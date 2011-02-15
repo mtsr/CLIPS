@@ -107,8 +107,8 @@ globle void InitializeFacts(
                                                      EnvRetract,
                                                      NULL,
                                                      EnvGetNextFact,
-                                                     EnvIncrementFactCount,
-                                                     EnvDecrementFactCount,NULL,NULL,NULL,NULL,NULL
+                                                     EnvDecrementFactCount,
+                                                     EnvIncrementFactCount,NULL,NULL,NULL,NULL,NULL
                                                    },
                                                    DecrementFactBasisCount,
                                                    IncrementFactBasisCount,
