@@ -247,8 +247,7 @@ globle void NetworkAssertRight(
 
       if ((join->secondaryNetworkTest != NULL) && exprResult)
         {
-         /* EngineData(theEnv)->GlobalRHSBinds = NULL; */
-         
+         EngineData(theEnv)->GlobalLHSBinds = lhsBinds;
          exprResult = EvaluateJoinExpression(theEnv,join->secondaryNetworkTest,join);
          if (EvaluationData(theEnv)->EvaluationError)
            { SetEvaluationError(theEnv,FALSE); }
