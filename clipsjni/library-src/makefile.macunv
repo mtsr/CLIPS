@@ -30,13 +30,13 @@ OBJS = agenda.o analysis.o argacces.o bload.o bmathfun.o bsave.o \
  	utility.o watch.o
 
 .c.o :
-	gcc -c -DDARWIN -DALLOW_ENVIRONMENT_GLOBALS=0 -std=c99 -arch i386 -arch ppc -Wall -Wundef -Wpointer-arith -Wshadow -Wcast-qual \
+	gcc -c -DDARWIN -DALLOW_ENVIRONMENT_GLOBALS=0 -std=c99 -arch i386 -arch ppc -arch x86_64 -Wall -Wundef -Wpointer-arith -Wshadow -Wcast-qual \
 	    -Wcast-align -Winline -Wmissing-declarations -Wredundant-decls \
 	    -Wmissing-prototypes -Wnested-externs \
 	    -Wstrict-prototypes -Waggregate-return -Wno-implicit $<
 
 libCLIPSJNI.jnilib : $(OBJS) CLIPSJNI_Environment.c
-	gcc -arch i386 -arch ppc -dynamiclib -o libCLIPSJNI.jnilib -Wall -I/System/Library/Frameworks/JavaVM.framework/Headers -framework JavaVM -lm $(OBJS) CLIPSJNI_Environment.c
+	gcc -arch i386 -arch ppc -arch x86_64 -dynamiclib -o libCLIPSJNI.jnilib -Wall -I/System/Library/Frameworks/JavaVM.framework/Headers -framework JavaVM -lm $(OBJS) CLIPSJNI_Environment.c
 
 agenda.o: agenda.c setup.h envrnmnt.h symbol.h usrsetup.h argacces.h \
   expressn.h exprnops.h exprnpsr.h extnfunc.h userdata.h scanner.h \

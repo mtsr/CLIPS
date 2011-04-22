@@ -51,4 +51,20 @@ public class IntegerValue extends PrimitiveValue
      {
       return ((Long) getValue()).longValue();
      }
+
+   /***********/
+   /* retain: */
+   /***********/
+   public void retain()
+     {
+      //System.out.println("IntegerValue retain");
+     }
+     
+   /*************/
+   /* release: */
+   /*************/
+   public void release()
+     {
+      //System.out.println("IntegerValue release");
+     }
   }

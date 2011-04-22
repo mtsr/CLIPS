@@ -514,18 +514,12 @@ public class Environment
                              theInstance.getInstanceAddress());
      }
 
-   /*************/
-   /* finalize: */
-   /*************/
-   protected void finalize() throws Throwable
+   /************/
+   /* destroy: */
+   /************/
+   public void destroy()
      {
-      try
-        {
-         /* TBD destroy global router references. */
-         destroyEnvironment(theEnvironment); 
-        }
-      finally
-        { super.finalize(); }
+      destroyEnvironment(theEnvironment);
      }
      
    /*********/

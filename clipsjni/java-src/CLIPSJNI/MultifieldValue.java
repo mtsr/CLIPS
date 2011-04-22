@@ -51,6 +51,36 @@ public class MultifieldValue extends PrimitiveValue
       
       return theList.size();
      }
+
+   /***********/
+   /* retain: */
+   /***********/
+   public void retain()
+     {
+      //System.out.println("MultifieldValue release");
+      List theList = (List) getValue();
+      
+      for (Iterator itr = theList.iterator(); itr.hasNext(); ) 
+        {
+         PrimitiveValue pv = (PrimitiveValue) itr.next();
+         pv.retain();
+        }            
+     }
+
+   /************/
+   /* release: */
+   /************/
+   public void release()
+     {
+      //System.out.println("MultifieldValue release");
+      List theList = (List) getValue();
+      
+      for (Iterator itr = theList.iterator(); itr.hasNext(); ) 
+        {
+         PrimitiveValue pv = (PrimitiveValue) itr.next();
+         pv.release();
+        }            
+     }
      
    /*************/
    /* toString: */

@@ -14,7 +14,6 @@ public class InstanceAddressValue extends InstanceValue
       super(new Long(value));
       
       owner = env;
-      env.incrementInstanceCount(this);
      }
 
    /*******************/
@@ -50,16 +49,21 @@ public class InstanceAddressValue extends InstanceValue
       return "<Instance-" + getInstanceName() + ">";
      }
 
-   /*************/
-   /* finalize: */
-   /*************/
-   protected void finalize() throws Throwable
+   /***********/
+   /* retain: */
+   /***********/
+   public void retain()
      {
-      try
-        {
-         owner.decrementInstanceCount(this);
-        }
-      finally
-        { super.finalize(); }
+      //System.out.println("InstanceAddressValue retain");
+      owner.incrementInstanceCount(this);
+     }
+
+   /************/
+   /* release: */
+   /************/
+   public void release()
+     {
+      //System.out.println("InstanceAddressValue release");
+      owner.decrementInstanceCount(this);
      }
   }

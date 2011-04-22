@@ -34,6 +34,22 @@ public class InstanceNameValue extends InstanceValue
      {
       return (String) getValue();
      }
+
+   /***********/
+   /* retain: */
+   /***********/
+   public void retain()
+     {
+      //System.out.println("InstanceNameValue retain");
+     }
+     
+   /*************/
+   /* release: */
+   /*************/
+   public void release()
+     {
+      //System.out.println("InstanceNameValue release");
+     }
    
    /*************/
    /* toString: */

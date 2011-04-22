@@ -12,6 +12,35 @@ import CLIPSJNI.*;
 
 /* TBD module qualifier with find-all-facts */
 
+/*
+
+Notes:
+
+This example creates just a single environment. If you create multiple environments,
+call the destroy method when you no longer need the environment. This will free the
+C data structures associated with the environment.
+
+   clips = new Environment();
+      .
+      . 
+      .
+   clips.destroy();
+
+Calling the clear, reset, load, loadFacts, run, eval, build, assertString,
+and makeInstance methods can trigger CLIPS garbage collection. If you need
+to retain access to a PrimitiveValue returned by a prior eval, assertString,
+or makeInstance call, retain it and then release it after the call is made.
+
+   PrimitiveValue pv1 = clips.eval("(myFunction foo)");
+   pv1.retain();
+   PrimitiveValue pv2 = clips.eval("(myFunction bar)");
+      .
+      .
+      .
+   pv1.release();
+
+*/
+
 class WineDemo implements ActionListener
   {  
    JFrame jfrm;

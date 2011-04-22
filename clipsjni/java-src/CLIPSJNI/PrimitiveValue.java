@@ -128,6 +128,22 @@ public abstract class PrimitiveValue
      {
       throw new Exception("PrimitiveValue " + this + " is not fact address type.");
      }
+
+   /************/
+   /* retain: */
+   /************/
+   public void retain()
+     {
+      //System.out.println("PrimitiveValue retain");
+     }
+
+   /************/
+   /* release: */
+   /************/
+   public void release()
+     {
+      //System.out.println("PrimitiveValue release");
+     }
      
    /*************/
    /* toString: */

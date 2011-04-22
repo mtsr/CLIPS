@@ -35,6 +35,22 @@ public class StringValue extends PrimitiveValue
       return (String) getValue();
      }
 
+   /************/
+   /* retain: */
+   /************/
+   public void retain()
+     {
+      //System.out.println("StringValue retain");
+     }
+     
+   /************/
+   /* release: */
+   /************/
+   public void release()
+     {
+      //System.out.println("StringValue release");
+     }
+
    /*************/
    /* toString: */
    /*************/
