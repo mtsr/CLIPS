@@ -852,6 +852,7 @@ globle void VMSSystem(
 globle int gengetchar(
   void *theEnv)
   {
+/*
 #if WIN_BTC || WIN_MVC
    if (SystemDependentData(theEnv)->getcLength ==
        SystemDependentData(theEnv)->getcPosition)
@@ -874,8 +875,11 @@ globle int gengetchar(
      
    return SystemDependentData(theEnv)->getcBuffer[SystemDependentData(theEnv)->getcPosition++];
 #else
+*/
    return(getc(stdin));
+/*
 #endif
+*/
   }
 
 /***********************************************/
@@ -886,6 +890,7 @@ globle int genungetchar(
   void *theEnv,
   int theChar)
   {
+  /*
 #if WIN_BTC || WIN_MVC
    if (SystemDependentData(theEnv)->getcPosition > 0)
      { 
@@ -895,8 +900,11 @@ globle int genungetchar(
    else
      { return EOF; }
 #else
+*/
    return(ungetc(theChar,stdin));
+/*
 #endif
+*/
   }
 
 /****************************************************/

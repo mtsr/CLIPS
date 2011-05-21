@@ -526,9 +526,9 @@ globle intBool EnvRetract(
    /* garbage information.             */
    /*==================================*/
 
-   FactDeinstall(theEnv,theFact);
-   UtilityData(theEnv)->EphemeralItemCount++;
-   UtilityData(theEnv)->EphemeralItemSize += sizeof(struct fact) + (sizeof(struct field) * theFact->theProposition.multifieldLength);
+   //FactDeinstall(theEnv,theFact);
+   //UtilityData(theEnv)->EphemeralItemCount++;
+   //UtilityData(theEnv)->EphemeralItemSize += sizeof(struct fact) + (sizeof(struct field) * theFact->theProposition.multifieldLength);
 
    /*========================================*/
    /* Add the fact to the fact garbage list. */
@@ -578,6 +578,15 @@ globle intBool EnvRetract(
    if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
      { PeriodicCleanup(theEnv,TRUE,FALSE); }
+   
+   /*==================================*/
+   /* Update busy counts and ephemeral */
+   /* garbage information.             */
+   /*==================================*/
+
+   FactDeinstall(theEnv,theFact);
+   UtilityData(theEnv)->EphemeralItemCount++;
+   UtilityData(theEnv)->EphemeralItemSize += sizeof(struct fact) + (sizeof(struct field) * theFact->theProposition.multifieldLength);
 
    /*==================================*/
    /* Return TRUE to indicate the fact */
