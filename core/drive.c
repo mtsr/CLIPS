@@ -715,6 +715,11 @@ globle unsigned long BetaMemoryHashValue(
    struct joinNode *oldJoin;
    unsigned long hashValue = 0;
    unsigned long multiplier = 1;
+   union
+     {
+      void *vv;
+      unsigned long liv;
+     } fis;
    
    /*======================================*/
    /* A NULL expression evaluates to zero. */
@@ -779,6 +784,21 @@ globle unsigned long BetaMemoryHashValue(
          case FLOAT:
            hashValue += (((FLOAT_HN *) theResult.value)->bucket * multiplier);
            break;
+           
+          case FACT_ADDRESS:
+#if OBJECT_SYSTEM
+          case INSTANCE_ADDRESS:
+#endif
+            fis.liv = 0;
+            fis.vv = theResult.value;
+            hashValue += (unsigned long) (fis.liv * multiplier);
+            break;
+
+          case EXTERNAL_ADDRESS:
+            fis.liv = 0;
+            fis.vv = ValueToExternalAddress(theResult.value);
+            hashValue += (unsigned long) (fis.liv * multiplier);
+            break;
         }
 
       /*==============================================*/
