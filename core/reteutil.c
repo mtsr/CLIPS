@@ -1354,6 +1354,11 @@ unsigned long ComputeRightHashValue(
    struct expr *tempExpr;
    unsigned long hashValue = 0;
    unsigned long multiplier = 1;
+   union
+     {
+      void *vv;
+      unsigned long liv;
+     } fis;
       
    if (theHeader->rightHash == NULL)
      { return hashValue; }
@@ -1384,6 +1389,21 @@ unsigned long ComputeRightHashValue(
              
           case FLOAT:
             hashValue += (((FLOAT_HN *) theResult.value)->bucket * multiplier);
+            break;
+            
+          case FACT_ADDRESS:
+#if OBJECT_SYSTEM
+          case INSTANCE_ADDRESS:
+#endif
+            fis.liv = 0;
+            fis.vv = theResult.value;
+            hashValue += (unsigned long) (fis.liv * multiplier);
+            break;
+
+          case EXTERNAL_ADDRESS:
+            fis.liv = 0;
+            fis.vv = ValueToExternalAddress(theResult.value);
+            hashValue += (unsigned long) (fis.liv * multiplier);
             break;
           }
        }
