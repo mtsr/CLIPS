@@ -39,6 +39,16 @@ struct callFunctionItem
    short int environmentAware;
    void *context;
   };
+
+struct callFunctionItemWithArg
+  {
+   char *name;
+   void (*func)(void *,void *);
+   int priority;
+   struct callFunctionItemWithArg *next;
+   short int environmentAware;
+   void *context;
+  };
   
 struct trackedMemory
   {
@@ -106,6 +116,14 @@ struct utilityData
                                                              struct callFunctionItem *,
                                                              int *);
    LOCALE void                           DeallocateCallList(void *,struct callFunctionItem *);
+   LOCALE struct callFunctionItemWithArg *AddFunctionToCallListWithArg(void *,char *,int,void (*)(void *, void *),
+                                                                       struct callFunctionItemWithArg *,intBool);
+   LOCALE struct callFunctionItemWithArg *AddFunctionToCallListWithArgWithContext(void *,char *,int,void (*)(void *, void *),
+                                                                                  struct callFunctionItemWithArg *,intBool,void *);
+   LOCALE struct callFunctionItemWithArg *RemoveFunctionFromCallListWithArg(void *,char *,
+                                                                            struct callFunctionItemWithArg *,
+                                                                            int *);
+   LOCALE void                           DeallocateCallListWithArg(void *,struct callFunctionItemWithArg *);
    LOCALE unsigned long                  ItemHashValue(void *,unsigned short,void *,unsigned long);
    LOCALE void                           YieldTime(void *);
    LOCALE short                          SetGarbageCollectionHeuristics(void *,short);

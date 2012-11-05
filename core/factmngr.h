@@ -75,6 +75,8 @@ struct factsData
    struct fact *FactList;
    long long NextFactIndex;
    unsigned long NumberOfFacts;
+   struct callFunctionItemWithArg *ListOfAssertFunctions;
+   struct callFunctionItemWithArg *ListOfRetractFunctions;
    struct patternEntityRecord  FactInfo;
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    struct deftemplate *CurrentDeftemplate;
@@ -154,6 +156,21 @@ struct factsData
    LOCALE intBool                        CopyFactSlotValues(void *,void *,void *);
    LOCALE intBool                        DeftemplateSlotDefault(void *,struct deftemplate *,
                                                                 struct templateSlot *,DATA_OBJECT *,int);
+
+   LOCALE intBool                        EnvAddAssertFunction(void *,char *,
+                                                                    void (*)(void *,void *),int);
+   LOCALE intBool                        EnvAddAssertFunctionWithContext(void *,char *,
+                                                                               void (*)(void *,void *),int,void *);
+   LOCALE intBool                        AddAssertFunction(char *,void (*)(void *,void *),int);
+   LOCALE intBool                        EnvRemoveAssertFunction(void *,char *);
+
+   LOCALE intBool                        EnvAddRetractFunction(void *,char *,
+                                                                    void (*)(void *,void *),int);
+   LOCALE intBool                        EnvAddRetractFunctionWithContext(void *,char *,
+                                                                               void (*)(void *,void *),int,void *);
+   LOCALE intBool                        AddRetractFunction(char *,void (*)(void *,void *),int);
+   LOCALE intBool                        EnvRemoveRetractFunction(void *,char *);
+
 
 #ifndef _FACTMNGR_SOURCE_
    extern int                            ChangeToFactList;
