@@ -2448,6 +2448,7 @@ static void HandleBackSpace(
                                          
          length = strlen(theCommand);
          if (length == 0) return;
+		 if (length == theData->caretOffset) return;
          
          postCommand = (char *) malloc(theData->caretOffset + 1);
          if (postCommand == NULL) return;
