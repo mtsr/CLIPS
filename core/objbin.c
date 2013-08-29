@@ -578,7 +578,7 @@ static void BsaveStorageObjects(
       return;
      }
    space = sizeof(long) * 9;
-   GenWrite((void *) &space,sizeof(long),fp);
+   GenWrite((void *) &space,sizeof(size_t),fp); // 64-bit issue changed long to size_t
    GenWrite((void *) &ObjectBinaryData(theEnv)->ModuleCount,sizeof(long),fp);
    GenWrite((void *) &ObjectBinaryData(theEnv)->ClassCount,sizeof(long),fp);
    GenWrite((void *) &ObjectBinaryData(theEnv)->LinkCount,sizeof(long),fp);
@@ -1129,7 +1129,7 @@ static void BloadObjects(
    if (ObjectBinaryData(theEnv)->ClassCount != 0L)
      {
       BloadandRefresh(theEnv,ObjectBinaryData(theEnv)->ClassCount,sizeof(BSAVE_DEFCLASS),UpdateDefclass);
-      BloadandRefresh(theEnv,ObjectBinaryData(theEnv)->LinkCount,sizeof(DEFCLASS *),UpdateLink);
+      BloadandRefresh(theEnv,ObjectBinaryData(theEnv)->LinkCount,sizeof(long),UpdateLink); // 64-bit bug fix: DEFCLASS * replaced with long
       BloadandRefresh(theEnv,ObjectBinaryData(theEnv)->SlotNameCount,sizeof(BSAVE_SLOT_NAME),UpdateSlotName);
       BloadandRefresh(theEnv,ObjectBinaryData(theEnv)->SlotCount,sizeof(BSAVE_SLOT_DESC),UpdateSlot);
       if (ObjectBinaryData(theEnv)->TemplateSlotCount != 0L)
