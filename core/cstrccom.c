@@ -202,6 +202,18 @@ globle void *FindNamedConstruct(
      }
 
    /*===============================================*/
+   /* If we find the symbol for the construct name, */
+   /* but it has a count of 0, then it can't be for */
+   /* a construct that's currently defined.         */
+   /*===============================================*/
+   
+   if (findValue->count == 0)
+     {
+      RestoreCurrentModule(theEnv);
+      return(NULL);
+     }
+
+   /*===============================================*/
    /* Loop through every construct of the specified */
    /* class in the current module checking to see   */
    /* if the construct's name matches the construct */
