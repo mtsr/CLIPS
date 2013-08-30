@@ -2751,6 +2751,7 @@ globle int DisplayBeforeCommandExecution(
       free(theData->topCommand->command);
       theData->topCommand->command = (char *) malloc(1);
       theData->topCommand->command[0] = '\0';
+	  theData->currentCommand = theData->topCommand; // Bug fix
       return TRUE;
      }
 
