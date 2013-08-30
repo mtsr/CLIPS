@@ -90,7 +90,6 @@ struct lhsParseNode
    struct expr *networkTest;
    struct expr *externalNetworkTest;
    struct expr *secondaryNetworkTest;
-   struct expr *secondaryExternalNetworkTest;
    struct expr *externalLeftHash;
    struct expr *externalRightHash;
    struct expr *constantSelector;

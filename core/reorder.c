@@ -975,7 +975,6 @@ static struct lhsParseNode *PerformReorder2(
             argPtr->right->networkTest = NULL; 
             argPtr->right->externalNetworkTest = NULL;
             argPtr->right->secondaryNetworkTest = NULL;
-            argPtr->right->secondaryExternalNetworkTest = NULL;
             argPtr->right->externalRightHash = NULL;
             argPtr->right->externalLeftHash = NULL;
             argPtr->right->leftHash = NULL;
@@ -1009,7 +1008,6 @@ static struct lhsParseNode *PerformReorder2(
             argPtr->networkTest = NULL; 
             argPtr->externalNetworkTest = NULL;
             argPtr->secondaryNetworkTest = NULL;
-            argPtr->secondaryExternalNetworkTest = NULL;
             argPtr->externalRightHash = NULL;
             argPtr->externalLeftHash = NULL;
             argPtr->constantSelector = NULL;
@@ -1398,7 +1396,6 @@ globle void CopyLHSParseNode(
       dest->networkTest = CopyExpression(theEnv,src->networkTest);
       dest->externalNetworkTest = CopyExpression(theEnv,src->externalNetworkTest);
       dest->secondaryNetworkTest = CopyExpression(theEnv,src->secondaryNetworkTest);
-      dest->secondaryExternalNetworkTest = CopyExpression(theEnv,src->secondaryExternalNetworkTest);
       dest->externalRightHash = CopyExpression(theEnv,src->externalRightHash);
       dest->externalLeftHash = CopyExpression(theEnv,src->externalLeftHash);
       dest->constantSelector = CopyExpression(theEnv,src->constantSelector);
@@ -1422,7 +1419,6 @@ globle void CopyLHSParseNode(
       dest->networkTest = src->networkTest;
       dest->externalNetworkTest = src->externalNetworkTest;
       dest->secondaryNetworkTest = src->secondaryNetworkTest;
-      dest->secondaryExternalNetworkTest = src->secondaryExternalNetworkTest;
       dest->externalRightHash = src->externalRightHash;
       dest->externalLeftHash = src->externalLeftHash;
       dest->constantSelector = src->constantSelector;
@@ -1476,7 +1472,6 @@ globle struct lhsParseNode *GetLHSParseNode(
    newNode->networkTest = NULL;
    newNode->externalNetworkTest = NULL;
    newNode->secondaryNetworkTest = NULL;
-   newNode->secondaryExternalNetworkTest = NULL;
    newNode->externalRightHash = NULL;
    newNode->externalLeftHash = NULL;
    newNode->constantSelector = NULL;
@@ -1504,7 +1499,6 @@ globle void ReturnLHSParseNodes(
       ReturnExpression(theEnv,waste->networkTest);
       ReturnExpression(theEnv,waste->externalNetworkTest);
       ReturnExpression(theEnv,waste->secondaryNetworkTest);
-      ReturnExpression(theEnv,waste->secondaryExternalNetworkTest);
       ReturnExpression(theEnv,waste->externalRightHash);
       ReturnExpression(theEnv,waste->externalLeftHash);
       ReturnExpression(theEnv,waste->constantSelector);
