@@ -1325,8 +1325,12 @@ static void MultifieldPrognDriver(
          EvaluationData(theEnv)->CurrentEvaluationDepth++;
          EvaluateExpression(theEnv,theExp,result);
          EvaluationData(theEnv)->CurrentEvaluationDepth--;
+        
          if (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE)
            { PropagateReturnValue(theEnv,result); }
+         else if ((theExp->nextArg == NULL) && (i == end)) // 6.30 Bug: If this is the last expression to be evaluated, it
+           { PropagateReturnValue(theEnv,result); }        // will be the return value so prevent garbage collection for it.
+
          PeriodicCleanup(theEnv,FALSE,TRUE);
 
          if (EvaluationData(theEnv)->HaltExecution || ProcedureFunctionData(theEnv)->BreakFlag || ProcedureFunctionData(theEnv)->ReturnFlag)
