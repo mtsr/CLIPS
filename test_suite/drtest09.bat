@@ -588,3 +588,42 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 (reset)
 (facts)
 (clear)
+(clear)                   ; SourceForge 1881324: CLIPS 6.3 Beta Release 3
+
+(deftemplate TAG2200 
+   (slot Doc-Address))
+   
+(defrule bug ""
+   (TAG2200 (Doc-Address ?DA1) )
+   (not (create-doc-shipper))
+   (test (eq ?DA1 ""))
+   =>)
+ 
+(reset)
+(assert (TAG2200 (Doc-Address "")))
+(assert (create-doc-shipper))
+
+(clear)                   ; DR0881
+(unwatch all)   
+
+(defrule detect
+   (b ?b)
+   (exists (a))
+   (test (eq ?b 2))
+   =>
+   (printout t "Rule Fired" crlf))
+(assert (a))
+(assert (b 1))
+(run)
+(reset)
+(assert (b 1))
+(assert (a))
+(run)
+(reset)
+(assert (a))
+(assert (b 2))
+(run)
+(reset)
+(assert (b 2))
+(assert (a))
+(run)

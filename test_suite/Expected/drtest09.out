@@ -801,4 +801,55 @@ f-1     (as_score (segment_id 11) (score 5))
 f-2     (as_score (segment_id 12) (score 9))
 For a total of 3 facts.
 CLIPS> (clear)
+CLIPS> (clear)                   ; SourceForge 1881324: CLIPS 6.3 Beta Release 3
+CLIPS> 
+(deftemplate TAG2200 
+   (slot Doc-Address))
+CLIPS>    
+(defrule bug ""
+   (TAG2200 (Doc-Address ?DA1) )
+   (not (create-doc-shipper))
+   (test (eq ?DA1 ""))
+   =>)
+CLIPS>  
+(reset)
+CLIPS> (assert (TAG2200 (Doc-Address "")))
+<Fact-1>
+CLIPS> (assert (create-doc-shipper))
+<Fact-2>
+CLIPS> 
+(clear)                   ; DR0881
+CLIPS> (unwatch all)   
+CLIPS> 
+(defrule detect
+   (b ?b)
+   (exists (a))
+   (test (eq ?b 2))
+   =>
+   (printout t "Rule Fired" crlf))
+CLIPS> (assert (a))
+<Fact-1>
+CLIPS> (assert (b 1))
+<Fact-2>
+CLIPS> (run)
+CLIPS> (reset)
+CLIPS> (assert (b 1))
+<Fact-1>
+CLIPS> (assert (a))
+<Fact-2>
+CLIPS> (run)
+CLIPS> (reset)
+CLIPS> (assert (a))
+<Fact-1>
+CLIPS> (assert (b 2))
+<Fact-2>
+CLIPS> (run)
+Rule Fired
+CLIPS> (reset)
+CLIPS> (assert (b 2))
+<Fact-1>
+CLIPS> (assert (a))
+<Fact-2>
+CLIPS> (run)
+Rule Fired
 CLIPS> (dribble-off)

@@ -19,7 +19,7 @@ CLIPS> (open blah5.dat blah5 r)           ; 10.5.2.1
 [ARGACCES5] Function open expected argument #3 to be of type string
 FALSE
 CLIPS> (open blah6.dat blah6 "x")         ; 10.5.2.1
-[ARGACCES5] Function open expected argument #3 to be of type string with value "r", "r+", "w", "wb", or "a"
+[ARGACCES5] Function open expected argument #3 to be of type string with value "r", "w", "a", "r+", "w+", "rb", "wb", "ab", "r+b", or "w+b"
 FALSE
 CLIPS> (open blah7.dat blah7 8)           ; 10.5.2.1
 [ARGACCES5] Function open expected argument #3 to be of type string

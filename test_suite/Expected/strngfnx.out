@@ -90,6 +90,8 @@ CLIPS> (sub-string -1 0 "abc")            ; 10.4.3
 ""
 CLIPS> (sub-string 3 8 "abcdefghijkl")    ; 10.4.3
 "cdefgh"
+CLIPS> (sub-string 1 1 "")                ; 10.4.3
+""
 CLIPS> (str-index)                        ; 10.4.4
 [ARGACCES4] Function str-index expected exactly 2 argument(s)
 CLIPS> (str-index "a")                    ; 10.4.4
@@ -341,4 +343,32 @@ CLIPS> 여러분 안녕하세요                      ; UTF-8 Support
 여러분
 CLIPS> Olá Mundo                          ; UTF-8 Support
 Olá
+CLIPS> 78Пр                               ; UTF-8 Support
+78Пр
+CLIPS> 7여                                 ; UTF-8 Support
+7여
+CLIPS> 3.4Пр                              ; UTF-8 Support
+3.4Пр
+CLIPS> 5.1여                               ; UTF-8 Support
+5.1여
+CLIPS> 3eПр                               ; UTF-8 Support
+3eПр
+CLIPS> 5.1e여                              ; UTF-8 Support
+5.1e여
+CLIPS> 3e+Пр                              ; UTF-8 Support
+3e+Пр
+CLIPS> 5.1e-여                             ; UTF-8 Support
+5.1e-여
+CLIPS> ?Привет                            ; UTF-8 Support
+[EVALUATN1] Variable Привет is unbound
+FALSE
+CLIPS> ?여러분                              ; UTF-8 Support
+[EVALUATN1] Variable 여러분 is unbound
+FALSE
+CLIPS> $?Привет                           ; UTF-8 Support
+[EVALUATN1] Variable Привет is unbound
+FALSE
+CLIPS> $?여러분                             ; UTF-8 Support
+[EVALUATN1] Variable 여러분 is unbound
+FALSE
 CLIPS> (dribble-off)

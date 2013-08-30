@@ -42,4 +42,40 @@
 (agenda)
 (retract 1)
 (agenda)
+(clear) ; 6.3 Issue
+(unwatch all)   
+
+(defrule detect
+   (b ?b)
+   (exists (a))
+   (test (eq ?b 2))
+   =>
+   (printout t "Rule Fired" crlf))
+(assert (a))
+(assert (b 1))
+(run)
+(reset)
+(assert (b 1))
+(assert (a))
+(run)
+(reset)
+(assert (a))
+(assert (b 2))
+(run)
+(reset)
+(assert (b 2))
+(assert (a))
+(run)
+(clear) ; 6.3 Issue
+
+(deffacts xy
+    (SAD T 1 T07 "12345678"))
+
+(defrule x
+   (exists (SAD T ?ix T07 ?str)
+       (test (>= (str-length ?str) 0))) 
+   (test (=  1 1))
+   =>)
+(reset)
+(agenda)
 (clear)

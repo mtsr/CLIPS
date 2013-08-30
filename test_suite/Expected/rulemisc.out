@@ -467,5 +467,90 @@ CLIPS> (assert (level-search 1))
 CLIPS> (run 1)
 ==> f-2     (level-search 2)
 CLIPS> (unwatch facts)
+CLIPS> (clear) ; Test Thing #17
+CLIPS> (deftemplate Event (slot value) (slot time))
+CLIPS> 
+(defrule example-failing-2
+  (Event (value 1) (time ?t1))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))
+            ))
+  (test (< ?t1 3))
+  =>
+  (printout t "Fails 1" crlf))
+CLIPS> 
+(deffacts stuff
+   (Event (value 1) (time 1)))
+CLIPS> (reset)
+CLIPS> (agenda)
+0      example-failing-2: f-1,*
+For a total of 1 activation.
+CLIPS> (clear) ; Test Thing #18
+CLIPS> (deftemplate Event (slot value) (slot time))
+CLIPS> 
+(defrule example-working
+  (Event (value 1) (time ?t1))
+  (Event (value 1) (time ?t2))
+  (test (< ?t1 ?t2))
+  (test (< ?t1 ?t2))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))))
+ =>
+  (printout t "Works 1" crlf)
+)
+CLIPS> 
+(defrule example-failing-1
+  (Event (value 1) (time ?t1))
+  (Event (value 1) (time ?t2))
+  (test (< ?t1 ?t2))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))))
+  (test (< ?t1 ?t2))
+=>
+ (printout t "Fails 1" crlf)
+)
+CLIPS> 
+(defrule example-simple-working-2
+  (Event (value 1) (time ?t1))
+  (Event (value 1) (time ?t2))
+  (test (< ?t1 ?t2))
+  (not (Event (value 0) (time ?tn)))
+  (test (< ?t1 ?t2))
+=>
+ (printout t "Works (Simple!) 2" crlf)
+)
+CLIPS> 
+(defrule example-failing-2
+  (Event (value 1) (time ?t1))
+  (Event (value 1) (time ?t2))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))))
+  (test (< ?t1 ?t2))
+  (test (< ?t1 ?t2))
+=>
+ (printout t "Fails 2" crlf)
+)
+CLIPS> 
+(defrule example-working-3
+  (Event (value 1) (time ?t1))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))))
+  (Event (value 1) (time ?t2))
+  (test (< ?t1 ?t2))
+  (test (< ?t1 ?t2))
+=>
+ (printout t "Works 3" crlf)
+)
+CLIPS> (assert (Event (value 1) (time 0)))
+<Fact-1>
+CLIPS> (assert (Event (value 1) (time 1)))
+<Fact-2>
+CLIPS> (agenda)
+0      example-working: f-1,f-2,*
+0      example-failing-1: f-1,f-2,*
+0      example-simple-working-2: f-1,f-2,*
+0      example-failing-2: f-1,f-2,*
+0      example-working-3: f-1,*,f-2
+For a total of 5 activations.
 CLIPS> (clear)
 CLIPS> (dribble-off)

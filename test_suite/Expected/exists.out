@@ -94,5 +94,53 @@ CLIPS> (agenda)
 For a total of 1 activation.
 CLIPS> (retract 1)
 CLIPS> (agenda)
+CLIPS> (clear) ; 6.3 Issue
+CLIPS> (unwatch all)   
+CLIPS> 
+(defrule detect
+   (b ?b)
+   (exists (a))
+   (test (eq ?b 2))
+   =>
+   (printout t "Rule Fired" crlf))
+CLIPS> (assert (a))
+<Fact-1>
+CLIPS> (assert (b 1))
+<Fact-2>
+CLIPS> (run)
+CLIPS> (reset)
+CLIPS> (assert (b 1))
+<Fact-1>
+CLIPS> (assert (a))
+<Fact-2>
+CLIPS> (run)
+CLIPS> (reset)
+CLIPS> (assert (a))
+<Fact-1>
+CLIPS> (assert (b 2))
+<Fact-2>
+CLIPS> (run)
+Rule Fired
+CLIPS> (reset)
+CLIPS> (assert (b 2))
+<Fact-1>
+CLIPS> (assert (a))
+<Fact-2>
+CLIPS> (run)
+Rule Fired
+CLIPS> (clear) ; 6.3 Issue
+CLIPS> 
+(deffacts xy
+    (SAD T 1 T07 "12345678"))
+CLIPS> 
+(defrule x
+   (exists (SAD T ?ix T07 ?str)
+       (test (>= (str-length ?str) 0))) 
+   (test (=  1 1))
+   =>)
+CLIPS> (reset)
+CLIPS> (agenda)
+0      x: *
+For a total of 1 activation.
 CLIPS> (clear)
 CLIPS> (dribble-off)

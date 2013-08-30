@@ -331,7 +331,7 @@ CLIPS> (assert (foo9))
 <Fact-9>
 CLIPS> (deftemplate foo10 (field x (type EXTERNAL-ADDRESS)))
 CLIPS> (assert (foo10))
-==> f-10    (foo10 (x <Pointer-0>)) ;; Any NULL pointer is OK
+==> f-10    (foo10 (x <Pointer-C-0x0>)) ;; Any NULL pointer is OK
 <Fact-10>
 CLIPS> (deftemplate foo11 (field x (type INTEGER) (allowed-integers 3 4 5)))
 CLIPS> (assert (foo11))

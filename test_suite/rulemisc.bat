@@ -214,4 +214,79 @@
 (assert (level-search 1))
 (run 1)
 (unwatch facts)
+(clear) ; Test Thing #17
+(deftemplate Event (slot value) (slot time))
+
+(defrule example-failing-2
+  (Event (value 1) (time ?t1))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))
+            ))
+  (test (< ?t1 3))
+  =>
+  (printout t "Fails 1" crlf))
+
+(deffacts stuff
+   (Event (value 1) (time 1)))
+(reset)
+(agenda)
+(clear) ; Test Thing #18
+(deftemplate Event (slot value) (slot time))
+
+(defrule example-working
+  (Event (value 1) (time ?t1))
+  (Event (value 1) (time ?t2))
+  (test (< ?t1 ?t2))
+  (test (< ?t1 ?t2))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))))
+ =>
+  (printout t "Works 1" crlf)
+)
+
+(defrule example-failing-1
+  (Event (value 1) (time ?t1))
+  (Event (value 1) (time ?t2))
+  (test (< ?t1 ?t2))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))))
+  (test (< ?t1 ?t2))
+=>
+ (printout t "Fails 1" crlf)
+)
+
+(defrule example-simple-working-2
+  (Event (value 1) (time ?t1))
+  (Event (value 1) (time ?t2))
+  (test (< ?t1 ?t2))
+  (not (Event (value 0) (time ?tn)))
+  (test (< ?t1 ?t2))
+=>
+ (printout t "Works (Simple!) 2" crlf)
+)
+
+(defrule example-failing-2
+  (Event (value 1) (time ?t1))
+  (Event (value 1) (time ?t2))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))))
+  (test (< ?t1 ?t2))
+  (test (< ?t1 ?t2))
+=>
+ (printout t "Fails 2" crlf)
+)
+
+(defrule example-working-3
+  (Event (value 1) (time ?t1))
+  (not (and (Event (value 0) (time ?tn))
+            (test (< ?t1 ?tn))))
+  (Event (value 1) (time ?t2))
+  (test (< ?t1 ?t2))
+  (test (< ?t1 ?t2))
+=>
+ (printout t "Works 3" crlf)
+)
+(assert (Event (value 1) (time 0)))
+(assert (Event (value 1) (time 1)))
+(agenda)
 (clear)

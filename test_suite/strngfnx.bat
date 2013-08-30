@@ -42,6 +42,7 @@
 (sub-string 5 7 "abc")             ; 10.4.3
 (sub-string -1 0 "abc")            ; 10.4.3
 (sub-string 3 8 "abcdefghijkl")    ; 10.4.3
+(sub-string 1 1 "")                ; 10.4.3
 (str-index)                        ; 10.4.4
 (str-index "a")                    ; 10.4.4
 (str-index "a" "b" 3)              ; 10.4.4
@@ -163,3 +164,15 @@
 Привет мир                         ; UTF-8 Support
 여러분 안녕하세요                      ; UTF-8 Support
 Olá Mundo                          ; UTF-8 Support
+78Пр                               ; UTF-8 Support
+7여                                 ; UTF-8 Support
+3.4Пр                              ; UTF-8 Support
+5.1여                               ; UTF-8 Support
+3eПр                               ; UTF-8 Support
+5.1e여                              ; UTF-8 Support
+3e+Пр                              ; UTF-8 Support
+5.1e-여                             ; UTF-8 Support
+?Привет                            ; UTF-8 Support
+?여러분                              ; UTF-8 Support
+$?Привет                           ; UTF-8 Support
+$?여러분                             ; UTF-8 Support
