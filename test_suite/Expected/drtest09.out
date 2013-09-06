@@ -852,4 +852,15 @@ CLIPS> (assert (a))
 <Fact-2>
 CLIPS> (run)
 Rule Fired
+CLIPS> (clear)                   ; CLIPSESG Issue
+CLIPS> (defclass BEO (is-a USER) (multislot de) (multislot en))
+CLIPS> (make-instance of BEO)
+[gen506]
+CLIPS> (make-instance of BEO)
+[gen507]
+CLIPS> (bsave-instances d.bins)
+3
+CLIPS> (reset)
+CLIPS> (bload-instances d.bins)
+3
 CLIPS> (dribble-off)
