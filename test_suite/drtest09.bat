@@ -627,3 +627,10 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 (assert (b 2))
 (assert (a))
 (run)
+(clear)                   ; CLIPSESG Issue
+(defclass BEO (is-a USER) (multislot de) (multislot en))
+(make-instance of BEO)
+(make-instance of BEO)
+(bsave-instances d.bins)
+(reset)
+(bload-instances d.bins)
