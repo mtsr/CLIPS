@@ -733,7 +733,11 @@ globle intBool CheckRHSForConstraintErrors(
           i++;
           tmpPtr = expressionList->nextArg;
           expressionList->nextArg = NULL;
-          if (CheckRHSForConstraintErrors(theEnv,expressionList,theLHS)) return(TRUE);
+          if (CheckRHSForConstraintErrors(theEnv,expressionList,theLHS))
+            {
+             expressionList->nextArg = tmpPtr;
+             return(TRUE);
+            }
           expressionList->nextArg = tmpPtr;
           expressionList = expressionList->nextArg;
          }

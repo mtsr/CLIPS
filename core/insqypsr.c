@@ -386,12 +386,14 @@ static int ParseQueryTestExpression(
    qtest = ArgumentParse(theEnv,readSource,&error);
    if (error == TRUE)
      {
+      ClearParsedBindNames(theEnv);
       SetParsedBindNames(theEnv,oldBindList);
       ReturnExpression(theEnv,top);
       return(FALSE);
      }
    if (qtest == NULL)
      {
+      ClearParsedBindNames(theEnv);
       SetParsedBindNames(theEnv,oldBindList);
       SyntaxErrorMessage(theEnv,"instance-set query function");
       ReturnExpression(theEnv,top);
@@ -436,10 +438,8 @@ static int ParseQueryActionExpression(
   struct token *queryInputToken)
   {
    EXPRESSION *qaction,*tmpInsSetVars;
-   int error;
    struct BindInfo *oldBindList,*newBindList,*prev;
 
-   error = FALSE;
    oldBindList = GetParsedBindNames(theEnv);
    SetParsedBindNames(theEnv,NULL);
    ExpressionData(theEnv)->BreakContext = TRUE;
@@ -451,14 +451,9 @@ static int ParseQueryActionExpression(
    SavePPBuffer(theEnv,queryInputToken->printForm);
 
    ExpressionData(theEnv)->BreakContext = FALSE;
-   if (error == TRUE)
-     {
-      SetParsedBindNames(theEnv,oldBindList);
-      ReturnExpression(theEnv,top);
-      return(FALSE);
-     }
    if (qaction == NULL)
      {
+      ClearParsedBindNames(theEnv);
       SetParsedBindNames(theEnv,oldBindList);
       SyntaxErrorMessage(theEnv,"instance-set query function");
       ReturnExpression(theEnv,top);

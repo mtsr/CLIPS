@@ -440,6 +440,7 @@ static int ParseQueryTestExpression(
    
    if (error == TRUE)
      {
+      ClearParsedBindNames(theEnv);
       SetParsedBindNames(theEnv,oldBindList);
       ReturnExpression(theEnv,top);
       return(FALSE);
@@ -447,6 +448,7 @@ static int ParseQueryTestExpression(
    
    if (qtest == NULL)
      {
+      ClearParsedBindNames(theEnv);
       SetParsedBindNames(theEnv,oldBindList);
       SyntaxErrorMessage(theEnv,"fact-set query function");
       ReturnExpression(theEnv,top);
@@ -495,10 +497,8 @@ static int ParseQueryActionExpression(
   struct token *queryInputToken)
   {
    EXPRESSION *qaction,*tmpFactSetVars;
-   int error;
    struct BindInfo *oldBindList,*newBindList,*prev;
 
-   error = FALSE;
    oldBindList = GetParsedBindNames(theEnv);
    SetParsedBindNames(theEnv,NULL);
    
@@ -513,15 +513,9 @@ static int ParseQueryActionExpression(
 
    ExpressionData(theEnv)->BreakContext = FALSE;
    
-   if (error == TRUE)
-     {
-      SetParsedBindNames(theEnv,oldBindList);
-      ReturnExpression(theEnv,top);
-      return(FALSE);
-     }
-   
    if (qaction == NULL)
      {
+      ClearParsedBindNames(theEnv);
       SetParsedBindNames(theEnv,oldBindList);
       SyntaxErrorMessage(theEnv,"fact-set query function");
       ReturnExpression(theEnv,top);

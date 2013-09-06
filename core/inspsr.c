@@ -333,6 +333,7 @@ globle EXPRESSION *ParseSlotOverrides(
   int *error)
   {
    EXPRESSION *top = NULL,*bot = NULL,*theExp;
+   EXPRESSION *theExpNext;
 
    while (GetType(DefclassData(theEnv)->ObjectParseToken) == LPAREN)
      {
@@ -351,13 +352,15 @@ globle EXPRESSION *ParseSlotOverrides(
          SetEvaluationError(theEnv,TRUE);
          return(NULL);
         }
-      theExp->nextArg = GenConstant(theEnv,SYMBOL,EnvTrueSymbol(theEnv));
-      if (CollectArguments(theEnv,theExp->nextArg,readSource) == NULL)
+      theExpNext = GenConstant(theEnv,SYMBOL,EnvTrueSymbol(theEnv));
+      if (CollectArguments(theEnv,theExpNext,readSource) == NULL)
         {
          *error = TRUE;
          ReturnExpression(theEnv,top);
+         ReturnExpression(theEnv,theExp);
          return(NULL);
         }
+      theExp->nextArg = theExpNext;
       if (top == NULL)
         top = theExp;
       else
