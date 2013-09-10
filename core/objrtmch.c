@@ -1042,7 +1042,7 @@ static void ProcessPatternNode(
      }
    else
      {
-      newMark->endPosition = (long) ObjectReteData(theEnv)->CurrentObjectSlotLength;
+      newMark->endPosition = (long) ObjectReteData(theEnv)->CurrentObjectSlotLength - patternNode->leaveFields; // Bug fix: added leaveFields
       
       if (patternNode->selector)
         {
