@@ -550,13 +550,13 @@
    [self setValue: [[self currentDirectory] stringByAbbreviatingWithTildeInPath]
          forKey: @"displayDirectory"];
 
-   NSLock *theLock = [[self envController] fileOpenLock];
+   //NSLock *theLock = [[self envController] fileOpenLock];
    
-   [theLock lock];
+   //[theLock lock];
    // This is probably unnecessary because of the change directory CLIPS glue function   
-   [[NSFileManager defaultManager] changeCurrentDirectoryPath: [self currentDirectory]];
+   //[[NSFileManager defaultManager] changeCurrentDirectoryPath: [self currentDirectory]];
    
-   [theLock unlock];
+   //[theLock unlock];
       
    FlushCommandString(theEnv);
       

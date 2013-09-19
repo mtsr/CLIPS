@@ -187,7 +187,8 @@ void MacYieldTimeFunction()
 int MacBeforeOpenFunction(
   void *theEnv)
   {
-   CLIPSTerminalController *theController = GetEnvironmentRouterContext(theEnv);
+   //CLIPSTerminalController *theController = GetEnvironmentRouterContext(theEnv);
+   CLIPSTerminalController *theController = GetEnvironmentContext(theEnv);
      
    NSLock *theLock = [[theController envController] fileOpenLock];
    
@@ -204,7 +205,8 @@ int MacBeforeOpenFunction(
 int MacAfterOpenFunction(
   void *theEnv)
   {
-   CLIPSTerminalController *theController = GetEnvironmentRouterContext(theEnv);
+   //CLIPSTerminalController *theController = GetEnvironmentRouterContext(theEnv);
+   CLIPSTerminalController *theController = GetEnvironmentContext(theEnv);
    
    NSLock *theLock = [[theController envController] fileOpenLock];
    
