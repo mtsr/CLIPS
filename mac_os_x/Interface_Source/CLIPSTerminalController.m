@@ -423,13 +423,13 @@
    /* Begin the open sheet for the environment window. */
    /*==================================================*/
         
-   [oPanel beginSheetForDirectory: theDirectory
-           file: nil
-           types: fileTypes
-           modalForWindow: [self window]
-           modalDelegate: self
-           didEndSelector: @selector(loadConstructPanelDidEnd:returnCode:contextInfo:)
-           contextInfo: nil];
+   [oPanel setAllowedFileTypes: fileTypes];
+   
+   [oPanel setDirectoryURL: [NSURL fileURLWithPath: theDirectory]];
+   
+   [oPanel beginSheetModalForWindow: [self window]
+                  completionHandler: ^(NSInteger returnCode)
+                                        { [self loadConstructPanelDidEnd: oPanel returnCode: returnCode]; }];
    }
  
 /****************************************************/
@@ -437,17 +437,16 @@
 /****************************************************/
 - (void) loadConstructPanelDidEnd: (NSOpenPanel *) sheet 
          returnCode: (int) returnCode 
-         contextInfo: (void  *) contextInfo
   {
    if (returnCode != NSOKButton) return;
       
-   NSArray *filesToOpen = [sheet filenames];
+   NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
    void *theEnv = [environment environment];
       
    if ([filesToOpen count] != 1) return;
       
-   theFileName = [filesToOpen objectAtIndex: 0];
+   theFileName = [[filesToOpen objectAtIndex: 0] path];
 
    /*======================================*/
    /* Remember this directory for the next */
@@ -520,13 +519,13 @@
    /* Begin the open sheet for the environment window. */
    /*==================================================*/
      
-   [oPanel beginSheetForDirectory: theDirectory
-           file: nil
-           types: fileTypes
-           modalForWindow: [self window]
-           modalDelegate: self
-           didEndSelector: @selector(loadBatchPanelDidEnd:returnCode:contextInfo:)
-           contextInfo: nil];
+   [oPanel setAllowedFileTypes: fileTypes];
+   
+   [oPanel setDirectoryURL: [NSURL fileURLWithPath: theDirectory]];
+   
+   [oPanel beginSheetModalForWindow: [self window]
+                  completionHandler: ^(NSInteger returnCode)
+                                        { [self loadBatchPanelDidEnd: oPanel returnCode: returnCode]; }];
   }
   
 /************************************************/
@@ -534,17 +533,16 @@
 /************************************************/
 - (void) loadBatchPanelDidEnd: (NSOpenPanel *) sheet 
          returnCode: (int) returnCode 
-         contextInfo: (void  *) contextInfo
   {
    if (returnCode != NSOKButton) return;
    
-   NSArray *filesToOpen = [sheet filenames];
+   NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
    void *theEnv = [environment environment];
       
    if ([filesToOpen count] != 1) return;
       
-   theFileName = [filesToOpen objectAtIndex: 0];
+   theFileName = [[filesToOpen objectAtIndex: 0] path];
 
    [self setCurrentDirectory: 
          [theFileName stringByDeletingLastPathComponent]];
@@ -606,13 +604,11 @@
    /* Begin the open sheet for the environment window. */
    /*==================================================*/
      
-   [oPanel beginSheetForDirectory: theDirectory
-           file: nil
-           types: nil
-           modalForWindow: [self window]
-           modalDelegate: self
-           didEndSelector: @selector(setDirectoryPanelDidEnd:returnCode:contextInfo:)
-           contextInfo: nil];
+   [oPanel setDirectoryURL: [NSURL fileURLWithPath: theDirectory]];
+   
+   [oPanel beginSheetModalForWindow: [self window]
+                  completionHandler: ^(NSInteger returnCode)
+                                        { [self setDirectoryPanelDidEnd: oPanel returnCode: returnCode]; }];
   }
 
 /************************************************/
@@ -620,17 +616,15 @@
 /************************************************/
 - (void) setDirectoryPanelDidEnd: (NSOpenPanel *) sheet 
          returnCode: (int) returnCode 
-         contextInfo: (void  *) contextInfo
   {
    if (returnCode != NSOKButton) return;
    
-   NSArray *filesToOpen = [sheet filenames];
+   NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
       
    if ([filesToOpen count] != 1) return;
       
-   theFileName = [filesToOpen objectAtIndex: 0];
-
+   theFileName = [[filesToOpen objectAtIndex: 0] path];
    [self setCurrentDirectory: theFileName];
       
    [self setValue: [[self currentDirectory] stringByAbbreviatingWithTildeInPath]

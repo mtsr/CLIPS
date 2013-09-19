@@ -58,16 +58,13 @@
 - (void)               printC: (char *) theString;
 
 - (void)               loadConstructPanelDidEnd: (NSOpenPanel *) sheet 
-                       returnCode: (int) returnCode 
-                       contextInfo: (void  *) contextInfo;
+                       returnCode: (int) returnCode;
 
 - (void)               loadBatchPanelDidEnd: (NSOpenPanel *) sheet 
-                       returnCode: (int) returnCode 
-                       contextInfo: (void  *) contextInfo;
+                       returnCode: (int) returnCode;
 
 - (void)               setDirectoryPanelDidEnd: (NSOpenPanel *) sheet 
-                       returnCode: (int) returnCode 
-                       contextInfo: (void  *) contextInfo;
+                       returnCode: (int) returnCode;
 
 - (unsigned int)       lineCountIncrease: (NSString *) theString;
                        
