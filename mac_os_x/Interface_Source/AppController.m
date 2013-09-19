@@ -20,7 +20,6 @@
    NSDictionary *appDefaults; 
    NSUserDefaults *defaults; 
    NSFont *theFont;
-   //NSLog(@"AppController initialize");
    
    theFont = [NSFont userFixedPitchFontOfSize:0.0];
 
@@ -71,8 +70,6 @@
 /*****************/
 - (void) awakeFromNib
   {
-   //NSLog(@"AppController awakeFromNib");
-   //NSLog(@"EnvController awakeFromNib");
   }
 
 /************/    
@@ -207,8 +204,6 @@
 /*******************************/
 - (NSApplicationTerminateReply) applicationShouldTerminate: (NSApplication *) app
   {
-   //NSLog(@"applicationShouldTerminate:");
-   
    if (preferenceController != nil)
      { return [preferenceController reviewPreferencesBeforeQuitting]; }
      

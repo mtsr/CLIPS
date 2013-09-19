@@ -39,8 +39,6 @@
 /************/    
 - (void) dealloc
   {
-   NSLog(@"CLIPSAgendaController dealloc");
-   
    [super dealloc];
   }
 
@@ -269,7 +267,6 @@
 /****************/  
 - (IBAction) showDefrule: (id) sender
   {
-   NSLog(@"CLIPSAgendaController showDefrule");
   }
  
 /*********************/    
@@ -277,7 +274,6 @@
 /*********************/    
 - (IBAction) halt: (id) sender
   {
-   NSLog(@"CLIPSAgendaController halt");
    EnvSetHaltRules([environment environment],TRUE);
   }
 
@@ -286,7 +282,6 @@
 /*********************/    
 - (IBAction) haltImmediately: (id) sender
   {
-   NSLog(@"CLIPSAgendaController haltImmediately");
    /* TBD Need to abort waitForChar */
    /* TBD Need to abort batch */
    SetHaltCommandLoopBatch([environment environment],TRUE);
@@ -336,8 +331,6 @@
 /********************/
 - (void) windowWillClose: (NSNotification *) aNotification
   {
-   NSLog(@"CLIPSAgendaController windowWillClose:");
-   
    [self setValue: nil forKey: @"environment"]; 
    [self setValue: nil forKey: @"environmentController"]; 
 

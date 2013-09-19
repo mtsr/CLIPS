@@ -39,8 +39,6 @@
 /*********/
 - (id) init
   {
-   NSLog(@"CLIPSTerminalController init");
-
    self = [super initWithWindowNibName:@"CLIPSTerminal"];
    
    if (self)
@@ -63,8 +61,6 @@
 /************/    
 - (void) dealloc
   {
-   NSLog(@"CLIPSTerminalController dealloc");
-
    void *theEnvironment = [environment environment];
 
    EnvSetBeforeOpenFunction(theEnvironment,NULL);
@@ -86,8 +82,6 @@
 /*****************/
 - (void) awakeFromNib
   {
-   NSLog(@"CLIPSTerminalController awakeFromNib");
-
    void *theEnvironment = [environment environment];
    
    /*======================================================*/
@@ -902,14 +896,12 @@
    if ((lineCount - startLines) > lineMax)
      {
       lineMax = lineCount - startLines;
-      NSLog(@"lineMax = %d",lineMax);
      }
 
 
    if ([outputBuffer length] > bufferMax)
      {
       bufferMax = [outputBuffer length];
-      NSLog(@"bufferMax = %d",bufferMax);
      }
 */
    bufferCount = 0;
@@ -962,7 +954,6 @@
      { lineIncrease--; }
       
    return lineIncrease;
-   //NSLog(@"theString = %@ position = %d length = %d lineCount = %d",theString,position,length,lineCount);
   }
 
 /**************************************************************/    
@@ -1041,8 +1032,6 @@
    char *theCommand;
    NSRange theRange = { 0, 0 };
    
-   NSLog(@"CLIPSTerminalController clearCurrentCommand");
-   
    theCommand = GetCommandString([environment environment]);
    if (theCommand == NULL) 
      { return; }
@@ -1065,7 +1054,6 @@
 /**************************************************************/    
 - (void) windowDidBecomeMain: (NSNotification *) aNotification
   {
-   //NSLog(@"CLIPSTerminalController windowDidBecomeMain");
    [envController setTerminal: self];
   }
 
@@ -1074,8 +1062,6 @@
 /*********************/    
 - (void) exit
   {
-   NSLog(@"CLIPSTerminalController exit");
-   
    exit = YES;
    [self haltImmediately: self];
   }
@@ -1085,7 +1071,6 @@
 /*********************/    
 - (IBAction) halt: (id) sender
   {
-   NSLog(@"CLIPSTerminalController halt");
    EnvSetHaltRules([environment environment],TRUE);
   }
 
@@ -1094,7 +1079,6 @@
 /*********************/    
 - (IBAction) haltImmediately: (id) sender
   {
-   NSLog(@"CLIPSTerminalController haltImmediately");
    /* Need to abort waitForChar */
    /* Need to abort batch */
    SetHaltCommandLoopBatch([environment environment],TRUE);
@@ -1167,8 +1151,6 @@
 /********************/
 - (void) windowWillClose: (NSNotification *) aNotification
   {
-   NSLog(@"CLIPSTerminalController windowWillClose");
-
    /*=====================*/
    /* Release the timers. */
    /*=====================*/

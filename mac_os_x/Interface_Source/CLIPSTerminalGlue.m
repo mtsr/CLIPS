@@ -210,7 +210,5 @@ int MacAfterOpenFunction(
    
    [theLock unlock];
 
-   //NSLog(@"After theLock = %@",theLock);
-   
    return TRUE;
   } 

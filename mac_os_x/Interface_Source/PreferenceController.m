@@ -30,8 +30,6 @@
 - (id) init
   {
    self = [super initWithWindowNibName:@"Preferences"];
-   //NSLog(@"PreferencesController init self = %@", self);
-   //NSLog(@"PreferencesController init window = %@", [self window]);
    return self;
   }
 
@@ -40,7 +38,6 @@
 /******************/
 - (void) awakeFromNib
   {
-   //NSLog(@"PreferencesController awakeFromNib window = %@", [self window]);
   }
 
 /******************/
@@ -48,7 +45,6 @@
 /******************/
 - (void) windowDidLoad
   {
-   //NSLog(@"PreferencesController windowDidLoad window = %@", [self window]);
   }
   
 /**************/
@@ -56,8 +52,6 @@
 /**************/
 - (void) showPanel
   {
-   //NSLog(@"PreferenceController showPanel");
-   
    NSUserDefaultsController *theDefaultsController;
    NSWindow *panel = [self window];
    
@@ -183,8 +177,6 @@
    NSUserDefaults *theValues;
    NSNumber *watchValue;
 
-   //NSLog(@"watchAll:");
-   
    theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
    watchValue = [NSNumber numberWithBool:YES];
    
@@ -212,8 +204,6 @@
    NSUserDefaults *theValues;
    NSNumber *watchValue;
 
-   //NSLog(@"watchNone:");
-   
    theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
    watchValue = [NSNumber numberWithBool:NO];
    

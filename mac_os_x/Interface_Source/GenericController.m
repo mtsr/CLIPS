@@ -22,7 +22,6 @@
 /*********/
 - (id) init
   {
-   //NSLog(@"GenericController init");
    self = [super initWithWindowNibName:@"GenericInspector"];
 
    if (self)
@@ -37,8 +36,6 @@
 /************/    
 - (void) dealloc
   {
-   NSLog(@"GenericInspector dealloc");
-   
    [super dealloc];
   }
 
@@ -50,8 +47,6 @@
    NSArrayController *theArrayController;
    NSMutableDictionary *bindingOptions = [NSMutableDictionary dictionary];
 
-   //NSLog(@"GenericController awakeFromNib");
-   
    /*=====================================================================*/
    /* Create the binding for the environment displayed in the popup menu. */
    /*=====================================================================*/
@@ -100,8 +95,6 @@
 /********************/
 - (void) windowWillClose: (NSNotification *) aNotification
   {
-   //NSLog(@"GenericController windowWillClose:");
-   
    [self setValue: nil forKey: @"environmentController"];
 
    [self autorelease];
@@ -128,7 +121,6 @@
 /*****************************/
 - (void) setEnvironmentController: (EnvController *) theController
   {
-   //NSLog(@"setEnvironmentController oldValue = %@ newValue = %@", environmentController, theController);
    [theController retain];
    [environmentController release];
    environmentController = theController;

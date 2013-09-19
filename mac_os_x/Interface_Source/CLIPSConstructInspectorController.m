@@ -75,7 +75,6 @@
 /*
 - (BOOL) shouldDrawInsertionPoint
   {
-   NSLog(@"CLIPSConstructInspectorController shouldDrawInsertionPoint");
    return NO;
   }
 */  

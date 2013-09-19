@@ -21,8 +21,6 @@
 /********************************/
 - (id) initWithFrame: (NSRect) frameRect textContainer: (NSTextContainer *) aTextContainer
   {
-   NSLog(@"CLIPSTerminalView initWithFrame:textContainer:");
-      
    self = [super initWithFrame: frameRect textContainer: aTextContainer];
    
    if (self)
@@ -37,7 +35,6 @@
 /******************/
 - (id) initWithFrame: (NSRect) frameRect
   {
-   NSLog(@"CLIPSTerminalView initWithFrame");
    self = [super initWithFrame: frameRect];
    
    if (self)
@@ -52,8 +49,6 @@
 /*********/
 - (id) init
   {
-   NSLog(@"CLIPSTerminalView init");
-   
    self = [super init];
    
    if (self) 
@@ -69,8 +64,6 @@
 /************/    
 - (void) dealloc
   {
-   NSLog(@"CLIPSTerminalView dealloc");
-     
    if (inputBuffer != NULL)
      { free(inputBuffer); }
      
@@ -85,7 +78,6 @@
 /*****************/
 - (void) awakeFromNib
   {
-   NSLog(@"CLIPSTerminalView awakeFromNib");
    inputCharLock = [[NSConditionLock alloc] initWithCondition: DOES_NOT_CHAR];
    hiliteColor = [[NSDictionary alloc] initWithObjectsAndKeys: [NSColor selectedTextBackgroundColor], NSBackgroundColorAttributeName, nil];
   }
@@ -124,7 +116,6 @@
 /**********/
 - (IBAction) paste: (id) sender
   {
-   //NSLog(@"CLIPSTerminalView paste:");
    NSRange theRange = { [[super string] length], 0 };
    [super setSelectedRange: theRange];   
 
@@ -319,7 +310,6 @@
 /***************/
 - (void) insertText: (NSString *) theText
   {
-   //NSLog(@"CLIPSTerminalView insertText");
    void *theEnvironment = [environment environment];
    
    /*================================================*/
@@ -404,8 +394,6 @@
 /*******************/
 - (void) deleteBackward: (id) sender
   {
-   //NSLog(@"CLIPSTerminalView deleteBackward");
-
    /*===================================*/
    /* Move the cursor to the end of the */
    /* last line in the terminal.        */
@@ -534,7 +522,6 @@
         {
          SetHaltExecution(theEnvironment,TRUE);
          CloseAllBatchSources(theEnvironment);
-         NSLog(@"Command-Shift-Period");
         }
       else
         {
@@ -547,8 +534,6 @@
             SetHaltExecution(theEnvironment,TRUE);
             CloseAllBatchSources(theEnvironment);
            }
-           
-         NSLog(@"Command-Period");
         }
        
       waitingForChar = FALSE;
@@ -590,7 +575,6 @@
 /*
 - (void) keyDown: (NSEvent *) event
   {
-   NSLog(@"CLIPSTerminalView keyDown");
    [super keyDown: event];
   }
 */
@@ -611,8 +595,6 @@
 /*
 - (void) refreshBindings
   {
-   NSLog(@"CLIPSTerminalView refreshBindings");
-   
    [self bind:@"fontName" 
          toObject: [NSUserDefaultsController sharedUserDefaultsController]
          withKeyPath:@"values.editorTextFontName" 

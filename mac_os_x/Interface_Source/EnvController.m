@@ -13,8 +13,6 @@
 /*********/
 - (id) init
   {
-   NSLog(@"EnvController init");
-
    self = [super init];
    
    if (self)
@@ -30,8 +28,6 @@
 /************/    
 - (void) dealloc
   {
-   NSLog(@"EnvController dealloc");
-
    [fileOpenLock release];
 
    /*=====================================*/

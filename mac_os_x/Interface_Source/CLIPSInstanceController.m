@@ -40,8 +40,6 @@
 /************/    
 - (void) dealloc
   {
-   NSLog(@"CLIPSInstanceController dealloc");
-   
    [super dealloc];
   }
 
@@ -236,7 +234,6 @@
 /***********/  
 - (IBAction) search: (id) sender
  {
-  NSLog(@"CLIPSInstanceController search");
   [instanceListController search: sender];
 /*
   [self setSearchString: [sender stringValue]];
@@ -267,8 +264,6 @@
 /********************/
 - (void) windowWillClose: (NSNotification *) aNotification
   {
-   NSLog(@"CLIPSInstanceController windowWillClose:");
-   
    [self setValue: nil forKey: @"environment"]; 
    [self setValue: nil forKey: @"environmentController"]; 
 

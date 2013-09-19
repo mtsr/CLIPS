@@ -40,8 +40,6 @@
 /************/    
 - (void) dealloc
   {
-   NSLog(@"CLIPSFactController dealloc");
-   
    [super dealloc];
   }
 
@@ -235,7 +233,6 @@
 /****************/  
 - (IBAction) search: (id) sender
  {
-  NSLog(@"CLIPSFactController search");
   [factListController search: sender];
 /*
   [self setSearchString: [sender stringValue]];
@@ -266,8 +263,6 @@
 /********************/
 - (void) windowWillClose: (NSNotification *) aNotification
   {
-   NSLog(@"CLIPSFactController windowWillClose:");
-   
    [self setValue: nil forKey: @"environment"]; 
    [self setValue: nil forKey: @"environmentController"]; 
 

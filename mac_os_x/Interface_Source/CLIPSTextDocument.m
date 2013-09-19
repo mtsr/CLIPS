@@ -35,8 +35,6 @@
 /************/    
 - (void) dealloc
   {
-   NSLog(@"CLIPSTextDocument dealloc");
-   
    if (terminalController != nil)
      {
       NSNotificationCenter  *nc;

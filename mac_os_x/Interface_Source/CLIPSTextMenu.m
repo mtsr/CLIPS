@@ -7,7 +7,6 @@
 /*****************/
 - (void) awakeFromNib
   {
-   NSLog(@"CLIPSTextMenu awakeFromNib");
    id mainMenu;
    NSArray *items;
    NSMutableArray *array;

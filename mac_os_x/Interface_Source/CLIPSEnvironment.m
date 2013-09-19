@@ -72,8 +72,6 @@
 /************/    
 - (void) dealloc
   {
-   NSLog(@"CLIPSEnvironment dealloc");
-
    /*================================*/
    /* Destroy the CLIPS environment. */
    /*================================*/
@@ -770,7 +768,6 @@
 /*
 - (void) setDelegate: (id) theDelegate
   {
-   NSLog(@"CLIPSEnvironment setDelegate");
    [theDelegate retain];
    [delegate release];
    delegate = theDelegate;
@@ -1056,8 +1053,6 @@
    
    agendaListenerCount++;
 
-   /* NSLog(@"increment %@ agendaListenerCount = %d",self,agendaListenerCount); */
-
    if (agendaListenerCount == 1)
      { [agendaLock unlockWithCondition: START_AGENDA_LISTENING]; }
    else
@@ -1073,8 +1068,6 @@
 
    agendaListenerCount--;
    
-   /* NSLog(@"decrement %@ agendaListenerCount = %d",self,agendaListenerCount); */
-
    if (agendaListenerCount == 0)
      { [agendaLock unlock]; }
    else
@@ -1098,8 +1091,6 @@
    
    factsListenerCount++;
 
-   /* NSLog(@"increment %@ factsListenerCount = %d",self,factsListenerCount); */
-
    if (factsListenerCount == 1)
      { [factsLock unlockWithCondition: START_FACTS_LISTENING]; }
    else
@@ -1115,8 +1106,6 @@
 
    factsListenerCount--;
    
-   /* NSLog(@"decrement %@ factsListenerCount = %d",self,factsListenerCount); */
-
    if (factsListenerCount == 0)
      { [factsLock unlock]; }
    else
@@ -1140,8 +1129,6 @@
    
    instancesListenerCount++;
 
-   /* NSLog(@"increment %@ instancesListenerCount = %d",self,instancesListenerCount); */
-
    if (instancesListenerCount == 1)
      { [instancesLock unlockWithCondition: START_INSTANCES_LISTENING]; }
    else
@@ -1157,8 +1144,6 @@
 
    instancesListenerCount--;
    
-   /* NSLog(@"decrement %@ factsListenerCount = %d",self,factsListenerCount); */
-
    if (instancesListenerCount == 0)
      { [instancesLock unlock]; }
    else

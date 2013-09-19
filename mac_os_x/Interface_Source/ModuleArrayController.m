@@ -88,8 +88,6 @@
 /****************/  
 - (IBAction) search: (id) sender
  {
-  /* NSLog(@"ModuleArrayController search = %@",[sender stringValue]); */
-
   [self setSearchString: [sender stringValue]];
   [self rearrangeObjects];
  } 
@@ -121,7 +119,6 @@
 /*******************/
 - (void) setModuleIndex: (int) theModule
   {
-   /* NSLog(@"ModuleArrayController setModuleIndex = %d",theModule); */
    moduleIndex = theModule;
    [self rearrangeObjects];
   }

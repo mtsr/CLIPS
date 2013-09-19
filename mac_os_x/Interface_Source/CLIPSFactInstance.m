@@ -191,7 +191,6 @@
 /************/    
 - (void) dealloc
   {
-   /* NSLog(@"CLIPSFactInstance dealloc %@", self); */
    [relationName release];
    [name release];
    [attributeValues release];
