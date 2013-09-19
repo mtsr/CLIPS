@@ -6,7 +6,6 @@
 //
 
 #import "CLIPSFactInstance.h"
-#import "CLIPS/clips.h"
 
 @implementation CLIPSFactInstance
 

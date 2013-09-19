@@ -6,6 +6,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "CLIPS/clips.h"
 
 @interface CLIPSFactInstance : NSObject 
   {

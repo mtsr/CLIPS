@@ -30,6 +30,8 @@
 
    if (self)
      {
+      [self setValue: [NSNumber numberWithInt: 10] forKey: @"fontSize"]; 
+      [self setValue: [NSNumber numberWithInt: 13] forKey: @"rowHeight"]; 
      }
      
    return self;

@@ -790,6 +790,9 @@
   {
    NSString *theStr = [NSString stringWithCString: theString encoding: NSUTF8StringEncoding];
    
+   if (theStr == nil)
+     { return; }
+     
    /*=================================================================*/
    /* If the buffer has grown too large, wait for it to be dumped by  */
    /* the UI before adding any more text to it. For print intensive   */
@@ -1110,7 +1113,7 @@
                      @"Wait", @"Halt Immediately", @"Halt",
                      [self window],self,                  
                      @selector(sheetDidEndShouldClose:returnCode:contextInfo:),
-                     NULL,sender,@"",nil);
+                     NULL,sender,@" ",nil);
                          
    return NO;
   }
