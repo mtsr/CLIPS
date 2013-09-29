@@ -153,4 +153,21 @@ CLIPS>
 CLIPS> (reset)
 CLIPS> (run)
 US
+CLIPS> (clear)                   ; SourceForge Bug #12
+CLIPS> (defclass Test (is-a USER) (multislot Contents))
+CLIPS> (make-instance of Test (Contents a b c d e f g h))
+[gen508]
+CLIPS> 
+(defrule BrokenPatternMatchBehavior-Object
+   (object (is-a Test) 
+           (Contents $?first ?second ?third $?fourth ?fifth))
+   =>
+   (printout t ?first " " ?second " " ?third " " ?fourth " " ?fifth crlf))
+CLIPS> (run)
+(a b c d e) f g () h
+(a b c d) e f (g) h
+(a b c) d e (f g) h
+(a b) c d (e f g) h
+(a) b c (d e f g) h
+() a b (c d e f g) h
 CLIPS> (dribble-off)
