@@ -1851,11 +1851,14 @@ static struct lhsParseNode *AssignPatternIndices(
       /*=====================================================*/
       /* A test CE is not assigned a pattern index, however, */
       /* if it is the last CE at the end of this level, then */
-      /* return to the previous level.                       */
+      /* return to the previous level. If this is the first  */
+      /* CE in a group, it will have a join created so the   */
+      /* depth should be incremented.                        */
       /*=====================================================*/
 
       else if (theLHS->type == TEST_CE)
-        { 
+        {
+         if (joinDepth == 0) joinDepth++;
          theLHS->joinDepth = joinDepth - 1;
          PropagateJoinDepth(theLHS->expression,(short) (joinDepth - 1));
          PropagateNandDepth2(theLHS->expression,theLHS->beginNandDepth,theLHS->endNandDepth);
