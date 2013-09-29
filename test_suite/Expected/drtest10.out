@@ -5,7 +5,7 @@ CLIPS> (clear)                   ; Memory Leak #1
 CLIPS> (progn (release-mem) TRUE)
 TRUE
 CLIPS> (mem-used)
-1697966 ;; Reference mem-used number
+1697966  ;; Can be different
 CLIPS> (defclass SOURCE (is-a USER))
 CLIPS> 
 (deffunction foo()
@@ -28,7 +28,7 @@ CLIPS> (clear)                   ; Memory Leak #2
 CLIPS> (progn (release-mem) TRUE)
 TRUE
 CLIPS> (mem-used)
-1698150 ;; Should be the same as above
+1698150 ;; Reference mem-used number
 CLIPS> (defclass SOURCE (is-a USER))
 CLIPS> 
 (deffunction foo()
@@ -71,7 +71,7 @@ CLIPS> (clear)                   ; Memory Leak #41
 CLIPS> (progn (release-mem) TRUE)
 TRUE
 CLIPS> (mem-used)
-1698150
+1698150 ;; Should be the same as above
 CLIPS> (deftemplate SOURCE)
 CLIPS> 
 (deffunction foo()
@@ -137,4 +137,20 @@ CLIPS> (progn (release-mem) TRUE)
 TRUE
 CLIPS> (mem-used)
 1698150 ;; Should be the same as above
+CLIPS> (clear)
+CLIPS> 
+(deftemplate nar 
+   (slot bc))
+CLIPS> 
+(defrule migrant 
+   (test (eq 1 1))
+   (nar (bc ?bc))
+   =>
+   (printout t ?bc crlf))
+CLIPS> 
+(deffacts stuff
+   (nar  (bc "US")))
+CLIPS> (reset)
+CLIPS> (run)
+US
 CLIPS> (dribble-off)
