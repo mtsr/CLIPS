@@ -1,5 +1,3 @@
-(clear)
-(release-mem)
 (clear)                   ; Memory Leak #1
 (progn (release-mem) TRUE)
 (mem-used)
@@ -59,3 +57,18 @@
 (clear)
 (progn (release-mem) TRUE)
 (mem-used)
+(clear)
+
+(deftemplate nar 
+   (slot bc))
+
+(defrule migrant 
+   (test (eq 1 1))
+   (nar (bc ?bc))
+   =>
+   (printout t ?bc crlf))
+
+(deffacts stuff
+   (nar  (bc "US")))
+(reset)
+(run)
