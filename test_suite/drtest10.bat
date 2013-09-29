@@ -72,3 +72,13 @@
    (nar  (bc "US")))
 (reset)
 (run)
+(clear)                   ; SourceForge Bug #12
+(defclass Test (is-a USER) (multislot Contents))
+(make-instance of Test (Contents a b c d e f g h))
+
+(defrule BrokenPatternMatchBehavior-Object
+   (object (is-a Test) 
+           (Contents $?first ?second ?third $?fourth ?fifth))
+   =>
+   (printout t ?first " " ?second " " ?third " " ?fourth " " ?fifth crlf))
+(run)
