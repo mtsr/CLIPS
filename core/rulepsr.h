@@ -34,6 +34,9 @@
    LOCALE int                            ParseDefrule(void *,char *);
    LOCALE struct lhsParseNode           *FindVariable(struct symbolHashNode *,
                                                       struct lhsParseNode *);
+#if DEVELOPER && DEBUGGING_FUNCTIONS
+   LOCALE void                           DumpRuleAnalysis(void *,struct lhsParseNode *);
+#endif
 
 #endif
 

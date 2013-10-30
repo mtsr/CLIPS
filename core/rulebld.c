@@ -50,6 +50,7 @@
 #include "reteutil.h"
 #include "router.h"
 #include "rulebld.h"
+#include "rulepsr.h"
 #include "watch.h"
 
 /***************************************/

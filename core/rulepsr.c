@@ -84,9 +84,6 @@
    static int                     ExpressionComplexity(void *,struct expr *);
    static int                     LogicalAnalysis(void *,struct lhsParseNode *);
    static void                    AddToDefruleList(struct defrule *);
-#if DEVELOPER && DEBUGGING_FUNCTIONS
-   static void                    DumpRuleAnalysis(void *,struct lhsParseNode *);
-#endif
 #endif
 
 /****************************************************/
@@ -950,7 +947,7 @@ static void AddToDefruleList(
 /**********************************************************/
 /* DumpRuleAnalysis:  */
 /**********************************************************/
-static void DumpRuleAnalysis(
+globle void DumpRuleAnalysis(
   void *theEnv,
   struct lhsParseNode *tempNode)
   {
@@ -963,8 +960,9 @@ static void DumpRuleAnalysis(
       if (! traceNode->userCE)
         { continue; }
         
-      gensprintf(buffer,"CE %2d: ",traceNode->whichCE);
+      gensprintf(buffer,"CE %2d (%2d %2d): ",traceNode->whichCE,traceNode->beginNandDepth,traceNode->endNandDepth);
       EnvPrintRouter(theEnv,WDISPLAY,buffer);
+      
       PrintExpression(theEnv,WDISPLAY,traceNode->networkTest);
       EnvPrintRouter(theEnv,WDISPLAY,"\n");
 
