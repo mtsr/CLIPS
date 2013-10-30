@@ -377,9 +377,6 @@ static RESTRICTION *ParseRestrictionType(
                  environment, they are pointers
                  to classes
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static EXPRESSION *GenTypeExpression(
   void *theEnv,
   EXPRESSION *top,
@@ -388,11 +385,11 @@ static EXPRESSION *GenTypeExpression(
   char *COOLName)
   {
 #if OBJECT_SYSTEM
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(nonCOOLCode)
 #endif
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(primitiveCode)
 #pragma unused(COOLName)
 #endif

@@ -166,16 +166,13 @@ static int GetcString(
 /****************************************************/
 /* UngetcString: Ungetc routine for string routers. */
 /****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int UngetcString(
   void *theEnv,
   int ch,
   char *logicalName)
   {
    struct stringRouter *head;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(ch)
 #endif
 

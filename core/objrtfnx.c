@@ -368,9 +368,6 @@ globle intBool ObjectCmpConstantFunction(
    =========================================
    ***************************************** */
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintObjectGetVarJN1(
   void *theEnv,
   char *logicalName,
@@ -404,7 +401,7 @@ static void PrintObjectGetVarJN1(
      }
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -427,9 +424,6 @@ static intBool ObjectGetVarJNFunction1(
    return(TRUE);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintObjectGetVarJN2(
   void *theEnv,
   char *logicalName,
@@ -455,7 +449,7 @@ static void PrintObjectGetVarJN2(
      }
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -478,9 +472,6 @@ static intBool ObjectGetVarJNFunction2(
    return(TRUE);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintObjectGetVarPN1(
   void *theEnv,
   char *logicalName,
@@ -507,7 +498,7 @@ static void PrintObjectGetVarPN1(
      }
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -527,9 +518,6 @@ static intBool ObjectGetVarPNFunction1(
    return(TRUE);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintObjectGetVarPN2(
   void *theEnv,
   char *logicalName,
@@ -553,7 +541,7 @@ static void PrintObjectGetVarPN2(
      }
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -573,9 +561,6 @@ static intBool ObjectGetVarPNFunction2(
    return(TRUE);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintObjectCmpConstant(
   void *theEnv,
   char *logicalName,
@@ -599,7 +584,7 @@ static void PrintObjectCmpConstant(
      }
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -607,9 +592,6 @@ static void PrintObjectCmpConstant(
 #endif
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintSlotLengthTest(
   void *theEnv,
   char *logicalName,
@@ -628,7 +610,7 @@ static void PrintSlotLengthTest(
    PrintLongInteger(theEnv,logicalName,(long long) hack->minLength);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -654,9 +636,6 @@ static intBool SlotLengthTestFunction(
    return(TRUE);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintPNSimpleCompareFunction1(
   void *theEnv,
   char *logicalName,
@@ -674,7 +653,7 @@ static void PrintPNSimpleCompareFunction1(
    EnvPrintRouter(theEnv,logicalName,ValueToString(FindIDSlotName(theEnv,(unsigned) hack->secondSlot)));
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -705,9 +684,6 @@ static intBool PNSimpleCompareFunction1(
    return(rv);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintPNSimpleCompareFunction2(
   void *theEnv,
   char *logicalName,
@@ -727,7 +703,7 @@ static void PrintPNSimpleCompareFunction2(
    EnvPrintRouter(theEnv,logicalName,ValueToString(FindIDSlotName(theEnv,(unsigned) hack->secondSlot)));
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -760,9 +736,6 @@ static intBool PNSimpleCompareFunction2(
    return(rv);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintPNSimpleCompareFunction3(
   void *theEnv,
   char *logicalName,
@@ -784,7 +757,7 @@ static void PrintPNSimpleCompareFunction3(
    PrintLongInteger(theEnv,logicalName,(long long) hack->secondOffset);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -817,9 +790,6 @@ static intBool PNSimpleCompareFunction3(
    return(rv);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintJNSimpleCompareFunction1(
   void *theEnv,
   char *logicalName,
@@ -841,7 +811,7 @@ static void PrintJNSimpleCompareFunction1(
    EnvPrintRouter(theEnv,logicalName,ValueToString(FindIDSlotName(theEnv,(unsigned) hack->secondSlot)));
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -876,9 +846,6 @@ static intBool JNSimpleCompareFunction1(
    return(rv);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintJNSimpleCompareFunction2(
   void *theEnv,
   char *logicalName,
@@ -902,7 +869,7 @@ static void PrintJNSimpleCompareFunction2(
    EnvPrintRouter(theEnv,logicalName,ValueToString(FindIDSlotName(theEnv,(unsigned) hack->secondSlot)));
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -939,9 +906,6 @@ static intBool JNSimpleCompareFunction2(
    return(rv);
   }
 
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintJNSimpleCompareFunction3(
   void *theEnv,
   char *logicalName,
@@ -967,7 +931,7 @@ static void PrintJNSimpleCompareFunction3(
    PrintLongInteger(theEnv,logicalName,(long long) hack->secondOffset);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)

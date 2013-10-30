@@ -219,9 +219,6 @@ static void CloseDeftemplateFiles(
 /* DeftemplateModuleToCode: Writes the C code representation */
 /*   of a single deftemplate module to the specified file.   */
 /*************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DeftemplateModuleToCode(
   void *theEnv,
   FILE *theFile,
@@ -230,7 +227,7 @@ static void DeftemplateModuleToCode(
   int maxIndices,
   int moduleCount)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(moduleCount)
 #endif
 
@@ -411,16 +408,13 @@ globle void DeftemplateCConstructReference(
 /* InitDeftemplateCode: Writes out runtime */
 /*   initialization code for deftemplates. */
 /*******************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void InitDeftemplateCode(
   void *theEnv,
   FILE *initFP,
   int imageID,
   int maxIndices)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(imageID)
 #pragma unused(maxIndices)

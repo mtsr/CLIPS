@@ -120,15 +120,12 @@ globle void ResetDefglobals(
 /* ResetDefglobalAction: Action to be applied to each */
 /*   defglobal construct during a reset command.      */
 /******************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void ResetDefglobalAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
    struct defglobal *theDefglobal = (struct defglobal *) theConstruct;
@@ -261,14 +258,11 @@ globle void EnvListDefglobals(
 /* EnvGetDefglobalWatch: C access routine for retrieving */
 /*   the current watch value of a defglobal.             */
 /*********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned EnvGetDefglobalWatch(
   void *theEnv,
   void *theGlobal)
   { 
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -279,15 +273,12 @@ globle unsigned EnvGetDefglobalWatch(
 /* EnvSetDeftemplateWatch: C access routine for setting */
 /*   the current watch value of a deftemplate.          */
 /********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvSetDefglobalWatch(
   void *theEnv,
   unsigned newState,
   void *theGlobal)
   {  
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -300,16 +291,13 @@ globle void EnvSetDefglobalWatch(
 /* DefglobalWatchAccess: Access routine for setting the */
 /*   watch flag of a defglobal via the watch command.   */
 /********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DefglobalWatchAccess(
   void *theEnv,
   int code,
   unsigned newState,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
 
@@ -321,16 +309,13 @@ static unsigned DefglobalWatchAccess(
 /* DefglobalWatchPrint: Access routine for printing which defglobals */
 /*   have their watch flag set via the list-watch-items command.     */
 /*********************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DefglobalWatchPrint(
   void *theEnv,
   char *logName,
   int code,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
 

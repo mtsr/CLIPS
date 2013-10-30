@@ -99,14 +99,11 @@ static void DeassignClassID(void *,unsigned);
   SIDE EFFECTS : Busy count incremented
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void IncrementDefclassBusyCount(
   void *theEnv,
   void *theDefclass)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -806,7 +803,7 @@ LOCALE void DestroyDefclass(
 
    rtn_struct(theEnv,defclass,cls);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(hnd)
 #endif
 #endif

@@ -110,14 +110,11 @@ static void NetworkModifyForSharedSlot(void *,int,DEFCLASS *,SLOT_DESC *);
   SIDE EFFECTS : Count set
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvIncrementInstanceCount(
   void *theEnv,
   void *vptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -133,14 +130,11 @@ globle void EnvIncrementInstanceCount(
   SIDE EFFECTS : Count set
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvDecrementInstanceCount(
   void *theEnv,
   void *vptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -1185,14 +1179,11 @@ globle void MatchObjectFunction(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle intBool NetworkSynchronized(
   void *theEnv,
   void *vins)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

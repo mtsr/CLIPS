@@ -280,9 +280,6 @@ static void ReadyObjectsForCode(
                  same time as the real slots - thus the
                  references must be predetermined
  ************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void MarkDefclassAndSlots(
   void *theEnv,
   struct constructHeader *vTheDefclass,
@@ -292,7 +289,7 @@ static void MarkDefclassAndSlots(
    MARK_INFO *markInfo = (MARK_INFO *) vTheBuffer;
    long i;
    PACKED_LOCATION_INFO theLocationInfo;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -352,16 +349,13 @@ static void PrintSlotNameReference(
   SIDE EFFECTS : Writes out initialization code
   NOTES        : None
  *******************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void InitObjectsCode(
   void *theEnv,
   FILE *initFP,
   int imageID,
   int maxIndices)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(maxIndices)
 #endif
 

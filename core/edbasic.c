@@ -42,7 +42,7 @@ static int	newmode[3];		/* New TTY mode bits		*/
 static short	iochan;		 	/* TTY I/O channel		*/
 #endif
 
-#if     WIN_MVC || WIN_BTC || WIN_GCC
+#if     WIN_MVC || WIN_GCC
 #include	<dos.h>
 #endif
 
@@ -71,9 +71,6 @@ static struct  sgttyb  nstate;		        /* values for editor mode */
  * beginning of the current line.
  * Trivial.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int gotobol(
   void *theEnv,
   int f,
@@ -117,9 +114,6 @@ globle int backchar(
 /*
  * Move the cursor to the end of the current line. Trivial. No errors.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int gotoeol(
   void *theEnv,
   int f,
@@ -160,9 +154,6 @@ globle int forwchar(
  * considered to be hard motion; it really isn't if the original value of dot
  * is the same as the new value of dot. Normally bound to "M-<".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int gotobob(
   void *theEnv,
   int f,
@@ -179,9 +170,6 @@ globle int gotobob(
  * (ZJ). The standard screen code does most of the hard parts of update.
  * Bound to "M->".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int gotoeob(
   void *theEnv,
   int f,
@@ -348,9 +336,6 @@ globle int backpage(
  * Set the mark in the current window to the value of "." in the window. No
  * errors are possible. Bound to "M-.".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int setmark(
   void *theEnv,
   int f,
@@ -368,9 +353,6 @@ globle int setmark(
  * that moves the mark about. The only possible error is "no mark". Bound to
  * "C-X C-X".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int swapmark(
   void *theEnv,
   int f,
@@ -413,9 +395,6 @@ globle int swapmark(
  *      NOTE:  This function may leaving trailing blanks.
  * Returns TRUE on success, FALSE on errors.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int wrapword(
   void *theEnv)
   {
@@ -444,9 +423,6 @@ globle int wrapword(
  * performed by the "backchar" and "forwchar" routines. Error if you try to
  * move beyond the buffers.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int backword(
   void *theEnv,
   int f,
@@ -473,9 +449,6 @@ globle int backword(
  * Move the cursor forward by the specified number of words. All of the motion
  * is done by "forwchar". Error if you try and move beyond the buffer's end.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int forwword(
   void *theEnv,
   int f,
@@ -501,9 +474,6 @@ globle int forwword(
  * convert any characters to upper case. Error if you try and move beyond the
  * end of the buffer. Bound to "M-U".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int upperword(
   void *theEnv,
   int f,
@@ -537,9 +507,6 @@ globle int upperword(
  * convert characters to lower case. Error if you try and move over the end of
  * the buffer. Bound to "M-L".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int lowerword(
   void *theEnv,
   int f,
@@ -574,9 +541,6 @@ globle int lowerword(
  * characters to lower case. Error if you try and move past the end of the
  * buffer. Bound to "M-C".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int capword(
   void *theEnv,
   int f,
@@ -620,9 +584,6 @@ globle int capword(
  * the right number of words. Put dot back where it was and issue the kill
  * command for the right number of characters. Bound to "M-D".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int delfword(
   void *theEnv,
   int f,
@@ -664,9 +625,6 @@ globle int delfword(
  * counting the characters. When dot is finally moved to its resting place,
  * fire off the kill command. Bound to "M-Rubout" and to "M-Backspace".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int delbword(
   void *theEnv,
   int f,
@@ -741,9 +699,6 @@ globle int inword()
  * Move "." to the start, and kill the characters.
  * Bound to "C-W".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int killregion(
   void *theEnv,
   int f,
@@ -768,9 +723,6 @@ globle int killregion(
  * at all. This is a bit like a kill region followed
  * by a yank. Bound to "M-W".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int copyregion(
   void *theEnv,
   int f,
@@ -812,9 +764,6 @@ globle int copyregion(
  * redisplay is done in all buffers. Bound to
  * "C-X C-L".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int lowerregion(
   void *theEnv,
   int f,
@@ -853,9 +802,6 @@ globle int lowerregion(
  * redisplay is done in all buffers. Bound to
  * "C-X C-L".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int upperregion(
   void *theEnv,
   int f,
@@ -965,9 +911,6 @@ REGION *rp)
  * Changed calling code to "C-X C-V" to be
  * more like the Zmacs editor on Symbolics. CJC 7/28/86
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int fileread(
   void *theEnv,
   int f,
@@ -993,9 +936,6 @@ globle int fileread(
  * Changed calling code to "C-X C-F" (Find File) to be
  * more like the Zmacs editor on Symbolics. CJC 7/28/86
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int filevisit(
   void *theEnv,
   int f,
@@ -1183,7 +1123,7 @@ char    fname[])
                 --cp1;
 #endif
 
-#if     WIN_MVC || WIN_BTC || WIN_GCC
+#if     WIN_MVC || WIN_GCC
         while (cp1!=&fname[0] && cp1[-1]!=':' && cp1[-1]!='\\')
                 --cp1;
 #endif
@@ -1209,9 +1149,6 @@ char    fname[])
  *
  * Modified to allow current file name as default. CJC 7/28/86
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int filewrite(
   void *theEnv,
   int f,
@@ -1250,9 +1187,6 @@ globle int filewrite(
  * name for the buffer. Bound to "C-X C-S". May
  * get called by "C-Z".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int filesave(
   void *theEnv,
   int f,
@@ -1331,9 +1265,6 @@ char    *fn)
  * Bound to "C-X C-R" for Rename buffer!
  * Changed 7/28/86 by CJC.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int filename(
   void *theEnv,
   int f,
@@ -1588,9 +1519,6 @@ globle void ttclose()
  * we just put the characters in the big array, after checking for overflow.
  * Ditto on MS-DOS (use the very very raw console output routine).
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void ttputc(
 int c)
 {
@@ -1681,7 +1609,7 @@ globle int ttgetc()
         return (ibuf[ibufi++] & 0xFF);	  /* Allow multinational  */
 #endif
 
-#if     WIN_MVC || WIN_BTC || WIN_GCC
+#if     WIN_MVC || WIN_GCC
 	return (fgetc(stdin));           /* NOTE: This won't really work */
 #endif                              /* See file EDTERM.C for good code */
 

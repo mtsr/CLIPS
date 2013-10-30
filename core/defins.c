@@ -230,7 +230,7 @@ static void DeallocateDefinstancesData(
       rtn_struct(theEnv,definstancesModule,theModuleItem);
      }
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif
@@ -241,15 +241,12 @@ static void DeallocateDefinstancesData(
 /* DestroyDefinstancesAction: Action used to remove  */
 /*   definstances as a result of DestroyEnvironment. */
 /*****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DestroyDefinstancesAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -263,7 +260,7 @@ static void DestroyDefinstancesAction(
 
    rtn_struct(theEnv,definstances,theDefinstances);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theConstruct,theEnv)
 #endif
 #endif
@@ -366,7 +363,7 @@ globle intBool EnvUndefinstances(
   void *vptr)
   {
 #if RUN_TIME || BLOAD_ONLY
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv,vptr)
 #endif
    return(FALSE);
@@ -859,15 +856,12 @@ static intBool ClearDefinstancesReady(
                  if definstances is not busy
                  (assumed to be initialized to 1)
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void CheckDefinstancesBusy(
   void *theEnv,
   struct constructHeader *theDefinstances,
   void *userBuffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -907,15 +901,12 @@ static void ResetDefinstances(
   SIDE EFFECTS : Instances created
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void ResetDefinstancesAction(
   void *theEnv,
   struct constructHeader *vDefinstances,
   void *userBuffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(userBuffer)
 #endif
    DEFINSTANCES *theDefinstances = (DEFINSTANCES *) vDefinstances;

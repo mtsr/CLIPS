@@ -181,7 +181,7 @@ globle void ConstructsToCCommand(
    int argCount;
    long long id, max; 
    int nameLength, pathLength;
-#if VAX_VMS || WIN_MVC || WIN_BTC
+#if VAX_VMS || WIN_MVC
    int i;
 #endif
 
@@ -206,7 +206,7 @@ globle void ConstructsToCCommand(
    /* PCs can't contain a period.    */
    /*================================*/
 
-#if VAX_VMS || WIN_MVC || WIN_BTC
+#if VAX_VMS || WIN_MVC
    for (i = 0 ; *(fileName+i) ; i++)
      {
       if (*(fileName+i) == '.')
@@ -1463,16 +1463,13 @@ globle void MarkConstructBsaveIDs(
 /*  Used with the MarkConstructBsaveIDs function to mark all */
 /*  occurences of a specific construct with a unique ID.     */
 /*************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void MarkConstruct(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *vTheBuffer)
   {
    long *count = (long *) vTheBuffer;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -1603,7 +1600,7 @@ globle void ConstructModuleToCode(
 void ConstructsToCCommand(
   void *theEnv) 
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
   }

@@ -112,15 +112,12 @@ static void ResetDeffacts(
 /* ResetDeffactsAction: Action to be applied to each */
 /*   deffacts construct during a reset command.      */
 /*****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void ResetDeffactsAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
    DATA_OBJECT result;
@@ -175,7 +172,7 @@ static void ClearDeffacts(
 
    AddConstructToModule(&newDeffacts->header);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif

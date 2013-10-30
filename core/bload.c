@@ -753,14 +753,11 @@ globle void AddAbortBloadFunction(
   SIDE EFFECTS : None
   NOTES        : None
  *******************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int BloadOutOfMemoryFunction(
   void *theEnv,
   size_t size)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(size,theEnv)
 #endif
    return(TRUE);
@@ -797,7 +794,7 @@ globle int BloadCommand(
    fileName = GetFileName(theEnv,"bload",1);
    if (fileName != NULL) return(EnvBload(theEnv,fileName));
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif

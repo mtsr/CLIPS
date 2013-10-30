@@ -186,9 +186,6 @@ static void CloseDeffactsFiles(
 /* DeffactsModuleToCode: Writes the C code representation */
 /*   of a single deffacts module to the specified file.   */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DeffactsModuleToCode(
   void *theEnv,
   FILE *theFile,
@@ -197,7 +194,7 @@ static void DeffactsModuleToCode(
   int maxIndices,
   int moduleCount)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(moduleCount)
 #endif
    

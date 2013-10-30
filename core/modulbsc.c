@@ -96,7 +96,7 @@ static void ClearDefmodules(
    CreateMainModule(theEnv);
    DefmoduleData(theEnv)->MainModuleRedefinable = TRUE;
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif

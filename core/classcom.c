@@ -235,9 +235,6 @@ globle DEFCLASS *LookupDefclassAnywhere(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-#if WIN_BTC && (! DEFMODULE_CONSTRUCT)
-#pragma argsused
-#endif
 globle intBool DefclassInScope(
   void *theEnv,
   DEFCLASS *theDefclass,
@@ -253,7 +250,7 @@ globle intBool DefclassInScope(
    moduleID = (int) theModule->bsaveID;
    return(TestBitMap(scopeMap,moduleID) ? TRUE : FALSE);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv,theDefclass,theModule)
 #endif
    return(TRUE);
@@ -334,10 +331,6 @@ globle intBool EnvUndefclass(
   void *theEnv,
   void *theDefclass)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(theEnv,theDefclass)
-#endif
-
 #if RUN_TIME || BLOAD_ONLY
    return(FALSE);
 #else
@@ -414,14 +407,11 @@ globle void EnvListDefclasses(
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned EnvGetDefclassWatchInstances(
   void *theEnv,
   void *theClass)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -440,15 +430,12 @@ globle unsigned EnvGetDefclassWatchInstances(
   SIDE EFFECTS : Watch flag for the class set
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvSetDefclassWatchInstances(
   void *theEnv,
   unsigned newState,
   void *theClass)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -468,14 +455,11 @@ globle void EnvSetDefclassWatchInstances(
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned EnvGetDefclassWatchSlots(
   void *theEnv,
   void *theClass)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -493,15 +477,12 @@ globle unsigned EnvGetDefclassWatchSlots(
   SIDE EFFECTS : Watch flag for the class set
   NOTES        : None
  **********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvSetDefclassWatchSlots(
   void *theEnv,
   unsigned newState,
   void *theClass)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -664,9 +645,6 @@ globle SYMBOL_HN *CheckClassAndSlot(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-#if WIN_BTC && (! DEBUGGING_FUNCTIONS)
-#pragma argsused
-#endif
 globle void SaveDefclasses(
   void *theEnv,
   void *theModule,
@@ -675,7 +653,7 @@ globle void SaveDefclasses(
 #if DEBUGGING_FUNCTIONS
    DoForAllConstructsInModule(theEnv,theModule,SaveDefclass,DefclassData(theEnv)->DefclassModuleIndex,FALSE,(void *) logName);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv,theModule,logName)
 #endif
 #endif

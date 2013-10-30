@@ -104,16 +104,13 @@ globle void PrintDefmoduleReference(
 /* InitDefmoduleCode: Writes out initialization */
 /*   code for defmodules for a run-time module. */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void InitDefmoduleCode(
   void *theEnv,
   FILE *initFP,
   int imageID,
   int maxIndices)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(maxIndices)
 #endif
 

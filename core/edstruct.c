@@ -69,9 +69,6 @@ static void int_to_ascii(char [],int,int);
  * if the use count is 0. Otherwise, they come
  * from some other window.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int usebuffer(
   void *theEnv,
   int f,
@@ -132,9 +129,6 @@ globle int usebuffer(
  * if the buffer has been changed). Then free the header
  * line and the buffer header. Bound to "C-X K".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int killbuffer(
   void *theEnv,
   int f,
@@ -183,9 +177,6 @@ globle int killbuffer(
  * the windows that are displaying the
  * list. Bound to "C-X C-B".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int listbuffers(
   void *theEnv,
   int f,
@@ -869,7 +860,7 @@ globle int kinsert(
   void *theEnv,
   int c)
 {
-#if  WIN_MVC || WIN_BTC
+#if  WIN_MVC
 	char *nbufp;
 #else
         register char   *nbufp;
@@ -922,9 +913,6 @@ int n)
  * redisplay code does). With no argument it defaults to 1. Bound to M-!.
  * Because of the default, it works like in Gosling.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int reposition(
   void *theEnv,
   int f,
@@ -939,9 +927,6 @@ globle int reposition(
  * Refresh the screen. With no argument, it just does the refresh. With an
  * argument it recenters "." in the current window. Bound to "C-L".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int EditorRefresh(
   void *theEnv,
   int f,
@@ -963,9 +948,6 @@ globle int EditorRefresh(
  * window. There are no real errors, although the command does nothing if
  * there is only 1 window on the screen. Bound to "C-X C-N".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int nextwind(
   void *theEnv,
   int f,
@@ -986,9 +968,6 @@ globle int nextwind(
  * current window. There arn't any errors, although the command does not do a
  * lot if there is 1 window.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int prevwind(
   void *theEnv,
   int f,
@@ -1033,9 +1012,6 @@ globle int mvdnwind(
  * (this command does not really move "."; it moves the frame). Bound to
  * "C-X C-P".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int mvupwind(
   void *theEnv,
   int f,
@@ -1087,9 +1063,6 @@ globle int mvupwind(
  * the buffer structures right if the distruction of a window makes a buffer
  * become undisplayed.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int onlywind(
   void *theEnv,
   int f,
@@ -1139,9 +1112,6 @@ globle int onlywind(
  * The only other error that is possible is a "malloc" failure allocating the
  * structure for the new window. Bound to "C-X 2".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int splitwind(
   void *theEnv,
   int f,

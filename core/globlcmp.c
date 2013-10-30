@@ -73,16 +73,13 @@ static void BeforeDefglobalsToCode(
 /* InitDefglobalsCode: Writes out initialization */
 /*   code for defglobals for a run-time module.  */
 /*************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void InitDefglobalsCode(
   void *theEnv,
   FILE *initFP,
   int imageID,
   int maxIndices)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(maxIndices)
 #pragma unused(imageID)
 #pragma unused(theEnv)
@@ -203,9 +200,6 @@ static void CloseDefglobalFiles(
 /* DefglobalModuleToCode: Writes the C code representation */
 /*   of a single defglobal module to the specified file.   */
 /***********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DefglobalModuleToCode(
   void *theEnv,
   FILE *theFile,
@@ -214,7 +208,7 @@ static void DefglobalModuleToCode(
   int maxIndices,
   int moduleCount)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(moduleCount)
 #endif
 

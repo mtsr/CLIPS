@@ -649,14 +649,11 @@ globle void *EnvFindInstance(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int EnvValidInstanceAddress(
   void *theEnv,
   void *iptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -755,14 +752,11 @@ globle int EnvDirectPutSlot(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle char *EnvGetInstanceName(
   void *theEnv,
   void *iptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -795,14 +789,11 @@ globle char *GetInstanceName(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void *EnvGetInstanceClass(
   void *theEnv,
   void *iptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -892,15 +883,12 @@ globle void *GetNextInstanceInScope(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void *EnvGetNextInstanceInClass(
   void *theEnv,
   void *cptr,
   void *iptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -1063,13 +1051,10 @@ globle void ClassCommand(
   SIDE EFFECTS : None
   NOTES        : Does nothing. Provided so it can be overridden.
  ******************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle intBool CreateInstanceHandler(
   void *theEnv)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

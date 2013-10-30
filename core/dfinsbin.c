@@ -194,15 +194,12 @@ static void BsaveDefinstancesFind(
   SIDE EFFECTS : Needed items marked
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void MarkDefinstancesItems(
   void *theEnv,
   struct constructHeader *theDefinstances,
   void *userBuffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(userBuffer)
 #endif
 

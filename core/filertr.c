@@ -147,20 +147,17 @@ globle int FindFile(
 /********************************************/
 /* ExitFile:  Exit routine for file router. */
 /********************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int ExitFile(
   void *theEnv,
   int num)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(num)
 #endif
 #if IO_FUNCTIONS
    CloseAllFiles(theEnv);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif

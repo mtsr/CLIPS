@@ -154,15 +154,12 @@ static void DeallocateDefglobalData(
 /* DestroyDefglobalAction: Action used to remove   */
 /*   defglobals as a result of DestroyEnvironment. */
 /***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DestroyDefglobalAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
 #if (! BLOAD_ONLY)
@@ -172,7 +169,7 @@ static void DestroyDefglobalAction(
 
    DestroyDefglobal(theEnv,theDefglobal);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv,theConstruct)
 #endif
 #endif
@@ -284,10 +281,6 @@ static void ReturnDefglobal(
   void *theEnv,
   void *vTheDefglobal)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(theEnv,vTheDefglobal)
-#endif
-   
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    struct defglobal *theDefglobal = (struct defglobal *) vTheDefglobal;
    
@@ -338,10 +331,6 @@ static void DestroyDefglobal(
   void *theEnv,
   void *vTheDefglobal)
   {
-#if (MAC_MCW || WIN_MCW) && BLOAD_ONLY
-#pragma unused(theEnv,vTheDefglobal)
-#endif
-   
 #if (! BLOAD_ONLY)
    struct defglobal *theDefglobal = (struct defglobal *) vTheDefglobal;
    
@@ -657,15 +646,12 @@ static void DecrementDefglobalBusyCount(
 /* IncrementDefglobalBusyCount: Increments the busy count */
 /*   of a defglobal data structure.                       */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void IncrementDefglobalBusyCount(
   void *theEnv,
   void *vTheGlobal)
   {
    struct defglobal *theGlobal = (struct defglobal *) vTheGlobal;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

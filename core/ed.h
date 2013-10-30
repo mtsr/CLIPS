@@ -45,7 +45,7 @@
 #define IBM_PC  0                       /* Standard IBM PC BIOS         */
 #endif
 
-#if     WIN_MVC || WIN_BTC
+#if     WIN_MVC
 #define ANSI    0                       /* Normally used for VAX VMS    */
 #define VT52    0                       /* VT52 terminal (Zenith).      */
 #define TERMCAP 0                       /* Use TERMCAP                  */

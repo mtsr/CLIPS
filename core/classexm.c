@@ -237,7 +237,7 @@ globle void EnvDescribeClass(
         maxSlotNameLength = 16;
       if (maxOverrideMessageLength > 12)
         maxOverrideMessageLength = 12;
-#if WIN_MVC || WIN_BTC
+#if WIN_MVC
       gensprintf(slotNamePrintFormat,"%%-%Id.%Ids : ",maxSlotNameLength,maxSlotNameLength);
       gensprintf(overrideMessagePrintFormat,"%%-%Id.%Ids ",maxOverrideMessageLength,
                                               maxOverrideMessageLength);
@@ -349,15 +349,12 @@ globle intBool SuperclassPCommand(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle intBool EnvSuperclassP(
   void *theEnv,
   void *firstClass,
   void *secondClass)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -394,15 +391,12 @@ globle intBool SubclassPCommand(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle intBool EnvSubclassP(
   void *theEnv,
   void *firstClass,
   void *secondClass)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

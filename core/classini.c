@@ -292,15 +292,12 @@ static void DeallocateDefclassData(
 /* DestroyDefclassAction: Action used to remove defclass */
 /*   as a result of DestroyEnvironment.                  */
 /*********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DestroyDefclassAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
    struct defclass *theDefclass = (struct defclass *) theConstruct;
@@ -310,7 +307,7 @@ static void DestroyDefclassAction(
 #if (! BLOAD_ONLY) 
    DestroyDefclass(theEnv,theDefclass);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif

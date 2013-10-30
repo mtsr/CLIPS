@@ -245,15 +245,12 @@ static void DeallocateMessageHandlerData(
   SIDE EFFECTS : None
   NOTES        : None
  *****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 char *EnvGetDefmessageHandlerName(
   void *theEnv,
   void *ptr,
   int theIndex)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -289,16 +286,13 @@ globle char *EnvGetDefmessageHandlerType(
   NOTES        : If index == 0, the first handler array index
                  (i.e. 1) returned
  **************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int EnvGetNextDefmessageHandler(
   void *theEnv,
   void *ptr,
   int theIndex)
   {
    DEFCLASS *cls;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -340,15 +334,12 @@ globle HANDLER *GetDefmessageHandlerPointer(
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned EnvGetDefmessageHandlerWatch(
   void *theEnv,
   void *theClass,
   int theIndex)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -367,16 +358,13 @@ globle unsigned EnvGetDefmessageHandlerWatch(
   SIDE EFFECTS : Watch flag for the handler set
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvSetDefmessageHandlerWatch(
   void *theEnv,
   int newState,
   void *theClass,
   int theIndex)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -518,11 +506,6 @@ globle int EnvUndefmessageHandler(
   void *vptr,
   int mhi)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(vptr)
-#pragma unused(mhi)
-#endif
-
 #if RUN_TIME || BLOAD_ONLY
    PrintErrorID(theEnv,"MSGCOM",3,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Unable to delete message-handlers.\n");
@@ -689,15 +672,12 @@ globle void PreviewSendCommand(
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle char *EnvGetDefmessageHandlerPPForm(
   void *theEnv,
   void *ptr,
   int theIndex)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -911,16 +891,13 @@ static int WildDeleteHandler(
   SIDE EFFECTS : Watch flags set in specified classes
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DefmessageHandlerWatchAccess(
   void *theEnv,
   int code,
   unsigned newState,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
    if (newState)
@@ -945,16 +922,13 @@ static unsigned DefmessageHandlerWatchAccess(
   SIDE EFFECTS : Watch flags displayed for specified classes
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DefmessageHandlerWatchPrint(
   void *theEnv,
   char *logName,
   int code,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
    return(DefmessageHandlerWatchSupport(theEnv,"list-watch-items",logName,-1,

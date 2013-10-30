@@ -189,14 +189,11 @@ static void DeallocateFileCommandData(
 /*****************************************************/
 /* FindDribble: Find routine for the dribble router. */
 /*****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int FindDribble(
   void *theEnv,
   char *logicalName)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -366,14 +363,11 @@ static int UngetcDribble(
 /*****************************************************/
 /* ExitDribble: Exit routine for the dribble router. */
 /*****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int ExitDribble(
   void *theEnv,
   int num)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(num)
 #endif
 
@@ -553,14 +547,11 @@ globle void SetDribbleStatusFunction(
 /*************************************************/
 /* FindBatch: Find routine for the batch router. */
 /*************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int FindBatch(
   void *theEnv,
   char *logicalName)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -661,15 +652,12 @@ globle int LLGetcBatch(
 /*****************************************************/
 /* UngetcBatch: Ungetc routine for the batch router. */
 /*****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int UngetcBatch(
   void *theEnv,
   int ch,
   char *logicalName)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(logicalName)
 #endif
 
@@ -684,14 +672,11 @@ static int UngetcBatch(
 /*************************************************/
 /* ExitBatch: Exit routine for the batch router. */
 /*************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int ExitBatch(
   void *theEnv,
   int num)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(num)
 #endif
    CloseAllBatchSources(theEnv);
@@ -1062,10 +1047,6 @@ globle int EnvBatchStar(
   void *theEnv,
   char *fileName)
   {
-#if (MAC_MCW || WIN_MCW) && RUN_TIME
-#pragma unused(fileName)
-#endif
-
    PrintErrorID(theEnv,"FILECOM",1,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Function batch* does not work in run time modules.\n");
    return(FALSE);

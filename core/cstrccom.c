@@ -152,7 +152,7 @@ globle intBool DeleteNamedConstruct(
 
    return(FALSE);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv,constructName,constructClass)
 #endif
    return(FALSE);
@@ -470,7 +470,7 @@ globle intBool Undefconstruct(
   struct construct *constructClass)
   {
 #if BLOAD_ONLY || RUN_TIME
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theConstruct)
 #pragma unused(constructClass)
 #pragma unused(theEnv)
@@ -654,14 +654,11 @@ globle char *GetConstructNameString(
 /* EnvGetConstructNameString: Generic routine for */
 /*   returning the name string of a construct.    */
 /**************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle char *EnvGetConstructNameString(
   void *theEnv,
   struct constructHeader *theConstruct)
   { 
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -770,11 +767,7 @@ globle void GetConstructList(
    SYMBOL_HN *theName;
    struct defmodule *loopModule;
    int allModules = FALSE;
-#if WIN_BTC
-   size_t largestConstructNameSize, bufferSize = 80;      /* prevents warning */
-#else
    size_t largestConstructNameSize = 0, bufferSize = 80;  /* prevents warning */
-#endif
    char *buffer;
    
    /*==========================*/
@@ -1128,14 +1121,11 @@ globle struct defmoduleItemHeader *GetConstructModuleItem(
 /* GetConstructPPForm: Returns the pretty print  */
 /*   representation for the specified construct. */
 /*************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle char *GetConstructPPForm(
   void *theEnv,
   struct constructHeader *theConstruct)
   { 
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -1646,14 +1636,11 @@ globle void *LookupConstruct(
 /* ConstructsDeletable: Returns a boolean value indicating */
 /*   whether constructs in general can be deleted.         */
 /***********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle intBool ConstructsDeletable(
   void *theEnv)
   {
 #if BLOAD_ONLY || RUN_TIME || ((! BLOAD) && (! BLOAD_AND_BSAVE))
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif

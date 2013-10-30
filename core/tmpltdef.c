@@ -148,15 +148,12 @@ static void DeallocateDeftemplateData(
 /* DestroyDeftemplateAction: Action used to remove   */
 /*   deftemplates as a result of DestroyEnvironment. */
 /*****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DestroyDeftemplateAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
    struct deftemplate *theDeftemplate = (struct deftemplate *) theConstruct;
@@ -276,10 +273,6 @@ static void ReturnDeftemplate(
   void *theEnv,
   void *vTheConstruct)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(theEnv,vTheConstruct)
-#endif
-
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    struct deftemplate *theConstruct = (struct deftemplate *) vTheConstruct;
    struct templateSlot *slotPtr;
@@ -332,10 +325,6 @@ static void DestroyDeftemplate(
   void *theEnv,
   void *vTheConstruct)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(vTheConstruct)
-#endif
-
    struct deftemplate *theConstruct = (struct deftemplate *) vTheConstruct;
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    struct templateSlot *slotPtr, *nextSlot;
@@ -374,10 +363,6 @@ globle void ReturnSlots(
   void *theEnv,
   struct templateSlot *slotPtr)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(theEnv,slotPtr)
-#endif
-
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    struct templateSlot *nextSlot;
 
@@ -410,15 +395,12 @@ globle void DecrementDeftemplateBusyCount(
 /* IncrementDeftemplateBusyCount: Increments the */
 /*   busy count of a deftemplate data structure. */
 /*************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void IncrementDeftemplateBusyCount(
   void *theEnv,
   void *vTheTemplate)
   {
    struct deftemplate *theTemplate = (struct deftemplate *) vTheTemplate;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -430,15 +412,12 @@ globle void IncrementDeftemplateBusyCount(
 /*   first fact in the template's fact-list. Otherwise returns the */
 /*   next template fact following the fact passed as an argument.  */
 /*******************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void *EnvGetNextFactInTemplate(
   void *theEnv,
   void *theTemplate,
   void *factPtr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
    if (factPtr == NULL)
@@ -499,15 +478,12 @@ globle void *CreateDeftemplateScopeMap(
 /*   to each deftemplate construct when a runtime */
 /*   initialization occurs.                       */
 /**************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void RuntimeDeftemplateAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
    struct deftemplate *theDeftemplate = (struct deftemplate *) theConstruct;

@@ -381,9 +381,6 @@ static intBool ValidDeffunctionName(
   SIDE EFFECTS : Deffunction structures allocated
   NOTES        : Assumes deffunction is not executing
  ****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static DEFFUNCTION *AddDeffunction(
   void *theEnv,
   SYMBOL_HN *name,
@@ -398,7 +395,7 @@ static DEFFUNCTION *AddDeffunction(
 #if DEBUGGING_FUNCTIONS
    unsigned DFHadWatch = FALSE;
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(headerp)
 #endif
 #endif

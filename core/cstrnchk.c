@@ -455,7 +455,7 @@ globle intBool CheckAllowedClassesConstraint(
    return(FALSE);
 #else
 
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(type)
 #pragma unused(vPtr)

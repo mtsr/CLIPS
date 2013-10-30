@@ -38,9 +38,6 @@
 /* PrintFactJNCompVars1: Print routine */
 /*   for the FactJNCompVars1 function. */
 /***************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactJNCompVars1(
   void *theEnv,
   char *logicalName,
@@ -77,7 +74,7 @@ globle void PrintFactJNCompVars1(
    PrintLongInteger(theEnv,logicalName,(long long) hack->slot2);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -89,9 +86,6 @@ globle void PrintFactJNCompVars1(
 /* PrintFactJNCompVars2: Print routine */
 /*   for the FactJNCompVars2 function. */
 /***************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactJNCompVars2(
   void *theEnv,
   char *logicalName,
@@ -140,7 +134,7 @@ globle void PrintFactJNCompVars2(
    PrintLongInteger(theEnv,logicalName,(long long) hack->offset2);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -152,9 +146,6 @@ globle void PrintFactJNCompVars2(
 /* PrintFactPNCompVars1: Print routine */
 /*   for the FactPNCompVars1 function. */
 /***************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactPNCompVars1(
   void *theEnv,
   char *logicalName,
@@ -172,7 +163,7 @@ globle void PrintFactPNCompVars1(
    PrintLongInteger(theEnv,logicalName,(long long) hack->field2);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -184,9 +175,6 @@ globle void PrintFactPNCompVars1(
 /* PrintFactSlotLength: Print routine */
 /*   for the FactSlotLength function. */
 /**************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactSlotLength(
   void *theEnv,
   char *logicalName,
@@ -205,7 +193,7 @@ globle void PrintFactSlotLength(
    PrintLongInteger(theEnv,logicalName,(long long) hack->minLength);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -217,9 +205,6 @@ globle void PrintFactSlotLength(
 /* PrintFactJNGetVar1: Print routine */
 /*   for the FactJNGetvar1 function. */
 /*************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactJNGetVar1(
   void *theEnv,
   char *logicalName,
@@ -248,7 +233,7 @@ globle void PrintFactJNGetVar1(
      { EnvPrintRouter(theEnv,logicalName," R"); }
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -260,9 +245,6 @@ globle void PrintFactJNGetVar1(
 /* PrintFactJNGetVar2: Print routine */
 /*   for the FactJNGetvar2 function. */
 /*************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactJNGetVar2(
   void *theEnv,
   char *logicalName,
@@ -284,7 +266,7 @@ globle void PrintFactJNGetVar2(
      { EnvPrintRouter(theEnv,logicalName," R"); }
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -296,9 +278,6 @@ globle void PrintFactJNGetVar2(
 /* PrintFactJNGetVar3: Print routine */
 /*   for the FactJNGetVar3 function. */
 /*************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactJNGetVar3(
   void *theEnv,
   char *logicalName,
@@ -330,7 +309,7 @@ globle void PrintFactJNGetVar3(
      
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -342,9 +321,6 @@ globle void PrintFactJNGetVar3(
 /* PrintFactPNGetVar1: Print routine */
 /*   for the FactPNGetvar1 function. */
 /*************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactPNGetVar1(
   void *theEnv,
   char *logicalName,
@@ -365,7 +341,7 @@ globle void PrintFactPNGetVar1(
    PrintLongInteger(theEnv,logicalName,(long long) hack->whichSlot);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -377,9 +353,6 @@ globle void PrintFactPNGetVar1(
 /* PrintFactPNGetVar2: Print routine */
 /*   for the FactPNGetvar2 function. */
 /*************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactPNGetVar2(
   void *theEnv,
   char *logicalName,
@@ -393,7 +366,7 @@ globle void PrintFactPNGetVar2(
    PrintLongInteger(theEnv,logicalName,(long long) hack->whichSlot);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -405,9 +378,6 @@ globle void PrintFactPNGetVar2(
 /* PrintFactPNGetVar3: Print routine */
 /*   for the FactPNGetvar3 function. */
 /*************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactPNGetVar3(
   void *theEnv,
   char *logicalName,
@@ -431,7 +401,7 @@ globle void PrintFactPNGetVar3(
    PrintLongInteger(theEnv,logicalName,(long long) hack->whichSlot);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -443,9 +413,6 @@ globle void PrintFactPNGetVar3(
 /* PrintFactPNConstant1: Print routine */
 /*   for the FactPNConstant1 function. */
 /***************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactPNConstant1(
   void *theEnv,
   char *logicalName,
@@ -466,7 +433,7 @@ globle void PrintFactPNConstant1(
    PrintAtom(theEnv,logicalName,GetFirstArgument()->type,GetFirstArgument()->value);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -478,9 +445,6 @@ globle void PrintFactPNConstant1(
 /* PrintFactPNConstant2: Print routine */
 /*   for the FactPNConstant2 function. */
 /***************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintFactPNConstant2(
   void *theEnv,
   char *logicalName,
@@ -505,7 +469,7 @@ globle void PrintFactPNConstant2(
    PrintAtom(theEnv,logicalName,GetFirstArgument()->type,GetFirstArgument()->value);
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)

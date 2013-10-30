@@ -419,7 +419,7 @@ globle int getkey()
         c = (*term.t_getchar)();
 	if ((c & META) == META) return(c);
 
-#if WIN_MVC || WIN_BTC || WIN_GCC
+#if WIN_MVC || WIN_GCC
 	if (c > 255) {
          switch (c) {
             case UP_ARROW    :
@@ -494,9 +494,6 @@ globle int quickexit(
  * Quit command. If an argument, always quit. Otherwise confirm if a buffer
  * has been changed and not written out. Normally bound to "C-X C-C".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int edquit(
   void *theEnv,
   int f,
@@ -521,9 +518,6 @@ globle int edquit(
  * Connected to "C-X Q".
  */
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int temp_quit(
   void *theEnv,
   int f,
@@ -538,9 +532,6 @@ globle int temp_quit(
  * Error if not at the top level in keyboard processing. Set up variables and
  * return.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int ctlxlp(
   void *theEnv,
   int f,
@@ -560,9 +551,6 @@ globle int ctlxlp(
  * End keyboard macro. Check for the same limit conditions as the above
  * routine. Set up the variables and return to the caller.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int ctlxrp(
   void *theEnv,
   int f,
@@ -583,9 +571,6 @@ globle int ctlxrp(
  * The command argument is the number of times to loop. Quit as soon as a
  * command gets an error. Return TRUE if all ok, else FALSE.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int ctlxe(
   void *theEnv,
   int f,
@@ -624,9 +609,6 @@ globle int ctlxe(
  * Beep the beeper. Kill off any keyboard macro, etc., that is in progress.
  * Sometimes called as a routine, to do general aborting of stuff.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int ctrlg(
   void *theEnv,
   int f,

@@ -68,13 +68,10 @@ void UserFunctions()
 /*   this function can be deleted from this file and       */
 /*   included in another file.                             */
 /***********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 void EnvUserFunctions(
   void *theEnv)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
   }

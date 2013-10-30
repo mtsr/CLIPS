@@ -83,7 +83,7 @@ globle void FactFunctionDefinitions(
    EnvDefineFunction2(theEnv,"get-fact-list",'m',PTIEF GetFactListFunction,"GetFactListFunction","01w");
    EnvDefineFunction2(theEnv,"ppfact",'v',PTIEF PPFactFunction,"PPFactFunction","13*z");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif
@@ -123,14 +123,11 @@ globle void *FactRelation(
 /* EnvFactDeftemplate: C access routine */
 /*   to retrieve a fact's deftemplate.  */
 /****************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void *EnvFactDeftemplate(
   void *theEnv,
   void *vTheFact)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -159,14 +156,11 @@ globle int FactExistpFunction(
 /* EnvFactExistp: C access routine */
 /*   for the fact-existp function. */
 /***********************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int EnvFactExistp(
   void *theEnv,
   void *vTheFact)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
    struct fact *theFact = (struct fact *) vTheFact;
@@ -518,11 +512,7 @@ globle void PPFactFunction(
   {
    struct fact *theFact;
    int numberOfArguments;
-#if WIN_BTC
-   char *logicalName;             /* Avoids warning */
-#else
    char *logicalName = NULL;      /* Avoids warning */
-#endif
    int ignoreDefaults = FALSE;
    DATA_OBJECT theArg;
 
@@ -583,16 +573,13 @@ globle void PPFactFunction(
 /* EnvPPFact: C access routine */
 /*   for the ppfact function.  */
 /*******************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvPPFact(
   void *theEnv,
   void *vTheFact,
   char *logicalName,
   int ignoreDefaults)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
    struct fact *theFact = (struct fact *) vTheFact;

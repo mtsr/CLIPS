@@ -121,7 +121,7 @@ static void DeallocateConstraintData(
    rm(theEnv,ConstraintData(theEnv)->ConstraintHashtable,
       (int) sizeof (struct constraintRecord *) * SIZE_CONSTRAINT_HASH);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif

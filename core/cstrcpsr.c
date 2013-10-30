@@ -405,9 +405,6 @@ globle int ParseConstruct(
 /*   field of a construct. Returns name of the construct */
 /*   if no errors are detected, otherwise returns NULL.  */
 /*********************************************************/
-#if WIN_BTC && (! DEBUGGING_FUNCTIONS)
-#pragma argsused
-#endif
 globle SYMBOL_HN *GetConstructNameAndComment(
   void *theEnv,
   char *readSource,
@@ -420,7 +417,7 @@ globle SYMBOL_HN *GetConstructNameAndComment(
   int getComment,
   int moduleNameAllowed)
   {
-#if (MAC_MCW || WIN_MCW || MAC_XCD) && (! DEBUGGING_FUNCTIONS)
+#if (MAC_XCD) && (! DEBUGGING_FUNCTIONS)
 #pragma unused(fullMessageCR)
 #endif
    SYMBOL_HN *name, *moduleName;

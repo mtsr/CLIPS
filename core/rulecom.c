@@ -141,7 +141,7 @@ globle void DefruleCommands(
 #endif /* DEVELOPER && (! BLOAD_ONLY) */
 
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif /* ! RUN_TIME */
@@ -442,9 +442,6 @@ static int ListBetaMatches(
 /****************************/
 /* PrintMatchesMemory: */
 /****************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void PrintMatchesMemory(
   void *theEnv,
   struct joinNode *theJoin,
@@ -452,7 +449,7 @@ static void PrintMatchesMemory(
   int startCE, 
   int endCE)  
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theJoin)
 #endif
    struct partialMatch *listOfMatches;

@@ -371,9 +371,6 @@ globle void DeleteMethodInfo(
   SIDE EFFECTS : Nodes deallocated
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void DestroyMethodInfo(
   void *theEnv,
   DEFGENERIC *gfunc,
@@ -381,7 +378,7 @@ globle void DestroyMethodInfo(
   {
    register int j;
    register RESTRICTION *rptr;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(gfunc)
 #endif
 
@@ -557,16 +554,13 @@ globle void PreviewGeneric(
   SIDE EFFECTS : None
   NOTES        : A terminating newline is NOT included
  ******************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void PrintMethod(
   void *theEnv,
   char *buf,
   int buflen,
   DEFMETHOD *meth)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
    long j,k;

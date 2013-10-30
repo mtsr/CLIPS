@@ -82,20 +82,8 @@
 #define MAC_XCD 0   /* MacOS 10.5, with Xcode 3.0 and Cocoa GUI */
 #endif
 
-#ifndef MAC_MCW
-#define MAC_MCW 0   /* MacOS 10.5, with CodeWarrior 9.6 */
-#endif
-
 #ifndef WIN_MVC
 #define WIN_MVC 0   /* Windows XP, with VC++ 2008 Express */
-#endif
-
-#ifndef WIN_BTC
-#define WIN_BTC 0   /* Windows XP, with Borland Turbo C++ 2006 */
-#endif
-
-#ifndef WIN_MCW
-#define WIN_MCW 0   /* Windows XP, with CodeWarrior 9.4 */
 #endif
 
 #ifndef WIN_GCC
@@ -112,8 +100,8 @@
 
 #ifndef GENERIC
 #if (! UNIX_V) && (! LINUX) && (! UNIX_7) && \
-    (! MAC_XCD) && (! MAC_MCW) && (! DARWIN) && \
-    (! WIN_MVC) && (! WIN_BTC) && (! WIN_MCW) && (! WIN_GCC) && \
+    (! MAC_XCD) && (! DARWIN) && \
+    (! WIN_MVC) && (! WIN_GCC) && \
     (! VAX_VMS)
 #define GENERIC 1   /* Generic (any machine)                   */
 #else
@@ -121,7 +109,7 @@
 #endif
 #endif
 
-#if WIN_MVC || WIN_BTC || WIN_MCW
+#if WIN_MVC
 #define IBM 1
 #else
 #define IBM 0
@@ -369,7 +357,7 @@
 #define  EMACS_EDITOR 1
 #endif
 
-#if GENERIC || MAC_XCD || MAC_MCW || WIN_MCW || WIN_BTC || WIN_MVC
+#if GENERIC || MAC_XCD || WIN_MVC
 #undef EMACS_EDITOR
 #define  EMACS_EDITOR  0
 #endif

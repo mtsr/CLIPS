@@ -138,7 +138,7 @@ static void ClearDeftemplates(
 
    CreateImpliedDeftemplate(theEnv,(SYMBOL_HN *) EnvAddSymbol(theEnv,"initial-fact"),FALSE);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif
@@ -260,14 +260,11 @@ globle void EnvListDeftemplates(
 /* EnvGetDeftemplateWatch: C access routine for retrieving */
 /*   the current watch value of a deftemplate.             */
 /***********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned EnvGetDeftemplateWatch(
   void *theEnv,
   void *theTemplate)
   { 
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -278,15 +275,12 @@ globle unsigned EnvGetDeftemplateWatch(
 /* EnvSetDeftemplateWatch:  C access routine for setting */
 /*   the current watch value of a deftemplate.           */
 /*********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvSetDeftemplateWatch(
   void *theEnv,
   unsigned newState,
   void *theTemplate)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -297,16 +291,13 @@ globle void EnvSetDeftemplateWatch(
 /* DeftemplateWatchAccess: Access routine for setting the */
 /*   watch flag of a deftemplate via the watch command.   */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned DeftemplateWatchAccess(
   void *theEnv,
   int code,
   unsigned newState,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
 
@@ -318,16 +309,13 @@ globle unsigned DeftemplateWatchAccess(
 /* DeftemplateWatchPrint: Access routine for printing which deftemplates */
 /*   have their watch flag set via the list-watch-items command.         */
 /*************************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned DeftemplateWatchPrint(
   void *theEnv,
   char *logName,
   int code,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
 

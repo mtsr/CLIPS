@@ -526,9 +526,6 @@ globle HANDLER_LINK *JoinHandlerLinks(
   SIDE EFFECTS : Expression printed
   NOTES        : None
  ***************************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintHandlerSlotGetFunction(
   void *theEnv,
   char *logicalName,
@@ -547,7 +544,7 @@ globle void PrintHandlerSlotGetFunction(
    sd = theDefclass->instanceTemplate[theDefclass->slotNameMap[theReference->slotID] - 1];
    EnvPrintRouter(theEnv,logicalName,ValueToString(sd->slotName->name));
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -649,9 +646,6 @@ HandlerGetError:
   SIDE EFFECTS : Expression printed
   NOTES        : None
  ***************************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 globle void PrintHandlerSlotPutFunction(
   void *theEnv,
   char *logicalName,
@@ -676,7 +670,7 @@ globle void PrintHandlerSlotPutFunction(
      }
    EnvPrintRouter(theEnv,logicalName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logicalName)
 #pragma unused(theValue)
@@ -1184,11 +1178,7 @@ static void CallHandlers(
   void *theEnv,
   DATA_OBJECT *result)
   {
-#if WIN_BTC
-   HANDLER_LINK *oldCurrent,*oldNext;                /* prevents warning */
-#else
    HANDLER_LINK *oldCurrent = NULL,*oldNext = NULL;  /* prevents warning */
-#endif
    DATA_OBJECT temp;
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;

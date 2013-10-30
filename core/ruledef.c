@@ -186,15 +186,12 @@ static void DeallocateDefruleData(
 /* DestroyDefruleAction: Action used to remove defrules */
 /*   as a result of DestroyEnvironment.                 */
 /********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DestroyDefruleAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
    struct defrule *theDefrule = (struct defrule *) theConstruct;

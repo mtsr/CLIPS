@@ -242,7 +242,7 @@ static void DeallocateDeffunctionData(
       rtn_struct(theEnv,deffunctionModule,theModuleItem);
      }
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif
@@ -253,15 +253,12 @@ static void DeallocateDeffunctionData(
 /* DestroyDeffunctionAction: Action used to remove   */
 /*   deffunctions as a result of DestroyEnvironment. */
 /*****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DestroyDeffunctionAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -275,7 +272,7 @@ static void DestroyDeffunctionAction(
    
    rtn_struct(theEnv,deffunctionStruct,theDeffunction);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theConstruct,theEnv)
 #endif
 #endif
@@ -349,10 +346,6 @@ globle intBool EnvUndeffunction(
   void *theEnv,
   void *vptr)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(theEnv,vptr)
-#endif
-
 #if BLOAD_ONLY || RUN_TIME
    return(FALSE);
 #else
@@ -612,9 +605,6 @@ globle int CheckDeffunctionCall(
   SIDE EFFECTS : Call expression printed
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void PrintDeffunctionCall(
   void *theEnv,
   char *logName,
@@ -631,7 +621,7 @@ static void PrintDeffunctionCall(
      }
    EnvPrintRouter(theEnv,logName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logName)
 #pragma unused(value)
@@ -698,14 +688,11 @@ static void DecrementDeffunctionBusyCount(
   SIDE EFFECTS : Busy count incremented
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void IncrementDeffunctionBusyCount(
   void *theEnv,
   void *value)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -955,16 +942,13 @@ static void SaveDeffunctions(
   SIDE EFFECTS : Watch flags set in specified deffunctions
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DeffunctionWatchAccess(
   void *theEnv,
   int code,
   unsigned newState,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
 
@@ -985,16 +969,13 @@ static unsigned DeffunctionWatchAccess(
   SIDE EFFECTS : Watch flags displayed for specified deffunctions
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DeffunctionWatchPrint(
   void *theEnv,
   char *logName,
   int code,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
 
@@ -1013,15 +994,12 @@ static unsigned DeffunctionWatchPrint(
   SIDE EFFECTS : Watch flag for the deffunction set
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvSetDeffunctionWatch(
   void *theEnv,
   unsigned newState,
   void *dptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -1038,14 +1016,11 @@ globle void EnvSetDeffunctionWatch(
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned EnvGetDeffunctionWatch(
   void *theEnv,
   void *dptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

@@ -194,13 +194,10 @@ globle struct lhsParseNode *CreateInitialFactPattern(
 /*   all patterns begin with a symbol, it follows that all patterns   */
 /*   can be parsed as a fact pattern.                                 */
 /**********************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int FactPatternParserFind(
   SYMBOL_HN *theRelation)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theRelation)
 #endif
    return(TRUE);

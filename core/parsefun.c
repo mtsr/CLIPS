@@ -339,14 +339,11 @@ static void SetErrorCaptureValues(
 /* FindErrorCapture: Find routine */
 /*   for the check-syntax router. */
 /**********************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int FindErrorCapture(
   void *theEnv,
   char *logicalName)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -406,11 +403,6 @@ globle int CheckSyntax(
   char *theString,
   DATA_OBJECT_PTR returnValue)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(theString)
-#pragma unused(returnValue)
-#endif
-
    PrintErrorID(theEnv,"PARSEFUN",1,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Function check-syntax does not work in run time modules.\n");
    SetpType(returnValue,SYMBOL);

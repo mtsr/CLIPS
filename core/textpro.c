@@ -122,13 +122,6 @@ struct lists
 #define BFORMAT "%d%1s%12s%s"   /*Format string for sscanf*/
 #define LIT_DELIM ('$')
 
-/*
-#if WIN_BTC
-#define OPEN_READ "rb"
-#else
-#define OPEN_READ "r"
-#endif
-*/
 #define OPEN_READ "r"
 
 #define TEXTPRO_DATA 8
@@ -1451,14 +1444,11 @@ globle int TossCommand(
 
 #if HELP_FUNCTIONS
 
-#if WIN_BTC
-#pragma argsused
-#endif
 static int RecognizeHelpRouters(
   void *theEnv,
   char *log_name)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -1467,15 +1457,12 @@ static int RecognizeHelpRouters(
    return(FALSE);
   }
 
-#if WIN_BTC
-#pragma argsused
-#endif
 static int HelpPrint(
   void *theEnv,
   char *log_name,
   char *str)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(log_name)
 #endif
 
@@ -1483,29 +1470,23 @@ static int HelpPrint(
    return(1);
   }
 
-#if WIN_BTC
-#pragma argsused
-#endif
 static int HelpGetc(
   void *theEnv,
   char *log_name)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(log_name)
 #endif
 
    return(EnvGetcRouter(theEnv,"stdin"));
   }
 
-#if WIN_BTC
-#pragma argsused
-#endif
 static int HelpUngetc(
   void *theEnv,
   int ch,
   char *log_name)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(log_name)
 #endif
 

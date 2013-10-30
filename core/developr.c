@@ -585,15 +585,12 @@ globle void InstanceTableUsage(
 /******************/
 /* ExamineMemory: */
 /******************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void ExamineMemory(
   void *theEnv,
   struct joinNode *theJoin,
   struct betaMemory *theMemory)  
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theJoin)
 #endif
    if (theMemory->size > 10000)
@@ -634,7 +631,7 @@ static void ValidateRuleBetaMemoriesAction(
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
    struct defrule *rulePtr, *tmpPtr;

@@ -495,14 +495,11 @@ globle void *EnvGetNextDefmodule(
 /* EnvGetDefmoduleName: Returns the name */
 /*   of the specified defmodule.         */
 /*****************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle char *EnvGetDefmoduleName(
   void *theEnv,
   void *defmodulePtr)
   { 
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -513,14 +510,11 @@ globle char *EnvGetDefmoduleName(
 /* EnvGetDefmodulePPForm: Returns the pretty print */
 /*   representation of the specified defmodule.    */
 /***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle char *EnvGetDefmodulePPForm(
   void *theEnv,
   void *defmodulePtr)
   { 
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

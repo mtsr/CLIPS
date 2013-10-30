@@ -779,10 +779,6 @@ static int SkipFactPatternNode(
   void *theEnv,
   struct factPatternNode *thePattern)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(theEnv,thePattern)
-#endif
-
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    if (EngineData(theEnv)->IncrementalResetInProgress &&
        (thePattern->header.initialize == FALSE))
@@ -801,9 +797,6 @@ static int SkipFactPatternNode(
 /*  that the nodes were traversed ("initialized") by the       */
 /*  incremental reset.                                         */
 /***************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void MarkFactPatternForIncrementalReset(
   void *theEnv,
   struct patternNodeHeader *thePattern,
@@ -811,7 +804,7 @@ globle void MarkFactPatternForIncrementalReset(
   {
    struct factPatternNode *patternPtr = (struct factPatternNode *) thePattern;
    struct joinNode *theJoin;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

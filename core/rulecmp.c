@@ -362,9 +362,6 @@ static void CloseDefruleFiles(
 /* DefruleModuleToCode: Writes the C code representation */
 /*   of a single defrule module to the specified file.   */
 /*********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DefruleModuleToCode(
   void *theEnv,
   FILE *theFile,
@@ -373,7 +370,7 @@ static void DefruleModuleToCode(
   int maxIndices,
   int moduleCount)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(moduleCount)
 #endif
 
@@ -671,16 +668,13 @@ globle void DefruleCModuleReference(
 /*****************************************************************/
 /* InitDefruleCode: Writes out initialization code for defrules. */
 /*****************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void InitDefruleCode(
   void *theEnv,
   FILE *initFP,
   int imageID,
   int maxIndices)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(maxIndices)
 #pragma unused(theEnv)
 #pragma unused(imageID)

@@ -247,15 +247,12 @@ static void BsaveGenericsFind(
   SIDE EFFECTS : Needed items marked
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void MarkDefgenericItems(
   void *theEnv,
   struct constructHeader *theDefgeneric,
   void *userBuffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(userBuffer)
 #endif
    DEFGENERIC *gfunc = (DEFGENERIC *) theDefgeneric;
@@ -599,9 +596,6 @@ static void BsaveMethodRestrictions(
   SIDE EFFECTS : Defgeneric methods' restrictions' types saved
   NOTES        : None
  *************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void BsaveRestrictionTypes(
   void *theEnv,
   struct constructHeader *theDefgeneric,
@@ -611,7 +605,7 @@ static void BsaveRestrictionTypes(
    long dummy_type;
    RESTRICTION *rptr;
    short i,j,k;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

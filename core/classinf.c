@@ -351,14 +351,11 @@ globle void SlotCardinalityCommand(
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle intBool EnvClassAbstractP(
   void *theEnv,
   void *clsptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -375,14 +372,11 @@ globle intBool EnvClassAbstractP(
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle intBool EnvClassReactiveP(
   void *theEnv,
   void *clsptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

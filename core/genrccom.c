@@ -297,7 +297,7 @@ static void DeallocateDefgenericData(
       rtn_struct(theEnv,defgenericModule,theModuleItem);
      }
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif
@@ -308,15 +308,12 @@ static void DeallocateDefgenericData(
 /* DestroyDefgenericAction: Action used to remove   */
 /*   defgenerics as a result of DestroyEnvironment. */
 /****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DestroyDefgenericAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -335,7 +332,7 @@ static void DestroyDefgenericAction(
 
    rtn_struct(theEnv,defgeneric,theDefgeneric);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv,theConstruct)
 #endif
 #endif
@@ -423,9 +420,6 @@ globle void *EnvGetNextDefgeneric(
   NOTES        : If index == 0, the index of the first
                    method is returned
  ***********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle long EnvGetNextDefmethod(
   void *theEnv,
   void *ptr,
@@ -433,7 +427,7 @@ globle long EnvGetNextDefmethod(
   {
    DEFGENERIC *gfunc;
    long mi;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -611,10 +605,6 @@ globle intBool EnvUndefgeneric(
   void *theEnv,
   void *vptr)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(theEnv,vptr)
-#endif
-
 #if RUN_TIME || BLOAD_ONLY
    return(FALSE);
 #else
@@ -742,7 +732,7 @@ globle void EnvGetDefmethodDescription(
   {
    DEFGENERIC *gfunc;
    long mi;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -761,14 +751,11 @@ globle void EnvGetDefmethodDescription(
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned EnvGetDefgenericWatch(
   void *theEnv,
   void *theGeneric)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -786,15 +773,12 @@ globle unsigned EnvGetDefgenericWatch(
   SIDE EFFECTS : Watch flag for the generic set
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvSetDefgenericWatch(
   void *theEnv,
   unsigned newState,
   void *theGeneric)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -812,9 +796,6 @@ globle void EnvSetDefgenericWatch(
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle unsigned EnvGetDefmethodWatch(
   void *theEnv,
   void *theGeneric,
@@ -822,7 +803,7 @@ globle unsigned EnvGetDefmethodWatch(
   {
    DEFGENERIC *gfunc;
    long mi;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -843,9 +824,6 @@ globle unsigned EnvGetDefmethodWatch(
   SIDE EFFECTS : Watch flag for the method set
   NOTES        : None
  *********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle void EnvSetDefmethodWatch(
   void *theEnv,
   unsigned newState,
@@ -854,7 +832,7 @@ globle void EnvSetDefmethodWatch(
   {
    DEFGENERIC *gfunc;
    long mi;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -947,9 +925,6 @@ globle void ListDefmethodsCommand(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle char *EnvGetDefmethodPPForm(
   void *theEnv,
   void *ptr,
@@ -957,7 +932,7 @@ globle char *EnvGetDefmethodPPForm(
   {
    DEFGENERIC *gfunc;
    int mi;
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -1305,9 +1280,6 @@ globle void EnvGetMethodRestrictions(
   SIDE EFFECTS : Call expression printed
   NOTES        : None
  ***************************************************/
-#if WIN_BTC && (! DEVELOPER)
-#pragma argsused
-#endif
 static void PrintGenericCall(
   void *theEnv,
   char *logName,
@@ -1324,7 +1296,7 @@ static void PrintGenericCall(
      }
    EnvPrintRouter(theEnv,logName,")");
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #pragma unused(logName)
 #pragma unused(value)
@@ -1391,14 +1363,11 @@ static void DecrementGenericBusyCount(
   SIDE EFFECTS : Busy count incremented
   NOTES        : None
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void IncrementGenericBusyCount(
   void *theEnv,
   void *value)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
    ((DEFGENERIC *) value)->busy++;
@@ -1567,16 +1536,13 @@ static long ListMethodsForGeneric(
   SIDE EFFECTS : Watch flags set in specified generics
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DefgenericWatchAccess(
   void *theEnv,
   int code,
   unsigned newState,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
 
@@ -1597,16 +1563,13 @@ static unsigned DefgenericWatchAccess(
   SIDE EFFECTS : Watch flags displayed for specified generics
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DefgenericWatchPrint(
   void *theEnv,
   char *logName,
   int code,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
 
@@ -1627,16 +1590,13 @@ static unsigned DefgenericWatchPrint(
   SIDE EFFECTS : Watch flags set in specified methods
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DefmethodWatchAccess(
   void *theEnv,
   int code,
   unsigned newState,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
    if (newState)
@@ -1658,16 +1618,13 @@ static unsigned DefmethodWatchAccess(
   SIDE EFFECTS : Watch flags displayed for specified methods
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static unsigned DefmethodWatchPrint(
   void *theEnv,
   char *logName,
   int code,
   EXPRESSION *argExprs)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(code)
 #endif
    return(DefmethodWatchSupport(theEnv,"list-watch-items",logName,0,

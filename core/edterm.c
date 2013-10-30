@@ -274,7 +274,7 @@ static void vt52open()
                                                 /* or the Turbo C compiler      */
                                                 /* or the Zortech C compiler    */
                                                 /* or the Intel C Code builder  */
-#if   WIN_MVC || WIN_BTC || WIN_GCC
+#if   WIN_MVC || WIN_GCC
 #include        <dos.h>
 
 #if WIN_MVC || WIN_GCC

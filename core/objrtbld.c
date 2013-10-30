@@ -304,15 +304,12 @@ static intBool PatternParserFind(
                  <name-constraint> ::= (name <constraint>)
                  <slot-constraint> ::= (<slot-name> <constraint>*)
  ************************************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static struct lhsParseNode *ObjectLHSParse(
   void *theEnv,
   char *readSource,
   struct token *lastToken)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(lastToken)
 #endif
    struct token theToken;
@@ -1577,14 +1574,11 @@ static void DeleteIntermediateClassBitMap(
                  OR CE.  The use count prevents having
                  to make duplicate copies of the bitmap
  ******************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void *CopyClassBitMap(
   void *theEnv,
   void *gset)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
@@ -2313,15 +2307,12 @@ static EXPRESSION *ObjectMatchDelayParse(
                  thus marked for initialization
                  by PlaceObjectPattern
  ***************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void MarkObjectPtnIncrementalReset(
   void *theEnv,
   struct patternNodeHeader *thePattern,
   int value)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 

@@ -56,7 +56,7 @@ extern  int     newmode[2];                      /* In "termio.c"        */
 extern  short   iochan;                          /* In "termio.c"        */
 #endif
 
-#if     WIN_MVC || WIN_BTC || WIN_GCC
+#if     WIN_MVC || WIN_GCC
 #include        <dos.h>
 #endif
 
@@ -87,9 +87,6 @@ static int CompileLineIndex = 0;
 /*    compile a region of a file 			*/
 /********************************************************/
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int compile_region(
   void *theEnv,
   int f,
@@ -142,9 +139,6 @@ globle int compile_region(
  *  This function will compile a file form emacs     *
  *****************************************************/
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int compile_file(
   void *theEnv,
   int f,
@@ -259,9 +253,6 @@ globle int region_fnd(
  *   is referenced by the logical name				*
  ****************************************************************/
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int region_getc(
   void *theEnv,
 char *log_name)
@@ -287,9 +278,6 @@ char *log_name)
  * This function will move the cursor back one charater*
  *******************************************************/
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int region_ungetc(
   void *theEnv,
 int c,
@@ -330,9 +318,6 @@ globle int buffer_fnd(
  * is referred by the logical name				*
  ****************************************************************/
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int buffer_getc(
   void *theEnv,
   char *log_name)
@@ -359,9 +344,6 @@ globle int buffer_getc(
  * this function will move the cursor back to one character  *
  *************************************************************/
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int buffer_ungetc(
   void *theEnv,
   int    c,
@@ -452,9 +434,6 @@ globle void kill_cmp_router(
 /*
  * Set fill column to n.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int setfillcol(
   void *theEnv,
   int f,
@@ -469,9 +448,6 @@ globle int setfillcol(
  * column, the current line and the total number of lines in the file.
  * Bound to "C-X =".      CJC, 8-1-86
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int showcpos(
   void *theEnv,
   int f,
@@ -550,9 +526,6 @@ globle int cntlines()
 /*
  * Go to a specified line number
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int gotoline(
   void *theEnv,
   int f,
@@ -596,9 +569,6 @@ globle int gotoline(
  * work. This fixes up a very common typo with a single stroke. Normally bound
  * to "C-T". This always works within a line, so "WFEDIT" is good enough.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int twiddle(
   void *theEnv,
   int f,
@@ -630,9 +600,6 @@ globle int twiddle(
  * inserted 0 times, for regularity. Bound to "M-Q" (for me) and "C-Q" (for
  * Rich, and only on terminals that don't need XON-XOFF).
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int quote(
   void *theEnv,
   int f,
@@ -662,9 +629,6 @@ globle int quote(
  * done in this slightly funny way because the tab (in ASCII) has been turned
  * into "C-I" (in 10 bit code) already. Bound to "C-I".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int tab(
   void *theEnv,
   int f,
@@ -686,9 +650,6 @@ globle int tab(
  * and then back up over them. Everything is done by the subcommand
  * procerssors. They even handle the looping. Normally this is bound to "C-O".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int openline(
   void *theEnv,
   int f,
@@ -717,9 +678,6 @@ globle int openline(
  * has to be done. This would not be as critical if screen update were a lot
  * more efficient.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int newline(
   void *theEnv,
   int f,
@@ -751,9 +709,6 @@ globle int newline(
  * the line. Normally this command is bound to "C-X C-O". Any argument is
  * ignored.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int deblank(
   void *theEnv,
   int f,
@@ -785,9 +740,6 @@ globle int deblank(
  * of tabs and spaces. Return TRUE if all ok. Return FALSE if one of the
  * subcomands failed. Normally bound to "C-J".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int indent(
   void *theEnv,
   int f,
@@ -823,9 +775,6 @@ globle int indent(
  * If any argument is present, it kills rather than deletes, to prevent loss
  * of text if typed with a big argument. Normally bound to "C-D".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int forwdel(
   void *theEnv,
   int f,
@@ -847,9 +796,6 @@ globle int forwdel(
  * forward, this actually does a kill if presented with an argument. Bound to
  * both "RUBOUT" and "C-H".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int backdel(
   void *theEnv,
   int f,
@@ -877,9 +823,6 @@ globle int backdel(
  * number of newlines. If called with a negative argument it kills backwards
  * that number of newlines. Normally bound to "C-K".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int kill_fwd(
   void *theEnv,
   int f,
@@ -922,9 +865,6 @@ globle int kill_fwd(
  * happens when you type a carriage return also happens when a carriage return
  * is yanked back from the kill buffer.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int yank(
   void *theEnv,
   int f,
@@ -993,9 +933,6 @@ globle int yank(
  * string, and [perhaps] repaint the display. Bound to "C-S".
  */
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int forwsearch(
   void *theEnv,
   int f,
@@ -1068,9 +1005,6 @@ fail:;
  * pointing at the first character of the pattern [the last character that was
  * matched. Bound to "C-R".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int backsearch(
   void *theEnv,
   int f,
@@ -1154,9 +1088,6 @@ globle int backsearch(
  *   and replace all occurences of an old string by a   *
  *   new string.                                        *
  ********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int bkwrdrpl(
   void *theEnv,
   int f,
@@ -1248,9 +1179,6 @@ globle int bkwrdrpl(
  *  This function will search backward for the occurences of an old *
  *  string and replace some of them with a new string.              *
  ********************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int bkwrdcr(
   void *theEnv,
   int f,
@@ -1369,9 +1297,6 @@ globle int bkwrdcr(
  *  with a new string                                 *
  ******************************************************/
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int frwsr(
   void *theEnv,
   int f,
@@ -1455,9 +1380,6 @@ globle int frwsr(
  * replace some of them                            *
  ***************************************************/
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int querysr(
   void *theEnv,
   int f,
@@ -1638,9 +1560,6 @@ globle int lreplace(
  * It is currently bounded to C-X-^                     *
  ********************************************************/
 
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int smatchb(
   void *theEnv,
   int f,
@@ -1878,15 +1797,12 @@ globle int readpattern(
  * repaint. Bound to "C-C". The message at the start in VMS puts out a newline.
  * Under some (unknown) condition, you don't get one free when DCL starts up.
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int spawncli(
   void *theEnv,
   int f,
   int n)
 {
-#if     UNIX_7 || UNIX_V || LINUX || DARWIN || WIN_MVC || WIN_BTC || WIN_GCC
+#if     UNIX_7 || UNIX_V || LINUX || DARWIN || WIN_MVC || WIN_GCC
         register char *cp;
 #endif
 	
@@ -1898,7 +1814,7 @@ globle int spawncli(
         return (sys(NULL));                     /* NULL => DCL.         */
 #endif
 
-#if     WIN_MVC || WIN_BTC || WIN_GCC
+#if     WIN_MVC || WIN_GCC
         cp = getenv("COMSPEC");
         if (cp == NULL)
           return(TRUE);
@@ -1929,9 +1845,6 @@ globle int spawncli(
  * character to be typed, then mark the screen as garbage so a full repaint is
  * done. Bound to "C-X !".
  */
-#if WIN_BTC
-#pragma argsused
-#endif
 globle int spawn(
   void *theEnv,
   int f,
@@ -1954,7 +1867,7 @@ globle int spawn(
         return (s);
 #endif
 
-#if     WIN_MVC || WIN_BTC || WIN_GCC
+#if     WIN_MVC || WIN_GCC
         if ((s=mlreply(theEnv,"MS-DOS command: ", line, NLINE)) != TRUE)
                 return (s);
         system(line);

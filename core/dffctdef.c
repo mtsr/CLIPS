@@ -110,7 +110,7 @@ static void DeallocateDeffactsData(
       rtn_struct(theEnv,deffactsModule,theModuleItem);
      }
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif
@@ -121,15 +121,12 @@ static void DeallocateDeffactsData(
 /* DestroyDeffactsAction: Action used to remove deffacts */
 /*   as a result of DestroyEnvironment.                  */
 /*********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void DestroyDeffactsAction(
   void *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(buffer)
 #endif
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -143,7 +140,7 @@ static void DestroyDeffactsAction(
 
    rtn_struct(theEnv,deffacts,theDeffacts);
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv,theConstruct)
 #endif
 #endif
@@ -234,14 +231,11 @@ globle void *EnvGetNextDeffacts(
 /* EnvIsDeffactsDeletable: Returns TRUE if a particular */
 /*   deffacts can be deleted, otherwise returns FALSE.  */
 /********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 globle intBool EnvIsDeffactsDeletable(
   void *theEnv,
   void *ptr)
   {
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(ptr)
 #endif
    if (! ConstructsDeletable(theEnv))
@@ -260,10 +254,6 @@ static void ReturnDeffacts(
   void *theEnv,
   void *vTheDeffacts)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(theEnv,vTheDeffacts)
-#endif
-
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    struct deffacts *theDeffacts = (struct deffacts *) vTheDeffacts;
 

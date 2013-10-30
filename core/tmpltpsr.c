@@ -73,10 +73,6 @@ globle int ParseDeftemplate(
   void *theEnv,
   char *readSource)
   {
-#if (MAC_MCW || WIN_MCW) && (RUN_TIME || BLOAD_ONLY)
-#pragma unused(readSource)
-#endif
-
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    SYMBOL_HN *deftemplateName;
    struct deftemplate *newDeftemplate;
@@ -198,7 +194,7 @@ globle int ParseDeftemplate(
    InstallDeftemplate(theEnv,newDeftemplate);
 
 #else
-#if MAC_MCW || WIN_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif
