@@ -28,5 +28,6 @@
 - (void) balanceParentheses;
 - (int) waitForChar;
 - (BOOL) readStringFromPasteboard: (NSPasteboard *) pb;
+- (NSUInteger) inputStringOffset;
 
 @end

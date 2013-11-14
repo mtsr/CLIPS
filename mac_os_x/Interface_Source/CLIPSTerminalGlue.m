@@ -33,7 +33,7 @@ intBool QueryInterfaceRouter(
   void *theEnv,
   char *logicalName)
   {
-#if MAC_MCW || MAC_XCD
+#if MAC_XCD
 #pragma unused(theEnv)
 #endif
    
@@ -187,9 +187,8 @@ void MacYieldTimeFunction()
 int MacBeforeOpenFunction(
   void *theEnv)
   {
-   //CLIPSTerminalController *theController = GetEnvironmentRouterContext(theEnv);
    CLIPSTerminalController *theController = GetEnvironmentContext(theEnv);
-     
+
    NSLock *theLock = [[theController envController] fileOpenLock];
    
    [theLock lock];
@@ -205,7 +204,6 @@ int MacBeforeOpenFunction(
 int MacAfterOpenFunction(
   void *theEnv)
   {
-   //CLIPSTerminalController *theController = GetEnvironmentRouterContext(theEnv);
    CLIPSTerminalController *theController = GetEnvironmentContext(theEnv);
    
    NSLock *theLock = [[theController envController] fileOpenLock];

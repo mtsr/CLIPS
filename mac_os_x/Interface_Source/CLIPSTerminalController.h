@@ -17,7 +17,7 @@
 @class CLIPSTerminalView;
 @class EnvController;
 
-@interface CLIPSTerminalController : NSWindowController
+@interface CLIPSTerminalController : NSWindowController <NSTextViewDelegate>
   {
    IBOutlet CLIPSEnvironment *environment;
    IBOutlet CLIPSTerminalView *textView;

@@ -84,6 +84,12 @@
   {
    void *theEnvironment = [environment environment];
    
+   /*=====================================*/
+   /* Set the delegate for the text view. */
+   /*=====================================*/
+   
+   textView.delegate = self;
+   
    /*======================================================*/
    /* Places a few pixels of white space between the edges */
    /* of the window and the rectangle in which the text is */
@@ -269,6 +275,21 @@
       return;
      }
      
+   /*====================================================*/
+   /* If the user has moved the caret into the center of */
+   /* the command, don't execute the command as the user */
+   /* may be temporarily adding/removing parentheses     */
+   /* that cause a completed command to be formed.       */
+   /*====================================================*/
+
+/*
+   NSRange selectionRange = [textView selectedRange];
+   
+   if ((selectionRange.length != 0) || ([[textView string] length] != selectionRange.location))
+     { NSLog(@"Ignoring");
+      return;
+     }
+*/
    /*===================================================*/
    /* Perform the command if present, otherwise return. */
    /*===================================================*/
@@ -626,7 +647,7 @@
       
    theFileName = [[filesToOpen objectAtIndex: 0] path];
    [self setCurrentDirectory: theFileName];
-      
+   
    [self setValue: [[self currentDirectory] stringByAbbreviatingWithTildeInPath]
          forKey: @"displayDirectory"];
   }
@@ -927,9 +948,9 @@
    return [textView waitForChar];
   }
   
-/**************************************************************/    
-/* 	lineCountIncrease: */
-/**************************************************************/    
+/**********************/
+/* lineCountIncrease: */
+/**********************/
 - (unsigned int) lineCountIncrease: (NSString *) theString
   {  
    NSRange theRange = { 0, 0 };
@@ -953,9 +974,9 @@
    return lineIncrease;
   }
 
-/**************************************************************/    
-/* 	deleteExtraLines: */
-/**************************************************************/    
+/*********************/
+/* deleteExtraLines: */
+/*********************/
 - (void) deleteExtraLines
   {  
    NSRange theRange = { 0, 0 };
@@ -1054,18 +1075,29 @@
    [envController setTerminal: self];
   }
 
-/*********************/    
+/*********/
 /* exit: */
-/*********************/    
+/*********/
 - (void) exit
   {
    exit = YES;
    [self haltImmediately: self];
   }
 
-/*********************/    
+/*******************************************************/
+/* cancelOperation: This is an NSResponder method that */
+/*    gets called when the ESC key is pressed.         */
+/*******************************************************/
+- (void) cancelOperation: (id)sender
+  {
+   NSRange theRange = { [[textView string] length], 0 };
+   [textView setSelectedRange: theRange];   
+   [textView scrollRangeToVisible: theRange];
+  }
+
+/*********/
 /* halt: */
-/*********************/    
+/*********/
 - (IBAction) halt: (id) sender
   {
    EnvSetHaltRules([environment environment],TRUE);
@@ -1112,9 +1144,9 @@
    return NO;
   }
   
-/***************************************************/
+/**************************************************/
 /* sheetDidEndShouldClose:returnCode:contextInfo: */
-/***************************************************/
+/**************************************************/
 - (void) sheetDidEndShouldClose: (NSWindow *) sheet
          returnCode: (int) returnCode
          contextInfo: (void *) contextInfo
@@ -1337,6 +1369,89 @@
   {
    clearWindow = theValue;
   }
+
+/*%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+/* TextView Delegate Methods */
+/*%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
+
+/**********************************************************************/
+/* textView:willChangeSelectionFromCharacterRanges:toCharacterRanges: */
+/**********************************************************************/
+- (NSArray *) textView: (NSTextView *) aTextView
+              willChangeSelectionFromCharacterRanges: (NSArray *) oldSelectedCharRanges
+              toCharacterRanges: (NSArray *) newSelectedCharRanges
+   {
+    NSValue *theValue, *inputCaret = NULL, *extraSelection = NULL;
+    NSUInteger textLength;
+    NSArray *returnArray;
+
+    /*=======================================*/
+    /* Determine the number of characters in */
+    /* the display that are currently input. */
+    /*=======================================*/
+    
+    NSUInteger charOffset = [textView inputStringOffset];
+       
+    /*================================*/
+    /* Determine the start and end of */
+    /* the input text in the buffer.  */
+    /*================================*/
+    
+    textLength = [[textView string] length];
+    NSUInteger inputEnd = textLength;
+    NSUInteger inputStart = textLength - charOffset;
+    
+    //NSLog(@"inputStart = %d inputEnd = %d",(int) inputStart, (int) inputEnd);
+    
+    /*==================================*/
+    /* Look for the original selection. */
+    /*==================================*/
+    
+    for (theValue in oldSelectedCharRanges)
+      {
+       NSRange theRange = [theValue rangeValue];
+       
+       /*====================================================*/
+       /* The original selection should fall entirely within */
+       /* the input area and there should only be one.       */
+       /*====================================================*/
+       
+       if (theRange.location >= inputStart)
+         { inputCaret = theValue; }
+      }
+
+    for (theValue in newSelectedCharRanges)
+      {
+       NSRange theRange = [theValue rangeValue];
+
+       if (theRange.location >= inputStart)
+         { inputCaret = theValue; }
+       else if (theRange.length != 0)
+         { extraSelection = theValue; }
+      }
+   
+    if (inputCaret == nil)
+      {
+       NSRange theRange = { inputEnd , 0 };
+       
+       inputCaret = [NSValue valueWithRange: theRange];
+      }
+    
+    if (extraSelection == nil)
+      { returnArray = [NSArray arrayWithObject: inputCaret]; }
+    else
+      { returnArray = [NSArray arrayWithObject: extraSelection]; }
+    
+    /*==========================================================================*/
+    /* An array containing the proposed character ranges for the new selection. */
+    /* This must be a non-nil, non-empty array of objects responding to the     */
+    /* NSValue method rangeValue, and in addition its elements must be sorted,  */
+    /* non-overlapping, non-contiguous, and (except for the case of a single    */
+    /* range) have non-zero-length.                                             */
+    /*==========================================================================*/
+   
+    return returnArray;
+   }
 
 /*%%%%%%%%%%%%%%%%*/
 /* Unused Methods */

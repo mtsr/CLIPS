@@ -52,9 +52,7 @@
    self = [super init];
    
    if (self) 
-     {    
-      inputBuffer = NULL;
-     }
+     { inputBuffer = NULL; }
    
    return self;
   }
@@ -96,13 +94,33 @@
    if ([inputCharLock condition] == NEEDS_CHAR)
      { return NO; }
 
-   /*===================================*/  
-   /* The insertion point is always the */
-   /* bottom of the terminal window.    */
-   /*===================================*/  
-    
-   NSRange theRange = { [[super string] length], 0 };
-   [super setSelectedRange: theRange];   
+   /*===============================================================*/
+   /* If the insertion point is before the beginning of the current */
+   /* command, then place it at the end of the terminal windows,    */
+   /* otherwise place the insertion point at the drag point.        */
+   /*===============================================================*/
+
+   NSPoint draggingLocation = [self convertPoint: [sender draggingLocation] fromView: nil];
+   NSUInteger location = [self characterIndexForInsertionAtPoint: draggingLocation];
+   
+   NSUInteger textLength;
+   NSString *theTerminalText;
+   NSUInteger inputOffset = [self inputStringOffset];
+      
+   theTerminalText = [self string];
+   textLength = [theTerminalText length];
+   NSUInteger inputStart = textLength - inputOffset;
+   if (location < inputStart)
+     {
+      // TBD The drag cursor leaves an artificat at the original location
+      NSRange theRange = { textLength, 0 };
+      [super setSelectedRange: theRange];
+     }
+   else
+     {
+      NSRange theRange = { location, 0 };
+      [super setSelectedRange: theRange];   
+     }
 
    NSPasteboard *pb = [sender draggingPasteboard];
    if (! [self readStringFromPasteboard: pb])
@@ -111,22 +129,56 @@
    return YES;
   }
   
+/***********/
+/* delete: */
+/***********/
+- (IBAction) delete: (id) sender
+  {
+   char *str;
+   NSUInteger textLength;
+   NSString *theTerminalText;
+   NSUInteger inputOffset = [self inputStringOffset];
+      
+   theTerminalText = [self string];
+      
+   NSString *theCommand, *preCommand, *postCommand;
+   textLength = [theTerminalText length];
+   NSUInteger inputStart = textLength - inputOffset;
+         
+   NSRange selectionRange = [super selectedRange];
+
+   if (selectionRange.location < inputStart)
+     { return; }
+
+   theCommand = [theTerminalText substringFromIndex: inputStart];
+   
+   preCommand = [theCommand substringToIndex: (selectionRange.location - inputStart)];
+   
+   postCommand = [theCommand substringFromIndex: (selectionRange.location + selectionRange.length - inputStart)];
+
+   str = (char *) [preCommand UTF8String];
+   SetCommandString([environment environment],str);
+      
+   str = (char *) [postCommand UTF8String];
+   AppendCommandString([environment environment],str);
+   
+   [super delete: sender];
+  }
+
 /**********/
 /* paste: */
 /**********/
 - (IBAction) paste: (id) sender
   {
-   NSRange theRange = { [[super string] length], 0 };
-   [super setSelectedRange: theRange];   
+   // InsertText should handle changing selection
+   //NSRange theRange = { [[super string] length], 0 };
+   //[super setSelectedRange: theRange];
 
    NSPasteboard *pb = [NSPasteboard generalPasteboard];
    
    [self readStringFromPasteboard: pb];
-      
-   //[super paste: sender];
   }
 
-      
 /*****************************/
 /* readStringFromPasteboard: */
 /*****************************/
@@ -146,7 +198,8 @@
       
       [self insertText: theText];
       
-      [[dialogWindow windowController] setScrollToEnd: YES];
+      //[[dialogWindow windowController] setScrollToEnd: YES];
+      [self scrollRangeToVisible: [self selectedRange]];
       
       return YES;
      }
@@ -265,7 +318,6 @@
    
    if (characterToCheck != ')') return;
 
-   
    /*======================================================================*/
    /* The nesting depth will start at zero. Each time a ')' is encountered */
    /* the nesting depth is incremented by one and each time a '(' is       */
@@ -331,12 +383,13 @@
      
    [[dialogWindow windowController] dumpOutputBuffer];
 
-   /*======================================================*/
-   /* Move the selection point to the end of the terminal. */ 
-   /*======================================================*/
-   
-   NSRange theRange = { [[super string] length], 0 };
-   [super setSelectedRange: theRange];   
+   /*========================================================*/
+   /* If the inputCharLock is set to NEEDS_CHAR, then we're  */
+   /* waiting for input for functions like read or readline. */
+   /* In this case we want to add any new input to the end   */
+   /* of the terminal as we don't support inline editing of  */
+   /* input to these functions.                              */
+   /*========================================================*/
 
    if ([inputCharLock condition] == NEEDS_CHAR)
      {
@@ -344,6 +397,10 @@
       size_t len;
       str = (char *) [theText UTF8String];
       charFound = str[0];
+ 
+      NSRange theRange = { [[super string] length], 0 };
+      [super setSelectedRange: theRange];
+
       [super insertText: theText];
       
       if ((len = strlen(str)) >  1)
@@ -365,17 +422,57 @@
    if (! routerPrint)
      { 
       char *str; 
+      NSUInteger textLength;
+
+      NSString *theTerminalText;
+      NSUInteger inputOffset = [self inputStringOffset];
+      
+      theTerminalText = [self string];
+      
+      NSString *theCommand, *preCommand, *postCommand;
+      textLength = [theTerminalText length];
+      NSUInteger inputStart = textLength - inputOffset;
+         
+      NSRange selectionRange = [super selectedRange];
+
+      if (selectionRange.location < inputStart)
+        {
+         NSRange theRange = { [[super string] length], 0 };
+         [super setSelectedRange: theRange];
+         selectionRange = theRange;
+        }
+
+      theCommand = [theTerminalText substringFromIndex: inputStart];
+   
+      preCommand = [theCommand substringToIndex: (selectionRange.location - inputStart)];
+   
+      postCommand = [theCommand substringFromIndex: (selectionRange.location + selectionRange.length - inputStart)];
       
       /*================================================================*/
       /* The string returned by UTF8String is placed in the autorelease */
       /* pool, so there is no need to release the str in this function. */
       /*================================================================*/
       
-      str = (char *) [theText UTF8String];
+      str = (char *) [preCommand UTF8String];
+      SetCommandString([environment environment],str);
       
+      str = (char *) [theText UTF8String];
       AppendCommandString(theEnvironment,str);
+      
+      str = (char *) [postCommand UTF8String];
+      AppendCommandString([environment environment],str);
+     }
+   else
+     {
+      NSRange theRange = { [[super string] length], 0 };
+      [super setSelectedRange: theRange];
      }
      
+   /*=======================================*/
+   /* Add the text to the terminal at the   */
+   /* current insertion point or selection. */
+   /*=======================================*/
+   
    [super insertText: theText];
    
    if (! routerPrint)
@@ -394,30 +491,35 @@
 /*******************/
 - (void) deleteBackward: (id) sender
   {
-   /*===================================*/
-   /* Move the cursor to the end of the */
-   /* last line in the terminal.        */
-   /*===================================*/
-      
-   NSRange theRange = { [[super string] length], 0 };
+   NSUInteger inputOffset = [self inputStringOffset];
+   NSUInteger textLength;
+   NSString *theTerminalText;
+   char *str;
 
-   [super setSelectedRange: theRange];   
-
-   /*==========================================*/
-   /* If the input buffer is empty, then there */
-   /* are no characters to delete.             */
-   /*==========================================*/
+   /*====================================================*/
+   /* If the input buffer is empty, then there are no    */
+   /* characters to delete. Remove the current selection */
+   /* and move the cursor to the end of the terminal.    */
+   /*====================================================*/
    
    if (RouterData([environment environment])->CommandBufferInputCount <= 0) 
-     { return; }
+     {
+      NSRange theRange = { [[super string] length], 0 };
+      [super setSelectedRange: theRange];
+      return;
+     }
 
    /*==========================================================*/
    /* Is a running CLIPS function or program (such as the read */
-   /* function) waiting for character input from stdin.        */
+   /* function) waiting for character input from stdin. If so, */
+   /* move the cursor to the end of the terminal and just      */
+   /* delete the last character.                               */
    /*==========================================================*/
    
    if ([inputCharLock condition] == NEEDS_CHAR)
      {
+      NSRange theRange = { [[super string] length], 0 };
+      [super setSelectedRange: theRange];
       [super deleteBackward: sender];
       charFound = '\b';
       [inputCharLock lock];
@@ -425,13 +527,65 @@
       return;
      }
    
+   /*=================================*/
+   /* Retrieve the current selection. */
+   /*=================================*/
+          
+   NSRange selectionRange = [super selectedRange];
+
+   /*========================*/
+   /* Determine the start of */
+   /* the current command.   */
+   /*========================*/
+   
+   theTerminalText = [self string];
+   textLength = [theTerminalText length];
+   NSUInteger inputStart = textLength - inputOffset;
+  
+   /*=============================================*/
+   /* If the selection contains any prior output, */
+   /* then remove the selection and move the      */
+   /* cursor to the end of the terminal.          */
+   /*=============================================*/
+    
+   if (selectionRange.location < inputStart)
+     {
+      NSRange theRange = { [[super string] length], 0 };
+      [super setSelectedRange: theRange];
+      return;
+     }
+ 
+   /*======================================*/
+   /* If the cursor is at the beginning of */
+   /* input, then deleting has no effect.  */
+   /*======================================*/
+   
+   if ((selectionRange.location == inputStart) && selectionRange.length == 0)
+     { return; }
+ 
+   NSString *theCommand, *preCommand, *postCommand;
+   
+   theCommand = [theTerminalText substringFromIndex: inputStart];
+   
+   if (selectionRange.length == 0)
+     { preCommand = [theCommand substringToIndex: ((selectionRange.location - inputStart) - 1)]; }
+   else
+     {
+      preCommand = [theCommand substringToIndex: (selectionRange.location - inputStart)];
+     }
+   
+   postCommand = [theCommand substringFromIndex: (selectionRange.location + selectionRange.length - inputStart)];
+
+   str = (char *) [preCommand UTF8String];
+   SetCommandString([environment environment],str);
+   str = (char *) [postCommand UTF8String];
+   AppendCommandString([environment environment],str);
+
    /*==============================================*/
    /* Process the backspace against the unexecuted */
    /* command being entered at the command prompt. */
    /*==============================================*/
     
-   ExpandCommandString([environment environment],'\b');
-      
    [super deleteBackward: sender];
    
    [self balanceParentheses];
@@ -500,6 +654,39 @@
    [[super layoutManager] removeTemporaryAttribute: NSBackgroundColorAttributeName forCharacterRange: NSRangeFromString(sender)];
   }
   
+/************************************************************************/
+/* inputStringOffset: Determines the number of characters in the output */
+/*    buffer that are associated with the input that user has currently */
+/*    entered. This will typically be the command being entered after   */
+/*    the CLIPS> prompt, but could also be the characters entered for   */
+/*    an input function such as (read) or (readline). The environment   */
+/*    value CommandBufferInputCount contains the number of bytes taken  */
+/*    up by the current input, but we need to determine the number of   */
+/*    UTF8 characters this represents. We compute this by looking at    */
+/*    the last portion of input in the buffer adding one character at a */
+/*    time until we get a number of bytes equal to the                  */
+/*    CommandBufferInputCount.                                          */
+/************************************************************************/
+- (NSUInteger) inputStringOffset
+  {
+    NSString *theString;
+    NSUInteger textLength;
+
+    textLength = [[self string] length];
+    NSUInteger inputByteCount = RouterData([environment environment])->CommandBufferInputCount;
+    NSUInteger bufferByteCount = 0;
+    NSUInteger charOffset = 0;
+    
+    while (bufferByteCount < inputByteCount)
+      {
+       charOffset++;
+       theString = [[self string] substringFromIndex: (textLength - charOffset)];
+       bufferByteCount = [theString lengthOfBytesUsingEncoding: NSUTF8StringEncoding];
+      }
+   
+   return charOffset;
+  }
+
 /*%%%%%%%%%%%%%%%%%%%%*/
 /* Overridden Methods */
 /*%%%%%%%%%%%%%%%%%%%%*/
@@ -555,14 +742,30 @@
    NSString *selectorString;
    selectorString = NSStringFromSelector([menuItem action]);
    
-   /*====================================*/
-   /* The cut and delete actions are not */
-   /* allowed in the terminal window.    */
-   /*====================================*/
+   /*============================================================*/
+   /* The paste, cut, and delete actions are only allowed in the */
+   /* terminal window when the selection is in the input area.   */
+   /*============================================================*/
    
-   if (([menuItem action] == @selector(cut:)) ||
+   if (([menuItem action] == @selector(paste:)) ||
+       ([menuItem action] == @selector(cut:)) ||
        ([menuItem action] == @selector(delete:)))
-     { return NO; }
+     {
+      NSUInteger textLength;
+
+      NSString *theTerminalText;
+      NSUInteger inputOffset = [self inputStringOffset];
+      
+      theTerminalText = [self string];
+      
+      textLength = [theTerminalText length];
+      NSUInteger inputStart = textLength - inputOffset;
+         
+      NSRange selectionRange = [super selectedRange];
+
+      if (selectionRange.location < inputStart)
+        { return NO; }
+     }
      
    /*====================================*/
    /* Otherwise, allow the superclass to */
