@@ -83,12 +83,19 @@
 - (void) awakeFromNib
   {
    void *theEnvironment = [environment environment];
-   
+
    /*=====================================*/
    /* Set the delegate for the text view. */
    /*=====================================*/
    
    textView.delegate = self;
+   
+   /*===========================================*/
+   /* Disable automatic text substitution (such */
+   /* as replacing quotes with curly quotes).   */
+   /*===========================================*/
+   
+   [textView setEnabledTextCheckingTypes: 0];
    
    /*======================================================*/
    /* Places a few pixels of white space between the edges */
@@ -97,7 +104,7 @@
    /*======================================================*/
    
    NSSize theSize = { 3, 3 };
-   [textView setTextContainerInset: theSize];   
+   [textView setTextContainerInset: theSize];
 
    /*====================================================*/
    /* Add an index value to the window names that are    */
@@ -274,7 +281,7 @@
       [executionIndicator stopAnimation: nil];     
       return;
      }
-     
+
    /*====================================================*/
    /* If the user has moved the caret into the center of */
    /* the command, don't execute the command as the user */
@@ -286,16 +293,14 @@
    NSRange selectionRange = [textView selectedRange];
    
    if ((selectionRange.length != 0) || ([[textView string] length] != selectionRange.location))
-     { NSLog(@"Ignoring");
-      return;
-     }
+     { return; }
 */
    /*===================================================*/
    /* Perform the command if present, otherwise return. */
    /*===================================================*/
      
    [[environment executionLock] lock];
-   
+
    if (! [environment performCommandIfPresent]) 
      {
       [executionIndicator stopAnimation: nil];     
@@ -443,7 +448,7 @@
    /*==================================================*/
    /* Begin the open sheet for the environment window. */
    /*==================================================*/
-        
+
    [oPanel setAllowedFileTypes: fileTypes];
    
    [oPanel setDirectoryURL: [NSURL fileURLWithPath: theDirectory]];
@@ -452,7 +457,7 @@
                   completionHandler: ^(NSInteger returnCode)
                                         { [self loadConstructPanelDidEnd: oPanel returnCode: returnCode]; }];
    }
- 
+
 /****************************************************/
 /* loadConstructPanelDidEnd:returnCode:contextInfo: */
 /****************************************************/
@@ -460,7 +465,7 @@
          returnCode: (int) returnCode 
   {
    if (returnCode != NSOKButton) return;
-      
+
    NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
    void *theEnv = [environment environment];
@@ -496,7 +501,7 @@
 
    [textView insertText: @"\")\n"];
   }
-  
+
 /**************************************************/
 /* loadBatch: Initiates the Load Batch... command */
 /*   for a CLIPS environment window (terminal).   */
@@ -539,7 +544,7 @@
    /*==================================================*/
    /* Begin the open sheet for the environment window. */
    /*==================================================*/
-     
+   
    [oPanel setAllowedFileTypes: fileTypes];
    
    [oPanel setDirectoryURL: [NSURL fileURLWithPath: theDirectory]];
@@ -556,7 +561,7 @@
          returnCode: (int) returnCode 
   {
    if (returnCode != NSOKButton) return;
-   
+
    NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
    void *theEnv = [environment environment];

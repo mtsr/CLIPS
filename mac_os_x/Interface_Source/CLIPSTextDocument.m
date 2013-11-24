@@ -79,6 +79,13 @@
    NSSize theSize = { 5, 5 };
    [textView setTextContainerInset: theSize];
    
+   /*===========================================*/
+   /* Disable automatic text substitution (such */
+   /* as replacing quotes with curly quotes).   */
+   /*===========================================*/
+   
+   [textView setEnabledTextCheckingTypes: 0];
+
    /*=====================================================================*/
    /* Create the binding for the environment displayed in the popup menu. */
    /*=====================================================================*/
