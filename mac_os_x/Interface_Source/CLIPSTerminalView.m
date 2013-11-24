@@ -15,7 +15,7 @@
 #define HAS_CHAR       2
 
 @implementation CLIPSTerminalView
- 
+
 /********************************/
 /* initWithFrame:textContainer: */
 /********************************/
@@ -24,8 +24,7 @@
    self = [super initWithFrame: frameRect textContainer: aTextContainer];
    
    if (self)
-     {
-     }
+     { }
      
    return self;
   }
@@ -38,8 +37,7 @@
    self = [super initWithFrame: frameRect];
    
    if (self)
-     {
-     }
+     { }
      
    return self;
   }
@@ -119,7 +117,7 @@
    else
      {
       NSRange theRange = { location, 0 };
-      [super setSelectedRange: theRange];   
+      [super setSelectedRange: theRange];
      }
 
    NSPasteboard *pb = [sender draggingPasteboard];
@@ -128,7 +126,7 @@
    
    return YES;
   }
-  
+
 /***********/
 /* delete: */
 /***********/
@@ -421,7 +419,7 @@
           
    if (! routerPrint)
      { 
-      char *str; 
+      char *str;
       NSUInteger textLength;
 
       NSString *theTerminalText;
@@ -447,12 +445,12 @@
       preCommand = [theCommand substringToIndex: (selectionRange.location - inputStart)];
    
       postCommand = [theCommand substringFromIndex: (selectionRange.location + selectionRange.length - inputStart)];
-      
+
       /*================================================================*/
       /* The string returned by UTF8String is placed in the autorelease */
       /* pool, so there is no need to release the str in this function. */
       /*================================================================*/
-      
+
       str = (char *) [preCommand UTF8String];
       SetCommandString([environment environment],str);
       
@@ -467,7 +465,7 @@
       NSRange theRange = { [[super string] length], 0 };
       [super setSelectedRange: theRange];
      }
-     
+
    /*=======================================*/
    /* Add the text to the terminal at the   */
    /* current insertion point or selection. */
@@ -485,7 +483,75 @@
         }
      }
   }
-  
+
+/*************************************************************/
+/* moveUpAndModifySelection: Overide of the up arrow + shift */
+/*   keys to allow cycling through command history.          */
+/*************************************************************/
+- (void) moveUpAndModifySelection: (id) sender
+  {
+    CLIPSTerminalController *theController = (CLIPSTerminalController *) [self delegate];
+
+    if (theController == nil)
+      { [super moveUpAndModifySelection: sender]; }
+    else if (theController->currentCommand->next != NULL)
+      {
+       [theController SwitchCommandFrom: theController->currentCommand
+                                     To: theController->bottomCommand];
+      }
+  }
+
+/*****************************************************************/
+/* moveDownAndModifySelection: Overide of the down arrow + shift */
+/*   keys to allow cycling through command history.              */
+/*****************************************************************/
+- (void) moveDownAndModifySelection: (id) sender
+  {
+    CLIPSTerminalController *theController = (CLIPSTerminalController *) [self delegate];
+
+    if (theController == nil)
+      { [super moveDownAndModifySelection: sender]; }
+    else if (theController->currentCommand->prev != NULL)
+      {
+       [theController SwitchCommandFrom: theController->currentCommand
+                                     To: theController->topCommand];
+      }
+  }
+
+/*********************************************/
+/* moveUp: Overide of the up arrow key to   */
+/*   allow cycling through command history. */
+/********************************************/
+- (void) moveUp: (id) sender
+   {
+    CLIPSTerminalController *theController = (CLIPSTerminalController *) [self delegate];
+
+    if (theController == nil)
+      { [super moveUp: sender]; }
+    else if (theController->currentCommand->next != NULL)
+      {
+       [theController SwitchCommandFrom: theController->currentCommand
+                                     To: theController->currentCommand->next];
+      }
+   }
+
+/***********************************************/
+/* moveDown: Override of the down arrow key to */
+/*   allow cycling through command history.    */
+/***********************************************/
+- (void) moveDown: (id) sender
+   {
+    CLIPSTerminalController *theController = (CLIPSTerminalController *) [self delegate];
+
+    if (theController == nil)
+      { [super moveUp: sender]; }
+    else if (theController->currentCommand->prev != NULL)
+      {
+       [theController SwitchCommandFrom: theController->currentCommand
+                                     To: theController->currentCommand->prev];
+      }
+   }
+
 /*******************/
 /* deleteBackward: */
 /*******************/
@@ -526,7 +592,7 @@
       [inputCharLock unlockWithCondition: HAS_CHAR];
       return;
      }
-   
+
    /*=================================*/
    /* Retrieve the current selection. */
    /*=================================*/
@@ -585,7 +651,7 @@
    /* Process the backspace against the unexecuted */
    /* command being entered at the command prompt. */
    /*==============================================*/
-    
+
    [super deleteBackward: sender];
    
    [self balanceParentheses];
@@ -653,7 +719,7 @@
   {
    [[super layoutManager] removeTemporaryAttribute: NSBackgroundColorAttributeName forCharacterRange: NSRangeFromString(sender)];
   }
-  
+
 /************************************************************************/
 /* inputStringOffset: Determines the number of characters in the output */
 /*    buffer that are associated with the input that user has currently */

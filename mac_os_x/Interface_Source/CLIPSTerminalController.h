@@ -17,6 +17,13 @@
 @class CLIPSTerminalView;
 @class EnvController;
 
+struct priorCommand
+  {
+   struct priorCommand *next;
+   struct priorCommand *prev;
+   char *command;
+  };
+
 @interface CLIPSTerminalController : NSWindowController <NSTextViewDelegate>
   {
    IBOutlet CLIPSEnvironment *environment;
@@ -39,6 +46,14 @@
    BOOL scrollToEnd;
    BOOL exit;
    BOOL clearWindow;
+@public
+   struct priorCommand *topCommand;
+@public
+   struct priorCommand *bottomCommand;
+@public
+   struct priorCommand *currentCommand;
+   int maxCommandCount;
+   int currentCommandCount;
   }
 
 - (IBAction)           loadConstructs: (id) sender;
@@ -84,6 +99,9 @@
 - (void) dumpOutputBuffer;
 - (void) exit;
 - (void) convertAndPrintC: (char *) theString;
+
+- (void) SwitchCommandFrom: (struct priorCommand *) oldCommand
+                        To: (struct priorCommand *) newCommand;
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Window Delegate Methods */

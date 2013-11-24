@@ -25,7 +25,9 @@
    static int                     bufferMax = 0;
    static int                     lineMax = 0;
    */
-   
+
+#define DEFAULT_COMMAND_MAX 20
+
 /****************/
 /* description: */
 /****************/
@@ -51,6 +53,20 @@
       
       lineCount = 1;
       lastDumpPosition = 0;
+      
+      /*===================================*/
+      /* Set up the prior command history. */
+      /*===================================*/
+   
+      self->maxCommandCount = DEFAULT_COMMAND_MAX;
+      self->currentCommandCount = 1;
+      self->topCommand = (struct priorCommand *) malloc(sizeof(struct priorCommand));
+      self->currentCommand = self->topCommand;
+      self->bottomCommand = self->topCommand;
+      self->topCommand->next = NULL;
+      self->topCommand->prev = NULL;
+      self->topCommand->command = (char *) malloc(1);
+      self->topCommand->command[0] = '\0';
      }
      
    return self;
@@ -62,6 +78,21 @@
 - (void) dealloc
   {
    void *theEnvironment = [environment environment];
+   struct priorCommand *nextCommand;
+   
+   /*=================================*/
+   /* Deallocate the command history. */
+   /*=================================*/
+   
+   while (self->topCommand != NULL)
+     {
+      nextCommand = self->topCommand->next;
+      
+      free(topCommand->command);
+      free(topCommand);
+      
+      self->topCommand = nextCommand;
+     }
 
    EnvSetBeforeOpenFunction(theEnvironment,NULL);
    EnvSetAfterOpenFunction(theEnvironment,NULL);
@@ -230,6 +261,146 @@
    RouterData(theEnvironment)->CommandBufferInputCount = 0;
   }
 
+/*************************/
+/* updateCommandHistory: */
+/*************************/
+- (void) updateCommandHistory
+  {
+   char *theCommand;
+   size_t i, length, lastCR;
+   struct priorCommand *nextCommand;
+
+   /*=================================================*/
+   /* Replace the first command with the contents of  */
+   /* the command string, up to but not including the */ 
+   /* last carriage return which initiated execution  */
+   /* of the command. Removing the last carriage      */
+   /* will prevent the command from being immediately */
+   /* executed when the command is recalled by the    */
+   /* up/down arrow keys (i.e. the user must hit the  */
+   /* final carriage return again to execute the      */
+   /* recalled command).                              */
+   /*=================================================*/
+      
+   free(self->topCommand->command);
+
+   theCommand = GetCommandString([environment environment]);
+   length = strlen(theCommand);
+   
+   for (i = 0, lastCR = length; i < length; i++)
+     {
+      if (theCommand[i] == '\n')
+        { lastCR = i; }
+     }   
+
+   self->topCommand->command = (char *) malloc(lastCR + 1);
+   strncpy(self->topCommand->command,theCommand,lastCR);
+   self->topCommand->command[lastCR] = '\0';
+   
+   /*====================================================*/
+   /* If this command is identical to the prior command, */
+   /* don't add it to the command history.               */
+   /*====================================================*/
+    
+   if ((self->topCommand->next != NULL) &&
+       (strcmp(self->topCommand->command,self->topCommand->next->command) == 0))
+     {
+      free(self->topCommand->command);
+      self->topCommand->command = (char *) malloc(1);
+      self->topCommand->command[0] = '\0';
+	  self->currentCommand = self->topCommand;
+      return;
+     }
+     
+   /*=================================================*/
+   /* Add a new empty command to the top of the stack */
+   /* in preparation for the next user command.       */
+   /*=================================================*/
+
+   nextCommand = (struct priorCommand *) malloc(sizeof(struct priorCommand));
+   nextCommand->next = self->topCommand;
+   nextCommand->prev = NULL;
+   nextCommand->command = (char *) malloc(1);
+   nextCommand->command[0] = '\0';
+   
+   self->topCommand->prev = nextCommand;
+   self->topCommand = nextCommand;
+   self->currentCommand = nextCommand;
+   
+   self->currentCommandCount++;
+   
+   /*=============================================*/
+   /* Remove commands at the end of the command   */
+   /* history if the maximum number of remembered */
+   /* commands is exceeded.                       */
+   /*=============================================*/
+   
+   while (self->currentCommandCount > self->maxCommandCount)
+     {
+      if (self->bottomCommand->prev == NULL)
+        { break; }
+        
+      self->bottomCommand->prev->next = NULL;
+      nextCommand = self->bottomCommand;
+      self->bottomCommand = self->bottomCommand->prev;
+      free(nextCommand->command);
+      free(nextCommand);
+      
+      self->currentCommandCount--;
+     }
+
+  }
+
+/*************************/
+/* SwitchCommandFrom:To: */
+/*************************/
+- (void) SwitchCommandFrom: (struct priorCommand *) oldCommand
+                        To: (struct priorCommand *) newCommand
+  {
+   char *theCommand;
+   size_t length;
+
+   NSString *newInput = [NSString stringWithCString: newCommand->command encoding: NSUTF8StringEncoding];
+
+   /*==========================================*/
+   /* Retrieve the current command from CLIPS. */
+   /*==========================================*/
+   
+   theCommand = GetCommandString([environment environment]);
+   if (theCommand == NULL)
+     { theCommand = ""; }
+   length = strlen(theCommand);
+ 
+   /*============================================*/
+   /* Replace the current command in the window. */
+   /*============================================*/
+   
+   NSUInteger charOffset = [self->textView inputStringOffset];
+   NSUInteger textLength = [[self->textView string] length];
+   NSUInteger inputStart = textLength - charOffset;
+
+   NSRange theRange = { inputStart, charOffset };
+   
+   [self->textView replaceCharactersInRange: theRange withString: newInput];
+   
+   /*==============================================*/
+   /* Replace the old command with the contents of */
+   /* the command string, which will now include   */
+   /* any edits the user made.                     */
+   /*==============================================*/
+   
+   free(oldCommand->command);
+   oldCommand->command = (char *) malloc(length + 1);
+   strncpy(oldCommand->command,theCommand,length + 1);
+
+   /*======================*/
+   /* Use the new command. */
+   /*======================*/
+   
+   SetCommandString([environment environment],newCommand->command);
+   self->currentCommand = newCommand;
+  }
+
 /*******************/
 /* lookForCommand: */
 /*******************/
@@ -295,6 +466,14 @@
    if ((selectionRange.length != 0) || ([[textView string] length] != selectionRange.location))
      { return; }
 */
+   
+   /*============================================================*/
+   /* Update the command history if there is a complete command. */
+   /*============================================================*/
+   
+   if ((! BatchActive([environment environment])) && CommandCompleteAndNotEmpty([environment environment]))
+     { [self updateCommandHistory]; }
+
    /*===================================================*/
    /* Perform the command if present, otherwise return. */
    /*===================================================*/
