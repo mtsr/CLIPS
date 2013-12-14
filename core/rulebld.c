@@ -116,7 +116,7 @@ globle struct joinNode *ConstructJoins(
 
    /*=====================================================*/
    /* Process each pattern CE in the rule. At this point, */
-   /* there should be no and/or/not/test CEs in the LHS.  */
+   /* there should be no and/or/not CEs in the LHS.       */
    /*=====================================================*/
 
    while (theLHS != NULL)
@@ -155,7 +155,7 @@ globle struct joinNode *ConstructJoins(
          if (nextLHS != NULL)
            { nextLHS = nextLHS->bottom; }
            
-         if ((nextLHS != NULL) && (nextLHS->type == TEST_CE))
+         if ((nextLHS != NULL) && (nextLHS->type == TEST_CE) && (nextLHS->beginNandDepth >= startDepth))
            { 
             secondaryExternalTest = nextLHS->networkTest;
             nextLHS = nextLHS->bottom; 
@@ -350,7 +350,7 @@ static void AttachTestCEsToPatternCEs(
   void *theEnv,
   struct lhsParseNode *theLHS)
   {
-   struct lhsParseNode *lastNode, *tempNode;
+   struct lhsParseNode *lastNode, *tempNode, *lastLastNode;
 
    if (theLHS == NULL) return;
 
@@ -358,15 +358,37 @@ static void AttachTestCEsToPatternCEs(
    /* Attach test CEs that can be attached directly to a pattern. */
    /*=============================================================*/
    
+   lastLastNode = NULL;
    lastNode = theLHS;
    theLHS = lastNode->bottom;
    
    while (theLHS != NULL)
      {
-      if ((theLHS->type != TEST_CE) ||
-          (lastNode->beginNandDepth != lastNode->endNandDepth) ||
+      /*================================================================*/
+      /* Skip over any CE that's not a TEST CE as we're only interested */
+      /* in attaching a TEST CE to a preceding pattern CE. Update the   */
+      /* variables that track the preceding pattern.                    */
+      /*================================================================*/
+      
+      if (theLHS->type != TEST_CE)
+        {
+         lastLastNode = lastNode;
+         lastNode = theLHS;
+         theLHS = theLHS->bottom;
+         continue;
+        }
+
+      /*===============================================================*/
+      /* If the preceding pattern was the end of a NOT/AND CE group or */
+      /* the current pattern is the beginning of a NOT/AND CE then we  */
+      /* can't attach this TEST CE to a preceding pattern and should   */
+      /* skip over it.                                                 */
+      /*===============================================================*/
+      
+      if ((lastNode->beginNandDepth != lastNode->endNandDepth) ||
           (lastNode->beginNandDepth != theLHS->beginNandDepth))
         {
+         lastLastNode = lastNode;
          lastNode = theLHS;
          theLHS = theLHS->bottom;
          continue;
@@ -396,6 +418,18 @@ static void AttachTestCEsToPatternCEs(
          lastNode->exists = TRUE;
          lastNode->negated = TRUE;
          lastNode->beginNandDepth = theLHS->endNandDepth;
+        }
+      else if ((lastLastNode != NULL) && (lastLastNode->endNandDepth != theLHS->beginNandDepth) &&
+               (theLHS->beginNandDepth != theLHS->endNandDepth)) // If the test CE depth remains the same collapse the test CE into the prior pattern but don't change anything
+        {
+         lastNode->negated = TRUE;
+         //lastNode->beginNandDepth = theLHS->endNandDepth;
+         lastNode->beginNandDepth--; //lastNode->beginNandDepth = theLHS->endNandDepth;
+         lastNode->networkTest = CombineExpressions(theEnv,lastNode->networkTest,lastNode->externalNetworkTest);
+         lastNode->externalNetworkTest = NULL;
+        }
+      else if (lastLastNode == NULL)
+        {
         }
         
       theLHS->networkTest = NULL;
