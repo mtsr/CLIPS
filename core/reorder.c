@@ -47,6 +47,11 @@
 #include "router.h"
 #include "rulelhs.h"
 
+#if DEVELOPER && DEBUGGING_FUNCTIONS
+#include "watch.h"
+#include "rulepsr.h"
+#endif
+
 #include "reorder.h"
 
 struct variableReference
@@ -392,6 +397,16 @@ static intBool AddNandPatterns(
    struct groupReference *tmpGroup;
    int vdepth;
    
+   /*================================================================*/
+   /* The firstPattern parameter is always the first CE in the rule. */
+   /* The value is never reassigned within this function.            */
+   /*================================================================*/
+   
+   /*===================================================*/
+   /* Initially, depth is 1, parent is NULL, and theLHS */
+   /* is the first CE in the LHS of the rule.           */
+   /*===================================================*/
+      
    nandStart = theLHS;
    startVariables = variables;
    newParent = parent;
@@ -416,9 +431,25 @@ static intBool AddNandPatterns(
          groups = tmpGroup->next;
          rtn_struct(theEnv,variableReference,tmpGroup);
          
-         /*===================================================*/
-         /* Skip to the end of the nand group just processed. */
-         /*===================================================*/
+         /*==========================================================*/
+         /* Skip to the end of the nand group just processed.        */
+         /*                                                          */
+         /*    (defrule example                                      */
+         /*       (a)                                                */
+         /*       (not (and (b)                                      */
+         /*                 (c)))                                    */
+         /*       (d)                                                */
+         /*       =>)                                                */
+         /*                                                          */
+         /* The begin/end nand depth for (a) is 1/1, for (b) is 2/2, */
+         /* for (c) is 2/1, and for (d) is 1/1. AddNandPatterns will */
+         /* be called in this block because the begin nand depth of  */
+         /* 2 is greater than the depth of 1 for the initial call    */
+         /* of this function. When the recursive call of             */
+         /* AddNandPatterns is completed, theLHS will be set to (c)  */
+         /* which is the last pattern in the nand group just         */
+         /* detected.                                                */
+         /*==========================================================*/
          
          while (theLHS->endNandDepth > depth)
            { theLHS = theLHS->bottom; }
@@ -507,7 +538,11 @@ static intBool AddNandPatterns(
               }
               
             if (addPatterns)
-              { InsertNandPatterns(theEnv,parent,firstPattern,nandStart,depth); }
+              {
+               if (parent != NULL)                  // Fix: adding patterns could
+                 { nandStart = parent->bottom; }    // have changed the nandStart
+               InsertNandPatterns(theEnv,parent,firstPattern,nandStart,depth);
+              }
               
             return(addPatterns || returnAddPatterns); 
            }
@@ -522,7 +557,11 @@ static intBool AddNandPatterns(
      }
 
    if (addPatterns)
-     { InsertNandPatterns(theEnv,parent,firstPattern,nandStart,depth); }
+     {
+      if (parent != NULL)                  // Fix: adding patterns could
+        { nandStart = parent->bottom; }    // have changed the nandStart
+      InsertNandPatterns(theEnv,parent,firstPattern,nandStart,depth);
+     }
 
    /*===================================================*/
    /* Deallocate variables detected in this nand group. */
@@ -637,9 +676,9 @@ static intBool AddNandPatternsForSubconstraints(
    return(FALSE);
   }
 
-/*************************************************************/
-/* InsertNandPatterns:                     */
-/*************************************************************/
+/***********************/
+/* InsertNandPatterns: */
+/***********************/
 static void InsertNandPatterns(
   void *theEnv,
   struct lhsParseNode *parent,
@@ -653,10 +692,18 @@ static void InsertNandPatterns(
    intBool insideFinalGroup = FALSE;
    int minDepth, maxDepth;
 
+   /*=======================================================*/
+   /* If parent is NULL, then this function has been called */
+   /* from the initial invocation of AddNandPatterns and we */
+   /* don't add any patterns at this level.                 */
+   /*=======================================================*/
+   
    if (parent == NULL) return;
    
    /*=========================================================================*/
    /* Determine the highest level not/and group to which the pattern belongs. */
+   /* The parent parameter is the CE before the nand group being processed.   */
+   /* The firstPattern parameter is always the first CE in the rule.          */
    /*=========================================================================*/
 
    for (theLHS = firstPattern; theLHS != endPattern; theLHS = theLHS->bottom)
