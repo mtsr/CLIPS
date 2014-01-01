@@ -721,9 +721,10 @@ globle void SetBeforeCommandExecutionFunction(
    CommandLineData(theEnv)->BeforeCommandExecutionFunction = funptr;
   }
   
-/************************************************/
-/* RouteCommand: Processes a completed command. */
-/************************************************/
+/********************************************************/
+/* RouteCommand: Processes a completed command. Returns */
+/*   1 if a command could be parsed, otherwise 0.       */
+/********************************************************/
 globle intBool RouteCommand(
   void *theEnv,
   char *command,
@@ -831,7 +832,8 @@ globle intBool RouteCommand(
           EnvPrintRouter(theEnv,WERROR,"\n");
          }
        DestroyPPBuffer(theEnv);
-       return(errorFlag);
+       if (errorFlag) return 0;
+       else return 1;
       }
    }
 #endif
@@ -867,6 +869,10 @@ globle intBool RouteCommand(
    
    ExpressionDeinstall(theEnv,top);
    ReturnExpression(theEnv,top);
+   
+   /*=================================================*/
+   /* Print the return value of the function/command. */
+   /*=================================================*/
    
    if ((result.type != RVOID) && printResult)
      {
