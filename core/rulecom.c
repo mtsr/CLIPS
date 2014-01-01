@@ -923,7 +923,11 @@ static void ShowJoins(
       while (theJoin != NULL)
         {
          if (theJoin->joinFromTheRight)
-           { theJoin = (struct joinNode *) theJoin->rightSideEntryStructure; }
+           {
+            numberOfJoins++;
+            joinList[numberOfJoins] = theJoin;
+            theJoin = (struct joinNode *) theJoin->rightSideEntryStructure;
+           }
          else
            {
             numberOfJoins++;
@@ -947,12 +951,21 @@ static void ShowJoins(
          else
            { rhsType = ' '; }
            
-         gensprintf(buffer,"%2d%c%c: ",(int) joinList[numberOfJoins]->depth,
+         gensprintf(buffer,"%2d%c%c%c%c: ",(int) joinList[numberOfJoins]->depth,
+                                     (joinList[numberOfJoins]->firstJoin) ? 'f' : ' ',
                                      rhsType,
+                                     (joinList[numberOfJoins]->joinFromTheRight) ? 'j' : ' ',
                                      (joinList[numberOfJoins]->logicalJoin) ? 'l' : ' ');
          EnvPrintRouter(theEnv,WDISPLAY,buffer);
          PrintExpression(theEnv,WDISPLAY,joinList[numberOfJoins]->networkTest);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
+         
+         if (joinList[numberOfJoins]->secondaryNetworkTest != NULL)
+           {
+            EnvPrintRouter(theEnv,WDISPLAY,"    SNT : ");
+            PrintExpression(theEnv,WDISPLAY,joinList[numberOfJoins]->secondaryNetworkTest);
+            EnvPrintRouter(theEnv,WDISPLAY,"\n");
+           }
          
          if (joinList[numberOfJoins]->leftHash != NULL)
            {

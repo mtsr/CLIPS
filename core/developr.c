@@ -94,9 +94,11 @@ globle void DeveloperCommands(
 #endif
   }
 
-/******************************************************/
-/* EnableGCHeuristics:      */
-/******************************************************/
+/*****************************************************************/
+/* EnableGCHeuristics: Enables the garbage collection heuristics */
+/*   which determine whether garbage collection should be        */
+/*   performed when PeriodicCleanup is invoked.                  */
+/*****************************************************************/
 globle void EnableGCHeuristics(
   void *theEnv)
   {
@@ -104,9 +106,11 @@ globle void EnableGCHeuristics(
    SetGarbageCollectionHeuristics(theEnv,TRUE);
   }
   
-/******************************************************/
-/* DisableGCHeuristics:      */
-/******************************************************/
+/*******************************************************************/
+/* DisableGCHeuristics: Disables the garbage collection heuristics */
+/*   which determine whether garbage collection should be          */
+/*   performed when PeriodicCleanup is invoked.                    */
+/*******************************************************************/
 globle void DisableGCHeuristics(
   void *theEnv)
   {
