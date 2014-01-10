@@ -52,7 +52,6 @@ struct fact
    void *list;
    long long factIndex;
    unsigned long hashValue;
-   unsigned int depth : 15;
    unsigned int garbage : 1;
    struct fact *previousFact;
    struct fact *nextFact;

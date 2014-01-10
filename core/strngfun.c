@@ -858,12 +858,11 @@ globle int EnvEval(
    /* issued from an embedded controller.      */
    /*==========================================*/
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
      { 
-      ValueInstall(theEnv,returnValue);
-      PeriodicCleanup(theEnv,TRUE,FALSE); 
-      ValueDeinstall(theEnv,returnValue);
+      CleanCurrentGarbageFrame(theEnv,returnValue);
+      CallPeriodicTasks(theEnv);
      }
 
    if (GetEvaluationError(theEnv)) return(FALSE);
@@ -1031,9 +1030,12 @@ globle int EnvBuild(
    /* issued from an embedded controller.       */
    /*===========================================*/
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
-     { PeriodicCleanup(theEnv,TRUE,FALSE); }
+     {
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+     }
 
    /*===============================================*/
    /* Return TRUE if the construct was successfully */

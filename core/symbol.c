@@ -174,7 +174,6 @@ static void DeallocateSymbolData(
    FLOAT_HN *fhPtr, *nextFHPtr;
    BITMAP_HN *bmhPtr, *nextBMHPtr;
    EXTERNAL_ADDRESS_HN *eahPtr, *nextEAHPtr;
-   struct ephemeron *edPtr, *nextEDPtr;
 
    if ((SymbolData(theEnv)->SymbolTable == NULL) ||
        (SymbolData(theEnv)->FloatTable == NULL) ||
@@ -254,55 +253,6 @@ static void DeallocateSymbolData(
            } 
          eahPtr = nextEAHPtr;
         }
-     }
-
-   /*=========================================*/
-   /* Remove the ephemeral symbol structures. */
-   /*=========================================*/
-   
-   edPtr = SymbolData(theEnv)->EphemeralSymbolList;
-
-   while (edPtr != NULL)
-     {
-      nextEDPtr = edPtr->next;
-      rtn_struct(theEnv,ephemeron,edPtr);
-      edPtr = nextEDPtr;
-     }
-
-   edPtr = SymbolData(theEnv)->EphemeralFloatList;
-
-   while (edPtr != NULL)
-     {
-      nextEDPtr = edPtr->next;
-      rtn_struct(theEnv,ephemeron,edPtr);
-      edPtr = nextEDPtr;
-     }
-
-   edPtr = SymbolData(theEnv)->EphemeralIntegerList;
-
-   while (edPtr != NULL)
-     {
-      nextEDPtr = edPtr->next;
-      rtn_struct(theEnv,ephemeron,edPtr);
-      edPtr = nextEDPtr;
-     }
-
-   edPtr = SymbolData(theEnv)->EphemeralBitMapList;
-
-   while (edPtr != NULL)
-     {
-      nextEDPtr = edPtr->next;
-      rtn_struct(theEnv,ephemeron,edPtr);
-      edPtr = nextEDPtr;
-     }
-
-   edPtr = SymbolData(theEnv)->EphemeralExternalAddressList;
-
-   while (edPtr != NULL)
-     {
-      nextEDPtr = edPtr->next;
-      rtn_struct(theEnv,ephemeron,edPtr);
-      edPtr = nextEDPtr;
      }
 
    /*================================*/
@@ -401,9 +351,9 @@ globle void *EnvAddSymbol(
     /* Add the string to the list of ephemeral items. */
     /*================================================*/
 
-    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&SymbolData(theEnv)->EphemeralSymbolList,
+    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralSymbolList,
                          sizeof(SYMBOL_HN),AVERAGE_STRING_SIZE);
-    peek->depth = EvaluationData(theEnv)->CurrentEvaluationDepth;
+    UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
     /*===================================*/
     /* Return the address of the symbol. */
@@ -490,10 +440,10 @@ globle void *EnvAddDouble(
     /* Add the float to the list of ephemeral items. */
     /*===============================================*/
 
-    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&SymbolData(theEnv)->EphemeralFloatList,
+    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralFloatList,
                          sizeof(FLOAT_HN),0);
-    peek->depth = EvaluationData(theEnv)->CurrentEvaluationDepth;
-
+    UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+    
     /*==================================*/
     /* Return the address of the float. */
     /*==================================*/
@@ -554,9 +504,9 @@ globle void *EnvAddLong(
     /* Add the integer to the list of ephemeral items. */
     /*=================================================*/
 
-    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&SymbolData(theEnv)->EphemeralIntegerList,
+    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralIntegerList,
                          sizeof(INTEGER_HN),0);
-    peek->depth = EvaluationData(theEnv)->CurrentEvaluationDepth;
+    UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
     /*====================================*/
     /* Return the address of the integer. */
@@ -657,9 +607,9 @@ globle void *EnvAddBitMap(
     /* Add the bitmap to the list of ephemeral items. */
     /*================================================*/
 
-    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&SymbolData(theEnv)->EphemeralBitMapList,
+    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralBitMapList,
                          sizeof(BITMAP_HN),sizeof(long));
-    peek->depth = EvaluationData(theEnv)->CurrentEvaluationDepth;
+    UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
     /*===================================*/
     /* Return the address of the bitmap. */
@@ -727,9 +677,9 @@ globle void *EnvAddExternalAddress(
     /* Add the bitmap to the list of ephemeral items. */
     /*================================================*/
 
-    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&SymbolData(theEnv)->EphemeralExternalAddressList,
+    AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralExternalAddressList,
                          sizeof(EXTERNAL_ADDRESS_HN),sizeof(long));
-    peek->depth = EvaluationData(theEnv)->CurrentEvaluationDepth;
+    UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
     /*=============================================*/
     /* Return the address of the external address. */
@@ -900,8 +850,9 @@ globle void DecrementSymbolCount(
 
    if (theValue->markedEphemeral == FALSE)
      {
-      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&SymbolData(theEnv)->EphemeralSymbolList,
+      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralSymbolList,
                            sizeof(SYMBOL_HN),AVERAGE_STRING_SIZE);
+      UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
    return;
@@ -928,8 +879,9 @@ globle void DecrementFloatCount(
 
    if (theValue->markedEphemeral == FALSE)
      {
-      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&SymbolData(theEnv)->EphemeralFloatList,
+      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralFloatList,
                            sizeof(FLOAT_HN),0);
+      UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
    return;
@@ -956,8 +908,9 @@ globle void DecrementIntegerCount(
 
    if (theValue->markedEphemeral == FALSE)
      {
-      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&SymbolData(theEnv)->EphemeralIntegerList,
+      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralIntegerList,
                            sizeof(INTEGER_HN),0);
+      UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
    return;
@@ -990,8 +943,9 @@ globle void DecrementBitMapCount(
 
    if (theValue->markedEphemeral == FALSE)
      {
-      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&SymbolData(theEnv)->EphemeralBitMapList,
+      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralBitMapList,
                            sizeof(BITMAP_HN),sizeof(long));
+      UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
    return;
@@ -1024,8 +978,9 @@ globle void DecrementExternalAddressCount(
 
    if (theValue->markedEphemeral == FALSE)
      {
-      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&SymbolData(theEnv)->EphemeralExternalAddressList,
+      AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralExternalAddressList,
                            sizeof(EXTERNAL_ADDRESS_HN),sizeof(long));
+      UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
    return;
@@ -1148,16 +1103,6 @@ static void AddEphemeralHashNode(
    temp->associatedValue = theHashNode;
    temp->next = *theEphemeralList;
    *theEphemeralList = temp;
-
-   /*=========================================================*/
-   /* Increment the ephemeral count and size variables. These */
-   /* variables are used by the garbage collection routines   */
-   /* to determine when garbage collection should occur.      */
-   /*=========================================================*/
-
-   UtilityData(theEnv)->EphemeralItemCount++;
-   UtilityData(theEnv)->EphemeralItemSize += sizeof(struct ephemeron) + hashNodeSize +
-                        averageContentsSize;
   }
 
 /***************************************************/
@@ -1169,15 +1114,20 @@ static void AddEphemeralHashNode(
 globle void RemoveEphemeralAtoms(
   void *theEnv)
   {
-   RemoveEphemeralHashNodes(theEnv,&SymbolData(theEnv)->EphemeralSymbolList,(GENERIC_HN **) SymbolData(theEnv)->SymbolTable,
+   struct garbageFrame *theGarbageFrame;
+   
+   theGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   if (! theGarbageFrame->dirty) return;
+   
+   RemoveEphemeralHashNodes(theEnv,&theGarbageFrame->ephemeralSymbolList,(GENERIC_HN **) SymbolData(theEnv)->SymbolTable,
                             sizeof(SYMBOL_HN),SYMBOL,AVERAGE_STRING_SIZE);
-   RemoveEphemeralHashNodes(theEnv,&SymbolData(theEnv)->EphemeralFloatList,(GENERIC_HN **) SymbolData(theEnv)->FloatTable,
+   RemoveEphemeralHashNodes(theEnv,&theGarbageFrame->ephemeralFloatList,(GENERIC_HN **) SymbolData(theEnv)->FloatTable,
                             sizeof(FLOAT_HN),FLOAT,0);
-   RemoveEphemeralHashNodes(theEnv,&SymbolData(theEnv)->EphemeralIntegerList,(GENERIC_HN **) SymbolData(theEnv)->IntegerTable,
+   RemoveEphemeralHashNodes(theEnv,&theGarbageFrame->ephemeralIntegerList,(GENERIC_HN **) SymbolData(theEnv)->IntegerTable,
                             sizeof(INTEGER_HN),INTEGER,0);
-   RemoveEphemeralHashNodes(theEnv,&SymbolData(theEnv)->EphemeralBitMapList,(GENERIC_HN **) SymbolData(theEnv)->BitMapTable,
+   RemoveEphemeralHashNodes(theEnv,&theGarbageFrame->ephemeralBitMapList,(GENERIC_HN **) SymbolData(theEnv)->BitMapTable,
                             sizeof(BITMAP_HN),BITMAPARRAY,AVERAGE_BITMAP_SIZE);
-   RemoveEphemeralHashNodes(theEnv,&SymbolData(theEnv)->EphemeralExternalAddressList,(GENERIC_HN **) SymbolData(theEnv)->ExternalAddressTable,
+   RemoveEphemeralHashNodes(theEnv,&theGarbageFrame->ephemeralExternalAddressList,(GENERIC_HN **) SymbolData(theEnv)->ExternalAddressTable,
                             sizeof(EXTERNAL_ADDRESS_HN),EXTERNAL_ADDRESS,0);
   }
 
@@ -1220,16 +1170,12 @@ static void RemoveEphemeralHashNodes(
       /* evaluation depth.                                */
       /*==================================================*/
 
-      if ((edPtr->associatedValue->count == 0) &&
-          (edPtr->associatedValue->depth > EvaluationData(theEnv)->CurrentEvaluationDepth))
+      if (edPtr->associatedValue->count == 0)
         {
          RemoveHashNode(theEnv,edPtr->associatedValue,theTable,hashNodeSize,hashNodeType);
          rtn_struct(theEnv,ephemeron,edPtr);
          if (lastPtr == NULL) *theEphemeralList = nextPtr;
          else lastPtr->next = nextPtr;
-         UtilityData(theEnv)->EphemeralItemCount--;
-         UtilityData(theEnv)->EphemeralItemSize -= sizeof(struct ephemeron) + hashNodeSize +
-                              averageContentsSize;
         }
 
       /*=======================================*/
@@ -1245,9 +1191,6 @@ static void RemoveEphemeralHashNodes(
 
          if (lastPtr == NULL) *theEphemeralList = nextPtr;
          else lastPtr->next = nextPtr;
-         UtilityData(theEnv)->EphemeralItemCount--;
-         UtilityData(theEnv)->EphemeralItemSize -= sizeof(struct ephemeron) + hashNodeSize +
-                              averageContentsSize;
         }
 
       /*==================================================*/

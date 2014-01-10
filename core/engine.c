@@ -159,6 +159,7 @@ globle long long EnvRun(
    struct profileFrameInfo profileFrame;
 #endif
    struct trackedMemory *theTM;
+   struct garbageFrame newGarbageFrame, *oldGarbageFrame;
 
    /*=====================================================*/
    /* Make sure the run command is not already executing. */
@@ -166,6 +167,15 @@ globle long long EnvRun(
 
    if (EngineData(theEnv)->AlreadyRunning) return(0);
    EngineData(theEnv)->AlreadyRunning = TRUE;
+    
+   /*========================================*/
+   /* Set up the frame for tracking garbage. */
+   /*========================================*/
+   
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
 
    /*================================*/
    /* Set up statistics information. */
@@ -192,7 +202,7 @@ globle long long EnvRun(
    /* Set up execution variables. */
    /*=============================*/
 
-   if (EvaluationData(theEnv)->CurrentEvaluationDepth == 0) SetHaltExecution(theEnv,FALSE);
+   if (UtilityData(theEnv)->CurrentGarbageFrame->topLevel) SetHaltExecution(theEnv,FALSE);
    EngineData(theEnv)->HaltRules = FALSE;
 
 #if DEVELOPER
@@ -399,7 +409,8 @@ globle long long EnvRun(
       /* while executing the rule's RHS.  */
       /*==================================*/
 
-      PeriodicCleanup(theEnv,FALSE,TRUE);
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
 
       /*==========================*/
       /* Keep up with statistics. */
@@ -611,7 +622,14 @@ globle long long EnvRun(
       if (EngineData(theEnv)->CurrentFocus->theModule != ((struct defmodule *) EnvGetCurrentModule(theEnv)))
         { EnvSetCurrentModule(theEnv,(void *) EngineData(theEnv)->CurrentFocus->theModule); }
      }
-
+     
+   /*================================*/
+   /* Restore the old garbage frame. */
+   /*================================*/
+   
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);
+   CallPeriodicTasks(theEnv);
+     
    /*===================================*/
    /* Return the number of rules fired. */
    /*===================================*/

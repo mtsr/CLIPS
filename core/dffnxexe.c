@@ -33,6 +33,8 @@
 #include <stdio.h>
 #endif
 
+#include <string.h>
+
 #include "constrct.h"
 #include "envrnmnt.h"
 #include "prcdrfun.h"
@@ -90,6 +92,8 @@ globle void CallDeffunction(
   {
    int oldce;
    DEFFUNCTION *previouslyExecutingDeffunction;
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
@@ -99,6 +103,12 @@ globle void CallDeffunction(
    EvaluationData(theEnv)->EvaluationError = FALSE;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
+     
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+
    oldce = ExecutingConstruct(theEnv);
    SetExecutingConstruct(theEnv,TRUE);
    previouslyExecutingDeffunction = DeffunctionData(theEnv)->ExecutingDeffunction;
@@ -112,7 +122,10 @@ globle void CallDeffunction(
       dptr->executing--;
       DeffunctionData(theEnv)->ExecutingDeffunction = previouslyExecutingDeffunction;
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
-      PeriodicCleanup(theEnv,FALSE,TRUE);
+      
+      RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+      CallPeriodicTasks(theEnv);
+
       SetExecutingConstruct(theEnv,oldce);
       return;
      }
@@ -146,8 +159,10 @@ globle void CallDeffunction(
    PopProcParameters(theEnv);
    DeffunctionData(theEnv)->ExecutingDeffunction = previouslyExecutingDeffunction;
    EvaluationData(theEnv)->CurrentEvaluationDepth--;
-   PropagateReturnValue(theEnv,result);
-   PeriodicCleanup(theEnv,FALSE,TRUE);
+   
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CallPeriodicTasks(theEnv);
+   
    SetExecutingConstruct(theEnv,oldce);
   }
 

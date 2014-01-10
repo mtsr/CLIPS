@@ -37,8 +37,6 @@
    LOCALE void                           DeveloperCommands(void *);
    LOCALE void                           PrimitiveTablesInfo(void *);
    LOCALE void                           PrimitiveTablesUsage(void *);
-   LOCALE void                           EnableGCHeuristics(void *);
-   LOCALE void                           DisableGCHeuristics(void *);
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
    LOCALE void                           ShowFactPatternNetwork(void *);

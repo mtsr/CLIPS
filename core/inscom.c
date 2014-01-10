@@ -130,7 +130,7 @@ globle void SetupInstances(
                                                 
    INSTANCE_TYPE dummyInstance = { { NULL, NULL, 0, 0L }, 
                                    NULL, NULL, 0, 1, 0, 0, 0, 
-                                   NULL,  0, 0, 0, NULL, NULL, NULL, NULL,
+                                   NULL,  0, 0, NULL, NULL, NULL, NULL,
                                    NULL, NULL, NULL, NULL, NULL };
 
    AllocateEnvironmentData(theEnv,INSTANCE_DATA,sizeof(struct instanceData),DeallocateInstanceData);
@@ -317,9 +317,12 @@ globle intBool EnvDeleteInstance(
         success = 0;
      }
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
-     { PeriodicCleanup(theEnv,TRUE,FALSE); }
+     {
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+     }
 
    return(success);
   }
@@ -369,9 +372,12 @@ globle intBool EnvUnmakeInstance(
    InstanceData(theEnv)->MaintainGarbageInstances = svmaintain;
    CleanupInstances(theEnv);
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
-     { PeriodicCleanup(theEnv,TRUE,FALSE); }
+     {
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+     }
 
    return(success);
   }
@@ -586,9 +592,12 @@ globle void *EnvMakeInstance(
      SyntaxErrorMessage(theEnv,"instance definition");
    CloseStringSource(theEnv,router);
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
-     { PeriodicCleanup(theEnv,TRUE,FALSE); }
+     {
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+     }
 
    if ((result.type == SYMBOL) && (result.value == EnvFalseSymbol(theEnv)))
      return(NULL);
@@ -700,7 +709,12 @@ globle void EnvDirectGetSlot(
       result->begin = 0;
       SetpDOEnd(result,GetInstanceSlotLength(sp));
      }
-   PropagateReturnValue(theEnv,result);
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+       (EvaluationData(theEnv)->CurrentExpression == NULL))
+     {
+      CleanCurrentGarbageFrame(theEnv,result);
+      CallPeriodicTasks(theEnv);
+     }
   }
 
 /*********************************************************
@@ -736,9 +750,12 @@ globle int EnvDirectPutSlot(
 
    if (PutSlotValue(theEnv,(INSTANCE_TYPE *) ins,sp,val,&junk,"external put"))
      {
-      if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+      if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
           (EvaluationData(theEnv)->CurrentExpression == NULL))
-        { PeriodicCleanup(theEnv,TRUE,FALSE); }
+        {
+         CleanCurrentGarbageFrame(theEnv,NULL);
+         CallPeriodicTasks(theEnv);
+        }
       return(TRUE);
      }
    return(FALSE);

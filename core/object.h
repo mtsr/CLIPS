@@ -179,7 +179,6 @@ struct instance
    unsigned initializeInProgress : 1;
    unsigned reteSynchronized     : 1;
    SYMBOL_HN *name;
-   int depth;
    unsigned hashTableIndex;
    unsigned busy;
    DEFCLASS *cls;

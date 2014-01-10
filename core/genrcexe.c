@@ -30,6 +30,8 @@
 
 #if DEFGENERIC_CONSTRUCT
 
+#include <string.h>
+
 #if OBJECT_SYSTEM
 #include "classcom.h"
 #include "classfun.h"
@@ -124,12 +126,20 @@ globle void GenericDispatch(
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
 
    result->type = SYMBOL;
    result->value = EnvFalseSymbol(theEnv);
    EvaluationData(theEnv)->EvaluationError = FALSE;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
+
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+
    oldce = ExecutingConstruct(theEnv);
    SetExecutingConstruct(theEnv,TRUE);
    previousGeneric = DefgenericData(theEnv)->CurrentGeneric;
@@ -146,7 +156,10 @@ globle void GenericDispatch(
       DefgenericData(theEnv)->CurrentGeneric = previousGeneric;
       DefgenericData(theEnv)->CurrentMethod = previousMethod;
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
-      PeriodicCleanup(theEnv,FALSE,TRUE);
+      
+      RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+      CallPeriodicTasks(theEnv);
+     
       SetExecutingConstruct(theEnv,oldce);
       return;
      }
@@ -227,8 +240,10 @@ globle void GenericDispatch(
    DefgenericData(theEnv)->CurrentGeneric = previousGeneric;
    DefgenericData(theEnv)->CurrentMethod = previousMethod;
    EvaluationData(theEnv)->CurrentEvaluationDepth--;
-   PropagateReturnValue(theEnv,result);
-   PeriodicCleanup(theEnv,FALSE,TRUE);
+
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CallPeriodicTasks(theEnv);
+   
    SetExecutingConstruct(theEnv,oldce);
   }
 

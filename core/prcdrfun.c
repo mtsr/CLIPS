@@ -122,13 +122,19 @@ globle void WhileFunction(
   DATA_OBJECT_PTR returnValue)
   {
    DATA_OBJECT theResult;
-   
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
+  
    /*====================================================*/
    /* Evaluate the body of the while loop as long as the */
    /* while condition evaluates to a non-FALSE value.    */
    /*====================================================*/
+   
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
 
-   EvaluationData(theEnv)->CurrentEvaluationDepth++;
    EnvRtnUnknown(theEnv,1,&theResult);
    while (((theResult.value != EnvFalseSymbol(theEnv)) ||
            (theResult.type != SYMBOL)) &&
@@ -136,17 +142,17 @@ globle void WhileFunction(
      {
       if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
         break;
+        
       EnvRtnUnknown(theEnv,2,&theResult);
-      EvaluationData(theEnv)->CurrentEvaluationDepth--;
-      if (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE)
-        { PropagateReturnValue(theEnv,&theResult); }
-      PeriodicCleanup(theEnv,FALSE,TRUE);
-      EvaluationData(theEnv)->CurrentEvaluationDepth++;
+
       if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
         break;
+
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+
       EnvRtnUnknown(theEnv,1,&theResult);
      }
-   EvaluationData(theEnv)->CurrentEvaluationDepth--;
 
    /*=====================================================*/
    /* Reset the break flag. The return flag is not reset  */
@@ -174,12 +180,15 @@ globle void WhileFunction(
       returnValue->type = SYMBOL;
       returnValue->value = EnvFalseSymbol(theEnv);
      }
+     
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,returnValue);
+   CallPeriodicTasks(theEnv);
   }
 
-/**********************************************/
-/* LoopForCountFunction: H/L access routine   */
-/*   for the loop-for-count function.         */
-/**********************************************/
+/********************************************/
+/* LoopForCountFunction: H/L access routine */
+/*   for the loop-for-count function.       */
+/********************************************/
 globle void LoopForCountFunction(
   void *theEnv,
   DATA_OBJECT_PTR loopResult)
@@ -187,6 +196,8 @@ globle void LoopForCountFunction(
    DATA_OBJECT arg_ptr;
    long long iterationEnd;
    LOOP_COUNTER_STACK *tmpCounter;
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
 
    tmpCounter = get_struct(theEnv,loopCounterStack);
    tmpCounter->loopCounter = 0L;
@@ -209,23 +220,30 @@ globle void LoopForCountFunction(
       rtn_struct(theEnv,loopCounterStack,tmpCounter);
       return;
      }
+     
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+
    iterationEnd = DOToLong(arg_ptr);
    while ((tmpCounter->loopCounter <= iterationEnd) &&
           (EvaluationData(theEnv)->HaltExecution != TRUE))
      {
       if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
         break;
-      EvaluationData(theEnv)->CurrentEvaluationDepth++;
+
       EnvRtnUnknown(theEnv,3,&arg_ptr);
-      EvaluationData(theEnv)->CurrentEvaluationDepth--;
-      if (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE)
-        { PropagateReturnValue(theEnv,&arg_ptr); }
-      PeriodicCleanup(theEnv,FALSE,TRUE);
+
       if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
         break;
+        
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+        
       tmpCounter->loopCounter++;
      }
-
+     
    ProcedureFunctionData(theEnv)->BreakFlag = FALSE;
    if (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE)
      {
@@ -241,11 +259,14 @@ globle void LoopForCountFunction(
      }
    ProcedureFunctionData(theEnv)->LoopCounterStack = tmpCounter->nxt;
    rtn_struct(theEnv,loopCounterStack,tmpCounter);
+    
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,loopResult);
+   CallPeriodicTasks(theEnv);
   }
 
-/************************************************/
-/* GetLoopCount                                 */
-/************************************************/
+/*****************/
+/* GetLoopCount: */
+/*****************/
 globle long long GetLoopCount(
   void *theEnv)
   {

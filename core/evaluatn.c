@@ -71,7 +71,6 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    PropagateReturnAtom(void *,int,void *);
    static void                    DeallocateEvaluationData(void *);
    static void                    PrintCAddress(void *,char *,void *);
    static void                    NewCAddress(void *,DATA_OBJECT *);
@@ -429,7 +428,6 @@ globle int EvaluateExpression(
         break;
      }
 
-   PropagateReturnValue(theEnv,returnValue);
    return(EvaluationData(theEnv)->EvaluationError);
   }
 
@@ -729,75 +727,6 @@ globle void AtomDeinstall(
      }
   }
 
-/*********************************************************************/
-/* PropagateReturnValue: Decrements the associated depth for a value */
-/*   stored in a DATA_OBJECT structure. In effect, the values        */
-/*   returned by certain evaluations (such as a deffunction call)    */
-/*   are passed up to the previous depth of evaluation. The return   */
-/*   value's depth is decremented so that it will not be garbage     */
-/*   collected along with other items that are no longer needed from */
-/*   the evaluation that generated the return value.                 */
-/*********************************************************************/
-globle void PropagateReturnValue(
-  void *theEnv,
-  DATA_OBJECT *vPtr)
-  {
-   long i;
-   struct multifield *theSegment;
-   struct field *theMultifield;
-
-   if (vPtr->type != MULTIFIELD)
-     { PropagateReturnAtom(theEnv,vPtr->type,vPtr->value); }
-   else
-     {
-      theSegment = (struct multifield *) vPtr->value;
-
-      if (theSegment->depth > EvaluationData(theEnv)->CurrentEvaluationDepth)
-        theSegment->depth = (short) EvaluationData(theEnv)->CurrentEvaluationDepth;
-
-      theMultifield = theSegment->theFields;
-
-      for (i = 0; i < theSegment->multifieldLength; i++)
-        { PropagateReturnAtom(theEnv,theMultifield[i].type,theMultifield[i].value); }
-     }
-  }
-
-/*****************************************/
-/* PropagateReturnAtom: Support function */
-/*   for PropagateReturnValue.           */
-/*****************************************/
-static void PropagateReturnAtom(
-  void *theEnv,
-  int type,
-  void *value)
-  {
-   switch (type)
-     {
-      case INTEGER         :
-      case FLOAT           :
-      case SYMBOL          :
-      case STRING          :
-      case EXTERNAL_ADDRESS:
-#if OBJECT_SYSTEM
-      case INSTANCE_NAME   :
-#endif
-        if (((SYMBOL_HN *) value)->depth > EvaluationData(theEnv)->CurrentEvaluationDepth)
-          { ((SYMBOL_HN *) value)->depth = EvaluationData(theEnv)->CurrentEvaluationDepth; }
-        break;
-
-#if OBJECT_SYSTEM
-      case INSTANCE_ADDRESS :
-        if (((INSTANCE_TYPE *) value)->depth > EvaluationData(theEnv)->CurrentEvaluationDepth)
-          { ((INSTANCE_TYPE *) value)->depth = EvaluationData(theEnv)->CurrentEvaluationDepth; }
-        break;
-#endif
-      case FACT_ADDRESS :
-        if (((int) ((struct fact *) value)->depth) > EvaluationData(theEnv)->CurrentEvaluationDepth)
-          { ((struct fact *) value)->depth = (unsigned) EvaluationData(theEnv)->CurrentEvaluationDepth; }
-        break;
-     }
-  }
-
 #if DEFFUNCTION_CONSTRUCT || DEFGENERIC_CONSTRUCT
 
 /********************************************/
@@ -852,15 +781,18 @@ globle int FunctionCall2(
    /* was executed from an embedded application.  */
    /*=============================================*/
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
-     { PeriodicCleanup(theEnv,TRUE,FALSE); }
+     {
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+     }
 
    /*========================*/
    /* Reset the error state. */
    /*========================*/
 
-   if (EvaluationData(theEnv)->CurrentEvaluationDepth == 0) SetHaltExecution(theEnv,FALSE);
+   if (UtilityData(theEnv)->CurrentGarbageFrame->topLevel) SetHaltExecution(theEnv,FALSE);
    EvaluationData(theEnv)->EvaluationError = FALSE;
 
    /*======================================*/

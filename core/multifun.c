@@ -1298,7 +1298,9 @@ static void MultifieldPrognDriver(
    DATA_OBJECT argval;
    long i, end; /* 6.04 Bug Fix */
    FIELD_VAR_STACK *tmpField;
-
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
+     
    tmpField = get_struct(theEnv,fieldVarStack);
    tmpField->type = SYMBOL;
    tmpField->value = EnvFalseSymbol(theEnv);
@@ -1312,7 +1314,12 @@ static void MultifieldPrognDriver(
       rtn_struct(theEnv,fieldVarStack,tmpField);
       return;
      }
-   ValueInstall(theEnv,&argval);
+     
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+
    end = GetDOEnd(argval);
    for (i = GetDOBegin(argval) ; i <= end ; i++)
      {
@@ -1322,20 +1329,10 @@ static void MultifieldPrognDriver(
       tmpField->index = (i - GetDOBegin(argval)) + 1; 
       for (theExp = GetFirstArgument()->nextArg ; theExp != NULL ; theExp = theExp->nextArg)
         {
-         EvaluationData(theEnv)->CurrentEvaluationDepth++;
          EvaluateExpression(theEnv,theExp,result);
-         EvaluationData(theEnv)->CurrentEvaluationDepth--;
         
-         if (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE)
-           { PropagateReturnValue(theEnv,result); }
-         else if ((theExp->nextArg == NULL) && (i == end)) // 6.30 Bug: If this is the last expression to be evaluated, it
-           { PropagateReturnValue(theEnv,result); }        // will be the return value so prevent garbage collection for it.
-
-         PeriodicCleanup(theEnv,FALSE,TRUE);
-
          if (EvaluationData(theEnv)->HaltExecution || ProcedureFunctionData(theEnv)->BreakFlag || ProcedureFunctionData(theEnv)->ReturnFlag)
            {
-            ValueDeinstall(theEnv,&argval);
             ProcedureFunctionData(theEnv)->BreakFlag = FALSE;
             if (EvaluationData(theEnv)->HaltExecution)
               {
@@ -1344,14 +1341,21 @@ static void MultifieldPrognDriver(
               }
             MultiFunctionData(theEnv)->FieldVarStack = tmpField->nxt;
             rtn_struct(theEnv,fieldVarStack,tmpField);
+            RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
             return;
            }
+
+        CleanCurrentGarbageFrame(theEnv,NULL);
+        CallPeriodicTasks(theEnv);
         }
      }
-   ValueDeinstall(theEnv,&argval);
+     
    ProcedureFunctionData(theEnv)->BreakFlag = FALSE;
    MultiFunctionData(theEnv)->FieldVarStack = tmpField->nxt;
    rtn_struct(theEnv,fieldVarStack,tmpField);
+   
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CallPeriodicTasks(theEnv);
   }
 
 /***************************************************/

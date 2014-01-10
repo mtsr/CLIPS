@@ -1222,7 +1222,7 @@ globle int GenClose(
 
    if (SystemDependentData(theEnv)->AfterOpenFunction != NULL)
      { (*SystemDependentData(theEnv)->AfterOpenFunction)(theEnv); }
-   
+
    return rv;
   }
   

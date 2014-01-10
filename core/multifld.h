@@ -43,7 +43,6 @@ struct field
 struct multifield
   {
    unsigned busyCount;
-   short depth;
    long multifieldLength;
    struct multifield *next;
    struct field theFields[1];
@@ -72,7 +71,7 @@ typedef struct field * FIELD_PTR;
 /*==================*/
 /* ENVIRONMENT DATA */
 /*==================*/
-
+/*
 #define MULTIFIELD_DATA 51
 
 struct multifieldData
@@ -81,7 +80,7 @@ struct multifieldData
   };
 
 #define MultifieldData(theEnv) ((struct multifieldData *) GetEnvironmentData(theEnv,MULTIFIELD_DATA))
-
+*/
 #ifdef LOCALE
 #undef LOCALE
 #endif

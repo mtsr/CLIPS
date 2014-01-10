@@ -50,7 +50,7 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    DeallocateMultifieldData(void *);
+   //static void                    DeallocateMultifieldData(void *);
 
 /***************************************************/
 /* InitializeMultifieldData: Allocates environment */
@@ -59,13 +59,14 @@
 globle void InitializeMultifieldData(
   void *theEnv)
   {
-   AllocateEnvironmentData(theEnv,MULTIFIELD_DATA,sizeof(struct multifieldData),DeallocateMultifieldData);
+   //AllocateEnvironmentData(theEnv,MULTIFIELD_DATA,sizeof(struct multifieldData),DeallocateMultifieldData);
   }
 
 /*****************************************************/
 /* DeallocateMultifieldData: Deallocates environment */
 /*    data for multifield values.                    */
 /*****************************************************/
+/*
 static void DeallocateMultifieldData(
   void *theEnv)
   {
@@ -79,10 +80,10 @@ static void DeallocateMultifieldData(
       tmpPtr = nextPtr;
      }
   }
-
-/***********************************************************/
-/* CreateMultifield2:       */
-/***********************************************************/
+*/
+/**********************/
+/* CreateMultifield2: */
+/**********************/
 globle void *CreateMultifield2(
   void *theEnv,
   long size)
@@ -95,16 +96,15 @@ globle void *CreateMultifield2(
    theSegment = get_var_struct(theEnv,multifield,(long) sizeof(struct field) * (newSize - 1L));
 
    theSegment->multifieldLength = size;
-   theSegment->depth = (short) EvaluationData(theEnv)->CurrentEvaluationDepth;
    theSegment->busyCount = 0;
    theSegment->next = NULL;
 
    return((void *) theSegment);
   }
 
-/*****************************************************************/
-/* ReturnMultifield:                                             */
-/*****************************************************************/
+/*********************/
+/* ReturnMultifield: */
+/*********************/
 globle void ReturnMultifield(
   void *theEnv,
   struct multifield *theSegment)
@@ -119,9 +119,9 @@ globle void ReturnMultifield(
    rtn_var_struct(theEnv,multifield,sizeof(struct field) * (newSize - 1),theSegment);
   }
 
-/******************************/
-/* MultifieldInstall:            */
-/******************************/
+/**********************/
+/* MultifieldInstall: */
+/**********************/
 globle void MultifieldInstall(
   void *theEnv,
   struct multifield *theSegment)
@@ -140,9 +140,9 @@ globle void MultifieldInstall(
      { AtomInstall(theEnv,theFields[i].type,theFields[i].value); }
   }
 
-/******************************/
-/* MultifieldDeinstall:       */
-/******************************/
+/************************/
+/* MultifieldDeinstall: */
+/************************/
 globle void MultifieldDeinstall(
   void *theEnv,
   struct multifield *theSegment)
@@ -161,7 +161,7 @@ globle void MultifieldDeinstall(
   }
 
 /*******************************************************/
-/* StringToMultifield:  Returns a multifield structure */
+/* StringToMultifield: Returns a multifield structure  */
 /*    that represents the string sent as the argument. */
 /*******************************************************/
 globle struct multifield *StringToMultifield(
@@ -252,22 +252,21 @@ globle void *EnvCreateMultifield(
    theSegment = get_var_struct(theEnv,multifield,(long) sizeof(struct field) * (newSize - 1L));
 
    theSegment->multifieldLength = size;
-   theSegment->depth = (short) EvaluationData(theEnv)->CurrentEvaluationDepth;
    theSegment->busyCount = 0;
    theSegment->next = NULL;
 
-   theSegment->next = MultifieldData(theEnv)->ListOfMultifields;
-   MultifieldData(theEnv)->ListOfMultifields = theSegment;
-
-   UtilityData(theEnv)->EphemeralItemCount++;
-   UtilityData(theEnv)->EphemeralItemSize += sizeof(struct multifield) + (sizeof(struct field) * newSize);
+   theSegment->next = UtilityData(theEnv)->CurrentGarbageFrame->ListOfMultifields;
+   UtilityData(theEnv)->CurrentGarbageFrame->ListOfMultifields = theSegment;
+   UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+   if (UtilityData(theEnv)->CurrentGarbageFrame->LastMultifield == NULL)
+     { UtilityData(theEnv)->CurrentGarbageFrame->LastMultifield = theSegment; }
 
    return((void *) theSegment);
   }
 
-/*********************************************************************/
-/* DOToMultifield:    */
-/*********************************************************************/
+/*******************/
+/* DOToMultifield: */
+/*******************/
 globle void *DOToMultifield(
   void *theEnv,
   DATA_OBJECT *theValue)
@@ -285,44 +284,49 @@ globle void *DOToMultifield(
    return((void *) dst);
   }
 
-/***********************************************************/
-/* AddToMultifieldList:                                       */
-/***********************************************************/
+/************************/
+/* AddToMultifieldList: */
+/************************/
 globle void AddToMultifieldList(
   void *theEnv,
   struct multifield *theSegment)
   {
-   theSegment->depth = (short) EvaluationData(theEnv)->CurrentEvaluationDepth;
-   theSegment->next = MultifieldData(theEnv)->ListOfMultifields;
-   MultifieldData(theEnv)->ListOfMultifields = theSegment;
-
-   UtilityData(theEnv)->EphemeralItemCount++;
-   UtilityData(theEnv)->EphemeralItemSize += sizeof(struct multifield) + (sizeof(struct field) * theSegment->multifieldLength);
+   theSegment->next = UtilityData(theEnv)->CurrentGarbageFrame->ListOfMultifields;
+   UtilityData(theEnv)->CurrentGarbageFrame->ListOfMultifields = theSegment;
+   UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+   if (UtilityData(theEnv)->CurrentGarbageFrame->LastMultifield == NULL)
+     { UtilityData(theEnv)->CurrentGarbageFrame->LastMultifield = theSegment; }
   }
 
-/***********************************************************/
-/* FlushMultifields:                                         */
-/***********************************************************/
+/*********************/
+/* FlushMultifields: */
+/*********************/
 globle void FlushMultifields(
   void *theEnv)
   {
    struct multifield *theSegment, *nextPtr, *lastPtr = NULL;
    unsigned long newSize;
 
-   theSegment = MultifieldData(theEnv)->ListOfMultifields;
+   theSegment = UtilityData(theEnv)->CurrentGarbageFrame->ListOfMultifields;
    while (theSegment != NULL)
      {
       nextPtr = theSegment->next;
-      if ((theSegment->depth > EvaluationData(theEnv)->CurrentEvaluationDepth) && (theSegment->busyCount == 0))
+      if (theSegment->busyCount == 0)
         {
-         UtilityData(theEnv)->EphemeralItemCount--;
-         UtilityData(theEnv)->EphemeralItemSize -= sizeof(struct multifield) +
-                              (sizeof(struct field) * theSegment->multifieldLength);
          if (theSegment->multifieldLength == 0) newSize = 1;
          else newSize = theSegment->multifieldLength;
          rtn_var_struct(theEnv,multifield,sizeof(struct field) * (newSize - 1),theSegment);
-         if (lastPtr == NULL) MultifieldData(theEnv)->ListOfMultifields = nextPtr;
+         if (lastPtr == NULL) UtilityData(theEnv)->CurrentGarbageFrame->ListOfMultifields = nextPtr;
          else lastPtr->next = nextPtr;
+         
+         /*=================================================*/
+         /* If the multifield deleted was the last in the   */
+         /* list, update the pointer to the last multifield */
+         /* to the prior multifield.                        */
+         /*=================================================*/
+         
+         if (nextPtr == NULL)
+           { UtilityData(theEnv)->CurrentGarbageFrame->LastMultifield = lastPtr; }
         }
       else
         { lastPtr = theSegment; }
@@ -331,10 +335,10 @@ globle void FlushMultifields(
      }
   }
 
-/*********************************************************************/
+/************************************************************************/
 /* DuplicateMultifield: Allocates a new segment and copies results from */
-/*                  old value to new - NOT put on ListOfMultifields!!   */
-/*********************************************************************/
+/*   old value to new. This value is not put on the ListOfMultifields.  */
+/************************************************************************/
 globle void DuplicateMultifield(
   void *theEnv,
   DATA_OBJECT_PTR dst,
@@ -348,9 +352,9 @@ globle void DuplicateMultifield(
                                         &((struct multifield *) src->value)->theFields[src->begin]);
   }
 
-/*********************************************************************/
-/* CopyMultifield:    */
-/*********************************************************************/
+/*******************/
+/* CopyMultifield: */
+/*******************/
 globle void *CopyMultifield(
   void *theEnv,
   struct multifield *src)
@@ -362,9 +366,9 @@ globle void *CopyMultifield(
    return((void *) dst);
   }
 
-/**********************************************************/
-/* PrintMultifield: Prints out a multifield               */
-/**********************************************************/
+/*********************************************/
+/* PrintMultifield: Prints out a multifield. */
+/*********************************************/
 globle void PrintMultifield(
   void *theEnv,
   char *fileid,
@@ -390,9 +394,9 @@ globle void PrintMultifield(
      EnvPrintRouter(theEnv,fileid,")");
   }
 
-/*****************************************************/
-/* StoreInMultifield:  Append function for segments. */
-/*****************************************************/
+/****************************************************/
+/* StoreInMultifield: Append function for segments. */
+/****************************************************/
 globle void StoreInMultifield(
   void *theEnv,
   DATA_OBJECT *returnValue,
@@ -684,7 +688,7 @@ globle unsigned long HashMultifield(
 globle struct multifield *GetMultifieldList(
   void *theEnv)
   {
-   return(MultifieldData(theEnv)->ListOfMultifields);
+   return(UtilityData(theEnv)->CurrentGarbageFrame->ListOfMultifields);
   }
 
 /***************************************/

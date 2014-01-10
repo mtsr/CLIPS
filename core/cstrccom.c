@@ -529,9 +529,13 @@ globle intBool Undefconstruct(
       /* Perform periodic cleanup if embedded. */
       /*=======================================*/
 
-      if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+      if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) &&
+          (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
           (EvaluationData(theEnv)->CurrentExpression == NULL))
-        { PeriodicCleanup(theEnv,TRUE,FALSE); }
+        {
+         CleanCurrentGarbageFrame(theEnv,NULL);
+         CallPeriodicTasks(theEnv);
+        }
 
       /*============================================*/
       /* Return TRUE if all constructs successfully */
@@ -565,9 +569,13 @@ globle intBool Undefconstruct(
    /* Perform periodic cleanup if embedded. */
    /*=======================================*/
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) &&
+       (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
-     { PeriodicCleanup(theEnv,TRUE,FALSE); }
+     {
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+     }
 
    /*=============================*/
    /* Return TRUE to indicate the */

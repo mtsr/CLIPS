@@ -207,7 +207,6 @@ struct evaluationData
    LOCALE void                           EnvSetMultifieldErrorValue(void *,struct dataObject *);
    LOCALE void                           ValueInstall(void *,struct dataObject *);
    LOCALE void                           ValueDeinstall(void *,struct dataObject *);
-   LOCALE void                           PropagateReturnValue(void *,struct dataObject *);
 #if DEFFUNCTION_CONSTRUCT || DEFGENERIC_CONSTRUCT
    LOCALE int                            EnvFunctionCall(void *,char *,char *,DATA_OBJECT *);
    LOCALE int                            FunctionCall2(void *,FUNCTION_REFERENCE *,char *,DATA_OBJECT *);

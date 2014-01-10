@@ -116,9 +116,9 @@ globle void InitializeFacts(
                                                    NULL
                                                  };
                                                  
-   struct fact dummyFact = { { NULL, NULL, 0, 0L }, NULL, NULL, -1L, 0, 0, 1,
-                                  NULL, NULL, NULL, NULL, { 1, 0, 0UL, NULL, { { 0, NULL } } } };
-   
+   struct fact dummyFact = { { NULL, NULL, 0, 0L }, NULL, NULL, -1L, 0, 1,
+                                  NULL, NULL, NULL, NULL, { 1, 0UL, NULL, { { 0, NULL } } } };
+
    AllocateEnvironmentData(theEnv,FACTS_DATA,sizeof(struct factsData),DeallocateFactData);
 
    memcpy(&FactData(theEnv)->FactInfo,&factInfo,sizeof(struct patternEntityRecord)); 
@@ -541,15 +541,6 @@ globle intBool EnvRetract(
         { theFact->nextFact->previousFact = theFact->previousFact; }
      }
 
-   /*==================================*/
-   /* Update busy counts and ephemeral */
-   /* garbage information.             */
-   /*==================================*/
-
-   //FactDeinstall(theEnv,theFact);
-   //UtilityData(theEnv)->EphemeralItemCount++;
-   //UtilityData(theEnv)->EphemeralItemSize += sizeof(struct fact) + (sizeof(struct field) * theFact->theProposition.multifieldLength);
-
    /*========================================*/
    /* Add the fact to the fact garbage list. */
    /*========================================*/
@@ -557,6 +548,7 @@ globle intBool EnvRetract(
    theFact->nextFact = FactData(theEnv)->GarbageFacts;
    FactData(theEnv)->GarbageFacts = theFact;
    theFact->garbage = TRUE;
+   UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
    /*===================================================*/
    /* Reset the evaluation error flag since expressions */
@@ -595,9 +587,9 @@ globle intBool EnvRetract(
    /* executed from an embedded application.    */
    /*===========================================*/
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
-     { PeriodicCleanup(theEnv,TRUE,FALSE); }
+     { CleanCurrentGarbageFrame(theEnv,NULL); }
    
    /*==================================*/
    /* Update busy counts and ephemeral */
@@ -605,8 +597,6 @@ globle intBool EnvRetract(
    /*==================================*/
 
    FactDeinstall(theEnv,theFact);
-   UtilityData(theEnv)->EphemeralItemCount++;
-   UtilityData(theEnv)->EphemeralItemSize += sizeof(struct fact) + (sizeof(struct field) * theFact->theProposition.multifieldLength);
 
    /*==================================*/
    /* Return TRUE to indicate the fact */
@@ -633,11 +623,8 @@ static void RemoveGarbageFacts(
    while (factPtr != NULL)
      {
       nextPtr = factPtr->nextFact;
-      if ((factPtr->factHeader.busyCount == 0) &&
-          (((int) factPtr->depth) > EvaluationData(theEnv)->CurrentEvaluationDepth))
+      if (factPtr->factHeader.busyCount == 0)
         {
-         UtilityData(theEnv)->EphemeralItemCount--;
-         UtilityData(theEnv)->EphemeralItemSize -= sizeof(struct fact) + (sizeof(struct field) * factPtr->theProposition.multifieldLength);
          ReturnFact(theEnv,factPtr);
          if (lastPtr == NULL) FactData(theEnv)->GarbageFacts = nextPtr;
          else lastPtr->nextFact = nextPtr;
@@ -835,9 +822,12 @@ globle void *EnvAssert(
    /* executed from an embedded application.   */
    /*==========================================*/
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
-     { PeriodicCleanup(theEnv,TRUE,FALSE); }
+     {
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+     }
 
    /*===============================*/
    /* Return a pointer to the fact. */
@@ -1272,7 +1262,6 @@ globle struct fact *CreateFactBySize(
 
    theFact = get_var_struct(theEnv,fact,sizeof(struct field) * (newSize - 1));
 
-   theFact->depth = (unsigned) EvaluationData(theEnv)->CurrentEvaluationDepth;
    theFact->garbage = FALSE;
    theFact->factIndex = 0LL;
    theFact->factHeader.busyCount = 0;
@@ -1286,7 +1275,6 @@ globle struct fact *CreateFactBySize(
    theFact->list = NULL;
 
    theFact->theProposition.multifieldLength = size;
-   theFact->theProposition.depth = (short) EvaluationData(theEnv)->CurrentEvaluationDepth;
    theFact->theProposition.busyCount = 0;
 
    return(theFact);

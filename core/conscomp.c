@@ -372,14 +372,6 @@ static int ConstructsToC(
         cgPtr = cgPtr->next)
      { if (cgPtr->beforeFunction != NULL) (*cgPtr->beforeFunction)(theEnv); }
 
-   /*=================================================*/
-   /* Do a periodic cleanup without using heuristics  */
-   /* to get rid of as much garbage as possible so    */
-   /* that it isn't written out as C data structures. */
-   /*=================================================*/
-
-   PeriodicCleanup(theEnv,FALSE,FALSE);
-
    /*=====================================*/
    /* Initialize some global information. */
    /*=====================================*/
@@ -414,7 +406,7 @@ static int ConstructsToC(
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"/****************************/\n");
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"/* EXTERN ARRAY DEFINITIONS */\n");
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"/****************************/\n\n");
-     
+
    /*================================================*/
    /* Write out the first portion of the fixup file. */
    /*================================================*/
@@ -787,7 +779,6 @@ static int WriteInitializationFunction(
            ConstructCompilerData(theEnv)->ImageID,ConstructCompilerData(theEnv)->ImageID);   
 
    fprintf(fp,"   EnvClear(theEnv);\n");
-   fprintf(fp,"   PeriodicCleanup(theEnv,TRUE,FALSE);\n");
 
    fprintf(fp,"   RefreshSpecialSymbols(theEnv);\n");
    fprintf(fp,"   InstallFunctionList(theEnv,P%d_1);\n\n",ConstructCompilerData(theEnv)->ImageID);

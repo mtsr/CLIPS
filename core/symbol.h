@@ -68,7 +68,6 @@ struct symbolHashNode
   {
    struct symbolHashNode *next;
    long count;
-   int depth;
    unsigned int permanent : 1;
    unsigned int markedEphemeral : 1;
    unsigned int neededSymbol : 1;
@@ -83,7 +82,6 @@ struct floatHashNode
   {
    struct floatHashNode *next;
    long count;
-   int depth;
    unsigned int permanent : 1;
    unsigned int markedEphemeral : 1;
    unsigned int neededFloat : 1;
@@ -98,7 +96,6 @@ struct integerHashNode
   {
    struct integerHashNode *next;
    long count;
-   int depth;
    unsigned int permanent : 1;
    unsigned int markedEphemeral : 1;
    unsigned int neededInteger : 1;
@@ -113,7 +110,6 @@ struct bitMapHashNode
   {
    struct bitMapHashNode *next;
    long count;
-   int depth;
    unsigned int permanent : 1;
    unsigned int markedEphemeral : 1;
    unsigned int neededBitMap : 1;
@@ -129,7 +125,6 @@ struct externalAddressHashNode
   {
    struct externalAddressHashNode *next;
    long count;
-   int depth;
    unsigned int permanent : 1;
    unsigned int markedEphemeral : 1;
    unsigned int neededPointer : 1;
@@ -145,7 +140,6 @@ struct genericHashNode
   {
    struct genericHashNode *next;
    long count;
-   int depth;
    unsigned int permanent : 1;
    unsigned int markedEphemeral : 1;
    unsigned int needed : 1;
@@ -223,11 +217,6 @@ struct symbolData
    INTEGER_HN **IntegerTable;
    BITMAP_HN **BitMapTable;
    EXTERNAL_ADDRESS_HN **ExternalAddressTable;
-   struct ephemeron *EphemeralSymbolList;
-   struct ephemeron *EphemeralFloatList;
-   struct ephemeron *EphemeralIntegerList;
-   struct ephemeron *EphemeralBitMapList;
-   struct ephemeron *EphemeralExternalAddressList;
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE || BLOAD_INSTANCES || BSAVE_INSTANCES
    long NumberOfSymbols;
    long NumberOfFloats;

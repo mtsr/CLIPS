@@ -542,7 +542,7 @@ globle intBool QuashInstance(
      )
      RemoveInstanceData(theEnv,ins);
 
-   if ((ins->busy == 0) && (ins->depth > EvaluationData(theEnv)->CurrentEvaluationDepth) &&
+   if ((ins->busy == 0) && 
        (InstanceData(theEnv)->MaintainGarbageInstances == FALSE)
 #if DEFRULE_CONSTRUCT
         && (ins->header.busyCount == 0)
@@ -559,8 +559,7 @@ globle intBool QuashInstance(
       gptr->ins = ins;
       gptr->nxt = InstanceData(theEnv)->InstanceGarbageList;
       InstanceData(theEnv)->InstanceGarbageList = gptr;
-      UtilityData(theEnv)->EphemeralItemCount += 2;
-      UtilityData(theEnv)->EphemeralItemSize += InstanceSizeHeuristic(ins) + sizeof(IGARBAGE);
+      UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
    InstanceData(theEnv)->ChangesToInstances = TRUE;
    return(1);
@@ -655,7 +654,6 @@ static INSTANCE_TYPE *NewInstance(
    instance->garbage = 0;
    instance->initSlotsCalled = 0;
    instance->initializeInProgress = 0;
-   instance->depth = EvaluationData(theEnv)->CurrentEvaluationDepth;
    instance->name = NULL;
    instance->hashTableIndex = 0;
    instance->cls = NULL;
@@ -744,7 +742,6 @@ static void InstallInstance(
         PrintInstanceWatch(theEnv,MAKE_TRACE,ins);
 #endif
       ins->installed = 1;
-      ins->depth = EvaluationData(theEnv)->CurrentEvaluationDepth;
       IncrementSymbolCount(ins->name);
       IncrementDefclassBusyCount(theEnv,(void *) ins->cls);
       InstanceData(theEnv)->GlobalNumberOfInstances++;

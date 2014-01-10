@@ -58,7 +58,7 @@ int main(
   char *argv[])
   {
    void *theEnv;
-   
+
    theEnv = CreateEnvironment();
    RerouteStdin(theEnv,argc,argv);
    CommandLoop(theEnv);

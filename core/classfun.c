@@ -141,14 +141,8 @@ globle void DecrementDefclassBusyCount(
 globle intBool InstancesPurge(
   void *theEnv)
   {
-   int svdepth;
-
    DestroyAllInstances(theEnv);
-   svdepth = EvaluationData(theEnv)->CurrentEvaluationDepth;
-   if (EvaluationData(theEnv)->CurrentEvaluationDepth == 0)
-     EvaluationData(theEnv)->CurrentEvaluationDepth = -1;
    CleanupInstances(theEnv);
-   EvaluationData(theEnv)->CurrentEvaluationDepth = svdepth;
    return((InstanceData(theEnv)->InstanceList != NULL) ? FALSE : TRUE);
   }
 

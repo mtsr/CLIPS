@@ -454,6 +454,7 @@ globle void QueryDoForAllInstances(
                                       "do-for-all-instances",&rcnt);
    if (qclasses == NULL)
      return;
+ 
    PushQueryCore(theEnv);
    InstanceQueryData(theEnv)->QueryCore = get_struct(theEnv,query_core);
    InstanceQueryData(theEnv)->QueryCore->solns = (INSTANCE_TYPE **) gm2(theEnv,(sizeof(INSTANCE_TYPE *) * rcnt));
@@ -463,7 +464,7 @@ globle void QueryDoForAllInstances(
    ValueInstall(theEnv,InstanceQueryData(theEnv)->QueryCore->result);
    TestEntireChain(theEnv,qclasses,0);
    ValueDeinstall(theEnv,InstanceQueryData(theEnv)->QueryCore->result);
-   PropagateReturnValue(theEnv,InstanceQueryData(theEnv)->QueryCore->result);
+      
    InstanceQueryData(theEnv)->AbortQuery = FALSE;
    ProcedureFunctionData(theEnv)->BreakFlag = FALSE;
    rm(theEnv,(void *) InstanceQueryData(theEnv)->QueryCore->solns,(sizeof(INSTANCE_TYPE *) * rcnt));
@@ -496,6 +497,8 @@ globle void DelayedQueryDoForAllInstances(
    QUERY_CLASS *qclasses;
    unsigned rcnt;
    register unsigned i;
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
 
    result->type = SYMBOL;
    result->value = EnvFalseSymbol(theEnv);
@@ -503,6 +506,7 @@ globle void DelayedQueryDoForAllInstances(
                                       "delayed-do-for-all-instances",&rcnt);
    if (qclasses == NULL)
      return;
+
    PushQueryCore(theEnv);
    InstanceQueryData(theEnv)->QueryCore = get_struct(theEnv,query_core);
    InstanceQueryData(theEnv)->QueryCore->solns = (INSTANCE_TYPE **) gm2(theEnv,(sizeof(INSTANCE_TYPE *) * rcnt));
@@ -514,24 +518,33 @@ globle void DelayedQueryDoForAllInstances(
    TestEntireChain(theEnv,qclasses,0);
    InstanceQueryData(theEnv)->AbortQuery = FALSE;
    InstanceQueryData(theEnv)->QueryCore->action = GetFirstArgument()->nextArg;
+   
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+
    while (InstanceQueryData(theEnv)->QueryCore->soln_set != NULL)
      {
       for (i = 0 ; i < rcnt ; i++)
         InstanceQueryData(theEnv)->QueryCore->solns[i] = InstanceQueryData(theEnv)->QueryCore->soln_set->soln[i];
       PopQuerySoln(theEnv);
-      EvaluationData(theEnv)->CurrentEvaluationDepth++;
       EvaluateExpression(theEnv,InstanceQueryData(theEnv)->QueryCore->action,result);
-      EvaluationData(theEnv)->CurrentEvaluationDepth--;
-      if (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE)
-        { PropagateReturnValue(theEnv,result); }
-      PeriodicCleanup(theEnv,FALSE,TRUE);
+      
       if (EvaluationData(theEnv)->HaltExecution || ProcedureFunctionData(theEnv)->BreakFlag || ProcedureFunctionData(theEnv)->ReturnFlag)
         {
          while (InstanceQueryData(theEnv)->QueryCore->soln_set != NULL)
            PopQuerySoln(theEnv);
          break;
         }
+
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
      }
+      
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CallPeriodicTasks(theEnv);
+
    ProcedureFunctionData(theEnv)->BreakFlag = FALSE;
    rm(theEnv,(void *) InstanceQueryData(theEnv)->QueryCore->solns,(sizeof(INSTANCE_TYPE *) * rcnt));
    rtn_struct(theEnv,query_core,InstanceQueryData(theEnv)->QueryCore);
@@ -882,12 +895,20 @@ static int TestForFirstInstanceInClass(
    long i;
    INSTANCE_TYPE *ins;
    DATA_OBJECT temp;
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
 
    if (TestTraversalID(cls->traversalRecord,id))
      return(FALSE);
    SetTraversalID(cls->traversalRecord,id);
    if (DefclassInScope(theEnv,cls,theModule) == FALSE)
      return(FALSE);
+     
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+      
    ins = cls->instanceList;
    while (ins != NULL)
      {
@@ -907,10 +928,7 @@ static int TestForFirstInstanceInClass(
       else
         {
          ins->busy++;
-         EvaluationData(theEnv)->CurrentEvaluationDepth++;
          EvaluateExpression(theEnv,InstanceQueryData(theEnv)->QueryCore->query,&temp);
-         EvaluationData(theEnv)->CurrentEvaluationDepth--;
-         PeriodicCleanup(theEnv,FALSE,TRUE);
          ins->busy--;
          if (EvaluationData(theEnv)->HaltExecution == TRUE)
            break;
@@ -918,10 +936,18 @@ static int TestForFirstInstanceInClass(
              (temp.value != EnvFalseSymbol(theEnv)))
            break;
         }
+        
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+       
       ins = ins->nxtClass;
       while ((ins != NULL) ? (ins->garbage == 1) : FALSE)
         ins = ins->nxtClass;
      }
+
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);
+   CallPeriodicTasks(theEnv);
+
    if (ins != NULL)
      return(((EvaluationData(theEnv)->HaltExecution == TRUE) || (InstanceQueryData(theEnv)->AbortQuery == TRUE))
              ? FALSE : TRUE);
@@ -996,12 +1022,20 @@ static void TestEntireClass(
    long i;
    INSTANCE_TYPE *ins;
    DATA_OBJECT temp;
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
 
    if (TestTraversalID(cls->traversalRecord,id))
      return;
    SetTraversalID(cls->traversalRecord,id);
    if (DefclassInScope(theEnv,cls,theModule) == FALSE)
      return;
+     
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+
    ins = cls->instanceList;
    while (ins != NULL)
      {
@@ -1017,10 +1051,9 @@ static void TestEntireClass(
       else
         {
          ins->busy++;
-         EvaluationData(theEnv)->CurrentEvaluationDepth++;
+
          EvaluateExpression(theEnv,InstanceQueryData(theEnv)->QueryCore->query,&temp);
-         EvaluationData(theEnv)->CurrentEvaluationDepth--;
-         PeriodicCleanup(theEnv,FALSE,TRUE);
+
          ins->busy--;
          if (EvaluationData(theEnv)->HaltExecution == TRUE)
            break;
@@ -1030,12 +1063,11 @@ static void TestEntireClass(
             if (InstanceQueryData(theEnv)->QueryCore->action != NULL)
               {
                ins->busy++;
-               EvaluationData(theEnv)->CurrentEvaluationDepth++;
+
                ValueDeinstall(theEnv,InstanceQueryData(theEnv)->QueryCore->result);
                EvaluateExpression(theEnv,InstanceQueryData(theEnv)->QueryCore->action,InstanceQueryData(theEnv)->QueryCore->result);
                ValueInstall(theEnv,InstanceQueryData(theEnv)->QueryCore->result);
-               EvaluationData(theEnv)->CurrentEvaluationDepth--;
-               PeriodicCleanup(theEnv,FALSE,TRUE);
+
                ins->busy--;
                if (ProcedureFunctionData(theEnv)->BreakFlag || ProcedureFunctionData(theEnv)->ReturnFlag)
                  {
@@ -1050,10 +1082,17 @@ static void TestEntireClass(
            }
         }
         
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+        
       ins = ins->nxtClass;
       while ((ins != NULL) ? (ins->garbage == 1) : FALSE)
         ins = ins->nxtClass;
      }
+   
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);
+   CallPeriodicTasks(theEnv);
+
    if (ins != NULL)
      return;
    for (i = 0 ; i < cls->directSubclasses.classCount ; i++)

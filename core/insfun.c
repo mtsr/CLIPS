@@ -183,14 +183,12 @@ globle void CleanupInstances(
    gtmp = InstanceData(theEnv)->InstanceGarbageList;
    while (gtmp != NULL)
      {
-      if ((gtmp->ins->busy == 0) && (gtmp->ins->depth > EvaluationData(theEnv)->CurrentEvaluationDepth)
+      if ((gtmp->ins->busy == 0)
 #if DEFRULE_CONSTRUCT
           && (gtmp->ins->header.busyCount == 0)
 #endif
          )
         {
-         UtilityData(theEnv)->EphemeralItemCount -= 2;
-         UtilityData(theEnv)->EphemeralItemSize -= InstanceSizeHeuristic(gtmp->ins) + sizeof(IGARBAGE);
          DecrementSymbolCount(theEnv,gtmp->ins->name);
          rtn_struct(theEnv,instance,gtmp->ins);
          if (gprv == NULL)

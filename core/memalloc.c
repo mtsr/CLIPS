@@ -93,7 +93,7 @@ globle void *genalloc(
   size_t size)
   {
    char *memPtr;
-               
+      
 #if   BLOCK_MEMORY
    memPtr = (char *) RequestChunk(theEnv,size);
    if (memPtr == NULL)

@@ -137,9 +137,12 @@ globle void EnvSend(
    EXPRESSION *iexp;
    SYMBOL_HN *msym;
 
-   if ((EvaluationData(theEnv)->CurrentEvaluationDepth == 0) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
-     { PeriodicCleanup(theEnv,TRUE,FALSE); }
+     {
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+     }
 
    SetEvaluationError(theEnv,FALSE);
    result->type = SYMBOL;
@@ -942,12 +945,19 @@ static void PerformMessage(
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
 
    result->type = SYMBOL;
    result->value = EnvFalseSymbol(theEnv);
    EvaluationData(theEnv)->EvaluationError = FALSE;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
+
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+
    oldce = ExecutingConstruct(theEnv);
    SetExecutingConstruct(theEnv,TRUE);
    oldName = MessageHandlerData(theEnv)->CurrentMessageName;
@@ -963,7 +973,10 @@ static void PerformMessage(
      {
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
       MessageHandlerData(theEnv)->CurrentMessageName = oldName;
-      PeriodicCleanup(theEnv,FALSE,TRUE);
+      
+      RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+      CallPeriodicTasks(theEnv);      
+      
       SetExecutingConstruct(theEnv,oldce);
       return;
      }
@@ -1013,7 +1026,10 @@ static void PerformMessage(
       PopProcParameters(theEnv);
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
       MessageHandlerData(theEnv)->CurrentMessageName = oldName;
-      PeriodicCleanup(theEnv,FALSE,TRUE);
+         
+      RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+      CallPeriodicTasks(theEnv);
+
       SetExecutingConstruct(theEnv,oldce);
       return;
      }
@@ -1106,8 +1122,10 @@ static void PerformMessage(
    PopProcParameters(theEnv);
    EvaluationData(theEnv)->CurrentEvaluationDepth--;
    MessageHandlerData(theEnv)->CurrentMessageName = oldName;
-   PropagateReturnValue(theEnv,result);
-   PeriodicCleanup(theEnv,FALSE,TRUE);
+
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CallPeriodicTasks(theEnv);
+
    SetExecutingConstruct(theEnv,oldce);
 
    if (EvaluationData(theEnv)->EvaluationError)

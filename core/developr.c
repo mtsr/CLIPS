@@ -72,8 +72,6 @@ globle void DeveloperCommands(
 #if ! RUN_TIME
    EnvDefineFunction2(theEnv,"primitives-info",'v', PTIEF PrimitiveTablesInfo,"PrimitiveTablesInfo","00");
    EnvDefineFunction2(theEnv,"primitives-usage",'v', PTIEF PrimitiveTablesUsage,"PrimitiveTablesUsage","00");
-   EnvDefineFunction2(theEnv,"enable-gc-heuristics",'v', PTIEF EnableGCHeuristics,"EnableGCHeuristics","00");
-   EnvDefineFunction2(theEnv,"disable-gc-heuristics",'v', PTIEF DisableGCHeuristics,"DisableGCHeuristics","00");
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
    EnvDefineFunction2(theEnv,"validate-fact-integrity", 'b', ValidateFactIntegrity, "ValidateFactIntegrity", "00");
@@ -92,30 +90,6 @@ globle void DeveloperCommands(
 #endif
 
 #endif
-  }
-
-/*****************************************************************/
-/* EnableGCHeuristics: Enables the garbage collection heuristics */
-/*   which determine whether garbage collection should be        */
-/*   performed when PeriodicCleanup is invoked.                  */
-/*****************************************************************/
-globle void EnableGCHeuristics(
-  void *theEnv)
-  {
-   EnvArgCountCheck(theEnv,"enable-gc-heuristics",EXACTLY,0);
-   SetGarbageCollectionHeuristics(theEnv,TRUE);
-  }
-  
-/*******************************************************************/
-/* DisableGCHeuristics: Disables the garbage collection heuristics */
-/*   which determine whether garbage collection should be          */
-/*   performed when PeriodicCleanup is invoked.                    */
-/*******************************************************************/
-globle void DisableGCHeuristics(
-  void *theEnv)
-  {
-   EnvArgCountCheck(theEnv,"disable-gc-heuristics",EXACTLY,0);
-   SetGarbageCollectionHeuristics(theEnv,FALSE);
   }
 
 /******************************************************/

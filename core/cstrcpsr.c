@@ -36,6 +36,7 @@
 #include <stdio.h>
 #define _STDIO_INCLUDED_
 #include <stdlib.h>
+#include <string.h>
 
 #include "envrnmnt.h"
 #include "router.h"
@@ -125,20 +126,30 @@ globle int LoadConstructsFromLogicalName(
    struct token theToken;
    int noErrors = TRUE;
    int foundConstruct;
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
 
    /*=========================================*/
    /* Reset the halt execution and evaluation */
    /* error flags in preparation for parsing. */
    /*=========================================*/
 
-   if (EvaluationData(theEnv)->CurrentEvaluationDepth == 0) SetHaltExecution(theEnv,FALSE);
+   if (UtilityData(theEnv)->CurrentGarbageFrame->topLevel) SetHaltExecution(theEnv,FALSE);
    SetEvaluationError(theEnv,FALSE);
+
+   /*==========================================*/
+   /* Set up the frame for garbage collection. */
+   /*==========================================*/
+
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
 
    /*========================================================*/
    /* Find the beginning of the first construct in the file. */
    /*========================================================*/
 
-   EvaluationData(theEnv)->CurrentEvaluationDepth++;
    GetToken(theEnv,readSource,&theToken);
    foundConstruct = FindConstructBeginning(theEnv,readSource,&theToken,FALSE,&noErrors);
 
@@ -191,17 +202,17 @@ globle int LoadConstructsFromLogicalName(
       /* Yield time if necessary to foreground applications. */
       /*=====================================================*/
 
-       if (foundConstruct)
+      if (foundConstruct)
          { IncrementSymbolCount(theToken.value); }
-       EvaluationData(theEnv)->CurrentEvaluationDepth--;
-       PeriodicCleanup(theEnv,FALSE,TRUE);
-       YieldTime(theEnv);
-       EvaluationData(theEnv)->CurrentEvaluationDepth++;
-       if (foundConstruct)
+       
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+      
+      YieldTime(theEnv);
+
+      if (foundConstruct)
          { DecrementSymbolCount(theEnv,(SYMBOL_HN *) theToken.value); }
      }
-
-   EvaluationData(theEnv)->CurrentEvaluationDepth--;
 
    /*========================================================*/
    /* Print a carriage return if a single character is being */
@@ -224,6 +235,13 @@ globle int LoadConstructsFromLogicalName(
    /*=============================================================*/
 
    DestroyPPBuffer(theEnv);
+   
+   /*======================================*/
+   /* Remove the garbage collection frame. */
+   /*======================================*/
+   
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,NULL);
+   CallPeriodicTasks(theEnv);
 
    /*==========================================================*/
    /* Return a boolean flag which indicates whether any errors */
@@ -351,6 +369,8 @@ globle int ParseConstruct(
   {
    struct construct *currentPtr;
    int rv, ov;
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
 
    /*=================================*/
    /* Look for a valid construct name */
@@ -359,6 +379,15 @@ globle int ParseConstruct(
 
    currentPtr = FindConstruct(theEnv,name);
    if (currentPtr == NULL) return(-1);
+
+   /*==========================================*/
+   /* Set up the frame for garbage collection. */
+   /*==========================================*/
+
+   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
+   newGarbageFrame.priorFrame = oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
 
    /*==================================*/
    /* Prepare the parsing environment. */
@@ -371,7 +400,6 @@ globle int ParseConstruct(
    PushRtnBrkContexts(theEnv);
    ExpressionData(theEnv)->ReturnContext = FALSE;
    ExpressionData(theEnv)->BreakContext = FALSE;
-   EvaluationData(theEnv)->CurrentEvaluationDepth++;
 
    /*=======================================*/
    /* Call the construct's parsing routine. */
@@ -385,12 +413,18 @@ globle int ParseConstruct(
    /* Restore environment settings. */
    /*===============================*/
 
-   EvaluationData(theEnv)->CurrentEvaluationDepth--;
    PopRtnBrkContexts(theEnv);
 
    ClearParsedBindNames(theEnv);
    SetPPBufferStatus(theEnv,OFF);
    SetHaltExecution(theEnv,ov);
+   
+   /*======================================*/
+   /* Remove the garbage collection frame. */
+   /*======================================*/
+   
+   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,NULL);
+   CallPeriodicTasks(theEnv);
 
    /*==============================*/
    /* Return the status of parsing */
