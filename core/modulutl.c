@@ -577,8 +577,29 @@ globle intBool ConstructExported(
    return FALSE;
   }
          
+/*********************************************************/
+/* AllImportedModulesVisited: Returns TRUE if all of the */
+/*   imported modules for a module have been visited.    */
+/*********************************************************/
+globle intBool AllImportedModulesVisited(
+  void *theEnv,
+  struct defmodule *theModule)
+  {
+   struct portItem *theImportList;
+   struct defmodule *theImportModule;
+      
+   theImportList = theModule->importList;
+   while (theImportList != NULL)
+     {
+      theImportModule = (struct defmodule *) EnvFindDefmodule(theEnv,ValueToString(theImportList->moduleName));
 
+      if (! theImportModule->visitedFlag) return FALSE;
+      
+      theImportList = theImportList->next;
+     }
 
+   return TRUE;
+  }
 
 /***************************************/
 /* ListItemsDriver: Driver routine for */

@@ -49,6 +49,7 @@
                                                                char *,int *,int,struct defmodule *);
    LOCALE void                           AmbiguousReferenceErrorMessage(void *,char *,char *);
    LOCALE void                           MarkModulesAsUnvisited(void *);
+   LOCALE intBool                        AllImportedModulesVisited(void *,struct defmodule *);
    LOCALE void                           ListItemsDriver(void *,
                                                          char *,struct defmodule *,
                                                          char *,char *,

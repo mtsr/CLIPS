@@ -46,6 +46,7 @@
 #include "exprnpsr.h"
 #include "multifld.h"
 #include "moduldef.h"
+#include "modulutl.h"
 #include "sysdep.h"
 #include "utility.h"
 #include "commline.h"
@@ -174,7 +175,9 @@ globle int EnvSave(
   {
    struct callFunctionItem *saveFunction;
    FILE *filePtr;
-   void *defmodulePtr;
+   struct defmodule *defmodulePtr;
+   intBool updated = FALSE;
+   intBool unvisited = TRUE;
 
    /*=====================*/
    /* Open the save file. */
@@ -189,19 +192,66 @@ globle int EnvSave(
 
    SetFastSave(theEnv,filePtr);
 
-   /*======================*/
-   /* Save the constructs. */
-   /*======================*/
+   /*================================*/
+   /* Mark all modules as unvisited. */
+   /*================================*/
    
-   for (defmodulePtr = EnvGetNextDefmodule(theEnv,NULL);
-        defmodulePtr != NULL;
-        defmodulePtr = EnvGetNextDefmodule(theEnv,defmodulePtr))
+   MarkModulesAsUnvisited(theEnv);
+  
+   /*===============================================*/
+   /* Save the constructs. Repeatedly loop over the */
+   /* modules until each module has been save.      */
+   /*===============================================*/
+   
+   while (unvisited)
      {
-      for (saveFunction = ConstructData(theEnv)->ListOfSaveFunctions;
-           saveFunction != NULL;
-           saveFunction = saveFunction->next)
+      unvisited = FALSE;
+      updated = FALSE;
+      
+      for (defmodulePtr = (struct defmodule *) EnvGetNextDefmodule(theEnv,NULL);
+           defmodulePtr != NULL;
+           defmodulePtr = (struct defmodule *) EnvGetNextDefmodule(theEnv,defmodulePtr))
         {
-         ((* (void (*)(void *,void *,char *)) saveFunction->func))(theEnv,defmodulePtr,(char *) filePtr);
+         /*=================================================================*/
+         /* We only want to save a module if all of the modules it imports  */
+         /* from have already been saved. Since there can't be circular     */
+         /* dependencies in imported modules, this should save the modules  */
+         /* that don't import anything first and then work back from those. */
+         /*=================================================================*/
+         
+         if (defmodulePtr->visitedFlag)
+           { /* Module has already been saved. */ }
+         else if (AllImportedModulesVisited(theEnv,defmodulePtr))
+           {
+            for (saveFunction = ConstructData(theEnv)->ListOfSaveFunctions;
+                 saveFunction != NULL;
+                 saveFunction = saveFunction->next)
+              {
+               ((* (void (*)(void *,void *,char *)) saveFunction->func))(theEnv,defmodulePtr,(char *) filePtr);
+              }
+              
+            updated = TRUE;
+            defmodulePtr->visitedFlag = TRUE;
+           }
+         else
+           { unvisited = TRUE; }
+        }
+        
+      /*=====================================================================*/
+      /* At least one module should be saved in every pass. If all have been */
+      /* visited/saved, then both flags will be FALSE. If all remaining      */
+      /* unvisited/unsaved modules were visited/saved, then unvisited will   */
+      /* be FALSE and updated will be TRUE. If some, but not all, remaining  */
+      /* unvisited/unsaved modules are visited/saved, then  unvisited will   */
+      /* be TRUE and updated will be TRUE. This leaves the case where there  */
+      /* are remaining unvisited/unsaved modules, but none were              */
+      /* visited/saved: unvisited is TRUE and updated is FALSE.              */
+      /*=====================================================================*/
+      
+      if (unvisited && (! updated))
+        {
+         SystemError(theEnv,"CONSTRCT",2);
+         break;
         }
      }
 
