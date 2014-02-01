@@ -162,7 +162,7 @@ static int SymbolHashNodesToCode(
               { fprintf(fp,"{&S%d_%d[%ld],",ConstructCompilerData(theEnv)->ImageID,arrayVersion,j + 1); }
            }
 
-         fprintf(fp,"%ld,0,1,0,0,%ld,",hashPtr->count + 1,i);
+         fprintf(fp,"%ld,1,0,0,%ld,",hashPtr->count + 1,i);
          PrintCString(fp,hashPtr->contents);
 
          count++;
@@ -265,7 +265,7 @@ static int BitMapHashNodesToCode(
               { fprintf(fp,"{&B%d_%d[%d],",ConstructCompilerData(theEnv)->ImageID,arrayVersion,j + 1); }
            }
 
-         fprintf(fp,"%ld,0,1,0,0,%d,(char *) &L%d_%d[%d],%d",
+         fprintf(fp,"%ld,1,0,0,%d,(char *) &L%d_%d[%d],%d",
                      hashPtr->count + 1,i,
                      ConstructCompilerData(theEnv)->ImageID,longsReqdPartition,longsReqdPartitionCount,
                      hashPtr->size);
@@ -491,7 +491,7 @@ static int FloatHashNodesToCode(
               { fprintf(fp,"{&F%d_%d[%d],",ConstructCompilerData(theEnv)->ImageID,arrayVersion,j + 1); }
            }
 
-         fprintf(fp,"%ld,0,1,0,0,%d,",hashPtr->count + 1,i);
+         fprintf(fp,"%ld,1,0,0,%d,",hashPtr->count + 1,i);
          fprintf(fp,"%s",FloatToString(theEnv,hashPtr->contents));
 
          count++;
@@ -593,7 +593,7 @@ static int IntegerHashNodesToCode(
               { fprintf(fp,"{&I%d_%d[%d],",ConstructCompilerData(theEnv)->ImageID,arrayVersion,j + 1); }
            }
 
-         fprintf(fp,"%ld,0,1,0,0,%d,",hashPtr->count + 1,i);
+         fprintf(fp,"%ld,1,0,0,%d,",hashPtr->count + 1,i);
          fprintf(fp,"%lldLL",hashPtr->contents);
 
          count++;
