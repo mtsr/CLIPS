@@ -1037,7 +1037,7 @@ static void CombineNandExpressions(
         {
          if (thePattern->beginNandDepth == scanDepth)
            {
-            theNandExpression = CombineExpressions(theEnv,thePattern->externalNetworkTest,theNandExpression);
+            theNandExpression = CombineExpressions(theEnv,theNandExpression,thePattern->externalNetworkTest);
             theLeftExpression = AppendExpressions(thePattern->externalLeftHash,theLeftExpression);
             theRightExpression = AppendExpressions(thePattern->externalRightHash,theRightExpression);
             thePattern->externalNetworkTest = NULL;
