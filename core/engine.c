@@ -546,6 +546,8 @@ globle long long EnvRun(
         }
       else
         { EnvPrintRouter(theEnv,WDIALOG,"\n"); }
+#else
+      EnvPrintRouter(theEnv,WDIALOG,"\n");
 #endif
 
 #if DEFTEMPLATE_CONSTRUCT
