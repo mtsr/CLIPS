@@ -931,12 +931,8 @@ static void AddToDefruleList(
      { theModuleItem->header.firstItem = (struct constructHeader *) rulePtr; }
    else
      {
-      tempRule = (struct defrule *) theModuleItem->header.lastItem;
-      while (tempRule != NULL)
-        {
-         tempRule->header.next = (struct constructHeader *) rulePtr;
-         tempRule = tempRule->disjunct;
-        }
+      tempRule = (struct defrule *) theModuleItem->header.lastItem; // Note: Only the first disjunct
+      tempRule->header.next = (struct constructHeader *) rulePtr;   // points to the next rule
      }
 
    theModuleItem->header.lastItem = (struct constructHeader *) rulePtr;

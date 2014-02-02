@@ -539,7 +539,7 @@ static void BsaveJoins(
   void *theEnv,
   FILE *fp)
   {
-   struct defrule *rulePtr;
+   struct defrule *rulePtr, *disjunctPtr;
    struct defmodule *theModule;
 
    /*===========================*/
@@ -563,14 +563,14 @@ static void BsaveJoins(
          /* Loop through each join of the disjunct. */
          /*=========================================*/
 
-         BsaveTraverseJoins(theEnv,fp,rulePtr->lastJoin);
+         for (disjunctPtr = rulePtr; disjunctPtr != NULL; disjunctPtr = disjunctPtr->disjunct)
+           { BsaveTraverseJoins(theEnv,fp,disjunctPtr->lastJoin); }
          
-         /*=======================================*/
-         /* Move on to the next rule or disjunct. */
-         /*=======================================*/
-
-         if (rulePtr->disjunct != NULL) rulePtr = rulePtr->disjunct;
-         else rulePtr = (struct defrule *) EnvGetNextDefrule(theEnv,rulePtr);
+         /*===========================*/
+         /* Move on to the next rule. */
+         /*===========================*/
+         
+         rulePtr = (struct defrule *) EnvGetNextDefrule(theEnv,rulePtr);
         }
      }
   }
@@ -646,7 +646,7 @@ static void BsaveLinks(
   void *theEnv,
   FILE *fp)
   {
-   struct defrule *rulePtr;
+   struct defrule *rulePtr, *disjunctPtr;
    struct defmodule *theModule;
    struct joinLink *theLink;
 
@@ -681,14 +681,14 @@ static void BsaveLinks(
          /* Loop through each join of the disjunct. */
          /*=========================================*/
 
-         BsaveTraverseLinks(theEnv,fp,rulePtr->lastJoin);
+         for (disjunctPtr = rulePtr; disjunctPtr != NULL; disjunctPtr = disjunctPtr->disjunct)
+           { BsaveTraverseLinks(theEnv,fp,disjunctPtr->lastJoin); }
          
          /*=======================================*/
          /* Move on to the next rule or disjunct. */
          /*=======================================*/
 
-         if (rulePtr->disjunct != NULL) rulePtr = rulePtr->disjunct;
-         else rulePtr = (struct defrule *) EnvGetNextDefrule(theEnv,rulePtr);
+         rulePtr = (struct defrule *) EnvGetNextDefrule(theEnv,rulePtr);
         }
      }
   }

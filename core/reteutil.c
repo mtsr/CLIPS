@@ -934,7 +934,7 @@ globle void MarkRuleNetwork(
   void *theEnv,
   int value)
   {
-   struct defrule *rulePtr;
+   struct defrule *rulePtr, *disjunctPtr;
    struct joinNode *joinPtr;
    struct defmodule *modulePtr;
 
@@ -961,16 +961,17 @@ globle void MarkRuleNetwork(
          /* with the specified value.   */
          /*=============================*/
 
-         joinPtr = rulePtr->lastJoin;
-         MarkRuleJoins(joinPtr,value);
+         for (disjunctPtr = rulePtr; disjunctPtr != NULL; disjunctPtr = disjunctPtr->disjunct)
+           {
+            joinPtr = disjunctPtr->lastJoin;
+            MarkRuleJoins(joinPtr,value);
+           }
 
-         /*=================================*/
-         /* Move on to the next rule or the */
-         /* next disjunct for this rule.    */
-         /*=================================*/
+         /*===========================*/
+         /* Move on to the next rule. */
+         /*===========================*/
 
-         if (rulePtr->disjunct != NULL) rulePtr = rulePtr->disjunct;
-         else rulePtr = (struct defrule *) EnvGetNextDefrule(theEnv,rulePtr);
+         rulePtr = (struct defrule *) EnvGetNextDefrule(theEnv,rulePtr);
         }
 
      }
@@ -1512,7 +1513,7 @@ globle void TagRuleNetwork(
   long int *linkCount)
   {
    struct defmodule *modulePtr;
-   struct defrule *rulePtr;
+   struct defrule *rulePtr, *disjunctPtr;
    struct joinLink *theLink;
 
    *moduleCount = 0;
@@ -1557,17 +1558,18 @@ globle void TagRuleNetwork(
 
       while (rulePtr != NULL)
         {
-         rulePtr->header.bsaveID = *ruleCount;
-         (*ruleCount)++;
-
-         /*=========================*/
-         /* Loop through each join. */
-         /*=========================*/
-        
-         TagNetworkTraverseJoins(theEnv,joinCount,linkCount,rulePtr->lastJoin);
-
-         if (rulePtr->disjunct != NULL) rulePtr = rulePtr->disjunct;
-         else rulePtr = (struct defrule *) EnvGetNextDefrule(theEnv,rulePtr);
+         /*=============================*/
+         /* Loop through each disjunct. */
+         /*=============================*/
+         
+         for (disjunctPtr = rulePtr; disjunctPtr != NULL; disjunctPtr = disjunctPtr->disjunct)
+           {
+            disjunctPtr->header.bsaveID = *ruleCount;
+            (*ruleCount)++;
+            TagNetworkTraverseJoins(theEnv,joinCount,linkCount,disjunctPtr->lastJoin);
+           }
+            
+         rulePtr = (struct defrule *) EnvGetNextDefrule(theEnv,rulePtr);
         }
      }
   }
