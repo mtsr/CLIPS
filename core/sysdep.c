@@ -159,10 +159,6 @@ extern int LIB$SPAWN();
 
 #include "moduldef.h"
 
-#if EMACS_EDITOR
-#include "ed.h"
-#endif
-
 #if DEVELOPER
 #include "developr.h"
 #endif
@@ -639,10 +635,6 @@ static void SystemFunctionDefinitions(
 
 #if TEXTPRO_FUNCTIONS || HELP_FUNCTIONS
    HelpFunctionDefinitions(theEnv);
-#endif
-
-#if EMACS_EDITOR
-   EditorFunctionDefinition(theEnv);
 #endif
 
 #if CONSTRUCT_COMPILER && (! RUN_TIME)
