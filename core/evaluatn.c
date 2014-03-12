@@ -553,6 +553,7 @@ globle void PrintDataObject(
       case INTEGER:
       case FLOAT:
       case EXTERNAL_ADDRESS:
+      case DATA_OBJECT_ARRAY: // TBD Remove with AddPrimitive
       case FACT_ADDRESS:
 #if OBJECT_SYSTEM
       case INSTANCE_NAME:
