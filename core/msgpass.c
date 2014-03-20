@@ -69,7 +69,7 @@
    =========================================
    ***************************************** */
 
-static void PerformMessage(void *,DATA_OBJECT *,EXPRESSION *,SYMBOL_HN *);
+static intBool PerformMessage(void *,DATA_OBJECT *,EXPRESSION *,SYMBOL_HN *);
 static HANDLER_LINK *FindApplicableHandlers(void *,DEFCLASS *,SYMBOL_HN *);
 static void CallHandlers(void *,DATA_OBJECT *);
 static void EarlySlotBindError(void *,INSTANCE_TYPE *,DEFCLASS *,unsigned);
@@ -89,11 +89,12 @@ static void EarlySlotBindError(void *,INSTANCE_TYPE *,DEFCLASS *,unsigned);
                  3) Address of DATA_OBJECT buffer
                     (NULL if don't care)
                  4) Message argument expressions
-  RETURNS      : Nothing useful
+  RETURNS      : Returns FALSE is an execution error occurred
+                 or execution is halted, otherwise TRUE
   SIDE EFFECTS : Side effects of message execution
   NOTES        : None
  *****************************************************/
-globle void DirectMessage(
+globle intBool DirectMessage(
   void *theEnv,
   SYMBOL_HN *msg,
   INSTANCE_TYPE *ins,
@@ -109,7 +110,7 @@ globle void DirectMessage(
    args.argList = NULL;
    args.type = INSTANCE_ADDRESS;
    args.value = (void *) ins;
-   PerformMessage(theEnv,resultbuf,&args,msg);
+   return PerformMessage(theEnv,resultbuf,&args,msg);
   }
 
 /***************************************************
@@ -926,12 +927,13 @@ globle void DynamicHandlerPutSlot(
                  2) Message argument expressions
                     (including implicit object)
                  3) Message name
-  RETURNS      : Nothing useful
+  RETURNS      : Returns FALSE is an execution error occurred
+                 or execution is halted, otherwise TRUE
   SIDE EFFECTS : Any side-effects of message execution
                     and caller's result buffer set
   NOTES        : None
  *****************************************************/
-static void PerformMessage(
+static intBool PerformMessage(
   void *theEnv,
   DATA_OBJECT *result,
   EXPRESSION *args,
@@ -952,7 +954,7 @@ static void PerformMessage(
    result->value = EnvFalseSymbol(theEnv);
    EvaluationData(theEnv)->EvaluationError = FALSE;
    if (EvaluationData(theEnv)->HaltExecution)
-     return;
+     return FALSE;
 
    oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
    memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
@@ -978,7 +980,7 @@ static void PerformMessage(
       CallPeriodicTasks(theEnv);      
       
       SetExecutingConstruct(theEnv,oldce);
-      return;
+      return FALSE;
      }
 
    if (ProceduralPrimitiveData(theEnv)->ProcParamArray->type == INSTANCE_ADDRESS)
@@ -1031,7 +1033,7 @@ static void PerformMessage(
       CallPeriodicTasks(theEnv);
 
       SetExecutingConstruct(theEnv,oldce);
-      return;
+      return FALSE;
      }
 
    /* oldCore = MessageHandlerData(theEnv)->TopOfCore; */
@@ -1132,7 +1134,10 @@ static void PerformMessage(
      {
       result->type = SYMBOL;
       result->value = EnvFalseSymbol(theEnv);
+      return FALSE;
      }
+     
+   return TRUE;
   }
 
 /*****************************************************************************

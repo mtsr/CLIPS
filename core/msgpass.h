@@ -51,7 +51,7 @@ typedef struct messageHandlerLink
 
 #define Send(a,b,c,d) EnvSend(GetCurrentEnvironment(),a,b,c,d)
 
-   LOCALE void             DirectMessage(void *,SYMBOL_HN *,INSTANCE_TYPE *,
+   LOCALE intBool          DirectMessage(void *,SYMBOL_HN *,INSTANCE_TYPE *,
                                          DATA_OBJECT *,EXPRESSION *);
    LOCALE void             EnvSend(void *,DATA_OBJECT *,char *,char *,DATA_OBJECT *);
    LOCALE void             DestroyHandlerLinks(void *,HANDLER_LINK *);

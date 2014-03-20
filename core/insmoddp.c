@@ -790,9 +790,7 @@ static void ModifyMsgHandlerSupport(
            msgExp.value = (void *) slotOverrides;
          msgExp.argList = NULL;
          msgExp.nextArg = NULL;
-         DirectMessage(theEnv,insSlot->desc->overrideMessage,ins,&temp,&msgExp);
-         if (EvaluationData(theEnv)->EvaluationError ||
-             ((temp.type == SYMBOL) && (temp.value == EnvFalseSymbol(theEnv))))
+         if (! DirectMessage(theEnv,insSlot->desc->overrideMessage,ins,&temp,&msgExp))
            return;
         }
       else
@@ -845,6 +843,7 @@ static void DuplicateMsgHandlerSupport(
    int oldMkInsMsgPass;
    INSTANCE_SLOT *dstInsSlot;
    DATA_OBJECT temp,junk,*newval;
+   intBool success;
 
    result->type = SYMBOL;
    result->value = EnvFalseSymbol(theEnv);
@@ -917,9 +916,7 @@ static void DuplicateMsgHandlerSupport(
            msgExp.value = (void *) slotOverrides;
          msgExp.argList = NULL;
          msgExp.nextArg = NULL;
-         DirectMessage(theEnv,dstInsSlot->desc->overrideMessage,dstins,&temp,&msgExp);
-         if (EvaluationData(theEnv)->EvaluationError ||
-             ((temp.type == SYMBOL) && (temp.value == EnvFalseSymbol(theEnv))))
+         if (! DirectMessage(theEnv,dstInsSlot->desc->overrideMessage,dstins,&temp,&msgExp))
            goto DuplicateError;
         }
       else
@@ -961,11 +958,10 @@ static void DuplicateMsgHandlerSupport(
                SetDOEnd(temp,GetMFLength(temp.value));
               }
             valArg = ConvertValueToExpression(theEnv,&temp);
-            DirectMessage(theEnv,dstins->slots[i].desc->overrideMessage,
+            success = DirectMessage(theEnv,dstins->slots[i].desc->overrideMessage,
                           dstins,&temp,valArg);
             ReturnExpression(theEnv,valArg);
-            if (EvaluationData(theEnv)->EvaluationError ||
-                ((temp.type == SYMBOL) && (temp.value == EnvFalseSymbol(theEnv))))
+            if (! success)
               goto DuplicateError;
            }
          else
