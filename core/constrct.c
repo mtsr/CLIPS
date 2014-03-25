@@ -50,6 +50,7 @@
 #include "sysdep.h"
 #include "utility.h"
 #include "commline.h"
+#include "cstrcpsr.h"
 
 #include "ruledef.h" /* TBD Remove */
 #include "constrct.h"
@@ -90,6 +91,19 @@ static void DeallocateConstructData(
    DeallocateCallList(theEnv,ConstructData(theEnv)->ListOfClearFunctions);
    DeallocateCallList(theEnv,ConstructData(theEnv)->ListOfClearReadyFunctions);
    
+   if (ConstructData(theEnv)->ErrorString != NULL)
+     { genfree(theEnv,ConstructData(theEnv)->ErrorString,sizeof(ConstructData(theEnv)->ErrorString) + 1); }
+
+   if (ConstructData(theEnv)->WarningString != NULL)
+     { genfree(theEnv,ConstructData(theEnv)->WarningString,sizeof(ConstructData(theEnv)->WarningString) + 1); }
+
+   ConstructData(theEnv)->ErrorString = NULL;
+   ConstructData(theEnv)->WarningString = NULL;
+     
+   EnvSetParsingFileName(theEnv,NULL);
+   EnvSetWarningFileName(theEnv,NULL);
+   EnvSetErrorFileName(theEnv,NULL);
+   
    tmpPtr = ConstructData(theEnv)->ListOfConstructs;
    while (tmpPtr != NULL)
      {
@@ -101,6 +115,20 @@ static void DeallocateConstructData(
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
 
+/**************************************************/
+/* EnvSetParserErrorCallback: Allows the function */
+/*   which is called when a construct parsing     */
+/*    error occurs to be changed.                 */
+/**************************************************/
+globle void (*EnvSetParserErrorCallback(void *theEnv,void (*functionPtr)(void *,char *,char *,char *,long)))(void *,char *,char *,char*,long)
+  {
+   void (*tmpPtr)(void *,char *,char *,char *,long);
+
+   tmpPtr = ConstructData(theEnv)->ParserErrorCallback;
+   ConstructData(theEnv)->ParserErrorCallback = functionPtr;
+   return(tmpPtr);
+  }
+  
 /*************************************************/
 /* FindConstruct: Determines whether a construct */
 /*   type is in the ListOfConstructs.            */

@@ -44,6 +44,7 @@
 #include "constrct.h"
 #include "prcdrpsr.h"
 #include "exprnpsr.h"
+#include "memalloc.h"
 #include "modulutl.h"
 #include "modulpsr.h"
 #include "sysdep.h"
@@ -80,6 +81,7 @@ globle int EnvLoad(
   char *fileName)
   {
    FILE *theFile;
+   char *oldParsingFileName;
    int noErrorsDetected;
 
    /*=======================================*/
@@ -95,7 +97,15 @@ globle int EnvLoad(
    /*===================================================*/
 
    SetFastLoad(theEnv,theFile);
+   
+   oldParsingFileName = CopyString(theEnv,EnvGetParsingFileName(theEnv));
+   EnvSetParsingFileName(theEnv,fileName);
+   
    noErrorsDetected = LoadConstructsFromLogicalName(theEnv,(char *) theFile);
+   
+   EnvSetParsingFileName(theEnv,oldParsingFileName);
+   DeleteString(theEnv,oldParsingFileName);
+   
    SetFastLoad(theEnv,NULL);
 
    /*=================*/
@@ -114,6 +124,108 @@ globle int EnvLoad(
    return(-1);
   }
 
+/*******************************************************/
+/* EnvSetParsingFileName: Sets the file name currently */
+/*   being parsed by the load/batch command.           */
+/*******************************************************/
+globle void EnvSetParsingFileName(
+  void *theEnv,
+  char *fileName)
+  {
+   char *fileNameCopy = NULL;
+
+   if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
+   
+   if (fileName != NULL)
+     {
+      fileNameCopy = (char *) genalloc(theEnv,strlen(fileName) + 1);
+      genstrcpy(fileNameCopy,fileName);
+     }
+
+   if (ConstructData(theEnv)->ParsingFileName != NULL)
+     { genfree(theEnv,ConstructData(theEnv)->ParsingFileName,strlen(ConstructData(theEnv)->ParsingFileName) + 1); }
+     
+   ConstructData(theEnv)->ParsingFileName = fileNameCopy;
+  }
+
+/**********************************************************/
+/* EnvGetParsingFileName: Returns the file name currently */
+/*   being parsed by the load/batch command.              */
+/**********************************************************/
+globle char *EnvGetParsingFileName(
+  void *theEnv)
+  {
+   return ConstructData(theEnv)->ParsingFileName;
+  }
+
+/**********************************************/
+/* EnvSetErrorFileName: Sets the file name    */
+/*   associated with the last error detected. */
+/**********************************************/
+globle void EnvSetErrorFileName(
+  void *theEnv,
+  char *fileName)
+  {
+   char *fileNameCopy = NULL;
+
+   if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
+   
+   if (fileName != NULL)
+     {
+      fileNameCopy = (char *) genalloc(theEnv,strlen(fileName) + 1);
+      genstrcpy(fileNameCopy,fileName);
+     }
+   
+   if (ConstructData(theEnv)->ErrorFileName != NULL)
+     { genfree(theEnv,ConstructData(theEnv)->ErrorFileName,strlen(ConstructData(theEnv)->ErrorFileName) + 1); }
+     
+   ConstructData(theEnv)->ErrorFileName = fileNameCopy;
+  }
+
+/**********************************************/
+/* EnvGetErrorFileName: Returns the file name */
+/*   associated with the last error detected. */
+/**********************************************/
+globle char *EnvGetErrorFileName(
+  void *theEnv)
+  {
+   return ConstructData(theEnv)->ErrorFileName;
+  }
+
+/************************************************/
+/* EnvSetWarningFileName: Sets the file name    */
+/*   associated with the last warning detected. */
+/************************************************/
+globle void EnvSetWarningFileName(
+  void *theEnv,
+  char *fileName)
+  {
+   char *fileNameCopy = NULL;
+
+   if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
+   
+   if (fileName != NULL)
+     {
+      fileNameCopy = (char *) genalloc(theEnv,strlen(fileName) + 1);
+      genstrcpy(fileNameCopy,fileName);
+     }
+   
+   if (ConstructData(theEnv)->WarningFileName != NULL)
+     { genfree(theEnv,ConstructData(theEnv)->WarningFileName,strlen(ConstructData(theEnv)->WarningFileName) + 1); }
+     
+   ConstructData(theEnv)->WarningFileName = fileNameCopy;
+  }
+
+/************************************************/
+/* EnvGetWarningFileName: Returns the file name */
+/*   associated with the last warning detected. */
+/************************************************/
+globle char *EnvGetWarningFileName(
+  void *theEnv)
+  {
+   return ConstructData(theEnv)->WarningFileName;
+  }
+
 /*****************************************************************/
 /* LoadConstructsFromLogicalName: Loads a set of constructs into */
 /*   the current environment from a specified logical name.      */
@@ -128,6 +240,22 @@ globle int LoadConstructsFromLogicalName(
    int foundConstruct;
    struct garbageFrame newGarbageFrame;
    struct garbageFrame *oldGarbageFrame;
+   long oldLineCountValue;
+   char *oldLineCountRouter;
+
+   /*===================================================*/
+   /* Create a router to capture the error information. */
+   /*===================================================*/
+
+   CreateErrorCaptureRouter(theEnv);
+
+   /*==============================*/
+   /* Initialize the line counter. */
+   /*==============================*/
+   
+   oldLineCountValue = SetLineCount(theEnv,1);
+   oldLineCountRouter = RouterData(theEnv)->LineCountRouter;
+   RouterData(theEnv)->LineCountRouter = readSource;
 
    /*=========================================*/
    /* Reset the halt execution and evaluation */
@@ -183,6 +311,9 @@ globle int LoadConstructsFromLogicalName(
          EnvPrintRouter(theEnv,WERROR,"\nERROR:\n");
          PrintInChunks(theEnv,WERROR,GetPPBuffer(theEnv));
          EnvPrintRouter(theEnv,WERROR,"\n");
+
+         FlushParsingMessages(theEnv);
+
          noErrors = FALSE;
          GetToken(theEnv,readSource,&theToken);
          foundConstruct = FindConstructBeginning(theEnv,readSource,&theToken,TRUE,&noErrors);
@@ -194,6 +325,7 @@ globle int LoadConstructsFromLogicalName(
 
       else
         {
+         FlushParsingMessages(theEnv);
          GetToken(theEnv,readSource,&theToken);
          foundConstruct = FindConstructBeginning(theEnv,readSource,&theToken,FALSE,&noErrors);
         }
@@ -242,6 +374,21 @@ globle int LoadConstructsFromLogicalName(
    
    RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,NULL);
    CallPeriodicTasks(theEnv);
+
+   /*==============================*/
+   /* Deactivate the line counter. */
+   /*==============================*/
+   
+   SetLineCount(theEnv,oldLineCountValue);
+   RouterData(theEnv)->LineCountRouter = oldLineCountRouter;
+
+   /*===========================================*/
+   /* Invoke the parser error callback function */
+   /* and delete the error capture router.      */
+   /*===========================================*/
+
+   FlushParsingMessages(theEnv);
+   DeleteErrorCaptureRouter(theEnv);
 
    /*==========================================================*/
    /* Return a boolean flag which indicates whether any errors */
@@ -356,6 +503,165 @@ static int FindConstructBeginning(
    return(FALSE);
   }
 
+/*************************************************/
+/* FindError: Find routine for the error router. */
+/*************************************************/
+static int FindError(
+  void *theEnv,
+  char *logicalName)
+  {
+#if MAC_XCD
+#pragma unused(theEnv)
+#endif
+
+   if ( (strcmp(logicalName,WERROR) == 0) ||
+        (strcmp(logicalName,WWARNING) == 0) )
+     { return(TRUE); }
+
+    return(FALSE);
+  }
+
+/***************************************************/
+/* PrintError: Print routine for the error router. */
+/***************************************************/
+static int PrintError(
+  void *theEnv,
+  char *logicalName,
+  char *str)
+  {
+   if (strcmp(logicalName,WERROR) == 0)
+     {
+      ConstructData(theEnv)->ErrorString =
+         AppendToString(theEnv,str,ConstructData(theEnv)->ErrorString,
+                                   &ConstructData(theEnv)->CurErrPos,
+                                   &ConstructData(theEnv)->MaxErrChars);
+     }
+   else if (strcmp(logicalName,WWARNING) == 0)
+     {
+      ConstructData(theEnv)->WarningString =
+         AppendToString(theEnv,str,ConstructData(theEnv)->WarningString,
+                                   &ConstructData(theEnv)->CurWrnPos,
+                                   &ConstructData(theEnv)->MaxWrnChars);
+     }
+
+   EnvDeactivateRouter(theEnv,"error-capture");
+   EnvPrintRouter(theEnv,logicalName,str);
+   EnvActivateRouter(theEnv,"error-capture");
+
+   return(1);
+  }
+
+/***********************************************/
+/* CreateErrorCaptureRouter: Creates the error */
+/*   capture router if it doesn't exists.      */
+/***********************************************/
+globle void CreateErrorCaptureRouter(
+  void *theEnv)
+  {
+   /*===========================================================*/
+   /* Don't bother creating the error capture router if there's */
+   /* no parser callback. The implication of this is that the   */
+   /* parser callback should be created before any routines     */
+   /* which could generate errors are called.                   */
+   /*===========================================================*/
+   
+   if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
+
+   /*=======================================================*/
+   /* If the router hasn't already been created, create it. */
+   /*=======================================================*/
+   
+   if (ConstructData(theEnv)->errorCaptureRouterCount == 0)
+     {
+      EnvAddRouter(theEnv,"error-capture", 40,
+                      FindError, PrintError,
+                      NULL, NULL,NULL);
+     }
+     
+   /*==================================================*/
+   /* Increment the count for the number of references */
+   /* that want the error capture router functioning.  */
+   /*==================================================*/
+
+   ConstructData(theEnv)->errorCaptureRouterCount++;
+  }
+
+/***********************************************/
+/* DeleteErrorCaptureRouter: Deletes the error */
+/*   capture router if it exists.              */
+/***********************************************/
+globle void DeleteErrorCaptureRouter(
+   void *theEnv)
+   {
+   /*===========================================================*/
+   /* Don't bother deleting the error capture router if there's */
+   /* no parser callback. The implication of this is that the   */
+   /* parser callback should be created before any routines     */
+   /* which could generate errors are called.                   */
+   /*===========================================================*/
+   
+   if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
+
+    ConstructData(theEnv)->errorCaptureRouterCount--;
+
+    if (ConstructData(theEnv)->errorCaptureRouterCount == 0)
+      { EnvDeleteRouter(theEnv,"error-capture"); }
+   }
+
+/*******************************************************/
+/* FlushParsingMessages: Invokes the callback routines */
+/*   for any existing warning/error messages.          */
+/*******************************************************/
+globle void FlushParsingMessages(
+  void *theEnv)
+  {
+   /*===========================================================*/
+   /* Don't bother flushing the error capture router if there's */
+   /* no parser callback. The implication of this is that the   */
+   /* parser callback should be created before any routines     */
+   /* which could generate errors are called.                   */
+   /*===========================================================*/
+   
+   if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
+
+   /*=================================*/
+   /* If an error occurred invoke the */
+   /* parser error callback function. */
+   /*=================================*/
+   
+   if (ConstructData(theEnv)->ErrorString != NULL)
+     {
+      (*ConstructData(theEnv)->ParserErrorCallback)(theEnv,EnvGetErrorFileName(theEnv),
+                                                           NULL,ConstructData(theEnv)->ErrorString,
+                                                           ConstructData(theEnv)->ErrLineNumber);
+     }
+
+   if (ConstructData(theEnv)->WarningString != NULL)
+     {
+      (*ConstructData(theEnv)->ParserErrorCallback)(theEnv,EnvGetWarningFileName(theEnv),
+                                                           ConstructData(theEnv)->WarningString,NULL,
+                                                           ConstructData(theEnv)->WrnLineNumber);
+     }
+     
+   /*===================================*/
+   /* Delete the error capture strings. */
+   /*===================================*/
+
+   EnvSetErrorFileName(theEnv,NULL);
+   if (ConstructData(theEnv)->ErrorString != NULL)
+     { genfree(theEnv,ConstructData(theEnv)->ErrorString,strlen(ConstructData(theEnv)->ErrorString) + 1); }
+   ConstructData(theEnv)->ErrorString = NULL;
+   ConstructData(theEnv)->CurErrPos = 0;
+   ConstructData(theEnv)->MaxErrChars = 0;
+   
+   EnvSetWarningFileName(theEnv,NULL);
+   if (ConstructData(theEnv)->WarningString != NULL)
+     { genfree(theEnv,ConstructData(theEnv)->WarningString,strlen(ConstructData(theEnv)->WarningString) + 1); }
+   ConstructData(theEnv)->WarningString = NULL;
+   ConstructData(theEnv)->CurWrnPos = 0;
+   ConstructData(theEnv)->MaxWrnChars = 0;
+  }
+
 /***********************************************************/
 /* ParseConstruct: Parses a construct. Returns an integer. */
 /*   -1 if the construct name has no parsing function, 0   */
@@ -388,7 +694,7 @@ globle int ParseConstruct(
    memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
    newGarbageFrame.priorFrame = oldGarbageFrame;
    UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
-
+      
    /*==================================*/
    /* Prepare the parsing environment. */
    /*==================================*/
@@ -418,7 +724,7 @@ globle int ParseConstruct(
    ClearParsedBindNames(theEnv);
    SetPPBufferStatus(theEnv,OFF);
    SetHaltExecution(theEnv,ov);
-   
+      
    /*======================================*/
    /* Remove the garbage collection frame. */
    /*======================================*/
@@ -578,19 +884,21 @@ globle SYMBOL_HN *GetConstructNameAndComment(
    if ((EnvGetWatchItem(theEnv,"compilations") == TRUE) &&
        GetPrintWhileLoading(theEnv) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
+      char *outRouter = WDIALOG;
       if (redefining) 
         {
+         outRouter = WWARNING;
          PrintWarningID(theEnv,"CSTRCPSR",1,TRUE);
-         EnvPrintRouter(theEnv,WDIALOG,"Redefining ");
+         EnvPrintRouter(theEnv,outRouter,"Redefining ");
         }
-      else EnvPrintRouter(theEnv,WDIALOG,"Defining ");
+      else EnvPrintRouter(theEnv,outRouter,"Defining ");
 
-      EnvPrintRouter(theEnv,WDIALOG,constructName);
-      EnvPrintRouter(theEnv,WDIALOG,": ");
-      EnvPrintRouter(theEnv,WDIALOG,ValueToString(name));
+      EnvPrintRouter(theEnv,outRouter,constructName);
+      EnvPrintRouter(theEnv,outRouter,": ");
+      EnvPrintRouter(theEnv,outRouter,ValueToString(name));
 
-      if (fullMessageCR) EnvPrintRouter(theEnv,WDIALOG,"\n");
-      else EnvPrintRouter(theEnv,WDIALOG," ");
+      if (fullMessageCR) EnvPrintRouter(theEnv,outRouter,"\n");
+      else EnvPrintRouter(theEnv,outRouter," ");
      }
    else
 #endif

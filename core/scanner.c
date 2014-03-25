@@ -764,13 +764,30 @@ globle void ResetLineCount(
    ScannerData(theEnv)->LineCount = 0;
   }
 
-/****************************************************/
-/* GettLineCount: Returns the scanner's line count. */
-/****************************************************/
+/***************************************************/
+/* GetLineCount: Returns the scanner's line count. */
+/***************************************************/
 globle long GetLineCount(
   void *theEnv)
   {
    return(ScannerData(theEnv)->LineCount);
+  }
+
+/***********************************************/
+/* SetLineCount: Sets the scanner's line count */
+/*   and returns the previous value.           */
+/***********************************************/
+globle long SetLineCount(
+  void *theEnv,
+  long value)
+  {
+   long oldValue;
+   
+   oldValue = ScannerData(theEnv)->LineCount;
+   
+   ScannerData(theEnv)->LineCount = value;
+   
+   return(oldValue);
   }
 
 /**********************************/

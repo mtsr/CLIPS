@@ -428,6 +428,35 @@ globle char *StringPrintForm(
    return(ValueToString(thePtr));
   }
 
+/**************************************************************/
+/* CopyString: Copies a string using CLIPS memory management. */
+/**************************************************************/
+globle char *CopyString(
+  void *theEnv,
+  char *theString)
+  {
+   char *stringCopy = NULL;
+   
+   if (theString != NULL)
+     {
+      stringCopy = (char *) genalloc(theEnv,strlen(theString) + 1);
+      genstrcpy(stringCopy,theString);
+     }
+     
+   return stringCopy;
+  }
+
+/*****************************************************************/
+/* DeleteString: Deletes a string using CLIPS memory management. */
+/*****************************************************************/
+globle void DeleteString(
+  void *theEnv,
+  char *theString)
+  {
+   if (theString != NULL)
+     { genfree(theEnv,theString,strlen(theString) + 1); }
+  }
+
 /***********************************************************/
 /* AppendStrings: Appends two strings together. The string */
 /*   created is added to the SymbolTable, so it is not     */
@@ -814,11 +843,11 @@ globle struct callFunctionItemWithArg *AddFunctionToCallListWithArg(
    return AddFunctionToCallListWithArgWithContext(theEnv,name,priority,func,head,environmentAware,NULL);
   }
   
-/***********************************************************/
-/* AddFunctionToCallListWithArgWithContext: Adds a function to a  */
-/*   list of functions which are called to perform certain */
-/*   operations (e.g. clear, reset, and bload functions).  */
-/***********************************************************/
+/***************************************************************/
+/* AddFunctionToCallListWithArgWithContext: Adds a function to */
+/*   a list of functions which are called to perform certain   */
+/*   operations (e.g. clear, reset, and bload functions).      */
+/***************************************************************/
 globle struct callFunctionItemWithArg *AddFunctionToCallListWithArgWithContext(
   void *theEnv,
   char *name,

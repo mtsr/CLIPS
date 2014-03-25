@@ -63,6 +63,7 @@ struct scannerData
    LOCALE void                           CopyToken(struct token *,struct token *);
    LOCALE void                           ResetLineCount(void *);
    LOCALE long                           GetLineCount(void *);
+   LOCALE long                           SetLineCount(void *,long);
    LOCALE void                           IncrementLineCount(void *);
    LOCALE void                           DecrementLineCount(void *);
 

@@ -114,6 +114,8 @@ struct utilityData
    LOCALE intBool                        AddPeriodicFunction(char *,void (*)(void),int);
    LOCALE intBool                        RemoveCleanupFunction(void *,char *);
    LOCALE intBool                        EnvRemovePeriodicFunction(void *,char *);
+   LOCALE char                          *CopyString(void *,char *);
+   LOCALE void                           DeleteString(void *,char *);
    LOCALE char                          *AppendStrings(void *,char *,char *);
    LOCALE char                          *StringPrintForm(void *,char *);
    LOCALE char                          *AppendToString(void *,char *,char *,size_t *,size_t *);

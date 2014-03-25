@@ -81,9 +81,24 @@ struct constructData
    int ResetReadyInProgress;
    int ResetInProgress;
 #if (! RUN_TIME) && (! BLOAD_ONLY)
-   struct callFunctionItem   *ListOfSaveFunctions;
+   struct callFunctionItem *ListOfSaveFunctions;
    intBool PrintWhileLoading;
    unsigned WatchCompilations;
+   int CheckSyntaxMode;
+   int ParsingConstruct;
+   char *ErrorString;
+   char *WarningString;
+   char *ParsingFileName;
+   char *ErrorFileName;
+   char *WarningFileName;
+   long ErrLineNumber;
+   long WrnLineNumber;
+   int errorCaptureRouterCount;
+   size_t MaxErrChars;
+   size_t CurErrPos;
+   size_t MaxWrnChars;
+   size_t CurWrnPos;
+   void (*ParserErrorCallback)(void *,char *,char *,char *,long);
 #endif
    struct construct *ListOfConstructs;
    struct callFunctionItem *ListOfResetFunctions;
@@ -91,8 +106,6 @@ struct constructData
    struct callFunctionItem *ListOfClearReadyFunctions;
    int Executing;
    int (*BeforeResetFunction)(void *);
-   int CheckSyntaxMode;
-   int ParsingConstruct;
   };
 
 #define ConstructData(theEnv) ((struct constructData *) GetEnvironmentData(theEnv,CONSTRUCT_DATA))
@@ -160,6 +173,8 @@ struct constructData
    LOCALE struct construct              *FindConstruct(void *,char *);
    LOCALE void                           DeinstallConstructHeader(void *,struct constructHeader *);
    LOCALE void                           DestroyConstructHeader(void *,struct constructHeader *);
+   LOCALE void                         (*EnvSetParserErrorCallback(void *theEnv,void (*functionPtr)(void *,char *,char *,char *,long)))
+                                            (void *,char *,char *,char*,long);
 
 #endif
 

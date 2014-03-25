@@ -66,6 +66,8 @@ struct batchEntry
    int batchType;
    void *inputSource;
    char *theString;
+   char *fileName;
+   long lineNumber;
    struct batchEntry *next;
   };
 
@@ -96,6 +98,7 @@ struct fileCommandData
    size_t BatchMaximumPosition;
    struct batchEntry *TopOfBatchList;
    struct batchEntry *BottomOfBatchList;
+   char *batchPriorParsingFile;
   };
 
 #define FileCommandData(theEnv) ((struct fileCommandData *) GetEnvironmentData(theEnv,FILECOM_DATA))
@@ -116,7 +119,7 @@ struct fileCommandData
    static int                     GetcBatch(void *,char *);
    static int                     UngetcBatch(void *,int,char *);
    static int                     ExitBatch(void *,int);
-   static void                    AddBatch(void *,int,void *,int,char *);
+   static void                    AddBatch(void *,int,void *,int,char *,char *);
    static void                    DeallocateFileCommandData(void *);
 
 /***************************************/
@@ -176,6 +179,9 @@ static void DeallocateFileCommandData(
    if (FileCommandData(theEnv)->BatchBuffer != NULL)
      { rm(theEnv,FileCommandData(theEnv)->BatchBuffer,FileCommandData(theEnv)->BatchMaximumPosition); }
 
+   DeleteString(theEnv,FileCommandData(theEnv)->batchPriorParsingFile);
+   FileCommandData(theEnv)->batchPriorParsingFile = NULL;
+   
 #if DEBUGGING_FUNCTIONS
    if (FileCommandData(theEnv)->DribbleBuffer != NULL)
      { rm(theEnv,FileCommandData(theEnv)->DribbleBuffer,FileCommandData(theEnv)->DribbleMaximumPosition); }
@@ -642,6 +648,13 @@ globle int LLGetcBatch(
         }
      }
 
+   /*=============================*/
+   /* Increment the line counter. */
+   /*=============================*/
+   
+   if (((char) rv == '\r') || ((char) rv == '\n'))
+     { IncrementLineCount(theEnv); }
+
    /*=====================================================*/
    /* Return the character retrieved from the batch file. */
    /*=====================================================*/
@@ -742,12 +755,35 @@ globle int OpenBatch(
                  ExitBatch);
      }
 
+   /*===============================================================*/
+   /* If a batch file is already open, save its current line count. */
+   /*===============================================================*/
+
+   if (FileCommandData(theEnv)->TopOfBatchList != NULL)
+     { FileCommandData(theEnv)->TopOfBatchList->lineNumber = GetLineCount(theEnv); }
+     
+   /*========================================================================*/
+   /* If this is the first batch file, remember the prior parsing file name. */
+   /*========================================================================*/
+   
+   if (FileCommandData(theEnv)->TopOfBatchList == NULL)
+     { FileCommandData(theEnv)->batchPriorParsingFile = CopyString(theEnv,EnvGetParsingFileName(theEnv)); }
+     
+   /*=======================================================*/
+   /* Create the error capture router if it does not exist. */
+   /*=======================================================*/
+   
+   EnvSetParsingFileName(theEnv,fileName);
+   SetLineCount(theEnv,0);
+
+   CreateErrorCaptureRouter(theEnv);
+
    /*====================================*/
    /* Add the newly opened batch file to */
    /* the list of batch files opened.    */
    /*====================================*/
 
-   AddBatch(theEnv,placeAtEnd,(void *) theFile,FILE_BATCH,NULL);
+   AddBatch(theEnv,placeAtEnd,(void *) theFile,FILE_BATCH,NULL,fileName);
 
    /*===================================*/
    /* Return TRUE to indicate the batch */
@@ -781,7 +817,7 @@ globle int OpenStringBatch(
                  ExitBatch);
      }
 
-   AddBatch(theEnv,placeAtEnd,(void *) stringName,STRING_BATCH,theString);
+   AddBatch(theEnv,placeAtEnd,(void *) stringName,STRING_BATCH,theString,NULL);
 
    return(1);
   }
@@ -795,7 +831,8 @@ static void AddBatch(
   int placeAtEnd,
   void *theSource,
   int type,
-  char *theString)
+  char *theString,
+  char *theFileName)
   {
    struct batchEntry *bptr;
 
@@ -807,6 +844,8 @@ static void AddBatch(
    bptr->batchType = type;
    bptr->inputSource = theSource;
    bptr->theString = theString;
+   bptr->fileName = CopyString(theEnv,theFileName);
+   bptr->lineNumber = 0;
    bptr->next = NULL;
 
    /*============================*/
@@ -843,7 +882,7 @@ globle int RemoveBatch(
   void *theEnv)
   {
    struct batchEntry *bptr;
-   int rv;
+   int rv, fileBatch = FALSE;
 
    if (FileCommandData(theEnv)->TopOfBatchList == NULL) return(FALSE);
 
@@ -852,7 +891,12 @@ globle int RemoveBatch(
    /*==================================================*/
 
    if (FileCommandData(theEnv)->TopOfBatchList->batchType == FILE_BATCH)
-     { GenClose(theEnv,(FILE *) FileCommandData(theEnv)->TopOfBatchList->inputSource); }
+     {
+      fileBatch = TRUE;
+      GenClose(theEnv,(FILE *) FileCommandData(theEnv)->TopOfBatchList->inputSource);
+      FlushParsingMessages(theEnv);
+      DeleteErrorCaptureRouter(theEnv);
+     }
    else
      {
       CloseStringSource(theEnv,(char *) FileCommandData(theEnv)->TopOfBatchList->inputSource);
@@ -863,6 +907,7 @@ globle int RemoveBatch(
    /* Remove the entry from the list. */
    /*=================================*/
 
+   DeleteString(theEnv,FileCommandData(theEnv)->TopOfBatchList->fileName);
    bptr = FileCommandData(theEnv)->TopOfBatchList;
    FileCommandData(theEnv)->TopOfBatchList = FileCommandData(theEnv)->TopOfBatchList->next;
 
@@ -885,6 +930,13 @@ globle int RemoveBatch(
       FileCommandData(theEnv)->BatchCurrentPosition = 0;
       FileCommandData(theEnv)->BatchMaximumPosition = 0;
       rv = 0;
+
+      if (fileBatch)
+        {
+         EnvSetParsingFileName(theEnv,FileCommandData(theEnv)->batchPriorParsingFile);
+         DeleteString(theEnv,FileCommandData(theEnv)->batchPriorParsingFile);
+         FileCommandData(theEnv)->batchPriorParsingFile = NULL;
+        }
      }
 
    /*===========================================*/
@@ -897,6 +949,11 @@ globle int RemoveBatch(
       FileCommandData(theEnv)->BatchSource = FileCommandData(theEnv)->TopOfBatchList->inputSource;
       FileCommandData(theEnv)->BatchCurrentPosition = 0;
       rv = 1;
+
+      if (FileCommandData(theEnv)->TopOfBatchList->batchType == FILE_BATCH)
+        { EnvSetParsingFileName(theEnv,FileCommandData(theEnv)->TopOfBatchList->fileName); }
+        
+      SetLineCount(theEnv,FileCommandData(theEnv)->TopOfBatchList->lineNumber);
      }
 
    /*====================================================*/
@@ -981,6 +1038,8 @@ globle int EnvBatchStar(
    char *theString = NULL;
    size_t position = 0;
    size_t maxChars = 0;
+   char *oldParsingFileName;
+   long oldLineCountValue;
 
    /*======================*/
    /* Open the batch file. */
@@ -993,6 +1052,17 @@ globle int EnvBatchStar(
       OpenErrorMessage(theEnv,"batch",fileName);
       return(FALSE);
      }
+
+   /*======================================*/
+   /* Setup for capturing errors/warnings. */
+   /*======================================*/
+   
+   oldParsingFileName = CopyString(theEnv,EnvGetParsingFileName(theEnv));
+   EnvSetParsingFileName(theEnv,fileName);
+
+   CreateErrorCaptureRouter(theEnv);
+     
+   oldLineCountValue = SetLineCount(theEnv,1);
 
    /*========================*/
    /* Reset the error state. */
@@ -1023,7 +1093,12 @@ globle int EnvBatchStar(
          theString = NULL;
          maxChars = 0;
          position = 0;
-        }      
+         
+         FlushParsingMessages(theEnv);
+        }
+        
+      if ((inchar == '\r') || (inchar == '\n'))
+        { IncrementLineCount(theEnv); }
      }
 
    if (theString != NULL)
@@ -1034,6 +1109,19 @@ globle int EnvBatchStar(
    /*=======================*/
 
    GenClose(theEnv,theFile);
+
+   /*========================================*/
+   /* Cleanup for capturing errors/warnings. */
+   /*========================================*/
+
+   FlushParsingMessages(theEnv);
+   DeleteErrorCaptureRouter(theEnv);
+     
+   SetLineCount(theEnv,oldLineCountValue);
+   
+   EnvSetParsingFileName(theEnv,oldParsingFileName);
+   DeleteString(theEnv,oldParsingFileName);
+
    return(TRUE);
   }
 

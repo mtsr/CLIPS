@@ -231,14 +231,16 @@ static intBool GetVariableDefinition(
 #if DEBUGGING_FUNCTIONS
    if ((EnvGetWatchItem(theEnv,"compilations") == ON) && GetPrintWhileLoading(theEnv))
      {
+      char *outRouter = WDIALOG;
       if (QFindDefglobal(theEnv,variableName) != NULL) 
         {
+         outRouter = WWARNING;
          PrintWarningID(theEnv,"CSTRCPSR",1,TRUE);
-         EnvPrintRouter(theEnv,WDIALOG,"Redefining defglobal: ");
+         EnvPrintRouter(theEnv,outRouter,"Redefining defglobal: ");
         }
-      else EnvPrintRouter(theEnv,WDIALOG,"Defining defglobal: ");
-      EnvPrintRouter(theEnv,WDIALOG,ValueToString(variableName));
-      EnvPrintRouter(theEnv,WDIALOG,"\n");
+      else EnvPrintRouter(theEnv,outRouter,"Defining defglobal: ");
+      EnvPrintRouter(theEnv,outRouter,ValueToString(variableName));
+      EnvPrintRouter(theEnv,outRouter,"\n");
      }
    else
 #endif
