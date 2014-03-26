@@ -184,6 +184,27 @@ globle intBool RemoveHashedFact(
    return(0);
   }
 
+/****************************************************/
+/* FactWillBeAsserted: Determines if a fact will be */
+/*   asserted based on the duplication settings.    */
+/****************************************************/
+globle intBool FactWillBeAsserted(
+  void *theEnv,
+  void *theFact)
+  {
+   struct fact *tempPtr;
+   unsigned long hashValue;
+
+   if (FactData(theEnv)->FactDuplication) return(TRUE);
+
+   hashValue = HashFact((struct fact *) theFact);
+
+   tempPtr = FactExists(theEnv,(struct fact *) theFact,hashValue);
+   if (tempPtr == NULL) return(TRUE);
+   
+   return(FALSE);
+  }
+
 /*****************************************************/
 /* HandleFactDuplication: Determines if a fact to be */
 /*   added to the fact-list is a duplicate entry and */

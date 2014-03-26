@@ -58,6 +58,7 @@ struct factHashEntry
    LOCALE void                           InitializeFactHashTable(void *);
    LOCALE void                           ShowFactHashTable(void *);
    LOCALE unsigned long                  HashFact(struct fact *);
+   LOCALE intBool                        FactWillBeAsserted(void *,void *);
 
 #endif
 

@@ -76,6 +76,7 @@ struct factsData
    unsigned long NumberOfFacts;
    struct callFunctionItemWithArg *ListOfAssertFunctions;
    struct callFunctionItemWithArg *ListOfRetractFunctions;
+   struct callFunctionItemWithArg *ListOfModifyFunctions;
    struct patternEntityRecord  FactInfo;
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    struct deftemplate *CurrentDeftemplate;
@@ -169,6 +170,13 @@ struct factsData
                                                                                void (*)(void *,void *),int,void *);
    LOCALE intBool                        AddRetractFunction(char *,void (*)(void *,void *),int);
    LOCALE intBool                        EnvRemoveRetractFunction(void *,char *);
+
+   LOCALE intBool                        EnvAddModifyFunction(void *,char *,
+                                                                    void (*)(void *,void *,void *),int);
+   LOCALE intBool                        EnvAddModifyFunctionWithContext(void *,char *,
+                                                                               void (*)(void *,void *,void *),int,void *);
+   LOCALE intBool                        AddModifyFunction(char *,void (*)(void *,void *,void *),int);
+   LOCALE intBool                        EnvRemoveModifyFunction(void *,char *);
 
 
 #ifndef _FACTMNGR_SOURCE_
