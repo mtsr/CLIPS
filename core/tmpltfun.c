@@ -400,7 +400,57 @@ static void DuplicateModifyCommand(
             CopyMultifield(theEnv,(struct multifield *) oldFact->theProposition.theFields[i].value);
         }
      }
+     
+   /*================================================*/
+   /* Call registered modify notification functions. */
+   /*================================================*/
 
+   if (retractIt &&
+       (FactData(theEnv)->ListOfModifyFunctions != NULL))
+     {
+      struct callFunctionItemWithArg *theModifyFunction;
+      struct fact *replacement = newFact;
+      
+      /*==================================================================*/
+      /* If the fact already exists, determine if it's the fact we're     */
+      /* modifying. If so it will be retracted and reasserted. If not,    */
+      /* it will just be retracted, so pass NULL as the replacement fact. */
+      /*==================================================================*/
+      
+      if (! FactWillBeAsserted(theEnv,newFact))
+        {
+         if (! MultifieldsEqual(&oldFact->theProposition,
+                              &newFact->theProposition))
+           { replacement = NULL; }
+        }
+
+      /*=========================================================*/
+      /* Preassign the factIndex and timeTag so the notification */
+      /* function will see the correct values.                   */
+      /*=========================================================*/
+      
+      if (replacement != NULL)
+        {
+         replacement->factIndex = FactData(theEnv)->NextFactIndex;
+         replacement->factHeader.timeTag = DefruleData(theEnv)->CurrentEntityTimeTag;
+        }
+     
+      /*=========================================*/
+      /* Call each modify notification function. */
+      /*=========================================*/
+      
+      for (theModifyFunction = FactData(theEnv)->ListOfModifyFunctions;
+           theModifyFunction != NULL;
+           theModifyFunction = theModifyFunction->next)
+        {
+         SetEnvironmentCallbackContext(theEnv,theModifyFunction->context);
+         if (theModifyFunction->environmentAware)
+           { ((void (*)(void *,void *,void *))(*theModifyFunction->func))(theEnv,oldFact,replacement); }
+         else
+           { ((void (*)(void *,void *))(*theModifyFunction->func))(oldFact,replacement); }
+        }
+     }
+     
    /*======================================*/
    /* Perform the duplicate/modify action. */
    /*======================================*/
