@@ -552,5 +552,53 @@ CLIPS> (agenda)
 0      example-failing-2: f-1,f-2,*
 0      example-working-3: f-1,*,f-2
 For a total of 5 activations.
+CLIPS> (clear) ; Test Thing #19
+CLIPS> (watch activations)
+CLIPS> 
+(defrule xx
+   (SAD SD SD01 ?val0)
+   (and
+      (exists 
+         (SAD G ?ix G10 ?val1)
+         (SAD G ?ix G10 ?val2)
+         (or
+            (test (eq ?val1 "IQ")) 
+            (test (eq ?val2 "IQ")))) 
+      (test (eq ?val0 "ZAH")))
+=>)
+CLIPS> (assert (SAD SD SD01 "ZAH"))
+<Fact-1>
+CLIPS> (assert (SAD SD SD01 "BAH"))
+<Fact-2>
+CLIPS> (assert (SAD G 10 G10 "BQ"))
+<Fact-3>
+CLIPS> (assert (SAD G 10 G10 "IQ"))
+==> Activation 0      xx: f-1,*
+<Fact-4>
+CLIPS> (unwatch activations)
+CLIPS> (clear) ; Test Thing #20
+CLIPS> (watch activations)
+CLIPS> 
+(deffacts xy
+   (SAD G 1 GX01 "XX")
+   (SAD G 1 GCH 1 GCH03 "AA")
+   (SAD G 2 GX01 "CN")
+   (SAD G 2 GCH 1 GCH03 "AA")
+   (SAD G 3 GX01 "XX")
+   (SAD G 3 GCH 1 GCH03 "B00")
+   (SAD G 4 GX01 "CN")
+   (SAD G 4 GCH 1 GCH03 "B00"))
+CLIPS> 
+(defrule if_exists ""
+   (SAD G ?ix1 GX01 ?var1)
+   (and
+      (test (eq ?var1 "CN"))
+      (exists 
+         (SAD G ?ix1 GCH ?ix2 GCH03 ?var2)
+         (test (eq ?var2 "B00"))))
+   =>)
+CLIPS> (reset)
+==> Activation 0      if_exists: f-7,*
+CLIPS> (unwatch activations)
 CLIPS> (clear)
 CLIPS> (dribble-off)

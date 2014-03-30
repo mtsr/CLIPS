@@ -170,4 +170,75 @@ CLIPS> (run)
 (a b) c d (e f g) h
 (a) b c (d e f g) h
 () a b (c d e f g) h
+CLIPS> (clear) ;; CLIPSESG Bug
+CLIPS> 
+(defclass A (is-a USER)
+  (role concrete)
+  (slot foo)
+  (slot bar))
+CLIPS> (make-instance a of A)
+[a]
+CLIPS> (watch all)
+CLIPS> (modify-instance a (foo 0))
+MSG >> direct-modify ED:1 (<Instance-a> <Pointer-0x608000442070>) ;; Reference Pointer
+HND >> direct-modify primary in class USER
+       ED:1 (<Instance-a> <Pointer-0x608000442070>)               ;; Should be the same as above
+::= local slot foo in instance a <- 0
+HND << direct-modify primary in class USER
+       ED:1 (<Instance-a> <Pointer-0x608000442070>)               ;; Should be the same as above
+MSG << direct-modify ED:1 (<Instance-a> <Pointer-0x608000442070>) ;; Should be the same as above
+TRUE
+CLIPS> (unwatch all)
+CLIPS> (clear) ;; CLIPSESG Bug
+CLIPS> 
+(defclass A
+  (is-a USER)
+  (role concrete)
+  (slot one (type STRING))
+  (slot two (type SYMBOL) (allowed-values TRUE FALSE) (default TRUE)))
+CLIPS> 
+(definstances TEST (a1 of A) (a2 of A) (a3 of A))
+CLIPS> 
+(defrule rule1
+  ?obj <- (object (is-a A) (name [a1]))
+  =>
+  (message-modify-instance ?obj (one "a") (two FALSE))
+  (send ?obj print))
+CLIPS> 
+(defrule rule2
+  ?obj <- (object (is-a A) (name [a2]))
+  =>
+  (message-modify-instance ?obj (two FALSE) (one "a"))
+  (send ?obj print))
+CLIPS> 
+(defrule rule3
+  ?obj <- (object (is-a A) (name [a3]))
+  =>
+  (modify-instance ?obj (two FALSE) (one "a"))
+  (send ?obj print))
+CLIPS> (reset)
+CLIPS> (run)
+[a3] of A
+(one "a")
+(two FALSE)
+[a2] of A
+(one "a")
+(two FALSE)
+[a1] of A
+(one "a")
+(two FALSE)
+CLIPS> (clear) ;; CLIPSESG Crash Bug
+CLIPS> 
+(defrule bug
+   (dummy)
+   (foo ?x)
+   (not (and (huge ?x)
+             (not (and (test (eq ?x 1))
+                       (bar ?x)))))
+   =>)
+CLIPS> (reset)
+CLIPS> (assert (bar 1))
+<Fact-1>
+CLIPS> (assert (huge 1))
+<Fact-2>
 CLIPS> (dribble-off)
