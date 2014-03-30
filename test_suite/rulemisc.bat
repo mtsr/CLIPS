@@ -289,4 +289,46 @@
 (assert (Event (value 1) (time 0)))
 (assert (Event (value 1) (time 1)))
 (agenda)
+(clear) ; Test Thing #19
+(watch activations)
+
+(defrule xx
+   (SAD SD SD01 ?val0)
+   (and
+      (exists 
+         (SAD G ?ix G10 ?val1)
+         (SAD G ?ix G10 ?val2)
+         (or
+            (test (eq ?val1 "IQ")) 
+            (test (eq ?val2 "IQ")))) 
+      (test (eq ?val0 "ZAH")))
+=>)
+(assert (SAD SD SD01 "ZAH"))
+(assert (SAD SD SD01 "BAH"))
+(assert (SAD G 10 G10 "BQ"))
+(assert (SAD G 10 G10 "IQ"))
+(unwatch activations)
+(clear) ; Test Thing #20
+(watch activations)
+
+(deffacts xy
+   (SAD G 1 GX01 "XX")
+   (SAD G 1 GCH 1 GCH03 "AA")
+   (SAD G 2 GX01 "CN")
+   (SAD G 2 GCH 1 GCH03 "AA")
+   (SAD G 3 GX01 "XX")
+   (SAD G 3 GCH 1 GCH03 "B00")
+   (SAD G 4 GX01 "CN")
+   (SAD G 4 GCH 1 GCH03 "B00"))
+
+(defrule if_exists ""
+   (SAD G ?ix1 GX01 ?var1)
+   (and
+      (test (eq ?var1 "CN"))
+      (exists 
+         (SAD G ?ix1 GCH ?ix2 GCH03 ?var2)
+         (test (eq ?var2 "B00"))))
+   =>)
+(reset)
+(unwatch activations)
 (clear)

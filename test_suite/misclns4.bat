@@ -298,3 +298,27 @@
 (dummy-not-OK)
 (dummy-not-OK)
 (dummy-not-OK)
+(clear) ;; module order save issue
+(defmodule A (export deftemplate AT))
+(deftemplate A::AT (slot x))
+(defmodule MAIN (import A deftemplate AT))
+(defrule MAIN::RAT (AT (x 3)) =>)
+(save "Temp//rules.sav")
+(clear)
+(load "Temp//rules.sav")
+(clear) ;; bsave/bload issue
+
+(defrule x_ba6
+   (Doklad KodDokladu ?V163_TV9040)
+   (Doklad KodDokladu ?V163_TV9043)
+   (or (test (eq  ?V163_TV9040 "36"))
+       (test (eq  ?V163_TV9043 "37")))
+   =>)
+(defrule x_ba8 =>)
+(defrule x_baa =>)
+(defrule x_ba8 =>)
+(bsave "Temp//temp.bin")   
+(clear)
+(bload "Temp//temp.bin")  
+(rules)
+(clear)

@@ -82,3 +82,54 @@
    =>
    (printout t ?first " " ?second " " ?third " " ?fourth " " ?fifth crlf))
 (run)
+(clear) ;; CLIPSESG Bug
+
+(defclass A (is-a USER)
+  (role concrete)
+  (slot foo)
+  (slot bar))
+(make-instance a of A)
+(watch all)
+(modify-instance a (foo 0))
+(unwatch all)
+(clear) ;; CLIPSESG Bug
+
+(defclass A
+  (is-a USER)
+  (role concrete)
+  (slot one (type STRING))
+  (slot two (type SYMBOL) (allowed-values TRUE FALSE) (default TRUE)))
+
+(definstances TEST (a1 of A) (a2 of A) (a3 of A))
+
+(defrule rule1
+  ?obj <- (object (is-a A) (name [a1]))
+  =>
+  (message-modify-instance ?obj (one "a") (two FALSE))
+  (send ?obj print))
+
+(defrule rule2
+  ?obj <- (object (is-a A) (name [a2]))
+  =>
+  (message-modify-instance ?obj (two FALSE) (one "a"))
+  (send ?obj print))
+
+(defrule rule3
+  ?obj <- (object (is-a A) (name [a3]))
+  =>
+  (modify-instance ?obj (two FALSE) (one "a"))
+  (send ?obj print))
+(reset)
+(run)
+(clear) ;; CLIPSESG Crash Bug
+
+(defrule bug
+   (dummy)
+   (foo ?x)
+   (not (and (huge ?x)
+             (not (and (test (eq ?x 1))
+                       (bar ?x)))))
+   =>)
+(reset)
+(assert (bar 1))
+(assert (huge 1))
