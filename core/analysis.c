@@ -628,6 +628,8 @@ static int PropagateVariableToNodes(
            {
             if (theNode->referringNode == NULL)
               { theNode->referringNode = theReference; }
+            else if (theNode->referringNode->beginNandDepth < theReference->beginNandDepth) // Compare to variable within
+              { theNode->referringNode = theReference; }                                    // closest not/and group.
             else if (theReference->pattern == theNode->pattern)
               { theNode->referringNode = theReference; }
             else if (theReference->patternType == theNode->patternType)
