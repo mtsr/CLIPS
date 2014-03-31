@@ -631,6 +631,6 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 (defclass BEO (is-a USER) (multislot de) (multislot en))
 (make-instance of BEO)
 (make-instance of BEO)
-(bsave-instances d.bins)
+(bsave-instances "Temp//d.bins")
 (reset)
-(bload-instances d.bins)
+(bload-instances "Temp//d.bins")
