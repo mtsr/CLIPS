@@ -98,6 +98,7 @@ struct lhsParseNode
    struct expr *rightHash;
    struct expr *betaHash;
    struct lhsParseNode *expression;
+   struct lhsParseNode *secondaryExpression;
    void *userData;
    struct lhsParseNode *right;
    struct lhsParseNode *bottom;
@@ -112,6 +113,8 @@ LOCALE struct lhsParseNode           *ExpressionToLHSParseNodes(void *,struct ex
 LOCALE struct expr                   *LHSParseNodesToExpression(void *,struct lhsParseNode *);
 LOCALE void                           AddInitialPatterns(void *,struct lhsParseNode *);
 LOCALE int                            IsExistsSubjoin(struct lhsParseNode *,int);
+LOCALE struct lhsParseNode           *CombineLHSParseNodes(void *,struct lhsParseNode *,struct lhsParseNode *);
+LOCALE void                           AssignPatternMarkedFlag(struct lhsParseNode *,short);
 
 #endif
 

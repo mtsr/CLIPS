@@ -502,6 +502,43 @@ globle struct expr *CombineExpressions(
    return(tempPtr);
   }
 
+/*********************/
+/* NegateExpression: */
+/*********************/
+globle struct expr *NegateExpression(
+  void *theEnv,
+  struct expr *theExpression)
+  {
+   struct expr *tempPtr;
+
+   /*=========================================*/
+   /* If the expression is NULL, return NULL. */
+   /*=========================================*/
+
+   if (theExpression == NULL) return(NULL);
+
+   /*==================================================*/
+   /* The expression is already wrapped within a "not" */
+   /* function call, just remove the function call.    */
+   /*==================================================*/
+
+   if (theExpression->value == ExpressionData(theEnv)->PTR_NOT)
+     {
+      tempPtr = theExpression->argList;
+      rtn_struct(theEnv,expr,theExpression);
+      return(tempPtr);
+     }
+
+   /*===================================================*/
+   /* Wrap the expression within a "not" function call. */
+   /*===================================================*/
+
+   tempPtr = GenConstant(theEnv,FCALL,ExpressionData(theEnv)->PTR_NOT);
+   tempPtr->argList = theExpression;
+
+   return(tempPtr);
+  }
+
 /********************************************************/
 /* AppendExpressions: Attaches an expression to the end */
 /*   of another expression's nextArg list.              */

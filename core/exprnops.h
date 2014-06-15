@@ -54,6 +54,7 @@
    LOCALE intBool                        ConstantType(int);
    LOCALE struct expr                   *CombineExpressions(void *,struct expr *,struct expr *);
    LOCALE struct expr                   *AppendExpressions(struct expr *,struct expr *);
+   LOCALE struct expr                   *NegateExpression(void *,struct expr *);
 
 #endif
 

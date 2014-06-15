@@ -73,31 +73,24 @@ struct groupReference
 /***************************************/
 
    static struct lhsParseNode    *ReverseAndOr(void *,struct lhsParseNode *,struct lhsParseNode *,int);
-   static struct lhsParseNode    *PerformReorder1(void *,struct lhsParseNode *,int *);
-   static struct lhsParseNode    *PerformReorder2(void *,struct lhsParseNode *,int *);
-   static struct lhsParseNode    *CompressCEs(void *,struct lhsParseNode *,int *);
+   static struct lhsParseNode    *PerformReorder1(void *,struct lhsParseNode *,int *,int);
+   static struct lhsParseNode    *PerformReorder2(void *,struct lhsParseNode *,int *,int);
+   static struct lhsParseNode    *CompressCEs(void *,struct lhsParseNode *,int *,int);
    static void                    IncrementNandDepth(void *,struct lhsParseNode *,int);
    static struct lhsParseNode    *CreateInitialPattern(void *);
-   static struct lhsParseNode    *ReorderDriver(void *,struct lhsParseNode *,int *,int);
+   static struct lhsParseNode    *ReorderDriver(void *,struct lhsParseNode *,int *,int,int);
    static struct lhsParseNode    *AddRemainingInitialPatterns(void *,struct lhsParseNode *);
    static void                    PrintNodes(void *,char *,struct lhsParseNode *);
-   static struct lhsParseNode    *AssignPatternIndices(struct lhsParseNode *,short,int);
+   static struct lhsParseNode    *AssignPatternIndices(struct lhsParseNode *,short,int,short);
    static void                    PropagateIndexSlotPatternValues(struct lhsParseNode *,
                                                                   short,short,
                                                                   struct symbolHashNode *,
                                                                   short);
    static void                    PropagateJoinDepth(struct lhsParseNode *,short);
    static void                    PropagateNandDepth(struct lhsParseNode *,int,int);
-   static void                    PropagateNandDepth2( struct lhsParseNode *,int,int);
-   static intBool                 AddNandPatterns(void *,int,struct lhsParseNode *,struct lhsParseNode *,
-                                                  struct lhsParseNode *,struct variableReference *,
-                                                  struct groupReference *);
    static int                     VariableDepth(void *,struct variableReference *);
-   static void                    InsertNandPatterns(void *,struct lhsParseNode *,struct lhsParseNode *,
-                                                     struct lhsParseNode *,int);
    static void                    MarkExistsNands(struct lhsParseNode *);
-   static intBool                 AddNandPatternsForTestCE(int,struct lhsParseNode *,struct variableReference *);
-   static intBool                 AddNandPatternsForSubconstraints(int,struct lhsParseNode *,struct variableReference *);
+   static int                     PropagateWhichCE(struct lhsParseNode *,int);
 
 /********************************************/
 /* ReorderPatterns: Reorders a group of CEs */     
@@ -108,8 +101,7 @@ globle struct lhsParseNode *ReorderPatterns(
   struct lhsParseNode *theLHS,
   int *anyChange)
   {
-   struct lhsParseNode *newLHS, *patternPtr, *tempLHS, *lastLHS;
-   unsigned int whichCE;
+   struct lhsParseNode *newLHS, *tempLHS, *lastLHS;
 
    /*=============================================*/
    /* If the LHS of the rule was left unspecified */
@@ -127,12 +119,18 @@ globle struct lhsParseNode *ReorderPatterns(
    newLHS->type = AND_CE;
    newLHS->right = theLHS;
 
+   /*==============================================================*/
+   /* Mark the nodes to indicate which CE they're associated with. */
+   /*==============================================================*/
+   
+   PropagateWhichCE(newLHS,0);
+   
    /*=======================================================*/
    /* Reorder the patterns to support the KB Rete topology. */
    /*=======================================================*/
 
-   newLHS = ReorderDriver(theEnv,newLHS,anyChange,1);
-   newLHS = ReorderDriver(theEnv,newLHS,anyChange,2);
+   newLHS = ReorderDriver(theEnv,newLHS,anyChange,1,1);
+   newLHS = ReorderDriver(theEnv,newLHS,anyChange,2,1);
 
    /*===========================================*/
    /* The top level and CE may have disappeared */
@@ -168,25 +166,19 @@ globle struct lhsParseNode *ReorderPatterns(
       newLHS->right = theLHS;
      }
 
-   /*==============================================*/
-   /* Add patterns if necessary to not/and groups. */
-   /*==============================================*/
+   /*================================================*/
+   /* Mark exist not/and groups within the patterns. */
+   /*================================================*/
 
    if (newLHS->type == OR_CE)
      {
       for (theLHS = newLHS->right;
            theLHS != NULL;
            theLHS = theLHS->bottom)
-        { 
-         MarkExistsNands(theLHS->right);
-         AddNandPatterns(theEnv,1,NULL,theLHS->right,theLHS->right,NULL,NULL); 
-        }
+        { MarkExistsNands(theLHS->right); }
      }
    else
-     {
-      MarkExistsNands(newLHS->right); 
-      AddNandPatterns(theEnv,1,NULL,newLHS->right,newLHS->right,NULL,NULL);
-     }
+     { MarkExistsNands(newLHS->right); }
 
    /*=====================================================*/
    /* Add initial patterns where needed (such as before a */
@@ -210,16 +202,7 @@ globle struct lhsParseNode *ReorderPatterns(
    for (;
         theLHS != NULL;
         theLHS = theLHS->bottom)
-     {
-      whichCE = 1;
-
-      for (patternPtr = theLHS->right;
-           patternPtr != NULL;
-           patternPtr = patternPtr->bottom)
-        { if (patternPtr->userCE) patternPtr->whichCE = whichCE++; }
-
-      AssignPatternIndices(theLHS->right,1,1);
-     }
+     { AssignPatternIndices(theLHS->right,1,1,0); }
 
    /*===========================*/
    /* Return the processed LHS. */
@@ -236,7 +219,8 @@ static struct lhsParseNode *ReorderDriver(
   void *theEnv,
   struct lhsParseNode *theLHS,
   int *anyChange,
-  int pass)
+  int pass,
+  int depth)
   {
    struct lhsParseNode *argPtr;
    struct lhsParseNode *before, *save;
@@ -265,8 +249,8 @@ static struct lhsParseNode *ReorderDriver(
           (theLHS->type == NOT_CE) ||
           (theLHS->type == OR_CE))
         {
-         if (pass == 1) theLHS = PerformReorder1(theEnv,theLHS,&newChange);
-         else theLHS = PerformReorder2(theEnv,theLHS,&newChange);
+         if (pass == 1) theLHS = PerformReorder1(theEnv,theLHS,&newChange,depth);
+         else theLHS = PerformReorder2(theEnv,theLHS,&newChange,depth);
 
          if (newChange)
            {
@@ -274,7 +258,7 @@ static struct lhsParseNode *ReorderDriver(
             change = TRUE;
            }
 
-         theLHS = CompressCEs(theEnv,theLHS,&newChange);
+         theLHS = CompressCEs(theEnv,theLHS,&newChange,depth);
 
          if (newChange)
            {
@@ -309,14 +293,14 @@ static struct lhsParseNode *ReorderDriver(
             if (before == NULL)
               {
                argPtr->bottom = NULL;
-               theLHS->right = ReorderDriver(theEnv,argPtr,&newChange,pass);
+               theLHS->right = ReorderDriver(theEnv,argPtr,&newChange,pass,depth+1);
                theLHS->right->bottom = save;
                before = theLHS->right;
               }
             else
               {
                argPtr->bottom = NULL;
-               before->bottom = ReorderDriver(theEnv,argPtr,&newChange,pass);
+               before->bottom = ReorderDriver(theEnv,argPtr,&newChange,pass,depth+1);
                before->bottom->bottom = save;
                before = before->bottom;
               }
@@ -345,9 +329,9 @@ static struct lhsParseNode *ReorderDriver(
    return(theLHS);
   }
 
-/*************************************************************/
-/* MarkExistsNands:                */
-/*************************************************************/
+/********************/
+/* MarkExistsNands: */
+/********************/
 static void MarkExistsNands(
   struct lhsParseNode *theLHS)
   {      
@@ -375,396 +359,6 @@ static void MarkExistsNands(
       currentDepth = theLHS->endNandDepth;
       theLHS = theLHS->bottom;
      }
-  }
-      
-/*************************************************************/
-/* AddNandPatterns: Adds patterns to the beginning of a nand */
-/*   CE group when a referenced variable falls is detected   */
-/*   outside the prior enclosing group.                      */
-/*************************************************************/
-static intBool AddNandPatterns(
-  void *theEnv,
-  int depth,
-  struct lhsParseNode *parent,
-  struct lhsParseNode *firstPattern,
-  struct lhsParseNode *theLHS,
-  struct variableReference *variables,
-  struct groupReference *groups)
-  {      
-   struct lhsParseNode *nandStart, *theField, *newParent, *subField;
-   struct variableReference *startVariables, *tmpVar;
-   intBool addPatterns = FALSE, returnAddPatterns = FALSE;
-   struct groupReference *tmpGroup;
-   int vdepth;
-   
-   /*================================================================*/
-   /* The firstPattern parameter is always the first CE in the rule. */
-   /* The value is never reassigned within this function.            */
-   /*================================================================*/
-   
-   /*===================================================*/
-   /* Initially, depth is 1, parent is NULL, and theLHS */
-   /* is the first CE in the LHS of the rule.           */
-   /*===================================================*/
-      
-   nandStart = theLHS;
-   startVariables = variables;
-   newParent = parent;
-   
-   while (theLHS != NULL)
-     {
-      if (theLHS->beginNandDepth > depth)
-        {
-         /*==============================*/
-         /* Process the next nand group. */
-         /*==============================*/
-
-         tmpGroup = get_struct(theEnv,groupReference);
-         tmpGroup->depth = depth;
-         tmpGroup->theGroup = theLHS;
-         tmpGroup->next = groups;
-         groups = tmpGroup;
-         
-         if (AddNandPatterns(theEnv,depth+1,newParent,firstPattern,theLHS,variables,groups))
-           { addPatterns = TRUE; }
-
-         groups = tmpGroup->next;
-         rtn_struct(theEnv,variableReference,tmpGroup);
-         
-         /*==========================================================*/
-         /* Skip to the end of the nand group just processed.        */
-         /*                                                          */
-         /*    (defrule example                                      */
-         /*       (a)                                                */
-         /*       (not (and (b)                                      */
-         /*                 (c)))                                    */
-         /*       (d)                                                */
-         /*       =>)                                                */
-         /*                                                          */
-         /* The begin/end nand depth for (a) is 1/1, for (b) is 2/2, */
-         /* for (c) is 2/1, and for (d) is 1/1. AddNandPatterns will */
-         /* be called in this block because the begin nand depth of  */
-         /* 2 is greater than the depth of 1 for the initial call    */
-         /* of this function. When the recursive call of             */
-         /* AddNandPatterns is completed, theLHS will be set to (c)  */
-         /* which is the last pattern in the nand group just         */
-         /* detected.                                                */
-         /*==========================================================*/
-         
-         while (theLHS->endNandDepth > depth)
-           { theLHS = theLHS->bottom; }
-        }
-      else
-        {
-         /*===========================================*/
-         /* Search the pattern for binding variables. */
-         /*===========================================*/
-        
-         if (theLHS->type == PATTERN_CE)
-           {            
-            for (theField = theLHS->right; theField != NULL; theField = theField->right)
-              {
-               if (theField->multifieldSlot)
-                 { subField = theField->bottom; }
-               else
-                 { subField = theField; }
-                 
-               while (subField != NULL)
-                 {
-                  if ((subField->type == SF_VARIABLE) || (subField->type == MF_VARIABLE))
-                    {
-                     vdepth = VariableDepth(subField->value,variables);
-                  
-                     if (vdepth != -1)
-                       {
-                        if (theLHS->negated)
-                          {
-                           if ((depth - vdepth) > 0)
-                             { addPatterns = TRUE; }
-                          }
-                        else
-                          {
-                           if ((depth - vdepth) > 1)
-                             { returnAddPatterns = TRUE; }
-                          }
-                       }
-                  
-                     tmpVar = get_struct(theEnv,variableReference);
-                     tmpVar->depth = depth;
-                     tmpVar->name = (struct symbolHashNode *) subField->value;
-                     tmpVar->next = variables;
-                     variables = tmpVar;
-                    }
-
-                  if (theLHS->negated)
-                    {
-                     if (AddNandPatternsForSubconstraints(depth+1,subField,variables))
-                       { addPatterns = TRUE; }
-                    }
-                  else 
-                    {
-                     if (AddNandPatternsForSubconstraints(depth,subField,variables))
-                       { returnAddPatterns = TRUE; }
-                    }
-                    
-                  if (theField->multifieldSlot)
-                    { subField = subField->right; }
-                  else
-                    { subField = NULL; }
-                 }
-              }
-           }
-         else if (theLHS->type == TEST_CE)
-           {
-            if (AddNandPatternsForTestCE(depth,theLHS->expression,variables))
-              { returnAddPatterns = TRUE; }
-           }
-           
-         /*=====================================================*/
-         /* Return if the end of a nand group has been reached. */
-         /*=====================================================*/
-         
-         if (theLHS->endNandDepth < depth)
-           { 
-            /*===================================================*/
-            /* Deallocate variables detected in this nand group. */
-            /*===================================================*/
-            
-            while (variables != startVariables)
-              {
-               tmpVar = variables->next;
-               rtn_struct(theEnv,variableReference,variables);
-               variables = tmpVar;
-              }
-              
-            if (addPatterns)
-              {
-               if (parent != NULL)                  // Fix: adding patterns could
-                 { nandStart = parent->bottom; }    // have changed the nandStart
-               InsertNandPatterns(theEnv,parent,firstPattern,nandStart,depth);
-              }
-              
-            return(addPatterns || returnAddPatterns); 
-           }
-        }
-      
-      /*=============================================*/
-      /* Move on the next pattern in the nand group. */
-      /*=============================================*/
-    
-      newParent = theLHS;
-      theLHS = theLHS->bottom;
-     }
-
-   if (addPatterns)
-     {
-      if (parent != NULL)                  // Fix: adding patterns could
-        { nandStart = parent->bottom; }    // have changed the nandStart
-      InsertNandPatterns(theEnv,parent,firstPattern,nandStart,depth);
-     }
-
-   /*===================================================*/
-   /* Deallocate variables detected in this nand group. */
-   /*===================================================*/
-
-   while (variables != startVariables)
-     {
-      tmpVar = variables->next;
-      rtn_struct(theEnv,variableReference,variables);
-      variables = tmpVar;
-     }
-     
-   return(addPatterns || returnAddPatterns);
-  }
-
-/******************************/
-/* AddNandPatternsForTestCE:  */
-/******************************/
-static intBool AddNandPatternsForTestCE(
-  int depth,
-  struct lhsParseNode *testCE,
-  struct variableReference *variables)
-  {
-   int vdepth;
-   
-   while (testCE != NULL)
-     {
-      if ((testCE->type == SF_VARIABLE) || (testCE->type == MF_VARIABLE))
-        {
-         vdepth = VariableDepth(testCE->value,variables);
-                  
-         if (vdepth != -1)
-           {
-            if ((depth - vdepth) > 1)
-              { return(TRUE); }
-           }
-        }
-
-      if ((testCE->bottom != NULL) &&
-          (AddNandPatternsForTestCE(depth,testCE->bottom,variables)))
-        { return(TRUE); }
-        
-      testCE = testCE->right;
-     }
-  
-   return(FALSE);
-  }
-  
-/**************************************/
-/* AddNandPatternsForSubconstraints:  */
-/**************************************/
-static intBool AddNandPatternsForSubconstraints(
-  int depth,
-  struct lhsParseNode *theField,
-  struct variableReference *variables)
-  {
-   struct lhsParseNode *andField;
-   struct lhsParseNode *orField;
-   int vdepth;
-
-   /*=========================================*/
-   /* Loop through each of the | constraints. */
-   /*=========================================*/
-
-   orField = theField->bottom;
-   for (;
-        orField != NULL;
-        orField = orField->bottom)
-     {
-      /*=========================================*/
-      /* Loop through each of the & constraints. */
-      /*=========================================*/
-
-      for (andField = orField;
-           andField != NULL;
-           andField = andField->right)
-        {
-         /*==========================================*/
-         /* If a variable is found, determine if the */
-         /* reference requires adding nand patterns. */
-         /*==========================================*/
-
-         if ((andField->type == SF_VARIABLE) || (andField->type == MF_VARIABLE))
-           { 
-            vdepth = VariableDepth(andField->value,variables);
-
-            if (vdepth != -1)
-              {
-               if ((depth - vdepth) > 1)
-                  { return(TRUE); }
-              }
-           }
-
-         /*========================================================*/
-         /* Check predicate and return value constraints to see if */
-         /* the reference variables require adding nand patterns   */
-         /*========================================================*/
-
-         else if ((andField->type == PREDICATE_CONSTRAINT) ||
-                  (andField->type == RETURN_VALUE_CONSTRAINT))
-           {
-            if (AddNandPatternsForTestCE(depth,andField->expression,variables))
-              { return(TRUE); }
-           }
-        }
-     }
-
-   /*===========================================*/
-   /* It is not necessary to add nand patterns. */
-   /*===========================================*/
-
-   return(FALSE);
-  }
-
-/***********************/
-/* InsertNandPatterns: */
-/***********************/
-static void InsertNandPatterns(
-  void *theEnv,
-  struct lhsParseNode *parent,
-  struct lhsParseNode *firstPattern,
-  struct lhsParseNode *endPattern,
-  int depth)
-  {  
-   struct lhsParseNode *theLHS, *newNode, *first = NULL, *last = NULL;
-   struct lhsParseNode *theFinalGroup = NULL;
-   int lastEnd = 1;
-   intBool insideFinalGroup = FALSE;
-   int minDepth, maxDepth;
-
-   /*=======================================================*/
-   /* If parent is NULL, then this function has been called */
-   /* from the initial invocation of AddNandPatterns and we */
-   /* don't add any patterns at this level.                 */
-   /*=======================================================*/
-   
-   if (parent == NULL) return;
-   
-   /*=========================================================================*/
-   /* Determine the highest level not/and group to which the pattern belongs. */
-   /* The parent parameter is the CE before the nand group being processed.   */
-   /* The firstPattern parameter is always the first CE in the rule.          */
-   /*=========================================================================*/
-
-   for (theLHS = firstPattern; theLHS != endPattern; theLHS = theLHS->bottom)
-     {
-      if ((lastEnd == 1) && (theLHS->beginNandDepth > 1))
-        { theFinalGroup = theLHS; }
-        
-      lastEnd = theLHS->endNandDepth;
-     }
-
-   if (lastEnd == 1)
-     { theFinalGroup = endPattern; }
-     
-   minDepth = theFinalGroup->endNandDepth;
-   maxDepth = theFinalGroup->beginNandDepth;
-        
-   for (theLHS = theFinalGroup; theLHS != endPattern; theLHS = theLHS->bottom)
-     {
-      if (theLHS->endNandDepth < minDepth)
-        { minDepth = theLHS->endNandDepth; }
-        
-      if (theLHS->beginNandDepth > maxDepth)
-        { maxDepth = theLHS->beginNandDepth; }
-     }
-     
-   /* TBD Add code here to determine the block start. */
-   
-   for (theLHS = firstPattern; theLHS != endPattern; theLHS = theLHS->bottom)
-     {
-      if (theLHS == theFinalGroup)
-        { insideFinalGroup = TRUE; }
-        
-      newNode = GetLHSParseNode(theEnv);
-      CopyLHSParseNode(theEnv,newNode,theLHS,TRUE);
-      newNode->right = CopyLHSParseNodes(theEnv,theLHS->right);
-      newNode->value = NULL;
-
-      if (insideFinalGroup)
-        {
-         newNode->beginNandDepth = depth + (theLHS->beginNandDepth - minDepth);
-         newNode->endNandDepth = depth + (theLHS->endNandDepth - minDepth);
-        }
-      else
-        {
-         newNode->beginNandDepth = depth + (theLHS->beginNandDepth - firstPattern->beginNandDepth);
-         newNode->endNandDepth = depth + (theLHS->endNandDepth - firstPattern->beginNandDepth);
-        }
-        
-      if (first == NULL)
-        { first = newNode; }
-      else
-        { last->bottom = newNode; }
-        
-      last = newNode;
-     }
-     
-   first->existsNand = endPattern->existsNand;
-   endPattern->existsNand = FALSE;
-   
-   parent->bottom = first;
-   last->bottom = endPattern;
   }
 
 /**************************************************************/
@@ -827,7 +421,8 @@ globle void AddInitialPatterns(
 static struct lhsParseNode *PerformReorder1(
   void *theEnv,
   struct lhsParseNode *theLHS,
-  int *newChange)
+  int *newChange,
+  int depth)
   {
    struct lhsParseNode *argPtr, *lastArg, *nextArg;
    struct lhsParseNode *tempArg, *newNode;
@@ -894,6 +489,7 @@ static struct lhsParseNode *PerformReorder1(
                tempArg->logical = FALSE;
                tempArg->value = NULL;
                tempArg->expression = NULL;
+               tempArg->secondaryExpression = NULL;
                tempArg->right = newNode;
 
                tempArg = tempArg->bottom;
@@ -958,7 +554,8 @@ static struct lhsParseNode *PerformReorder1(
 static struct lhsParseNode *PerformReorder2(
   void *theEnv,
   struct lhsParseNode *theLHS,
-  int *newChange)
+  int *newChange,
+  int depth)
   {
    struct lhsParseNode *argPtr;
    int change;
@@ -1028,6 +625,7 @@ static struct lhsParseNode *PerformReorder2(
             argPtr->right->rightHash = NULL;
             argPtr->right->betaHash = NULL;
             argPtr->right->expression = NULL;
+            argPtr->right->secondaryExpression = NULL;
             argPtr->right->userData = NULL;
             argPtr->right->right = NULL;
             argPtr->right->bottom = NULL;
@@ -1063,6 +661,7 @@ static struct lhsParseNode *PerformReorder2(
             argPtr->rightHash = NULL;
             argPtr->betaHash = NULL;
             argPtr->expression = NULL;
+            argPtr->secondaryExpression = NULL;
             argPtr->userData = NULL;
             argPtr->right = NULL;
             argPtr->bottom = NULL;
@@ -1231,13 +830,14 @@ static struct lhsParseNode *ReverseAndOr(
    return(copyOfCEs);
   }
 
-/***********************************************************/
-/* CompressCEs:              */
-/***********************************************************/
+/****************/
+/* CompressCEs: */
+/****************/
 static struct lhsParseNode *CompressCEs(
   void *theEnv,
   struct lhsParseNode *theLHS,
-  int *newChange)
+  int *newChange,
+  int depth)
   {
    struct lhsParseNode *argPtr, *lastArg, *nextArg;
    struct lhsParseNode *tempArg;
@@ -1297,19 +897,15 @@ static struct lhsParseNode *CompressCEs(
             change = TRUE;
             *newChange = TRUE;
 
-            e1 = GenConstant(theEnv,FCALL,ExpressionData(theEnv)->PTR_NOT);
-            e2 = LHSParseNodesToExpression(theEnv,argPtr->expression);
-            e1->arg_list = e2;
+            tempArg = GetLHSParseNode(theEnv);
+            tempArg->type = FCALL;
+            tempArg->value = ExpressionData(theEnv)->PTR_NOT;
+            tempArg->bottom = argPtr->expression;
+            argPtr->expression = tempArg;
 
             CopyLHSParseNode(theEnv,theLHS,argPtr,TRUE);
-
             ReturnLHSParseNodes(theEnv,argPtr);
-            ReturnLHSParseNodes(theEnv,theLHS->expression);
-
-            theLHS->expression = ExpressionToLHSParseNodes(theEnv,e1);
             theLHS->right = NULL;
-            ReturnExpression(theEnv,e1);
-
             break;
            }
 
@@ -1327,14 +923,83 @@ static struct lhsParseNode *CompressCEs(
             change = TRUE;
             *newChange = TRUE;
 
-            e1 = LHSParseNodesToExpression(theEnv,argPtr->expression);
-            e2 = LHSParseNodesToExpression(theEnv,argPtr->bottom->expression);
-            e1 = CombineExpressions(theEnv,e1,e2);
+            argPtr->expression = CombineLHSParseNodes(theEnv,argPtr->expression,argPtr->bottom->expression);
+            argPtr->bottom->expression = NULL;
 
-            ReturnLHSParseNodes(theEnv,argPtr->expression);
-            argPtr->expression = ExpressionToLHSParseNodes(theEnv,e1);
-            ReturnExpression(theEnv,e1);
+            tempArg = argPtr->bottom;
+            argPtr->bottom = tempArg->bottom;
+            tempArg->bottom = NULL;
 
+            ReturnLHSParseNodes(theEnv,tempArg);
+           }
+
+         /*========================================================*/
+         /* A test CE can be attached to the preceding pattern CE. */
+         /*========================================================*/
+
+         else if ((theLHS->type == AND_CE) && (argPtr->type == PATTERN_CE) &&
+                  ((argPtr->bottom != NULL) ? argPtr->bottom->type == TEST_CE :
+                                              FALSE) &&
+                   (argPtr->negated == FALSE) &&
+                   (argPtr->exists == FALSE) &&
+                   (argPtr->beginNandDepth == argPtr->endNandDepth) &&
+                   (argPtr->endNandDepth == argPtr->bottom->beginNandDepth))
+           {
+            int endNandDepth;
+            change = TRUE;
+            *newChange = TRUE;
+            
+            endNandDepth = argPtr->bottom->endNandDepth;
+            
+            if (argPtr->negated || argPtr->exists)
+              {
+               e1 = LHSParseNodesToExpression(theEnv,argPtr->secondaryExpression);
+               e2 = LHSParseNodesToExpression(theEnv,argPtr->bottom->expression);
+               e1 = CombineExpressions(theEnv,e1,e2);
+               ReturnLHSParseNodes(theEnv,argPtr->secondaryExpression);
+               argPtr->secondaryExpression = ExpressionToLHSParseNodes(theEnv,e1);
+               ReturnExpression(theEnv,e1);
+              }
+            else
+              {
+               argPtr->expression = CombineLHSParseNodes(theEnv,argPtr->expression,argPtr->bottom->expression);
+               argPtr->bottom->expression = NULL;
+              }
+            
+            if ((theLHS->right == argPtr) && ((argPtr->beginNandDepth - 1) == endNandDepth))
+              {
+               if (argPtr->negated)
+                 {
+                  argPtr->negated = FALSE;
+                  argPtr->exists = TRUE;
+                  e1 = LHSParseNodesToExpression(theEnv,argPtr->secondaryExpression);
+                  e1 = NegateExpression(theEnv,e1);
+                  ReturnLHSParseNodes(theEnv,argPtr->secondaryExpression);
+                  argPtr->secondaryExpression = ExpressionToLHSParseNodes(theEnv,e1);
+                  ReturnExpression(theEnv,e1);
+                 }
+               else if (argPtr->exists)
+                 {
+                  argPtr->negated = TRUE;
+                  argPtr->exists = FALSE;
+                  e1 = LHSParseNodesToExpression(theEnv,argPtr->secondaryExpression);
+                  e1 = NegateExpression(theEnv,e1);
+                  ReturnLHSParseNodes(theEnv,argPtr->secondaryExpression);
+                  argPtr->secondaryExpression = ExpressionToLHSParseNodes(theEnv,e1);
+                  ReturnExpression(theEnv,e1);
+                 }
+               else
+                 {
+                  argPtr->negated = TRUE;
+                 }
+               PropagateNandDepth(argPtr,endNandDepth,endNandDepth);
+              }
+
+            /*========================================*/
+            /* Detach the test CE from its parent and */
+            /* dispose of the data structures.        */
+            /*========================================*/
+            
             tempArg = argPtr->bottom;
             argPtr->bottom = tempArg->bottom;
             tempArg->bottom = NULL;
@@ -1355,6 +1020,40 @@ static struct lhsParseNode *CompressCEs(
 
             CopyLHSParseNode(theEnv,theLHS,argPtr,TRUE);
             theLHS->right = NULL;
+            ReturnLHSParseNodes(theEnv,argPtr);
+            break;
+           }
+
+         /*=======================================================*/
+         /* Replace and CEs containing a single pattern CE with   */
+         /* just a pattern CE if this is not the top most and CE. */
+         /*=======================================================*/
+
+         else if ((theLHS->type == AND_CE) && (argPtr->type == PATTERN_CE) &&
+                  (theLHS->right == argPtr) && (argPtr->bottom == NULL) && (depth > 1))
+           {
+            change = TRUE;
+            *newChange = TRUE;
+
+            CopyLHSParseNode(theEnv,theLHS,argPtr,FALSE);
+
+            theLHS->right = argPtr->right;
+
+            argPtr->networkTest = NULL; 
+            argPtr->externalNetworkTest = NULL;
+            argPtr->secondaryNetworkTest = NULL;
+            argPtr->externalRightHash = NULL;
+            argPtr->externalLeftHash = NULL;
+            argPtr->constantSelector = NULL;
+            argPtr->constantValue = NULL;
+            argPtr->leftHash = NULL;
+            argPtr->rightHash = NULL;
+            argPtr->betaHash = NULL;
+            argPtr->expression = NULL;
+            argPtr->secondaryExpression = NULL;
+            argPtr->userData = NULL;
+            argPtr->right = NULL;
+            argPtr->bottom = NULL;
             ReturnLHSParseNodes(theEnv,argPtr);
             break;
            }
@@ -1422,6 +1121,8 @@ globle void CopyLHSParseNode(
    dest->singleFieldsAfter = src->singleFieldsAfter;
    dest->logical = src->logical;
    dest->userCE = src->userCE;
+   dest->marked = src->marked;
+   dest->whichCE = src->whichCE;
    dest->referringNode = src->referringNode;
    dest->patternType = src->patternType;
    dest->pattern = src->pattern;
@@ -1457,6 +1158,7 @@ globle void CopyLHSParseNode(
       else
         { dest->userData = (*src->patternType->copyUserDataFunction)(theEnv,src->userData); }
       dest->expression = CopyLHSParseNodes(theEnv,src->expression);
+      dest->secondaryExpression = CopyLHSParseNodes(theEnv,src->secondaryExpression);
       dest->constraints = CopyConstraintRecord(theEnv,src->constraints);
       if (dest->constraints != NULL) dest->derivedConstraints = TRUE;
       else dest->derivedConstraints = FALSE;
@@ -1475,6 +1177,7 @@ globle void CopyLHSParseNode(
       dest->rightHash = src->rightHash;
       dest->userData = src->userData;
       dest->expression = src->expression;
+      dest->secondaryExpression = src->secondaryExpression;
       dest->derivedConstraints = FALSE;
       dest->constraints = src->constraints;
      }
@@ -1505,6 +1208,8 @@ globle struct lhsParseNode *GetLHSParseNode(
    newNode->logical = FALSE;
    newNode->derivedConstraints = FALSE;
    newNode->userCE = TRUE;
+   newNode->marked = FALSE;
+   newNode->whichCE = 0;
    newNode->constraints = NULL;
    newNode->referringNode = NULL;
    newNode->patternType = NULL;
@@ -1527,6 +1232,7 @@ globle struct lhsParseNode *GetLHSParseNode(
    newNode->betaHash = NULL;
    newNode->rightHash = NULL;
    newNode->expression = NULL;
+   newNode->secondaryExpression = NULL;
    newNode->right = NULL;
    newNode->bottom = NULL;
 
@@ -1556,6 +1262,7 @@ globle void ReturnLHSParseNodes(
       ReturnLHSParseNodes(theEnv,waste->right);
       ReturnLHSParseNodes(theEnv,waste->bottom);
       ReturnLHSParseNodes(theEnv,waste->expression);
+      ReturnLHSParseNodes(theEnv,waste->secondaryExpression);
       if (waste->derivedConstraints) RemoveConstraint(theEnv,waste->constraints);
       if ((waste->userData != NULL) &&
           (waste->patternType->returnUserDataFunction != NULL))
@@ -1865,10 +1572,10 @@ static void PrintNodes(
 static struct lhsParseNode *AssignPatternIndices(
   struct lhsParseNode *theLHS,
   short startIndex,
-  int depth)
+  int nandDepth,
+  short joinDepth)
   {
    struct lhsParseNode *theField;
-   short joinDepth = 0;
 
    /*====================================*/
    /* Loop through the CEs at this level */
@@ -1887,10 +1594,10 @@ static struct lhsParseNode *AssignPatternIndices(
       /* return to the previous level.                              */
       /*============================================================*/
 
-      if (theLHS->beginNandDepth > depth)
+      if (theLHS->beginNandDepth > nandDepth)
         {
-         theLHS = AssignPatternIndices(theLHS,startIndex,theLHS->beginNandDepth);
-         if (theLHS->endNandDepth < depth) return(theLHS);
+         theLHS = AssignPatternIndices(theLHS,startIndex,theLHS->beginNandDepth,joinDepth);
+         if (theLHS->endNandDepth < nandDepth) return(theLHS);
          startIndex++;
          joinDepth++;
         }
@@ -1905,11 +1612,12 @@ static struct lhsParseNode *AssignPatternIndices(
 
       else if (theLHS->type == TEST_CE)
         {
-         if (joinDepth == 0) joinDepth++;
+         if (joinDepth == 0)
+           { joinDepth++; }
          theLHS->joinDepth = joinDepth - 1;
          PropagateJoinDepth(theLHS->expression,(short) (joinDepth - 1));
-         PropagateNandDepth2(theLHS->expression,theLHS->beginNandDepth,theLHS->endNandDepth);
-         if (theLHS->endNandDepth < depth) return(theLHS); 
+         PropagateNandDepth(theLHS->expression,theLHS->beginNandDepth,theLHS->endNandDepth);
+         if (theLHS->endNandDepth < nandDepth) return(theLHS);
         }
 
       /*==========================================================*/
@@ -1921,19 +1629,25 @@ static struct lhsParseNode *AssignPatternIndices(
 
       else if (theLHS->type == PATTERN_CE)
         {
+         if (theLHS->expression != NULL)
+           {
+            PropagateJoinDepth(theLHS->expression,(short) joinDepth);
+            PropagateNandDepth(theLHS->expression,theLHS->beginNandDepth,theLHS->endNandDepth);
+           }
+           
          theLHS->pattern = startIndex;
          theLHS->joinDepth = joinDepth;
          PropagateJoinDepth(theLHS->right,joinDepth);
+         PropagateNandDepth(theLHS->right,theLHS->beginNandDepth,theLHS->endNandDepth);
          for (theField = theLHS->right; theField != NULL; theField = theField->right)
            {
             theField->pattern = startIndex;
             PropagateIndexSlotPatternValues(theField,theField->pattern,
                                             theField->index,theField->slot,
                                             theField->slotNumber);
-            PropagateNandDepth(theField,theLHS->beginNandDepth,theLHS->endNandDepth);
            }
 
-         if (theLHS->endNandDepth < depth) return(theLHS);
+         if (theLHS->endNandDepth < nandDepth) return(theLHS);
          startIndex++;
          joinDepth++;
         }
@@ -2022,9 +1736,31 @@ static void PropagateIndexSlotPatternValues(
      }
    }
 
-/***********************************************************/
-/* PropagateJoinDepth:          */
-/***********************************************************/
+/***************************************************/
+/* AssignPatternMarkedFlag: Recursively assigns    */
+/*   value to the marked field of a LHSParseNode.  */
+/***************************************************/
+globle void AssignPatternMarkedFlag(
+  struct lhsParseNode *theField,
+  short markedValue)
+  {
+   while (theField != NULL)
+     {
+      theField->marked = markedValue;
+      if (theField->bottom != NULL)
+        { AssignPatternMarkedFlag(theField->bottom,markedValue); }
+      if (theField->expression != NULL)
+        { AssignPatternMarkedFlag(theField->expression,markedValue); }
+      if (theField->secondaryExpression != NULL)
+        { AssignPatternMarkedFlag(theField->secondaryExpression,markedValue); }
+      theField = theField->right;
+     }
+  }
+
+/*****************************************************************/
+/* PropagateJoinDepth: Recursively assigns a joinDepth to each   */
+/*   node in a LHS node by following the right and bottom links. */
+/*****************************************************************/
 static void PropagateJoinDepth(
   struct lhsParseNode *theField,
   short joinDepth)
@@ -2036,48 +1772,61 @@ static void PropagateJoinDepth(
         { PropagateJoinDepth(theField->bottom,joinDepth); }
       if (theField->expression != NULL)
         { PropagateJoinDepth(theField->expression,joinDepth); }
+      if (theField->secondaryExpression != NULL)
+        { PropagateJoinDepth(theField->secondaryExpression,joinDepth); }
       theField = theField->right;
      }
   }
 
-/***********************************************************/
-/* PropagateNandDepth:          */
-/***********************************************************/
+/**************************************************************/
+/* PropagateNandDepth: Recursively assigns the not/and (nand) */
+/*   depth to each node in a LHS node by following the right, */
+/*   bottom, and expression links.                            */
+/**************************************************************/
 static void PropagateNandDepth(
   struct lhsParseNode *theField,
   int beginDepth,
   int endDepth)
   { 
    if (theField == NULL) return;
-   theField->beginNandDepth = beginDepth;
-   theField->endNandDepth = endDepth;
    
-   PropagateNandDepth(theField->expression,beginDepth,endDepth);
-      
-   for (theField = theField->bottom; theField != NULL; theField = theField->right)
-      { PropagateNandDepth(theField,beginDepth,endDepth); }
-  }
-
-/***********************************************************/
-/* PropagateNandDepth2:        */
-/***********************************************************/
-static void PropagateNandDepth2( 
-  struct lhsParseNode *theField,
-  int beginDepth,
-  int endDepth)
-  { 
-   if (theField == NULL) return;
    for (; theField != NULL; theField = theField->right)
       { 
        theField->beginNandDepth = beginDepth;
        theField->endNandDepth = endDepth;
-       PropagateNandDepth2(theField->bottom,beginDepth,endDepth); 
+       PropagateNandDepth(theField->expression,beginDepth,endDepth);
+       PropagateNandDepth(theField->secondaryExpression,beginDepth,endDepth);
+       PropagateNandDepth(theField->bottom,beginDepth,endDepth);
       }
   }
-  
-/*************************************************************************/
-/* IsExistsSubjoin:  */
-/*************************************************************************/
+
+/*****************************************/
+/* PropagateWhichCE: Recursively assigns */
+/*   an index indicating the user CE.    */
+/*****************************************/
+static int PropagateWhichCE(
+  struct lhsParseNode *theField,
+  int whichCE)
+  {
+   while (theField != NULL)
+     {
+      if ((theField->type == PATTERN_CE) || (theField->type == TEST_CE))
+        { whichCE++; }
+        
+      theField->whichCE = whichCE;
+      
+      whichCE = PropagateWhichCE(theField->right,whichCE);
+      PropagateWhichCE(theField->expression,whichCE);
+      
+      theField = theField->bottom;
+     }
+     
+   return whichCE;
+  }
+
+/********************/
+/* IsExistsSubjoin: */
+/********************/
 globle int IsExistsSubjoin(
   struct lhsParseNode *theLHS,
   int parentDepth)
@@ -2090,16 +1839,124 @@ globle int IsExistsSubjoin(
    while (theLHS->endNandDepth >= startDepth)
      { theLHS = theLHS->bottom; }
    
-   /*
-   if (theLHS->endNandDepth == parentDepth)
-     { return(TRUE); }
-   */  
-
    if (theLHS->endNandDepth <= parentDepth)
      { return(TRUE); }
 
    return(FALSE);
   }
-  
+
+/***************************************************************************/
+/* CombineLHSParseNodes: Combines two expressions into a single equivalent */
+/*   expression. Mainly serves to merge expressions containing "and"       */
+/*   and "or" expressions without unnecessary duplication of the "and"     */
+/*   and "or" expressions (i.e., two "and" expressions can be merged by    */
+/*   placing them as arguments within another "and" expression, but it     */
+/*   is more efficient to add the arguments of one of the "and"            */
+/*   expressions to the list of arguments for the other and expression).   */
+/***************************************************************************/
+globle struct lhsParseNode *CombineLHSParseNodes(
+  void *theEnv,
+  struct lhsParseNode *expr1,
+  struct lhsParseNode *expr2)
+  {
+   struct lhsParseNode *tempPtr;
+
+   /*===========================================================*/
+   /* If the 1st expression is NULL, return the 2nd expression. */
+   /*===========================================================*/
+
+   if (expr1 == NULL) return(expr2);
+
+   /*===========================================================*/
+   /* If the 2nd expression is NULL, return the 1st expression. */
+   /*===========================================================*/
+
+   if (expr2 == NULL) return(expr1);
+
+   /*============================================================*/
+   /* If the 1st expression is an "and" expression, and the 2nd  */
+   /* expression is not an "and" expression, then include the    */
+   /* 2nd expression in the argument list of the 1st expression. */
+   /*============================================================*/
+
+   if ((expr1->value == ExpressionData(theEnv)->PTR_AND) &&
+       (expr2->value != ExpressionData(theEnv)->PTR_AND))
+     {
+      tempPtr = expr1->bottom;
+      if (tempPtr == NULL)
+        {
+         rtn_struct(theEnv,lhsParseNode,expr1);
+         return(expr2);
+        }
+
+      while (tempPtr->right != NULL)
+        { tempPtr = tempPtr->right; }
+
+      tempPtr->right = expr2;
+      return(expr1);
+     }
+
+   /*============================================================*/
+   /* If the 2nd expression is an "and" expression, and the 1st  */
+   /* expression is not an "and" expression, then include the    */
+   /* 1st expression in the argument list of the 2nd expression. */
+   /*============================================================*/
+
+   if ((expr1->value != ExpressionData(theEnv)->PTR_AND) &&
+       (expr2->value == ExpressionData(theEnv)->PTR_AND))
+     {
+      tempPtr = expr2->bottom;
+      if (tempPtr == NULL)
+        {
+         rtn_struct(theEnv,lhsParseNode,expr2);
+         return(expr1);
+        }
+
+      expr2->bottom = expr1;
+      expr1->right = tempPtr;
+
+      return(expr2);
+     }
+
+   /*===========================================================*/
+   /* If both expressions are "and" expressions, then add the   */
+   /* 2nd expression to the argument list of the 1st expression */
+   /* and throw away the extraneous "and" expression.           */
+   /*===========================================================*/
+
+   if ((expr1->value == ExpressionData(theEnv)->PTR_AND) &&
+       (expr2->value == ExpressionData(theEnv)->PTR_AND))
+     {
+      tempPtr = expr1->bottom;
+      if (tempPtr == NULL)
+        {
+         rtn_struct(theEnv,lhsParseNode,expr1);
+         return(expr2);
+        }
+
+      while (tempPtr->right != NULL)
+        { tempPtr = tempPtr->right; }
+
+      tempPtr->right = expr2->bottom;
+      rtn_struct(theEnv,lhsParseNode,expr2);
+
+      return(expr1);
+     }
+
+   /*=====================================================*/
+   /* If neither expression is an "and" expression, then  */
+   /* create an "and" expression and add both expressions */
+   /* to the argument list of that "and" expression.      */
+   /*=====================================================*/
+
+   tempPtr = GetLHSParseNode(theEnv);
+   tempPtr->type = FCALL;
+   tempPtr->value = ExpressionData(theEnv)->PTR_AND;
+   
+   tempPtr->bottom = expr1;
+   expr1->right = expr2;
+   return(tempPtr);
+  }
+
 #endif
 

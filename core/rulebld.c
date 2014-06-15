@@ -75,12 +75,12 @@ globle struct joinNode *ConstructJoins(
   void *theEnv,
   int logicalJoin,
   struct lhsParseNode *theLHS,
-  int startDepth)
+  int startDepth,
+  struct joinNode *lastJoin,
+  int tryToReuse,
+  int firstJoin)
   {
-   struct joinNode *lastJoin = NULL;
    struct patternNodeHeader *lastPattern;
-   unsigned firstJoin = TRUE;
-   int tryToReuse = TRUE;
    struct joinNode *listOfJoins = NULL;
    struct joinNode *oldJoin;
    int joinNumber = 1;
@@ -186,8 +186,8 @@ globle struct joinNode *ConstructJoins(
          joinFromTheRight = TRUE;
          isExists = theLHS->existsNand;
 
-         lastRightJoin = ConstructJoins(theEnv,logicalJoin,theLHS,startDepth+1);
-           
+         lastRightJoin = ConstructJoins(theEnv,logicalJoin,theLHS,startDepth+1,lastJoin,tryToReuse,firstJoin);
+            
          rhsStruct = lastRightJoin;
          rhsType = 0;
          lastPattern = NULL;
@@ -243,21 +243,18 @@ globle struct joinNode *ConstructJoins(
       /*===============================================*/
 
       useLinks = TRUE;
-      if (firstJoin == TRUE)
+      if (lastJoin != NULL)
+        { theLinks = lastJoin->nextLinks; }
+      else if (theLHS->right == NULL)
+        { theLinks = DefruleData(theEnv)->RightPrimeJoins; }
+      else if (lastPattern != NULL)
         { 
-         if (theLHS->right == NULL)
-           { theLinks = DefruleData(theEnv)->RightPrimeJoins; }
-         else if (lastPattern != NULL)
-           { 
-            listOfJoins = lastPattern->entryJoin;
-            theLinks = NULL;
-            useLinks = FALSE;
-           }
-         else
-           { theLinks = lastRightJoin->nextLinks; }
+         listOfJoins = lastPattern->entryJoin;
+         theLinks = NULL;
+         useLinks = FALSE;
         }
       else
-        { theLinks = lastJoin->nextLinks; }
+        { theLinks = lastRightJoin->nextLinks; }
 
       /*=======================================================*/
       /* Determine if the next join to be added can be shared. */
@@ -520,9 +517,9 @@ static void AttachTestCEsToPatternCEs(
             lastNode->negated = TRUE;
             
             lastNode->networkTest =
-               CombineExpressions(theEnv,lastNode->networkTest,theLHS->networkTest);
-            lastNode->networkTest =
                CombineExpressions(theEnv,lastNode->networkTest,lastNode->externalNetworkTest);
+            lastNode->networkTest =
+               CombineExpressions(theEnv,lastNode->networkTest,theLHS->networkTest);
             lastNode->externalNetworkTest = NULL;
            }
          
@@ -582,9 +579,6 @@ static void AttachTestCEsToPatternCEs(
             lastNode->existsNand = FALSE;
             lastNode->exists = TRUE;
             lastNode->negated = TRUE;
-            
-            lastNode->networkTest =
-               CombineExpressions(theEnv,lastNode->networkTest,theLHS->networkTest);
                
             /*===================================================*/
             /* For the first two patterns, there shouldn't be an */
@@ -595,6 +589,8 @@ static void AttachTestCEsToPatternCEs(
             
             lastNode->networkTest =
                CombineExpressions(theEnv,lastNode->networkTest,lastNode->externalNetworkTest);
+            lastNode->networkTest =
+               CombineExpressions(theEnv,lastNode->networkTest,theLHS->networkTest);
             lastNode->externalNetworkTest = NULL;
            }
 
@@ -637,9 +633,6 @@ static void AttachTestCEsToPatternCEs(
             
             lastNode->existsNand = FALSE;
 
-            lastNode->secondaryNetworkTest =
-               CombineExpressions(theEnv,lastNode->secondaryNetworkTest,theLHS->networkTest);
-               
             /*===================================================*/
             /* For the first two patterns, there shouldn't be an */
             /* externalNetwork test, but this code is included   */
@@ -649,6 +642,8 @@ static void AttachTestCEsToPatternCEs(
             
             lastNode->secondaryNetworkTest =
                CombineExpressions(theEnv,lastNode->secondaryNetworkTest,lastNode->externalNetworkTest);
+            lastNode->secondaryNetworkTest =
+               CombineExpressions(theEnv,lastNode->secondaryNetworkTest,theLHS->networkTest);
             lastNode->externalNetworkTest = NULL;
            }
            
@@ -744,9 +739,9 @@ static void AttachTestCEsToPatternCEs(
             lastNode->negated = TRUE;
                
             lastNode->networkTest =
-               CombineExpressions(theEnv,lastNode->networkTest,theLHS->networkTest);
-            lastNode->networkTest =
                CombineExpressions(theEnv,lastNode->networkTest,lastNode->externalNetworkTest);
+            lastNode->networkTest =
+               CombineExpressions(theEnv,lastNode->networkTest,theLHS->networkTest);
             lastNode->externalNetworkTest = NULL;
            }
           
@@ -814,9 +809,9 @@ static void AttachTestCEsToPatternCEs(
             lastNode->negated = TRUE;
             
             lastNode->networkTest =
-               CombineExpressions(theEnv,lastNode->networkTest,theLHS->networkTest);
-            lastNode->networkTest =
                CombineExpressions(theEnv,lastNode->networkTest,lastNode->externalNetworkTest);
+            lastNode->networkTest =
+               CombineExpressions(theEnv,lastNode->networkTest,theLHS->networkTest);
             lastNode->externalNetworkTest = NULL;
            }
               
@@ -856,15 +851,8 @@ static void AttachTestCEsToPatternCEs(
                   (lastNode->exists == TRUE) &&
                   (lastNode->existsNand == TRUE))
            {
-            lastNode->beginNandDepth = theLHS->endNandDepth;
-            
-            lastNode->existsNand = FALSE;
-
             lastNode->secondaryNetworkTest =
                CombineExpressions(theEnv,lastNode->secondaryNetworkTest,theLHS->networkTest);
-            lastNode->secondaryNetworkTest =
-               CombineExpressions(theEnv,lastNode->secondaryNetworkTest,lastNode->externalNetworkTest);
-            lastNode->externalNetworkTest = NULL;
            }
            
          /*==============================================*/
@@ -1162,7 +1150,7 @@ static struct joinNode *CreateNewJoin(
          newJoin->rightMemory->count = 0;
         }     
      }
-   else if ((lhsEntryStruct == NULL) && (rhsEntryStruct == NULL))
+   else if (rhsEntryStruct == NULL)
      {
       newJoin->rightMemory = get_struct(theEnv,betaMemory); 
       newJoin->rightMemory->beta = (struct partialMatch **) genalloc(theEnv,sizeof(struct partialMatch *));
@@ -1232,8 +1220,30 @@ static struct joinNode *CreateNewJoin(
       theLink = get_struct(theEnv,joinLink);
       theLink->join = newJoin;
       theLink->enterDirection = LHS;
-      theLink->next = lhsEntryStruct->nextLinks;
-      lhsEntryStruct->nextLinks = theLink;
+      
+      /*==============================================================*/
+      /* If this is a join from the right, then there should already  */
+      /* be a link from the previous join to the other join in the    */
+      /* the bifurcated path through the join network. If so, we want */
+      /* add the next link to the join from the right so that it is   */
+      /* visited after the other path. Doing this will reduce the     */
+      /* number of activations added and then removed if the other    */
+      /* path were followed first. The other path generates the       */
+      /* partial matches which are negated by this path, so if that   */
+      /* path is processed first, the partial matches from that path  */
+      /* will prevent partial matches on this path.                   */
+      /*==============================================================*/
+      
+      if ((joinFromTheRight) && (lhsEntryStruct->nextLinks != NULL))
+        {
+         theLink->next = lhsEntryStruct->nextLinks->next;
+         lhsEntryStruct->nextLinks->next = theLink;
+        }
+      else
+        {
+         theLink->next = lhsEntryStruct->nextLinks;
+         lhsEntryStruct->nextLinks = theLink;
+        }
      }
 
    /*=======================================================*/

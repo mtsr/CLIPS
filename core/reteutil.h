@@ -83,6 +83,8 @@
    LOCALE void                           MarkRuleJoins(struct joinNode *,int);
    LOCALE void                           AddBlockedLink(struct partialMatch *,struct partialMatch *);
    LOCALE void                           RemoveBlockedLink(struct partialMatch *);
+   LOCALE unsigned long                  PrintBetaMemory(void *,char *,struct betaMemory *,int,char *);
+
 #endif
 
 

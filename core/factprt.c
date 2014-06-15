@@ -52,7 +52,7 @@ globle void PrintFactJNCompVars1(
    else EnvPrintRouter(theEnv,logicalName,"<> ");
    
    EnvPrintRouter(theEnv,logicalName,"p");
-   PrintLongInteger(theEnv,logicalName,(long long) hack->pattern1);
+   PrintLongInteger(theEnv,logicalName,(long long) hack->pattern1 + 1);
 
    if (hack->p1lhs)
      { EnvPrintRouter(theEnv,logicalName," L"); }
@@ -63,7 +63,7 @@ globle void PrintFactJNCompVars1(
    PrintLongInteger(theEnv,logicalName,(long long) hack->slot1);
 
    EnvPrintRouter(theEnv,logicalName," p");
-   PrintLongInteger(theEnv,logicalName,(long long) hack->pattern2);
+   PrintLongInteger(theEnv,logicalName,(long long) hack->pattern2 + 1);
 
    if (hack->p2lhs)
      { EnvPrintRouter(theEnv,logicalName," L"); }
@@ -100,7 +100,7 @@ globle void PrintFactJNCompVars2(
    else EnvPrintRouter(theEnv,logicalName,"<> ");
 
    EnvPrintRouter(theEnv,logicalName,"p");
-   PrintLongInteger(theEnv,logicalName,(long long) hack->pattern1);
+   PrintLongInteger(theEnv,logicalName,(long long) hack->pattern1 + 1);
 
    if (hack->p1lhs)
      { EnvPrintRouter(theEnv,logicalName," L"); }
@@ -117,7 +117,7 @@ globle void PrintFactJNCompVars2(
    PrintLongInteger(theEnv,logicalName,(long long) hack->offset1);
 
    EnvPrintRouter(theEnv,logicalName," p");
-   PrintLongInteger(theEnv,logicalName,(long long) hack->pattern2);
+   PrintLongInteger(theEnv,logicalName,(long long) hack->pattern2 + 1);
 
    if (hack->p2lhs)
      { EnvPrintRouter(theEnv,logicalName," L"); }

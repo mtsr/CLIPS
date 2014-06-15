@@ -449,7 +449,7 @@ globle void ConstraintReferenceErrorMessage(
    /*========================================*/
 
    EnvPrintRouter(theEnv,WERROR,"found in CE #");
-   PrintLongInteger(theEnv,WERROR,(long int) whichCE);
+   PrintLongInteger(theEnv,WERROR,(long int) theExpression->whichCE);
    if (slotName == NULL)
      {
       if (theField > 0)

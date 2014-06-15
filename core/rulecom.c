@@ -335,14 +335,28 @@ static int ListAlphaMatches(
    if (theJoin == NULL) 
      { return(priorPatterns); }
      
+   /*==========================================================*/
+   /* We want to follow the right link if it exists or the     */
+   /* left link if the right link doesn't exists. This will    */
+   /* prevent the same node from being visited more than once. */
+   /*==========================================================*/
+   
+   if (theJoin->joinFromTheRight)
+     { return ListAlphaMatches(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,priorPatterns); }
+   else if (theJoin->lastLevel != NULL)
+     { priorPatterns = ListAlphaMatches(theEnv,theJoin->lastLevel,priorPatterns); }
+     
+   priorPatterns++;
+   
+   if (GetHaltExecution(theEnv) == TRUE)
+     { return(priorPatterns); }
+
+   EnvPrintRouter(theEnv,WDISPLAY,"Matches for Pattern ");
+   PrintLongInteger(theEnv,WDISPLAY,(long int) priorPatterns);
+   EnvPrintRouter(theEnv,WDISPLAY,"\n");
+  
    if (theJoin->rightSideEntryStructure == NULL)
      { 
-      priorPatterns++;
-
-      EnvPrintRouter(theEnv,WDISPLAY,"Matches for Pattern ");
-      PrintLongInteger(theEnv,WDISPLAY,(long int) priorPatterns);
-      EnvPrintRouter(theEnv,WDISPLAY,"\n");
-     
       if (theJoin->rightMemory->beta[0]->children != NULL)
         { EnvPrintRouter(theEnv,WDISPLAY,"*\n"); }
       else
@@ -350,23 +364,8 @@ static int ListAlphaMatches(
      
       return(priorPatterns); 
      }
-   
-   if (theJoin->lastLevel != NULL)
-     { priorPatterns = ListAlphaMatches(theEnv,theJoin->lastLevel,priorPatterns); }
-     
-   if (theJoin->joinFromTheRight)
-     { return ListAlphaMatches(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,priorPatterns); }
-     
-   listOfHashNodes =  ((struct patternNodeHeader *) theJoin->rightSideEntryStructure)->firstHash;
 
-   priorPatterns++;
-   
-   if (GetHaltExecution(theEnv) == TRUE)
-     { return(priorPatterns); }
-   
-   EnvPrintRouter(theEnv,WDISPLAY,"Matches for Pattern ");
-   PrintLongInteger(theEnv,WDISPLAY,(long int) priorPatterns);
-   EnvPrintRouter(theEnv,WDISPLAY,"\n");
+   listOfHashNodes =  ((struct patternNodeHeader *) theJoin->rightSideEntryStructure)->firstHash;
 
    for (flag = 1;
         listOfHashNodes != NULL;
@@ -419,29 +418,13 @@ static int ListBetaMatches(
      }
 
    startPatterns = patternsFound;
-   
-   if (theJoin->joinFromTheRight)
-     { patternsFound += ListBetaMatches(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,blockStart+patternsFound); }
 
-   if ((theJoin->joinFromTheRight) &&
-       (((struct joinNode *) (theJoin->rightSideEntryStructure))->depth > 1))
-     { 
-      PrintMatchesMemory(theEnv,theJoin,
-                                theJoin->rightMemory,
-                                blockStart + startPatterns,
-                                blockStart + patternsFound - 1); 
-     }
-         
-   
-   if (theJoin->joinFromTheRight)
-     { return(patternsFound); } 
-   else
-     { return(patternsFound + 1); } 
+   return(patternsFound + 1);
   }
  
-/****************************/
+/***********************/
 /* PrintMatchesMemory: */
-/****************************/
+/***********************/
 static void PrintMatchesMemory(
   void *theEnv,
   struct joinNode *theJoin,
@@ -452,14 +435,10 @@ static void PrintMatchesMemory(
 #if MAC_XCD
 #pragma unused(theJoin)
 #endif
-   struct partialMatch *listOfMatches;
-   unsigned long b;
-   int matchesDisplayed;
 
    if (GetHaltExecution(theEnv) == TRUE)
      { return; }
      
-   matchesDisplayed = 0;
    EnvPrintRouter(theEnv,WDISPLAY,"Partial matches for CEs ");
    PrintLongInteger(theEnv,WDISPLAY,(long int) startCE);
    EnvPrintRouter(theEnv,WDISPLAY," - ");
@@ -467,26 +446,9 @@ static void PrintMatchesMemory(
    
    EnvPrintRouter(theEnv,WDISPLAY,"\n");
 
-   for (b = 0; b < theMemory->size; b++)
-     {
-      listOfMatches = theMemory->beta[b];
-
-      while (listOfMatches != NULL)
-        {
-         if (GetHaltExecution(theEnv) == TRUE)
-           { return; }
-
-         matchesDisplayed++;
-         PrintPartialMatch(theEnv,WDISPLAY,listOfMatches);
-         EnvPrintRouter(theEnv,WDISPLAY,"\n");
-    
-         listOfMatches = listOfMatches->nextInMemory;
-        }
-     }
-
-   if (matchesDisplayed == 0) { EnvPrintRouter(theEnv,WDISPLAY," None\n"); }
+   if (PrintBetaMemory(theEnv,WDISPLAY,theMemory,TRUE,"") == 0)
+     { EnvPrintRouter(theEnv,WDISPLAY," None\n"); }
   }
-
  
 /*******************************************/
 /* JoinActivityCommand: H/L access routine */
@@ -951,7 +913,7 @@ static void ShowJoins(
          else
            { rhsType = ' '; }
            
-         gensprintf(buffer,"%2d%c%c%c%c: ",(int) joinList[numberOfJoins]->depth,
+         gensprintf(buffer,"%2d%c%c%c%c : ",(int) joinList[numberOfJoins]->depth,
                                      (joinList[numberOfJoins]->firstJoin) ? 'f' : ' ',
                                      rhsType,
                                      (joinList[numberOfJoins]->joinFromTheRight) ? 'j' : ' ',
@@ -959,6 +921,13 @@ static void ShowJoins(
          EnvPrintRouter(theEnv,WDISPLAY,buffer);
          PrintExpression(theEnv,WDISPLAY,joinList[numberOfJoins]->networkTest);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
+         
+         if (joinList[numberOfJoins]->ruleToActivate != NULL)
+           {
+            EnvPrintRouter(theEnv,WDISPLAY,"    RA : ");
+            EnvPrintRouter(theEnv,WDISPLAY,EnvGetDefruleName(theEnv,joinList[numberOfJoins]->ruleToActivate));
+            EnvPrintRouter(theEnv,WDISPLAY,"\n");
+           }
          
          if (joinList[numberOfJoins]->secondaryNetworkTest != NULL)
            {
@@ -972,6 +941,27 @@ static void ShowJoins(
             EnvPrintRouter(theEnv,WDISPLAY,"    LH : ");
             PrintExpression(theEnv,WDISPLAY,joinList[numberOfJoins]->leftHash);
             EnvPrintRouter(theEnv,WDISPLAY,"\n");
+           }
+
+         if (joinList[numberOfJoins]->rightHash != NULL)
+           {
+            EnvPrintRouter(theEnv,WDISPLAY,"    RH : ");
+            PrintExpression(theEnv,WDISPLAY,joinList[numberOfJoins]->rightHash);
+            EnvPrintRouter(theEnv,WDISPLAY,"\n");
+           }
+
+         if (! joinList[numberOfJoins]->firstJoin)
+           {
+            EnvPrintRouter(theEnv,WDISPLAY,"    LM : ");
+            if (PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->leftMemory,FALSE,"         ") == 0)
+              { EnvPrintRouter(theEnv,WDISPLAY,"None\n"); }
+           }
+         
+         if (joinList[numberOfJoins]->joinFromTheRight)
+           {
+            EnvPrintRouter(theEnv,WDISPLAY,"    RM : ");
+            if (PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->rightMemory,FALSE,"         ") == 0)
+              { EnvPrintRouter(theEnv,WDISPLAY,"None\n"); }
            }
          
          numberOfJoins--;

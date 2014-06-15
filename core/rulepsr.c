@@ -409,7 +409,7 @@ static struct defrule *ProcessRuleLHS(
       /* Create the pattern and join data structures for the new rule. */
       /*===============================================================*/
 
-      lastJoin = ConstructJoins(theEnv,logicalJoin,tempNode,1);
+      lastJoin = ConstructJoins(theEnv,logicalJoin,tempNode,1,NULL,TRUE,TRUE);
 
       /*===================================================================*/
       /* Determine the rule's complexity for use with conflict resolution. */
@@ -940,9 +940,10 @@ static void AddToDefruleList(
 
 #if DEVELOPER && DEBUGGING_FUNCTIONS
 
-/**********************************************************/
-/* DumpRuleAnalysis:  */
-/**********************************************************/
+/************************************************************/
+/* DumpRuleAnalysis: Displays the information about network */
+/*   expressions generated from the analysis of the rule.   */
+/************************************************************/
 globle void DumpRuleAnalysis(
   void *theEnv,
   struct lhsParseNode *tempNode)
@@ -953,10 +954,11 @@ globle void DumpRuleAnalysis(
    EnvPrintRouter(theEnv,WDISPLAY,"\n");
    for (traceNode = tempNode; traceNode != NULL; traceNode = traceNode->bottom)
      {
-      if (! traceNode->userCE)
-        { continue; }
-        
-      gensprintf(buffer,"CE %2d (%2d %2d): ",traceNode->whichCE,traceNode->beginNandDepth,traceNode->endNandDepth);
+      if (traceNode->userCE)
+        { gensprintf(buffer,"UCE %2d (%2d %2d): ",traceNode->whichCE,traceNode->beginNandDepth,traceNode->endNandDepth); }
+      else
+        { gensprintf(buffer,"SCE %2d (%2d %2d): ",traceNode->whichCE,traceNode->beginNandDepth,traceNode->endNandDepth); }
+
       EnvPrintRouter(theEnv,WDISPLAY,buffer);
       
       PrintExpression(theEnv,WDISPLAY,traceNode->networkTest);
@@ -964,28 +966,28 @@ globle void DumpRuleAnalysis(
 
       if (traceNode->externalNetworkTest != NULL)
         { 
-         EnvPrintRouter(theEnv,WDISPLAY,"       ET: ");
+         EnvPrintRouter(theEnv,WDISPLAY,"      ENT: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->externalNetworkTest);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
 
       if (traceNode->secondaryNetworkTest != NULL)
         { 
-         EnvPrintRouter(theEnv,WDISPLAY,"       ST: ");
+         EnvPrintRouter(theEnv,WDISPLAY,"      SNT: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->secondaryNetworkTest);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
                  
       if (traceNode->externalRightHash != NULL)
         { 
-         EnvPrintRouter(theEnv,WDISPLAY,"       EB: ");
+         EnvPrintRouter(theEnv,WDISPLAY,"      ERH: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->externalRightHash);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
                  
       if (traceNode->externalLeftHash != NULL)
         { 
-         EnvPrintRouter(theEnv,WDISPLAY,"       EH: ");
+         EnvPrintRouter(theEnv,WDISPLAY,"      ELH: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->externalLeftHash);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }

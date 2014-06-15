@@ -1115,6 +1115,7 @@ globle struct expr *FactJNVariableComparison(
    struct expr *top;
    struct factCompVarsJN1Call hack1;
    struct factCompVarsJN2Call hack2;
+   struct lhsParseNode *firstNode;
 
    /*================================================================*/
    /* If two single field slots of a deftemplate are being compared, */
@@ -1129,18 +1130,21 @@ globle struct expr *FactJNVariableComparison(
       ClearBitString(&hack1,sizeof(struct factCompVarsJN1Call));
       hack1.pass = 0;
       hack1.fail = 0;
-      hack1.slot1 = (unsigned short) (selfNode->slotNumber - 1);
+
+      if (nandJoin)
+        { firstNode = referringNode; }
+      else
+        { firstNode = selfNode; }
+      
+      hack1.slot1 = (unsigned short) (firstNode->slotNumber - 1);
         
       if (nandJoin)
-        { hack1.pattern1 = (unsigned short) selfNode->joinDepth; }
+        { hack1.pattern1 = (unsigned short) referringNode->joinDepth; }
       else
         { hack1.pattern1 = 0; }
+        
       hack1.p1rhs = TRUE;
-
-      if (nandJoin && (selfNode->beginNandDepth == referringNode->beginNandDepth))
-        { hack1.p2rhs = TRUE; }
-      else
-        { hack1.p2lhs = TRUE; }
+      hack1.p2lhs = TRUE;
 
       hack1.pattern2 = (unsigned short) referringNode->joinDepth; 
       
@@ -1174,31 +1178,34 @@ globle struct expr *FactJNVariableComparison(
       ClearBitString(&hack2,sizeof(struct factCompVarsJN2Call));
       hack2.pass = 0;
       hack2.fail = 0;
-      hack2.slot1 = (unsigned short) (selfNode->slotNumber - 1);
-      
+
       if (nandJoin)
-        { hack2.pattern1 = (unsigned short) selfNode->joinDepth; }
+        { firstNode = referringNode; }
+      else
+        { firstNode = selfNode; }
+
+      hack2.slot1 = (unsigned short) (firstNode->slotNumber - 1);
+
+      if (nandJoin)
+        { hack2.pattern1 = (unsigned short) referringNode->joinDepth; }
       else
         { hack2.pattern1 = 0; }
+      
       hack2.p1rhs = TRUE;
-
-      if (nandJoin && (selfNode->beginNandDepth == referringNode->beginNandDepth))
-        { hack2.p2rhs = TRUE; }
-      else
-        { hack2.p2lhs = TRUE; }
+      hack2.p2lhs = TRUE;
         
       hack2.pattern2 = (unsigned short) referringNode->joinDepth; 
       hack2.slot2 = (unsigned short) (referringNode->slotNumber - 1);
 
-      if (selfNode->multiFieldsBefore == 0)
+      if (firstNode->multiFieldsBefore == 0)
         {
          hack2.fromBeginning1 = 1;
-         hack2.offset1 = selfNode->singleFieldsBefore;
+         hack2.offset1 = firstNode->singleFieldsBefore;
         }
       else
         {
          hack2.fromBeginning1 = 0;
-         hack2.offset1 = selfNode->singleFieldsAfter;
+         hack2.offset1 = firstNode->singleFieldsAfter;
         }
 
       if (referringNode->multiFieldsBefore == 0)
@@ -1236,10 +1243,7 @@ globle struct expr *FactJNVariableComparison(
       else
         { top->argList = FactGenGetvar(theEnv,selfNode,RHS); }
         
-      if (nandJoin && (selfNode->beginNandDepth == referringNode->beginNandDepth))
-        { top->argList->nextArg = FactGenGetvar(theEnv,referringNode,NESTED_RHS); }
-      else
-        { top->argList->nextArg = FactGenGetvar(theEnv,referringNode,LHS); }
+      top->argList->nextArg = FactGenGetvar(theEnv,referringNode,LHS);
      }
 
    /*======================================*/

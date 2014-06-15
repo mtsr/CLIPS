@@ -478,6 +478,12 @@ static EXPRESSION *GenerateSlotComparisonTest(
    struct ObjectCmpJoinSingleSlotVars1 jhack1;
    struct ObjectCmpJoinSingleSlotVars2 jhack2;
    struct ObjectCmpJoinSingleSlotVars3 jhack3;
+   struct lhsParseNode *firstNode;
+
+   if (isNand)
+     { firstNode = referringNode; }
+   else
+     { firstNode = selfNode; }
 
    /* =========================================================
       If we are comparing two single-field slot variables that
@@ -485,12 +491,12 @@ static EXPRESSION *GenerateSlotComparisonTest(
       a quick comparison.  Otherwise, use a general eq/neq with
       the pattern variable access routines
       ========================================================= */
-   if (IsSimpleSlotVariable(selfNode) && IsSimpleSlotVariable(referringNode))
+   if (IsSimpleSlotVariable(firstNode) && IsSimpleSlotVariable(referringNode))
      {
       /* ==============================
          Compare two single-field slots
          ============================== */
-      if ((selfNode->withinMultifieldSlot == FALSE) &&
+      if ((firstNode->withinMultifieldSlot == FALSE) &&
           (referringNode->withinMultifieldSlot == FALSE))
         {
          ClearBitString((void *) &phack1,(int) sizeof(struct ObjectCmpPNSingleSlotVars1));
@@ -499,20 +505,19 @@ static EXPRESSION *GenerateSlotComparisonTest(
            phack1.fail = jhack1.fail = 1;
          else
            phack1.pass = jhack1.pass = 1;
-         phack1.firstSlot = jhack1.firstSlot = (unsigned short) selfNode->slotNumber;
+           
+         phack1.firstSlot = jhack1.firstSlot = (unsigned short) firstNode->slotNumber;
          phack1.secondSlot = jhack1.secondSlot = (unsigned short) referringNode->slotNumber;
          if (joinTest)
            {
             if (isNand)
-              { jhack1.firstPattern = (unsigned short) selfNode->joinDepth; }
+              { jhack1.firstPattern = (unsigned short) referringNode->joinDepth; }
             else
               { jhack1.firstPattern = 0; }
+            
             jhack1.firstPatternRHS = TRUE;
-
-            if (isNand && (selfNode->beginNandDepth == referringNode->beginNandDepth))
-              { jhack1.secondPatternRHS = TRUE; }
-            else
-              { jhack1.secondPatternLHS = TRUE; }
+            jhack1.secondPatternLHS = TRUE;
+              
             jhack1.secondPattern = (unsigned short) referringNode->joinDepth; 
             
             theExp = GenConstant(theEnv,OBJ_JN_CMP1,EnvAddBitMap(theEnv,(void *) &jhack1,
@@ -527,59 +532,58 @@ static EXPRESSION *GenerateSlotComparisonTest(
          single-field in a multifield slot (make sure
          the multifield slot reference is first
          ============================================ */
-      else if ((selfNode->withinMultifieldSlot == FALSE) ||
+      else if ((firstNode->withinMultifieldSlot == FALSE) ||
                (referringNode->withinMultifieldSlot == FALSE))
         {
          ClearBitString((void *) &phack2,(int) sizeof(struct ObjectCmpPNSingleSlotVars2));
          ClearBitString((void *) &jhack2,(int) sizeof(struct ObjectCmpJoinSingleSlotVars2));
+         
          if (selfNode->negated)
            phack2.fail = jhack2.fail = 1;
          else
            phack2.pass = jhack2.pass = 1;
-         if (selfNode->withinMultifieldSlot == TRUE)
+
+         if (firstNode->withinMultifieldSlot == TRUE)
            {
-            phack2.firstSlot = jhack2.firstSlot = (unsigned short) selfNode->slotNumber;
+            phack2.firstSlot = jhack2.firstSlot = (unsigned short) firstNode->slotNumber;
             phack2.secondSlot = jhack2.secondSlot = (unsigned short) referringNode->slotNumber;
             if (joinTest)
               {
                if (isNand)
-                 { jhack2.firstPattern = (unsigned short) selfNode->joinDepth; }
+                 { jhack2.firstPattern = (unsigned short) referringNode->joinDepth; }
                else
                  { jhack2.firstPattern = 0; }
+               
                jhack2.firstPatternRHS = TRUE;
-
-               if (isNand && (selfNode->beginNandDepth == referringNode->beginNandDepth))
-                 { jhack2.secondPatternRHS = TRUE; }
-               else
-                 { jhack2.secondPatternLHS = TRUE; }
+               jhack2.secondPatternLHS = TRUE;
                jhack2.secondPattern = (unsigned short) referringNode->joinDepth; 
               }
-            if (selfNode->multiFieldsBefore == 0)
+              
+            if (firstNode->multiFieldsBefore == 0)
               {
                phack2.fromBeginning = jhack2.fromBeginning = 1;
-               phack2.offset = jhack2.offset = selfNode->singleFieldsBefore;
+               phack2.offset = jhack2.offset = firstNode->singleFieldsBefore;
               }
             else
-              phack2.offset = jhack2.offset = selfNode->singleFieldsAfter;
+              phack2.offset = jhack2.offset = firstNode->singleFieldsAfter;
            }
          else
            {
             phack2.firstSlot = jhack2.firstSlot = (unsigned short) referringNode->slotNumber;
-            phack2.secondSlot = jhack2.secondSlot = (unsigned short) selfNode->slotNumber;
+            phack2.secondSlot = jhack2.secondSlot = (unsigned short) firstNode->slotNumber;
             if (joinTest)
               {
                if (isNand)
-                 { jhack2.secondPattern = (unsigned short) selfNode->joinDepth; }
+                 { jhack2.secondPattern = (unsigned short) firstNode->joinDepth; }
                else
                  { jhack2.secondPattern = 0; }
+                 
                jhack2.secondPatternRHS = TRUE;
-
-               if (isNand && (selfNode->beginNandDepth == referringNode->beginNandDepth))
-                 { jhack2.firstPatternRHS = TRUE; }
-               else
-                 { jhack2.firstPatternLHS = TRUE; }
+               jhack2.firstPatternLHS = TRUE;
+               
                jhack2.firstPattern = (unsigned short) referringNode->joinDepth; 
               }
+            
             if (referringNode->multiFieldsBefore == 0)
               {
                phack2.fromBeginning = jhack2.fromBeginning = 1;
@@ -604,19 +608,23 @@ static EXPRESSION *GenerateSlotComparisonTest(
         {
          ClearBitString((void *) &phack3,(int) sizeof(struct ObjectCmpPNSingleSlotVars3));
          ClearBitString((void *) &jhack3,(int) sizeof(struct ObjectCmpJoinSingleSlotVars3));
+         
          if (selfNode->negated)
            phack3.fail = jhack3.fail = 1;
          else
            phack3.pass = jhack3.pass = 1;
-         phack3.firstSlot = jhack3.firstSlot = (unsigned short) selfNode->slotNumber;
+           
+         phack3.firstSlot = jhack3.firstSlot = (unsigned short) firstNode->slotNumber;
          phack3.secondSlot = jhack3.secondSlot = (unsigned short) referringNode->slotNumber;
-         if (selfNode->multiFieldsBefore == 0)
+         
+         if (firstNode->multiFieldsBefore == 0)
            {
             phack3.firstFromBeginning = jhack3.firstFromBeginning = 1;
-            phack3.firstOffset = jhack3.firstOffset = selfNode->singleFieldsBefore;
+            phack3.firstOffset = jhack3.firstOffset = firstNode->singleFieldsBefore;
            }
          else
-           phack3.firstOffset = jhack3.firstOffset = selfNode->singleFieldsAfter;
+           phack3.firstOffset = jhack3.firstOffset = firstNode->singleFieldsAfter;
+           
          if (referringNode->multiFieldsBefore == 0)
            {
             phack3.secondFromBeginning = jhack3.secondFromBeginning = 1;
@@ -624,18 +632,16 @@ static EXPRESSION *GenerateSlotComparisonTest(
            }
          else
            phack3.secondOffset = jhack3.secondOffset = referringNode->singleFieldsAfter;
+           
          if (joinTest)
            {
             if (isNand)
-              { jhack3.firstPattern = (unsigned short) selfNode->joinDepth; }
+              { jhack3.firstPattern = (unsigned short) referringNode->joinDepth; }
             else
               { jhack3.firstPattern = 0; }
+            
             jhack3.firstPatternRHS = TRUE;
-
-            if (isNand && (selfNode->beginNandDepth == referringNode->beginNandDepth))
-              { jhack3.secondPatternRHS = TRUE; }
-            else
-              { jhack3.secondPatternLHS = TRUE; }
+            jhack3.secondPatternLHS = TRUE;
             jhack3.secondPattern = (unsigned short) referringNode->joinDepth; 
 
             theExp = GenConstant(theEnv,OBJ_JN_CMP3,EnvAddBitMap(theEnv,(void *) &jhack3,
@@ -664,10 +670,7 @@ static EXPRESSION *GenerateSlotComparisonTest(
       
       theExp->argList->nextArg = GenConstant(theEnv,0,NULL);
       
-      if (isNand && (selfNode->beginNandDepth == referringNode->beginNandDepth))
-        { GenObjectGetVar(theEnv,joinTest,theExp->argList->nextArg,referringNode,NESTED_RHS); }
-      else
-        { GenObjectGetVar(theEnv,joinTest,theExp->argList->nextArg,referringNode,LHS); }
+      GenObjectGetVar(theEnv,joinTest,theExp->argList->nextArg,referringNode,LHS);
      }
    return(theExp);
   }

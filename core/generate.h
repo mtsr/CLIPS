@@ -30,6 +30,9 @@
 #ifndef _H_reorder
 #include "reorder.h"
 #endif
+#ifndef _H_analysis
+#include "analysis.h"
+#endif
 
 #ifdef LOCALE
 #undef LOCALE
@@ -41,9 +44,9 @@
 #define LOCALE extern
 #endif
 
-   LOCALE void                           FieldConversion(void *,struct lhsParseNode *,struct lhsParseNode *);
-   LOCALE struct expr                   *GetvarReplace(void *,struct lhsParseNode *,int);
-   LOCALE intBool                        IsNandTest(struct lhsParseNode *);
+   LOCALE void                           FieldConversion(void *,struct lhsParseNode *,struct lhsParseNode *,struct nandFrame *);
+   LOCALE struct expr                   *GetvarReplace(void *,struct lhsParseNode *,int,struct nandFrame *);
+   LOCALE void                           AddNandUnification(void *,struct lhsParseNode *,struct nandFrame *);
 
 #endif
 

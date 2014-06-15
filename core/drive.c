@@ -339,6 +339,40 @@ globle void NetworkAssertLeft(
       return;
      }
 
+   /*=====================================*/
+   /* Handle a join handling a test CE at */
+   /* the beginning of a not/and group.   */
+   /*=====================================*/
+   
+   if (join->rightSideEntryStructure == NULL)
+     {
+      exprResult = TRUE;
+      
+      if (join->networkTest != NULL)
+        {
+         oldLHSBinds = EngineData(theEnv)->GlobalLHSBinds;
+         oldRHSBinds = EngineData(theEnv)->GlobalRHSBinds;
+         oldJoin = EngineData(theEnv)->GlobalJoin;
+         
+         EngineData(theEnv)->GlobalLHSBinds = lhsBinds;
+         EngineData(theEnv)->GlobalRHSBinds = NULL;
+         EngineData(theEnv)->GlobalJoin = join;
+
+         exprResult = EvaluateJoinExpression(theEnv,join->networkTest,join);
+         if (EvaluationData(theEnv)->EvaluationError)
+           { SetEvaluationError(theEnv,FALSE); }
+          
+         EngineData(theEnv)->GlobalLHSBinds = oldLHSBinds;
+         EngineData(theEnv)->GlobalRHSBinds = oldRHSBinds;
+         EngineData(theEnv)->GlobalJoin = oldJoin;
+        }
+
+      if (exprResult)
+        { PPDrive(theEnv,lhsBinds,NULL,join); }
+                
+      return;
+     }
+      
    /*==================================================*/
    /* Initialize some variables used to indicate which */
    /* side is being compared to the new partial match. */

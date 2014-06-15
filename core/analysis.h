@@ -43,6 +43,18 @@
 #define LOCALE extern
 #endif
 
+/*****************************************************/
+/* nandFrame structure: Stores information about the */
+/*   current position in the nesting of not/and CEs  */
+/*   as the patterns of a rule are analyzed.         */
+/*****************************************************/
+struct nandFrame
+  {
+   int depth;
+   struct lhsParseNode *nandCE;
+   struct nandFrame *next;
+  };
+
    LOCALE intBool                        VariableAnalysis(void *,struct lhsParseNode *);
 
 #endif

@@ -364,17 +364,15 @@ static void AddBetaMemoriesToRule(
 
 #if RUN_TIME || BLOAD_ONLY || BLOAD || BLOAD_AND_BSAVE
 
-/******************************************/
-/* AddBetaMemoriesToJoin:     */
-/******************************************/
+/**************************/
+/* AddBetaMemoriesToJoin: */
+/**************************/
 globle void AddBetaMemoriesToJoin(
   void *theEnv,
   struct joinNode *theNode)
   {   
    if ((theNode->leftMemory != NULL) || (theNode->rightMemory != NULL))
      { return; }
-
-   //if ((! theNode->firstJoin) || theNode->patternIsExists)
 
    if ((! theNode->firstJoin) || theNode->patternIsExists || theNode-> patternIsNegated || theNode->joinFromTheRight)
      {
@@ -397,7 +395,6 @@ globle void AddBetaMemoriesToJoin(
          theNode->leftMemory->last = NULL;
         }
 
- //     if (theNode->firstJoin && theNode->patternIsExists)
       if (theNode->firstJoin && (theNode->patternIsExists || theNode-> patternIsNegated || theNode->joinFromTheRight))
         {
          theNode->leftMemory->beta[0] = CreateEmptyPartialMatch(theEnv); 
@@ -430,8 +427,7 @@ globle void AddBetaMemoriesToJoin(
          theNode->rightMemory->count = 0;
         }
      }
-
-   else if (theNode->firstJoin && (theNode->rightSideEntryStructure == NULL))
+   else if (theNode->rightSideEntryStructure == NULL)
      {
       theNode->rightMemory = get_struct(theEnv,betaMemory); 
       theNode->rightMemory->beta = (struct partialMatch **) genalloc(theEnv,sizeof(struct partialMatch *));
@@ -443,7 +439,6 @@ globle void AddBetaMemoriesToJoin(
       theNode->rightMemory->size = 1;
       theNode->rightMemory->count = 1;    
      }
-
    else
      { theNode->rightMemory = NULL; }
   }
