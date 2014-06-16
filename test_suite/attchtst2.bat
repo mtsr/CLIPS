@@ -1,4 +1,5 @@
 (clear) ; Case 1a
+(load* "attchtst2.clp")
 
 (defrule fail-pass "Case 1a"
    (a)
@@ -13,6 +14,7 @@
 (assert (a) (b))
 (agenda)
 (clear) ; Case 1b
+(load* "attchtst2.clp")
 
 (defrule pass-fail "Case 1b"
    (not (a))
@@ -27,6 +29,7 @@
 (assert (a) (b))
 (agenda)
 (clear) ; Case 1c
+(load* "attchtst2.clp")
 
 (defrule fail-pass "Case 1c"
    (exists (a))
@@ -41,6 +44,7 @@
 (assert (a) (b))
 (agenda)
 (clear) ; Case 3a
+(load* "attchtst2.clp")
 
 (defrule pass-fail "Case 3a"
    (not (and (a)
@@ -55,6 +59,7 @@
 (assert (a) (b))
 (agenda)
 (clear) ; Case 3b
+(load* "attchtst2.clp")
 
 (defrule fail-pass "Case 3b"
    (not (and (not (a))
@@ -69,6 +74,7 @@
 (assert (a) (b))
 (agenda)
 (clear) ; Case 3c
+(load* "attchtst2.clp")
 
 (defrule pass-fail "Case 3c"
    (not (and (exists (a))
@@ -83,6 +89,7 @@
 (assert (a) (b))
 (agenda)
 (clear) ; Case 3d
+(load* "attchtst2.clp")
 
 (defrule fail-pass "Case 3d"
    (exists (and (a)
@@ -97,6 +104,7 @@
 (assert (a) (b))
 (agenda)
 (clear) ; Case 3e
+(load* "attchtst2.clp")
 
 (defrule pass-fail "Case 3e"
    (exists (and (not (a))
@@ -111,6 +119,7 @@
 (assert (a) (b))
 (agenda)
 (clear) ; Case 3f
+(load* "attchtst2.clp")
 
 (defrule fail-pass "Case 3f"
    (exists (and (exists (a))
@@ -125,6 +134,7 @@
 (assert (a) (b))
 (agenda)
 (clear) ; Case 4a
+(load* "attchtst2.clp")
 
 (defrule pass-pass-fail "Case 4a"
    (not (and (a)
@@ -143,6 +153,7 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 4b
+(load* "attchtst2.clp")
 
 (defrule pass-fail-pass "Case 4b"
    (not (and (a)
@@ -161,6 +172,7 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 4c
+(load* "attchtst2.clp")
 
 (defrule pass-pass-fail "Case 4c"
    (not (and (a)
@@ -179,6 +191,7 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 4d
+(load* "attchtst2.clp")
 
 (defrule fail-fail-pass "Case 4d"
    (exists (and (a)
@@ -197,6 +210,7 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 4e
+(load* "attchtst2.clp")
 
 (defrule fail-pass-fail "Case 4e"
    (exists (and (a)
@@ -215,6 +229,7 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 4f
+(load* "attchtst2.clp")
 
 (defrule fail-fail-pass "Case 4f"
    (exists (and (a)
@@ -233,6 +248,7 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 4g
+(load* "attchtst2.clp")
 
 (defrule pass-fail-fail-pass "Case 4g"
    (not (and (not (and (x)
@@ -255,6 +271,7 @@
 (assert (y) (w))
 (agenda)
 (clear) ; Case 4h
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-pass "Case 4h"
    (not (and (not (and (x)
@@ -277,6 +294,7 @@
 (assert (y) (w))
 (agenda)
 (clear) ; Case 4i
+(load* "attchtst2.clp")
 
 (defrule pass-fail-fail-pass "Case 4i"
    (not (and (not (and (x)
@@ -299,6 +317,7 @@
 (assert (y) (w))
 (agenda)
 (clear) ; Case 4j
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-fail "Case 4j"
    (exists (and (not (and (x)
@@ -321,6 +340,7 @@
 (assert (y) (w))
 (agenda)
 (clear) ; Case 4k
+(load* "attchtst2.clp")
 
 (defrule pass-fail-fail-fail "Case 4k"
    (exists (and (not (and (x)
@@ -343,6 +363,7 @@
 (assert (y) (w))
 (agenda)
 (clear) ; Case 4l
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-fail "Case 4l"
    (exists (and (not (and (x)
@@ -365,6 +386,7 @@
 (assert (y) (w))
 (agenda)
 (clear) ; Case 5a
+(load* "attchtst2.clp")
 
 (defrule fail-pass-fail "Case 5a"
    (a)
@@ -383,6 +405,8 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 5b
+(load* "attchtst2.clp")
+
 (defrule fail-fail-pass "Case 5b"
    (a)
    (not (and (not (b))
@@ -400,6 +424,8 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 5c
+(load* "attchtst2.clp")
+
 (defrule fail-pass-fail "Case 5c"
    (a)
    (not (and (exists (b))
@@ -417,6 +443,7 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 5d
+(load* "attchtst2.clp")
 
 (defrule fail-fail-pass "Case 5d"
    (a)
@@ -435,6 +462,7 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 5e
+(load* "attchtst2.clp")
 
 (defrule fail-pass-fail "Case 5e"
    (a)
@@ -453,6 +481,7 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 5f
+(load* "attchtst2.clp")
 
 (defrule fail-fail-pass "Case 5f"
    (a)
@@ -471,114 +500,121 @@
 (assert (b) (d))
 (agenda)
 (clear) ; Case 5g
+(load* "attchtst2.clp")
 
 (defrule fail-pass-both "Case 5g"
-   (a ?x)
-   (not (and (b ?x)
+   (a (sa ?x))
+   (not (and (b (sb ?x))
              (test (> ?x 0))))
    =>)
 
 (defrule fail-pass-pass "Case 5g"
-   (c ?x)
-   (not (and (d ?x)
+   (c (sc ?x))
+   (not (and (d (sd ?x))
              (test (< ?x 0))))
    =>)
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5h
+(load* "attchtst2.clp")
 
 (defrule fail-fail-both "Case 5h"
-   (a ?x)
-   (not (and (not (b ?x))
+   (a (sa ?x))
+   (not (and (not (b (sb ?x)))
              (test (> ?x 0))))
    =>)
 
 (defrule fail-pass-pass "Case 5h"
-   (c ?x)
-   (not (and (not (d ?x))
+   (c (sc ?x))
+   (not (and (not (d (sd ?x)))
              (test (< ?x 0))))
    =>)
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5i
+(load* "attchtst2.clp")
 
 (defrule fail-pass-both "Case 5i"
-   (a ?x)
-   (not (and (exists (b ?x))
+   (a (sa ?x))
+   (not (and (exists (b (sb ?x)))
              (test (> ?x 0))))
    =>)
 
 (defrule fail-pass-pass "Case 5i"
-   (c ?x)
-   (not (and (exists (d ?x))
+   (c (sc ?x))
+   (not (and (exists (d (sd ?x)))
              (test (< ?x 0))))
    =>)
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5j
+(load* "attchtst2.clp")
 
 (defrule fail-fail-both "Case 5j"
-   (a ?x)
-   (exists (and (b ?x)
+   (a (sa ?x))
+   (exists (and (b (sb ?x))
                 (test (> ?x 0))))
    =>)
 
 (defrule fail-fail-fail "Case 5j"
-   (c ?x)
-   (exists (and (d ?x)
+   (c (sc ?x))
+   (exists (and (d (sd ?x))
                 (test (< ?x 0))))
    =>)
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5k
+(load* "attchtst2.clp")
 
 (defrule fail-pass-both "Case 5k"
-   (a ?x)
-   (exists (and (not (b ?x))
+   (a (sa ?x))
+   (exists (and (not (b (sb ?x)))
                 (test (> ?x 0))))
    =>)
 
 (defrule fail-fail-fail "Case 5k"
-   (c ?x)
-   (exists (and (not (d ?x))
+   (c (sc ?x))
+   (exists (and (not (d (sd ?x)))
                 (test (< ?x 0))))
    =>)
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5l
+(load* "attchtst2.clp")
 
 (defrule fail-fail-both "Case 5l"
-   (a ?x)
-   (exists (and (exists (b ?x))
+   (a (sa ?x))
+   (exists (and (exists (b (sb ?x)))
                 (test (> ?x 0))))
    =>)
 
 (defrule fail-fail-fail "Case 5l"
-   (c ?x)
-   (exists (and (exists (d ?x))
+   (c (sc ?x))
+   (exists (and (exists (d (sd ?x)))
                 (test (< ?x 0))))
    =>)
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5m
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-pass "Case 5m"
    (not (and (not (and (a)
@@ -601,6 +637,7 @@
 (assert (b) (e))
 (agenda)
 (clear) ; Case 5n
+(load* "attchtst2.clp")
 
 (defrule pass-fail-fail-pass "Case 5n"
    (not (and (not (and (a)
@@ -623,132 +660,139 @@
 (assert (b) (e))
 (agenda)
 (clear) ; Case 5o
+(load* "attchtst2.clp")
 
 (defrule fail-pass-both "Case 5o"
    (x)
-   (a ?x)
-   (not (and (b ?x)
+   (a (sa ?x))
+   (not (and (b (sb ?x))
              (test (> ?x 0))))
    =>)
 
 (defrule fail-pass-pass "Case 5o"
    (x)
-   (c ?x)
-   (not (and (d ?x)
+   (c (sc ?x))
+   (not (and (d (sd ?x))
              (test (< ?x 0))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5p
+(load* "attchtst2.clp")
 
 (defrule fail-fail-both "Case 5p"
    (x)
-   (a ?x)
-   (not (and (not (b ?x))
+   (a (sa ?x))
+   (not (and (not (b (sb ?x)))
              (test (> ?x 0))))
    =>)
 
 (defrule fail-pass-pass "Case 5p"
    (x)
-   (c ?x)
-   (not (and (not (d ?x))
+   (c (sc ?x))
+   (not (and (not (d (sd ?x)))
              (test (< ?x 0))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5q
+(load* "attchtst2.clp")
 
 (defrule fail-pass-both "Case 5q"
    (x)
-   (a ?x)
-   (not (and (exists (b ?x))
+   (a (sa ?x))
+   (not (and (exists (b (sb ?x)))
              (test (> ?x 0))))
    =>)
 
 (defrule fail-pass-pass "Case 5q"
    (x)
-   (c ?x)
-   (not (and (exists (d ?x))
+   (c (sc ?x))
+   (not (and (exists (d (sd ?x)))
              (test (< ?x 0))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5r
+(load* "attchtst2.clp")
 
 (defrule fail-fail-both "Case 5r"
    (x)
-   (a ?x)
-   (exists (and (b ?x)
+   (a (sa ?x))
+   (exists (and (b (sb ?x))
                 (test (> ?x 0))))
    =>)
 
 (defrule fail-fail-fail "Case 5r"
    (x)
-   (c ?x)
-   (exists (and (d ?x)
+   (c (sc ?x))
+   (exists (and (d (sd ?x))
                 (test (< ?x 0))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5s
+(load* "attchtst2.clp")
 
 (defrule fail-pass-both "Case 5s"
    (x)
-   (a ?x)
-   (exists (and (not (b ?x))
+   (a (sa ?x))
+   (exists (and (not (b (sb ?x)))
                 (test (> ?x 0))))
    =>)
 
 (defrule fail-fail-fail "Case 5s"
    (x)
-   (c ?x)
-   (exists (and (not (d ?x))
+   (c (sc ?x))
+   (exists (and (not (d (sd ?x)))
                 (test (< ?x 0))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 5t
+(load* "attchtst2.clp")
 
 (defrule fail-fail-both "Case 5t"
    (x)
-   (a ?x)
-   (exists (and (exists (b ?x))
+   (a (sa ?x))
+   (exists (and (exists (b (sb ?x)))
                 (test (> ?x 0))))
    =>)
 
 (defrule fail-fail-fail "Case 5t"
    (x)
-   (c ?x)
-   (exists (and (exists (d ?x))
+   (c (sc ?x))
+   (exists (and (exists (d (sd ?x)))
                 (test (< ?x 0))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (c 1) (a 2) (c 2))
+(assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 (agenda)
-(assert (b 1) (d 1))
+(assert (b (sb 1)) (d (sd 1)))
 (agenda)
 (clear) ; Case 6a
+(load* "attchtst2.clp")
 
 (defrule fail-pass-fail-fail-pass "Case 6a"
    (a)
@@ -775,6 +819,7 @@
 (assert (c) (g))
 (agenda)
 (clear) ; Case 6b
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-pass-fail "Case 6b"
    (a)
@@ -801,6 +846,7 @@
 (assert (c) (g))
 (agenda)
 (clear) ; Case 6c
+(load* "attchtst2.clp")
 
 (defrule fail-fail-pass-pass-fail "Case 6c"
    (a)
@@ -827,6 +873,7 @@
 (assert (c) (g))
 (agenda)
 (clear) ; Case 6d
+(load* "attchtst2.clp")
 
 (defrule fail-fail-fail-fail-pass "Case 6d"
    (a)
@@ -853,226 +900,235 @@
 (assert (c) (g))
 (agenda)
 (clear) ; Case 6e
+(load* "attchtst2.clp")
 
 (defrule fail-pass-fail-fail-both "Case 6e"
-   (a ?x)
-   (not (and (not (and (b ?x)
-                       (c ?x)))
+   (a (sa ?x))
+   (not (and (not (and (b (sb ?x))
+                       (c (sc ?x))))
              (test (= 1 1))
-             (d ?x)))
+             (d (sd ?x))))
    =>)
 
 (defrule fail-pass-pass-pass-pass "Case 6e"
-   (e ?x)
-   (not (and (not (and (f ?x)
-                       (g ?x)))
+   (e (se ?x))
+   (not (and (not (and (f (sf ?x))
+                       (g (sg ?x))))
              (test (!= 2 2))
-             (h ?x)))
+             (h (sh ?x))))
    =>)
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (d 1) (h 1) (d 2) (h 2))
+(assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 6f
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-pass-both "Case 6f"
-   (a ?x)
-   (not (and (exists (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (not (and (exists (and (b (sb ?x))
+                          (c (sc ?x))))
              (test (= 1 1))
-             (d ?x)))
+             (d (sd ?x))))
    =>)
 
 (defrule fail-pass-pass-pass-pass "Case 6f"
-   (e ?x)
-   (not (and (exists (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (not (and (exists (and (f (sf ?x))
+                          (g (sg ?x))))
              (test (!= 2 2))
-             (h ?x)))
+             (h (sh ?x))))
    =>)
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (d 1) (h 1) (d 2) (h 2))
+(assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 6g
+(load* "attchtst2.clp")
 
 (defrule fail-fail-pass-pass-both "Case 6g"
-   (a ?x)
-   (exists (and (not (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (exists (and (not (and (b (sb ?x))
+                          (c (sc ?x))))
                 (test (= 1 1))
-                (d ?x)))
+                (d (sd ?x))))
    =>)
 
 (defrule fail-fail-fail-fail-fail "Case 6g"
-   (e ?x)
-   (exists (and (not (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (exists (and (not (and (f (sf ?x))
+                          (g (sg ?x))))
                 (test (!= 2 2))
-                (h ?x)))
+                (h (sh ?x))))
    =>)
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (d 1) (h 1) (d 2) (h 2))
+(assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 6h
+(load* "attchtst2.clp")
 
 (defrule fail-fail-fail-fail-both "Case 6h"
-   (a ?x)
-   (exists (and (exists (and (b ?x)
-                             (c ?x)))
+   (a (sa ?x))
+   (exists (and (exists (and (b (sb ?x))
+                             (c (sc ?x))))
                 (test (= 1 1))
-                (d ?x)))
+                (d (sd ?x))))
    =>)
 
 (defrule fail-fail-fail-fail-fail "Case 6h"
-   (e ?x)
-   (exists (and (exists (and (f ?x)
-                             (g ?x)))
+   (e (se ?x))
+   (exists (and (exists (and (f (sf ?x))
+                             (g (sg ?x))))
                 (test (!= 2 2))
-                (h ?x)))
+                (h (sh ?x))))
    =>)
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (d 1) (h 1) (d 2) (h 2))
+(assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 6i
+(load* "attchtst2.clp")
 
 (defrule fail-pass-fail-fail-both "Case 6i"
    (x)
-   (a ?x)
-   (not (and (not (and (b ?x)
-                       (c ?x)))
+   (a (sa ?x))
+   (not (and (not (and (b (sb ?x))
+                       (c (sc ?x))))
              (test (= 1 1))
-             (d ?x)))
+             (d (sd ?x))))
    =>)
 
 (defrule fail-pass-pass-pass-pass "Case 6i"
    (x)
-   (e ?x)
-   (not (and (not (and (f ?x)
-                       (g ?x)))
+   (e (se ?x))
+   (not (and (not (and (f (sf ?x))
+                       (g (sg ?x))))
              (test (!= 2 2))
-             (h ?x)))
+             (h (sh ?x))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (d 1) (h 1) (d 2) (h 2))
+(assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 6j
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-pass-both "Case 6j"
    (x)
-   (a ?x)
-   (not (and (exists (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (not (and (exists (and (b (sb ?x))
+                          (c (sc ?x))))
              (test (= 1 1))
-             (d ?x)))
+             (d (sd ?x))))
    =>)
 
 (defrule fail-pass-pass-pass-pass "Case 6j"
    (x)
-   (e ?x)
-   (not (and (exists (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (not (and (exists (and (f (sf ?x))
+                          (g (sg ?x))))
              (test (!= 2 2))
-             (h ?x)))
+             (h (sh ?x))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (d 1) (h 1) (d 2) (h 2))
+(assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 6k
+(load* "attchtst2.clp")
 
 (defrule fail-fail-pass-pass-both "Case 6k"
    (x)
-   (a ?x)
-   (exists (and (not (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (exists (and (not (and (b (sb ?x))
+                          (c (sc ?x))))
                 (test (= 1 1))
-                (d ?x)))
+                (d (sd ?x))))
    =>)
 
 (defrule fail-fail-fail-fail-fail "Case 6k"
    (x)
-   (e ?x)
-   (exists (and (not (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (exists (and (not (and (f (sf ?x))
+                          (g (sg ?x))))
                 (test (!= 2 2))
-                (h ?x)))
+                (h (sh ?x))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (d 1) (h 1) (d 2) (h 2))
+(assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 6l
+(load* "attchtst2.clp")
 
 (defrule fail-fail-fail-fail-both "Case 6l"
    (x)
-   (a ?x)
-   (exists (and (exists (and (b ?x)
-                             (c ?x)))
+   (a (sa ?x))
+   (exists (and (exists (and (b (sb ?x))
+                             (c (sc ?x))))
                 (test (= 1 1))
-                (d ?x)))
+                (d (sd ?x))))
    =>)
 
 (defrule fail-fail-fail-fail-fail "Case 6l"
    (x)
-   (e ?x)
-   (exists (and (exists (and (f ?x)
-                             (g ?x)))
+   (e (se ?x))
+   (exists (and (exists (and (f (sf ?x))
+                             (g (sg ?x))))
                 (test (!= 2 2))
-                (h ?x)))
+                (h (sh ?x))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (d 1) (h 1) (d 2) (h 2))
+(assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 7a
+(load* "attchtst2.clp")
 
 (defrule fail-fail-fail-pass "Case 7a"
    (a)
@@ -1095,6 +1151,7 @@
 (assert (c) (g))
 (agenda)
 (clear) ; Case 7b
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-fail "Case 7b"
    (a)
@@ -1117,6 +1174,7 @@
 (assert (c) (g))
 (agenda)
 (clear) ; Case 7c
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-fail "Case 7c"
    (a)
@@ -1139,6 +1197,7 @@
 (assert (c) (g))
 (agenda)
 (clear) ; Case 7d
+(load* "attchtst2.clp")
 
 (defrule fail-fail-fail-pass "Case 7d"
    (a)
@@ -1161,191 +1220,199 @@
 (assert (c) (g))
 (agenda)
 (clear) ; Case 7e
+(load* "attchtst2.clp")
 
 (defrule fail-fail-fail-both "Case 7e"
-   (a ?x)
-   (not (and (not (and (b ?x)
-                       (c ?x)))
+   (a (sa ?x))
+   (not (and (not (and (b (sb ?x))
+                       (c (sc ?x))))
              (test (= 1 1))))
    =>)
 
 (defrule fail-pass-pass-pass "Case 7e"
-   (e ?x)
-   (not (and (not (and (f ?x)
-                       (g ?x)))
+   (e (se ?x))
+   (not (and (not (and (f (sf ?x))
+                       (g (sg ?x))))
              (test (!= 2 2))))
    =>)
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 7f
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-both "Case 7f"
-   (a ?x)
-   (not (and (exists (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (not (and (exists (and (b (sb ?x))
+                          (c (sc ?x))))
              (test (= 1 1))))
    =>)
 
 (defrule fail-pass-pass-pass "Case 7f"
-   (e ?x)
-   (not (and (exists (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (not (and (exists (and (f (sf ?x))
+                          (g (sg ?x))))
              (test (!= 2 2))))
    =>)
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 7g
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-both "Case 7g"
-   (a ?x)
-   (exists (and (not (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (exists (and (not (and (b (sb ?x))
+                          (c (sc ?x))))
                 (test (= 1 1))))
    =>)
 
 (defrule fail-fail-fail-fail "Case 7g"
-   (e ?x)
-   (exists (and (not (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (exists (and (not (and (f (sf ?x))
+                          (g (sg ?x))))
                 (test (!= 2 2))))
    =>)
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 7h
+(load* "attchtst2.clp")
 
 (defrule fail-fail-fail-both "Case 7h"
-   (a ?x)
-   (exists (and (exists (and (b ?x)
-                             (c ?x)))
+   (a (sa ?x))
+   (exists (and (exists (and (b (sb ?x))
+                             (c (sc ?x))))
                 (test (= 1 1))))
    =>)
 
 (defrule fail-fail-fail-fail "Case 7h"
-   (e ?x)
-   (exists (and (exists (and (f ?x)
-                             (g ?x)))
+   (e (se ?x))
+   (exists (and (exists (and (f (sf ?x))
+                             (g (sg ?x))))
                 (test (!= 2 2))))
    =>)
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 7i
+(load* "attchtst2.clp")
 
 (defrule fail-fail-fail-both "Case 7i"
    (x)
-   (a ?x)
-   (not (and (not (and (b ?x)
-                       (c ?x)))
+   (a (sa ?x))
+   (not (and (not (and (b (sb ?x))
+                       (c (sc ?x))))
              (test (= 1 1))))
    =>)
 
 (defrule fail-pass-pass-pass "Case 7i"
    (x)
-   (e ?x)
-   (not (and (not (and (f ?x)
-                       (g ?x)))
+   (e (se ?x))
+   (not (and (not (and (f (sf ?x))
+                       (g (sg ?x))))
              (test (!= 2 2))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 7j
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-both "Case 7j"
    (x)
-   (a ?x)
-   (not (and (exists (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (not (and (exists (and (b (sb ?x))
+                          (c (sc ?x))))
              (test (= 1 1))))
    =>)
 
 (defrule fail-pass-pass-pass "Case 7j"
    (x)
-   (e ?x)
-   (not (and (exists (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (not (and (exists (and (f (sf ?x))
+                          (g (sg ?x))))
              (test (!= 2 2))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 7k
+(load* "attchtst2.clp")
 
 (defrule fail-pass-pass-both "Case 7k"
    (x)
-   (a ?x)
-   (exists (and (not (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (exists (and (not (and (b (sb ?x))
+                          (c (sc ?x))))
                 (test (= 1 1))))
    =>)
 
 (defrule fail-fail-fail-fail "Case 7k"
    (x)
-   (e ?x)
-   (exists (and (not (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (exists (and (not (and (f (sf ?x))
+                          (g (sg ?x))))
                 (test (!= 2 2))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear) ; Case 7l
+(load* "attchtst2.clp")
 
 (defrule fail-fail-fail-both "Case 7l"
    (x)
-   (a ?x)
-   (exists (and (exists (and (b ?x)
-                             (c ?x)))
+   (a (sa ?x))
+   (exists (and (exists (and (b (sb ?x))
+                             (c (sc ?x))))
                 (test (= 1 1))))
    =>)
 
 (defrule fail-fail-fail-fail "Case 7l"
    (x)
-   (e ?x)
-   (exists (and (exists (and (f ?x)
-                             (g ?x)))
+   (e (se ?x))
+   (exists (and (exists (and (f (sf ?x))
+                             (g (sg ?x))))
                 (test (!= 2 2))))
    =>)
 (assert (x))
 (agenda)
-(assert (a 1) (e 1) (a 2) (e 2))
+(assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 (agenda)
-(assert (b 1) (f 1))
+(assert (b (sb 1)) (f (sf 1)))
 (agenda)
-(assert (c 1) (g 1))
+(assert (c (sc 1)) (g (sg 1)))
 (agenda)
 (clear)

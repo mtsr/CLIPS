@@ -331,4 +331,226 @@
    =>)
 (reset)
 (unwatch activations)
+(clear) ; Test Thing #21 (Sudoku)
+
+(deftemplate possible
+   (slot row)
+   (slot value))
+
+(deftemplate size-value
+   (slot value))
+
+(defrule issue
+   (size-value (value ?v))
+   (not (and (size-value (value ?v2&:(< ?v2 ?v)))
+             (not (possible (row 1) (value ?v2)))))
+   =>)
+
+(defrule grid-values
+   =>
+   (assert (size-value (value 5)))
+   (assert (size-value (value 6))))   
+(reset)
+(agenda)
+(watch activations)
+(watch facts)
+(run 1)
+(agenda)
+(unwatch facts)
+(unwatch activations)
+(clear) ; Test Thing #22 (Sudoku)
+
+(deftemplate possible
+   (slot row)
+   (slot value))
+
+(deftemplate size-value
+   (slot value))
+
+(defrule issue
+   (x)
+   (size-value (value ?v))
+   (not (and (y)
+             (size-value (value ?v2&:(< ?v2 ?v)))
+             (not (possible (row 1) (value ?v2)))))
+   =>)
+
+(defrule grid-values
+   =>
+   (assert (x))
+   (assert (y))
+   (assert (size-value (value 5)))
+   (assert (size-value (value 6))))   
+(reset)
+(agenda)
+(watch activations)
+(watch facts)
+(run 1)
+(agenda)
+(unwatch facts)
+(unwatch activations)
+(clear) ; Test Thing #23 (User Bug)
+
+(deftemplate link
+   (slot z)
+   (slot y))
+
+(deftemplate xfer
+   (slot u)
+   (slot z))
+   
+(deftemplate csp
+   (slot y)
+   (slot u))
+      
+(deffacts start
+   (csp (y A) (u B))
+   (link (z B) (y A))
+   (link (z C) (y A))
+   (xfer (u B) (z C)))
+
+(defrule rule-bad
+   (link (z ?zzz) (y ?yyy))
+   (forall (csp (y ?yyy) (u ?uuu))
+           (test (progn TRUE))
+           (xfer (u ?uuu) (z ?zzz)))
+   =>)
+(watch facts)
+(watch activations)
+(reset)
+(agenda)
+(unwatch facts)
+(unwatch activations)
+(clear) ; Test Thing #24 (Client Bug)
+
+(deftemplate thing
+   (slot id))
+
+(defrule load-data
+   =>
+   (assert
+      (thing
+         (id "GCSS2100-001"))))
+
+(defrule Rule-1
+   (exists (and (thing (id ?id))
+                (thing (id ~?id))))
+   =>)
+      
+(defrule Rule-2
+   (before)
+   (exists (and (thing (id ?id))
+                (thing (id ~?id))))
+   (after)
+   =>)
+(reset)
+(agenda)
+(run 1)
+(agenda)
+(clear) ; Test Thing #25 (Client Bug)
+
+(deftemplate thing
+   (slot source)
+   (slot tag-id))
+
+(defrule load-data
+   =>
+   (assert
+      (thing
+         (source BAR)
+         (tag-id "thing-001"))))
+
+(deftemplate select-thing
+   (slot tag-id))
+    
+(defrule rule-1
+   (thing (source FOO)
+          (tag-id ?td1))
+   =>)
+
+(defrule rule-2
+   (exists (and (thing (source BAR) 
+                       (tag-id ?td2))
+                (thing (source GCSS)
+                       (tag-id ?td3&~?td2))))
+   =>)
+
+(defrule rule-3
+   (thing (source FOO)
+          (tag-id ?td1))
+   (exists (and (thing (source BAR) 
+                       (tag-id ?td2))
+                (thing (source BAR)
+                       (tag-id ?td3&~?td2))))
+   (not (select-thing))
+   =>)
+
+(defrule rule-4  "This needs to share with rule-2"
+   (thing (source FOO)
+          (tag-id ?td1))
+   (exists (and (thing (source BAR) 
+                       (tag-id ?td2))
+                (thing (source BAR)
+                       (tag-id ?td3&~?td2))))
+   (not (dabble))
+   =>)
+(reset)
+(agenda)
+(run 1)
+(agenda)
+(clear) ; Test Thing #26 (Client Bug)
+
+(deftemplate thing
+   (slot source)
+   (slot matched (default no)))
+
+(deftemplate dubob
+   (slot source)
+   (slot matched (default no)))
+
+(deffacts initial
+   (thing
+      (source BAR)
+      (matched X))
+   (thing
+      (source FOO)
+      (matched X))
+   (dubob
+      (source FOO)
+      (matched Y)))
+
+(defrule rule-1  ""
+   (compare)
+   (exists (thing (source FOO)
+                  (matched ?match&~no))        
+           (not (thing (source BAR)
+                       (matched ?match))))
+   =>)
+
+(defrule rule-2 ""
+   (exists (and (thing (source FOO) (matched ~no)) ;; This join should not be shared with the prior join
+                (dubob (source FOO) (matched ~no))))   
+   =>)
+(agenda)
+(reset)
+(agenda)
+(clear) ; Test Thing #27 (Client Bug)
+
+(deftemplate thing
+   (slot tag-id))
+
+(deftemplate dubob)
+
+(deffacts data
+   (dubob)
+   (thing (tag-id "B")))
+         
+(defrule rule-1 ""
+   (thing (tag-id ?td2)) 
+   (not (and (dubob)  
+             (not (thing (tag-id ~?td2))))) 
+   =>)
+(agenda)
+(reset)
+(agenda)
 (clear)

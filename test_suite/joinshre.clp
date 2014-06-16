@@ -13,8 +13,7 @@
   (e-1)
   =>)
   
-;; Can't reshare a-1 because the prior next join is negated
-(defrule rule-1-3 "=j+j+j+j+j"
+(defrule rule-1-3 "=j=j=j+j+j"
   (declare (salience 18))
   (a-1)
   (b-1)
@@ -41,7 +40,7 @@
   (d-2)
   =>)
   
-(defrule rule-2-2 "=j=j+j+j+j+j"
+(defrule rule-2-2 "=j=j=j=j+j+j"
   (declare (salience 15))
   (a-2)
   (b-2)
@@ -76,8 +75,7 @@
             (d-3)))
   =>)  
 
-;;; a-3 and b-3 joins can be shared
-(defrule rule-3-3 "=j=j+j+j+j"
+(defrule rule-3-3 "=j=j=j=j+j"
   (declare (salience 11))
   (a-3)
   (b-3)
