@@ -1,7 +1,9 @@
 TRUE
-CLIPS> (batch "attchtst.bat")
+CLIPS> (batch "attchtst2.bat")
 TRUE
 CLIPS> (clear) ; Case 1a
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass "Case 1a"
    (a)
@@ -19,6 +21,8 @@ CLIPS> (agenda)
 0      fail-pass: f-1
 For a total of 1 activation.
 CLIPS> (clear) ; Case 1b
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-fail "Case 1b"
    (not (a))
@@ -36,6 +40,8 @@ CLIPS> (assert (a) (b))
 <Fact-2>
 CLIPS> (agenda)
 CLIPS> (clear) ; Case 1c
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass "Case 1c"
    (exists (a))
@@ -53,6 +59,8 @@ CLIPS> (agenda)
 0      fail-pass: *
 For a total of 1 activation.
 CLIPS> (clear) ; Case 3a
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-fail "Case 3a"
    (not (and (a)
@@ -73,6 +81,8 @@ CLIPS> (agenda)
 0      pass-pass: *
 For a total of 1 activation.
 CLIPS> (clear) ; Case 3b
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass "Case 3b"
    (not (and (not (a))
@@ -93,6 +103,8 @@ CLIPS> (agenda)
 0      pass-pass: *
 For a total of 2 activations.
 CLIPS> (clear) ; Case 3c
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-fail "Case 3c"
    (not (and (exists (a))
@@ -113,6 +125,8 @@ CLIPS> (agenda)
 0      pass-pass: *
 For a total of 1 activation.
 CLIPS> (clear) ; Case 3d
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass "Case 3d"
    (exists (and (a)
@@ -130,6 +144,8 @@ CLIPS> (agenda)
 0      fail-pass: *
 For a total of 1 activation.
 CLIPS> (clear) ; Case 3e
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-fail "Case 3e"
    (exists (and (not (a))
@@ -147,6 +163,8 @@ CLIPS> (assert (a) (b))
 <Fact-2>
 CLIPS> (agenda)
 CLIPS> (clear) ; Case 3f
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass "Case 3f"
    (exists (and (exists (a))
@@ -164,6 +182,8 @@ CLIPS> (agenda)
 0      fail-pass: *
 For a total of 1 activation.
 CLIPS> (clear) ; Case 4a
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-pass-fail "Case 4a"
    (not (and (a)
@@ -192,6 +212,8 @@ CLIPS> (agenda)
 0      pass-pass-pass: *
 For a total of 1 activation.
 CLIPS> (clear) ; Case 4b
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-fail-pass "Case 4b"
    (not (and (a)
@@ -220,6 +242,8 @@ CLIPS> (agenda)
 0      pass-pass-pass: *
 For a total of 2 activations.
 CLIPS> (clear) ; Case 4c
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-pass-fail "Case 4c"
    (not (and (a)
@@ -248,6 +272,8 @@ CLIPS> (agenda)
 0      pass-pass-pass: *
 For a total of 1 activation.
 CLIPS> (clear) ; Case 4d
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-pass "Case 4d"
    (exists (and (a)
@@ -270,6 +296,8 @@ CLIPS> (agenda)
 0      fail-fail-pass: *
 For a total of 1 activation.
 CLIPS> (clear) ; Case 4e
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-fail "Case 4e"
    (exists (and (a)
@@ -292,6 +320,8 @@ CLIPS> (assert (b) (d))
 <Fact-4>
 CLIPS> (agenda)
 CLIPS> (clear) ; Case 4f
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-pass "Case 4f"
    (exists (and (a)
@@ -314,6 +344,8 @@ CLIPS> (agenda)
 0      fail-fail-pass: *
 For a total of 1 activation.
 CLIPS> (clear) ; Case 4g
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-fail-fail-pass "Case 4g"
    (not (and (not (and (x)
@@ -349,6 +381,8 @@ CLIPS> (agenda)
 0      pass-pass-pass-pass: *
 For a total of 2 activations.
 CLIPS> (clear) ; Case 4h
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-pass "Case 4h"
    (not (and (not (and (x)
@@ -385,6 +419,8 @@ CLIPS> (agenda)
 0      pass-pass-pass-pass: *
 For a total of 2 activations.
 CLIPS> (clear) ; Case 4i
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-fail-fail-pass "Case 4i"
    (not (and (not (and (x)
@@ -420,6 +456,8 @@ CLIPS> (agenda)
 0      pass-pass-pass-pass: *
 For a total of 2 activations.
 CLIPS> (clear) ; Case 4j
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-fail "Case 4j"
    (exists (and (not (and (x)
@@ -449,6 +487,8 @@ CLIPS> (assert (y) (w))
 <Fact-6>
 CLIPS> (agenda)
 CLIPS> (clear) ; Case 4k
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-fail-fail-fail "Case 4k"
    (exists (and (not (and (x)
@@ -476,6 +516,8 @@ CLIPS> (assert (y) (w))
 <Fact-6>
 CLIPS> (agenda)
 CLIPS> (clear) ; Case 4l
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-fail "Case 4l"
    (exists (and (not (and (x)
@@ -505,6 +547,8 @@ CLIPS> (assert (y) (w))
 <Fact-6>
 CLIPS> (agenda)
 CLIPS> (clear) ; Case 5a
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-fail "Case 5a"
    (a)
@@ -530,7 +574,10 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-2,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 5b
-CLIPS> (defrule fail-fail-pass "Case 5b"
+CLIPS> (load* "attchtst2.clp")
+TRUE
+CLIPS> 
+(defrule fail-fail-pass "Case 5b"
    (a)
    (not (and (not (b))
              (test (= 1 1))))
@@ -554,7 +601,10 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-2,*
 For a total of 2 activations.
 CLIPS> (clear) ; Case 5c
-CLIPS> (defrule fail-pass-fail "Case 5c"
+CLIPS> (load* "attchtst2.clp")
+TRUE
+CLIPS> 
+(defrule fail-pass-fail "Case 5c"
    (a)
    (not (and (exists (b))
              (test (= 1 1))))
@@ -578,6 +628,8 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-2,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 5d
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-pass "Case 5d"
    (a)
@@ -600,6 +652,8 @@ CLIPS> (agenda)
 0      fail-fail-pass: f-1,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 5e
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-fail "Case 5e"
    (a)
@@ -622,6 +676,8 @@ CLIPS> (assert (b) (d))
 <Fact-4>
 CLIPS> (agenda)
 CLIPS> (clear) ; Case 5f
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-pass "Case 5f"
    (a)
@@ -644,20 +700,22 @@ CLIPS> (agenda)
 0      fail-fail-pass: f-1,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 5g
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-both "Case 5g"
-   (a ?x)
-   (not (and (b ?x)
+   (a (sa ?x))
+   (not (and (b (sb ?x))
              (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass "Case 5g"
-   (c ?x)
-   (not (and (d ?x)
+   (c (sc ?x))
+   (not (and (d (sd ?x))
              (test (< ?x 0))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-4>
 CLIPS> (agenda)
 0      fail-pass-pass: f-4,*
@@ -665,7 +723,7 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-2,*
 0      fail-pass-both: f-1,*
 For a total of 4 activations.
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-6>
 CLIPS> (agenda)
 0      fail-pass-pass: f-4,*
@@ -673,26 +731,28 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-2,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 5h
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-both "Case 5h"
-   (a ?x)
-   (not (and (not (b ?x))
+   (a (sa ?x))
+   (not (and (not (b (sb ?x)))
              (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass "Case 5h"
-   (c ?x)
-   (not (and (not (d ?x))
+   (c (sc ?x))
+   (not (and (not (d (sd ?x)))
              (test (< ?x 0))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-4>
 CLIPS> (agenda)
 0      fail-pass-pass: f-4,*
 0      fail-pass-pass: f-2,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-6>
 CLIPS> (agenda)
 0      fail-fail-both: f-1,*
@@ -700,20 +760,22 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-2,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 5i
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-both "Case 5i"
-   (a ?x)
-   (not (and (exists (b ?x))
+   (a (sa ?x))
+   (not (and (exists (b (sb ?x)))
              (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass "Case 5i"
-   (c ?x)
-   (not (and (exists (d ?x))
+   (c (sc ?x))
+   (not (and (exists (d (sd ?x)))
              (test (< ?x 0))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-4>
 CLIPS> (agenda)
 0      fail-pass-pass: f-4,*
@@ -721,7 +783,7 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-2,*
 0      fail-pass-both: f-1,*
 For a total of 4 activations.
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-6>
 CLIPS> (agenda)
 0      fail-pass-pass: f-4,*
@@ -729,75 +791,83 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-2,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 5j
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-both "Case 5j"
-   (a ?x)
-   (exists (and (b ?x)
+   (a (sa ?x))
+   (exists (and (b (sb ?x))
                 (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail "Case 5j"
-   (c ?x)
-   (exists (and (d ?x)
+   (c (sc ?x))
+   (exists (and (d (sd ?x))
                 (test (< ?x 0))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-4>
 CLIPS> (agenda)
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-6>
 CLIPS> (agenda)
 0      fail-fail-both: f-1,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 5k
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-both "Case 5k"
-   (a ?x)
-   (exists (and (not (b ?x))
+   (a (sa ?x))
+   (exists (and (not (b (sb ?x)))
                 (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail "Case 5k"
-   (c ?x)
-   (exists (and (not (d ?x))
+   (c (sc ?x))
+   (exists (and (not (d (sd ?x)))
                 (test (< ?x 0))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-4>
 CLIPS> (agenda)
 0      fail-pass-both: f-3,*
 0      fail-pass-both: f-1,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-6>
 CLIPS> (agenda)
 0      fail-pass-both: f-3,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 5l
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-both "Case 5l"
-   (a ?x)
-   (exists (and (exists (b ?x))
+   (a (sa ?x))
+   (exists (and (exists (b (sb ?x)))
                 (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail "Case 5l"
-   (c ?x)
-   (exists (and (exists (d ?x))
+   (c (sc ?x))
+   (exists (and (exists (d (sd ?x)))
                 (test (< ?x 0))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-4>
 CLIPS> (agenda)
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-6>
 CLIPS> (agenda)
 0      fail-fail-both: f-1,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 5m
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-pass "Case 5m"
    (not (and (not (and (a)
@@ -830,6 +900,8 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: *
 For a total of 2 activations.
 CLIPS> (clear) ; Case 5n
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule pass-fail-fail-pass "Case 5n"
    (not (and (not (and (a)
@@ -865,24 +937,26 @@ CLIPS> (agenda)
 0      pass-pass-pass-pass: *
 For a total of 2 activations.
 CLIPS> (clear) ; Case 5o
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-both "Case 5o"
    (x)
-   (a ?x)
-   (not (and (b ?x)
+   (a (sa ?x))
+   (not (and (b (sb ?x))
              (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass "Case 5o"
    (x)
-   (c ?x)
-   (not (and (d ?x)
+   (c (sc ?x))
+   (not (and (d (sd ?x))
              (test (< ?x 0))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-5>
 CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-5,*
@@ -890,7 +964,7 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-3,*
 0      fail-pass-both: f-1,f-2,*
 For a total of 4 activations.
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-7>
 CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-5,*
@@ -898,30 +972,32 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-3,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 5p
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-both "Case 5p"
    (x)
-   (a ?x)
-   (not (and (not (b ?x))
+   (a (sa ?x))
+   (not (and (not (b (sb ?x)))
              (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass "Case 5p"
    (x)
-   (c ?x)
-   (not (and (not (d ?x))
+   (c (sc ?x))
+   (not (and (not (d (sd ?x)))
              (test (< ?x 0))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-5>
 CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-5,*
 0      fail-pass-pass: f-1,f-3,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-7>
 CLIPS> (agenda)
 0      fail-fail-both: f-1,f-2,*
@@ -929,24 +1005,26 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-3,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 5q
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-both "Case 5q"
    (x)
-   (a ?x)
-   (not (and (exists (b ?x))
+   (a (sa ?x))
+   (not (and (exists (b (sb ?x)))
              (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass "Case 5q"
    (x)
-   (c ?x)
-   (not (and (exists (d ?x))
+   (c (sc ?x))
+   (not (and (exists (d (sd ?x)))
              (test (< ?x 0))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-5>
 CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-5,*
@@ -954,7 +1032,7 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-3,*
 0      fail-pass-both: f-1,f-2,*
 For a total of 4 activations.
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-7>
 CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-5,*
@@ -962,87 +1040,95 @@ CLIPS> (agenda)
 0      fail-pass-pass: f-1,f-3,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 5r
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-both "Case 5r"
    (x)
-   (a ?x)
-   (exists (and (b ?x)
+   (a (sa ?x))
+   (exists (and (b (sb ?x))
                 (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail "Case 5r"
    (x)
-   (c ?x)
-   (exists (and (d ?x)
+   (c (sc ?x))
+   (exists (and (d (sd ?x))
                 (test (< ?x 0))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-5>
 CLIPS> (agenda)
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-7>
 CLIPS> (agenda)
 0      fail-fail-both: f-1,f-2,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 5s
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-both "Case 5s"
    (x)
-   (a ?x)
-   (exists (and (not (b ?x))
+   (a (sa ?x))
+   (exists (and (not (b (sb ?x)))
                 (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail "Case 5s"
    (x)
-   (c ?x)
-   (exists (and (not (d ?x))
+   (c (sc ?x))
+   (exists (and (not (d (sd ?x)))
                 (test (< ?x 0))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-5>
 CLIPS> (agenda)
 0      fail-pass-both: f-1,f-4,*
 0      fail-pass-both: f-1,f-2,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-7>
 CLIPS> (agenda)
 0      fail-pass-both: f-1,f-4,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 5t
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-both "Case 5t"
    (x)
-   (a ?x)
-   (exists (and (exists (b ?x))
+   (a (sa ?x))
+   (exists (and (exists (b (sb ?x)))
                 (test (> ?x 0))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail "Case 5t"
    (x)
-   (c ?x)
-   (exists (and (exists (d ?x))
+   (c (sc ?x))
+   (exists (and (exists (d (sd ?x)))
                 (test (< ?x 0))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (c 1) (a 2) (c 2))
+CLIPS> (assert (a (sa 1)) (c (sc 1)) (a (sa 2)) (c (sc 2)))
 <Fact-5>
 CLIPS> (agenda)
-CLIPS> (assert (b 1) (d 1))
+CLIPS> (assert (b (sb 1)) (d (sd 1)))
 <Fact-7>
 CLIPS> (agenda)
 0      fail-fail-both: f-1,f-2,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 6a
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-fail-fail-pass "Case 6a"
    (a)
@@ -1083,6 +1169,8 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-2,*
 For a total of 2 activations.
 CLIPS> (clear) ; Case 6b
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-pass-fail "Case 6b"
    (a)
@@ -1124,6 +1212,8 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-2,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 6c
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-pass-pass-fail "Case 6c"
    (a)
@@ -1158,6 +1248,8 @@ CLIPS> (assert (c) (g))
 <Fact-8>
 CLIPS> (agenda)
 CLIPS> (clear) ; Case 6d
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-fail-fail-pass "Case 6d"
    (a)
@@ -1190,24 +1282,26 @@ CLIPS> (agenda)
 0      fail-fail-fail-fail-pass: f-1,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 6e
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-fail-fail-both "Case 6e"
-   (a ?x)
-   (not (and (not (and (b ?x)
-                       (c ?x)))
+   (a (sa ?x))
+   (not (and (not (and (b (sb ?x))
+                       (c (sc ?x))))
              (test (= 1 1))
-             (d ?x)))
+             (d (sd ?x))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass-pass-pass "Case 6e"
-   (e ?x)
-   (not (and (not (and (f ?x)
-                       (g ?x)))
+   (e (se ?x))
+   (not (and (not (and (f (sf ?x))
+                       (g (sg ?x))))
              (test (!= 2 2))
-             (h ?x)))
+             (h (sh ?x))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-4>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-4,*
@@ -1215,19 +1309,19 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-2,*
 0      fail-pass-fail-fail-both: f-1,*
 For a total of 4 activations.
-CLIPS> (assert (d 1) (h 1) (d 2) (h 2))
+CLIPS> (assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 <Fact-8>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-4,*
 0      fail-pass-pass-pass-pass: f-2,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-10>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-4,*
 0      fail-pass-pass-pass-pass: f-2,*
 For a total of 2 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-12>
 CLIPS> (agenda)
 0      fail-pass-fail-fail-both: f-1,*
@@ -1235,24 +1329,26 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-2,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 6f
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-pass-both "Case 6f"
-   (a ?x)
-   (not (and (exists (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (not (and (exists (and (b (sb ?x))
+                          (c (sc ?x))))
              (test (= 1 1))
-             (d ?x)))
+             (d (sd ?x))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass-pass-pass "Case 6f"
-   (e ?x)
-   (not (and (exists (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (not (and (exists (and (f (sf ?x))
+                          (g (sg ?x))))
              (test (!= 2 2))
-             (h ?x)))
+             (h (sh ?x))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-4>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-4,*
@@ -1260,7 +1356,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-2,*
 0      fail-pass-pass-pass-both: f-1,*
 For a total of 4 activations.
-CLIPS> (assert (d 1) (h 1) (d 2) (h 2))
+CLIPS> (assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 <Fact-8>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-4,*
@@ -1268,7 +1364,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-2,*
 0      fail-pass-pass-pass-both: f-1,*
 For a total of 4 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-10>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-4,*
@@ -1276,7 +1372,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-2,*
 0      fail-pass-pass-pass-both: f-1,*
 For a total of 4 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-12>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-4,*
@@ -1284,98 +1380,104 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-2,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 6g
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-pass-pass-both "Case 6g"
-   (a ?x)
-   (exists (and (not (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (exists (and (not (and (b (sb ?x))
+                          (c (sc ?x))))
                 (test (= 1 1))
-                (d ?x)))
+                (d (sd ?x))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail-fail-fail "Case 6g"
-   (e ?x)
-   (exists (and (not (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (exists (and (not (and (f (sf ?x))
+                          (g (sg ?x))))
                 (test (!= 2 2))
-                (h ?x)))
+                (h (sh ?x))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-4>
 CLIPS> (agenda)
-CLIPS> (assert (d 1) (h 1) (d 2) (h 2))
+CLIPS> (assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 <Fact-8>
 CLIPS> (agenda)
 0      fail-fail-pass-pass-both: f-3,*
 0      fail-fail-pass-pass-both: f-1,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-10>
 CLIPS> (agenda)
 0      fail-fail-pass-pass-both: f-3,*
 0      fail-fail-pass-pass-both: f-1,*
 For a total of 2 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-12>
 CLIPS> (agenda)
 0      fail-fail-pass-pass-both: f-3,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 6h
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-fail-fail-both "Case 6h"
-   (a ?x)
-   (exists (and (exists (and (b ?x)
-                             (c ?x)))
+   (a (sa ?x))
+   (exists (and (exists (and (b (sb ?x))
+                             (c (sc ?x))))
                 (test (= 1 1))
-                (d ?x)))
+                (d (sd ?x))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail-fail-fail "Case 6h"
-   (e ?x)
-   (exists (and (exists (and (f ?x)
-                             (g ?x)))
+   (e (se ?x))
+   (exists (and (exists (and (f (sf ?x))
+                             (g (sg ?x))))
                 (test (!= 2 2))
-                (h ?x)))
+                (h (sh ?x))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-4>
 CLIPS> (agenda)
-CLIPS> (assert (d 1) (h 1) (d 2) (h 2))
+CLIPS> (assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 <Fact-8>
 CLIPS> (agenda)
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-10>
 CLIPS> (agenda)
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-12>
 CLIPS> (agenda)
 0      fail-fail-fail-fail-both: f-1,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 6i
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-fail-fail-both "Case 6i"
    (x)
-   (a ?x)
-   (not (and (not (and (b ?x)
-                       (c ?x)))
+   (a (sa ?x))
+   (not (and (not (and (b (sb ?x))
+                       (c (sc ?x))))
              (test (= 1 1))
-             (d ?x)))
+             (d (sd ?x))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass-pass-pass "Case 6i"
    (x)
-   (e ?x)
-   (not (and (not (and (f ?x)
-                       (g ?x)))
+   (e (se ?x))
+   (not (and (not (and (f (sf ?x))
+                       (g (sg ?x))))
              (test (!= 2 2))
-             (h ?x)))
+             (h (sh ?x))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-5>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-5,*
@@ -1383,19 +1485,19 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-3,*
 0      fail-pass-fail-fail-both: f-1,f-2,*
 For a total of 4 activations.
-CLIPS> (assert (d 1) (h 1) (d 2) (h 2))
+CLIPS> (assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 <Fact-9>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-5,*
 0      fail-pass-pass-pass-pass: f-1,f-3,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-11>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-5,*
 0      fail-pass-pass-pass-pass: f-1,f-3,*
 For a total of 2 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-13>
 CLIPS> (agenda)
 0      fail-pass-fail-fail-both: f-1,f-2,*
@@ -1403,28 +1505,30 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-3,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 6j
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-pass-both "Case 6j"
    (x)
-   (a ?x)
-   (not (and (exists (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (not (and (exists (and (b (sb ?x))
+                          (c (sc ?x))))
              (test (= 1 1))
-             (d ?x)))
+             (d (sd ?x))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass-pass-pass "Case 6j"
    (x)
-   (e ?x)
-   (not (and (exists (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (not (and (exists (and (f (sf ?x))
+                          (g (sg ?x))))
              (test (!= 2 2))
-             (h ?x)))
+             (h (sh ?x))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-5>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-5,*
@@ -1432,7 +1536,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-3,*
 0      fail-pass-pass-pass-both: f-1,f-2,*
 For a total of 4 activations.
-CLIPS> (assert (d 1) (h 1) (d 2) (h 2))
+CLIPS> (assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 <Fact-9>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-5,*
@@ -1440,7 +1544,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-3,*
 0      fail-pass-pass-pass-both: f-1,f-2,*
 For a total of 4 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-11>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-5,*
@@ -1448,7 +1552,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-3,*
 0      fail-pass-pass-pass-both: f-1,f-2,*
 For a total of 4 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-13>
 CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-5,*
@@ -1456,84 +1560,90 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass-pass: f-1,f-3,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 6k
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-pass-pass-both "Case 6k"
    (x)
-   (a ?x)
-   (exists (and (not (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (exists (and (not (and (b (sb ?x))
+                          (c (sc ?x))))
                 (test (= 1 1))
-                (d ?x)))
+                (d (sd ?x))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail-fail-fail "Case 6k"
    (x)
-   (e ?x)
-   (exists (and (not (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (exists (and (not (and (f (sf ?x))
+                          (g (sg ?x))))
                 (test (!= 2 2))
-                (h ?x)))
+                (h (sh ?x))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-5>
 CLIPS> (agenda)
-CLIPS> (assert (d 1) (h 1) (d 2) (h 2))
+CLIPS> (assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 <Fact-9>
 CLIPS> (agenda)
 0      fail-fail-pass-pass-both: f-1,f-4,*
 0      fail-fail-pass-pass-both: f-1,f-2,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-11>
 CLIPS> (agenda)
 0      fail-fail-pass-pass-both: f-1,f-4,*
 0      fail-fail-pass-pass-both: f-1,f-2,*
 For a total of 2 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-13>
 CLIPS> (agenda)
 0      fail-fail-pass-pass-both: f-1,f-4,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 6l
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-fail-fail-both "Case 6l"
    (x)
-   (a ?x)
-   (exists (and (exists (and (b ?x)
-                             (c ?x)))
+   (a (sa ?x))
+   (exists (and (exists (and (b (sb ?x))
+                             (c (sc ?x))))
                 (test (= 1 1))
-                (d ?x)))
+                (d (sd ?x))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail-fail-fail "Case 6l"
    (x)
-   (e ?x)
-   (exists (and (exists (and (f ?x)
-                             (g ?x)))
+   (e (se ?x))
+   (exists (and (exists (and (f (sf ?x))
+                             (g (sg ?x))))
                 (test (!= 2 2))
-                (h ?x)))
+                (h (sh ?x))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-5>
 CLIPS> (agenda)
-CLIPS> (assert (d 1) (h 1) (d 2) (h 2))
+CLIPS> (assert (d (sd 1)) (h (sh 1)) (d (sd 2)) (h (sh 2)))
 <Fact-9>
 CLIPS> (agenda)
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-11>
 CLIPS> (agenda)
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-13>
 CLIPS> (agenda)
 0      fail-fail-fail-fail-both: f-1,f-2,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 7a
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-fail-pass "Case 7a"
    (a)
@@ -1566,6 +1676,8 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-2,*
 For a total of 2 activations.
 CLIPS> (clear) ; Case 7b
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-fail "Case 7b"
    (a)
@@ -1599,6 +1711,8 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-2,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 7c
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-fail "Case 7c"
    (a)
@@ -1628,6 +1742,8 @@ CLIPS> (assert (c) (g))
 <Fact-6>
 CLIPS> (agenda)
 CLIPS> (clear) ; Case 7d
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-fail-pass "Case 7d"
    (a)
@@ -1655,34 +1771,36 @@ CLIPS> (agenda)
 0      fail-fail-fail-pass: f-1,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 7e
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-fail-both "Case 7e"
-   (a ?x)
-   (not (and (not (and (b ?x)
-                       (c ?x)))
+   (a (sa ?x))
+   (not (and (not (and (b (sb ?x))
+                       (c (sc ?x))))
              (test (= 1 1))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass-pass "Case 7e"
-   (e ?x)
-   (not (and (not (and (f ?x)
-                       (g ?x)))
+   (e (se ?x))
+   (not (and (not (and (f (sf ?x))
+                       (g (sg ?x))))
              (test (!= 2 2))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-4>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-4,*
 0      fail-pass-pass-pass: f-2,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-6>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-4,*
 0      fail-pass-pass-pass: f-2,*
 For a total of 2 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-8>
 CLIPS> (agenda)
 0      fail-fail-fail-both: f-1,*
@@ -1690,22 +1808,24 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-2,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 7f
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-both "Case 7f"
-   (a ?x)
-   (not (and (exists (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (not (and (exists (and (b (sb ?x))
+                          (c (sc ?x))))
              (test (= 1 1))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass-pass "Case 7f"
-   (e ?x)
-   (not (and (exists (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (not (and (exists (and (f (sf ?x))
+                          (g (sg ?x))))
              (test (!= 2 2))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-4>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-4,*
@@ -1713,7 +1833,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-2,*
 0      fail-pass-pass-both: f-1,*
 For a total of 4 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-6>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-4,*
@@ -1721,7 +1841,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-2,*
 0      fail-pass-pass-both: f-1,*
 For a total of 4 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-8>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-4,*
@@ -1729,98 +1849,104 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-2,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 7g
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-both "Case 7g"
-   (a ?x)
-   (exists (and (not (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (exists (and (not (and (b (sb ?x))
+                          (c (sc ?x))))
                 (test (= 1 1))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail-fail "Case 7g"
-   (e ?x)
-   (exists (and (not (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (exists (and (not (and (f (sf ?x))
+                          (g (sg ?x))))
                 (test (!= 2 2))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-4>
 CLIPS> (agenda)
 0      fail-pass-pass-both: f-3,*
 0      fail-pass-pass-both: f-1,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-6>
 CLIPS> (agenda)
 0      fail-pass-pass-both: f-3,*
 0      fail-pass-pass-both: f-1,*
 For a total of 2 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-8>
 CLIPS> (agenda)
 0      fail-pass-pass-both: f-3,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 7h
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-fail-both "Case 7h"
-   (a ?x)
-   (exists (and (exists (and (b ?x)
-                             (c ?x)))
+   (a (sa ?x))
+   (exists (and (exists (and (b (sb ?x))
+                             (c (sc ?x))))
                 (test (= 1 1))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail-fail "Case 7h"
-   (e ?x)
-   (exists (and (exists (and (f ?x)
-                             (g ?x)))
+   (e (se ?x))
+   (exists (and (exists (and (f (sf ?x))
+                             (g (sg ?x))))
                 (test (!= 2 2))))
    =>)
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-4>
 CLIPS> (agenda)
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-6>
 CLIPS> (agenda)
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-8>
 CLIPS> (agenda)
 0      fail-fail-fail-both: f-1,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 7i
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-fail-both "Case 7i"
    (x)
-   (a ?x)
-   (not (and (not (and (b ?x)
-                       (c ?x)))
+   (a (sa ?x))
+   (not (and (not (and (b (sb ?x))
+                       (c (sc ?x))))
              (test (= 1 1))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass-pass "Case 7i"
    (x)
-   (e ?x)
-   (not (and (not (and (f ?x)
-                       (g ?x)))
+   (e (se ?x))
+   (not (and (not (and (f (sf ?x))
+                       (g (sg ?x))))
              (test (!= 2 2))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-5>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-1,f-5,*
 0      fail-pass-pass-pass: f-1,f-3,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-7>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-1,f-5,*
 0      fail-pass-pass-pass: f-1,f-3,*
 For a total of 2 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-9>
 CLIPS> (agenda)
 0      fail-fail-fail-both: f-1,f-2,*
@@ -1828,26 +1954,28 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-1,f-3,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 7j
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-both "Case 7j"
    (x)
-   (a ?x)
-   (not (and (exists (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (not (and (exists (and (b (sb ?x))
+                          (c (sc ?x))))
              (test (= 1 1))))
    =>)
 CLIPS> 
 (defrule fail-pass-pass-pass "Case 7j"
    (x)
-   (e ?x)
-   (not (and (exists (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (not (and (exists (and (f (sf ?x))
+                          (g (sg ?x))))
              (test (!= 2 2))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-5>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-1,f-5,*
@@ -1855,7 +1983,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-1,f-3,*
 0      fail-pass-pass-both: f-1,f-2,*
 For a total of 4 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-7>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-1,f-5,*
@@ -1863,7 +1991,7 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-1,f-3,*
 0      fail-pass-pass-both: f-1,f-2,*
 For a total of 4 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-9>
 CLIPS> (agenda)
 0      fail-pass-pass-pass: f-1,f-5,*
@@ -1871,69 +1999,73 @@ CLIPS> (agenda)
 0      fail-pass-pass-pass: f-1,f-3,*
 For a total of 3 activations.
 CLIPS> (clear) ; Case 7k
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-pass-pass-both "Case 7k"
    (x)
-   (a ?x)
-   (exists (and (not (and (b ?x)
-                          (c ?x)))
+   (a (sa ?x))
+   (exists (and (not (and (b (sb ?x))
+                          (c (sc ?x))))
                 (test (= 1 1))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail-fail "Case 7k"
    (x)
-   (e ?x)
-   (exists (and (not (and (f ?x)
-                          (g ?x)))
+   (e (se ?x))
+   (exists (and (not (and (f (sf ?x))
+                          (g (sg ?x))))
                 (test (!= 2 2))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-5>
 CLIPS> (agenda)
 0      fail-pass-pass-both: f-1,f-4,*
 0      fail-pass-pass-both: f-1,f-2,*
 For a total of 2 activations.
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-7>
 CLIPS> (agenda)
 0      fail-pass-pass-both: f-1,f-4,*
 0      fail-pass-pass-both: f-1,f-2,*
 For a total of 2 activations.
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-9>
 CLIPS> (agenda)
 0      fail-pass-pass-both: f-1,f-4,*
 For a total of 1 activation.
 CLIPS> (clear) ; Case 7l
+CLIPS> (load* "attchtst2.clp")
+TRUE
 CLIPS> 
 (defrule fail-fail-fail-both "Case 7l"
    (x)
-   (a ?x)
-   (exists (and (exists (and (b ?x)
-                             (c ?x)))
+   (a (sa ?x))
+   (exists (and (exists (and (b (sb ?x))
+                             (c (sc ?x))))
                 (test (= 1 1))))
    =>)
 CLIPS> 
 (defrule fail-fail-fail-fail "Case 7l"
    (x)
-   (e ?x)
-   (exists (and (exists (and (f ?x)
-                             (g ?x)))
+   (e (se ?x))
+   (exists (and (exists (and (f (sf ?x))
+                             (g (sg ?x))))
                 (test (!= 2 2))))
    =>)
 CLIPS> (assert (x))
 <Fact-1>
 CLIPS> (agenda)
-CLIPS> (assert (a 1) (e 1) (a 2) (e 2))
+CLIPS> (assert (a (sa 1)) (e (se 1)) (a (sa 2)) (e (se 2)))
 <Fact-5>
 CLIPS> (agenda)
-CLIPS> (assert (b 1) (f 1))
+CLIPS> (assert (b (sb 1)) (f (sf 1)))
 <Fact-7>
 CLIPS> (agenda)
-CLIPS> (assert (c 1) (g 1))
+CLIPS> (assert (c (sc 1)) (g (sg 1)))
 <Fact-9>
 CLIPS> (agenda)
 0      fail-fail-fail-both: f-1,f-2,*

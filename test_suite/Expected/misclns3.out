@@ -142,10 +142,10 @@ CLIPS> (apropos "dynamic" 7)
 CLIPS> (apropos "dynamic")
 [ARGACCES5] Function apropos expected argument #1 to be of type symbol
 CLIPS> (apropos dynamic)
+get-dynamic-constraint-checking
 dynamic-put
 set-dynamic-constraint-checking
 dynamic-get
-get-dynamic-constraint-checking
 CLIPS> (list-watch-items 7) ;; CR0263
 [ARGACCES5] Function list-watch-items expected argument #1 to be of type symbol
 CLIPS> (unwatch all)

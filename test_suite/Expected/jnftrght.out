@@ -677,8 +677,6 @@ CLIPS> (reset)
 CLIPS> (assert (B))
 <Fact-1>
 CLIPS> (assert (A 3))
-==> Activation 0      buggy-rule: f-2,*
-<== Activation 0      buggy-rule: f-2,*
 <Fact-2>
 CLIPS> (agenda)
 CLIPS> (clear)

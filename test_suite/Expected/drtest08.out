@@ -274,8 +274,8 @@ CLIPS>
    =>)
 CLIPS> (reset)
 CLIPS> (agenda)
-0      r2: f-2,*
 0      r1: f-1,*
+0      r2: f-2,*
 For a total of 2 activations.
 CLIPS> (clear)                    ; DR0740
 CLIPS> 
