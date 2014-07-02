@@ -322,3 +322,7 @@
 (bload "Temp//temp.bin")  
 (rules)
 (clear)
+(watch compilations)
+(load "gnrcdef.clp")
+(unwatch compilations)
+(clear)
