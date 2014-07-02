@@ -622,7 +622,7 @@ static SYMBOL_HN *ParseDefinstancesName(
    *active = FALSE;
    dname = GetConstructNameAndComment(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken,"definstances",
                                       EnvFindDefinstances,EnvUndefinstances,"@",
-                                      TRUE,FALSE,TRUE);
+                                      TRUE,FALSE,TRUE,FALSE);
    if (dname == NULL)
      return(NULL);
 

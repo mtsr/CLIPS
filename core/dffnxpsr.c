@@ -123,7 +123,7 @@ globle intBool ParseDeffunction(
       ===================================================== */
    deffunctionName = GetConstructNameAndComment(theEnv,readSource,&DeffunctionData(theEnv)->DFInputToken,"deffunction",
                                                 EnvFindDeffunction,NULL,
-                                                "!",TRUE,TRUE,TRUE);
+                                                "!",TRUE,TRUE,TRUE,FALSE);
    if (deffunctionName == NULL)
      return(TRUE);
 

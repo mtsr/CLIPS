@@ -137,7 +137,7 @@ globle intBool ParseDefgeneric(
 
    gname = GetConstructNameAndComment(theEnv,readSource,&DefgenericData(theEnv)->GenericInputToken,"defgeneric",
                                       EnvFindDefgeneric,NULL,"^",TRUE,
-                                      TRUE,TRUE);
+                                      TRUE,TRUE,FALSE);
    if (gname == NULL)
      return(TRUE);
 
@@ -339,14 +339,25 @@ globle intBool ParseDefmethod(
    meth = AddMethod(theEnv,gfunc,meth,mposn,theIndex,params,rcnt,lvars,wildcard,actions,NULL,FALSE);
 #endif
    DeleteTempRestricts(theEnv,params);
-   if (GetPrintWhileLoading(theEnv) && GetCompilationsWatch(theEnv))
+   if (GetPrintWhileLoading(theEnv) && GetCompilationsWatch(theEnv) &&
+       (! ConstructData(theEnv)->CheckSyntaxMode))
      {
-      EnvPrintRouter(theEnv,WDIALOG,"   Method #");
-      PrintLongInteger(theEnv,WDIALOG,(long long) meth->index);
+      char *outRouter = WDIALOG;
+     
       if (mnew)
-        EnvPrintRouter(theEnv,WDIALOG," defined.\n");
+        {
+         EnvPrintRouter(theEnv,outRouter,"   Method #");
+         PrintLongInteger(theEnv,outRouter,(long long) meth->index);
+         EnvPrintRouter(theEnv,outRouter," defined.\n");
+        }
       else
-        EnvPrintRouter(theEnv,WDIALOG," redefined.\n");
+        {
+         outRouter = WWARNING;
+         PrintWarningID(theEnv,"CSTRCPSR",1,TRUE);
+         EnvPrintRouter(theEnv,outRouter,"Method #");
+         PrintLongInteger(theEnv,outRouter,(long long) meth->index);
+         EnvPrintRouter(theEnv,outRouter," redefined.\n");
+        }
      }
    return(FALSE);
 
@@ -772,7 +783,7 @@ static SYMBOL_HN *ParseMethodNameAndIndex(
 
    *theIndex = 0;
    gname = GetConstructNameAndComment(theEnv,readSource,&DefgenericData(theEnv)->GenericInputToken,"defgeneric",
-                                      EnvFindDefgeneric,NULL,"&",TRUE,FALSE,TRUE);
+                                      EnvFindDefgeneric,NULL,"&",TRUE,FALSE,TRUE,TRUE);
    if (gname == NULL)
      return(NULL);
    if (GetType(DefgenericData(theEnv)->GenericInputToken) == INTEGER)

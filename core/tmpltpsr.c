@@ -110,7 +110,7 @@ globle int ParseDeftemplate(
 
    deftemplateName = GetConstructNameAndComment(theEnv,readSource,&inputToken,"deftemplate",
                                                 EnvFindDeftemplate,EnvUndeftemplate,"%",
-                                                TRUE,TRUE,TRUE);
+                                                TRUE,TRUE,TRUE,FALSE);
    if (deftemplateName == NULL) return(TRUE);
 
    if (ReservedPatternSymbol(theEnv,ValueToString(deftemplateName),"deftemplate"))

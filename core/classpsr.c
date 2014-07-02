@@ -174,7 +174,7 @@ globle int ParseDefclass(
 
    cname = GetConstructNameAndComment(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken,"defclass",
                                       EnvFindDefclass,NULL,"#",TRUE,
-                                      TRUE,TRUE);
+                                      TRUE,TRUE,FALSE);
    if (cname == NULL)
      return(TRUE);
 

@@ -755,7 +755,8 @@ globle SYMBOL_HN *GetConstructNameAndComment(
   char *constructSymbol,
   int fullMessageCR,
   int getComment,
-  int moduleNameAllowed)
+  int moduleNameAllowed,
+  int ignoreRedefinition)
   {
 #if (MAC_XCD) && (! DEBUGGING_FUNCTIONS)
 #pragma unused(fullMessageCR)
@@ -885,7 +886,7 @@ globle SYMBOL_HN *GetConstructNameAndComment(
        GetPrintWhileLoading(theEnv) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       char *outRouter = WDIALOG;
-      if (redefining) 
+      if (redefining && (! ignoreRedefinition))
         {
          outRouter = WWARNING;
          PrintWarningID(theEnv,"CSTRCPSR",1,TRUE);

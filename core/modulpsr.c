@@ -171,7 +171,7 @@ globle int ParseDefmodule(
 
    defmoduleName = GetConstructNameAndComment(theEnv,readSource,&inputToken,"defmodule",
                                               EnvFindDefmodule,DeleteDefmodule,"+",
-                                              TRUE,TRUE,FALSE);
+                                              TRUE,TRUE,FALSE,FALSE);
    if (defmoduleName == NULL) { return(TRUE); }
 
    if (strcmp(ValueToString(defmoduleName),"MAIN") == 0)

@@ -125,7 +125,7 @@ globle int ParseDefmessageHandler(
      }
 #endif
    cname = GetConstructNameAndComment(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken,"defmessage-handler",
-                                      NULL,NULL,"~",TRUE,FALSE,TRUE);
+                                      NULL,NULL,"~",TRUE,FALSE,TRUE,FALSE);
    if (cname == NULL)
      return(TRUE);
    cls = LookupDefclassByMdlOrScope(theEnv,ValueToString(cname));

@@ -137,7 +137,7 @@ globle int ParseDefrule(
 
    ruleName = GetConstructNameAndComment(theEnv,readSource,&theToken,"defrule",
                                          EnvFindDefrule,EnvUndefrule,"*",FALSE,
-                                         TRUE,TRUE);
+                                         TRUE,TRUE,FALSE);
 
    if (ruleName == NULL) return(TRUE);
 
