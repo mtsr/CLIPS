@@ -488,6 +488,7 @@ Partial matches for CEs 1 - 2
  None
 Activations
  None
+(1 0 0)
 CLIPS> 
 (defrule Rule2
   (A ?PP)
@@ -502,6 +503,7 @@ Partial matches for CEs 1 - 2
  None
 Activations
  None
+(1 0 0)
 CLIPS> (clear) ;; garbage collection issue
 CLIPS> (defglobal ?*A* = (create$ 1 2 3 4 5 6 7 8 9 10))
 CLIPS> (defglobal ?*B* = (create$ 1 2 3 4 5 6 7 8 9 10))
@@ -556,5 +558,20 @@ x_ba6
 x_baa
 x_ba8
 For a total of 3 defrules.
+CLIPS> (clear)
+CLIPS> (watch compilations)
+CLIPS> (load "gnrcdef.clp")
+Defining defgeneric: splunge
+   Method #1 defined.
+Defining defgeneric: splunge
+   Method #2 defined.
+Defining defgeneric: splunge
+
+[CSTRCPSR1] WARNING: Method #1 redefined.
+Defining defgeneric: foobar
+
+[CSTRCPSR1] WARNING: Redefining defgeneric: foobar
+TRUE
+CLIPS> (unwatch compilations)
 CLIPS> (clear)
 CLIPS> (dribble-off)

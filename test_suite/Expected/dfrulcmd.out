@@ -198,11 +198,12 @@ CLIPS> (run 1)
 CLIPS> (agenda)
 CLIPS> (clear) ; Test matches command
 CLIPS> (matches)
-[ARGACCES4] Function matches expected exactly 1 argument(s)
+[ARGACCES4] Function matches expected at least 1 argument(s)
 CLIPS> (matches 10)
 [ARGACCES5] Function matches expected argument #1 to be of type symbol
 CLIPS> (matches bad-rule)
 [PRNTUTIL1] Unable to find defrule bad-rule.
+FALSE
 CLIPS> (defrule foo (or (a ?x) (b ?x)) (c ?) =>)
 CLIPS> (defrule bar (b ?x) (c ?x) (a ?) =>)
 CLIPS> (defrule yaz (q) (r) =>)
@@ -234,6 +235,7 @@ f-2,f-6
 f-3,f-6
 f-4,f-6
 f-5,f-6
+(7 5 5)
 CLIPS> (matches bar)
 Matches for Pattern 1
 f-4
@@ -254,6 +256,7 @@ Activations
 f-4,f-6,f-3
 f-4,f-6,f-2
 f-4,f-6,f-1
+(6 4 3)
 CLIPS> (matches yaz)
 Matches for Pattern 1
  None
@@ -263,6 +266,7 @@ Partial matches for CEs 1 - 2
  None
 Activations
  None
+(0 0 0)
 CLIPS> (matches flx)
 Matches for Pattern 1
 f-4
@@ -279,6 +283,7 @@ Partial matches for CEs 1 - 3
 f-5,*,f-2
 Activations
 f-5,*,f-2
+(6 2 1)
 CLIPS> (clear) ; Test breakpoint stuff
 CLIPS> (set-break)
 [ARGACCES4] Function set-break expected exactly 1 argument(s)

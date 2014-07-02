@@ -149,6 +149,7 @@ Partial matches for CEs 1 - 3
  None
 Activations
  None
+(0 0 0)
 CLIPS> (defrule foo (test (> 3 4)) =>)
 CLIPS> (defrule yak (test (< 3 4)) =>)
 ==> Activation 0      yak: *
@@ -157,11 +158,13 @@ Matches for Pattern 1
  None
 Activations
  None
+(0 0 0)
 CLIPS> (matches yak)
 Matches for Pattern 1
 *
 Activations
 *
+(1 0 1)
 CLIPS> (clear)                     ; Incremental Reset exists/nand CE
 CLIPS> (defrule foo (a) (b) (c) =>)
 CLIPS> (assert (a) (b) (c) (d))
