@@ -1127,7 +1127,11 @@
 /****************/    
 - (int) waitForChar
   {
-   [self dumpOutputBuffer];
+   // CA_DEBUG_TRANSACTIONS
+   dispatch_async(dispatch_get_main_queue(),
+    ^{
+      [self dumpOutputBuffer];
+     });
      
    return [textView waitForChar];
   }
@@ -1568,6 +1572,17 @@
     NSValue *theValue, *inputCaret = NULL, *extraSelection = NULL;
     NSUInteger textLength;
     NSArray *returnArray;
+
+    /*=======================================================*/
+    /* If the output buffer hasn't been dumped, don't try to */
+    /* modify the selection because we're in the process of  */
+    /* attempting to print information.                      */
+    /*=======================================================*/
+    
+    if (! [outputBuffer isEqualToString: @""])
+      {
+       return newSelectedCharRanges;
+      }
 
     /*=======================================*/
     /* Determine the number of characters in */
