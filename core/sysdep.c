@@ -1179,9 +1179,17 @@ globle FILE *GenOpen(
   {
    FILE *theFile;
    
+   /*==================================*/
+   /* Invoke the before open function. */
+   /*==================================*/
+
    if (SystemDependentData(theEnv)->BeforeOpenFunction != NULL)
      { (*SystemDependentData(theEnv)->BeforeOpenFunction)(theEnv); }
 
+   /*================*/
+   /* Open the file. */
+   /*================*/
+   
 #if WIN_MVC
 #if _MSC_VER >= 1400
    fopen_s(&theFile,fileName,accessType);
@@ -1192,12 +1200,46 @@ globle FILE *GenOpen(
    theFile = fopen(fileName,accessType);
 #endif
    
+   /*=====================================*/
+   /* Check for a UTF-8 Byte Order Marker */
+   /* (BOM): 0xEF,0xBB,0xBF.              */
+   /*=====================================*/
+   
+   if ((theFile != NULL) & (strcmp(accessType,"r") == 0))
+     {
+      int theChar;
+      
+      theChar = getc(theFile);
+      if (theChar == 0xEF)
+       {
+        theChar = getc(theFile);
+        if (theChar == 0xBB)
+          {
+           theChar = getc(theFile);
+           if (theChar != 0xBF)
+             { ungetc(theChar,theFile);}
+          }
+        else
+          { ungetc(theChar,theFile);}
+       }
+      else
+       { ungetc(theChar,theFile); }
+     }
+     
+   /*=================================*/
+   /* Invoke the after open function. */
+   /*=================================*/
+   
    if (SystemDependentData(theEnv)->AfterOpenFunction != NULL)
      { (*SystemDependentData(theEnv)->AfterOpenFunction)(theEnv); }
      
+   /*===============================*/
+   /* Return a pointer to the file. */
+   /*===============================*/
+   
    return theFile;
   }
-  
+
 /**********************************************/
 /* GenClose: Trap routine for closing a file. */
 /**********************************************/
