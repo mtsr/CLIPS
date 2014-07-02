@@ -55,6 +55,7 @@
 #include "incrrset.h"
 #include "lgcldpnd.h"
 #include "memalloc.h"
+#include "multifld.h"
 #include "pattern.h"
 #include "reteutil.h"
 #include "router.h"
@@ -75,10 +76,10 @@
 #if DEVELOPER
    static void                    ShowJoins(void *,void *);
 #endif
-   static int                     ListAlphaMatches(void *,struct joinNode *,int);
-   static int                     ListBetaMatches(void *,struct joinNode *,int);
+   static int                     ListAlphaMatches(void *,struct joinNode *,int,int,long *);
+   static int                     ListBetaMatches(void *,struct joinNode *,int,int,long *);
    static int                     ListBetaJoinActivity(void *,struct joinNode *,int,long long *,int);
-   static void                    PrintMatchesMemory(void *,struct joinNode *,struct betaMemory *,int,int);
+   static void                    PrintMatchesMemory(void *,struct joinNode *,struct betaMemory *,int,int,int,long *);
    
 /****************************************************************/
 /* DefruleCommands: Initializes defrule commands and functions. */
@@ -105,9 +106,8 @@ globle void DefruleCommands(
                                   "RemoveBreakCommand", "*1w");
    EnvDefineFunction2(theEnv,"show-breaks",'v', PTIEF ShowBreaksCommand,
                                  "ShowBreaksCommand", "01w");
-   EnvDefineFunction2(theEnv,"matches",'v',PTIEF MatchesCommand,"MatchesCommand","11w");
+   EnvDefineFunction2(theEnv,"matches",'u',PTIEF MatchesCommand,"MatchesCommand","12w");
    EnvDefineFunction2(theEnv,"join-activity",'g',PTIEF JoinActivityCommand,"JoinActivityCommand","11w");
-   EnvDefineFunction2(theEnv,"matches-count",'v',PTIEF MatchesCountCommand,"MatchesCountCommand","11w");
    EnvDefineFunction2(theEnv,"list-focus-stack",'v', PTIEF ListFocusStackCommand,
                                       "ListFocusStackCommand", "00");
    EnvDefineFunction2(theEnv,"dependencies", 'v', PTIEF DependenciesCommand,
@@ -236,13 +236,29 @@ globle int GetBetaMemoryResizingCommand(
 /*   for the matches command.           */
 /****************************************/
 globle void MatchesCommand(
-  void *theEnv)
+  void *theEnv,
+  DATA_OBJECT *result)
   {
-   char *ruleName;
+   char *ruleName, *argument;
    void *rulePtr;
+   int numberOfArguments;
+   DATA_OBJECT argPtr;
+   int output;
 
-   ruleName = GetConstructName(theEnv,"matches","rule name");
-   if (ruleName == NULL) return;
+   result->type = SYMBOL;
+   result->value = EnvFalseSymbol(theEnv);
+
+   if ((numberOfArguments = EnvArgRangeCheck(theEnv,"matches",1,2)) == -1) return;
+
+   if (EnvArgTypeCheck(theEnv,"matches",1,SYMBOL,&argPtr) == FALSE) return;
+
+   if (GetType(argPtr) != SYMBOL)
+     {
+      ExpectedTypeError1(theEnv,"matches",1,"rule name");
+      return;
+     }
+
+   ruleName = DOToString(argPtr);
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);
    if (rulePtr == NULL)
@@ -251,7 +267,28 @@ globle void MatchesCommand(
       return;
      }
 
-   EnvMatches(theEnv,rulePtr);
+   if (numberOfArguments == 2)
+     {
+      if (EnvArgTypeCheck(theEnv,"matches",2,SYMBOL,&argPtr) == FALSE)
+        { return; }
+
+      argument = DOToString(argPtr);
+      if (strcmp(argument,"verbose") == 0)
+        { output = VERBOSE; }
+      else if (strcmp(argument,"succinct") == 0)
+        { output = SUCCINCT; }
+      else if (strcmp(argument,"terse") == 0)
+        { output = TERSE; }
+      else
+        {
+         ExpectedTypeError1(theEnv,"matches",1,"symbol with value verbose, succinct, or terse");
+         return;
+        }
+     }
+   else
+     { output = VERBOSE; }
+
+   EnvMatches(theEnv,rulePtr,output,result);
   }
 
 /********************************/
@@ -260,12 +297,30 @@ globle void MatchesCommand(
 /********************************/
 globle intBool EnvMatches(
   void *theEnv,
-  void *theRule)
+  void *theRule,
+  int output,
+  DATA_OBJECT *result)
   {
    struct defrule *rulePtr, *tmpPtr;
    struct joinNode *lastJoin;
    ACTIVATION *agendaPtr;
-   int flag;
+   long alpha_count = 0, beta_count = 0, activations = 0;
+
+   /*==========================*/
+   /* Set up the return value. */
+   /*==========================*/
+   
+   result->type = MULTIFIELD;
+   result->begin = 0;
+   result->end = 2;
+   result->value = EnvCreateMultifield(theEnv,3L);
+   
+   SetMFType(result->value,1,INTEGER);
+   SetMFValue(result->value,1,SymbolData(theEnv)->Zero);
+   SetMFType(result->value,2,INTEGER);
+   SetMFValue(result->value,2,SymbolData(theEnv)->Zero);
+   SetMFType(result->value,3,INTEGER);
+   SetMFValue(result->value,3,SymbolData(theEnv)->Zero);
 
    /*=================================================*/
    /* Loop through each of the disjuncts for the rule */
@@ -285,13 +340,19 @@ globle intBool EnvMatches(
       /* List the alpha memory partial matches. */
       /*========================================*/
 
-      ListAlphaMatches(theEnv,lastJoin->lastLevel,0);
+      ListAlphaMatches(theEnv,lastJoin->lastLevel,0,output,&alpha_count);
+      
+      SetMFType(result->value,1,INTEGER);
+      SetMFValue(result->value,1,EnvAddLong(theEnv,alpha_count));
 
       /*=======================================*/
       /* List the beta memory partial matches. */
       /*=======================================*/
 
-      ListBetaMatches(theEnv,lastJoin,1);
+      ListBetaMatches(theEnv,lastJoin,1,output,&beta_count);
+      
+      SetMFType(result->value,2,INTEGER);
+      SetMFValue(result->value,2,EnvAddLong(theEnv,beta_count));
      }
 
    /*===================*/
@@ -299,8 +360,10 @@ globle intBool EnvMatches(
    /*===================*/
 
    rulePtr = tmpPtr;
-   EnvPrintRouter(theEnv,WDISPLAY,"Activations\n");
-   flag = 1;
+   
+   if (output == VERBOSE)
+     { EnvPrintRouter(theEnv,WDISPLAY,"Activations\n"); }
+     
    for (agendaPtr = (struct activation *) EnvGetNextActivation(theEnv,NULL);
         agendaPtr != NULL;
         agendaPtr = (struct activation *) EnvGetNextActivation(theEnv,agendaPtr))
@@ -309,13 +372,28 @@ globle intBool EnvMatches(
 
       if (((struct activation *) agendaPtr)->theRule->header.name == rulePtr->header.name)
         {
-         flag = 0;
-         PrintPartialMatch(theEnv,WDISPLAY,GetActivationBasis(agendaPtr));
-         EnvPrintRouter(theEnv,WDISPLAY,"\n");
+         activations++;
+         
+         if (output == VERBOSE)
+           {
+            PrintPartialMatch(theEnv,WDISPLAY,GetActivationBasis(agendaPtr));
+            EnvPrintRouter(theEnv,WDISPLAY,"\n");
+           }
         }
      }
 
-   if (flag) EnvPrintRouter(theEnv,WDISPLAY," None\n");
+   if (output == SUCCINCT)
+     {
+      char buffer[100];
+      
+      sprintf(buffer,"Activations: %7ld\n",activations);
+      EnvPrintRouter(theEnv,WDISPLAY,buffer);
+     }
+     
+   if ((activations == 0) && (output == VERBOSE)) EnvPrintRouter(theEnv,WDISPLAY," None\n");
+
+   SetMFType(result->value,3,INTEGER);
+   SetMFValue(result->value,3,EnvAddLong(theEnv,activations));
 
    return(TRUE);
   }
@@ -326,11 +404,13 @@ globle intBool EnvMatches(
 static int ListAlphaMatches(
   void *theEnv,
   struct joinNode *theJoin,
-  int priorPatterns)
+  int priorPatterns,
+  int output,
+  long *alphaCount)
   {
    struct alphaMemoryHash *listOfHashNodes;
    struct partialMatch *listOfMatches;
-   int flag;
+   long count;
 
    if (theJoin == NULL) 
      { return(priorPatterns); }
@@ -342,32 +422,52 @@ static int ListAlphaMatches(
    /*==========================================================*/
    
    if (theJoin->joinFromTheRight)
-     { return ListAlphaMatches(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,priorPatterns); }
+     { return ListAlphaMatches(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,priorPatterns,output,alphaCount); }
    else if (theJoin->lastLevel != NULL)
-     { priorPatterns = ListAlphaMatches(theEnv,theJoin->lastLevel,priorPatterns); }
+     { priorPatterns = ListAlphaMatches(theEnv,theJoin->lastLevel,priorPatterns,output,alphaCount); }
      
    priorPatterns++;
    
    if (GetHaltExecution(theEnv) == TRUE)
      { return(priorPatterns); }
 
-   EnvPrintRouter(theEnv,WDISPLAY,"Matches for Pattern ");
-   PrintLongInteger(theEnv,WDISPLAY,(long int) priorPatterns);
-   EnvPrintRouter(theEnv,WDISPLAY,"\n");
-  
-   if (theJoin->rightSideEntryStructure == NULL)
-     { 
-      if (theJoin->rightMemory->beta[0]->children != NULL)
-        { EnvPrintRouter(theEnv,WDISPLAY,"*\n"); }
-      else
-        { EnvPrintRouter(theEnv,WDISPLAY," None\n"); }
+   if (output == VERBOSE)
+     {
+      EnvPrintRouter(theEnv,WDISPLAY,"Matches for Pattern ");
+      PrintLongInteger(theEnv,WDISPLAY,(long int) priorPatterns);
+      EnvPrintRouter(theEnv,WDISPLAY,"\n");
+     }
      
+   if (theJoin->rightSideEntryStructure == NULL)
+     {
+      if (theJoin->rightMemory->beta[0]->children != NULL)
+        { *alphaCount += 1; }
+        
+      if (output == VERBOSE)
+        {
+         if (theJoin->rightMemory->beta[0]->children != NULL)
+           { EnvPrintRouter(theEnv,WDISPLAY,"*\n"); }
+         else
+           { EnvPrintRouter(theEnv,WDISPLAY," None\n"); }
+        }
+      else if (output == SUCCINCT)
+        {
+         char buffer[100];
+            
+         if (theJoin->rightMemory->beta[0]->children != NULL)
+           { sprintf(buffer,"Pattern %2d:  %7d\n",priorPatterns,1); }
+         else
+           { sprintf(buffer,"Pattern %2d:  %7d\n",priorPatterns,0); }
+           
+         EnvPrintRouter(theEnv,WDISPLAY,buffer);
+        }
+        
       return(priorPatterns); 
      }
 
    listOfHashNodes =  ((struct patternNodeHeader *) theJoin->rightSideEntryStructure)->firstHash;
 
-   for (flag = 1;
+   for (count = 0;
         listOfHashNodes != NULL;
         listOfHashNodes = listOfHashNodes->nextHash)
      {
@@ -378,14 +478,27 @@ static int ListAlphaMatches(
          if (GetHaltExecution(theEnv) == TRUE)
            { return(priorPatterns); }
                  
-         flag = 0;
-         PrintPartialMatch(theEnv,WDISPLAY,listOfMatches);
-         EnvPrintRouter(theEnv,WDISPLAY,"\n");
+         count++;
+         if (output == VERBOSE)
+           {
+            PrintPartialMatch(theEnv,WDISPLAY,listOfMatches);
+            EnvPrintRouter(theEnv,WDISPLAY,"\n");
+           }
          listOfMatches = listOfMatches->nextInMemory;
         }
      }
-           
-   if (flag) EnvPrintRouter(theEnv,WDISPLAY," None\n");
+      
+   *alphaCount += count;
+   
+   if ((count == 0) && (output == VERBOSE)) EnvPrintRouter(theEnv,WDISPLAY," None\n");
+   
+   if (output == SUCCINCT)
+     {
+      char buffer[100];
+      
+      sprintf(buffer,"Pattern %2d:  %7ld\n",priorPatterns,count);
+      EnvPrintRouter(theEnv,WDISPLAY,buffer);
+     }
    
    return(priorPatterns);
   }
@@ -396,7 +509,9 @@ static int ListAlphaMatches(
 static int ListBetaMatches(
   void *theEnv,
   struct joinNode *theJoin,
-  int blockStart)
+  int blockStart,
+  int output,
+  long *beta_count)
   {
    int patternsFound = 0, startPatterns;
 
@@ -407,14 +522,14 @@ static int ListBetaMatches(
      { return(patternsFound); }
      
    if (theJoin->lastLevel != NULL)
-     { patternsFound += ListBetaMatches(theEnv,theJoin->lastLevel,blockStart); }
+     { patternsFound += ListBetaMatches(theEnv,theJoin->lastLevel,blockStart,output,beta_count); }
      
    if (theJoin->depth > 2)
      {
       PrintMatchesMemory(theEnv,theJoin,
                                 theJoin->leftMemory,
                                 blockStart,
-                                blockStart + patternsFound - 1); 
+                                blockStart + patternsFound - 1,output,beta_count);
      }
 
    startPatterns = patternsFound;
@@ -430,26 +545,41 @@ static void PrintMatchesMemory(
   struct joinNode *theJoin,
   struct betaMemory *theMemory,
   int startCE, 
-  int endCE)  
+  int endCE,
+  int output,
+  long *beta_count)
   {
 #if MAC_XCD
 #pragma unused(theJoin)
 #endif
+   long int count;
 
    if (GetHaltExecution(theEnv) == TRUE)
      { return; }
-     
-   EnvPrintRouter(theEnv,WDISPLAY,"Partial matches for CEs ");
-   PrintLongInteger(theEnv,WDISPLAY,(long int) startCE);
-   EnvPrintRouter(theEnv,WDISPLAY," - ");
-   PrintLongInteger(theEnv,WDISPLAY,(long int) endCE);
-   
-   EnvPrintRouter(theEnv,WDISPLAY,"\n");
 
-   if (PrintBetaMemory(theEnv,WDISPLAY,theMemory,TRUE,"") == 0)
+   if (output == VERBOSE)
+     {
+      EnvPrintRouter(theEnv,WDISPLAY,"Partial matches for CEs ");
+      PrintLongInteger(theEnv,WDISPLAY,(long int) startCE);
+      EnvPrintRouter(theEnv,WDISPLAY," - ");
+      PrintLongInteger(theEnv,WDISPLAY,(long int) endCE);
+      EnvPrintRouter(theEnv,WDISPLAY,"\n");
+    }
+
+   count = PrintBetaMemory(theEnv,WDISPLAY,theMemory,TRUE,"",output);
+   *beta_count += count;
+   
+   if ((output == VERBOSE) && (count == 0))
      { EnvPrintRouter(theEnv,WDISPLAY," None\n"); }
+   else if (output == SUCCINCT)
+     {
+      char buffer[100];
+      
+      sprintf(buffer,"CEs %2d - %2d: %7ld\n",startCE,endCE,count);
+      EnvPrintRouter(theEnv,WDISPLAY,buffer);
+     }
   }
- 
+
 /*******************************************/
 /* JoinActivityCommand: H/L access routine */
 /*   for the join-activity command.        */
@@ -576,212 +706,6 @@ static int ListBetaJoinActivity(
      { return(priorLeftPatterns + priorRightPatterns); } 
    else
      { return(priorLeftPatterns + priorRightPatterns + 1); } 
-  }
-
-/*******************************************/
-/* MatchesCountCommand: H/L access routine */
-/*   for the matches-count command.        */
-/*******************************************/
-globle void MatchesCountCommand(
-  void *theEnv)
-  {
-   char *ruleName;
-   void *rulePtr;
-
-   ruleName = GetConstructName(theEnv,"matches-count","rule name");
-   if (ruleName == NULL) return;
-
-   rulePtr = EnvFindDefrule(theEnv,ruleName);
-   if (rulePtr == NULL)
-     {
-      CantFindItemErrorMessage(theEnv,"defrule",ruleName);
-      return;
-     }
-
-   EnvMatchesCount(theEnv,rulePtr);
-  }
-
-/*************************************/
-/* EnvMatchesCount: C access routine */
-/*   for the matches-count command.  */
-/*************************************/
-globle intBool EnvMatchesCount(
-  void *theEnv,
-  void *theRule)
-  {
-   struct defrule *rulePtr, *tmpPtr;
-   struct betaMemory *theMemory, **theStorage;
-   struct partialMatch *listOfMatches;
-   struct alphaMemoryHash *listOfHashNodes, **theAlphaStorage;
-   struct joinNode *theJoin, *lastJoin;
-   int i, depth;
-   ACTIVATION *agendaPtr;
-   long count;
-
-   /*=================================================*/
-   /* Loop through each of the disjuncts for the rule */
-   /*=================================================*/
-
-   for (rulePtr = (struct defrule *) theRule, tmpPtr = rulePtr;
-        rulePtr != NULL;
-        rulePtr = rulePtr->disjunct)
-     {
-      /*======================================*/
-      /* Determine the last join in the rule. */
-      /*======================================*/
-
-      lastJoin = rulePtr->lastJoin;
-
-      /*===================================*/
-      /* Determine the number of patterns. */
-      /*===================================*/
-
-      depth = GetPatternNumberFromJoin(lastJoin);
-
-      /*=========================================*/
-      /* Store the alpha memory partial matches. */
-      /*=========================================*/
-
-      theAlphaStorage = (struct alphaMemoryHash **)
-                        genalloc(theEnv,(unsigned) (depth * sizeof(struct alphaMemoryHash *)));
-
-      theJoin = lastJoin;
-      i = depth - 1;
-      while (theJoin != NULL)
-        {
-         if (theJoin->joinFromTheRight)
-           { theJoin = (struct joinNode *) theJoin->rightSideEntryStructure; }
-         else
-           {
-            theAlphaStorage[i] = ((struct patternNodeHeader *) theJoin->rightSideEntryStructure)->firstHash;
-            i--;
-            theJoin = theJoin->lastLevel;
-           }
-        }
-
-      /*========================================*/
-      /* List the alpha memory partial matches. */
-      /*========================================*/
-
-      for (i = 0; i < depth; i++)
-        {
-         if (GetHaltExecution(theEnv) == TRUE)
-           {
-            genfree(theEnv,theAlphaStorage,(unsigned) (depth * sizeof(struct alphaMemoryHash *)));
-            return(TRUE);
-           }
-
-         EnvPrintRouter(theEnv,WDISPLAY,"Matches for Pattern ");
-         PrintLongInteger(theEnv,WDISPLAY,(long int) i + 1);
-         EnvPrintRouter(theEnv,WDISPLAY,": ");
-
-         count = 0;
-         for (listOfHashNodes = theAlphaStorage[i];
-              listOfHashNodes != NULL;
-              listOfHashNodes = listOfHashNodes->nextHash)
-           {
-            listOfMatches = listOfHashNodes->alphaMemory;
-
-            while (listOfMatches != NULL)
-              {
-               if (GetHaltExecution(theEnv) == TRUE)
-                 {
-                  genfree(theEnv,theAlphaStorage,(unsigned) (depth * sizeof(struct alphaMemoryHash *)));
-                  return(TRUE);
-                 }
-                 
-               count++;
-               listOfMatches = listOfMatches->nextInMemory;
-              }
-           }
-           
-         PrintLongInteger(theEnv,WDISPLAY,count);
-         EnvPrintRouter(theEnv,WDISPLAY,"\n");
-        }
-
-      genfree(theEnv,theAlphaStorage,(unsigned) (depth * sizeof(struct alphaMemoryHash *)));
-
-      /*========================================*/
-      /* Store the beta memory partial matches. */
-      /*========================================*/
-
-      depth = lastJoin->depth;
-      theStorage = (struct betaMemory **) genalloc(theEnv,(unsigned) (depth * sizeof(struct betaMemory *)));
-
-      theJoin = lastJoin;
-      for (i = depth - 1; i >= 0; i--)
-        {
-         /* theStorage[i] = GetBetaMemory(theEnv,theJoin); */
-         theStorage[i] = theJoin->leftMemory;
-         theJoin = theJoin->lastLevel;
-        }
-
-      /*=======================================*/
-      /* List the beta memory partial matches. */
-      /*=======================================*/
-
-      for (i = 1; i < depth; i++)
-        {
-         if (GetHaltExecution(theEnv) == TRUE)
-           {
-            genfree(theEnv,theStorage,(unsigned) (depth * sizeof(struct betaMemory *)));
-            return(TRUE);
-           }
-
-         /* count = 0; */
-
-         EnvPrintRouter(theEnv,WDISPLAY,"Partial matches for CEs 1 - ");
-         PrintLongInteger(theEnv,WDISPLAY,(long int) i + 1);
-         EnvPrintRouter(theEnv,WDISPLAY,": ");
-         theMemory = theStorage[i];
-		 /*
-		 for (b = 0; b < theMemory->size; b++)
-		   {
-			listOfMatches = theMemory->beta[b];
-
-			while (listOfMatches != NULL)
-			  {
-			   if (GetHaltExecution(theEnv) == TRUE)
-				 {
-				  genfree(theEnv,theStorage,(unsigned) (depth * sizeof(struct betaMemory *)));
-				  return(TRUE);
-				 }
-
-			   count++;
-			   listOfMatches = listOfMatches->nextInMemory;
-			  }
-		   }
-         */
-         count = theMemory->count;
-         PrintLongInteger(theEnv,WDISPLAY,count);
-
-         EnvPrintRouter(theEnv,WDISPLAY,"\n"); 
-        }
-
-      genfree(theEnv,theStorage,(unsigned) (depth * sizeof(struct betaMemory *)));
-     }
-
-   /*===================*/
-   /* List activations. */
-   /*===================*/
-
-   rulePtr = tmpPtr;
-   EnvPrintRouter(theEnv,WDISPLAY,"Activations: ");
-   count = 0;
-   for (agendaPtr = (struct activation *) EnvGetNextActivation(theEnv,NULL);
-        agendaPtr != NULL;
-        agendaPtr = (struct activation *) EnvGetNextActivation(theEnv,agendaPtr))
-     {
-      if (GetHaltExecution(theEnv) == TRUE) return(TRUE);
-
-      if (((struct activation *) agendaPtr)->theRule->header.name == rulePtr->header.name)
-        { count++; }
-     }
-
-   PrintLongInteger(theEnv,WDISPLAY,count);
-   EnvPrintRouter(theEnv,WDISPLAY,"\n");
-
-   return(TRUE);
   }
 
 /***************************************/

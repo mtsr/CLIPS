@@ -54,18 +54,20 @@
 #define GetBetaMemoryResizing() EnvGetBetaMemoryResizing(GetCurrentEnvironment())
 #define SetBetaMemoryResizing(a) EnvSetBetaMemoryResizing(GetCurrentEnvironment(),a)
 
+#define VERBOSE  0
+#define SUCCINCT 1
+#define TERSE    2
+
    LOCALE intBool                        EnvGetBetaMemoryResizing(void *);
    LOCALE intBool                        EnvSetBetaMemoryResizing(void *,intBool);
    LOCALE int                            GetBetaMemoryResizingCommand(void *);
    LOCALE int                            SetBetaMemoryResizingCommand(void *);
 
-   LOCALE intBool                        EnvMatches(void *,void *);
+   LOCALE intBool                        EnvMatches(void *,void *,int,DATA_OBJECT *);
    LOCALE long long                      EnvJoinActivity(void *,void *,int);
-   LOCALE intBool                        EnvMatchesCount(void *,void *);
    LOCALE void                           DefruleCommands(void *);
-   LOCALE void                           MatchesCommand(void *);
+   LOCALE void                           MatchesCommand(void *,DATA_OBJECT *);
    LOCALE long long                      JoinActivityCommand(void *);
-   LOCALE void                           MatchesCountCommand(void *);
    LOCALE long long                      TimetagFunction(void *);
 #if DEVELOPER
    LOCALE void                           ShowJoinsCommand(void *);

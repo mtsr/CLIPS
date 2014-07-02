@@ -47,6 +47,7 @@
 #include "pattern.h"
 #include "retract.h"
 #include "router.h"
+#include "rulecom.h"
 
 #include "reteutil.h"
 
@@ -1505,7 +1506,8 @@ globle unsigned long PrintBetaMemory(
   char *logName,
   struct betaMemory *theMemory,
   int indentFirst,
-  char *indentString)
+  char *indentString,
+  int output)
   {
    struct partialMatch *listOfMatches;
    unsigned long b, count = 0;
@@ -1533,17 +1535,24 @@ globle unsigned long PrintBetaMemory(
          /* the indentation string.                                 */
          /*=========================================================*/
          
-         if (indentFirst)
-           { EnvPrintRouter(theEnv,logName,indentString); }
-         else
-           { indentFirst = TRUE; }
-           
+         if (output == VERBOSE)
+           {
+            if (indentFirst)
+              { EnvPrintRouter(theEnv,logName,indentString); }
+            else
+              { indentFirst = TRUE; }
+           }
+
          /*==========================*/
          /* Print the partial match. */
          /*==========================*/
          
-         PrintPartialMatch(theEnv,logName,listOfMatches);
-         EnvPrintRouter(theEnv,logName,"\n");
+         if (output == VERBOSE)
+           {
+            PrintPartialMatch(theEnv,logName,listOfMatches);
+            EnvPrintRouter(theEnv,logName,"\n");
+           }
+           
          count++;
     
          /*============================*/
