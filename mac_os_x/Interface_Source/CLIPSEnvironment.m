@@ -1067,7 +1067,7 @@
    [agendaLock lock];
 
    agendaListenerCount--;
-   
+
    if (agendaListenerCount == 0)
      { [agendaLock unlock]; }
    else
@@ -1120,9 +1120,9 @@
    return factsListenerCount;
   }
 
-/*****************************/
+/********************************/
 /* incrementInstancesListeners: */
-/*****************************/
+/********************************/
 - (void) incrementInstancesListeners
   {
    [instancesLock lock];
@@ -1135,9 +1135,9 @@
      { [instancesLock unlock]; }
   }
 
-/*****************************/
+/********************************/
 /* decrementInstancesListeners: */
-/*****************************/
+/********************************/
 - (void) decrementInstancesListeners
   {
    [instancesLock lock];

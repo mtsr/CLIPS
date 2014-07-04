@@ -49,7 +49,7 @@
   {
    NSArrayController *theArrayController;
    NSMutableDictionary *bindingOptions = [NSMutableDictionary dictionary];
-   
+
    /*=====================================================================*/
    /* Create the binding for the environment displayed in the popup menu. */
    /*=====================================================================*/

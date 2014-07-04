@@ -110,7 +110,7 @@
    NSUInteger inputStart = textLength - inputOffset;
    if (location < inputStart)
      {
-      // TBD The drag cursor leaves an artificat at the original location
+      // TBD The drag cursor leaves an artifact at the original location
       NSRange theRange = { textLength, 0 };
       [super setSelectedRange: theRange];
      }

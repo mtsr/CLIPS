@@ -289,17 +289,17 @@
    relationName = theRelationName;
   }
   
-/********************/
+/*****************/
 /* relationName: */
-/********************/
+/*****************/
 - (NSString *) relationName
   {
    return relationName;
   }
 
-/***********************/
+/************/
 /* setName: */
-/***********************/
+/************/
 - (void) setName: (NSString *) theName
   {
    [theName retain];
@@ -315,9 +315,9 @@
    return name;
   }
 
-/***********************/
+/*************/
 /* setIndex: */
-/***********************/
+/*************/
 - (void) setIndex: (NSNumber *) theIndex
   {
    [theIndex retain];

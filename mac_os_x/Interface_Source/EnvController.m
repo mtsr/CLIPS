@@ -169,9 +169,9 @@
 - (IBAction) newDebugFactBrowser: (id) sender
   {
    CLIPSFactController *theController;
-      
+ 
    theController = [[CLIPSFactController alloc] init]; 
-        
+
    [theController showWindow: self];
   }
 

@@ -33,7 +33,7 @@
       [self setValue: [NSNumber numberWithInt: 10] forKey: @"fontSize"]; 
       [self setValue: [NSNumber numberWithInt: 13] forKey: @"rowHeight"]; 
      }
-     
+
    return self;
   }
 
@@ -52,7 +52,7 @@
   {
    NSArrayController *theArrayController;
    NSMutableDictionary *bindingOptions = [NSMutableDictionary dictionary];
-   
+
    /*=====================================================================*/
    /* Create the binding for the environment displayed in the popup menu. */
    /*=====================================================================*/
