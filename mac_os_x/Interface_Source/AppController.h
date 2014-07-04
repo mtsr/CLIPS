@@ -19,13 +19,12 @@
 /*%%%%%%%%%%%%%%%%*/
 
 - (IBAction) showPreferencePanel: (id) sender;
+
 - (IBAction) showCLIPSHomePage: (id) sender;
+- (IBAction) showCLIPSDocumentation: (id) sender;
 - (IBAction) showCLIPSExpertSystemGroup: (id) sender;
-- (IBAction) showCLIPSSourceForgeForums: (id) sender;
-- (IBAction) showUsersGuide: (id) sender;
-- (IBAction) showBasicProgrammingGuide: (id) sender;
-- (IBAction) showAdvancedProgrammingGuide: (id) sender;
-- (IBAction) showInterfacesGuide: (id) sender;
+- (IBAction) showCLIPSSourceForgeDiscussion: (id) sender;
+- (IBAction) showCLIPSStackOverflow: (id) sender;
 
 /*%%%%%%%%%%%%%%%%%%*/
 /* Delegate Methods */
