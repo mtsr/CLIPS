@@ -310,19 +310,6 @@
 #define TEXTPRO_FUNCTIONS 1
 #endif
 
-/****************************************************************/
-/* HELP: To implement the help facility, set the flag below and */
-/* specify the path and name of the help data file your system. */
-/****************************************************************/
-
-#ifndef HELP_FUNCTIONS
-#define HELP_FUNCTIONS 1
-#endif
-
-#if HELP_FUNCTIONS
-#define HELP_DEFAULT "clips.hlp"
-#endif
-
 /*************************************************************************/
 /* BLOAD_ONLY:      Enables bload command and disables the load command. */
 /* BLOAD:           Enables bload command.                               */

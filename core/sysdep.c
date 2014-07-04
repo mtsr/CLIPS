@@ -633,7 +633,7 @@ static void SystemFunctionDefinitions(
    ExtendedMathFunctionDefinitions(theEnv);
 #endif
 
-#if TEXTPRO_FUNCTIONS || HELP_FUNCTIONS
+#if TEXTPRO_FUNCTIONS
    HelpFunctionDefinitions(theEnv);
 #endif
 

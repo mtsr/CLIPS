@@ -60,7 +60,7 @@
 
 #include "textpro.h"
 
-#if TEXTPRO_FUNCTIONS || HELP_FUNCTIONS
+#if TEXTPRO_FUNCTIONS
 
 #define NAMESIZE 80
 #define NULLCHAR '\0'
@@ -130,10 +130,6 @@ struct textProcessingData
   { 
    struct lists *headings;
    struct entries *parent;
-#if HELP_FUNCTIONS
-   int HELP_INIT;
-   char *help_file;
-#endif
   };
 
 #define TextProcessingData(theEnv) ((struct textProcessingData *) GetEnvironmentData(theEnv,TEXTPRO_DATA))
@@ -987,14 +983,6 @@ struct topics
 /*============================================================================*/
 /******************************************************************************/
 
-#if HELP_FUNCTIONS
-static int RecognizeHelpRouters(void *,char *);
-static int HelpPrint(void *,char *,char *);
-static int HelpGetc(void *,char *);
-static int HelpUngetc(void *,int,char *);
-static struct topics *AskForNewHelpTopic(void *,struct topics *,char **);
-#endif
-
 static struct topics *GetCommandLineTopics(void *);
 static FILE *FindTopicInEntries(void *,char *,struct topics *,char **,int *);
 
@@ -1003,239 +991,6 @@ static FILE *FindTopicInEntries(void *,char *,struct topics *,char **,int *);
 /*                       EXTERNAL ACCESS FUNCTIONS                            */
 /*============================================================================*/
 /******************************************************************************/
-
-/******************************************************************************/
-/*FUNCTION HelpFunction : (H/L function help)                               */
-/* Input : Multiple or no topic requests may be passed to the help facility   */
-/*         from the top level via a "stack" accessed by the          */
-/*         system routines num_args() and rstring().                          */
-/* Output : This function loads the help file specified in setup.h into a     */
-/*          a hierarchical tree structure using the routines of LOOKUP.C.     */
-/*          It then queries the user for topics, and, using the LOOKUP        */
-/*          routines, branches through the tree, displaying information where */
-/*          appropriate.  The function returns control once the user          */
-/*          has indicated an exit from the help tree.                         */
-/*                                                                            */
-/* For usage see external documentation.                                      */
-/******************************************************************************/
-
-#if HELP_FUNCTIONS
-
-globle void HelpFunction(
-  void *theEnv)
-  {
-   int status;                     /*Return code from the lookup routines */
-   FILE *fp;                       /*Pointer in to the help file stream   */
-   struct topics *main_topic,      /*Pointer to the first requested topic */
-                 *tptr;            /*Used in deallocating the topic list  */
-   char buf[256],   /*Buffer for storing input strings from the help file */
-        *menu[1];   /*Buffer for the name of the current main topic       */
-#if ! WINDOW_INTERFACE
-   char termbuf[2]; /*Buffer for storing the terminators of a scroll      */
-   int line_cnt;    /*Line count used for scrolling purposes              */
-#endif
-
-   if (TextProcessingData(theEnv)->HELP_INIT == FALSE)
-     {
-      if (TextProcessingData(theEnv)->help_file == NULL)
-        {
-         TextProcessingData(theEnv)->help_file = (char *) gm2(theEnv,strlen(HELP_DEFAULT) + 1);
-         genstrcpy(TextProcessingData(theEnv)->help_file,HELP_DEFAULT);
-        }
-      EnvPrintRouter(theEnv,WDIALOG,"Loading help file entries from ");
-      EnvPrintRouter(theEnv,WDIALOG,TextProcessingData(theEnv)->help_file);
-      EnvPrintRouter(theEnv,WDIALOG,".\nPlease wait...\n");
-      status = TextLookupFetch(theEnv,TextProcessingData(theEnv)->help_file);
-      if (status <= 0)
-        {
-         return;
-        }
-      else
-        {
-         /* ================================================================
-            Enables logical name "whelp" as the destination for all help I/O
-            ================================================================ */
-         EnvAddRouter(theEnv,"whelp",10,RecognizeHelpRouters,HelpPrint,
-                    HelpGetc,HelpUngetc,NULL);
-         TextProcessingData(theEnv)->HELP_INIT = TRUE;
-        }
-     }
-
-   EnvActivateRouter(theEnv,"whelp");
-
-   /* ====================================================================
-      The root node of the help-tree is MAIN (see external documentation.)
-      Add this node to the front of the initial topic request list given
-      by the user on the top level command line.
-      ==================================================================== */
-   main_topic = (struct topics *) gm2(theEnv,(int) sizeof(struct topics));
-   genstrcpy(main_topic->name,"MAIN");
-   main_topic->next = GetCommandLineTopics(theEnv);
-   main_topic->end_list = NULL;
-
-   EnvPrintRouter(theEnv,"whelp","\n");
-
-   /*============================*/
-   /*Process user topic requests */
-   /*============================*/
-   do
-     {
-      fp = FindTopicInEntries(theEnv,TextProcessingData(theEnv)->help_file,main_topic,menu,&status);
-      if (status == NO_FILE)
-        {
-         PrintErrorID(theEnv,"TEXTPRO",1,FALSE);
-         EnvPrintRouter(theEnv,WERROR,"Unable to access help file.\n");
-         break;
-        }
-      if (status == EXIT)
-        break;
-      if (status == NO_TOPIC)
-        {
-         if (fp == NULL)
-           {
-            /*===================================================*/
-            /*The lookup routines return the file location of the*/
-            /*current main topic if the requested topic is not   */
-            /*found.  The help-tree has one root: MAIN (see      */
-            /*external docs).  This topic should always be       */
-            /*available.  Thus, if the topic was not found and   */
-            /*there is no current menu, the help-file has been   */
-            /*tampered with and should be corrected.             */
-            /*===================================================*/
-            EnvPrintRouter(theEnv,"whelp","Root entry \"MAIN\" not found in ");
-            EnvPrintRouter(theEnv,"whelp",TextProcessingData(theEnv)->help_file);
-            EnvPrintRouter(theEnv,"whelp",".\nSee external documentation.\n");
-            break;
-           }
-         EnvPrintRouter(theEnv,"whelp","\nSorry, no information available.\n\n");
-        }
-      if (status != BRANCH_UP)
-        {
-#if ! WINDOW_INTERFACE
-         line_cnt = 0;
-#endif
-
-         /*======================================================*/
-         /*Print lines from the information entry stopping after */
-         /*every screenful of lines.  The user at that point has */
-         /*the option to continue or abort the entry to continue */
-         /*at the current menu level.                            */
-         /*======================================================*/
-         while (grab_string(theEnv,fp,buf,256) != NULL)
-           {
-#if ! WINDOW_INTERFACE
-            if (line_cnt >= (SCREEN_LN + 1))
-              {
-               EnvPrintRouter(theEnv,"whelp","PRESS <RETURN> FOR MORE. ");
-               EnvPrintRouter(theEnv,"whelp","PRESS <A>,<RETURN> TO ABORT.");
-               RouterData(theEnv)->CommandBufferInputCount = 0;
-               RouterData(theEnv)->AwaitingInput = TRUE;
-               do
-                 {
-                  termbuf[0] = (char) EnvGetcRouter(theEnv,"whelp");
-                  if (termbuf[0] != LNFEED)
-                    {
-                     if (termbuf[0] == 'a')
-                       termbuf[0] = 'A';
-                     if (termbuf[0] != '\b')
-                       RouterData(theEnv)->CommandBufferInputCount++;
-                     else if (RouterData(theEnv)->CommandBufferInputCount != 0)
-                       RouterData(theEnv)->CommandBufferInputCount--;
-                     termbuf[1] = (char) EnvGetcRouter(theEnv,"whelp");
-                    }
-                 }
-               while ((termbuf[0] != LNFEED) &&
-                      (termbuf[0] != 'A'));
-               RouterData(theEnv)->CommandBufferInputCount = 0;
-               RouterData(theEnv)->AwaitingInput = FALSE;
-               line_cnt = 0;
-               if (termbuf[0] == 'A')
-                 {
-                  GenClose(theEnv,fp);
-                  break;
-                 }
-              }
-            line_cnt++;
-#endif
-            EnvPrintRouter(theEnv,"whelp",buf);
-           }
-        }
-      else if (fp != NULL)
-        /*==========================================================*/
-        /*If the user branched-up the help-tree, don't reprint that */
-        /*menu.  However, the help file still needs to be closed.   */
-        /*==========================================================*/
-        GenClose(theEnv,fp);
-
-      main_topic = AskForNewHelpTopic(theEnv,main_topic,menu);
-      if (EvaluationData(theEnv)->HaltExecution)
-        {
-         while (status != EXIT)
-           if ((fp = GetEntries(theEnv,TextProcessingData(theEnv)->help_file,menu,NULL,&status)) != NULL)
-             GenClose(theEnv,fp);
-        }
-     } while (status != EXIT);
-   EnvDeactivateRouter(theEnv,"whelp");
-
-   /*========================================================*/
-   /*Release any space used by the user's topic request list */
-   /*========================================================*/
-   while (main_topic != NULL)
-     {
-      tptr = main_topic;
-      main_topic = main_topic->next;
-      rm(theEnv,(void *) tptr,(int) sizeof(struct topics));
-     }
-  }
-
-/***************************************************************************/
-/*FUNCTION HelpPathFunction : (function help-path)                         */
-/* Input : Via the argument "stack", the name of the new help entries    */
-/*         file, or no input.                                             */
-/* Output : This function redefines the lookup file for the help facility. */
-/*          If no argument is given, it displays the current file name.    */
-/***************************************************************************/
-globle void HelpPathFunction(
-  void *theEnv)
-  {
-   char *help_name;
-   DATA_OBJECT arg_ptr;
-
-   if (EnvRtnArgCount(theEnv) == 0)
-     {
-      EnvPrintRouter(theEnv,WDIALOG,"The current help entries file is ");
-      if (TextProcessingData(theEnv)->help_file != NULL)
-        EnvPrintRouter(theEnv,WDIALOG,TextProcessingData(theEnv)->help_file);
-      else
-        EnvPrintRouter(theEnv,WDIALOG,HELP_DEFAULT);
-      EnvPrintRouter(theEnv,WDIALOG,"\n");
-     }
-   else
-     {
-      if (TextProcessingData(theEnv)->help_file != NULL)
-        {
-         if (TextProcessingData(theEnv)->HELP_INIT == TRUE)
-           {
-            EnvPrintRouter(theEnv,WDIALOG,"Releasing help entries from file ");
-            EnvPrintRouter(theEnv,WDIALOG,TextProcessingData(theEnv)->help_file);
-            EnvPrintRouter(theEnv,WDIALOG,"...\n");
-            TextLookupToss(theEnv,TextProcessingData(theEnv)->help_file);
-            EnvDeleteRouter(theEnv,"whelp");
-            TextProcessingData(theEnv)->HELP_INIT = FALSE;
-           }
-         rm(theEnv,(void *) TextProcessingData(theEnv)->help_file,strlen(TextProcessingData(theEnv)->help_file) + 1);
-        }
-      if (EnvArgTypeCheck(theEnv,"help-path",1,SYMBOL_OR_STRING,&arg_ptr) == FALSE) return;
-      help_name = DOToString(arg_ptr);
-      TextProcessingData(theEnv)->help_file = (char *) gm2(theEnv,strlen(help_name) + 1);
-      genstrcpy(TextProcessingData(theEnv)->help_file,help_name);
-      EnvPrintRouter(theEnv,WDIALOG,"Help entries file reset to ");
-      EnvPrintRouter(theEnv,WDIALOG,help_name);
-      EnvPrintRouter(theEnv,WDIALOG,"\n");
-     }
-  }
-
-#endif
 
 #if TEXTPRO_FUNCTIONS
 
@@ -1419,78 +1174,7 @@ globle int TossCommand(
      return (FALSE);
    file = DOToString(arg_ptr);
 
-#if HELP_FUNCTIONS
-
-    if (TextProcessingData(theEnv)->help_file != NULL)
-      if ((strcmp(file,TextProcessingData(theEnv)->help_file) == 0) && (TextProcessingData(theEnv)->HELP_INIT == TRUE))
-        {
-         rm(theEnv,(void *) TextProcessingData(theEnv)->help_file,strlen(TextProcessingData(theEnv)->help_file) + 1);
-         TextProcessingData(theEnv)->help_file = NULL;
-         TextProcessingData(theEnv)->HELP_INIT = FALSE;
-         EnvDeleteRouter(theEnv,"whelp");
-        }
-
-#endif
-
    return(TextLookupToss(theEnv,file));
-  }
-
-#endif
-
-/******************************************************************************/
-/* The following four functions are the router routines for the logical name  */
-/* "whelp".  Currently, all they do is direct all accesses to standard I/O.   */
-/******************************************************************************/
-
-#if HELP_FUNCTIONS
-
-static int RecognizeHelpRouters(
-  void *theEnv,
-  char *log_name)
-  {
-#if MAC_XCD
-#pragma unused(theEnv)
-#endif
-
-   if (strcmp(log_name,"whelp") == 0)
-     return(TRUE);
-   return(FALSE);
-  }
-
-static int HelpPrint(
-  void *theEnv,
-  char *log_name,
-  char *str)
-  {
-#if MAC_XCD
-#pragma unused(log_name)
-#endif
-
-   EnvPrintRouter(theEnv,"stdout",str);
-   return(1);
-  }
-
-static int HelpGetc(
-  void *theEnv,
-  char *log_name)
-  {
-#if MAC_XCD
-#pragma unused(log_name)
-#endif
-
-   return(EnvGetcRouter(theEnv,"stdin"));
-  }
-
-static int HelpUngetc(
-  void *theEnv,
-  int ch,
-  char *log_name)
-  {
-#if MAC_XCD
-#pragma unused(log_name)
-#endif
-
-   return(EnvUngetcRouter(theEnv,ch,"stdin"));
   }
 
 #endif
@@ -1547,122 +1231,6 @@ static struct topics *GetCommandLineTopics(
      }
     return(head);
   }
-
-/******************************************************************************/
-/*FUNCTION QUERY_TOPIC :                                                      */
-/* Input : 1) The address of the old topic list (this routines writes over    */
-/*            previously allocated memory, if available)                      */
-/*         2) A buffer holding the name of the current menu in the tree       */
-/* Output : This function prompts the user for a new set of topic(s) and      */
-/*          displays the name of the current menu.  Each new topic is         */
-/*          delineated by white-space, and this function builds a linked list */
-/*          of these topics.  It returns the address of the top of this list. */
-/******************************************************************************/
-
-#if HELP_FUNCTIONS
-
-static struct topics *AskForNewHelpTopic(
-  void *theEnv,
-  struct topics *old_list,
-  char **menu)
-  {
-   int theIndex, cnt;       /*Indices of the user input buffer and topic name */
-   struct topics *tmain,  /*Address of the top of the topic list            */
-                 *tnode, /*Address of the new topic node                   */
-                 *tptr;  /*Used to add the new node to the topic list      */
-   char list[256],       /*User input buffer                               */
-        name[NAMESIZE];  /*Name of the new topic in the list               */
-
-   /*==================================================================*/
-   /*Read a line of input from the user (substituting blanks for tabs) */
-   /*==================================================================*/
-   EnvPrintRouter(theEnv,"whelp",*menu);
-   EnvPrintRouter(theEnv,"whelp"," Topic? ");
-   RouterData(theEnv)->CommandBufferInputCount = 0;
-   RouterData(theEnv)->AwaitingInput = TRUE;
-   for ( theIndex = 0;
-         ((list[theIndex] = (char) EnvGetcRouter(theEnv,"whelp")) != LNFEED) && (theIndex < 254);
-         theIndex++ , RouterData(theEnv)->CommandBufferInputCount++)
-       {
-        if (EvaluationData(theEnv)->HaltExecution)
-          break;
-        if (list[theIndex] == TAB)
-          list[theIndex] = BLANK;
-        else if ((list[theIndex] == '\b') && (theIndex != 0))
-          {
-           theIndex -= 2;
-           RouterData(theEnv)->CommandBufferInputCount -= 2;
-          }
-       }
-#if VAX_VMS
-   EnvPrintRouter(theEnv,"whelp","\n");
-#endif
-
-   RouterData(theEnv)->CommandBufferInputCount = 0;
-   RouterData(theEnv)->AwaitingInput = FALSE;
-   if (EvaluationData(theEnv)->HaltExecution)
-     {
-      EnvPrintRouter(theEnv,"whelp","\n");
-      old_list->end_list = old_list;
-      return(old_list);
-     }
-   list[theIndex] = BLANK;
-   list[theIndex+1] = NULLCHAR;
-
-   /*=======================================*/
-   /*Parse user buffer into separate topics */
-   /*=======================================*/
-   tmain = old_list;
-   theIndex = 0; cnt = 0;
-   while (list[theIndex] != NULLCHAR)
-     {
-      if ((list[theIndex] != BLANK) && (cnt < NAMESIZE))
-        name[cnt++] = list[theIndex++];
-      else if (cnt > 0)
-        {
-         while ((list[theIndex] != BLANK) && (list[theIndex] != NULLCHAR))
-           theIndex++;
-         name[cnt] = NULLCHAR;
-         cnt = 0;
-
-         /*==============================================*/
-         /*Write over previous topic lists, if available */
-         /*==============================================*/
-         if (old_list != NULL)
-           {
-            genstrcpy(old_list->name,name);
-            old_list = old_list->next;
-           }
-         else
-           {
-            tnode = (struct topics *) gm2(theEnv,(int) sizeof(struct topics));
-            genstrcpy(tnode->name,name);
-            tnode->next = NULL;
-            tnode->end_list = NULL;
-            if (tmain == NULL)
-              tmain = tnode;
-            else
-              {
-               tptr = tmain;
-               while (tptr->next != NULL)
-                 tptr = tptr->next;
-               tptr->next = tnode;
-              }
-           }
-        }
-      else
-        theIndex++;
-     }
-
-  /*========================================================================*/
-  /*If the new list is shorter than the previous one, we must mark the end. */
-  /*========================================================================*/
-  tmain->end_list = old_list;
-  return(tmain);
- }
-
-
-#endif
 
 /******************************************************************************/
 /*FUNCTION FIND_TOPIC :                                                       */
@@ -1739,11 +1307,6 @@ globle void HelpFunctionDefinitions(
   {
    AllocateEnvironmentData(theEnv,TEXTPRO_DATA,sizeof(struct textProcessingData),DeallocateTextProcessingData);
 #if ! RUN_TIME
-#if HELP_FUNCTIONS
-   EnvDefineFunction2(theEnv,"help",'v',PTIEF HelpFunction,"HelpFunction",NULL);
-   EnvDefineFunction2(theEnv,"help-path",'v',PTIEF HelpPathFunction,"HelpPathFunction","*1k");
-#endif
-
 #if TEXTPRO_FUNCTIONS
    EnvDefineFunction2(theEnv,"fetch",'u', PTIEF FetchCommand,"FetchCommand","11k");
    EnvDefineFunction2(theEnv,"toss",'b', PTIEF TossCommand,"TossCommand","11k");
@@ -1772,14 +1335,6 @@ static void DeallocateTextProcessingData(
 
       clptr = nextptr;
      }
-     
-#if HELP_FUNCTIONS
-   if (TextProcessingData(theEnv)->help_file != NULL)
-     {
-      rm(theEnv,TextProcessingData(theEnv)->help_file,
-         strlen(TextProcessingData(theEnv)->help_file) + 1);
-     }
-#endif
   }
 
 

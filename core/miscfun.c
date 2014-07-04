@@ -690,13 +690,6 @@ EnvPrintRouter(theEnv,WDISPLAY,"Text processing function package is ");
   EnvPrintRouter(theEnv,WDISPLAY,"OFF\n");
 #endif
 
-EnvPrintRouter(theEnv,WDISPLAY,"Help system is ");
-#if HELP_FUNCTIONS
-  EnvPrintRouter(theEnv,WDISPLAY,"ON\n");
-#else
-  EnvPrintRouter(theEnv,WDISPLAY,"OFF\n");
-#endif
-
 EnvPrintRouter(theEnv,WDISPLAY,"Bload capability is ");
 #if BLOAD_ONLY
   EnvPrintRouter(theEnv,WDISPLAY,"BLOAD ONLY");

@@ -41,11 +41,6 @@
    int                                   TossCommand(void *);
 #endif
 
-#if HELP_FUNCTIONS
-   LOCALE void                           HelpFunction(void *);
-   LOCALE void                           HelpPathFunction(void *);
-#endif
-
    LOCALE void                           HelpFunctionDefinitions(void *);
 #endif
 
