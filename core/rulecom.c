@@ -1473,20 +1473,20 @@ static void ShowJoins(
          if (! joinList[numberOfJoins]->firstJoin)
            {
             EnvPrintRouter(theEnv,WDISPLAY,"    LM : ");
-            if (PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->leftMemory,FALSE,"         ") == 0)
+            if (PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->leftMemory,FALSE,"         ",SUCCINCT) == 0)
               { EnvPrintRouter(theEnv,WDISPLAY,"None\n"); }
            }
          
          if (joinList[numberOfJoins]->joinFromTheRight)
            {
             EnvPrintRouter(theEnv,WDISPLAY,"    RM : ");
-            if (PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->rightMemory,FALSE,"         ") == 0)
+            if (PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->rightMemory,FALSE,"         ",SUCCINCT) == 0)
               { EnvPrintRouter(theEnv,WDISPLAY,"None\n"); }
            }
          
          numberOfJoins--;
         };
-
+  
       /*===============================*/
       /* Proceed to the next disjunct. */
       /*===============================*/
