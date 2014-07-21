@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/21/14            */
    /*                                                     */
    /*                  RULE BUILD MODULE                  */
    /*******************************************************/
@@ -1178,8 +1178,10 @@ static struct joinNode *CreateNewJoin(
    newJoin->initialize = EnvGetIncrementalReset(theEnv);
    newJoin->logicalJoin = FALSE;
    newJoin->ruleToActivate = NULL;
-   newJoin->memoryAdds = 0;
-   newJoin->memoryDeletes = 0;
+   newJoin->memoryLeftAdds = 0;
+   newJoin->memoryRightAdds = 0;
+   newJoin->memoryLeftDeletes = 0;
+   newJoin->memoryRightDeletes = 0;
    newJoin->memoryCompares = 0;
 
    /*==============================================*/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/21/14            */
    /*                                                     */
    /*                 DEFRULE HEADER FILE                 */
    /*******************************************************/
@@ -170,7 +170,8 @@ struct defruleData
 #if RUN_TIME || BLOAD_ONLY || BLOAD || BLOAD_AND_BSAVE
    LOCALE void                           AddBetaMemoriesToJoin(void *,struct joinNode *);
 #endif
-
+   LOCALE long                           EnvGetDisjunctCount(void *,void *);
+   LOCALE void                          *EnvGetNthDisjunct(void *,void *,long);
 #endif
 
 

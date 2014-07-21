@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/21/14            */
    /*                                                     */
    /*                    DRIVE MODULE                     */
    /*******************************************************/
@@ -997,8 +997,6 @@ static void EmptyDrive(
    /* the join expression. If it doesn't then no further   */
    /* action is taken.                                     */
    /*======================================================*/
-
-   join->memoryCompares++;
 
    if (join->networkTest != NULL)
      {

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/21/14            */
    /*                                                     */
    /*                 NETWORK HEADER FILE                 */
    /*******************************************************/
@@ -111,8 +111,10 @@ struct joinNode
    unsigned int rhsType : 3;
    unsigned int depth : 16;
    long bsaveID;
-   long long memoryAdds;
-   long long memoryDeletes;
+   long long memoryLeftAdds;
+   long long memoryRightAdds;
+   long long memoryLeftDeletes;
+   long long memoryRightDeletes;
    long long memoryCompares;
    struct betaMemory *leftMemory;
    struct betaMemory *rightMemory;

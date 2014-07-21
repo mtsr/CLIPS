@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/21/14            */
    /*                                                     */
    /*                   DEFRULE MODULE                    */
    /*******************************************************/
@@ -34,6 +34,9 @@
 /*            Added salience groups to improve performance   */
 /*            with large numbers of activations of different */
 /*            saliences.                                     */
+/*                                                           */
+/*            Added EnvGetDisjunctCount and                  */
+/*            EnvGetNthDisjunct functions.                   */
 /*                                                           */
 /*************************************************************/
 
@@ -303,6 +306,50 @@ globle intBool EnvIsDefruleDeletable(
    if (EngineData(theEnv)->JoinOperationInProgress) return(FALSE);
 
    return(TRUE);
+  }
+
+/***********************************************************/
+/* EnvGetDisjunctCount: Returns the number of disjuncts of */
+/*   a rule (permutations caused by the use of or CEs).    */
+/***********************************************************/
+globle long EnvGetDisjunctCount(
+  void *theEnv,
+  void *vTheDefrule)
+  {
+   struct defrule *theDefrule;
+   long count = 0;
+
+   for (theDefrule = (struct defrule *) vTheDefrule;
+        theDefrule != NULL;
+        theDefrule = theDefrule->disjunct)
+     { count++; }
+
+   return(count);
+  }
+
+/**********************************************************/
+/* EnvGetNthDisjunct: Returns the nth disjunct of a rule. */
+/*   The disjunct indices run from 1 to N rather than 0   */
+/*   to N - 1.                                            */
+/**********************************************************/
+globle void *EnvGetNthDisjunct(
+  void *theEnv,
+  void *vTheDefrule,
+  long index)
+  {
+   struct defrule *theDefrule;
+   long count = 0;
+
+   for (theDefrule = (struct defrule *) vTheDefrule;
+        theDefrule != NULL;
+        theDefrule = theDefrule->disjunct)
+     {
+      count++;
+      if (count == index)
+        { return theDefrule; }
+     }
+
+   return(NULL);
   }
 
 #if RUN_TIME

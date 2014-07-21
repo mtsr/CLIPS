@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/21/14            */
    /*                                                     */
    /*             DEFRULE COMMANDS HEADER FILE            */
    /*******************************************************/
@@ -24,7 +24,10 @@
 /*                                                           */
 /*      6.30: Added support for hashed alpha memories.       */
 /*                                                           */
-/*            Added matches-count function.                  */
+/*            Improvements to matches command.               */
+/*                                                           */
+/*            Add join-activity and join-activity-reset      */
+/*            commands.                                      */
 /*                                                           */
 /*            Added get-join-hashing and set-join-hashing    */
 /*            functions.                                     */
@@ -48,11 +51,24 @@
 #define LOCALE extern
 #endif
 
+struct joinInformation
+  {
+   int whichCE;
+   struct joinNode *theJoin;
+   int patternBegin;
+   int patternEnd;
+   int marked;
+   struct betaMemory *theMemory;
+   struct joinNode *nextJoin;
+  };
+
+/* TBD Remove
 #define Matches(a) EnvMatches(GetCurrentEnvironment(),a)
 #define JoinActivity(a,b) EnvJoinActivity(GetCurrentEnvironment(),a,b)
 #define MatchesCount(a) EnvMatchesCount(GetCurrentEnvironment(),a)
 #define GetBetaMemoryResizing() EnvGetBetaMemoryResizing(GetCurrentEnvironment())
 #define SetBetaMemoryResizing(a) EnvSetBetaMemoryResizing(GetCurrentEnvironment(),a)
+*/
 
 #define VERBOSE  0
 #define SUCCINCT 1
@@ -63,12 +79,19 @@
    LOCALE int                            GetBetaMemoryResizingCommand(void *);
    LOCALE int                            SetBetaMemoryResizingCommand(void *);
 
-   LOCALE intBool                        EnvMatches(void *,void *,int,DATA_OBJECT *);
-   LOCALE long long                      EnvJoinActivity(void *,void *,int);
+   LOCALE void                           EnvMatches(void *,void *,int,DATA_OBJECT *);
+   LOCALE void                           EnvJoinActivity(void *,void *,int,DATA_OBJECT *);
    LOCALE void                           DefruleCommands(void *);
    LOCALE void                           MatchesCommand(void *,DATA_OBJECT *);
-   LOCALE long long                      JoinActivityCommand(void *);
+   LOCALE void                           JoinActivityCommand(void *,DATA_OBJECT *);
    LOCALE long long                      TimetagFunction(void *);
+   LOCALE long                           EnvAlphaJoinCount(void *,void *);
+   LOCALE long                           EnvBetaJoinCount(void *,void *);
+   LOCALE struct joinInformation        *EnvCreateJoinArray(void *,long);
+   LOCALE void                           EnvFreeJoinArray(void *,struct joinInformation *,long);
+   LOCALE void                           EnvAlphaJoins(void *,void *,long,struct joinInformation *);
+   LOCALE void                           EnvBetaJoins(void *,void *,long,struct joinInformation *);
+   LOCALE void                           JoinActivityResetCommand(void *);
 #if DEVELOPER
    LOCALE void                           ShowJoinsCommand(void *);
    LOCALE long                           RuleComplexityCommand(void *);

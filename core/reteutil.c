@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/21/14            */
    /*                                                     */
    /*                 RETE UTILITY MODULE                 */
    /*******************************************************/
@@ -220,7 +220,10 @@ globle void UpdateBetaPMLinks(
      }
      
    theMemory->count++;
-   join->memoryAdds++;
+   if (side == LHS)
+    { join->memoryLeftAdds++; }
+   else
+    { join->memoryRightAdds++; }
    
    thePM->owner = join;
 
@@ -326,7 +329,11 @@ globle void UnlinkBetaPMFromNodeAndLineage(
    /*=============================================*/
    
    theMemory->count--;
-   join->memoryDeletes++;
+
+   if (side == LHS)
+    { join->memoryLeftDeletes++; }
+   else
+    { join->memoryRightDeletes++; }
 
    betaLocation = thePM->hashValue % theMemory->size;
    
@@ -380,7 +387,11 @@ globle void UnlinkNonLeftLineage(
    /*=============================================*/
    
    theMemory->count--;
-   join->memoryDeletes++;
+
+   if (side == LHS)
+    { join->memoryLeftDeletes++; }
+   else
+    { join->memoryRightDeletes++; }
 
    betaLocation = thePM->hashValue % theMemory->size;
    

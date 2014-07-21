@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/21/14            */
    /*                                                     */
    /*                RULE COMMANDS MODULE                 */
    /*******************************************************/
@@ -27,7 +27,10 @@
 /*                                                           */
 /*      6.30: Added support for hashed alpha memories.       */
 /*                                                           */
-/*            Added matches-count function.                  */
+/*            Improvements to matches command.               */
+/*                                                           */
+/*            Add join-activity and join-activity-reset      */
+/*            commands.                                      */
 /*                                                           */
 /*            Added get-join-hashing and set-join-hashing    */
 /*            functions.                                     */
@@ -76,11 +79,19 @@
 #if DEVELOPER
    static void                    ShowJoins(void *,void *);
 #endif
-   static int                     ListAlphaMatches(void *,struct joinNode *,int,int,long *);
-   static int                     ListBetaMatches(void *,struct joinNode *,int,int,long *);
-   static int                     ListBetaJoinActivity(void *,struct joinNode *,int,long long *,int);
-   static void                    PrintMatchesMemory(void *,struct joinNode *,struct betaMemory *,int,int,int,long *);
-   
+   static long long               ListAlphaMatches(void *,struct joinInformation *,int);
+   static long long               ListBetaMatches(void *,struct joinInformation *,long,long,int);
+   static void                    ListBetaJoinActivity(void *,struct joinInformation *,long,long,int,DATA_OBJECT *);
+   static void                    PrintJoinActivity(void *,struct joinNode *,struct betaMemory *,int,int,int,long long *);
+   static long                    AlphaJoinCountDriver(void *,struct joinNode *);
+   static long                    BetaJoinCountDriver(void *,struct joinNode *);
+   static void                    AlphaJoinsDriver(void *,struct joinNode *,long,struct joinInformation *);
+   static void                    BetaJoinsDriver(void *,struct joinNode *,long,struct joinInformation *,struct betaMemory *,struct joinNode *);
+   static int                     CountPatterns(void *,struct joinNode *,int);
+   static char                   *BetaHeaderString(void *,struct joinInformation *,long,long);
+   static char                   *ActivityHeaderString(void *,struct joinInformation *,long,long);
+   static void                    ResetJoinActivity(void *,struct constructHeader *,void *);
+
 /****************************************************************/
 /* DefruleCommands: Initializes defrule commands and functions. */
 /****************************************************************/
@@ -107,7 +118,9 @@ globle void DefruleCommands(
    EnvDefineFunction2(theEnv,"show-breaks",'v', PTIEF ShowBreaksCommand,
                                  "ShowBreaksCommand", "01w");
    EnvDefineFunction2(theEnv,"matches",'u',PTIEF MatchesCommand,"MatchesCommand","12w");
-   EnvDefineFunction2(theEnv,"join-activity",'g',PTIEF JoinActivityCommand,"JoinActivityCommand","11w");
+   EnvDefineFunction2(theEnv,"join-activity",'u',PTIEF JoinActivityCommand,"JoinActivityCommand","12w");
+   EnvDefineFunction2(theEnv,"join-activity-reset",'v', PTIEF JoinActivityResetCommand,
+                                  "JoinActivityResetCommand", "00");
    EnvDefineFunction2(theEnv,"list-focus-stack",'v', PTIEF ListFocusStackCommand,
                                       "ListFocusStackCommand", "00");
    EnvDefineFunction2(theEnv,"dependencies", 'v', PTIEF DependenciesCommand,
@@ -281,7 +294,7 @@ globle void MatchesCommand(
         { output = TERSE; }
       else
         {
-         ExpectedTypeError1(theEnv,"matches",1,"symbol with value verbose, succinct, or terse");
+         ExpectedTypeError1(theEnv,"matches",2,"symbol with value verbose, succinct, or terse");
          return;
         }
      }
@@ -295,16 +308,20 @@ globle void MatchesCommand(
 /* EnvMatches: C access routine */
 /*   for the matches command.   */
 /********************************/
-globle intBool EnvMatches(
+globle void EnvMatches(
   void *theEnv,
   void *theRule,
   int output,
   DATA_OBJECT *result)
   {
-   struct defrule *rulePtr, *tmpPtr;
-   struct joinNode *lastJoin;
+   struct defrule *rulePtr;
+   long disjunctCount, disjunctIndex, joinIndex;
+   long arraySize;
+   struct joinInformation *theInfo;
+   long long alphaMatchCount = 0;
+   long long betaMatchCount = 0;
+   long long activations = 0;
    ACTIVATION *agendaPtr;
-   long alpha_count = 0, beta_count = 0, activations = 0;
 
    /*==========================*/
    /* Set up the return value. */
@@ -326,41 +343,77 @@ globle intBool EnvMatches(
    /* Loop through each of the disjuncts for the rule */
    /*=================================================*/
 
-   for (rulePtr = (struct defrule *) theRule, tmpPtr = rulePtr;
-        rulePtr != NULL;
-        rulePtr = rulePtr->disjunct)
+   disjunctCount = EnvGetDisjunctCount(theEnv,theRule);
+
+   for (disjunctIndex = 1; disjunctIndex <= disjunctCount; disjunctIndex++)
      {
-      /*======================================*/
-      /* Determine the last join in the rule. */
-      /*======================================*/
-
-      lastJoin = rulePtr->lastJoin;
-
-      /*========================================*/
-      /* List the alpha memory partial matches. */
-      /*========================================*/
-
-      ListAlphaMatches(theEnv,lastJoin->lastLevel,0,output,&alpha_count);
+      rulePtr = (struct defrule *) EnvGetNthDisjunct(theEnv,theRule,disjunctIndex);
       
-      SetMFType(result->value,1,INTEGER);
-      SetMFValue(result->value,1,EnvAddLong(theEnv,alpha_count));
-
-      /*=======================================*/
-      /* List the beta memory partial matches. */
-      /*=======================================*/
-
-      ListBetaMatches(theEnv,lastJoin,1,output,&beta_count);
+      /*===============================================*/
+      /* Create the array containing the list of alpha */
+      /* join nodes (those connected to a pattern CE). */
+      /*===============================================*/
       
-      SetMFType(result->value,2,INTEGER);
-      SetMFValue(result->value,2,EnvAddLong(theEnv,beta_count));
+      arraySize = EnvAlphaJoinCount(theEnv,rulePtr);
+      
+      theInfo = EnvCreateJoinArray(theEnv,arraySize);
+      
+      EnvAlphaJoins(theEnv,rulePtr,arraySize,theInfo);
+       
+      /*=========================*/
+      /* List the alpha matches. */
+      /*=========================*/
+      
+      for (joinIndex = 0; joinIndex < arraySize; joinIndex++)
+        {
+         alphaMatchCount += ListAlphaMatches(theEnv,&theInfo[joinIndex],output);
+         
+         SetMFType(result->value,1,INTEGER);
+         SetMFValue(result->value,1,EnvAddLong(theEnv,alphaMatchCount));
+        }
+
+      /*================================*/
+      /* Free the array of alpha joins. */
+      /*================================*/
+      
+      EnvFreeJoinArray(theEnv,theInfo,arraySize);
+
+      /*==============================================*/
+      /* Create the array containing the list of beta */
+      /* join nodes (joins from the right plus joins  */
+      /* connected to a pattern CE).                  */
+      /*==============================================*/
+      
+      arraySize = EnvBetaJoinCount(theEnv,rulePtr);
+      
+      theInfo = EnvCreateJoinArray(theEnv,arraySize);
+      
+      EnvBetaJoins(theEnv,rulePtr,arraySize,theInfo);
+
+      /*======================================*/
+      /* List the beta matches (for all joins */
+      /* except the first pattern CE).        */
+      /*======================================*/
+
+      for (joinIndex = 1; joinIndex < arraySize; joinIndex++)
+        {
+         betaMatchCount += ListBetaMatches(theEnv,theInfo,joinIndex,arraySize,output);
+         
+         SetMFType(result->value,2,INTEGER);
+         SetMFValue(result->value,2,EnvAddLong(theEnv,betaMatchCount));
+        }
+
+      /*================================*/
+      /* Free the array of alpha joins. */
+      /*================================*/
+      
+      EnvFreeJoinArray(theEnv,theInfo,arraySize);
      }
 
    /*===================*/
    /* List activations. */
    /*===================*/
 
-   rulePtr = tmpPtr;
-   
    if (output == VERBOSE)
      { EnvPrintRouter(theEnv,WDISPLAY,"Activations\n"); }
      
@@ -368,12 +421,12 @@ globle intBool EnvMatches(
         agendaPtr != NULL;
         agendaPtr = (struct activation *) EnvGetNextActivation(theEnv,agendaPtr))
      {
-      if (GetHaltExecution(theEnv) == TRUE) return(TRUE);
+      if (GetHaltExecution(theEnv) == TRUE) return;
 
       if (((struct activation *) agendaPtr)->theRule->header.name == rulePtr->header.name)
         {
          activations++;
-         
+      
          if (output == VERBOSE)
            {
             PrintPartialMatch(theEnv,WDISPLAY,GetActivationBasis(agendaPtr));
@@ -384,64 +437,271 @@ globle intBool EnvMatches(
 
    if (output == SUCCINCT)
      {
-      char buffer[100];
-      
-      sprintf(buffer,"Activations: %7ld\n",activations);
-      EnvPrintRouter(theEnv,WDISPLAY,buffer);
+      EnvPrintRouter(theEnv,WDISPLAY,"Activations: ");
+      PrintLongInteger(theEnv,WDISPLAY,activations);
+      EnvPrintRouter(theEnv,WDISPLAY,"\n");
      }
      
    if ((activations == 0) && (output == VERBOSE)) EnvPrintRouter(theEnv,WDISPLAY," None\n");
 
    SetMFType(result->value,3,INTEGER);
    SetMFValue(result->value,3,EnvAddLong(theEnv,activations));
-
-   return(TRUE);
   }
+
+/****************************************************/
+/* AlphaJoinCountDriver: Driver routine to iterate  */
+/*   over a rule's joins to determine the number of */
+/*   alpha joins.                                   */
+/****************************************************/
+static long AlphaJoinCountDriver(
+  void *theEnv,
+  struct joinNode *theJoin)
+  {
+   long alphaCount = 0;
+
+   if (theJoin == NULL) 
+     { return(alphaCount); }
+   
+   if (theJoin->joinFromTheRight)
+     { return AlphaJoinCountDriver(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure); }
+   else if (theJoin->lastLevel != NULL)
+     { alphaCount += AlphaJoinCountDriver(theEnv,theJoin->lastLevel); }
+     
+   alphaCount++;
+   
+   return(alphaCount);
+  }
+
+/**************************************************/
+/* EnvAlphaJoinCount: Returns the number of alpha */
+/*   joins associated with the specified rule.    */
+/**************************************************/
+globle long EnvAlphaJoinCount(
+  void *theEnv,
+  void *vTheDefrule)
+  {
+   struct defrule *theDefrule = (struct defrule *) vTheDefrule;
+   
+   return AlphaJoinCountDriver(theEnv,theDefrule->lastJoin->lastLevel);
+  }
+
+/***************************************/
+/* AlphaJoinsDriver: Driver routine to */
+/*   retrieve a rule's alpha joins.    */
+/***************************************/
+static void AlphaJoinsDriver(
+  void *theEnv,
+  struct joinNode *theJoin,
+  long alphaIndex,
+  struct joinInformation *theInfo)
+  {
+   if (theJoin == NULL)
+     { return; }
+   
+   if (theJoin->joinFromTheRight)
+     {
+      AlphaJoinsDriver(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,alphaIndex,theInfo);
+      return;
+     }
+   else if (theJoin->lastLevel != NULL)
+     { AlphaJoinsDriver(theEnv,theJoin->lastLevel,alphaIndex-1,theInfo); }
+     
+   theInfo[alphaIndex-1].whichCE = alphaIndex;
+   theInfo[alphaIndex-1].theJoin = theJoin;
+   
+   return;
+  }
+
+/********************************************/
+/* EnvAlphaJoins: Retrieves the alpha joins */
+/*   associated with the specified rule.    */
+/********************************************/
+globle void EnvAlphaJoins(
+  void *theEnv,
+  void *vTheDefrule,
+  long alphaCount,
+  struct joinInformation *theInfo)
+  {
+   struct defrule *theDefrule = (struct defrule *) vTheDefrule;
+   
+   AlphaJoinsDriver(theEnv,theDefrule->lastJoin->lastLevel,alphaCount,theInfo);
+  }
+
+/****************************************************/
+/* BetaJoinCountDriver: Driver routine to iterate  */
+/*   over a rule's joins to determine the number of */
+/*   beta joins.                                   */
+/****************************************************/
+static long BetaJoinCountDriver(
+  void *theEnv,
+  struct joinNode *theJoin)
+  {
+   long betaCount = 0;
+
+   if (theJoin == NULL)
+     { return(betaCount); }
+   
+   betaCount++;
+   
+   if (theJoin->joinFromTheRight)
+     { betaCount += BetaJoinCountDriver(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure); }
+   else if (theJoin->lastLevel != NULL)
+     { betaCount += BetaJoinCountDriver(theEnv,theJoin->lastLevel); }
+     
+   return(betaCount);
+  }
+
+/************************************************/
+/* EnvBetaJoinCount: Returns the number of beta */
+/*   joins associated with the specified rule.  */
+/************************************************/
+globle long EnvBetaJoinCount(
+  void *theEnv,
+  void *vTheDefrule)
+  {
+   struct defrule *theDefrule = (struct defrule *) vTheDefrule;
+   
+   return BetaJoinCountDriver(theEnv,theDefrule->lastJoin->lastLevel);
+  }
+
+/**************************************/
+/* BetaJoinsDriver: Driver routine to */
+/*   retrieve a rule's beta joins.    */
+/**************************************/
+static void BetaJoinsDriver(
+  void *theEnv,
+  struct joinNode *theJoin,
+  long betaIndex,
+  struct joinInformation *theJoinInfoArray,
+  struct betaMemory *lastMemory,
+  struct joinNode *nextJoin)
+  {
+   int theCE = 0, theCount;
+   struct joinNode *tmpPtr;
+   
+   if (theJoin == NULL)
+     { return; }
+
+   theJoinInfoArray[betaIndex-1].theJoin = theJoin;
+   theJoinInfoArray[betaIndex-1].theMemory = lastMemory;
+   theJoinInfoArray[betaIndex-1].nextJoin = nextJoin;
+
+   /*===================================*/
+   /* Determine the conditional element */
+   /* index for this join.              */
+   /*===================================*/
+     
+   for (tmpPtr = theJoin; tmpPtr != NULL; tmpPtr = tmpPtr->lastLevel)
+      { theCE++; }
+     
+   theJoinInfoArray[betaIndex-1].whichCE = theCE;
+
+   /*==============================================*/
+   /* The end pattern in the range of patterns for */
+   /* this join is always the number of patterns   */
+   /* remaining to be encountered.                 */
+   /*==============================================*/
+
+   theCount = CountPatterns(theEnv,theJoin,TRUE);
+   theJoinInfoArray[betaIndex-1].patternEnd = theCount;
+
+   /*========================================================*/
+   /* Determine where the block of patterns for a CE begins. */
+   /*========================================================*/
+
+
+   theCount = CountPatterns(theEnv,theJoin,FALSE);
+   theJoinInfoArray[betaIndex-1].patternBegin = theCount;
+   
+   /*==========================*/
+   /* Find the next beta join. */
+   /*==========================*/
+   
+   if (theJoin->joinFromTheRight)
+     {
+      tmpPtr = (struct joinNode *) theJoin->rightSideEntryStructure;
+      BetaJoinsDriver(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,betaIndex-1,theJoinInfoArray,theJoin->rightMemory,theJoin);
+     }
+   else if (theJoin->lastLevel != NULL)
+     {
+      BetaJoinsDriver(theEnv,theJoin->lastLevel,betaIndex-1,theJoinInfoArray,theJoin->leftMemory,theJoin);
+     }
+     
+   return;
+  }
+
+/******************************************/
+/* EnvBetaJoins: Retrieves the beta joins */
+/*   associated with the specified rule.  */
+/******************************************/
+globle void EnvBetaJoins(
+  void *theEnv,
+  void *vTheDefrule,
+  long betaArraySize,
+  struct joinInformation *theInfo)
+  {
+   struct defrule *theDefrule = (struct defrule *) vTheDefrule;
+      
+   BetaJoinsDriver(theEnv,theDefrule->lastJoin->lastLevel,betaArraySize,theInfo,theDefrule->lastJoin->leftMemory,theDefrule->lastJoin);
+  }
+
+/**************************************************/
+/* EnvCreateJoinArray: Creates a join information */
+/*    array of the specified size.                */
+/**************************************************/
+globle struct joinInformation *EnvCreateJoinArray(
+   void *theEnv,
+   long size)
+   {
+    if (size == 0) return (NULL);
+    
+    return (struct joinInformation *) genalloc(theEnv,sizeof(struct joinInformation) * size);
+   }
+
+/**********************************************/
+/* EnvFreeJoinArray: Frees a join information */
+/*    array of the specified size.            */
+/**********************************************/
+globle void EnvFreeJoinArray(
+   void *theEnv,
+   struct joinInformation *theArray,
+   long size)
+   {
+    if (size == 0) return;
+    
+    genfree(theEnv,theArray,sizeof(struct joinInformation) * size);
+   }
 
 /*********************/
 /* ListAlphaMatches: */
 /*********************/
-static int ListAlphaMatches(
+static long long ListAlphaMatches(
   void *theEnv,
-  struct joinNode *theJoin,
-  int priorPatterns,
-  int output,
-  long *alphaCount)
+  struct joinInformation *theInfo,
+  int output)
   {
    struct alphaMemoryHash *listOfHashNodes;
    struct partialMatch *listOfMatches;
-   long count;
+   long long count;
+   struct joinNode *theJoin;
+   long long alphaCount = 0;
 
-   if (theJoin == NULL) 
-     { return(priorPatterns); }
-     
-   /*==========================================================*/
-   /* We want to follow the right link if it exists or the     */
-   /* left link if the right link doesn't exists. This will    */
-   /* prevent the same node from being visited more than once. */
-   /*==========================================================*/
-   
-   if (theJoin->joinFromTheRight)
-     { return ListAlphaMatches(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,priorPatterns,output,alphaCount); }
-   else if (theJoin->lastLevel != NULL)
-     { priorPatterns = ListAlphaMatches(theEnv,theJoin->lastLevel,priorPatterns,output,alphaCount); }
-     
-   priorPatterns++;
-   
    if (GetHaltExecution(theEnv) == TRUE)
-     { return(priorPatterns); }
+     { return(alphaCount); }
 
+   theJoin = theInfo->theJoin;
+   
    if (output == VERBOSE)
      {
       EnvPrintRouter(theEnv,WDISPLAY,"Matches for Pattern ");
-      PrintLongInteger(theEnv,WDISPLAY,(long int) priorPatterns);
+      PrintLongInteger(theEnv,WDISPLAY,theInfo->whichCE);
       EnvPrintRouter(theEnv,WDISPLAY,"\n");
      }
      
    if (theJoin->rightSideEntryStructure == NULL)
      {
       if (theJoin->rightMemory->beta[0]->children != NULL)
-        { *alphaCount += 1; }
+        { alphaCount += 1; }
         
       if (output == VERBOSE)
         {
@@ -452,17 +712,18 @@ static int ListAlphaMatches(
         }
       else if (output == SUCCINCT)
         {
-         char buffer[100];
-            
+         EnvPrintRouter(theEnv,WDISPLAY,"Pattern ");
+         PrintLongInteger(theEnv,WDISPLAY,theInfo->whichCE);
+         EnvPrintRouter(theEnv,WDISPLAY,": ");
+
          if (theJoin->rightMemory->beta[0]->children != NULL)
-           { sprintf(buffer,"Pattern %2d:  %7d\n",priorPatterns,1); }
+           { EnvPrintRouter(theEnv,WDISPLAY,"1"); }
          else
-           { sprintf(buffer,"Pattern %2d:  %7d\n",priorPatterns,0); }
-           
-         EnvPrintRouter(theEnv,WDISPLAY,buffer);
+           { EnvPrintRouter(theEnv,WDISPLAY,"0"); }
+         EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
         
-      return(priorPatterns); 
+      return(alphaCount);
      }
 
    listOfHashNodes =  ((struct patternNodeHeader *) theJoin->rightSideEntryStructure)->firstHash;
@@ -476,7 +737,7 @@ static int ListAlphaMatches(
       while (listOfMatches != NULL)
         {
          if (GetHaltExecution(theEnv) == TRUE)
-           { return(priorPatterns); }
+           { return(alphaCount); }
                  
          count++;
          if (output == VERBOSE)
@@ -488,224 +749,559 @@ static int ListAlphaMatches(
         }
      }
       
-   *alphaCount += count;
+   alphaCount += count;
    
    if ((count == 0) && (output == VERBOSE)) EnvPrintRouter(theEnv,WDISPLAY," None\n");
    
    if (output == SUCCINCT)
      {
-      char buffer[100];
-      
-      sprintf(buffer,"Pattern %2d:  %7ld\n",priorPatterns,count);
-      EnvPrintRouter(theEnv,WDISPLAY,buffer);
+      EnvPrintRouter(theEnv,WDISPLAY,"Pattern ");
+      PrintLongInteger(theEnv,WDISPLAY,theInfo->whichCE);
+      EnvPrintRouter(theEnv,WDISPLAY,": ");
+      PrintLongInteger(theEnv,WDISPLAY,count);
+      EnvPrintRouter(theEnv,WDISPLAY,"\n");
      }
    
-   return(priorPatterns);
+   return(alphaCount);
   }
-  
+
+/********************/
+/* BetaHeaderString */
+/********************/
+static char *BetaHeaderString(
+  void *theEnv,
+  struct joinInformation *infoArray,
+  long joinIndex,
+  long arraySize)
+  {
+   struct joinNode *theJoin;
+   struct joinInformation *theInfo;
+   long i, j, startPosition, endPosition, positionsToPrint = 0;
+   int nestedCEs = FALSE;
+   char *returnString = "";
+   long lastIndex;
+   char buffer[32];
+   
+   theInfo = &infoArray[joinIndex];
+   theJoin = theInfo->theJoin;
+
+   /*=============================================*/
+   /* Determine which joins need to be traversed. */
+   /*=============================================*/
+   
+   for (i = 0; i < arraySize; i++)
+     { infoArray[i].marked = FALSE; }
+     
+   theJoin = theInfo->theJoin;
+   lastIndex = joinIndex;
+   
+   while (theJoin != NULL)
+     {
+      for (i = lastIndex; i >= 0; i--)
+        {
+         if (infoArray[i].theJoin == theJoin)
+           {
+            positionsToPrint++;
+            infoArray[i].marked = TRUE;
+            if (infoArray[i].patternBegin != infoArray[i].patternEnd)
+              { nestedCEs = TRUE; }
+            lastIndex = i - 1;
+            break;
+           }
+        }
+      theJoin = theJoin->lastLevel;
+     }
+   
+   for (i = 0; i <= joinIndex; i++)
+     {
+      if (infoArray[i].marked == FALSE) continue;
+
+      positionsToPrint--;
+      startPosition = i;
+      endPosition = i;
+      
+      if (infoArray[i].patternBegin == infoArray[i].patternEnd)
+        {
+         for (j = i + 1; j <= joinIndex; j++)
+           {
+            if (infoArray[j].marked == FALSE) continue;
+         
+            if (infoArray[j].patternBegin != infoArray[j].patternEnd) break;
+         
+            positionsToPrint--;
+            i = j;
+            endPosition = j;
+           }
+        }
+        
+      theInfo = &infoArray[startPosition];
+
+      gensprintf(buffer,"%d",theInfo->whichCE);
+      returnString = AppendStrings(theEnv,returnString,buffer);
+      
+      if (nestedCEs)
+        {
+         if (theInfo->patternBegin == theInfo->patternEnd)
+           {
+            returnString = AppendStrings(theEnv,returnString," (P");
+            gensprintf(buffer,"%d",theInfo->patternBegin);
+            returnString = AppendStrings(theEnv,returnString,buffer);
+            returnString = AppendStrings(theEnv,returnString,")");
+           }
+         else
+           {
+            returnString = AppendStrings(theEnv,returnString," (P");
+            gensprintf(buffer,"%d",theInfo->patternBegin);
+            returnString = AppendStrings(theEnv,returnString,buffer);
+            returnString = AppendStrings(theEnv,returnString," - P");
+            gensprintf(buffer,"%d",theInfo->patternEnd);
+            returnString = AppendStrings(theEnv,returnString,buffer);
+            returnString = AppendStrings(theEnv,returnString,")");
+           }
+        }
+      
+      if (startPosition != endPosition)
+        {
+         theInfo = &infoArray[endPosition];
+         
+         returnString = AppendStrings(theEnv,returnString," - ");
+         gensprintf(buffer,"%d",theInfo->whichCE);
+         returnString = AppendStrings(theEnv,returnString,buffer);
+      
+         if (nestedCEs)
+           {
+            if (theInfo->patternBegin == theInfo->patternEnd)
+              {
+               returnString = AppendStrings(theEnv,returnString," (P");
+               gensprintf(buffer,"%d",theInfo->patternBegin);
+               returnString = AppendStrings(theEnv,returnString,buffer);
+               returnString = AppendStrings(theEnv,returnString,")");
+              }
+            else
+              {
+               returnString = AppendStrings(theEnv,returnString," (P");
+               gensprintf(buffer,"%d",theInfo->patternBegin);
+               returnString = AppendStrings(theEnv,returnString,buffer);
+               returnString = AppendStrings(theEnv,returnString," - P");
+               gensprintf(buffer,"%d",theInfo->patternEnd);
+               returnString = AppendStrings(theEnv,returnString,buffer);
+               returnString = AppendStrings(theEnv,returnString,")");
+              }
+           }
+        }
+      
+      if (positionsToPrint > 0)
+        { returnString = AppendStrings(theEnv,returnString," , "); }
+     }
+      
+   return returnString;
+  }
+
 /********************/
 /* ListBetaMatches: */
 /********************/
-static int ListBetaMatches(
+static long long ListBetaMatches(
   void *theEnv,
-  struct joinNode *theJoin,
-  int blockStart,
-  int output,
-  long *beta_count)
+  struct joinInformation *infoArray,
+  long joinIndex,
+  long arraySize,
+  int output)
   {
-   int patternsFound = 0, startPatterns;
+   long betaCount = 0;
+   struct joinNode *theJoin;
+   struct joinInformation *theInfo;
 
    if (GetHaltExecution(theEnv) == TRUE)
-     { return(0); }   
+     { return(betaCount); }
 
-   if (theJoin == NULL) 
-     { return(patternsFound); }
-     
-   if (theJoin->lastLevel != NULL)
-     { patternsFound += ListBetaMatches(theEnv,theJoin->lastLevel,blockStart,output,beta_count); }
-     
-   if (theJoin->depth > 2)
-     {
-      PrintMatchesMemory(theEnv,theJoin,
-                                theJoin->leftMemory,
-                                blockStart,
-                                blockStart + patternsFound - 1,output,beta_count);
-     }
+   theInfo = &infoArray[joinIndex];
+   
+   theJoin = theInfo->theJoin;
 
-   startPatterns = patternsFound;
-
-   return(patternsFound + 1);
-  }
- 
-/***********************/
-/* PrintMatchesMemory: */
-/***********************/
-static void PrintMatchesMemory(
-  void *theEnv,
-  struct joinNode *theJoin,
-  struct betaMemory *theMemory,
-  int startCE, 
-  int endCE,
-  int output,
-  long *beta_count)
-  {
-#if MAC_XCD
-#pragma unused(theJoin)
-#endif
    long int count;
-
-   if (GetHaltExecution(theEnv) == TRUE)
-     { return; }
 
    if (output == VERBOSE)
      {
       EnvPrintRouter(theEnv,WDISPLAY,"Partial matches for CEs ");
-      PrintLongInteger(theEnv,WDISPLAY,(long int) startCE);
-      EnvPrintRouter(theEnv,WDISPLAY," - ");
-      PrintLongInteger(theEnv,WDISPLAY,(long int) endCE);
+      EnvPrintRouter(theEnv,WDISPLAY,
+                     BetaHeaderString(theEnv,infoArray,joinIndex,arraySize));
       EnvPrintRouter(theEnv,WDISPLAY,"\n");
-    }
+     }
 
-   count = PrintBetaMemory(theEnv,WDISPLAY,theMemory,TRUE,"",output);
-   *beta_count += count;
+   count = PrintBetaMemory(theEnv,WDISPLAY,theInfo->theMemory,TRUE,"",output);
+   
+   betaCount += count;
    
    if ((output == VERBOSE) && (count == 0))
      { EnvPrintRouter(theEnv,WDISPLAY," None\n"); }
    else if (output == SUCCINCT)
      {
-      char buffer[100];
-      
-      sprintf(buffer,"CEs %2d - %2d: %7ld\n",startCE,endCE,count);
-      EnvPrintRouter(theEnv,WDISPLAY,buffer);
+      EnvPrintRouter(theEnv,WDISPLAY,"CEs ");
+      EnvPrintRouter(theEnv,WDISPLAY,
+                     BetaHeaderString(theEnv,infoArray,joinIndex,arraySize));
+      EnvPrintRouter(theEnv,WDISPLAY,": ");
+      PrintLongInteger(theEnv,WDISPLAY,betaCount);
+      EnvPrintRouter(theEnv,WDISPLAY,"\n");
      }
+
+   return(betaCount);
+  }
+
+/******************/
+/* CountPatterns: */
+/******************/
+static int CountPatterns(
+  void *theEnv,
+  struct joinNode *theJoin,
+  int followRight)
+  {
+   int theCount = 0;
+
+   if (theJoin == NULL) return theCount;
+   
+   if (theJoin->joinFromTheRight && (followRight == FALSE))
+     { theCount++; }
+    
+   while (theJoin != NULL)
+     {
+      if (theJoin->joinFromTheRight)
+        {
+         if (followRight)
+           { theJoin = (struct joinNode *) theJoin->rightSideEntryStructure; }
+         else
+           { theJoin = theJoin->lastLevel; }
+        }
+      else
+        {
+         theCount++;
+         theJoin = theJoin->lastLevel;
+        }
+        
+      followRight = TRUE;
+     }
+     
+   return theCount;
   }
 
 /*******************************************/
 /* JoinActivityCommand: H/L access routine */
 /*   for the join-activity command.        */
 /*******************************************/
-globle long long JoinActivityCommand(
-  void *theEnv)
+globle void JoinActivityCommand(
+  void *theEnv,
+  DATA_OBJECT *result)
   {
-   char *ruleName;
+   char *ruleName, *argument;
    void *rulePtr;
+   int numberOfArguments;
+   DATA_OBJECT argPtr;
+   int output;
 
-   ruleName = GetConstructName(theEnv,"join-activity","rule name");
-   if (ruleName == NULL) return(0);
+   result->type = SYMBOL;
+   result->value = EnvFalseSymbol(theEnv);
+
+   if ((numberOfArguments = EnvArgRangeCheck(theEnv,"join-activity",1,2)) == -1) return;
+
+   if (EnvArgTypeCheck(theEnv,"join-activity",1,SYMBOL,&argPtr) == FALSE) return;
+
+   if (GetType(argPtr) != SYMBOL)
+     {
+      ExpectedTypeError1(theEnv,"join-activity",1,"rule name");
+      return;
+     }
+
+   ruleName = DOToString(argPtr);
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
-      return(0);
+      return;
      }
 
-   return EnvJoinActivity(theEnv,rulePtr,0);
+   if (numberOfArguments == 2)
+     {
+      if (EnvArgTypeCheck(theEnv,"join-activity",2,SYMBOL,&argPtr) == FALSE)
+        { return; }
+
+      argument = DOToString(argPtr);
+      if (strcmp(argument,"verbose") == 0)
+        { output = VERBOSE; }
+      else if (strcmp(argument,"succinct") == 0)
+        { output = SUCCINCT; }
+      else if (strcmp(argument,"terse") == 0)
+        { output = TERSE; }
+      else
+        {
+         ExpectedTypeError1(theEnv,"join-activity",2,"symbol with value verbose, succinct, or terse");
+         return;
+        }
+     }
+   else
+     { output = VERBOSE; }
+
+   EnvJoinActivity(theEnv,rulePtr,output,result);
   }
 
 /*************************************/
 /* EnvJoinActivity: C access routine */
 /*   for the join-activity command.  */
 /*************************************/
-globle long long EnvJoinActivity(
+globle void EnvJoinActivity(
   void *theEnv,
   void *theRule,
-  int verbosity)
+  int output,
+  DATA_OBJECT *result)
   {
    struct defrule *rulePtr;
-   struct joinNode *lastJoin;
-   long long totalActivity = 0;
+   long disjunctCount, disjunctIndex, joinIndex;
+   long arraySize;
+   struct joinInformation *theInfo;
+
+   /*==========================*/
+   /* Set up the return value. */
+   /*==========================*/
+   
+   result->type = MULTIFIELD;
+   result->begin = 0;
+   result->end = 2;
+   result->value = EnvCreateMultifield(theEnv,3L);
+   
+   SetMFType(result->value,1,INTEGER);
+   SetMFValue(result->value,1,SymbolData(theEnv)->Zero);
+   SetMFType(result->value,2,INTEGER);
+   SetMFValue(result->value,2,SymbolData(theEnv)->Zero);
+   SetMFType(result->value,3,INTEGER);
+   SetMFValue(result->value,3,SymbolData(theEnv)->Zero);
 
    /*=================================================*/
    /* Loop through each of the disjuncts for the rule */
    /*=================================================*/
 
-   for (rulePtr = (struct defrule *) theRule;
-		rulePtr != NULL;
-		rulePtr = rulePtr->disjunct)
+   disjunctCount = EnvGetDisjunctCount(theEnv,theRule);
+
+   for (disjunctIndex = 1; disjunctIndex <= disjunctCount; disjunctIndex++)
      {
+      rulePtr = (struct defrule *) EnvGetNthDisjunct(theEnv,theRule,disjunctIndex);
+      
+      /*==============================================*/
+      /* Create the array containing the list of beta */
+      /* join nodes (joins from the right plus joins  */
+      /* connected to a pattern CE).                  */
+      /*==============================================*/
+      
+      arraySize = EnvBetaJoinCount(theEnv,rulePtr);
+      
+      theInfo = EnvCreateJoinArray(theEnv,arraySize);
+      
+      EnvBetaJoins(theEnv,rulePtr,arraySize,theInfo);
+
       /*======================================*/
-      /* Determine the last join in the rule. */
+      /* List the beta matches (for all joins */
+      /* except the first pattern CE).        */
       /*======================================*/
 
-      lastJoin = rulePtr->lastJoin;
+      for (joinIndex = 0; joinIndex < arraySize; joinIndex++)
+        { ListBetaJoinActivity(theEnv,theInfo,joinIndex,arraySize,output,result); }
 
-      /*=======================================*/
-      /* List the beta memory partial matches. */
-      /*=======================================*/
-
-      ListBetaJoinActivity(theEnv,lastJoin,1,&totalActivity,verbosity);
+      /*================================*/
+      /* Free the array of alpha joins. */
+      /*================================*/
+      
+      EnvFreeJoinArray(theEnv,theInfo,arraySize);
      }
+  }
+
+/************************/
+/* ActivityHeaderString */
+/************************/
+static char *ActivityHeaderString(
+  void *theEnv,
+  struct joinInformation *infoArray,
+  long joinIndex,
+  long arraySize)
+  {
+   struct joinNode *theJoin;
+   struct joinInformation *theInfo;
+   long i;
+   int nestedCEs = FALSE;
+   char *returnString = "";
+   long lastIndex;
+   char buffer[32];
+   
+   theInfo = &infoArray[joinIndex];
+   theJoin = theInfo->theJoin;
+
+   /*=============================================*/
+   /* Determine which joins need to be traversed. */
+   /*=============================================*/
+   
+   for (i = 0; i < arraySize; i++)
+     { infoArray[i].marked = FALSE; }
      
-   return(totalActivity);
+   theJoin = theInfo->theJoin;
+   lastIndex = joinIndex;
+
+   while (theJoin != NULL)
+     {
+      for (i = lastIndex; i >= 0; i--)
+        {
+         if (infoArray[i].theJoin == theJoin)
+           {
+            if (infoArray[i].patternBegin != infoArray[i].patternEnd)
+              { nestedCEs = TRUE; }
+            lastIndex = i - 1;
+            break;
+           }
+        }
+      theJoin = theJoin->lastLevel;
+     }
+  
+   gensprintf(buffer,"%d",theInfo->whichCE);
+   returnString = AppendStrings(theEnv,returnString,buffer);
+   if (nestedCEs == FALSE)
+     { return returnString; }
+
+   if (theInfo->patternBegin == theInfo->patternEnd)
+     {
+      returnString = AppendStrings(theEnv,returnString," (P");
+      gensprintf(buffer,"%d",theInfo->patternBegin);
+      returnString = AppendStrings(theEnv,returnString,buffer);
+
+      returnString = AppendStrings(theEnv,returnString,")");
+     }
+   else
+     {
+      returnString = AppendStrings(theEnv,returnString," (P");
+            
+      gensprintf(buffer,"%d",theInfo->patternBegin);
+      returnString = AppendStrings(theEnv,returnString,buffer);
+
+      returnString = AppendStrings(theEnv,returnString," - P");
+            
+      gensprintf(buffer,"%d",theInfo->patternEnd);
+      returnString = AppendStrings(theEnv,returnString,buffer);
+
+      returnString = AppendStrings(theEnv,returnString,")");
+     }
+      
+   return returnString;
   }
 
 /*************************/
 /* ListBetaJoinActivity: */
 /*************************/
-static int ListBetaJoinActivity(
+static void ListBetaJoinActivity(
   void *theEnv,
-  struct joinNode *theJoin,
-  int blockStart,
-  long long *activity,
-  int verbosity)
+  struct joinInformation *infoArray,
+  long joinIndex,
+  long arraySize,
+  int output,
+  DATA_OBJECT *result)
   {
-   int priorLeftPatterns = 0, priorRightPatterns = 0;
+   long long activity = 0;
+   long long compares, adds, deletes;
+   struct joinNode *theJoin, *nextJoin;
+   struct joinInformation *theInfo;
 
-   if (theJoin == NULL) 
-     { return(priorLeftPatterns + priorRightPatterns); }
-     
-   if (theJoin->lastLevel != NULL)
-     { priorLeftPatterns = ListBetaJoinActivity(theEnv,theJoin->lastLevel,blockStart,activity,verbosity); }
-     
-   if (theJoin->joinFromTheRight)
-     { priorRightPatterns = ListBetaJoinActivity(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,blockStart+priorLeftPatterns,activity,verbosity); }
+   if (GetHaltExecution(theEnv) == TRUE)
+     { return; }
+
+   theInfo = &infoArray[joinIndex];
    
-   if (theJoin->depth == 1)
-     { 
-      if (theJoin->joinFromTheRight)
-        { return(priorLeftPatterns + priorRightPatterns); } 
-      else
-        { return(priorLeftPatterns + priorRightPatterns + 1); } 
-     }
-      
-   if ((priorLeftPatterns > 1) || (theJoin->joinFromTheRight))
+   theJoin = theInfo->theJoin;
+   nextJoin = theInfo->nextJoin;
+   
+   compares = theJoin->memoryCompares;
+   if (theInfo->nextJoin->joinFromTheRight)
      {
-      /* EnvPrintRouter(theEnv,WDISPLAY,"Join Activity for CEs "); */
-      
-      if (priorLeftPatterns > 1)
-        {
-        /*
-         PrintLongInteger(theEnv,WDISPLAY,(long int) blockStart);
-         EnvPrintRouter(theEnv,WDISPLAY," - ");
-         PrintLongInteger(theEnv,WDISPLAY,(long int) priorLeftPatterns);
-         */
-        }
-      else if (theJoin->joinFromTheRight)
-        {
-        /*
-         PrintLongInteger(theEnv,WDISPLAY,(long int) blockStart + priorLeftPatterns);
-         EnvPrintRouter(theEnv,WDISPLAY," - ");
-         PrintLongInteger(theEnv,WDISPLAY,(long int) blockStart + priorLeftPatterns + (priorRightPatterns - 1));
-         */
-        }
-  
-      *activity += theJoin->memoryCompares + theJoin->memoryAdds + theJoin->memoryDeletes;
-      /*
-      EnvPrintRouter(theEnv,WDISPLAY,": C ");
-      PrintLongInteger(theEnv,WDISPLAY,theJoin->memoryCompares);
-      EnvPrintRouter(theEnv,WDISPLAY,"/ A ");
-      PrintLongInteger(theEnv,WDISPLAY,theJoin->memoryAdds);
-      EnvPrintRouter(theEnv,WDISPLAY,"/ D ");
-      PrintLongInteger(theEnv,WDISPLAY,theJoin->memoryDeletes);
-      EnvPrintRouter(theEnv,WDISPLAY,"\n");
-      */
+      adds = nextJoin->memoryRightAdds;
+      deletes = nextJoin->memoryRightDeletes;
      }
-   
-   if (theJoin->joinFromTheRight)
-     { return(priorLeftPatterns + priorRightPatterns); } 
    else
-     { return(priorLeftPatterns + priorRightPatterns + 1); } 
+     {
+      adds = nextJoin->memoryLeftAdds;
+      deletes = nextJoin->memoryLeftDeletes;
+     }
+
+   activity = compares + adds + deletes;
+   
+   if (output == VERBOSE)
+     {
+      char buffer[100];
+      
+      EnvPrintRouter(theEnv,WDISPLAY,"Activity for CE ");
+      EnvPrintRouter(theEnv,WDISPLAY,
+                     ActivityHeaderString(theEnv,infoArray,joinIndex,arraySize));
+      EnvPrintRouter(theEnv,WDISPLAY,"\n");
+      
+      sprintf(buffer,"   Compares: %10lld\n",compares);
+      EnvPrintRouter(theEnv,WDISPLAY,buffer);
+      sprintf(buffer,"   Adds:     %10lld\n",adds);
+      EnvPrintRouter(theEnv,WDISPLAY,buffer);
+      sprintf(buffer,"   Deletes:  %10lld\n",deletes);
+      EnvPrintRouter(theEnv,WDISPLAY,buffer);
+     }
+   else if (output == SUCCINCT)
+     {
+      EnvPrintRouter(theEnv,WDISPLAY,"CE ");
+      EnvPrintRouter(theEnv,WDISPLAY,
+                     ActivityHeaderString(theEnv,infoArray,joinIndex,arraySize));
+      EnvPrintRouter(theEnv,WDISPLAY,": ");
+      PrintLongInteger(theEnv,WDISPLAY,activity);
+      EnvPrintRouter(theEnv,WDISPLAY,"\n");
+     }
+
+   compares += ValueToLong(GetMFValue(result->value,1));
+   adds += ValueToLong(GetMFValue(result->value,2));
+   deletes += ValueToLong(GetMFValue(result->value,3));
+   
+   SetMFType(result->value,1,INTEGER);
+   SetMFValue(result->value,1,EnvAddLong(theEnv,compares));
+   SetMFType(result->value,2,INTEGER);
+   SetMFValue(result->value,2,EnvAddLong(theEnv,adds));
+   SetMFType(result->value,3,INTEGER);
+   SetMFValue(result->value,3,EnvAddLong(theEnv,deletes));
+  }
+
+/*********************************************/
+/* JoinActivityReset: Sets the join activity */
+/*   counts for each rule back to 0.         */
+/*********************************************/
+static void JoinActivityReset(
+  void *theEnv,
+  struct constructHeader *theConstruct,
+  void *buffer)
+  {
+#if MAC_XCD
+#pragma unused(buffer)
+#endif
+   struct defrule *theDefrule = (struct defrule *) theConstruct;
+   struct joinNode *theJoin = theDefrule->lastJoin;
+   
+   while (theJoin != NULL)
+     {
+      theJoin->memoryCompares = 0;
+      theJoin->memoryLeftAdds = 0;
+      theJoin->memoryRightAdds = 0;
+      theJoin->memoryLeftDeletes = 0;
+      theJoin->memoryRightDeletes = 0;
+      
+      if (theJoin->joinFromTheRight)
+        { theJoin = (struct joinNode *) theJoin->rightSideEntryStructure; }
+      else
+        { theJoin = theJoin->lastLevel; }
+     }
+  }
+
+/************************************************/
+/* JoinActivityResetCommand: H/L access routine */
+/*   for the reset-join-activity command.       */
+/************************************************/
+globle void JoinActivityResetCommand(
+  void *theEnv)
+  { 
+   DoForAllConstructs(theEnv,JoinActivityReset,DefruleData(theEnv)->DefruleModuleIndex,TRUE,NULL);
   }
 
 /***************************************/
@@ -951,4 +1547,3 @@ globle void ShowAlphaHashTable(
 #endif /* DEVELOPER */
 
 #endif /* DEFRULE_CONSTRUCT */
-
