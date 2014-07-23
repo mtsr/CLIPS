@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/22/14            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -589,7 +589,7 @@ globle intBool EnvRetract(
    /*===========================================*/
 
    if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
-       (EvaluationData(theEnv)->CurrentExpression == NULL))
+       (EvaluationData(theEnv)->CurrentExpression == NULL) && (UtilityData(theEnv)->GarbageCollectionLocks == 0))
      { CleanCurrentGarbageFrame(theEnv,NULL); }
    
    /*==================================*/
@@ -824,7 +824,7 @@ globle void *EnvAssert(
    /*==========================================*/
 
    if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
-       (EvaluationData(theEnv)->CurrentExpression == NULL))
+       (EvaluationData(theEnv)->CurrentExpression == NULL) && (UtilityData(theEnv)->GarbageCollectionLocks == 0))
      {
       CleanCurrentGarbageFrame(theEnv,NULL);
       CallPeriodicTasks(theEnv);
@@ -1712,7 +1712,7 @@ globle intBool EnvRemoveAssertFunction(
 /***************************************/
 /* AddRetractFunction: Adds a function */
 /*   to the ListOfRetractFunctions.    */
-/********************************************/
+/***************************************/
 globle intBool AddRetractFunction(
   char *name,
   void (*functionPtr)(void *,void *),

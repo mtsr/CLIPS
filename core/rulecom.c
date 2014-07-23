@@ -910,6 +910,7 @@ static long long ListBetaMatches(
    long betaCount = 0;
    struct joinNode *theJoin;
    struct joinInformation *theInfo;
+   long int count;
 
    if (GetHaltExecution(theEnv) == TRUE)
      { return(betaCount); }
@@ -917,8 +918,6 @@ static long long ListBetaMatches(
    theInfo = &infoArray[joinIndex];
    
    theJoin = theInfo->theJoin;
-
-   long int count;
 
    if (output == VERBOSE)
      {
