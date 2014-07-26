@@ -1556,11 +1556,12 @@ BOOL FAR PASCAL DefruleManager(
              +--------------*/
              
              if (wParam == IDC_PBUTTON3)
-               {  
+               { 
+			    DATA_OBJECT result; 
                 EnvPrintRouter(theEnv,WPROMPT,"(matches ");
                 EnvPrintRouter(theEnv,WPROMPT,string );
                 EnvPrintRouter(theEnv,WPROMPT,")\n");
-                EnvMatches(theEnv,defrulePtr);
+                EnvMatches(theEnv,defrulePtr,VERBOSE,&result);
                 PrintPrompt(theEnv);
                 //InvalidateRect(WinDialog.hWnd,NULL,TRUE);
                 SetFocus(hListBox);
