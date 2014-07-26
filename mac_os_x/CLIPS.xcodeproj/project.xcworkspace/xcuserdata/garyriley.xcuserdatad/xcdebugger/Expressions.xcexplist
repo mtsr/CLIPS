@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "InitializeClassBitMap:objrtbld.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "bmp-&gt;map[0]">
+            </PersistentString>
+            <PersistentString
+               value = "bmp-&gt;map[1]">
+            </PersistentString>
+            <PersistentString
+               value = "bmp-&gt;map[2]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "GetEnvironmentRouterContext:envrnmnt.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(struct environmentData *)theEnvironment">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "EvaluateSlotOverrides:insmoddp.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(SYMBOL_HN *)slotName">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "NewClassBitMap:objrtbld.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "(char [1])(bmp)-&gt;map">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ProcessClassRestriction:objrtbld.c">
+      </ContextState>
+      <ContextState
+         contextName = "MarkBitMapSubclasses:classfun.c">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

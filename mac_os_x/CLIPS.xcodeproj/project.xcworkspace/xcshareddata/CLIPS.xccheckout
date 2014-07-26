@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>7F237053-E053-46BB-A3CF-6C440B90E6D4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>CLIPS</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>6370E530-1252-4FBC-8B06-1EF10289833F</key>
+		<string>https://clipsrules.svn.sourceforge.net/svnroot/clipsrules/mac_os_x/English.lproj/CLIPSInstanceBrowser.nib</string>
+		<key>80E91922-7B0A-4566-A0D4-831BCE0ABCB0</key>
+		<string>https://clipsrules.svn.sourceforge.net/svnroot/clipsrules/mac_os_x/CLIPS.xcodeproj</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>6370E530-1252-4FBC-8B06-1EF10289833F</key>
+		<string>../../English.lproj/CLIPSInstanceBrowser.nib</string>
+		<key>80E91922-7B0A-4566-A0D4-831BCE0ABCB0</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectRepositoryRootDictionary</key>
+	<dict>
+		<key>6370E530-1252-4FBC-8B06-1EF10289833F</key>
+		<string>https://clipsrules.svn.sourceforge.net/svnroot/clipsrules</string>
+		<key>80E91922-7B0A-4566-A0D4-831BCE0ABCB0</key>
+		<string>https://clipsrules.svn.sourceforge.net/svnroot/clipsrules</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://clipsrules.svn.sourceforge.net/svnroot/clipsrules/mac_os_x/CLIPS.xcodeproj</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>80E91922-7B0A-4566-A0D4-831BCE0ABCB0</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>6370E530-1252-4FBC-8B06-1EF10289833F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CLIPSInstanceBrowser</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.subversion</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>80E91922-7B0A-4566-A0D4-831BCE0ABCB0</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CLIPS</string>
+		</dict>
+	</array>
+</dict>
+</plist>

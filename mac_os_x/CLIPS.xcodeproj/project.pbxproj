@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -23,7 +23,6 @@
 		B53E50D009B0FD8A00F72EB0 /* PreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = B53E50CC09B0FD8A00F72EB0 /* PreferenceController.m */; };
 		B53E50DA09B1046500F72EB0 /* CLIPSTerminalController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B53E50D809B1046500F72EB0 /* CLIPSTerminalController.h */; };
 		B53E50DB09B1046500F72EB0 /* CLIPSTerminalController.m in Sources */ = {isa = PBXBuildFile; fileRef = B53E50D909B1046500F72EB0 /* CLIPSTerminalController.m */; };
-		B54846B30D5137FB0025757C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B54846B20D5137FB0025757C /* Cocoa.framework */; };
 		B5491E7A0BB18E2C00206EA5 /* ModuleArrayController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5491E780BB18E2C00206EA5 /* ModuleArrayController.h */; };
 		B5491E7B0BB18E2C00206EA5 /* ModuleArrayController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5491E790BB18E2C00206EA5 /* ModuleArrayController.m */; };
 		B549629209BA9D6100697F33 /* CogDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = B549628F09BA9D6100697F33 /* CogDown.tiff */; };
@@ -37,7 +36,6 @@
 		B571D72509D5E0D4003FCD41 /* CLIPSTerminalGlue.m in Sources */ = {isa = PBXBuildFile; fileRef = B571D72409D5E0D4003FCD41 /* CLIPSTerminalGlue.m */; };
 		B57AFA0C0BA9F90F002491B9 /* CLIPSModule.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B57AFA0A0BA9F90F002491B9 /* CLIPSModule.h */; };
 		B57AFA0D0BA9F90F002491B9 /* CLIPSModule.m in Sources */ = {isa = PBXBuildFile; fileRef = B57AFA0B0BA9F90F002491B9 /* CLIPSModule.m */; };
-		B580A3FA0D513B7000150F2D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B54846B20D5137FB0025757C /* Cocoa.framework */; };
 		B591DCA80A13C16D0021AA02 /* CLIPSTextMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = B591DCA60A13C16D0021AA02 /* CLIPSTextMenu.m */; };
 		B591DCA90A13C16E0021AA02 /* CLIPSTextMenu.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B591DCA70A13C16D0021AA02 /* CLIPSTextMenu.h */; };
 		B59979A90D4D9B9E00C9B896 /* agenda.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEF5B09AD245A000E597B /* agenda.c */; };
@@ -83,11 +81,6 @@
 		B59979D10D4D9B9E00C9B896 /* dfinsbin.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFAF09AD245A000E597B /* dfinsbin.c */; };
 		B59979D20D4D9B9E00C9B896 /* dfinscmp.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB109AD245A000E597B /* dfinscmp.c */; };
 		B59979D30D4D9B9E00C9B896 /* drive.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB309AD245A000E597B /* drive.c */; };
-		B59979D40D4D9B9E00C9B896 /* edbasic.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB609AD245A000E597B /* edbasic.c */; };
-		B59979D50D4D9B9E00C9B896 /* edmain.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB709AD245A000E597B /* edmain.c */; };
-		B59979D60D4D9B9E00C9B896 /* edmisc.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB809AD245A000E597B /* edmisc.c */; };
-		B59979D70D4D9B9E00C9B896 /* edstruct.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB909AD245A000E597B /* edstruct.c */; };
-		B59979D80D4D9B9E00C9B896 /* edterm.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFBA09AD245A000E597B /* edterm.c */; };
 		B59979D90D4D9B9E00C9B896 /* emathfun.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFBB09AD245A000E597B /* emathfun.c */; };
 		B59979DA0D4D9B9E00C9B896 /* engine.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFBD09AD245A000E597B /* engine.c */; };
 		B59979DB0D4D9B9E00C9B896 /* envrnmnt.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFBF09AD245A000E597B /* envrnmnt.c */; };
@@ -209,6 +202,8 @@
 		B5997A4F0D4D9B9E00C9B896 /* utility.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCF0AB09AD245B000E597B /* utility.c */; };
 		B5997A500D4D9B9E00C9B896 /* watch.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCF0AD09AD245B000E597B /* watch.c */; };
 		B5997A510D4D9B9E00C9B896 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = B5134C1A0B9F9D5A007B3571 /* main.c */; };
+		B59D1400179C5C1A00E1A6C7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59D13FF179C5C1A00E1A6C7 /* Cocoa.framework */; };
+		B59D1401179C5C9600E1A6C7 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B59D13FF179C5C1A00E1A6C7 /* Cocoa.framework */; };
 		B5AC0A4409B21DA100297B9E /* EnvController.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5AC0A4209B21DA100297B9E /* EnvController.h */; };
 		B5AC0A4509B21DA100297B9E /* EnvController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5AC0A4309B21DA100297B9E /* EnvController.m */; };
 		B5AC0A4809B21E1200297B9E /* EnvController.nib in Resources */ = {isa = PBXBuildFile; fileRef = B5AC0A4609B21E1200297B9E /* EnvController.nib */; };
@@ -315,12 +310,6 @@
 		B5BCF10609AD245B000E597B /* dfinscmp.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCEFB209AD245A000E597B /* dfinscmp.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5BCF10709AD245B000E597B /* drive.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB309AD245A000E597B /* drive.c */; };
 		B5BCF10809AD245B000E597B /* drive.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCEFB409AD245A000E597B /* drive.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B5BCF10909AD245B000E597B /* ed.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCEFB509AD245A000E597B /* ed.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B5BCF10A09AD245B000E597B /* edbasic.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB609AD245A000E597B /* edbasic.c */; };
-		B5BCF10B09AD245B000E597B /* edmain.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB709AD245A000E597B /* edmain.c */; };
-		B5BCF10C09AD245B000E597B /* edmisc.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB809AD245A000E597B /* edmisc.c */; };
-		B5BCF10D09AD245B000E597B /* edstruct.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFB909AD245A000E597B /* edstruct.c */; };
-		B5BCF10E09AD245B000E597B /* edterm.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFBA09AD245A000E597B /* edterm.c */; };
 		B5BCF10F09AD245B000E597B /* emathfun.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFBB09AD245A000E597B /* emathfun.c */; };
 		B5BCF11009AD245B000E597B /* emathfun.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCEFBC09AD245A000E597B /* emathfun.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5BCF11109AD245B000E597B /* engine.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEFBD09AD245A000E597B /* engine.c */; };
@@ -580,7 +569,6 @@
 		B5FB532C09AD4203001AE877 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B5FB532B09AD4203001AE877 /* main.m */; };
 		B5FB533109AD425F001AE877 /* CLIPS.icns in Resources */ = {isa = PBXBuildFile; fileRef = B5FB533009AD425F001AE877 /* CLIPS.icns */; };
 		B5FB533409AD4276001AE877 /* CLIPSTerminal.nib in Resources */ = {isa = PBXBuildFile; fileRef = B5FB533209AD4276001AE877 /* CLIPSTerminal.nib */; };
-		B5FB533C09AD42E6001AE877 /* CLIPS-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B5FB533B09AD42E6001AE877 /* CLIPS-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -643,7 +631,6 @@
 		B53E50CC09B0FD8A00F72EB0 /* PreferenceController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = PreferenceController.m; path = Interface_Source/PreferenceController.m; sourceTree = "<group>"; };
 		B53E50D809B1046500F72EB0 /* CLIPSTerminalController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CLIPSTerminalController.h; path = Interface_Source/CLIPSTerminalController.h; sourceTree = "<group>"; };
 		B53E50D909B1046500F72EB0 /* CLIPSTerminalController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLIPSTerminalController.m; path = Interface_Source/CLIPSTerminalController.m; sourceTree = "<group>"; };
-		B54846B20D5137FB0025757C /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = SDKs/MacOSX10.5.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = SYSTEM_DEVELOPER_DIR; };
 		B5491E780BB18E2C00206EA5 /* ModuleArrayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModuleArrayController.h; path = Interface_Source/ModuleArrayController.h; sourceTree = "<group>"; };
 		B5491E790BB18E2C00206EA5 /* ModuleArrayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ModuleArrayController.m; path = Interface_Source/ModuleArrayController.m; sourceTree = "<group>"; };
 		B549628F09BA9D6100697F33 /* CogDown.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CogDown.tiff; path = Resources/CogDown.tiff; sourceTree = "<group>"; };
@@ -659,7 +646,9 @@
 		B57AFA0B0BA9F90F002491B9 /* CLIPSModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLIPSModule.m; path = Interface_Source/CLIPSModule.m; sourceTree = "<group>"; };
 		B591DCA60A13C16D0021AA02 /* CLIPSTextMenu.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CLIPSTextMenu.m; path = Interface_Source/CLIPSTextMenu.m; sourceTree = "<group>"; };
 		B591DCA70A13C16D0021AA02 /* CLIPSTextMenu.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CLIPSTextMenu.h; path = Interface_Source/CLIPSTextMenu.h; sourceTree = "<group>"; };
+		B594317509B4CA7800936A6B /* ToDo.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ToDo.txt; sourceTree = "<group>"; };
 		B5997A580D4D9B9E00C9B896 /* CLIPS Console */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CLIPS Console"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B59D13FF179C5C1A00E1A6C7 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B5AC0A4209B21DA100297B9E /* EnvController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = EnvController.h; path = Interface_Source/EnvController.h; sourceTree = "<group>"; };
 		B5AC0A4309B21DA100297B9E /* EnvController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = EnvController.m; path = Interface_Source/EnvController.m; sourceTree = "<group>"; };
 		B5AC0A4709B21E1200297B9E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EnvController.nib; sourceTree = "<group>"; };
@@ -767,12 +756,6 @@
 		B5BCEFB209AD245A000E597B /* dfinscmp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dfinscmp.h; path = CLIPS_Source/dfinscmp.h; sourceTree = "<group>"; };
 		B5BCEFB309AD245A000E597B /* drive.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = drive.c; path = CLIPS_Source/drive.c; sourceTree = "<group>"; };
 		B5BCEFB409AD245A000E597B /* drive.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = drive.h; path = CLIPS_Source/drive.h; sourceTree = "<group>"; };
-		B5BCEFB509AD245A000E597B /* ed.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ed.h; path = CLIPS_Source/ed.h; sourceTree = "<group>"; };
-		B5BCEFB609AD245A000E597B /* edbasic.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = edbasic.c; path = CLIPS_Source/edbasic.c; sourceTree = "<group>"; };
-		B5BCEFB709AD245A000E597B /* edmain.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = edmain.c; path = CLIPS_Source/edmain.c; sourceTree = "<group>"; };
-		B5BCEFB809AD245A000E597B /* edmisc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = edmisc.c; path = CLIPS_Source/edmisc.c; sourceTree = "<group>"; };
-		B5BCEFB909AD245A000E597B /* edstruct.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = edstruct.c; path = CLIPS_Source/edstruct.c; sourceTree = "<group>"; };
-		B5BCEFBA09AD245A000E597B /* edterm.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = edterm.c; path = CLIPS_Source/edterm.c; sourceTree = "<group>"; };
 		B5BCEFBB09AD245A000E597B /* emathfun.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = emathfun.c; path = CLIPS_Source/emathfun.c; sourceTree = "<group>"; };
 		B5BCEFBC09AD245A000E597B /* emathfun.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = emathfun.h; path = CLIPS_Source/emathfun.h; sourceTree = "<group>"; };
 		B5BCEFBD09AD245A000E597B /* engine.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = engine.c; path = CLIPS_Source/engine.c; sourceTree = "<group>"; };
@@ -1040,8 +1023,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B59D1400179C5C1A00E1A6C7 /* Cocoa.framework in Frameworks */,
 				B5BCF3AE09AD30A1000E597B /* CLIPS.framework in Frameworks */,
-				B54846B30D5137FB0025757C /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1056,7 +1039,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B580A3FA0D513B7000150F2D /* Cocoa.framework in Frameworks */,
+				B59D1401179C5C9600E1A6C7 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1066,7 +1049,6 @@
 		1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B54846B20D5137FB0025757C /* Cocoa.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -1091,6 +1073,8 @@
 		2A37F4AAFDCFA73011CA2CEA /* CLIPSEditor */ = {
 			isa = PBXGroup;
 			children = (
+				B59D13FF179C5C1A00E1A6C7 /* Cocoa.framework */,
+				B594317509B4CA7800936A6B /* ToDo.txt */,
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				B5BCF20509AD249F000E597B /* CLIPS Source */,
 				B54DA5D109AE1D4C00D9DF3D /* CLIPS Source Headers */,
@@ -1105,46 +1089,46 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				B5AF77130BA89B360090AC5E /* CLIPSAgendaController.h */,
-				B533574E09D72E5900893C2F /* CLIPSConstructInspectorController.h */,
-				B533574F09D72E5900893C2F /* CLIPSConstructInspectorController.m */,
-				B571D71909D5E026003FCD41 /* CLIPSTerminalGlue.h */,
-				B571D72409D5E0D4003FCD41 /* CLIPSTerminalGlue.m */,
 				B5FB531D09AD41E2001AE877 /* AppController.h */,
 				B5FB531E09AD41E2001AE877 /* AppController.m */,
 				B5B1B53609CDE36A00F76417 /* CLIPSActivation.h */,
 				B5B1B53709CDE36A00F76417 /* CLIPSActivation.m */,
-				B5B1B53809CDE36A00F76417 /* CLIPSFactController.h */,
-				B5AF77150BA89B750090AC5E /* CLIPSFactController.m */,
+				B5AF77130BA89B360090AC5E /* CLIPSAgendaController.h */,
 				B5B1B53909CDE36A00F76417 /* CLIPSAgendaController.m */,
+				B533574E09D72E5900893C2F /* CLIPSConstructInspectorController.h */,
+				B533574F09D72E5900893C2F /* CLIPSConstructInspectorController.m */,
 				B5FB531709AD41E2001AE877 /* CLIPSEnvironment.h */,
 				B5FB531809AD41E2001AE877 /* CLIPSEnvironment.m */,
+				B5B1B53809CDE36A00F76417 /* CLIPSFactController.h */,
+				B5AF77150BA89B750090AC5E /* CLIPSFactController.m */,
 				B5B1B57809CDE69F00F76417 /* CLIPSFactInstance.h */,
 				B5B1B57909CDE69F00F76417 /* CLIPSFactInstance.m */,
 				B5B1B54009CDE38600F76417 /* CLIPSFocus.h */,
 				B5B1B54109CDE38600F76417 /* CLIPSFocus.m */,
 				B5CE5D850D7DB62B002166A8 /* CLIPSInstanceController.h */,
 				B5CE5D860D7DB62B002166A8 /* CLIPSInstanceController.m */,
+				B57AFA0A0BA9F90F002491B9 /* CLIPSModule.h */,
+				B57AFA0B0BA9F90F002491B9 /* CLIPSModule.m */,
 				B53E50D809B1046500F72EB0 /* CLIPSTerminalController.h */,
 				B53E50D909B1046500F72EB0 /* CLIPSTerminalController.m */,
+				B571D71909D5E026003FCD41 /* CLIPSTerminalGlue.h */,
+				B571D72409D5E0D4003FCD41 /* CLIPSTerminalGlue.m */,
 				B53E50C909B0FD8A00F72EB0 /* CLIPSTerminalView.h */,
 				B53E50CA09B0FD8A00F72EB0 /* CLIPSTerminalView.m */,
 				B5FB531B09AD41E2001AE877 /* CLIPSTextDocument.h */,
 				B5FB531C09AD41E2001AE877 /* CLIPSTextDocument.m */,
+				B591DCA70A13C16D0021AA02 /* CLIPSTextMenu.h */,
+				B591DCA60A13C16D0021AA02 /* CLIPSTextMenu.m */,
 				B5B1B54209CDE38600F76417 /* CLIPSTextView.h */,
 				B5B1B54309CDE38600F76417 /* CLIPSTextView.m */,
 				B5AC0A4209B21DA100297B9E /* EnvController.h */,
 				B5AC0A4309B21DA100297B9E /* EnvController.m */,
 				B565435A09D220C3002856FE /* GenericController.h */,
 				B565435B09D220C3002856FE /* GenericController.m */,
-				B53E50CB09B0FD8A00F72EB0 /* PreferenceController.h */,
-				B53E50CC09B0FD8A00F72EB0 /* PreferenceController.m */,
-				B591DCA60A13C16D0021AA02 /* CLIPSTextMenu.m */,
-				B591DCA70A13C16D0021AA02 /* CLIPSTextMenu.h */,
-				B57AFA0A0BA9F90F002491B9 /* CLIPSModule.h */,
-				B57AFA0B0BA9F90F002491B9 /* CLIPSModule.m */,
 				B5491E780BB18E2C00206EA5 /* ModuleArrayController.h */,
 				B5491E790BB18E2C00206EA5 /* ModuleArrayController.m */,
+				B53E50CB09B0FD8A00F72EB0 /* PreferenceController.h */,
+				B53E50CC09B0FD8A00F72EB0 /* PreferenceController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1244,7 +1228,6 @@
 				B5BCEFB009AD245A000E597B /* dfinsbin.h */,
 				B5BCEFB209AD245A000E597B /* dfinscmp.h */,
 				B5BCEFB409AD245A000E597B /* drive.h */,
-				B5BCEFB509AD245A000E597B /* ed.h */,
 				B5BCEFBC09AD245A000E597B /* emathfun.h */,
 				B5BCEFBE09AD245A000E597B /* engine.h */,
 				B5BCEFC009AD245A000E597B /* envrnmnt.h */,
@@ -1421,11 +1404,6 @@
 				B5BCEFAF09AD245A000E597B /* dfinsbin.c */,
 				B5BCEFB109AD245A000E597B /* dfinscmp.c */,
 				B5BCEFB309AD245A000E597B /* drive.c */,
-				B5BCEFB609AD245A000E597B /* edbasic.c */,
-				B5BCEFB709AD245A000E597B /* edmain.c */,
-				B5BCEFB809AD245A000E597B /* edmisc.c */,
-				B5BCEFB909AD245A000E597B /* edstruct.c */,
-				B5BCEFBA09AD245A000E597B /* edterm.c */,
 				B5BCEFBB09AD245A000E597B /* emathfun.c */,
 				B5BCEFBD09AD245A000E597B /* engine.c */,
 				B5BCEFBF09AD245A000E597B /* envrnmnt.c */,
@@ -1610,7 +1588,6 @@
 				B5BCF10409AD245B000E597B /* dfinsbin.h in Headers */,
 				B5BCF10609AD245B000E597B /* dfinscmp.h in Headers */,
 				B5BCF10809AD245B000E597B /* drive.h in Headers */,
-				B5BCF10909AD245B000E597B /* ed.h in Headers */,
 				B5BCF11009AD245B000E597B /* emathfun.h in Headers */,
 				B5BCF11209AD245B000E597B /* engine.h in Headers */,
 				B5BCF11409AD245B000E597B /* envrnmnt.h in Headers */,
@@ -1803,9 +1780,19 @@
 /* Begin PBXProject section */
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+			};
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "CLIPS" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* CLIPSEditor */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -1849,7 +1836,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B5FB533C09AD42E6001AE877 /* CLIPS-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1941,11 +1927,6 @@
 				B59979D10D4D9B9E00C9B896 /* dfinsbin.c in Sources */,
 				B59979D20D4D9B9E00C9B896 /* dfinscmp.c in Sources */,
 				B59979D30D4D9B9E00C9B896 /* drive.c in Sources */,
-				B59979D40D4D9B9E00C9B896 /* edbasic.c in Sources */,
-				B59979D50D4D9B9E00C9B896 /* edmain.c in Sources */,
-				B59979D60D4D9B9E00C9B896 /* edmisc.c in Sources */,
-				B59979D70D4D9B9E00C9B896 /* edstruct.c in Sources */,
-				B59979D80D4D9B9E00C9B896 /* edterm.c in Sources */,
 				B59979D90D4D9B9E00C9B896 /* emathfun.c in Sources */,
 				B59979DA0D4D9B9E00C9B896 /* engine.c in Sources */,
 				B59979DB0D4D9B9E00C9B896 /* envrnmnt.c in Sources */,
@@ -2117,11 +2098,6 @@
 				B5BCF10309AD245B000E597B /* dfinsbin.c in Sources */,
 				B5BCF10509AD245B000E597B /* dfinscmp.c in Sources */,
 				B5BCF10709AD245B000E597B /* drive.c in Sources */,
-				B5BCF10A09AD245B000E597B /* edbasic.c in Sources */,
-				B5BCF10B09AD245B000E597B /* edmain.c in Sources */,
-				B5BCF10C09AD245B000E597B /* edmisc.c in Sources */,
-				B5BCF10D09AD245B000E597B /* edstruct.c in Sources */,
-				B5BCF10E09AD245B000E597B /* edterm.c in Sources */,
 				B5BCF10F09AD245B000E597B /* emathfun.c in Sources */,
 				B5BCF11109AD245B000E597B /* engine.c in Sources */,
 				B5BCF11309AD245B000E597B /* envrnmnt.c in Sources */,
@@ -2374,10 +2350,7 @@
 		1E6F78CD0D502A6500B9DCFB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-				);
+				GCC_MODEL_PPC64 = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"WINDOW_INTERFACE=1",
@@ -2385,8 +2358,8 @@
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
 				VALID_ARCHS = "ppc64 ppc7400 ppc970 i386 x86_64 ppc";
 			};
 			name = Release;
@@ -2399,16 +2372,18 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"EMACS_EDITOR=0",
 					"WINDOW_INTERFACE=0",
 					"DARWIN=1",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "CLIPS Console";
 				REZ_EXECUTABLE = YES;
+				SDKROOT = macosx;
 				SECTORDER_FLAGS = "";
+				VALID_ARCHS = "i386 x86_64";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -2420,19 +2395,18 @@
 		1E6F78CF0D502A6500B9DCFB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/SDKs/MacOSX10.5.sdk/System/Library/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Interface_Source/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "CLIPS IDE";
+				SDKROOT = macosx;
+				VALID_ARCHS = "i386 x86_64";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -2441,17 +2415,13 @@
 		1E6F78D00D502A6500B9DCFB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(DEVELOPER_DIR)/SDKs/MacOSX10.5.sdk/System/Library/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2459,10 +2429,12 @@
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Interface_Source/CLIPS-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = CLIPS;
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "i386 x86_64";
 				ZERO_LINK = YES;
 			};
 			name = Release;
@@ -2475,16 +2447,18 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"EMACS_EDITOR=0",
 					"WINDOW_INTERFACE=0",
 					"DARWIN=1",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PRODUCT_NAME = "CLIPS Console";
 				REZ_EXECUTABLE = YES;
+				SDKROOT = macosx;
 				SECTORDER_FLAGS = "";
+				VALID_ARCHS = "i386 x86_64";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -2496,17 +2470,13 @@
 		B5BCEF5809AD23C0000E597B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(DEVELOPER_DIR)/SDKs/MacOSX10.5.sdk/System/Library/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				FRAMEWORK_VERSION = A;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2514,10 +2484,12 @@
 				GCC_PREFIX_HEADER = "";
 				INFOPLIST_FILE = "Interface_Source/CLIPS-Info.plist";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = CLIPS;
+				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "i386 x86_64";
 				ZERO_LINK = YES;
 			};
 			name = Debug;
@@ -2525,19 +2497,18 @@
 		C05733C808A9546B00998B17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
-				);
-				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(DEVELOPER_DIR)/SDKs/MacOSX10.5.sdk/System/Library/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = Interface_Source/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				PRODUCT_NAME = "CLIPS IDE";
+				SDKROOT = macosx;
+				VALID_ARCHS = "i386 x86_64";
 				WRAPPER_EXTENSION = app;
 				ZERO_LINK = YES;
 			};
@@ -2546,10 +2517,6 @@
 		C05733CC08A9546B00998B17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					i386,
-					ppc,
-				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"WINDOW_INTERFACE=1",
@@ -2557,8 +2524,9 @@
 				);
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
 				VALID_ARCHS = "ppc64 ppc7400 ppc970 i386 x86_64 ppc";
 			};
 			name = Debug;
