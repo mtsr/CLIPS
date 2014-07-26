@@ -70,7 +70,7 @@ struct priorCommand
 
 - (void)               setWatchFlagsFromPreferences;
 - (void)               print: (NSString *) theString;
-- (void)               printC: (char *) theString;
+- (void)               printC: (const char *) theString;
 
 - (void)               loadConstructPanelDidEnd: (NSOpenPanel *) sheet 
                        returnCode: (int) returnCode;

@@ -20,7 +20,7 @@ void ClearEnvironmentWindowCommand(
   void *theEnv)
   {
    if (EnvArgCountCheck(theEnv,"clear-window",EXACTLY,0) == -1) return;
-   id theObject = GetEnvironmentContext(theEnv);
+   id theObject = (id) GetEnvironmentContext(theEnv);
    
    [theObject clearScrollbackFunction];
   }
@@ -31,7 +31,7 @@ void ClearEnvironmentWindowCommand(
 /**********************************************************/
 intBool QueryInterfaceRouter(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -56,12 +56,12 @@ intBool QueryInterfaceRouter(
 /*****************************************/
 int PrintInterfaceRouter(
   void *theEnv,
-  char *logicalName,
-  char *str)
+  const char *logicalName,
+  const char *str)
   {
    FILE *fptr;
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-   id theObject = GetEnvironmentRouterContext(theEnv);
+   id theObject = (id) GetEnvironmentRouterContext(theEnv);
 
    fptr = FindFptr(theEnv,logicalName);
    if (fptr == stdout)
@@ -81,11 +81,11 @@ int PrintInterfaceRouter(
 /*******************************************/
 int GetcInterfaceRouter(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
    int theChar;
-   id theObject = GetEnvironmentRouterContext(theEnv);
+   id theObject = (id) GetEnvironmentRouterContext(theEnv);
 
    theChar = [theObject waitForChar];
 
@@ -103,7 +103,7 @@ int ExitInterfaceRouter(
   void *theEnv,
   int num)
   {   
-   CLIPSTerminalController *theController = GetEnvironmentRouterContext(theEnv);
+   CLIPSTerminalController *theController = (CLIPSTerminalController *) GetEnvironmentRouterContext(theEnv);
    [theController exit];
    /* AbortExit(theEnv); */
    return(TRUE);
@@ -115,7 +115,7 @@ int ExitInterfaceRouter(
 void MacPeriodicFunction(
   void *theEnv)
   {
-   CLIPSTerminalController *theController = GetEnvironmentContext(theEnv);
+   CLIPSTerminalController *theController = (CLIPSTerminalController *) GetEnvironmentContext(theEnv);
    NSConditionLock *theAgendaLock, *theFactsLock;
    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
    
@@ -187,7 +187,7 @@ void MacYieldTimeFunction()
 int MacBeforeOpenFunction(
   void *theEnv)
   {
-   CLIPSTerminalController *theController = GetEnvironmentContext(theEnv);
+   CLIPSTerminalController *theController = (CLIPSTerminalController *) GetEnvironmentContext(theEnv);
 
    NSLock *theLock = [[theController envController] fileOpenLock];
    
@@ -204,7 +204,7 @@ int MacBeforeOpenFunction(
 int MacAfterOpenFunction(
   void *theEnv)
   {
-   CLIPSTerminalController *theController = GetEnvironmentContext(theEnv);
+   CLIPSTerminalController *theController = (CLIPSTerminalController *) GetEnvironmentContext(theEnv);
    
    NSLock *theLock = [[theController envController] fileOpenLock];
    

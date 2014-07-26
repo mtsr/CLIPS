@@ -42,7 +42,7 @@
       
       environment = theEnvironment;
 
-      theScopeMap = CreateDeftemplateScopeMap(theEnvironment,theFact->whichDeftemplate);
+      theScopeMap = (BITMAP_HN *) CreateDeftemplateScopeMap(theEnvironment,theFact->whichDeftemplate);
       
       scopeMap = malloc(theScopeMap->size);
       
@@ -126,7 +126,7 @@
       
       environment = theEnvironment;
 
-      theScopeMap = CreateClassScopeMap(theEnvironment,theClass);
+      theScopeMap = (BITMAP_HN *) CreateClassScopeMap(theEnvironment,(DEFCLASS *) theClass);
       
       scopeMap = malloc(theScopeMap->size);
       

@@ -374,7 +374,7 @@
       void *theEnvironment = [environment environment];
       NSArray *theArray = [focusStackController valueForKeyPath: @"selection.agenda"];
          
-      struct activation *theActivation = [[theArray objectAtIndex: theRow] activation];
+      struct activation *theActivation = (struct activation *) [[theArray objectAtIndex: theRow] activation];
          
       NSString *thePPForm = [NSString stringWithUTF8String: EnvGetDefrulePPForm(theEnvironment,theActivation->theRule)];
 

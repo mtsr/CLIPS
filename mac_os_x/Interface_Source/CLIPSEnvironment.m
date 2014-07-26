@@ -376,9 +376,9 @@
    /*=====================================================*/
    
    focusCount = 0;
-   for (theFocus = EnvGetNextFocus(environment,NULL);
+   for (theFocus = (struct focus *) EnvGetNextFocus(environment,NULL);
         theFocus != NULL;
-        theFocus = EnvGetNextFocus(environment,theFocus))
+        theFocus = (struct focus *) EnvGetNextFocus(environment,theFocus))
      { focusCount++; }
      
    /*============================================================*/
@@ -395,9 +395,9 @@
    /* Iterate over the CLIPS focus stack. */
    /*=====================================*/
    
-   for (theFocus = EnvGetNextFocus(environment,NULL);
+   for (theFocus = (struct focus *) EnvGetNextFocus(environment,NULL);
         theFocus != NULL;
-        theFocus = EnvGetNextFocus(environment,theFocus))
+        theFocus = (struct focus *) EnvGetNextFocus(environment,theFocus))
      {
       /*==========================================*/
       /* Create an object to represent the focus. */
@@ -432,7 +432,7 @@
       agendaCount = 0;
       for (theActivation = theFocus->theDefruleModule->agenda;
            theActivation != NULL;
-           theActivation = EnvGetNextActivation(environment,theActivation))
+           theActivation = (struct activation *) EnvGetNextActivation(environment,theActivation))
         { agendaCount++; }
      
       newAgenda = [[NSMutableArray alloc] initWithCapacity: agendaCount];
@@ -443,7 +443,7 @@
       
       for (theActivation = theFocus->theDefruleModule->agenda;
            theActivation != NULL;
-           theActivation = EnvGetNextActivation(environment,theActivation))
+           theActivation = (struct activation *) EnvGetNextActivation(environment,theActivation))
         {
          newActivation  = [[CLIPSActivation alloc] init];
          
@@ -515,9 +515,9 @@
    /*=====================================*/
    
    moduleCount = 0;
-   for (theModule = EnvGetNextDefmodule(environment,NULL);
+   for (theModule = (struct defmodule *) EnvGetNextDefmodule(environment,NULL);
         theModule != NULL;
-        theModule = EnvGetNextDefmodule(environment,theModule))
+        theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
      { moduleCount++; }
 
    [runningFactModule release];
@@ -529,9 +529,9 @@
    /*===================================*/
 
    factCount = 0;
-   for (theFact = EnvGetNextFact(environment,NULL);
+   for (theFact = (struct fact *) EnvGetNextFact(environment,NULL);
         theFact != NULL;
-        theFact = EnvGetNextFact(environment,theFact))
+        theFact = (struct fact *) EnvGetNextFact(environment,theFact))
      { factCount++; }
      
    [runningFactList release];
@@ -541,9 +541,9 @@
    /* Get a list of all the modules. */
    /*================================*/
    
-   for (theModule = EnvGetNextDefmodule(environment,NULL);
+   for (theModule = (struct defmodule *) EnvGetNextDefmodule(environment,NULL);
         theModule != NULL;
-        theModule = EnvGetNextDefmodule(environment,theModule))
+        theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
      {
       newModule = [[CLIPSModule alloc] init];
 
@@ -561,9 +561,9 @@
    /* Get the list of all the facts. */
    /*================================*/
    
-   for (theFact = EnvGetNextFact(environment,NULL);
+   for (theFact = (struct fact *) EnvGetNextFact(environment,NULL);
         theFact != NULL;
-        theFact = EnvGetNextFact(environment,theFact))
+        theFact = (struct fact *) EnvGetNextFact(environment,theFact))
      {
       newFact = [[CLIPSFactInstance alloc] initWithFact: theFact fromEnvironment: environment];
 
@@ -607,9 +607,9 @@
    /*=====================================*/
    
    moduleCount = 0;
-   for (theModule = EnvGetNextDefmodule(environment,NULL);
+   for (theModule = (struct defmodule *) EnvGetNextDefmodule(environment,NULL);
         theModule != NULL;
-        theModule = EnvGetNextDefmodule(environment,theModule))
+        theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
      { moduleCount++; }
 
    [runningInstanceModule release];
@@ -621,9 +621,9 @@
    /*=======================================*/
 
    instanceCount = 0;
-   for (theInstance = EnvGetNextInstance(environment,NULL);
+   for (theInstance = (struct instance *) EnvGetNextInstance(environment,NULL);
         theInstance != NULL;
-        theInstance = EnvGetNextInstance(environment,theInstance))
+        theInstance = (struct instance *) EnvGetNextInstance(environment,theInstance))
      { instanceCount++; }
      
    [runningInstanceList release];
@@ -633,9 +633,9 @@
    /* Get a list of all the modules. */
    /*================================*/
    
-   for (theModule = EnvGetNextDefmodule(environment,NULL);
+   for (theModule = (struct defmodule *) EnvGetNextDefmodule(environment,NULL);
         theModule != NULL;
-        theModule = EnvGetNextDefmodule(environment,theModule))
+        theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
      {
       newModule = [[CLIPSModule alloc] init];
 
@@ -653,9 +653,9 @@
    /* Get the list of all the instances. */
    /*====================================*/
    
-   for (theInstance = EnvGetNextInstance(environment,NULL);
+   for (theInstance = (struct instance *) EnvGetNextInstance(environment,NULL);
         theInstance != NULL;
-        theInstance = EnvGetNextInstance(environment,theInstance))
+        theInstance = (struct instance *) EnvGetNextInstance(environment,theInstance))
      {
       newInstance = [[CLIPSFactInstance alloc] initWithInstance: theInstance fromEnvironment: environment];
 

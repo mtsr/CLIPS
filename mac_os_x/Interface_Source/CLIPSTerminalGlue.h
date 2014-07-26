@@ -9,9 +9,9 @@
 #import <Cocoa/Cocoa.h>
 #import <CLIPS/clips.h>
 
-   intBool                 QueryInterfaceRouter(void *,char *);
-   int                     PrintInterfaceRouter(void *,char *,char *);
-   int                     GetcInterfaceRouter(void *,char *);
+   intBool                 QueryInterfaceRouter(void *,const char *);
+   int                     PrintInterfaceRouter(void *,const char *,const char *);
+   int                     GetcInterfaceRouter(void *,const char *);
    int                     ExitInterfaceRouter(void *,int);
    void                    MacYieldTimeFunction(void);
    void                    MacPeriodicFunction(void *);

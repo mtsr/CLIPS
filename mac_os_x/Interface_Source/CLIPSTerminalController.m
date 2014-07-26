@@ -357,7 +357,7 @@
 - (void) SwitchCommandFrom: (struct priorCommand *) oldCommand
                         To: (struct priorCommand *) newCommand
   {
-   char *theCommand;
+   const char *theCommand;
    size_t length;
 
    NSString *newInput = [NSString stringWithCString: newCommand->command encoding: NSUTF8StringEncoding];
@@ -985,7 +985,7 @@
 /***********/    
 /* printC: */
 /***********/    
-- (void) printC: (char *) theString
+- (void) printC: (const char *) theString
   {
    NSString *theStr = [NSString stringWithCString: theString encoding: NSUTF8StringEncoding];
    
