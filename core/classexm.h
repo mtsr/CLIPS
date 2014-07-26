@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  03/04/08          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -26,6 +26,9 @@
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*      6.30: Added EnvSlotDefaultP function.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -56,12 +59,12 @@
 
 #if DEBUGGING_FUNCTIONS
 LOCALE void BrowseClassesCommand(void *);
-LOCALE void EnvBrowseClasses(void *,char *,void *);
+LOCALE void EnvBrowseClasses(void *,const char *,void *);
 LOCALE void DescribeClassCommand(void *);
-LOCALE void EnvDescribeClass(void *,char *,void *);
+LOCALE void EnvDescribeClass(void *,const char *,void *);
 #endif
 
-LOCALE char *GetCreateAccessorString(void *);
+LOCALE const char *GetCreateAccessorString(void *);
 
 LOCALE void *GetDefclassModuleCommand(void *);
 LOCALE intBool SuperclassPCommand(void *);
@@ -69,20 +72,20 @@ LOCALE intBool EnvSuperclassP(void *,void *,void *);
 LOCALE intBool SubclassPCommand(void *);
 LOCALE intBool EnvSubclassP(void *,void *,void *);
 LOCALE int SlotExistPCommand(void *);
-LOCALE intBool EnvSlotExistP(void *,void *,char *,intBool);
+LOCALE intBool EnvSlotExistP(void *,void *,const char *,intBool);
 LOCALE int MessageHandlerExistPCommand(void *);
 LOCALE intBool SlotWritablePCommand(void *);
-LOCALE intBool EnvSlotWritableP(void *,void *,char *);
+LOCALE intBool EnvSlotWritableP(void *,void *,const char *);
 LOCALE intBool SlotInitablePCommand(void *);
-LOCALE intBool EnvSlotInitableP(void *,void *,char *);
+LOCALE intBool EnvSlotInitableP(void *,void *,const char *);
 LOCALE intBool SlotPublicPCommand(void *);
-LOCALE intBool EnvSlotPublicP(void *,void *,char *);
+LOCALE intBool EnvSlotPublicP(void *,void *,const char *);
 LOCALE intBool SlotDirectAccessPCommand(void *);
-LOCALE intBool EnvSlotDirectAccessP(void *,void *,char *);
+LOCALE intBool EnvSlotDirectAccessP(void *,void *,const char *);
 LOCALE void SlotDefaultValueCommand(void *,DATA_OBJECT_PTR);
-LOCALE intBool EnvSlotDefaultValue(void *,void *,char *,DATA_OBJECT_PTR);
+LOCALE intBool EnvSlotDefaultValue(void *,void *,const char *,DATA_OBJECT_PTR);
 LOCALE int ClassExistPCommand(void *);
-LOCALE int EnvSlotDefaultP(void *,void *,char *);
+LOCALE int EnvSlotDefaultP(void *,void *,const char *);
   
 #ifndef _CLASSEXM_SOURCE_
 #endif

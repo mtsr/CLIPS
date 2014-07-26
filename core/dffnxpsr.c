@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/05/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -25,6 +25,9 @@
 /*                                                           */
 /*            Added pragmas to prevent unused variable       */
 /*            warnings.                                      */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -72,7 +75,7 @@
    =========================================
    ***************************************** */
 
-static intBool ValidDeffunctionName(void *,char *);
+static intBool ValidDeffunctionName(void *,const char *);
 static DEFFUNCTION *AddDeffunction(void *,SYMBOL_HN *,EXPRESSION *,int,int,int,int);
 
 /* =========================================
@@ -94,7 +97,7 @@ static DEFFUNCTION *AddDeffunction(void *,SYMBOL_HN *,EXPRESSION *,int,int,int,i
  ***************************************************************************/
 globle intBool ParseDeffunction(
   void *theEnv,
-  char *readSource)
+  const char *readSource)
   {
    SYMBOL_HN *deffunctionName;
    EXPRESSION *actions;
@@ -282,7 +285,7 @@ globle intBool ParseDeffunction(
  ************************************************************/
 static intBool ValidDeffunctionName(
   void *theEnv,
-  char *theDeffunctionName)
+  const char *theDeffunctionName)
   {
    struct constructHeader *theDeffunction;
 #if DEFGENERIC_CONSTRUCT

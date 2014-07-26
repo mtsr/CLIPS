@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*           CONSTRUCT COMPILER HEADER FILE            */
    /*******************************************************/
@@ -17,6 +17,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -45,10 +48,10 @@
 
 struct CodeGeneratorItem
   {
-   char *name;
+   const char *name;
    void (*beforeFunction)(void *);
    void (*initFunction)(void *,FILE *,int,int);
-   int (*generateFunction)(void *,char *,char *,char *,int,FILE *,int,int);
+   int (*generateFunction)(void *,const char *,const char *,char *,int,FILE *,int,int);
    int priority;
    char **arrayNames;
    int arrayCount;
@@ -62,8 +65,8 @@ struct constructCompilerData
    int MaxIndices;
    FILE *ExpressionFP;
    FILE *FixupFP;
-   char *FilePrefix;
-   char *PathName;
+   const char *FilePrefix;
+   const char *PathName;
    char *FileNameBuffer;
    intBool ExpressionHeader;
    long ExpressionCount;
@@ -85,8 +88,8 @@ struct constructCompilerData
 
 struct CodeGeneratorFile
  {
-  char *filePrefix;
-  char *pathName;
+  const char *filePrefix;
+  const char *pathName;
   char *fileNameBuffer;
   int id,version;
  };
@@ -99,21 +102,21 @@ struct CodeGeneratorFile
 
    LOCALE void                      InitializeConstructCompilerData(void *);
    LOCALE void                      ConstructsToCCommandDefinition(void *);
-   LOCALE FILE                     *NewCFile(void *,char *,char *,char *,int,int,int);
+   LOCALE FILE                     *NewCFile(void *,const char *,const char *,char *,int,int,int);
    LOCALE int                       ExpressionToCode(void *,FILE *,struct expr *);
    LOCALE void                      PrintFunctionReference(void *,FILE *,struct FunctionDefinition *);
-   LOCALE struct CodeGeneratorItem *AddCodeGeneratorItem(void *,char *,int,
+   LOCALE struct CodeGeneratorItem *AddCodeGeneratorItem(void *,const char *,int,
                                                          void (*)(void *),
                                                          void (*)(void *,FILE *,int,int),
-                                                         int (*)(void *,char *,char *,char *,int,FILE *,int,int),int);
+                                                         int (*)(void *,const char *,const char *,char *,int,FILE *,int,int),int);
    LOCALE FILE                     *CloseFileIfNeeded(void *,FILE *,int *,int *,int,int *,struct CodeGeneratorFile *);
-   LOCALE FILE                     *OpenFileIfNeeded(void *,FILE *,char *,char *,char *,int,int,int *,int,FILE *,
-                                                     char *,char *,int,struct CodeGeneratorFile *);
+   LOCALE FILE                     *OpenFileIfNeeded(void *,FILE *,const char *,const char *,char *,int,int,int *,
+                                                     int,FILE *,const char *,char *,int,struct CodeGeneratorFile *);
    LOCALE void                      MarkConstructBsaveIDs(void *,int);
    LOCALE void                      ConstructHeaderToCode(void *,FILE *,struct constructHeader *,int,int,
-                                                         int,char *,char *);
+                                                         int,const char *,const char *);
    LOCALE void                      ConstructModuleToCode(void *,FILE *,struct defmodule *,int,int,
-                                                         int,char *);
+                                                         int,const char *);
    LOCALE void                      PrintHashedExpressionReference(void *,FILE *,struct expr *,int,int);
 
 #endif

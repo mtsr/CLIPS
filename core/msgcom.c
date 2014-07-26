@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/02/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                OBJECT MESSAGE COMMANDS              */
    /*******************************************************/
@@ -24,6 +24,9 @@
 /*                                                           */
 /*            Corrected code to remove run-time program      */
 /*            compiler warnings.                             */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -82,20 +85,20 @@ static void CreateSystemHandlers(void *);
 #endif
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
-static int WildDeleteHandler(void *,DEFCLASS *,SYMBOL_HN *,char *);
+static int WildDeleteHandler(void *,DEFCLASS *,SYMBOL_HN *,const char *);
 #endif
 
 #if DEBUGGING_FUNCTIONS
 static unsigned DefmessageHandlerWatchAccess(void *,int,unsigned,EXPRESSION *);
-static unsigned DefmessageHandlerWatchPrint(void *,char *,int,EXPRESSION *);
-static unsigned DefmessageHandlerWatchSupport(void *,char *,char *,int,
-                                              void (*)(void *,char *,void *,int),
+static unsigned DefmessageHandlerWatchPrint(void *,const char *,int,EXPRESSION *);
+static unsigned DefmessageHandlerWatchSupport(void *,const char *,const char *,int,
+                                              void (*)(void *,const char *,void *,int),
                                               void (*)(void *,int,void *,int),
                                               EXPRESSION *);
-static unsigned WatchClassHandlers(void *,void *,char *,int,char *,int,int,
-                                  void (*)(void *,char *,void *,int),
+static unsigned WatchClassHandlers(void *,void *,const char *,int,const char *,int,int,
+                                  void (*)(void *,const char *,void *,int),
                                   void (*)(void *,int,void *,int));
-static void PrintHandlerWatchFlag(void *,char *,void *,int);
+static void PrintHandlerWatchFlag(void *,const char *,void *,int);
 #endif
 
 static void DeallocateMessageHandlerData(void *);
@@ -267,7 +270,7 @@ char *EnvGetDefmessageHandlerName(
   SIDE EFFECTS : None
   NOTES        : None
  *****************************************************/
-globle char *EnvGetDefmessageHandlerType(
+globle const char *EnvGetDefmessageHandlerType(
   void *theEnv,
   void *ptr,
   int theIndex)
@@ -389,8 +392,8 @@ globle void EnvSetDefmessageHandlerWatch(
 globle unsigned EnvFindDefmessageHandler(
   void *theEnv,
   void *ptr,
-  char *hname,
-  char *htypestr)
+  const char *hname,
+  const char *htypestr)
   {
    unsigned htype;
    SYMBOL_HN *hsym;
@@ -455,7 +458,7 @@ globle void UndefmessageHandlerCommand(
    EnvPrintRouter(theEnv,WERROR,"Unable to delete message-handlers.\n");
 #else
    SYMBOL_HN *mname;
-   char *tname;
+   const char *tname;
    DATA_OBJECT tmp;
    DEFCLASS *cls;
 
@@ -560,7 +563,7 @@ globle void PPDefmessageHandlerCommand(
   {
    DATA_OBJECT temp;
    SYMBOL_HN *csym,*msym;
-   char *tname;
+   const char *tname;
    DEFCLASS *cls = NULL;
    unsigned mtype;
    HANDLER *hnd;
@@ -697,7 +700,7 @@ globle char *EnvGetDefmessageHandlerPPForm(
  *******************************************************************/
 globle void EnvListDefmessageHandlers(
   void *theEnv,
-  char *logName,
+  const char *logName,
   void *vptr,
   int inhp)
   {
@@ -745,9 +748,9 @@ globle void EnvListDefmessageHandlers(
  ********************************************************************/
 globle void EnvPreviewSend(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   void *clsptr,
-  char *msgname)
+  const char *msgname)
   {
    HANDLER_LINK *core;
    SYMBOL_HN *msym;
@@ -776,7 +779,7 @@ globle void EnvPreviewSend(
  ****************************************************/
 globle long DisplayHandlersInLinks(
   void *theEnv,
-  char *logName,
+  const char *logName,
   PACKED_CLASS_LINKS *plinks,
   int theIndex)
   {
@@ -845,7 +848,7 @@ static int WildDeleteHandler(
   void *theEnv,
   DEFCLASS *cls,
   SYMBOL_HN *msym,
-  char *tname)
+  const char *tname)
   {
    int mtype;
 
@@ -924,7 +927,7 @@ static unsigned DefmessageHandlerWatchAccess(
  ***********************************************************************/
 static unsigned DefmessageHandlerWatchPrint(
   void *theEnv,
-  char *logName,
+  const char *logName,
   int code,
   EXPRESSION *argExprs)
   {
@@ -952,10 +955,10 @@ static unsigned DefmessageHandlerWatchPrint(
  *******************************************************/
 static unsigned DefmessageHandlerWatchSupport(
   void *theEnv,
-  char *funcName,
-  char *logName,
+  const char *funcName,
+  const char *logName,
   int newState,
-  void (*printFunc)(void *,char *,void *,int),
+  void (*printFunc)(void *,const char *,void *,int),
   void (*traceFunc)(void *,int,void *,int),
   EXPRESSION *argExprs)
   {
@@ -1080,12 +1083,12 @@ static unsigned DefmessageHandlerWatchSupport(
 static unsigned WatchClassHandlers(
   void *theEnv,
   void *theClass,
-  char *theHandlerStr,
+  const char *theHandlerStr,
   int theType,
-  char *logName,
+  const char *logName,
   int newState,
   int indentp,
-  void (*printFunc)(void *,char *,void *,int),
+  void (*printFunc)(void *,const char *,void *,int),
   void (*traceFunc)(void *,int,void *,int))
   {
    unsigned theHandler;
@@ -1130,7 +1133,7 @@ static unsigned WatchClassHandlers(
  ***************************************************/
 static void PrintHandlerWatchFlag(
   void *theEnv,
-  char *logName,
+  const char *logName,
   void *theClass,
   int theHandler)
   {

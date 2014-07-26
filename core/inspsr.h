@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.20  01/31/02          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -15,6 +15,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -36,11 +39,11 @@
 #endif
 
 #if ! RUN_TIME
-LOCALE EXPRESSION *ParseInitializeInstance(void *,EXPRESSION *,char *);
-LOCALE EXPRESSION *ParseSlotOverrides(void *,char *,int *);
+LOCALE EXPRESSION *ParseInitializeInstance(void *,EXPRESSION *,const char *);
+LOCALE EXPRESSION *ParseSlotOverrides(void *,const char *,int *);
 #endif
 
-LOCALE EXPRESSION *ParseSimpleInstance(void *,EXPRESSION *,char *);
+LOCALE EXPRESSION *ParseSimpleInstance(void *,EXPRESSION *,const char *);
 
 #ifndef _INSCOM_SOURCE_
 #endif

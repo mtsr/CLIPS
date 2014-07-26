@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*          CONSTRAINT CONSTRUCTS-TO-C HEADER          */
    /*******************************************************/
@@ -16,6 +16,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -46,7 +49,7 @@
 
    LOCALE void                           PrintConstraintReference(void *,FILE *,CONSTRAINT_RECORD *,int,int);
    LOCALE void                           ConstraintRecordToCode(FILE *,CONSTRAINT_RECORD *);
-   LOCALE int                            ConstraintsToCode(void *,char *,char *,char *,int,FILE *,int,int);
+   LOCALE int                            ConstraintsToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
 
 #endif
 

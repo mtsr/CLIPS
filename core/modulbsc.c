@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.22  06/15/04            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*         DEFMODULE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -47,7 +50,7 @@
 
    static void                    ClearDefmodules(void *);
 #if DEFMODULE_CONSTRUCT
-   static void                    SaveDefmodules(void *,void *,char *);
+   static void                    SaveDefmodules(void *,void *,const char *);
 #endif
 
 /*****************************************************************/
@@ -111,7 +114,7 @@ static void ClearDefmodules(
 static void SaveDefmodules(
   void *theEnv,
   void *theModule,
-  char *logicalName)
+  const char *logicalName)
   {
    char *ppform;
 
@@ -143,7 +146,7 @@ globle void EnvGetDefmoduleList(
 globle void PPDefmoduleCommand(
   void *theEnv)
   {
-   char *defmoduleName;
+   const char *defmoduleName;
 
    defmoduleName = GetConstructName(theEnv,"ppdefmodule","defmodule name");
    if (defmoduleName == NULL) return;
@@ -159,8 +162,8 @@ globle void PPDefmoduleCommand(
 /*************************************/
 globle int PPDefmodule(
   void *theEnv,
-  char *defmoduleName,
-  char *logicalName)
+  const char *defmoduleName,
+  const char *logicalName)
   {
    void *defmodulePtr;
 
@@ -194,7 +197,7 @@ globle void ListDefmodulesCommand(
 /***************************************/
 globle void EnvListDefmodules(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
    void *theModule;
    int count = 0;

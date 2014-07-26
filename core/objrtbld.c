@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  10/19/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -24,6 +24,9 @@
 /*            Renamed BOOLEAN macro type to intBool.          */
 /*                                                            */
 /*      6.30: Added support for hashed alpha memories.        */
+/*                                                            */
+/*            Added const qualifiers to remove C++            */
+/*            deprecation warnings.                           */
 /*                                                            */
 /**************************************************************/
 /* =========================================
@@ -105,7 +108,7 @@
    ***************************************** */
 
 static intBool PatternParserFind(SYMBOL_HN *);
-static struct lhsParseNode *ObjectLHSParse(void *,char *,struct token *);
+static struct lhsParseNode *ObjectLHSParse(void *,const char *,struct token *);
 static intBool ReorderAndAnalyzeObjectPattern(void *,struct lhsParseNode *);
 static struct patternNodeHeader *PlaceObjectPattern(void *,struct lhsParseNode *);
 static OBJECT_PATTERN_NODE *FindObjectPatternNode(OBJECT_PATTERN_NODE *,struct lhsParseNode *,
@@ -116,9 +119,9 @@ static void DetachObjectPattern(void *,struct patternNodeHeader *);
 static void ClearObjectPatternMatches(void *,OBJECT_ALPHA_NODE *);
 static void RemoveObjectPartialMatches(void *,INSTANCE_TYPE *,struct patternNodeHeader *);
 static intBool CheckDuplicateSlots(void *,struct lhsParseNode *,SYMBOL_HN *);
-static struct lhsParseNode *ParseClassRestriction(void *,char *,struct token *);
-static struct lhsParseNode *ParseNameRestriction(void *,char *,struct token *);
-static struct lhsParseNode *ParseSlotRestriction(void *,char *,struct token *,CONSTRAINT_RECORD *,int);
+static struct lhsParseNode *ParseClassRestriction(void *,const char *,struct token *);
+static struct lhsParseNode *ParseNameRestriction(void *,const char *,struct token *);
+static struct lhsParseNode *ParseSlotRestriction(void *,const char *,struct token *,CONSTRAINT_RECORD *,int);
 static CLASS_BITMAP *NewClassBitMap(void *,int,int);
 static void InitializeClassBitMap(void *,CLASS_BITMAP *,int);
 static void DeleteIntermediateClassBitMap(void *,CLASS_BITMAP *);
@@ -138,7 +141,7 @@ static struct lhsParseNode *FilterObjectPattern(void *,struct patternParser *,
 static BITMAP_HN *FormSlotBitMap(void *,struct lhsParseNode *);
 static struct lhsParseNode *RemoveSlotExistenceTests(void *,struct lhsParseNode *,BITMAP_HN **);
 static struct lhsParseNode *CreateInitialObjectPattern(void *);
-static EXPRESSION *ObjectMatchDelayParse(void *,EXPRESSION *,char *);
+static EXPRESSION *ObjectMatchDelayParse(void *,EXPRESSION *,const char *);
 static void MarkObjectPtnIncrementalReset(void *,struct patternNodeHeader *,int);
 static void ObjectIncrementalReset(void *);
 
@@ -306,7 +309,7 @@ static intBool PatternParserFind(
  ************************************************************************************/
 static struct lhsParseNode *ObjectLHSParse(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *lastToken)
   {
 #if MAC_XCD
@@ -1324,7 +1327,7 @@ static intBool CheckDuplicateSlots(
  **********************************************************/
 static struct lhsParseNode *ParseClassRestriction(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *theToken)
   {
    struct lhsParseNode *tmpNode;
@@ -1376,7 +1379,7 @@ static struct lhsParseNode *ParseClassRestriction(
  **********************************************************/
 static struct lhsParseNode *ParseNameRestriction(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *theToken)
   {
    struct lhsParseNode *tmpNode;
@@ -1436,7 +1439,7 @@ static struct lhsParseNode *ParseNameRestriction(
  ***************************************************/
 static struct lhsParseNode *ParseSlotRestriction(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *theToken,
   CONSTRAINT_RECORD *slotConstraints,
   int multip)
@@ -2274,7 +2277,7 @@ static struct lhsParseNode *CreateInitialObjectPattern(
 static EXPRESSION *ObjectMatchDelayParse(
   void *theEnv,
   struct expr *top,
-  char *infile)
+  const char *infile)
   {
    struct token tkn;
 

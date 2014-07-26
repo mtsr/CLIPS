@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/21/14            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                 RETE UTILITY MODULE                 */
    /*******************************************************/
@@ -25,6 +25,9 @@
 /*      6.30: Added support for hashed alpha memories.       */
 /*                                                           */
 /*            Removed pseudo-facts used in not CEs.          */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -55,7 +58,7 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                        TraceErrorToRuleDriver(void *,struct joinNode *,char *,int,int);
+   static void                        TraceErrorToRuleDriver(void *,struct joinNode *,const char *,int,int);
    static struct alphaMemoryHash     *FindAlphaMemory(void *,struct patternNodeHeader *,unsigned long);
    static unsigned long               AlphaMemoryHashValue(struct patternNodeHeader *,unsigned long);
    static void                        UnlinkAlphaMemory(void *,struct patternNodeHeader *,struct alphaMemoryHash *);
@@ -76,7 +79,7 @@
 /***********************************************************/
 globle void PrintPartialMatch(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   struct partialMatch *list)
   {
    struct patternEntity *matchingItem;
@@ -855,7 +858,7 @@ globle int GetPatternNumberFromJoin(
 globle void TraceErrorToRule(
   void *theEnv,
   struct joinNode *joinPtr,
-  char *indentSpaces)
+  const char *indentSpaces)
   {
    int patternCount;
    
@@ -875,7 +878,7 @@ globle void TraceErrorToRule(
 static void TraceErrorToRuleDriver(
   void *theEnv,
   struct joinNode *joinPtr,
-  char *indentSpaces,
+  const char *indentSpaces,
   int priorRightJoinPatterns,
   int enteredJoinFromRight)
   {
@@ -1514,10 +1517,10 @@ static void ResetBetaMemory(
 /********************/
 globle unsigned long PrintBetaMemory(
   void *theEnv,
-  char *logName,
+  const char *logName,
   struct betaMemory *theMemory,
   int indentFirst,
-  char *indentString,
+  const char *indentString,
   int output)
   {
    struct partialMatch *listOfMatches;

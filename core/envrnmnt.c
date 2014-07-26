@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                ENVIRONMENT MODULE                   */
    /*******************************************************/
@@ -32,6 +32,9 @@
 /*      6.30: Added support for passing context information  */ 
 /*            to user defined functions and callback         */
 /*            functions.                                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -641,7 +644,7 @@ globle intBool DestroyEnvironment(
 /**************************************************/
 globle intBool AddEnvironmentCleanupFunction(
   void *vtheEnv,
-  char *name,
+  const char *name,
   void (*functionPtr)(void *),
   int priority)
   {

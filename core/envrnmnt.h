@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                ENVRNMNT HEADER FILE                 */
    /*******************************************************/
@@ -25,6 +25,9 @@
 /*      6.30: Added support for passing context information  */ 
 /*            to user defined functions and callback         */
 /*            functions.                                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -50,7 +53,7 @@
 
 struct environmentCleanupFunction
   {
-   char *name;
+   const char *name;
    void (*func)(void *);
    int priority;
    struct environmentCleanupFunction *next;
@@ -89,7 +92,7 @@ typedef struct environmentData * ENVIRONMENT_DATA_PTR;
    LOCALE void                          *CreateRuntimeEnvironment(struct symbolHashNode **,struct floatHashNode **,
                                                                   struct integerHashNode **,struct bitMapHashNode **);
    LOCALE intBool                        DestroyEnvironment(void *);
-   LOCALE intBool                        AddEnvironmentCleanupFunction(void *,char *,void (*)(void *),int);
+   LOCALE intBool                        AddEnvironmentCleanupFunction(void *,const char *,void (*)(void *),int);
    LOCALE void                          *GetEnvironmentContext(void *);
    LOCALE void                          *SetEnvironmentContext(void *,void *);
    LOCALE void                          *GetEnvironmentRouterContext(void *);

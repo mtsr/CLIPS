@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.22  06/15/04            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*            EXTENDED MATH FUNCTIONS MODULE           */
    /*******************************************************/
@@ -21,6 +21,9 @@
 /*      Gary D. Riley                                        */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -55,11 +58,11 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                     SingleNumberCheck(void *,char *,double *);
+   static int                     SingleNumberCheck(void *,const char *,double *);
    static int                     TestProximity(double,double);
-   static void                    DomainErrorMessage(void *,char *);
-   static void                    ArgumentOverflowErrorMessage(void *,char *);
-   static void                    SingularityErrorMessage(void *,char *);
+   static void                    DomainErrorMessage(void *,const char *);
+   static void                    ArgumentOverflowErrorMessage(void *,const char *);
+   static void                    SingularityErrorMessage(void *,const char *);
    static double                  genacosh(double);
    static double                  genasinh(double);
    static double                  genatanh(double);
@@ -126,7 +129,7 @@ globle void ExtendedMathFunctionDefinitions(
 /************************************************************/
 static int SingleNumberCheck(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   double *theNumber)
   {
    DATA_OBJECT theValue;
@@ -157,7 +160,7 @@ static int TestProximity(
 /********************************************************/
 static void DomainErrorMessage(
   void *theEnv,
-  char *functionName)
+  const char *functionName)
   {
    PrintErrorID(theEnv,"EMATHFUN",1,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Domain error for ");
@@ -174,7 +177,7 @@ static void DomainErrorMessage(
 /************************************************************/
 static void ArgumentOverflowErrorMessage(
   void *theEnv,
-  char *functionName)
+  const char *functionName)
   {
    PrintErrorID(theEnv,"EMATHFUN",2,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Argument overflow for ");
@@ -191,7 +194,7 @@ static void ArgumentOverflowErrorMessage(
 /************************************************************/
 static void SingularityErrorMessage(
   void *theEnv,
-  char *functionName)
+  const char *functionName)
   {
    PrintErrorID(theEnv,"EMATHFUN",3,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Singularity at asymptote in ");

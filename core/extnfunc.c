@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*               EXTERNAL FUNCTION MODULE              */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*                                                           */
 /*      6.30: Added support for passing context information  */ 
 /*            to user defined functions.                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -110,10 +113,10 @@ static void DeallocateExternalFunctionData(
 /************************************************************/
 #if ALLOW_ENVIRONMENT_GLOBALS
 globle int DefineFunction(
-  char *name,
+  const char *name,
   int returnType,
   int (*pointer)(void),
-  char *actualName)
+  const char *actualName)
   {
    void *theEnv;
    
@@ -131,10 +134,10 @@ globle int DefineFunction(
 /***************************************************************/
 globle int EnvDefineFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   int returnType,
   int (*pointer)(void *),
-  char *actualName)
+  const char *actualName)
   {
    return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,TRUE,NULL));
   }
@@ -145,10 +148,10 @@ globle int EnvDefineFunction(
 /************************************************************/
 globle int EnvDefineFunctionWithContext(
   void *theEnv,
-  char *name,
+  const char *name,
   int returnType,
   int (*pointer)(void *),
-  char *actualName,
+  const char *actualName,
   void *context)
   {
    return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,TRUE,context));
@@ -160,11 +163,11 @@ globle int EnvDefineFunctionWithContext(
 /*************************************************************/
 #if ALLOW_ENVIRONMENT_GLOBALS
 globle int DefineFunction2(
-  char *name,
+  const char *name,
   int returnType,
   int (*pointer)(void),
-  char *actualName,
-  char *restrictions)
+  const char *actualName,
+  const char *restrictions)
   {
    void *theEnv;
    
@@ -182,11 +185,11 @@ globle int DefineFunction2(
 /*************************************************************/
 globle int EnvDefineFunction2(
   void *theEnv,
-  char *name,
+  const char *name,
   int returnType,
   int (*pointer)(void *),
-  char *actualName,
-  char *restrictions)
+  const char *actualName,
+  const char *restrictions)
   {
    return(DefineFunction3(theEnv,name,returnType,pointer,actualName,restrictions,TRUE,NULL));
   }
@@ -197,11 +200,11 @@ globle int EnvDefineFunction2(
 /*************************************************************/
 globle int EnvDefineFunction2WithContext(
   void *theEnv,
-  char *name,
+  const char *name,
   int returnType,
   int (*pointer)(void *),
-  char *actualName,
-  char *restrictions,
+  const char *actualName,
+  const char *restrictions,
   void *context)
   {
    return(DefineFunction3(theEnv,name,returnType,pointer,actualName,restrictions,TRUE,context));
@@ -234,11 +237,11 @@ globle int EnvDefineFunction2WithContext(
 /*************************************************************/
 globle int DefineFunction3(
   void *theEnv,
-  char *name,
+  const char *name,
   int returnType,
   int (*pointer)(void *),
-  char *actualName,
-  char *restrictions,
+  const char *actualName,
+  const char *restrictions,
   intBool environmentAware,
   void *context)
   {
@@ -306,7 +309,7 @@ globle int DefineFunction3(
 /***********************************************/
 globle int UndefineFunction(
   void *theEnv,
-  char *functionName)
+  const char *functionName)
   {
    SYMBOL_HN *findValue;
    struct FunctionDefinition *fPtr, *lastPtr = NULL;
@@ -383,8 +386,8 @@ static int RemoveHashFunction(
 /***************************************************************************/
 globle int AddFunctionParser(
   void *theEnv,
-  char *functionName,
-  struct expr *(*fpPtr)(void *,struct expr *,char *))
+  const char *functionName,
+  struct expr *(*fpPtr)(void *,struct expr *,const char *))
   {
    struct FunctionDefinition *fdPtr;
 
@@ -407,7 +410,7 @@ globle int AddFunctionParser(
 /*********************************************************************/
 globle int RemoveFunctionParser(
   void *theEnv,
-  char *functionName)
+  const char *functionName)
   {
    struct FunctionDefinition *fdPtr;
 
@@ -429,7 +432,7 @@ globle int RemoveFunctionParser(
 /*****************************************************************/
 globle int FuncSeqOvlFlags(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   int seqp,
   int ovlp)
   {
@@ -452,7 +455,7 @@ globle int FuncSeqOvlFlags(
 /* GetArgumentTypeName: Returns a descriptive string for */
 /*   a function argument type (used by DefineFunction2). */
 /*********************************************************/
-globle char *GetArgumentTypeName(
+globle const char *GetArgumentTypeName(
   int theRestriction)
   {
    switch ((char) theRestriction)
@@ -625,7 +628,7 @@ globle void InstallFunctionList(
 /********************************************************/
 globle struct FunctionDefinition *FindFunction(
   void *theEnv,
-  char *functionName)
+  const char *functionName)
   {
    struct FunctionHash *fhPtr;
    unsigned hashValue;
@@ -693,7 +696,8 @@ static void AddHashFunction(
 globle int GetMinimumArgs(
   struct FunctionDefinition *theFunction)
   {
-   char theChar[2], *restrictions;
+   char theChar[2];
+   const char *restrictions;
 
    restrictions = theFunction->restrictions;
    if (restrictions == NULL) return(-1);
@@ -716,7 +720,8 @@ globle int GetMinimumArgs(
 globle int GetMaximumArgs(
   struct FunctionDefinition *theFunction)
   {
-   char theChar[2], *restrictions;
+   char theChar[2];
+   const char *restrictions;
 
    restrictions = theFunction->restrictions;
    if (restrictions == NULL) return(-1);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  05/17/06            */
+   /*             CLIPS Version 6.39  07/25/14            */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -33,6 +33,9 @@
 /*            AUXILIARY_MESSAGE_HANDLERS compilation flags.  */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -74,7 +77,7 @@ struct miscFunctionData
 
    static void                    ExpandFuncMultifield(void *,DATA_OBJECT *,EXPRESSION *,
                                                        EXPRESSION **,void *);
-   static int                     FindLanguageType(void *,char *);
+   static int                     FindLanguageType(void *,const char *);
    
 /*****************************************************************/
 /* MiscFunctionDefinitions: Initializes miscellaneous functions. */
@@ -1402,7 +1405,7 @@ globle void CallFunction(
 /************************************/
 static int FindLanguageType(
   void *theEnv,
-  char *languageName)
+  const char *languageName)
   {
    int theType;
    

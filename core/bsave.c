@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/05/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                     BSAVE MODULE                    */
    /*******************************************************/
@@ -22,6 +22,9 @@
 /*                                                           */
 /*            Added environment parameter to GenClose.       */
 /*            Added environment parameter to GenOpen.        */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -91,7 +94,7 @@ globle int BsaveCommand(
   void *theEnv)
   {
 #if (! RUN_TIME) && BLOAD_AND_BSAVE
-   char *fileName;
+   const char *fileName;
 
    if (EnvArgCountCheck(theEnv,"bsave",EXACTLY,1) == -1) return(FALSE);
    fileName = GetFileName(theEnv,"bsave",1);
@@ -113,7 +116,7 @@ globle int BsaveCommand(
 /******************************/
 globle intBool EnvBsave(
   void *theEnv,
-  char *fileName)
+  const char *fileName)
   {
    FILE *fp;
    struct BinaryItem *biPtr;
@@ -485,8 +488,8 @@ static void WriteBinaryHeader(
   void *theEnv,
   FILE *fp)
   {
-   GenWrite(BloadData(theEnv)->BinaryPrefixID,(unsigned long) strlen(BloadData(theEnv)->BinaryPrefixID) + 1,fp);
-   GenWrite(BloadData(theEnv)->BinaryVersionID,(unsigned long) strlen(BloadData(theEnv)->BinaryVersionID) + 1,fp);
+   GenWrite((void *) BloadData(theEnv)->BinaryPrefixID,(unsigned long) strlen(BloadData(theEnv)->BinaryPrefixID) + 1,fp);
+   GenWrite((void *) BloadData(theEnv)->BinaryVersionID,(unsigned long) strlen(BloadData(theEnv)->BinaryVersionID) + 1,fp);
   }
 
 /******************************************************/
@@ -515,7 +518,7 @@ static void WriteBinaryFooter(
 /**********************************************************/
 globle intBool AddBinaryItem(
   void *theEnv,
-  char *name,
+  const char *name,
   int priority,
   void (*findFunction)(void *),
   void (*expressionFunction)(void *,FILE *),

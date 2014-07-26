@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*         CONFLICT RESOLUTION STRATEGY MODULE         */
    /*******************************************************/
@@ -30,6 +30,9 @@
 /*            saliences.                                     */
 /*                                                           */
 /*            Removed pseudo-facts used for not CEs.         */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -68,7 +71,7 @@
    static ACTIVATION             *PlaceSimplicityActivation(ACTIVATION *,struct salienceGroup *);
    static ACTIVATION             *PlaceRandomActivation(ACTIVATION *,struct salienceGroup *);
    static int                     ComparePartialMatches(void *,ACTIVATION *,ACTIVATION *);
-   static char                   *GetStrategyName(int);
+   static const char             *GetStrategyName(int);
    static unsigned long long     *SortPartialMatch(void *,struct partialMatch *);
    
 /******************************************************************/
@@ -1034,10 +1037,10 @@ globle void *SetStrategyCommand(
 /*   to a specified strategy, return a character string   */
 /*   of the strategy's name.                              */
 /**********************************************************/
-static char *GetStrategyName(
+static const char *GetStrategyName(
   int strategy)
   {
-   char *sname;
+   const char *sname;
 
    switch (strategy)
      {

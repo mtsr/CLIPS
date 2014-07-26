@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*               ARGUMENT ACCESS MODULE                */
    /*******************************************************/
@@ -22,6 +22,9 @@
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*            Added IllegalLogicalNameMessage function.      */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -50,8 +53,8 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    NonexistantError(void *,char *,char *,int);
-   static void                    ExpectedTypeError3(void *,char *,char *,int,char *);
+   static void                    NonexistantError(void *,const char *,const char *,int);
+   static void                    ExpectedTypeError3(void *,const char *,const char *,int,const char *);
 
 /*******************************************************************/
 /* EnvRtnLexeme: Access function to retrieve the nth argument from */
@@ -306,7 +309,7 @@ globle int EnvRtnArgCount(
 /************************************************************************/
 globle int EnvArgCountCheck(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   int countRelation,
   int expectedNumber)
   {
@@ -352,7 +355,7 @@ globle int EnvArgCountCheck(
 /****************************************************************/
 globle int EnvArgRangeCheck(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   int min,
   int max)
   {
@@ -386,7 +389,7 @@ globle int EnvArgRangeCheck(
 /*************************************************************/
 globle int EnvArgTypeCheck(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   int argumentPosition,
   int expectedType,
   DATA_OBJECT_PTR returnValue)
@@ -490,7 +493,7 @@ globle int EnvArgTypeCheck(
 globle intBool GetNumericArgument(
   void *theEnv,
   struct expr *theArgument,
-  char *functionName,
+  const char *functionName,
   DATA_OBJECT *result,
   intBool convertToFloat,
   int whichArgument)
@@ -561,12 +564,12 @@ globle intBool GetNumericArgument(
 /*   logical name. If valid, the logical name is returned, otherwise */
 /*   NULL is returned.                                               */
 /*********************************************************************/
-globle char *GetLogicalName(
+globle const char *GetLogicalName(
   void *theEnv,
   int whichArgument,
-  char *defaultLogicalName)
+  const char *defaultLogicalName)
   {
-   char *logicalName;
+   const char *logicalName;
    DATA_OBJECT result;
 
    EnvRtnUnknown(theEnv,whichArgument,&result);
@@ -599,9 +602,9 @@ globle char *GetLogicalName(
 /*   if it is a valid file name. If valid, the file name is */
 /*   returned, otherwise NULL is returned.                  */
 /************************************************************/
-globle char *GetFileName(
+globle const char *GetFileName(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   int whichArgument)
   {
    DATA_OBJECT result;
@@ -621,8 +624,8 @@ globle char *GetFileName(
 /******************************************************************/
 globle void OpenErrorMessage(
   void *theEnv,
-  char *functionName,
-  char *fileName)
+  const char *functionName,
+  const char *fileName)
   {
    PrintErrorID(theEnv,"ARGACCES",2,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Function ");
@@ -641,7 +644,7 @@ globle void OpenErrorMessage(
 /************************************************************/
 globle struct defmodule *GetModuleName(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   int whichArgument,
   int *error)
   {
@@ -697,10 +700,10 @@ globle struct defmodule *GetModuleName(
 /*   is used by functions such as ppdeftemplate, undefrule,     */
 /*   etc... to retrieve the construct name on which to operate. */
 /****************************************************************/
-globle char *GetConstructName(
+globle const char *GetConstructName(
   void *theEnv,
-  char *functionName,
-  char *constructType)
+  const char *functionName,
+  const char *constructType)
   {
    DATA_OBJECT result;
 
@@ -726,8 +729,8 @@ globle char *GetConstructName(
 /**************************************************************************/
 static void NonexistantError(
   void *theEnv,
-  char *accessFunction,
-  char *functionName,
+  const char *accessFunction,
+  const char *functionName,
   int argumentPosition)
   {
    PrintErrorID(theEnv,"ARGACCES",3,FALSE);
@@ -746,7 +749,7 @@ static void NonexistantError(
 /*********************************************************/
 globle void ExpectedCountError(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   int countRelation,
   int expectedNumber)
   {
@@ -783,8 +786,8 @@ globle void ExpectedCountError(
 /*************************************************************/
 globle intBool CheckFunctionArgCount(
   void *theEnv,
-  char *functionName,
-  char *restrictions,
+  const char *functionName,
+  const char *restrictions,
   int argumentCount)
   {
    register int minArguments, maxArguments;
@@ -881,9 +884,9 @@ globle intBool CheckFunctionArgCount(
 /*******************************************************************/
 globle void ExpectedTypeError1(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   int whichArg,
-  char *expectedType)
+  const char *expectedType)
   {
    PrintErrorID(theEnv,"ARGACCES",5,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Function ");
@@ -903,11 +906,11 @@ globle void ExpectedTypeError1(
 /**************************************************************/
 globle void ExpectedTypeError2(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   int whichArg)
   {
    struct FunctionDefinition *theFunction;
-   char *theType;
+   const char *theType;
 
    theFunction = FindFunction(theEnv,functionName);
 
@@ -926,10 +929,10 @@ globle void ExpectedTypeError2(
 /*******************************************************************/
 static void ExpectedTypeError3(
   void *theEnv,
-  char *accessFunction,
-  char *functionName,
+  const char *accessFunction,
+  const char *functionName,
   int argumentPosition,
-  char *type)
+  const char *type)
   {
    PrintErrorID(theEnv,"ARGACCES",6,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Function ");
@@ -951,7 +954,7 @@ void *GetFactOrInstanceArgument(
   void *theEnv,
   int thePosition,
   DATA_OBJECT *item,
-  char *functionName)
+  const char *functionName)
   {
 #if DEFTEMPLATE_CONSTRUCT || OBJECT_SYSTEM
    void *ptr;
@@ -1019,7 +1022,7 @@ void *GetFactOrInstanceArgument(
 /****************************************************/
 void IllegalLogicalNameMessage(
   void *theEnv,
-  char *theFunction)
+  const char *theFunction)
   {
    PrintErrorID(theEnv,"IOFUN",1,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Illegal logical name used for ");

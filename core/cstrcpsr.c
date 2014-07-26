@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -24,6 +24,9 @@
 /*            prominent.                                     */
 /*                                                           */
 /*            Added pragmas to remove compilation warnings.  */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -56,14 +59,14 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                     FindConstructBeginning(void *,char *,struct token *,int,int *);
+   static int                     FindConstructBeginning(void *,const char *,struct token *,int,int *);
 
 /************************************************/
 /* Load: C access routine for the load command. */
 /************************************************/
 #if ALLOW_ENVIRONMENT_GLOBALS
 globle int Load(
-  char *fileName)
+  const char *fileName)
   {
    return EnvLoad(GetCurrentEnvironment(),fileName);
   }
@@ -78,7 +81,7 @@ globle int Load(
 /************************************************************/
 globle int EnvLoad(
   void *theEnv,
-  char *fileName)
+  const char *fileName)
   {
    FILE *theFile;
    char *oldParsingFileName;
@@ -130,7 +133,7 @@ globle int EnvLoad(
 /*******************************************************/
 globle void EnvSetParsingFileName(
   void *theEnv,
-  char *fileName)
+  const char *fileName)
   {
    char *fileNameCopy = NULL;
 
@@ -164,7 +167,7 @@ globle char *EnvGetParsingFileName(
 /**********************************************/
 globle void EnvSetErrorFileName(
   void *theEnv,
-  char *fileName)
+  const char *fileName)
   {
    char *fileNameCopy = NULL;
 
@@ -198,7 +201,7 @@ globle char *EnvGetErrorFileName(
 /************************************************/
 globle void EnvSetWarningFileName(
   void *theEnv,
-  char *fileName)
+  const char *fileName)
   {
    char *fileNameCopy = NULL;
 
@@ -232,7 +235,7 @@ globle char *EnvGetWarningFileName(
 /*****************************************************************/
 globle int LoadConstructsFromLogicalName(
   void *theEnv,
-  char *readSource)
+  const char *readSource)
   {
    int constructFlag;
    struct token theToken;
@@ -241,7 +244,7 @@ globle int LoadConstructsFromLogicalName(
    struct garbageFrame newGarbageFrame;
    struct garbageFrame *oldGarbageFrame;
    long oldLineCountValue;
-   char *oldLineCountRouter;
+   const char *oldLineCountRouter;
 
    /*===================================================*/
    /* Create a router to capture the error information. */
@@ -406,7 +409,7 @@ globle int LoadConstructsFromLogicalName(
 /********************************************************************/
 static int FindConstructBeginning(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *theToken,
   int errorCorrection,
   int *noErrors)
@@ -508,7 +511,7 @@ static int FindConstructBeginning(
 /*************************************************/
 static int FindError(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -526,8 +529,8 @@ static int FindError(
 /***************************************************/
 static int PrintError(
   void *theEnv,
-  char *logicalName,
-  char *str)
+  const char *logicalName,
+  const char *str)
   {
    if (strcmp(logicalName,WERROR) == 0)
      {
@@ -670,8 +673,8 @@ globle void FlushParsingMessages(
 /***********************************************************/
 globle int ParseConstruct(
   void *theEnv,
-  char *name,
-  char *logicalName)
+  const char *name,
+  const char *logicalName)
   {
    struct construct *currentPtr;
    int rv, ov;
@@ -747,12 +750,12 @@ globle int ParseConstruct(
 /*********************************************************/
 globle SYMBOL_HN *GetConstructNameAndComment(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *inputToken,
-  char *constructName,
-  void *(*findFunction)(void *,char *),
+  const char *constructName,
+  void *(*findFunction)(void *,const char *),
   int (*deleteFunction)(void *,void *),
-  char *constructSymbol,
+  const char *constructSymbol,
   int fullMessageCR,
   int getComment,
   int moduleNameAllowed,
@@ -885,7 +888,7 @@ globle SYMBOL_HN *GetConstructNameAndComment(
    if ((EnvGetWatchItem(theEnv,"compilations") == TRUE) &&
        GetPrintWhileLoading(theEnv) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
-      char *outRouter = WDIALOG;
+      const char *outRouter = WDIALOG;
       if (redefining && (! ignoreRedefinition))
         {
          outRouter = WWARNING;
@@ -998,10 +1001,10 @@ globle void RemoveConstructFromModule(
 /******************************************************/
 globle void ImportExportConflictMessage(
   void *theEnv,
-  char *constructName,
-  char *itemName,
-  char *causedByConstruct,
-  char *causedByName)
+  const char *constructName,
+  const char *itemName,
+  const char *causedByConstruct,
+  const char *causedByName)
   {
    PrintErrorID(theEnv,"CSTRCPSR",3,TRUE);
    EnvPrintRouter(theEnv,WERROR,"Cannot define ");

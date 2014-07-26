@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                FACT COMMANDS MODULE                 */
    /*******************************************************/
@@ -18,12 +18,16 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*      6.24: Added environment parameter to GenClose.       */
 /*            Added environment parameter to GenOpen.        */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -72,12 +76,12 @@
 /***************************************/
 
 #if (! RUN_TIME)
-   static struct expr            *AssertParse(void *,struct expr *,char *);
+   static struct expr            *AssertParse(void *,struct expr *,const char *);
 #endif
 #if DEBUGGING_FUNCTIONS
    static long long               GetFactsArgument(void *,int,int);
 #endif
-   static struct expr            *StandardLoadFact(void *,char *,struct token *);
+   static struct expr            *StandardLoadFact(void *,const char *,struct token *);
    static DATA_OBJECT_PTR         GetSaveFactsDeftemplateNames(void *,struct expr *,int,int *,int *);
 
 /***************************************/
@@ -579,7 +583,7 @@ globle void FactsCommand(
 /*****************************************************/
 globle void EnvFacts(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   void *vTheModule,
   long long start,
   long long end,
@@ -769,7 +773,7 @@ globle void AssertStringFunction(
 globle int SaveFactsCommand(
   void *theEnv)
   {
-   char *fileName;
+   const char *fileName;
    int numArgs, saveCode = LOCAL_SAVE;
    char *argument;
    DATA_OBJECT theValue;
@@ -835,7 +839,7 @@ globle int SaveFactsCommand(
 globle int LoadFactsCommand(
   void *theEnv)
   {
-   char *fileName;
+   const char *fileName;
 
    /*============================================*/
    /* Check for the correct number of arguments. */
@@ -863,7 +867,7 @@ globle int LoadFactsCommand(
 /**************************************************************/
 globle intBool EnvSaveFacts(
   void *theEnv,
-  char *fileName,
+  const char *fileName,
   int saveCode,
   struct expr *theList)
   {
@@ -1139,7 +1143,7 @@ static DATA_OBJECT_PTR GetSaveFactsDeftemplateNames(
 /**************************************************************/
 globle intBool EnvLoadFacts(
   void *theEnv,
-  char *fileName)
+  const char *fileName)
   {
    FILE *filePtr;
    struct token theToken;
@@ -1192,10 +1196,10 @@ globle intBool EnvLoadFacts(
 /*********************************************/
 globle intBool EnvLoadFactsFromString(
   void *theEnv,
-  char *theString,
+  const char *theString,
   int theMax)
   {
-   char * theStrRouter = "*** load-facts-from-string ***";
+   const char *theStrRouter = "*** load-facts-from-string ***";
    struct token theToken;
    struct expr *testPtr;
    DATA_OBJECT rv;
@@ -1241,7 +1245,7 @@ globle intBool EnvLoadFactsFromString(
 /**************************************************************************/
 static struct expr *StandardLoadFact(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   struct token *theToken)
   {
    int error = FALSE;
@@ -1279,7 +1283,7 @@ static struct expr *StandardLoadFact(
 static struct expr *AssertParse(
   void *theEnv,
   struct expr *top,
-  char *logicalName)
+  const char *logicalName)
   {
    int error;
    struct expr *rv;

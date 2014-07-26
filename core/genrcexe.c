@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  05/17/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*      6.24: Removed IMPERATIVE_METHODS compilation flag.   */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -69,8 +72,8 @@
 static DEFMETHOD *FindApplicableMethod(void *,DEFGENERIC *,DEFMETHOD *);
 
 #if DEBUGGING_FUNCTIONS
-static void WatchGeneric(void *,char *);
-static void WatchMethod(void *,char *);
+static void WatchGeneric(void *,const char *);
+static void WatchMethod(void *,const char *);
 #endif
 
 #if OBJECT_SYSTEM
@@ -595,7 +598,7 @@ static DEFMETHOD *FindApplicableMethod(
  **********************************************************************/
 static void WatchGeneric(
   void *theEnv,
-  char *tstring)
+  const char *tstring)
   {
    EnvPrintRouter(theEnv,WTRACE,"GNC ");
    EnvPrintRouter(theEnv,WTRACE,tstring);
@@ -627,7 +630,7 @@ static void WatchGeneric(
  **********************************************************************/
 static void WatchMethod(
   void *theEnv,
-  char *tstring)
+  const char *tstring)
   {
    EnvPrintRouter(theEnv,WTRACE,"MTH ");
    EnvPrintRouter(theEnv,WTRACE,tstring);

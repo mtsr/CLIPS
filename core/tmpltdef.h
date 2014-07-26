@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.26  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*               DEFTEMPLATE HEADER FILE               */
    /*******************************************************/
@@ -20,6 +20,9 @@
 /*            own list of facts.                             */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -133,7 +136,7 @@ struct deftemplateData
 #define DeftemplateModule(x) GetConstructModuleName((struct constructHeader *) x)
 
    LOCALE void                           InitializeDeftemplates(void *);
-   LOCALE void                          *EnvFindDeftemplate(void *,char *);
+   LOCALE void                          *EnvFindDeftemplate(void *,const char *);
    LOCALE void                          *EnvGetNextDeftemplate(void *,void *);
    LOCALE intBool                        EnvIsDeftemplateDeletable(void *,void *);
    LOCALE void                          *EnvGetNextFactInTemplate(void *,void *,void *);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              FILE COMMANDS HEADER FILE              */
    /*******************************************************/
@@ -19,6 +19,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -42,20 +45,20 @@
 #define BatchStar(a) EnvBatchStar(GetCurrentEnvironment(),a)
 
    LOCALE void                           FileCommandDefinitions(void *);
-   LOCALE intBool                        EnvDribbleOn(void *,char *);
+   LOCALE intBool                        EnvDribbleOn(void *,const char *);
    LOCALE intBool                        EnvDribbleActive(void *);
    LOCALE intBool                        EnvDribbleOff(void *);
    LOCALE void                           SetDribbleStatusFunction(void *,int (*)(void *,int));
-   LOCALE int                            LLGetcBatch(void *,char *,int);
-   LOCALE int                            Batch(void *,char *);
-   LOCALE int                            OpenBatch(void *,char *,int);
-   LOCALE int                            OpenStringBatch(void *,char *,char *,int);
+   LOCALE int                            LLGetcBatch(void *,const char *,int);
+   LOCALE int                            Batch(void *,const char *);
+   LOCALE int                            OpenBatch(void *,const char *,int);
+   LOCALE int                            OpenStringBatch(void *,const char *,const char *,int);
    LOCALE int                            RemoveBatch(void *);
    LOCALE intBool                        BatchActive(void *);
    LOCALE void                           CloseAllBatchSources(void *);
    LOCALE int                            BatchCommand(void *);
    LOCALE int                            BatchStarCommand(void *);
-   LOCALE int                            EnvBatchStar(void *,char *);
+   LOCALE int                            EnvBatchStar(void *,const char *);
    LOCALE int                            LoadCommand(void *);
    LOCALE int                            LoadStarCommand(void *);
    LOCALE int                            SaveCommand(void *);

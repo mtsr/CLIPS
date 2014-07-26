@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.22  06/15/04            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*            FACT LHS PATTERN PARSING MODULE          */
    /*******************************************************/
@@ -20,6 +20,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -55,7 +58,7 @@
 /***********************************************/
 globle struct lhsParseNode *SequenceRestrictionParse(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *theToken)
   {
    struct lhsParseNode *topNode;
@@ -209,7 +212,7 @@ globle int FactPatternParserFind(
 /******************************************************/
 globle struct lhsParseNode *FactPatternParse(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *theToken)
   {
    struct deftemplate *theDeftemplate;

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/05/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*            FACT-SET QUERIES PARSER MODULE           */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*            definitions.                                   */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -68,10 +71,10 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static EXPRESSION             *ParseQueryRestrictions(void *,EXPRESSION *,char *,struct token *);
+   static EXPRESSION             *ParseQueryRestrictions(void *,EXPRESSION *,const char *,struct token *);
    static intBool                 ReplaceTemplateNameWithReference(void *,EXPRESSION *);
-   static int                     ParseQueryTestExpression(void *,EXPRESSION *,char *);
-   static int                     ParseQueryActionExpression(void *,EXPRESSION *,char *,EXPRESSION *,struct token *);
+   static int                     ParseQueryTestExpression(void *,EXPRESSION *,const char *);
+   static int                     ParseQueryActionExpression(void *,EXPRESSION *,const char *,EXPRESSION *,struct token *);
    static void                    ReplaceFactVariables(void *,EXPRESSION *,EXPRESSION *,int,int);
    static void                    ReplaceSlotReference(void *,EXPRESSION *,EXPRESSION *,
                                                        struct FunctionDefinition *,int);
@@ -115,7 +118,7 @@
 globle EXPRESSION *FactParseQueryNoAction(
   void *theEnv,
   EXPRESSION *top,
-  char *readSource)
+  const char *readSource)
   {
    EXPRESSION *factQuerySetVars;
    struct token queryInputToken;
@@ -183,7 +186,7 @@ globle EXPRESSION *FactParseQueryNoAction(
 globle EXPRESSION *FactParseQueryAction(
   void *theEnv,
   EXPRESSION *top,
-  char *readSource)
+  const char *readSource)
   {
    EXPRESSION *factQuerySetVars;
    struct token queryInputToken;
@@ -251,7 +254,7 @@ globle EXPRESSION *FactParseQueryAction(
 static EXPRESSION *ParseQueryRestrictions(
   void *theEnv,
   EXPRESSION *top,
-  char *readSource,
+  const char *readSource,
   struct token *queryInputToken)
   {
    EXPRESSION *factQuerySetVars = NULL,*lastFactQuerySetVars = NULL,
@@ -426,7 +429,7 @@ static intBool ReplaceTemplateNameWithReference(
 static int ParseQueryTestExpression(
   void *theEnv,
   EXPRESSION *top,
-  char *readSource)
+  const char *readSource)
   {
    EXPRESSION *qtest;
    int error;
@@ -492,7 +495,7 @@ static int ParseQueryTestExpression(
 static int ParseQueryActionExpression(
   void *theEnv,
   EXPRESSION *top,
-  char *readSource,
+  const char *readSource,
   EXPRESSION *factQuerySetVars,
   struct token *queryInputToken)
   {
@@ -649,7 +652,7 @@ static void ReplaceSlotReference(
    size_t len;
    int posn,oldpp;
    size_t i;
-   register char *str;
+   const char *str;
    EXPRESSION *eptr;
    struct token itkn;
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -16,6 +16,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -44,26 +47,26 @@
 #endif
 
 #if ALLOW_ENVIRONMENT_GLOBALS
-   LOCALE int                            Load(char *);
+   LOCALE int                            Load(const char *);
 #endif
 
-   LOCALE int                            EnvLoad(void *,char *);
-   LOCALE int                            LoadConstructsFromLogicalName(void *,char *);
-   LOCALE int                            ParseConstruct(void *,char *,char *);
+   LOCALE int                            EnvLoad(void *,const char *);
+   LOCALE int                            LoadConstructsFromLogicalName(void *,const char *);
+   LOCALE int                            ParseConstruct(void *,const char *,const char *);
    LOCALE void                           RemoveConstructFromModule(void *,struct constructHeader *);
-   LOCALE struct symbolHashNode         *GetConstructNameAndComment(void *,char *,
-                                         struct token *,char *,
-                                         void *(*)(void *,char *),
-                                         int (*)(void *,void *),
-                                         char *,int,int,int,int);
-   LOCALE void                           ImportExportConflictMessage(void *,char *,char *,char *,char *);
+   LOCALE struct symbolHashNode         *GetConstructNameAndComment(void *,const char *,
+                                                                    struct token *,const char *,
+                                                                    void *(*)(void *,const char *),
+                                                                    int (*)(void *,void *),
+                                                                    const char *,int,int,int,int);
+   LOCALE void                           ImportExportConflictMessage(void *,const char *,const char *,const char *,const char *);
    LOCALE void                           FlushParsingMessages(void *);
    LOCALE char                          *EnvGetParsingFileName(void *);
-   LOCALE void                           EnvSetParsingFileName(void *,char *);
+   LOCALE void                           EnvSetParsingFileName(void *,const char *);
    LOCALE char                          *EnvGetErrorFileName(void *);
-   LOCALE void                           EnvSetErrorFileName(void *,char *);
+   LOCALE void                           EnvSetErrorFileName(void *,const char *);
    LOCALE char                          *EnvGetWarningFileName(void *);
-   LOCALE void                           EnvSetWarningFileName(void *,char *);
+   LOCALE void                           EnvSetWarningFileName(void *,const char *);
    LOCALE void                           CreateErrorCaptureRouter(void *);
    LOCALE void                           DeleteErrorCaptureRouter(void *);
 

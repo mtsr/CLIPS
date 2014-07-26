@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  07/01/05            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /*                                                           */
 /*      6.24: Added pragmas to remove unused parameter       */
 /*            warnings.                                      */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -74,7 +77,7 @@
    ***************************************** */
 
 static void ReadyDefgenericsForCode(void *);
-static int DefgenericsToCode(void *,char *,char *,char *,int,FILE *,int,int);
+static int DefgenericsToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
 static void CloseDefgenericFiles(void *,FILE *[SAVE_ITEMS],int [SAVE_ITEMS],
                                  struct CodeGeneratorFile [SAVE_ITEMS],int);
 static void DefgenericModuleToCode(void *,FILE *,struct defmodule *,int,int);
@@ -199,8 +202,8 @@ static void ReadyDefgenericsForCode(
  *******************************************************/
 static int DefgenericsToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,

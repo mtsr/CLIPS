@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*           DEFMODULE CONSTRUCTS-TO-C MODULE          */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Added environment parameter to GenClose.       */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -49,11 +52,11 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                     ConstructToCode(void *,char *,char *,char *,int,FILE *,int,int);
+   static int                     ConstructToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
    static void                    InitDefmoduleCode(void *,FILE *,int,int);
    static struct portItem        *GetNextPortItem(void *,struct defmodule **,struct portItem **,
                                                   int *,int *);
-   static int                     PortItemsToCode(void *,char *,char *,char *,int,FILE *,int,int,int *);
+   static int                     PortItemsToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int *);
    static void                    BeforeDefmodulesToCode(void *);
 
 /***************************************************************/
@@ -127,8 +130,8 @@ static void InitDefmoduleCode(
 /***********************************************************/
 static int ConstructToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -311,8 +314,8 @@ static int ConstructToCode(
 /************************************************************/
 static int PortItemsToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,

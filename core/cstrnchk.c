@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  07/01/05            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*             CONSTRAINT CHECKING MODULE              */
    /*******************************************************/
@@ -24,6 +24,9 @@
 /*      6.24: Added allowed-classes slot facet.              */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -57,7 +60,7 @@
    static int                     CheckFunctionReturnType(int,CONSTRAINT_RECORD *);
    static intBool                 CheckTypeConstraint(int,CONSTRAINT_RECORD *);
    static intBool                 CheckRangeConstraint(void *,int,void *,CONSTRAINT_RECORD *);
-   static void                    PrintRange(void *,char *,CONSTRAINT_RECORD *);
+   static void                    PrintRange(void *,const char *,CONSTRAINT_RECORD *);
 
 /******************************************************/
 /* CheckFunctionReturnType: Checks a functions return */
@@ -532,8 +535,8 @@ static intBool CheckRangeConstraint(
 /************************************************/
 globle void ConstraintViolationErrorMessage(
   void *theEnv,
-  char *theWhat,
-  char *thePlace,
+  const char *theWhat,
+  const char *thePlace,
   int command,
   int thePattern,
   struct symbolHashNode *theSlot,
@@ -635,7 +638,7 @@ globle void ConstraintViolationErrorMessage(
 /********************************************************************/
 static void PrintRange(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   CONSTRAINT_RECORD *theConstraint)
   {
    if (theConstraint->minValue->value == SymbolData(theEnv)->NegativeInfinity)

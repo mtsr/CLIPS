@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -15,6 +15,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -40,7 +43,7 @@
    ***************************************** */
 
 static void ReadyDeffunctionsForCode(void *);
-static int DeffunctionsToCode(void *,char *,char *,char *,int,FILE *,int,int);
+static int DeffunctionsToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
 static void CloseDeffunctionFiles(void *,FILE *,FILE *,int);
 static void DeffunctionModuleToCode(void *,FILE *,struct defmodule *,int,int);
 static void SingleDeffunctionToCode(void *,FILE *,DEFFUNCTION *,int,int,int);
@@ -162,8 +165,8 @@ static void ReadyDeffunctionsForCode(
  *******************************************************/
 static int DeffunctionsToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,

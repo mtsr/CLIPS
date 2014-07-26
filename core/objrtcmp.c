@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  05/17/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*    OBJECT PATTERN NETWORK CONSTRUCTS-TO-C MODULE    */
    /*******************************************************/
@@ -21,6 +21,9 @@
 /*                                                            */
 /*            Added environment parameter to GenClose.        */
 /*                                                            */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
+/*                                                           */
 /**************************************************************/
 /* =========================================
    *****************************************
@@ -61,10 +64,10 @@
 static void BeforeObjectPatternsToCode(void *);
 static OBJECT_PATTERN_NODE *GetNextObjectPatternNode(OBJECT_PATTERN_NODE *);
 static void InitObjectPatternsCode(void *,FILE *,int,int);
-static int ObjectPatternsToCode(void *,char *,char *,char *,int,FILE *,int,int);
+static int ObjectPatternsToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
 static void IntermediatePatternNodeReference(void *,OBJECT_PATTERN_NODE *,FILE *,int,int);
-static int IntermediatePatternNodesToCode(void *,char *,char *,char *,int,FILE *,int,int,int);
-static int AlphaPatternNodesToCode(void *,char *,char *,char *,int,FILE *,int,int,int);
+static int IntermediatePatternNodesToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int);
+static int AlphaPatternNodesToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int);
 
 /* =========================================
    *****************************************
@@ -251,8 +254,8 @@ static void InitObjectPatternsCode(
  ***********************************************************/
 static int ObjectPatternsToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -321,8 +324,8 @@ static void IntermediatePatternNodeReference(
  *************************************************************/
 static int IntermediatePatternNodesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -426,8 +429,8 @@ static int IntermediatePatternNodesToCode(
  ***********************************************************/
 static int AlphaPatternNodesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,

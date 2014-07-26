@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  03/05/08            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -25,6 +25,9 @@
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*      6.30: Added UTF-8 routines.                          */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -310,7 +313,7 @@ globle void CallPeriodicTasks(
 /***************************************************/
 globle intBool AddCleanupFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*theFunction)(void *),
   int priority)
   {
@@ -327,7 +330,7 @@ globle intBool AddCleanupFunction(
 /*   of functions called to handle periodic tasks.  */
 /****************************************************/
 globle intBool AddPeriodicFunction(
-  char *name,
+  const char *name,
   void (*theFunction)(void),
   int priority)
   {
@@ -350,7 +353,7 @@ globle intBool AddPeriodicFunction(
 /*******************************************************/
 globle intBool EnvAddPeriodicFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*theFunction)(void *),
   int priority)
   {
@@ -368,7 +371,7 @@ globle intBool EnvAddPeriodicFunction(
 /*******************************************************/
 globle intBool RemoveCleanupFunction(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    intBool found;
    
@@ -384,7 +387,7 @@ globle intBool RemoveCleanupFunction(
 /**********************************************************/
 globle intBool EnvRemovePeriodicFunction(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    intBool found;
    
@@ -398,9 +401,9 @@ globle intBool EnvRemovePeriodicFunction(
 /* StringPrintForm: Generates printed representation */
 /*   of a string. Replaces / with // and " with /".  */
 /*****************************************************/
-globle char *StringPrintForm(
+globle const char *StringPrintForm(
   void *theEnv,
-  char *str)
+  const char *str)
   {
    int i = 0;
    size_t pos = 0;
@@ -433,7 +436,7 @@ globle char *StringPrintForm(
 /**************************************************************/
 globle char *CopyString(
   void *theEnv,
-  char *theString)
+  const char *theString)
   {
    char *stringCopy = NULL;
    
@@ -464,8 +467,8 @@ globle void DeleteString(
 /***********************************************************/
 globle char *AppendStrings(
   void *theEnv,
-  char *str1,
-  char *str2)
+  const char *str1,
+  const char *str2)
   {
    size_t pos = 0;
    size_t max = 0;
@@ -486,7 +489,7 @@ globle char *AppendStrings(
 /******************************************************/
 globle char *AppendToString(
   void *theEnv,
-  char *appendStr,
+  const char *appendStr,
   char *oldStr,
   size_t *oldPos,
   size_t *oldMax)
@@ -526,7 +529,7 @@ globle char *AppendToString(
 /**********************************************************/
 globle char *InsertInString(
   void *theEnv,
-  char *insertStr,
+  const char *insertStr,
   size_t position,
   char *oldStr,
   size_t *oldPos,
@@ -606,7 +609,7 @@ globle char *EnlargeString(
 /*******************************************************/
 globle char *AppendNToString(
   void *theEnv,
-  char *appendStr,
+  const char *appendStr,
   char *oldStr,
   size_t length,
   size_t *oldPos,
@@ -709,7 +712,7 @@ globle char *ExpandStringWithChar(
 /*****************************************************************/
 globle struct callFunctionItem *AddFunctionToCallList(
   void *theEnv,
-  char *name,
+  const char *name,
   int priority,
   void (*func)(void *),
   struct callFunctionItem *head,
@@ -725,7 +728,7 @@ globle struct callFunctionItem *AddFunctionToCallList(
 /***********************************************************/
 globle struct callFunctionItem *AddFunctionToCallListWithContext(
   void *theEnv,
-  char *name,
+  const char *name,
   int priority,
   void (*func)(void *),
   struct callFunctionItem *head,
@@ -776,7 +779,7 @@ globle struct callFunctionItem *AddFunctionToCallListWithContext(
 /*****************************************************************/
 globle struct callFunctionItem *RemoveFunctionFromCallList(
   void *theEnv,
-  char *name,
+  const char *name,
   struct callFunctionItem *head,
   int *found)
   {
@@ -834,7 +837,7 @@ globle void DeallocateCallList(
 /***************************************************************/
 globle struct callFunctionItemWithArg *AddFunctionToCallListWithArg(
   void *theEnv,
-  char *name,
+  const char *name,
   int priority,
   void (*func)(void *, void *),
   struct callFunctionItemWithArg *head,
@@ -850,7 +853,7 @@ globle struct callFunctionItemWithArg *AddFunctionToCallListWithArg(
 /***************************************************************/
 globle struct callFunctionItemWithArg *AddFunctionToCallListWithArgWithContext(
   void *theEnv,
-  char *name,
+  const char *name,
   int priority,
   void (*func)(void *, void *),
   struct callFunctionItemWithArg *head,
@@ -901,7 +904,7 @@ globle struct callFunctionItemWithArg *AddFunctionToCallListWithArgWithContext(
 /**************************************************************/
 globle struct callFunctionItemWithArg *RemoveFunctionFromCallListWithArg(
   void *theEnv,
-  char *name,
+  const char *name,
   struct callFunctionItemWithArg *head,
   int *found)
   {
@@ -1121,7 +1124,7 @@ globle void RemoveTrackedMemory(
 /*   of characters in a UTF8 string.      */
 /******************************************/
 globle size_t UTF8Length(
-  char *s)
+  const char *s)
   {
    size_t i = 0, length = 0;
    
@@ -1139,7 +1142,7 @@ globle size_t UTF8Length(
 /*   next character in a UTF8 string.        */
 /*********************************************/
 globle void UTF8Increment(
-  char *s,
+  const char *s,
   size_t *i)
   {
    (void) (IsUTF8Start(s[++(*i)]) || 
@@ -1153,7 +1156,7 @@ globle void UTF8Increment(
 /*   in a UTF8 string to the actual byte offset.    */
 /****************************************************/
 globle size_t UTF8Offset(
-  char *str, 
+  const char *str,
   size_t charnum)
   {
    size_t offs = 0;
@@ -1176,7 +1179,7 @@ globle size_t UTF8Offset(
 /*   offset to the logical character index.      */
 /*************************************************/
 globle size_t UTF8CharNum(
-  char *s, 
+  const char *s,
   size_t offset)
   {
    size_t charnum = 0, offs=0;

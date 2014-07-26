@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/21/14            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                RULE COMMANDS MODULE                 */
    /*******************************************************/
@@ -34,6 +34,9 @@
 /*                                                           */
 /*            Added get-join-hashing and set-join-hashing    */
 /*            functions.                                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -82,15 +85,14 @@
    static long long               ListAlphaMatches(void *,struct joinInformation *,int);
    static long long               ListBetaMatches(void *,struct joinInformation *,long,long,int);
    static void                    ListBetaJoinActivity(void *,struct joinInformation *,long,long,int,DATA_OBJECT *);
-   static void                    PrintJoinActivity(void *,struct joinNode *,struct betaMemory *,int,int,int,long long *);
    static long                    AlphaJoinCountDriver(void *,struct joinNode *);
    static long                    BetaJoinCountDriver(void *,struct joinNode *);
    static void                    AlphaJoinsDriver(void *,struct joinNode *,long,struct joinInformation *);
    static void                    BetaJoinsDriver(void *,struct joinNode *,long,struct joinInformation *,struct betaMemory *,struct joinNode *);
    static int                     CountPatterns(void *,struct joinNode *,int);
-   static char                   *BetaHeaderString(void *,struct joinInformation *,long,long);
-   static char                   *ActivityHeaderString(void *,struct joinInformation *,long,long);
-   static void                    ResetJoinActivity(void *,struct constructHeader *,void *);
+   static const char             *BetaHeaderString(void *,struct joinInformation *,long,long);
+   static const char             *ActivityHeaderString(void *,struct joinInformation *,long,long);
+   static void                    JoinActivityReset(void *,struct constructHeader *,void *);
 
 /****************************************************************/
 /* DefruleCommands: Initializes defrule commands and functions. */
@@ -768,7 +770,7 @@ static long long ListAlphaMatches(
 /********************/
 /* BetaHeaderString */
 /********************/
-static char *BetaHeaderString(
+static const char *BetaHeaderString(
   void *theEnv,
   struct joinInformation *infoArray,
   long joinIndex,
@@ -778,7 +780,7 @@ static char *BetaHeaderString(
    struct joinInformation *theInfo;
    long i, j, startPosition, endPosition, positionsToPrint = 0;
    int nestedCEs = FALSE;
-   char *returnString = "";
+   const char *returnString = "";
    long lastIndex;
    char buffer[32];
    
@@ -1114,7 +1116,7 @@ globle void EnvJoinActivity(
 /************************/
 /* ActivityHeaderString */
 /************************/
-static char *ActivityHeaderString(
+static const char *ActivityHeaderString(
   void *theEnv,
   struct joinInformation *infoArray,
   long joinIndex,
@@ -1124,7 +1126,7 @@ static char *ActivityHeaderString(
    struct joinInformation *theInfo;
    long i;
    int nestedCEs = FALSE;
-   char *returnString = "";
+   const char *returnString = "";
    long lastIndex;
    char buffer[32];
    
@@ -1332,7 +1334,7 @@ globle long long TimetagFunction(
 globle long RuleComplexityCommand(
   void *theEnv)
   {
-   char *ruleName;
+   const char *ruleName;
    struct defrule *rulePtr;
 
    ruleName = GetConstructName(theEnv,"rule-complexity","rule name");
@@ -1355,7 +1357,7 @@ globle long RuleComplexityCommand(
 globle void ShowJoinsCommand(
   void *theEnv)
   {
-   char *ruleName;
+   const char *ruleName;
    void *rulePtr;
 
    ruleName = GetConstructName(theEnv,"show-joins","rule name");

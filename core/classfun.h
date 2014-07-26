@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  05/17/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -20,6 +20,9 @@
 /*            DEFRULE_CONSTRUCT.                             */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -60,12 +63,12 @@ LOCALE intBool InstancesPurge(void *theEnv);
 LOCALE void InitializeClasses(void *);
 #endif
 LOCALE SLOT_DESC *FindClassSlot(DEFCLASS *,SYMBOL_HN *);
-LOCALE void ClassExistError(void *,char *,char *);
+LOCALE void ClassExistError(void *,const char *,const char *);
 LOCALE void DeleteClassLinks(void *,CLASS_LINK *);
-LOCALE void PrintClassName(void *,char *,DEFCLASS *,intBool);
+LOCALE void PrintClassName(void *,const char *,DEFCLASS *,intBool);
 
 #if DEBUGGING_FUNCTIONS || ((! BLOAD_ONLY) && (! RUN_TIME))
-LOCALE void PrintPackedClassLinks(void *,char *,char *,PACKED_CLASS_LINKS *);
+LOCALE void PrintPackedClassLinks(void *,const char *,const char *,PACKED_CLASS_LINKS *);
 #endif
 
 #if ! RUN_TIME

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.24  06/05/06           */
+   /*              CLIPS Version 6.30  07/25/14           */
    /*                                                     */
    /*         INSTANCE LOAD/SAVE (ASCII/BINARY) MODULE    */
    /*******************************************************/
@@ -22,6 +22,9 @@
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*            Corrected code to remove compiler warnings.    */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -90,16 +93,16 @@ struct bsaveSlotValueAtom
    =========================================
    ***************************************** */
 
-static long InstancesSaveCommandParser(void *,char *,long (*)(void *,char *,int,
+static long InstancesSaveCommandParser(void *,const char *,long (*)(void *,const char *,int,
                                                    EXPRESSION *,intBool));
-static DATA_OBJECT *ProcessSaveClassList(void *,char *,EXPRESSION *,int,intBool);
+static DATA_OBJECT *ProcessSaveClassList(void *,const char *,EXPRESSION *,int,intBool);
 static void ReturnSaveClassList(void *,DATA_OBJECT *);
 static long SaveOrMarkInstances(void *,void *,int,DATA_OBJECT *,intBool,intBool,
                                          void (*)(void *,void *,INSTANCE_TYPE *));
 static long SaveOrMarkInstancesOfClass(void *,void *,struct defmodule *,int,DEFCLASS *,
                                                 intBool,int,void (*)(void *,void *,INSTANCE_TYPE *));
 static void SaveSingleInstanceText(void *,void *,INSTANCE_TYPE *);
-static void ProcessFileErrorMessage(void *,char *,char *);
+static void ProcessFileErrorMessage(void *,const char *,const char *);
 #if BSAVE_INSTANCES
 static void WriteBinaryHeader(void *,FILE *);
 static void MarkSingleInstance(void *,void *,INSTANCE_TYPE *);
@@ -108,10 +111,10 @@ static void SaveSingleInstanceBinary(void *,void *,INSTANCE_TYPE *);
 static void SaveAtomBinary(void *,unsigned short,void *,FILE *);
 #endif
 
-static long LoadOrRestoreInstances(void *,char *,int,int);
+static long LoadOrRestoreInstances(void *,const char *,int,int);
 
 #if BLOAD_INSTANCES
-static intBool VerifyBinaryHeader(void *,char *);
+static intBool VerifyBinaryHeader(void *,const char *);
 static intBool LoadSingleBinaryInstance(void *);
 static void BinaryLoadInstanceError(void *,SYMBOL_HN *,DEFCLASS *);
 static void CreateSlotValue(void *,DATA_OBJECT *,struct bsaveSlotValueAtom *,unsigned long); 
@@ -219,7 +222,7 @@ globle long LoadInstancesCommand(
  ***************************************************/
 globle long EnvLoadInstances(
   void *theEnv,
-  char *file)
+  const char *file)
   {
    return(LoadOrRestoreInstances(theEnv,file,TRUE,TRUE));
   }
@@ -236,11 +239,11 @@ globle long EnvLoadInstances(
  ***************************************************/
 globle long EnvLoadInstancesFromString(
   void *theEnv,
-  char *theString,
+  const char *theString,
   int theMax)
   {
    long theCount;
-   char * theStrRouter = "*** load-instances-from-string ***";
+   const char * theStrRouter = "*** load-instances-from-string ***";
 
    if ((theMax == -1) ? (!OpenStringSource(theEnv,theStrRouter,theString,0)) :
                         (!OpenTextSource(theEnv,theStrRouter,theString,0,(unsigned) theMax)))
@@ -287,7 +290,7 @@ globle long RestoreInstancesCommand(
  ***************************************************/
 globle long EnvRestoreInstances(
   void *theEnv,
-  char *file)
+  const char *file)
   {
    return(LoadOrRestoreInstances(theEnv,file,FALSE,TRUE));
   }
@@ -304,11 +307,11 @@ globle long EnvRestoreInstances(
  ***************************************************/
 globle long EnvRestoreInstancesFromString(
   void *theEnv,
-  char *theString,
+  const char *theString,
   int theMax)
   {
    long theCount;
-   char * theStrRouter = "*** load-instances-from-string ***";
+   const char *theStrRouter = "*** load-instances-from-string ***";
 
    if ((theMax == -1) ? (!OpenStringSource(theEnv,theStrRouter,theString,0)) :
                         (!OpenTextSource(theEnv,theStrRouter,theString,0,(unsigned) theMax)))
@@ -358,7 +361,7 @@ globle long BinaryLoadInstancesCommand(
  ****************************************************/
 globle long EnvBinaryLoadInstances(
   void *theEnv,
-  char *theFile)
+  const char *theFile)
   {
    long i,instanceCount;
 
@@ -425,7 +428,7 @@ globle long EnvBinaryLoadInstances(
  *******************************************************/
 globle long EnvSaveInstances(
   void *theEnv,
-  char *file,
+  const char *file,
   int saveCode,
   EXPRESSION *classExpressionList,
   intBool inheritFlag)
@@ -509,7 +512,7 @@ globle long BinarySaveInstancesCommand(
  *******************************************************/
 globle long EnvBinarySaveInstances(
   void *theEnv,
-  char *file,
+  const char *file,
   int saveCode,
   EXPRESSION *classExpressionList,
   intBool inheritFlag)
@@ -571,8 +574,8 @@ globle long EnvBinarySaveInstances(
  ******************************************************/
 static long InstancesSaveCommandParser(
   void *theEnv,
-  char *functionName,
-  long (*saveFunction)(void *,char *,int,EXPRESSION *,intBool))
+  const char *functionName,
+  long (*saveFunction)(void *,const char *,int,EXPRESSION *,intBool))
   {
    char *fileFound;
    DATA_OBJECT temp;
@@ -645,7 +648,7 @@ static long InstancesSaveCommandParser(
  ****************************************************/
 static DATA_OBJECT *ProcessSaveClassList(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   EXPRESSION *classExps,
   int saveCode,
   intBool inheritFlag)
@@ -890,7 +893,7 @@ static void SaveSingleInstanceText(
   {
    long i;
    INSTANCE_SLOT *sp;
-   char *logicalName = (char *) vLogicalName;
+   const char *logicalName = (const char *) vLogicalName;
 
    EnvPrintRouter(theEnv,logicalName,"([");
    EnvPrintRouter(theEnv,logicalName,ValueToString(theInstance->name));
@@ -1175,13 +1178,13 @@ static void SaveAtomBinary(
  **********************************************************************/
 static long LoadOrRestoreInstances(
   void *theEnv,
-  char *file,
+  const char *file,
   int usemsgs,
   int isFileName)
   {
    DATA_OBJECT temp;
    FILE *sfile = NULL,*svload = NULL;
-   char *ilog;
+   const char *ilog;
    EXPRESSION *top;
    int svoverride;
    long instanceCount = 0L;
@@ -1257,8 +1260,8 @@ static long LoadOrRestoreInstances(
  ***************************************************/
 static void ProcessFileErrorMessage(
   void *theEnv,
-  char *functionName,
-  char *fileName)
+  const char *functionName,
+  const char *fileName)
   {
    PrintErrorID(theEnv,"INSFILE",1,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Function ");
@@ -1283,7 +1286,7 @@ static void ProcessFileErrorMessage(
  *******************************************************/
 static intBool VerifyBinaryHeader(
   void *theEnv,
-  char *theFile)
+  const char *theFile)
   {
    char buf[20];
 

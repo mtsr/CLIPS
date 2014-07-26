@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/05/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -17,6 +17,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -35,7 +38,7 @@
 #define LOCALE extern
 #endif
 
-LOCALE intBool ParseDeffunction(void *,char *);
+LOCALE intBool ParseDeffunction(void *,const char *);
 
 #ifndef _DFFNXPSR_SOURCE_
 #endif

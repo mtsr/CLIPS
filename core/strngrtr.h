@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*            STRING I/O ROUTER HEADER FILE            */
    /*******************************************************/
@@ -17,6 +17,9 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_strngrtr
@@ -31,8 +34,10 @@
 
 struct stringRouter
   {
-   char *name;
-   char *str;
+   const char *name;
+   const char *readString;
+   char *writeString;
+   //char *str;
    size_t currentPosition;
    size_t maximumPosition;
    int readWriteType;
@@ -61,11 +66,11 @@ struct stringRouterData
 /**************************/
 
    LOCALE void                           InitializeStringRouter(void *);
-   LOCALE int                            OpenStringSource(void *,char *,char *,size_t);
-   LOCALE int                            OpenTextSource(void *,char *,char *,size_t,size_t);
-   LOCALE int                            CloseStringSource(void *,char *);
-   LOCALE int                            OpenStringDestination(void *,char *,char *,size_t);
-   LOCALE int                            CloseStringDestination(void *,char *);
+   LOCALE int                            OpenStringSource(void *,const char *,const char *,size_t);
+   LOCALE int                            OpenTextSource(void *,const char *,const char *,size_t,size_t);
+   LOCALE int                            CloseStringSource(void *,const char *);
+   LOCALE int                            OpenStringDestination(void *,const char *,char *,size_t);
+   LOCALE int                            CloseStringDestination(void *,const char *);
 
 #endif
 

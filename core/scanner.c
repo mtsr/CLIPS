@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  03/06/08            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                    SCANNER MODULE                   */
    /*******************************************************/
@@ -20,6 +20,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.30: Added UTF-8 support.                           */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -49,9 +52,9 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                   *ScanSymbol(void *,char *,int,unsigned short *);
-   static void                   *ScanString(void *,char *);
-   static void                    ScanNumber(void *,char *,struct token *);
+   static void                   *ScanSymbol(void *,const char *,int,unsigned short *);
+   static void                   *ScanString(void *,const char *);
+   static void                    ScanNumber(void *,const char *,struct token *);
    static void                    DeallocateScannerData(void *);
 
 /************************************************/
@@ -85,7 +88,7 @@ static void DeallocateScannerData(
 /***********************************************************************/
 globle void GetToken(
  void *theEnv,
- char *logicalName,
+ const char *logicalName,
  struct token *theToken)
  {
    int inchar;
@@ -375,7 +378,7 @@ globle void GetToken(
 /*************************************/
 static void *ScanSymbol(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   int count,
   unsigned short *type)
   {
@@ -453,7 +456,7 @@ static void *ScanSymbol(
 /*************************************/
 static void *ScanString(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
    int inchar;
    size_t pos = 0;
@@ -503,7 +506,7 @@ static void *ScanString(
 /**************************************/
 static void ScanNumber(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   struct token *theToken)
   {
    int count = 0;

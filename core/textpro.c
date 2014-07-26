@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*               TEXT PROCESSING MODULE                */
    /*******************************************************/
@@ -26,6 +26,9 @@
 /*                                                           */
 /*            Added environment parameter to GenClose.       */
 /*            Added environment parameter to GenOpen.        */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -134,18 +137,18 @@ struct textProcessingData
 
 #define TextProcessingData(theEnv) ((struct textProcessingData *) GetEnvironmentData(theEnv,TEXTPRO_DATA))
 
-int TextLookupFetch(void *,char *);
-int TextLookupToss(void *,char *);
-static FILE *GetEntries(void *,char *,char **,char *,int *);
-static FILE *GetCurrentMenu(void *,char *,int *);
+int TextLookupFetch(void *,const char *);
+int TextLookupToss(void *,const char *);
+static FILE *GetEntries(void *,const char *,char **,char *,int *);
+static FILE *GetCurrentMenu(void *,const char *,int *);
 static char *grab_string(void *,FILE *,char *,int);
 
-static int findstr(char *,char *);
+static int findstr(const char *,const char *);
 static void upper(char *);
-static struct lists *NewFetchFile(void *,char *);
-static struct entries *AllocateEntryNode(void *,FILE *,char *,char *,int);
-static int AttachLeaf(void *,struct lists *,struct entries *,FILE *,char *,int);
-static long LookupEntry(void *,char *,char **,char *,int *);
+static struct lists *NewFetchFile(void *,const char *);
+static struct entries *AllocateEntryNode(void *,FILE *,const char *,const char *,int);
+static int AttachLeaf(void *,struct lists *,struct entries *,FILE *,const char *,int);
+static long LookupEntry(void *,const char *,char **,char *,int *);
 static void TossFunction(void *,struct entries *);
 static void DeallocateTextProcessingData(void *);
 
@@ -178,7 +181,7 @@ static void DeallocateTextProcessingData(void *);
 /****************************************************************************/
 globle int TextLookupFetch(
   void *theEnv,
-  char *file)
+  const char *file)
   {
    FILE *fp;                     /*Pointer into stream of input file      */
    char str[256];                /*Buffer for storing input file lines    */
@@ -304,7 +307,7 @@ globle int TextLookupFetch(
 /******************************************************************************/
 globle int TextLookupToss(
   void *theEnv,
-  char *file)
+  const char *file)
   {
    struct lists *plptr, *clptr;
    int l_flag;
@@ -358,7 +361,7 @@ globle int TextLookupToss(
 /******************************************************************************/
 static FILE *GetEntries(
   void *theEnv,
-  char *file,
+  const char *file,
   char **menu,
   char *name,
   int *code)
@@ -396,7 +399,7 @@ static FILE *GetEntries(
 /******************************************************************************/
 static FILE *GetCurrentMenu(
   void *theEnv,
-  char *file,
+  const char *file,
   int *status)
   {
    struct lists *lptr;   /*Used in searching the file list*/
@@ -502,8 +505,8 @@ static char *grab_string(
 /*          2) returns -1, if not found                                   */
 /**************************************************************************/
 static int findstr(
-  char *s,
-  char *t)
+  const char *s,
+  const char *t)
   {
    int i,j,k;
 
@@ -539,7 +542,7 @@ static void upper(
 /******************************************************************************/
 static struct lists *NewFetchFile(
   void *theEnv,
-  char *file)
+  const char *file)
   {
    struct lists *lptr = NULL, *lnode;
 
@@ -587,8 +590,8 @@ static struct lists *NewFetchFile(
 static struct entries *AllocateEntryNode(
   void *theEnv,
   FILE *fp,
-  char *file,
-  char *str,
+  const char *file,
+  const char *str,
   int line_ct)
   {
    struct entries *enode;
@@ -683,7 +686,7 @@ static int AttachLeaf(
   struct lists *lnode,
   struct entries *enode,
   FILE *fp,
-  char *file,
+  const char *file,
   int line_ct)
   {
    int p_flag;   /*Used in searching the tree for a parent*/
@@ -804,7 +807,7 @@ static int AttachLeaf(
 /******************************************************************************/
 static long int LookupEntry(
   void *theEnv,
-  char *file,
+  const char *file,
   char **menu,
   char *name,
   int *code)
@@ -984,7 +987,7 @@ struct topics
 /******************************************************************************/
 
 static struct topics *GetCommandLineTopics(void *);
-static FILE *FindTopicInEntries(void *,char *,struct topics *,char **,int *);
+static FILE *FindTopicInEntries(void *,const char *,struct topics *,char **,int *);
 
 /******************************************************************************/
 /*============================================================================*/
@@ -1248,7 +1251,7 @@ static struct topics *GetCommandLineTopics(
 /******************************************************************************/
 static FILE *FindTopicInEntries(
   void *theEnv,
-  char *file,
+  const char *file,
   struct topics *main_topic,
   char **menu,
   int *status)

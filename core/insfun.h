@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  05/17/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                INSTANCE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -27,6 +27,9 @@
 /*                                                           */
 /*            Moved EvaluateAndStoreInDataObject to          */
 /*            evaluatn.c                                     */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -83,18 +86,18 @@ LOCALE INSTANCE_TYPE *FindInstanceInModule(void *,SYMBOL_HN *,struct defmodule *
                                            struct defmodule *,unsigned);
 LOCALE INSTANCE_SLOT *FindInstanceSlot(void *,INSTANCE_TYPE *,SYMBOL_HN *);
 LOCALE int FindInstanceTemplateSlot(void *,DEFCLASS *,SYMBOL_HN *);
-LOCALE int PutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *,char *);
+LOCALE int PutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *,const char *);
 LOCALE int DirectPutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *);
-LOCALE intBool ValidSlotValue(void *,DATA_OBJECT *,SLOT_DESC *,INSTANCE_TYPE *,char *);
-LOCALE INSTANCE_TYPE *CheckInstance(void *,char *);
-LOCALE void NoInstanceError(void *,char *,char *);
-LOCALE void StaleInstanceAddress(void *,char *,int);
+LOCALE intBool ValidSlotValue(void *,DATA_OBJECT *,SLOT_DESC *,INSTANCE_TYPE *,const char *);
+LOCALE INSTANCE_TYPE *CheckInstance(void *,const char *);
+LOCALE void NoInstanceError(void *,const char *,const char *);
+LOCALE void StaleInstanceAddress(void *,const char *,int);
 LOCALE int EnvGetInstancesChanged(void *);
 LOCALE void EnvSetInstancesChanged(void *,int);
-LOCALE void PrintSlot(void *,char *,SLOT_DESC *,INSTANCE_TYPE *,char *);
-LOCALE void PrintInstanceNameAndClass(void *,char *,INSTANCE_TYPE *,intBool);
-LOCALE void PrintInstanceName(void *,char *,void *);
-LOCALE void PrintInstanceLongForm(void *,char *,void *);
+LOCALE void PrintSlot(void *,const char *,SLOT_DESC *,INSTANCE_TYPE *,const char *);
+LOCALE void PrintInstanceNameAndClass(void *,const char *,INSTANCE_TYPE *,intBool);
+LOCALE void PrintInstanceName(void *,const char *,void *);
+LOCALE void PrintInstanceLongForm(void *,const char *,void *);
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
 LOCALE void DecrementObjectBasisCount(void *,void *);

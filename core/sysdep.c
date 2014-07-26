@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  05/17/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -33,6 +33,9 @@
 /*            Updated UNIX_V gentime functionality.          */
 /*                                                           */
 /*            Removed GenOpen check against FILENAME_MAX.    */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -876,7 +879,7 @@ globle int genungetchar(
 globle void genprintfile(
   void *theEnv,
   FILE *fptr,
-  char *str)
+  const char *str)
   {
    if (fptr != stdout)
      {
@@ -1122,7 +1125,7 @@ globle char *gengetcwd(
 /* genremove: Generic function for removing a file. */
 /****************************************************/
 globle int genremove(
-  char *fileName)
+  const char *fileName)
   {
    if (remove(fileName)) return(FALSE);
 
@@ -1133,8 +1136,8 @@ globle int genremove(
 /* genrename: Generic function for renaming a file. */
 /****************************************************/
 globle int genrename(
-  char *oldFileName,
-  char *newFileName)
+  const char *oldFileName,
+  const char *newFileName)
   {
    if (rename(oldFileName,newFileName)) return(FALSE);
 
@@ -1174,8 +1177,8 @@ globle int (*EnvSetAfterOpenFunction(void *theEnv,
 /*********************************************/
 globle FILE *GenOpen(
   void *theEnv,
-  char *fileName,
-  char *accessType)
+  const char *fileName,
+  const char *accessType)
   {
    FILE *theFile;
    
@@ -1268,8 +1271,8 @@ globle int GenClose(
 /************************************************************/
 globle int GenOpenReadBinary(
   void *theEnv,
-  char *funcName,
-  char *fileName)
+  const char *funcName,
+  const char *fileName)
   {
    if (SystemDependentData(theEnv)->BeforeOpenFunction != NULL)
      { (*SystemDependentData(theEnv)->BeforeOpenFunction)(theEnv); }

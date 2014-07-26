@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.23  01/31/05            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -15,7 +15,11 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -64,7 +68,7 @@
 static void UnboundDeffunctionErr(void *);
 
 #if DEBUGGING_FUNCTIONS
-static void WatchDeffunction(void *,char *);
+static void WatchDeffunction(void *,const char *);
 #endif
 
 /* =========================================
@@ -206,7 +210,7 @@ static void UnboundDeffunctionErr(
  ***************************************************/
 static void WatchDeffunction(
   void *theEnv,
-  char *tstring)
+  const char *tstring)
   {
    EnvPrintRouter(theEnv,WTRACE,"DFN ");
    EnvPrintRouter(theEnv,WTRACE,tstring);

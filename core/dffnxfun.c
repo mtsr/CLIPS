@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/02/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                 DEFFUNCTION MODULE                  */
    /*******************************************************/
@@ -29,6 +29,9 @@
 /*                                                           */
 /*            Corrected code to remove run-time program      */
 /*            compiler warning.                              */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -83,7 +86,7 @@
    =========================================
    ***************************************** */
 
-static void PrintDeffunctionCall(void *,char *,void *);
+static void PrintDeffunctionCall(void *,const char *,void *);
 static intBool EvaluateDeffunctionCall(void *,void *,DATA_OBJECT *);
 static void DecrementDeffunctionBusyCount(void *,void *);
 static void IncrementDeffunctionBusyCount(void *,void *);
@@ -98,15 +101,15 @@ static intBool ClearDeffunctionsReady(void *);
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
 static intBool RemoveAllDeffunctions(void *);
-static void DeffunctionDeleteError(void *,char *);
-static void SaveDeffunctionHeaders(void *,void *,char *);
+static void DeffunctionDeleteError(void *,const char *);
+static void SaveDeffunctionHeaders(void *,void *,const char *);
 static void SaveDeffunctionHeader(void *,struct constructHeader *,void *);
-static void SaveDeffunctions(void *,void *,char *);
+static void SaveDeffunctions(void *,void *,const char *);
 #endif
 
 #if DEBUGGING_FUNCTIONS
 static unsigned DeffunctionWatchAccess(void *,int,unsigned,EXPRESSION *);
-static unsigned DeffunctionWatchPrint(void *,char *,int,EXPRESSION *);
+static unsigned DeffunctionWatchPrint(void *,const char *,int,EXPRESSION *);
 #endif
 
 /* =========================================
@@ -291,7 +294,7 @@ static void DestroyDeffunctionAction(
  ***************************************************/
 globle void *EnvFindDeffunction(
   void *theEnv,
-  char *dfnxModuleAndName)
+  const char *dfnxModuleAndName)
   {
    return(FindNamedConstruct(theEnv,dfnxModuleAndName,DeffunctionData(theEnv)->DeffunctionConstruct));
   }
@@ -309,7 +312,7 @@ globle void *EnvFindDeffunction(
  ***************************************************/
 globle DEFFUNCTION *LookupDeffunctionByMdlOrScope(
   void *theEnv,
-  char *deffunctionName)
+  const char *deffunctionName)
   {
    return((DEFFUNCTION *) LookupConstruct(theEnv,DeffunctionData(theEnv)->DeffunctionConstruct,deffunctionName,TRUE));
   }
@@ -327,7 +330,7 @@ globle DEFFUNCTION *LookupDeffunctionByMdlOrScope(
  ***************************************************/
 globle DEFFUNCTION *LookupDeffunctionInScope(
   void *theEnv,
-  char *deffunctionName)
+  const char *deffunctionName)
   {
    return((DEFFUNCTION *) LookupConstruct(theEnv,DeffunctionData(theEnv)->DeffunctionConstruct,deffunctionName,FALSE));
   }
@@ -505,7 +508,7 @@ globle void ListDeffunctionsCommand(
  ***************************************************/
 globle void EnvListDeffunctions(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   struct defmodule *theModule)
   {
    ListConstruct(theEnv,DeffunctionData(theEnv)->DeffunctionConstruct,logicalName,theModule);
@@ -607,7 +610,7 @@ globle int CheckDeffunctionCall(
  ***************************************************/
 static void PrintDeffunctionCall(
   void *theEnv,
-  char *logName,
+  const char *logName,
   void *value)
   {
 #if DEVELOPER
@@ -837,7 +840,7 @@ static intBool RemoveAllDeffunctions(
  ****************************************************/
 static void DeffunctionDeleteError(
   void *theEnv,
-  char *dfnxName)
+  const char *dfnxName)
   {
    CantDeleteItemErrorMessage(theEnv,"deffunction",dfnxName);
   }
@@ -857,7 +860,7 @@ static void DeffunctionDeleteError(
 static void SaveDeffunctionHeaders(
   void *theEnv,
   void *theModule,
-  char *logicalName)
+  const char *logicalName)
   {
    DoForAllConstructsInModule(theEnv,theModule,SaveDeffunctionHeader,
                               DeffunctionData(theEnv)->DeffunctionModuleIndex,
@@ -880,7 +883,7 @@ static void SaveDeffunctionHeader(
   void *userBuffer)
   {
    DEFFUNCTION *dfnxPtr = (DEFFUNCTION *) theDeffunction;
-   char *logicalName = (char *) userBuffer;
+   const char *logicalName = (const char *) userBuffer;
    register int i;
 
    if (EnvGetDeffunctionPPForm(theEnv,(void *) dfnxPtr) != NULL)
@@ -920,7 +923,7 @@ static void SaveDeffunctionHeader(
 static void SaveDeffunctions(
   void *theEnv,
   void *theModule,
-  char *logicalName)
+  const char *logicalName)
   {
    SaveConstruct(theEnv,theModule,logicalName,DeffunctionData(theEnv)->DeffunctionConstruct);
   }
@@ -971,7 +974,7 @@ static unsigned DeffunctionWatchAccess(
  ***********************************************************************/
 static unsigned DeffunctionWatchPrint(
   void *theEnv,
-  char *logName,
+  const char *logName,
   int code,
   EXPRESSION *argExprs)
   {

@@ -2,7 +2,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  05/17/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*            DEFRULE CONSTRUCTS-TO-C MODULE           */
    /*******************************************************/
@@ -21,6 +21,9 @@
 /*                                                           */
 /*      6.24: Removed DYNAMIC_SALIENCE and                   */
 /*            LOGICAL_DEPENDENCIES compilation flags.        */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -44,7 +47,7 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                     ConstructToCode(void *,char *,char *,char *,int,FILE *,int,int);
+   static int                     ConstructToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
    static void                    JoinToCode(void *,FILE *,struct joinNode *,int,int);
    static void                    LinkToCode(void *,FILE *,struct joinLink *,int,int);
    static void                    DefruleModuleToCode(void *,FILE *,struct defmodule *,int,int,int);
@@ -52,10 +55,10 @@
    static void                    CloseDefruleFiles(void *,FILE *,FILE *,FILE *,FILE*,int);
    static void                    BeforeDefrulesCode(void *);
    static void                    InitDefruleCode(void *,FILE *,int,int);
-   static int                     RuleCompilerTraverseJoins(void *,struct joinNode *,char *,char *,char *,int,
+   static int                     RuleCompilerTraverseJoins(void *,struct joinNode *,const char *,const char *,char *,int,
                                                             FILE *,int,int,FILE **,FILE **,
                                                             int *,int *,int *,int *,int *);
-   static int                     TraverseJoinLinks(void *,struct joinLink *,char *,char *,char *,int,FILE *,
+   static int                     TraverseJoinLinks(void *,struct joinLink *,const char *,const char *,char *,int,FILE *,
                                                     int,int,FILE **,int *,int *, int *);
   
 /***********************************************************/
@@ -88,8 +91,8 @@ static void BeforeDefrulesCode(
 /*********************************************************/
 static int ConstructToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -228,8 +231,8 @@ static int ConstructToCode(
 static int RuleCompilerTraverseJoins(
   void *theEnv,
   struct joinNode *joinPtr,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -285,8 +288,8 @@ static int RuleCompilerTraverseJoins(
 static int TraverseJoinLinks(
   void *theEnv,
   struct joinLink *linkPtr,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,

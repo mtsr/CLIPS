@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  05/17/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                PATTERN HEADER FILE                  */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*      6.24: Removed LOGICAL_DEPENDENCIES compilation flag. */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -87,11 +90,11 @@ struct patternParser;
 
 struct patternParser
   {
-   char *name;
+   const char *name;
    struct patternEntityRecord *entityType;
    int positionInArray;
    int (*recognizeFunction)(SYMBOL_HN *);
-   struct lhsParseNode *(*parseFunction)(void *,char *,struct token *);
+   struct lhsParseNode *(*parseFunction)(void *,const char *,struct token *);
    int (*postAnalysisFunction)(void *,struct lhsParseNode *);
    struct patternNodeHeader *(*addPatternFunction)(void *,struct lhsParseNode *);
    void (*removePatternFunction)(void *,struct patternNodeHeader *);
@@ -115,8 +118,8 @@ struct patternParser
 
 struct reservedSymbol
   {
-   char *theSymbol;
-   char *reservedBy;
+   const char *theSymbol;
+   const char *reservedBy;
    struct reservedSymbol *next;
   };
 
@@ -152,20 +155,20 @@ struct patternData
 
    LOCALE void                           InitializePatterns(void *);
    LOCALE int                            AddPatternParser(void *,struct patternParser *);
-   LOCALE struct patternParser          *FindPatternParser(void *,char *);
+   LOCALE struct patternParser          *FindPatternParser(void *,const char *);
    LOCALE void                           DetachPattern(void *,int,struct patternNodeHeader *);
    LOCALE void                           GetNextPatternEntity(void *,
                                                               struct patternParser **,
                                                               struct patternEntity **);
    LOCALE struct patternParser          *GetPatternParser(void *,int);
-   LOCALE struct lhsParseNode           *RestrictionParse(void *,char *,struct token *,int,
+   LOCALE struct lhsParseNode           *RestrictionParse(void *,const char *,struct token *,int,
                                                        struct symbolHashNode *,short,
                                                        struct constraintRecord *,short);
    LOCALE int                            PostPatternAnalysis(void *,struct lhsParseNode *);
    LOCALE void                           PatternNodeHeaderToCode(void *,FILE *,struct patternNodeHeader *,int,int);
-   LOCALE void                           AddReservedPatternSymbol(void *,char *,char *);
-   LOCALE intBool                        ReservedPatternSymbol(void *,char *,char *);
-   LOCALE void                           ReservedPatternSymbolErrorMsg(void *,char *,char *);
+   LOCALE void                           AddReservedPatternSymbol(void *,const char *,const char *);
+   LOCALE intBool                        ReservedPatternSymbol(void *,const char *,const char *);
+   LOCALE void                           ReservedPatternSymbolErrorMsg(void *,const char *,const char *);
    LOCALE void                           AddHashedPatternNode(void *,void *,void *,unsigned short,void *);
    LOCALE intBool                        RemoveHashedPatternNode(void *,void *,void *,unsigned short,void *);
    LOCALE void                          *FindHashedPatternNode(void *,void *,unsigned short,void *);

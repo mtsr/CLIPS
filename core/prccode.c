@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/05/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -26,6 +26,9 @@
 /*      6.24: Renamed BOOLEAN macro type to intBool.           */
 /*                                                             */
 /*            Added pragmas to remove compilation warnings.    */
+/*                                                             */
+/*      6.30: Added const qualifiers to remove C++             */
+/*            deprecation warnings.                            */
 /*                                                             */
 /***************************************************************/
 
@@ -81,7 +84,7 @@ typedef struct
    =========================================
    ***************************************** */
 
-static void EvaluateProcParameters(void *,EXPRESSION *,int,char *,char *);
+static void EvaluateProcParameters(void *,EXPRESSION *,int,const char *,const char *);
 static intBool RtnProcParam(void *,void *,DATA_OBJECT *);
 static intBool GetProcBind(void *,void *,DATA_OBJECT *);
 static intBool PutProcBind(void *,void *,DATA_OBJECT *);
@@ -226,14 +229,14 @@ static void DeallocateProceduralPrimitiveData(
  ************************************************************/
 globle EXPRESSION *ParseProcParameters(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *tkn,
   EXPRESSION *parameterList,
   SYMBOL_HN **wildcard,
   int *min,
   int *max,
   int *error,
-  int (*checkfunc)(void *,char *))
+  int (*checkfunc)(void *,const char *))
   {
    EXPRESSION *nextOne,*lastOne,*check;
    int paramprintp = 0;
@@ -352,8 +355,8 @@ NOTES        : None
 *************************************************************************/
 globle EXPRESSION *ParseProcActions(
   void *theEnv,
-  char *bodytype,
-  char *readSource,
+  const char *bodytype,
+  const char *readSource,
   struct token *tkn,
   EXPRESSION *params,
   SYMBOL_HN *wildcard,
@@ -456,7 +459,7 @@ globle EXPRESSION *ParseProcActions(
  *************************************************************************/
 globle int ReplaceProcVars(
   void *theEnv,
-  char *bodytype,
+  const char *bodytype,
   EXPRESSION *actions,
   EXPRESSION *parameterList,
   SYMBOL_HN *wildcard,
@@ -645,8 +648,8 @@ globle void PushProcParameters(
   void *theEnv,
   EXPRESSION *parameterList,
   int numberOfParameters,
-  char *pname,
-  char *bodytype,
+  const char *pname,
+  const char *bodytype,
   void (*UnboundErrFunc)(void *))
   {
    register PROC_PARAM_STACK *ptmp;
@@ -917,7 +920,7 @@ globle void EvaluateProcActions(
  ****************************************************/
 globle void PrintProcParamArray(
   void *theEnv,
-  char *logName)
+  const char *logName)
   {
    register int i;
 
@@ -1040,8 +1043,8 @@ static void EvaluateProcParameters(
   void *theEnv,
   EXPRESSION *parameterList,
   int numberOfParameters,
-  char *pname,
-  char *bodytype)
+  const char *pname,
+  const char *bodytype)
   {
    DATA_OBJECT *rva,temp;
    int i = 0;

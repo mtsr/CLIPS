@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*            DEFGLOBAL COMMANDS HEADER FILE           */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -44,7 +47,7 @@
    LOCALE int                            GetResetGlobalsCommand(void *);
    LOCALE intBool                        EnvGetResetGlobals(void *);
    LOCALE void                           ShowDefglobalsCommand(void *);
-   LOCALE void                           EnvShowDefglobals(void *,char *,void *);
+   LOCALE void                           EnvShowDefglobals(void *,const char *,void *);
 
 #endif
 

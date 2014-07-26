@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/02/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -30,6 +30,9 @@
 /*                                                           */
 /*            Corrected code to remove run-time program      */
 /*            compiler warning.                              */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -93,7 +96,7 @@
    =========================================
    ***************************************** */
 
-static void PrintGenericCall(void *,char *,void *);
+static void PrintGenericCall(void *,const char *,void *);
 static intBool EvaluateGenericCall(void *,void *,DATA_OBJECT *);
 static void DecrementGenericBusyCount(void *,void *);
 static void IncrementGenericBusyCount(void *,void *);
@@ -104,24 +107,24 @@ static void DestroyDefgenericAction(void *,struct constructHeader *,void *);
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
 
-static void SaveDefgenerics(void *,void *,char *);
-static void SaveDefmethods(void *,void *,char *);
+static void SaveDefgenerics(void *,void *,const char *);
+static void SaveDefmethods(void *,void *,const char *);
 static void SaveDefmethodsForDefgeneric(void *,struct constructHeader *,void *);
 static void RemoveDefgenericMethod(void *,DEFGENERIC *,long);
 
 #endif
 
 #if DEBUGGING_FUNCTIONS
-static long ListMethodsForGeneric(void *,char *,DEFGENERIC *);
+static long ListMethodsForGeneric(void *,const char *,DEFGENERIC *);
 static unsigned DefgenericWatchAccess(void *,int,unsigned,EXPRESSION *);
-static unsigned DefgenericWatchPrint(void *,char *,int,EXPRESSION *);
+static unsigned DefgenericWatchPrint(void *,const char *,int,EXPRESSION *);
 static unsigned DefmethodWatchAccess(void *,int,unsigned,EXPRESSION *);
-static unsigned DefmethodWatchPrint(void *,char *,int,EXPRESSION *);
-static unsigned DefmethodWatchSupport(void *,char *,char *,unsigned,
-                                     void (*)(void *,char *,void *,long),
+static unsigned DefmethodWatchPrint(void *,const char *,int,EXPRESSION *);
+static unsigned DefmethodWatchSupport(void *,const char *,const char *,unsigned,
+                                     void (*)(void *,const char *,void *,long),
                                      void (*)(void *,unsigned,void *,long),
                                      EXPRESSION *);
-static void PrintMethodWatchFlag(void *,char *,void *,long);
+static void PrintMethodWatchFlag(void *,const char *,void *,long);
 #endif
 
 /* =========================================
@@ -351,7 +354,7 @@ static void DestroyDefgenericAction(
  ***************************************************/
 globle void *EnvFindDefgeneric(
   void *theEnv,
-  char *genericModuleAndName)
+  const char *genericModuleAndName)
   {
    return(FindNamedConstruct(theEnv,genericModuleAndName,DefgenericData(theEnv)->DefgenericConstruct));
   }
@@ -369,7 +372,7 @@ globle void *EnvFindDefgeneric(
  ***************************************************/
 globle DEFGENERIC *LookupDefgenericByMdlOrScope(
   void *theEnv,
-  char *defgenericName)
+  const char *defgenericName)
   {
    return((DEFGENERIC *) LookupConstruct(theEnv,DefgenericData(theEnv)->DefgenericConstruct,defgenericName,TRUE));
   }
@@ -387,7 +390,7 @@ globle DEFGENERIC *LookupDefgenericByMdlOrScope(
  ***************************************************/
 globle DEFGENERIC *LookupDefgenericInScope(
   void *theEnv,
-  char *defgenericName)
+  const char *defgenericName)
   {
    return((DEFGENERIC *) LookupConstruct(theEnv,DefgenericData(theEnv)->DefgenericConstruct,defgenericName,FALSE));
   }
@@ -966,7 +969,7 @@ globle void ListDefgenericsCommand(
  ***************************************************/
 globle void EnvListDefgenerics(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   struct defmodule *theModule)
   {
    ListConstruct(theEnv,DefgenericData(theEnv)->DefgenericConstruct,logicalName,theModule);
@@ -985,7 +988,7 @@ globle void EnvListDefgenerics(
  ******************************************************/
 globle void EnvListDefmethods(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   void *vptr)
   {
    DEFGENERIC *gfunc;
@@ -1282,7 +1285,7 @@ globle void EnvGetMethodRestrictions(
  ***************************************************/
 static void PrintGenericCall(
   void *theEnv,
-  char *logName,
+  const char *logName,
   void *value)
   {
 #if DEVELOPER
@@ -1386,7 +1389,7 @@ static void IncrementGenericBusyCount(
 static void SaveDefgenerics(
   void *theEnv,
   void *theModule,
-  char *logName)
+  const char *logName)
   {
    SaveConstruct(theEnv,theModule,logName,DefgenericData(theEnv)->DefgenericConstruct);
   }
@@ -1402,7 +1405,7 @@ static void SaveDefgenerics(
 static void SaveDefmethods(
   void *theEnv,
   void *theModule,
-  char *logName)
+  const char *logName)
   {
    DoForAllConstructsInModule(theEnv,theModule,SaveDefmethodsForDefgeneric,
                               DefgenericData(theEnv)->DefgenericModuleIndex,
@@ -1426,7 +1429,7 @@ static void SaveDefmethodsForDefgeneric(
   void *userBuffer)
   {
    DEFGENERIC *gfunc = (DEFGENERIC *) theDefgeneric;
-   char *logName = (char *) userBuffer;
+   const char *logName = (const char *) userBuffer;
    long i;
 
    for (i = 0 ; i < gfunc->mcnt ; i++)
@@ -1506,7 +1509,7 @@ static void RemoveDefgenericMethod(
  ******************************************************/
 static long ListMethodsForGeneric(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   DEFGENERIC *gfunc)
   {
    long gi;
@@ -1565,7 +1568,7 @@ static unsigned DefgenericWatchAccess(
  ***********************************************************************/
 static unsigned DefgenericWatchPrint(
   void *theEnv,
-  char *logName,
+  const char *logName,
   int code,
   EXPRESSION *argExprs)
   {
@@ -1620,7 +1623,7 @@ static unsigned DefmethodWatchAccess(
  ***********************************************************************/
 static unsigned DefmethodWatchPrint(
   void *theEnv,
-  char *logName,
+  const char *logName,
   int code,
   EXPRESSION *argExprs)
   {
@@ -1648,10 +1651,10 @@ static unsigned DefmethodWatchPrint(
  *******************************************************/
 static unsigned DefmethodWatchSupport(
   void *theEnv,
-  char *funcName,
-  char *logName,
+  const char *funcName,
+  const char *logName,
   unsigned newState,
-  void (*printFunc)(void *,char *,void *,long),
+  void (*printFunc)(void *,const char *,void *,long),
   void (*traceFunc)(void *,unsigned,void *,long),
   EXPRESSION *argExprs)
   {
@@ -1770,7 +1773,7 @@ static unsigned DefmethodWatchSupport(
  ***************************************************/
 static void PrintMethodWatchFlag(
   void *theEnv,
-  char *logName,
+  const char *logName,
   void *theGeneric,
   long theMethod)
   {

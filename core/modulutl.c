@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              DEFMODULE UTILITY MODULE               */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -49,7 +52,7 @@
 /*   position of the second colon within the string is returned.    */
 /********************************************************************/
 globle unsigned FindModuleSeparator(
-  char *theString)
+  const char *theString)
   {
    unsigned i, foundColon;
 
@@ -76,7 +79,7 @@ globle unsigned FindModuleSeparator(
 globle SYMBOL_HN *ExtractModuleName(
   void *theEnv,
   unsigned thePosition,
-  char *theString)
+  const char *theString)
   {
    char *newString;
    SYMBOL_HN *returnValue;
@@ -136,7 +139,7 @@ globle SYMBOL_HN *ExtractModuleName(
 globle SYMBOL_HN *ExtractConstructName(
   void *theEnv,
   unsigned thePosition,
-  char *theString)
+  const char *theString)
   {
    size_t theLength;
    char *newString;
@@ -201,9 +204,9 @@ globle SYMBOL_HN *ExtractConstructName(
 /*   module and construct name from a string. Sets  */
 /*   the current module to the specified module.    */
 /****************************************************/
-globle char *ExtractModuleAndConstructName(
+globle const char *ExtractModuleAndConstructName(
   void *theEnv,
-  char *theName)
+  const char *theName)
   {
    unsigned separatorPosition;
    SYMBOL_HN *moduleName, *shortName;
@@ -252,9 +255,9 @@ globle char *ExtractModuleAndConstructName(
 /************************************************************/
 globle void *FindImportedConstruct(
   void *theEnv,
-  char *constructName,
+  const char *constructName,
   struct defmodule *matchModule,
-  char *findName,
+  const char *findName,
   int *count,
   int searchCurrent,
   struct defmodule *notYetDefinedInModule)
@@ -341,8 +344,8 @@ globle void *FindImportedConstruct(
 /*********************************************************/
 globle void AmbiguousReferenceErrorMessage(
   void *theEnv,
-  char *constructName,
-  char *findName)
+  const char *constructName,
+  const char *findName)
   {
    EnvPrintRouter(theEnv,WERROR,"Ambiguous reference to ");
    EnvPrintRouter(theEnv,WERROR,constructName);
@@ -546,7 +549,7 @@ static void *SearchImportedConstructModules(
 /**************************************************************/
 globle intBool ConstructExported(
   void *theEnv,
-  char *constructTypeStr,
+  const char *constructTypeStr,
   struct symbolHashNode *moduleName,
   struct symbolHashNode *findName)
   {
@@ -607,17 +610,17 @@ globle intBool AllImportedModulesVisited(
 /***************************************/
 globle void ListItemsDriver(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   struct defmodule *theModule,
-  char *singleName,
-  char *pluralName,
+  const char *singleName,
+  const char *pluralName,
   void *(*nextFunction)(void *,void *),
-  char *(*nameFunction)(void *),
-  void (*printFunction)(void *,char *,void *),
+  const char *(*nameFunction)(void *),
+  void (*printFunction)(void *,const char *,void *),
   int (*doItFunction)(void *,void *))
   {
    void *constructPtr;
-   char *constructName;
+   const char *constructName;
    long count = 0;
    int allModules = FALSE;
    int doIt;

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  07/01/05          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*            DR0868                                         */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -59,8 +62,8 @@
 static void PushQueryCore(void *);
 static void PopQueryCore(void *);
 static QUERY_CORE *FindQueryCore(void *,int);
-static QUERY_TEMPLATE *DetermineQueryTemplates(void *,EXPRESSION *,char *,unsigned *);
-static QUERY_TEMPLATE *FormChain(void *,char *,DATA_OBJECT *);
+static QUERY_TEMPLATE *DetermineQueryTemplates(void *,EXPRESSION *,const char *,unsigned *);
+static QUERY_TEMPLATE *FormChain(void *,const char *,DATA_OBJECT *);
 static void DeleteQueryTemplates(void *,QUERY_TEMPLATE *);
 static int TestForFirstInChain(void *,QUERY_TEMPLATE *,int);
 static int TestForFirstFactInTemplate(void *,struct deftemplate *,QUERY_TEMPLATE *,int);
@@ -669,7 +672,7 @@ static QUERY_CORE *FindQueryCore(
 static QUERY_TEMPLATE *DetermineQueryTemplates(
   void *theEnv,
   EXPRESSION *templateExp,
-  char *func,
+  const char *func,
   unsigned *rcnt)
   {
    QUERY_TEMPLATE *clist = NULL,*cnxt = NULL,*cchain = NULL,*tmp;
@@ -731,7 +734,7 @@ static QUERY_TEMPLATE *DetermineQueryTemplates(
  *************************************************************/
 static QUERY_TEMPLATE *FormChain(
   void *theEnv,
-  char *func,
+  const char *func,
   DATA_OBJECT *val)
   {
    struct deftemplate *templatePtr;

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.24  06/05/06           */
+   /*              CLIPS Version 6.30  07/25/14           */
    /*                                                     */
    /*                INSTANCE PARSER MODULE               */
    /*******************************************************/
@@ -22,6 +22,9 @@
 /*            definitions.                                   */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -163,7 +166,7 @@ static intBool ReplaceClassNameWithReference(void *,EXPRESSION *);
 globle EXPRESSION *ParseInitializeInstance(
   void *theEnv,
   EXPRESSION *top,
-  char *readSource)
+  const char *readSource)
   {
    int error,fcalltype,readclass;
 
@@ -329,7 +332,7 @@ ParseInitializeInstanceError:
  ********************************************************************************/
 globle EXPRESSION *ParseSlotOverrides(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   int *error)
   {
    EXPRESSION *top = NULL,*bot = NULL,*theExp;
@@ -413,7 +416,7 @@ globle EXPRESSION *ParseSlotOverrides(
 globle EXPRESSION *ParseSimpleInstance(
   void *theEnv,
   EXPRESSION *top,
-  char *readSource)
+  const char *readSource)
   {
    EXPRESSION *theExp,*vals = NULL,*vbot,*tval;
    unsigned short type;

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -19,6 +19,9 @@
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*            Added environment parameter to GenClose.       */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -105,33 +108,33 @@ static void ReadyObjectsForCode(void *);
 static void MarkDefclassAndSlots(void *,struct constructHeader *,void *);
 static void PrintSlotNameReference(void *,FILE *,SLOT_NAME *,int,int);
 static void InitObjectsCode(void *,FILE *,int,int);
-static int ObjectsToCode(void *,char *,char *,char *,int,FILE *,int,int);
-static int ClassIDMapToCode(void *,char *,char *,char *,int,FILE *,int,int,int *);
-static int ClassHashTableToCode(void *,char *,char *,char *,int,FILE *,int,int,int *);
-static int SlotNameHashTableToCode(void *,char *,char *,char *,int,FILE *,int,int,int *);
-static int SlotNameEntriesToCode(void *,char *,char *,char *,int,FILE *,int,int,int *);
+static int ObjectsToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
+static int ClassIDMapToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int *);
+static int ClassHashTableToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int *);
+static int SlotNameHashTableToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int *);
+static int SlotNameEntriesToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int *);
 static void CloseObjectFiles(void *,FILE *[SAVE_ITEMS],int [SAVE_ITEMS],
                              struct CodeGeneratorFile [SAVE_ITEMS],int);
 static void DefclassModuleToCode(void *,FILE *,struct defmodule *,int,int);
 static void SingleDefclassToCode(void *,FILE *,int,int,DEFCLASS *,int,
                                  int,int,int,int,int,int,
                                  int,int,int,int,int,int);
-static intBool InheritanceLinksToCode(void *,FILE **,char *,char *,char *,int,int,FILE *,
+static intBool InheritanceLinksToCode(void *,FILE **,const char *,const char *,char *,int,int,FILE *,
                                       int *,int,DEFCLASS *,int *,
                                       int *,int *,struct CodeGeneratorFile *);
-static intBool SlotsToCode(void *,FILE **,char *,char *,char *,int,int,FILE *,
+static intBool SlotsToCode(void *,FILE **,const char *,const char *,char *,int,int,FILE *,
                            int *,int,DEFCLASS *,int *,
                            int *,int *,struct CodeGeneratorFile *);
-static intBool TemplateSlotsToCode(void *,FILE **,char *,char *,char *,int,int,FILE *,
+static intBool TemplateSlotsToCode(void *,FILE **,const char *,const char *,char *,int,int,FILE *,
                                    int *,int,DEFCLASS *,int *,
                                    int *,int *,struct CodeGeneratorFile *);
-static intBool OrderedSlotsToCode(void *,FILE **,char *,char *,char *,int,int,FILE *,
+static intBool OrderedSlotsToCode(void *,FILE **,const char *,const char *,char *,int,int,FILE *,
                                   int *,int,DEFCLASS *,int *,
                                   int *,int *,struct CodeGeneratorFile *);
-static intBool HandlersToCode(void *,FILE **,char *,char *,char *,int,int,FILE *,
+static intBool HandlersToCode(void *,FILE **,const char *,const char *,char *,int,int,FILE *,
                               int *,int,DEFCLASS *,int *,
                               int *,int *,struct CodeGeneratorFile *);
-static intBool OrderedHandlersToCode(void *,FILE **,char *,char *,char *,int,int,FILE *,
+static intBool OrderedHandlersToCode(void *,FILE **,const char *,const char *,char *,int,int,FILE *,
                                      int *,int,DEFCLASS *,int *,
                                      int *,int *,struct CodeGeneratorFile *);
 
@@ -382,8 +385,8 @@ static void InitObjectsCode(
  *************************************************************/
 static int ObjectsToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -545,8 +548,8 @@ ObjectCodeError:
  ***********************************************************/
 static int ClassIDMapToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -594,8 +597,8 @@ static int ClassIDMapToCode(
  ***********************************************************/
 static int ClassHashTableToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -641,8 +644,8 @@ static int ClassHashTableToCode(
  ***********************************************************/
 static int SlotNameHashTableToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -689,8 +692,8 @@ static int SlotNameHashTableToCode(
  ***********************************************************/
 static int SlotNameEntriesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   FILE *headerFP,
@@ -971,8 +974,8 @@ static void SingleDefclassToCode(
 static intBool InheritanceLinksToCode(
   void *theEnv,
   FILE **classLinkFile,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   int imageID,
@@ -1069,8 +1072,8 @@ static intBool InheritanceLinksToCode(
 static intBool SlotsToCode(
   void *theEnv,
   FILE **slotFile,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   int imageID,
@@ -1184,8 +1187,8 @@ static intBool SlotsToCode(
 static intBool TemplateSlotsToCode(
   void *theEnv,
   FILE **templateSlotFile,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   int imageID,
@@ -1263,8 +1266,8 @@ static intBool TemplateSlotsToCode(
 static intBool OrderedSlotsToCode(
   void *theEnv,
   FILE **orderedSlotFile,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   int imageID,
@@ -1334,8 +1337,8 @@ static intBool OrderedSlotsToCode(
 static intBool HandlersToCode(
   void *theEnv,
   FILE **handlerFile,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   int imageID,
@@ -1415,8 +1418,8 @@ static intBool HandlersToCode(
 static intBool OrderedHandlersToCode(
   void *theEnv,
   FILE **orderedHandlerFile,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   int imageID,

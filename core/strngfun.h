@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.21  06/15/03            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*             STRING FUNCTIONS HEADER FILE            */
    /*******************************************************/
@@ -15,6 +15,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -37,12 +40,12 @@
 #endif
 
 #if ALLOW_ENVIRONMENT_GLOBALS
-   LOCALE int                            Build(char *);
-   LOCALE int                            Eval(char *,DATA_OBJECT_PTR);
+   LOCALE int                            Build(const char *);
+   LOCALE int                            Eval(const char *,DATA_OBJECT_PTR);
 #endif
 
-   LOCALE int                            EnvBuild(void *,char *);
-   LOCALE int                            EnvEval(void *,char *,DATA_OBJECT_PTR);
+   LOCALE int                            EnvBuild(void *,const char *);
+   LOCALE int                            EnvEval(void *,const char *,DATA_OBJECT_PTR);
    LOCALE void                           StringFunctionDefinitions(void *);
    LOCALE void                           StrCatFunction(void *,DATA_OBJECT_PTR);
    LOCALE void                           SymCatFunction(void *,DATA_OBJECT_PTR);
@@ -55,7 +58,7 @@
    LOCALE void                           EvalFunction(void *,DATA_OBJECT_PTR);
    LOCALE int                            BuildFunction(void *);
    LOCALE void                           StringToFieldFunction(void *,DATA_OBJECT *);
-   LOCALE void                           StringToField(void *,char *,DATA_OBJECT *);
+   LOCALE void                           StringToField(void *,const char *,DATA_OBJECT *);
 
 #endif
 

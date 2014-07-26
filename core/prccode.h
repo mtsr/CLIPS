@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/05/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -17,6 +17,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -98,22 +101,22 @@ LOCALE void InstallProcedurePrimitives(void *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
 
 #if DEFFUNCTION_CONSTRUCT || OBJECT_SYSTEM
-LOCALE EXPRESSION *ParseProcParameters(void *,char *,struct token *,EXPRESSION *,
+LOCALE EXPRESSION *ParseProcParameters(void *,const char *,struct token *,EXPRESSION *,
                                        SYMBOL_HN **,int *,int *,int *,
-                                       int (*)(void *,char *));
+                                       int (*)(void *,const char *));
 #endif
-LOCALE EXPRESSION *ParseProcActions(void *,char *,char *,struct token *,EXPRESSION *,SYMBOL_HN *,
+LOCALE EXPRESSION *ParseProcActions(void *,const char *,const char *,struct token *,EXPRESSION *,SYMBOL_HN *,
                                     int (*)(void *,EXPRESSION *,void *),
                                     int (*)(void *,EXPRESSION *,void *),
                                     int *,void *);
-LOCALE intBool ReplaceProcVars(void *,char *,EXPRESSION *,EXPRESSION *,SYMBOL_HN *,
+LOCALE intBool ReplaceProcVars(void *,const char *,EXPRESSION *,EXPRESSION *,SYMBOL_HN *,
                                      int (*)(void *,EXPRESSION *,void *),void *);
 #if DEFGENERIC_CONSTRUCT
 LOCALE EXPRESSION *GenProcWildcardReference(void *,int);
 #endif
 #endif
 
-LOCALE void PushProcParameters(void *,EXPRESSION *,int,char *,char *,void (*)(void *));
+LOCALE void PushProcParameters(void *,EXPRESSION *,int,const char *,const char *,void (*)(void *));
 LOCALE void PopProcParameters(void *);
 
 #if DEFGENERIC_CONSTRUCT
@@ -122,7 +125,7 @@ LOCALE EXPRESSION *GetProcParamExpressions(void *);
 
 LOCALE void EvaluateProcActions(void *,struct defmodule *,EXPRESSION *,int,
                                 DATA_OBJECT *,void (*)(void *));
-LOCALE void PrintProcParamArray(void *,char *);
+LOCALE void PrintProcParamArray(void *,const char *);
 LOCALE void GrabProcWildargs(void *,DATA_OBJECT *,int);
 
 #endif

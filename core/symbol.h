@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                 SYMBOL HEADER FILE                  */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*                                                           */
 /*      6.24: Support for run-time programs directly passing */
 /*            the hash tables for initialization.            */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -244,17 +247,17 @@ struct symbolData
    LOCALE void                           InitializeAtomTables(void *,struct symbolHashNode **,struct floatHashNode **,
                                                               struct integerHashNode **,struct bitMapHashNode **,
                                                               struct externalAddressHashNode **);
-   LOCALE void                          *EnvAddSymbol(void *,char *);
-   LOCALE SYMBOL_HN                     *FindSymbolHN(void *,char *);
+   LOCALE void                          *EnvAddSymbol(void *,const char *);
+   LOCALE SYMBOL_HN                     *FindSymbolHN(void *,const char *);
    LOCALE void                          *EnvAddDouble(void *,double);
    LOCALE void                          *EnvAddLong(void *,long long);
    LOCALE void                          *EnvAddBitMap(void *,void *,unsigned);
    LOCALE void                          *EnvAddExternalAddress(void *,void *,unsigned);
    LOCALE INTEGER_HN                    *FindLongHN(void *,long long);
-   LOCALE unsigned long                  HashSymbol(char *,unsigned long);
+   LOCALE unsigned long                  HashSymbol(const char *,unsigned long);
    LOCALE unsigned long                  HashFloat(double,unsigned long);
    LOCALE unsigned long                  HashInteger(long long,unsigned long);
-   LOCALE unsigned long                  HashBitMap(char *,unsigned long,unsigned);
+   LOCALE unsigned long                  HashBitMap(const char *,unsigned long,unsigned);
    LOCALE unsigned long                  HashExternalAddress(void *,unsigned long);
    LOCALE void                           DecrementSymbolCount(void *,struct symbolHashNode *);
    LOCALE void                           DecrementFloatCount(void *,struct floatHashNode *);
@@ -274,9 +277,9 @@ struct symbolData
                                        **GetExternalAddressTable(void *);
    LOCALE void                           SetExternalAddressTable(void *,struct externalAddressHashNode **);
    LOCALE void                           RefreshSpecialSymbols(void *);
-   LOCALE struct symbolMatch            *FindSymbolMatches(void *,char *,unsigned *,size_t *);
+   LOCALE struct symbolMatch            *FindSymbolMatches(void *,const char *,unsigned *,size_t *);
    LOCALE void                           ReturnSymbolMatches(void *,struct symbolMatch *);
-   LOCALE SYMBOL_HN                     *GetNextSymbolMatch(void *,char *,size_t,SYMBOL_HN *,int,size_t *);
+   LOCALE SYMBOL_HN                     *GetNextSymbolMatch(void *,const char *,size_t,SYMBOL_HN *,int,size_t *);
    LOCALE void                           ClearBitString(void *,unsigned);
    LOCALE void                           SetAtomicValueIndices(void *,int);
    LOCALE void                           RestoreAtomicValueBuckets(void *);

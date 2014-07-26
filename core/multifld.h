@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                MULTIFIELD HEADER FILE               */
    /*******************************************************/
@@ -20,6 +20,9 @@
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*            Moved ImplodeMultifield from multifun.c.       */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -97,12 +100,12 @@ struct multifieldData
    LOCALE void                           ReturnMultifield(void *,struct multifield *);
    LOCALE void                           MultifieldInstall(void *,struct multifield *);
    LOCALE void                           MultifieldDeinstall(void *,struct multifield *);
-   LOCALE struct multifield             *StringToMultifield(void *,char *);
+   LOCALE struct multifield             *StringToMultifield(void *,const char *);
    LOCALE void                          *EnvCreateMultifield(void *,long);
    LOCALE void                           AddToMultifieldList(void *,struct multifield *);
    LOCALE void                           FlushMultifields(void *);
    LOCALE void                           DuplicateMultifield(void *,struct dataObject *,struct dataObject *);
-   LOCALE void                           PrintMultifield(void *,char *,SEGMENT_PTR,long,long,int);
+   LOCALE void                           PrintMultifield(void *,const char *,SEGMENT_PTR,long,long,int);
    LOCALE intBool                        MultifieldDOsEqual(DATA_OBJECT_PTR,DATA_OBJECT_PTR);
    LOCALE void                           StoreInMultifield(void *,DATA_OBJECT *,EXPRESSION *,int);
    LOCALE void                          *CopyMultifield(void *,struct multifield *);

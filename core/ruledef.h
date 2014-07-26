@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/21/14            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                 DEFRULE HEADER FILE                 */
    /*******************************************************/
@@ -32,6 +32,9 @@
 /*            Added salience groups to improve performance   */
 /*            with large numbers of activations of different */
 /*            saliences.                                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -160,7 +163,7 @@ struct defruleData
 #define IsDefruleDeletable(a) EnvIsDefruleDeletable(GetCurrentEnvironment(),a)
 
    LOCALE void                           InitializeDefrules(void *);
-   LOCALE void                          *EnvFindDefrule(void *,char *);
+   LOCALE void                          *EnvFindDefrule(void *,const char *);
    LOCALE void                          *EnvGetNextDefrule(void *,void *);
    LOCALE struct defruleModule          *GetDefruleModuleItem(void *,struct defmodule *);
    LOCALE intBool                        EnvIsDefruleDeletable(void *,void *);

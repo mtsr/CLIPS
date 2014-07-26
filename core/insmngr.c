@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.24  05/17/06           */
+   /*              CLIPS Version 6.30  07/25/14           */
    /*                                                     */
    /*            INSTANCE PRIMITIVE SUPPORT MODULE        */
    /*******************************************************/
@@ -24,6 +24,9 @@
 /*            DEFRULE_CONSTRUCT.                             */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -88,7 +91,7 @@ static int InsertSlotOverrides(void *,INSTANCE_TYPE *,EXPRESSION *);
 static void EvaluateClassDefaults(void *,INSTANCE_TYPE *);
 
 #if DEBUGGING_FUNCTIONS
-static void PrintInstanceWatch(void *,char *,INSTANCE_TYPE *);
+static void PrintInstanceWatch(void *,const char *,INSTANCE_TYPE *);
 #endif
 
 /* =========================================
@@ -1075,7 +1078,7 @@ static void EvaluateClassDefaults(
  ***************************************************/
 static void PrintInstanceWatch(
   void *theEnv,
-  char *traceString,
+  const char *traceString,
   INSTANCE_TYPE *theInstance)
   {
    EnvPrintRouter(theEnv,WTRACE,traceString);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/22/14            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              CONSTRUCT COMMANDS MODULE              */
    /*******************************************************/
@@ -35,6 +35,9 @@
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*            Added ConstructsDeletable function.            */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -71,10 +74,10 @@
 /***************************************/
 
 #if DEBUGGING_FUNCTIONS
-   static void                    ConstructPrintWatch(void *,char *,struct construct *,void *,
+   static void                    ConstructPrintWatch(void *,const char *,struct construct *,void *,
                                                       unsigned (*)(void *,void *));
-   static unsigned                ConstructWatchSupport(void *,struct construct *,char *,
-                                                        char *,EXPRESSION *,intBool,
+   static unsigned                ConstructWatchSupport(void *,struct construct *,const char *,
+                                                        const char *,EXPRESSION *,intBool,
                                                         unsigned,unsigned (*)(void *,void *),
                                                         void (*)(void *,unsigned,void *));
 #endif
@@ -105,7 +108,7 @@ globle void AddConstructToModule(
 /****************************************************/
 globle intBool DeleteNamedConstruct(
   void *theEnv,
-  char *constructName,
+  const char *constructName,
   struct construct *constructClass)
   {
 #if (! BLOAD_ONLY)
@@ -165,7 +168,7 @@ globle intBool DeleteNamedConstruct(
 /*******************************************/
 globle void *FindNamedConstruct(
   void *theEnv,
-  char *constructName,
+  const char *constructName,
   struct construct *constructClass)
   {
    void *theConstruct;
@@ -252,10 +255,10 @@ globle void *FindNamedConstruct(
 /*****************************************/
 globle void UndefconstructCommand(
   void *theEnv,
-  char *command,
+  const char *command,
   struct construct *constructClass)
   {
-   char *constructName;
+   const char *constructName;
    char buffer[80];
 
    /*==============================================*/
@@ -308,10 +311,10 @@ globle void UndefconstructCommand(
 /******************************************/
 globle void PPConstructCommand(
   void *theEnv,
-  char *command,
+  const char *command,
   struct construct *constructClass)
   {
-   char *constructName;
+   const char *constructName;
    char buffer[80];
 
    /*===============================*/
@@ -339,8 +342,8 @@ globle void PPConstructCommand(
 /***********************************/
 globle int PPConstruct(
   void *theEnv,
-  char *constructName,
-  char *logicalName,
+  const char *constructName,
+  const char *logicalName,
   struct construct *constructClass)
   {
    void *constructPtr;
@@ -384,10 +387,10 @@ globle int PPConstruct(
 /*********************************************/
 globle SYMBOL_HN *GetConstructModuleCommand(
   void *theEnv,
-  char *command,
+  const char *command,
   struct construct *constructClass)
   {
-   char *constructName;
+   const char *constructName;
    char buffer[80];
    struct defmodule *constructModule;
 
@@ -425,7 +428,7 @@ globle SYMBOL_HN *GetConstructModuleCommand(
 /******************************************/
 globle struct defmodule *GetConstructModule(
   void *theEnv,
-  char *constructName,
+  const char *constructName,
   struct construct *constructClass)
   {
    struct constructHeader *constructPtr;
@@ -595,7 +598,7 @@ globle intBool Undefconstruct(
 globle void SaveConstruct(
   void *theEnv,
   void *theModule,
-  char *logicalName,
+  const char *logicalName,
   struct construct *constructClass)
   {
    char *ppform;
@@ -689,7 +692,7 @@ globle SYMBOL_HN *GetConstructNamePointer(
 /************************************************/
 globle void GetConstructListFunction(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   DATA_OBJECT_PTR returnValue,
   struct construct *constructClass)
   {
@@ -944,7 +947,7 @@ globle void GetConstructList(
 /*********************************************/
 globle void ListConstructCommand(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   struct construct *constructClass)
   {
    struct defmodule *theModule;
@@ -1016,7 +1019,7 @@ globle void ListConstructCommand(
 globle void ListConstruct(
   void *theEnv,
   struct construct *constructClass,
-  char *logicalName,
+  const char *logicalName,
   struct defmodule *theModule)
   {
    void *constructPtr;
@@ -1348,7 +1351,7 @@ globle void DoForAllConstructsInModule(
 /*****************************************************/
 globle void InitializeConstructHeader(
   void *theEnv,
-  char *constructType,
+  const char *constructType,
   struct constructHeader *theConstruct,
   SYMBOL_HN *theConstructName)
   {
@@ -1393,7 +1396,7 @@ globle void SetConstructPPForm(
 globle unsigned ConstructPrintWatchAccess(
   void *theEnv,
   struct construct *constructClass,
-  char *logName,
+  const char *logName,
   EXPRESSION *argExprs,
   unsigned (*getWatchFunc)(void *,void *),
   void (*setWatchFunc)(void *,unsigned,void *))
@@ -1425,8 +1428,8 @@ globle unsigned ConstructSetWatchAccess(
 static unsigned ConstructWatchSupport(
   void *theEnv,
   struct construct *constructClass,
-  char *funcName,
-  char *logName,
+  const char *funcName,
+  const char *logName,
   EXPRESSION *argExprs,
   intBool setFlag,
   unsigned newState,
@@ -1574,7 +1577,7 @@ static unsigned ConstructWatchSupport(
 /*************************************************/
 static void ConstructPrintWatch(
   void *theEnv,
-  char *logName,
+  const char *logName,
   struct construct *constructClass,
   void *theConstruct,
   unsigned (*getWatchFunc)(void *,void *))
@@ -1596,11 +1599,11 @@ static void ConstructPrintWatch(
 globle void *LookupConstruct(
   void *theEnv,
   struct construct *constructClass,
-  char *constructName,
+  const char *constructName,
   intBool moduleNameAllowed)
   {
    void *theConstruct;
-   char *constructType;
+   const char *constructType;
    int moduleCount;
 
    /*============================================*/

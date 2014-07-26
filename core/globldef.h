@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                DEFGLOBAL HEADER FILE                */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -107,7 +110,7 @@ struct defglobalModule
 #define SetGlobalsChanged(a) EnvSetGlobalsChanged(GetCurrentEnvironment(),a)
 
    LOCALE void                           InitializeDefglobals(void *);
-   LOCALE void                          *EnvFindDefglobal(void *,char *);
+   LOCALE void                          *EnvFindDefglobal(void *,const char *);
    LOCALE void                          *EnvGetNextDefglobal(void *,void *);
    LOCALE void                           CreateInitialFactDefglobal(void);
    LOCALE intBool                        EnvIsDefglobalDeletable(void *,void *);
@@ -117,8 +120,8 @@ struct defglobalModule
    LOCALE void                           EnvGetDefglobalValueForm(void *,char *,unsigned,void *);
    LOCALE int                            EnvGetGlobalsChanged(void *);
    LOCALE void                           EnvSetGlobalsChanged(void *,int);
-   LOCALE intBool                        EnvGetDefglobalValue(void *,char *,DATA_OBJECT_PTR);
-   LOCALE intBool                        EnvSetDefglobalValue(void *,char *,DATA_OBJECT_PTR);
+   LOCALE intBool                        EnvGetDefglobalValue(void *,const char *,DATA_OBJECT_PTR);
+   LOCALE intBool                        EnvSetDefglobalValue(void *,const char *,DATA_OBJECT_PTR);
    LOCALE void                           UpdateDefglobalScope(void *);
    LOCALE void                          *GetNextDefglobalInScope(void *,void *);
    LOCALE int                            QGetDefglobalValue(void *,void *,DATA_OBJECT_PTR);

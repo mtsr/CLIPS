@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.21  06/15/03            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*               FACT COMMANDS HEADER FILE             */
    /*******************************************************/
@@ -15,6 +15,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -45,14 +48,14 @@
    LOCALE void                           RetractCommand(void *);
    LOCALE void                           AssertStringFunction(void *,DATA_OBJECT_PTR);
    LOCALE void                           FactsCommand(void *);
-   LOCALE void                           EnvFacts(void *,char *,void *,long long,long long,long long);
+   LOCALE void                           EnvFacts(void *,const char *,void *,long long,long long,long long);
    LOCALE int                            SetFactDuplicationCommand(void *);
    LOCALE int                            GetFactDuplicationCommand(void *);
    LOCALE int                            SaveFactsCommand(void *);
    LOCALE int                            LoadFactsCommand(void *);
-   LOCALE int                            EnvSaveFacts(void *,char *,int,struct expr *);
-   LOCALE int                            EnvLoadFacts(void *,char *);
-   LOCALE int                            EnvLoadFactsFromString(void *,char *,int);
+   LOCALE int                            EnvSaveFacts(void *,const char *,int,struct expr *);
+   LOCALE int                            EnvLoadFacts(void *,const char *);
+   LOCALE int                            EnvLoadFactsFromString(void *,const char *,int);
    LOCALE long long                      FactIndexFunction(void *);
 
 #endif

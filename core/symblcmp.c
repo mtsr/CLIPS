@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*           SYMBOL CONSTRUCT COMPILER MODULE          */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*      6.24: Added environment parameter to GenClose.       */
 /*                                                           */
 /*            Corrected code to remove compiler warnings.    */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -56,13 +59,13 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                         SymbolHashNodesToCode(void *,char *,char *,char *,int);
-   static int                         BitMapHashNodesToCode(void *,char *,char *,char *,int);
-   static int                         BitMapValuesToCode(void *,char *,char *, char *,int);
-   static int                         FloatHashNodesToCode(void *,char *,char *,char *,int);
-   static int                         IntegerHashNodesToCode(void *,char *,char *,char *,int);
-   static int                         HashTablesToCode(void *,char *,char *,char *);
-   static void                        PrintCString(FILE *,char *);
+   static int                         SymbolHashNodesToCode(void *,const char *,const char *,char *,int);
+   static int                         BitMapHashNodesToCode(void *,const char *,const char *,char *,int);
+   static int                         BitMapValuesToCode(void *,const char *,const char *, char *,int);
+   static int                         FloatHashNodesToCode(void *,const char *,const char *,char *,int);
+   static int                         IntegerHashNodesToCode(void *,const char *,const char *,char *,int);
+   static int                         HashTablesToCode(void *,const char *,const char *,char *);
+   static void                        PrintCString(FILE *,const char *);
 
 /**************************************************************/
 /* AtomicValuesToCode: Driver routine for generating the code */
@@ -70,11 +73,11 @@
 /**************************************************************/
 globle void AtomicValuesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer)
   {
-   int version;
+   int version; // TBD Necessary?
 
    SetAtomicValueIndices(theEnv,TRUE);
 
@@ -94,8 +97,8 @@ globle void AtomicValuesToCode(
 /*****************************************************/
 static int SymbolHashNodesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int version)
   {
@@ -196,8 +199,8 @@ static int SymbolHashNodesToCode(
 /******************************************************/
 static int BitMapHashNodesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int version)
   {
@@ -310,8 +313,8 @@ static int BitMapHashNodesToCode(
 /*****************************************************/
 static int BitMapValuesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int version)
   {
@@ -423,8 +426,8 @@ static int BitMapValuesToCode(
 /****************************************************/
 static int FloatHashNodesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int version)
   {
@@ -525,8 +528,8 @@ static int FloatHashNodesToCode(
 /******************************************************/
 static int IntegerHashNodesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int version)
   {
@@ -627,8 +630,8 @@ static int IntegerHashNodesToCode(
 /****************************************************************/
 static int HashTablesToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer)
   {
    unsigned long i;
@@ -801,7 +804,7 @@ globle void PrintBitMapReference(
 /*********************************************************/
 static void PrintCString(
   FILE *theFile,
-  char *str)
+  const char *str)
   {
    unsigned i;
    size_t slen;

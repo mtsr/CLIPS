@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.22  06/15/04            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              STRING I/O ROUTER MODULE               */
    /*******************************************************/
@@ -17,6 +17,9 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -44,12 +47,12 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                     FindString(void *,char *);
-   static int                     PrintString(void *,char *,char *);
-   static int                     GetcString(void *,char *);
-   static int                     UngetcString(void *,int,char *);
-   static struct stringRouter    *FindStringRouter(void *,char *);
-   static int                     CreateReadStringSource(void *,char *,char *,size_t,size_t);
+   static int                     FindString(void *,const char *);
+   static int                     PrintString(void *,const char *,const char *);
+   static int                     GetcString(void *,const char *);
+   static int                     UngetcString(void *,int,const char *);
+   static struct stringRouter    *FindStringRouter(void *,const char *);
+   static int                     CreateReadStringSource(void *,const char *,const char *,size_t,size_t);
    static void                    DeallocateStringRouterData(void *);
 
 /**********************************************************/
@@ -76,7 +79,7 @@ static void DeallocateStringRouterData(
    while (tmpPtr != NULL)
      {
       nextPtr = tmpPtr->next;
-      rm(theEnv,tmpPtr->name,strlen(tmpPtr->name) + 1);
+      rm(theEnv,(void *) tmpPtr->name,strlen(tmpPtr->name) + 1);
       rtn_struct(theEnv,stringRouter,tmpPtr);
       tmpPtr = nextPtr;
      }
@@ -87,7 +90,7 @@ static void DeallocateStringRouterData(
 /*************************************************************/
 static int FindString(
   void *theEnv,
-  char *fileid)
+  const char *fileid)
   {
    struct stringRouter *head;
 
@@ -107,8 +110,8 @@ static int FindString(
 /**************************************************/
 static int PrintString(
   void *theEnv,
-  char *logicalName,
-  char *str)
+  const char *logicalName,
+  const char *str)
   {
    struct stringRouter *head;
 
@@ -125,7 +128,7 @@ static int PrintString(
    
    if ((head->currentPosition + 1) >= head->maximumPosition) return(1);
 
-   genstrncpy(&head->str[head->currentPosition],
+   genstrncpy(&head->writeString[head->currentPosition],
               str,(STD_SIZE) (head->maximumPosition - head->currentPosition) - 1);
 
    head->currentPosition += strlen(str);
@@ -138,7 +141,7 @@ static int PrintString(
 /************************************************/
 static int GetcString(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
    struct stringRouter *head;
    int rc;
@@ -157,7 +160,7 @@ static int GetcString(
       return(EOF);
      }
 
-   rc = (unsigned char) head->str[head->currentPosition];
+   rc = (unsigned char) head->readString[head->currentPosition];
    head->currentPosition++;
 
    return(rc);
@@ -169,7 +172,7 @@ static int GetcString(
 static int UngetcString(
   void *theEnv,
   int ch,
-  char *logicalName)
+  const char *logicalName)
   {
    struct stringRouter *head;
 #if MAC_XCD
@@ -196,8 +199,8 @@ static int UngetcString(
 /************************************************/
 globle int OpenStringSource(
   void *theEnv,
-  char *name,
-  char *str,
+  const char *name,
+  const char *str,
   size_t currentPosition)
   {
    size_t maximumPosition;
@@ -219,8 +222,8 @@ globle int OpenStringSource(
 /******************************************************/
 globle int OpenTextSource(
   void *theEnv,
-  char *name,
-  char *str,
+  const char *name,
+  const char *str,
   size_t currentPosition,
   size_t maximumPosition)
   {
@@ -238,19 +241,22 @@ globle int OpenTextSource(
 /******************************************************************/
 static int CreateReadStringSource(
   void *theEnv,
-  char *name,
-  char *str,
+  const char *name,
+  const char *str,
   size_t currentPosition,
   size_t maximumPosition)
   {
    struct stringRouter *newStringRouter;
+   char *theName;
 
    if (FindStringRouter(theEnv,name) != NULL) return(0);
 
    newStringRouter = get_struct(theEnv,stringRouter);
-   newStringRouter->name = (char *) gm1(theEnv,strlen(name) + 1);
-   genstrcpy(newStringRouter->name,name);
-   newStringRouter->str = str;
+   theName = (char *) gm1(theEnv,strlen(name) + 1);
+   genstrcpy(theName,name);
+   newStringRouter->name = theName;
+   newStringRouter->writeString = NULL;
+   newStringRouter->readString = str;
    newStringRouter->currentPosition = currentPosition;
    newStringRouter->readWriteType = READ_STRING;
    newStringRouter->maximumPosition = maximumPosition;
@@ -265,7 +271,7 @@ static int CreateReadStringSource(
 /**********************************************/
 globle int CloseStringSource(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    struct stringRouter *head, *last;
 
@@ -278,14 +284,14 @@ globle int CloseStringSource(
          if (last == NULL)
            {
             StringRouterData(theEnv)->ListOfStringRouters = head->next;
-            rm(theEnv,head->name,strlen(head->name) + 1);
+            rm(theEnv,(void *) head->name,strlen(head->name) + 1);
             rtn_struct(theEnv,stringRouter,head);
             return(1);
            }
          else
            {
             last->next = head->next;
-            rm(theEnv,head->name,strlen(head->name) + 1);
+            rm(theEnv,(void *) head->name,strlen(head->name) + 1);
             rtn_struct(theEnv,stringRouter,head);
             return(1);
            }
@@ -302,18 +308,21 @@ globle int CloseStringSource(
 /******************************************************************/
 globle int OpenStringDestination(
   void *theEnv,
-  char *name,
+  const char *name,
   char *str,
   size_t maximumPosition)
   {
    struct stringRouter *newStringRouter;
+   char *theName;
 
    if (FindStringRouter(theEnv,name) != NULL) return(0);
 
    newStringRouter = get_struct(theEnv,stringRouter);
-   newStringRouter->name = (char *) gm1(theEnv,(int) strlen(name) + 1);
-   genstrcpy(newStringRouter->name,name);
-   newStringRouter->str = str;
+   theName = (char *) gm1(theEnv,(int) strlen(name) + 1);
+   genstrcpy(theName,name);
+   newStringRouter->name = theName;
+   newStringRouter->readString = NULL;
+   newStringRouter->writeString = str;
    newStringRouter->currentPosition = 0;
    newStringRouter->readWriteType = WRITE_STRING;
    newStringRouter->maximumPosition = maximumPosition;
@@ -328,7 +337,7 @@ globle int OpenStringDestination(
 /***************************************************/
 globle int CloseStringDestination(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    return(CloseStringSource(theEnv,name));
   }
@@ -338,7 +347,7 @@ globle int CloseStringDestination(
 /*******************************************************************/
 static struct stringRouter *FindStringRouter(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    struct stringRouter *head;
 

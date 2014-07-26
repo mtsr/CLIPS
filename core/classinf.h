@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  07/01/05          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /*      6.24: Added allowed-classes slot facet.              */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -56,7 +59,7 @@ LOCALE intBool ClassAbstractPCommand(void *);
 #if DEFRULE_CONSTRUCT
 LOCALE intBool ClassReactivePCommand(void *);
 #endif
-LOCALE void *ClassInfoFnxArgs(void *,char *,int *);
+LOCALE void *ClassInfoFnxArgs(void *,const char *,int *);
 LOCALE void ClassSlotsCommand(void *,DATA_OBJECT *);
 LOCALE void ClassSuperclassesCommand(void *,DATA_OBJECT *);
 LOCALE void ClassSubclassesCommand(void *,DATA_OBJECT *);
@@ -77,13 +80,13 @@ LOCALE void EnvGetDefmessageHandlerList(void *,void *,DATA_OBJECT *,int);
 LOCALE void EnvClassSuperclasses(void *,void *,DATA_OBJECT *,int);
 LOCALE void EnvClassSubclasses(void *,void *,DATA_OBJECT *,int);
 LOCALE void ClassSubclassAddresses(void *,void *,DATA_OBJECT *,int);
-LOCALE void EnvSlotFacets(void *,void *,char *,DATA_OBJECT *);
-LOCALE void EnvSlotSources(void *,void *,char *,DATA_OBJECT *);
-LOCALE void EnvSlotTypes(void *,void *,char *,DATA_OBJECT *);
-LOCALE void EnvSlotAllowedValues(void *,void *,char *,DATA_OBJECT *);
-LOCALE void EnvSlotAllowedClasses(void *,void *,char *,DATA_OBJECT *);
-LOCALE void EnvSlotRange(void *,void *,char *,DATA_OBJECT *);
-LOCALE void EnvSlotCardinality(void *,void *,char *,DATA_OBJECT *);
+LOCALE void EnvSlotFacets(void *,void *,const char *,DATA_OBJECT *);
+LOCALE void EnvSlotSources(void *,void *,const char *,DATA_OBJECT *);
+LOCALE void EnvSlotTypes(void *,void *,const char *,DATA_OBJECT *);
+LOCALE void EnvSlotAllowedValues(void *,void *,const char *,DATA_OBJECT *);
+LOCALE void EnvSlotAllowedClasses(void *,void *,const char *,DATA_OBJECT *);
+LOCALE void EnvSlotRange(void *,void *,const char *,DATA_OBJECT *);
+LOCALE void EnvSlotCardinality(void *,void *,const char *,DATA_OBJECT *);
 
 #endif
 

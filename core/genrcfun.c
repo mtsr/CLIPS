@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  05/17/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -22,6 +22,9 @@
 /*      6.24: Removed IMPERATIVE_METHODS compilation flag.   */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -624,8 +627,8 @@ globle void PrintMethod(
  ***************************************************/
 globle DEFGENERIC *CheckGenericExists(
   void *theEnv,
-  char *fname,
-  char *gname)
+  const char *fname,
+  const char *gname)
   {
    DEFGENERIC *gfunc;
 
@@ -657,7 +660,7 @@ globle DEFGENERIC *CheckGenericExists(
  ***************************************************/
 globle long CheckMethodExists(
   void *theEnv,
-  char *fname,
+  const char *fname,
   DEFGENERIC *gfunc,
   long mi)
   {
@@ -737,7 +740,7 @@ globle char *TypeName(
  ******************************************************/
 globle void PrintGenericName(
   void *theEnv,
-  char *logName,
+  const char *logName,
   DEFGENERIC *gfunc)
   {
    if (gfunc->header.whichModule->theModule != ((struct defmodule *) EnvGetCurrentModule(theEnv)))

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*          DEFTEMPLATE RHS PARSING HEADER FILE        */
    /*******************************************************/
@@ -15,6 +15,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -42,7 +45,7 @@
 #define LOCALE extern
 #endif
 
-   LOCALE struct expr                   *ParseAssertTemplate(void *,char *,struct token *,int *,
+   LOCALE struct expr                   *ParseAssertTemplate(void *,const char *,struct token *,int *,
                                                              int,int,struct deftemplate *);
 
 #endif

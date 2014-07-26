@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.20  01/31/02          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -15,6 +15,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -37,8 +40,8 @@
 #define LOCALE extern
 #endif
 
-LOCALE EXPRESSION *ParseQueryNoAction(void *,EXPRESSION *,char *);
-LOCALE EXPRESSION *ParseQueryAction(void *,EXPRESSION *,char *);
+LOCALE EXPRESSION *ParseQueryNoAction(void *,EXPRESSION *,const char *);
+LOCALE EXPRESSION *ParseQueryAction(void *,EXPRESSION *,const char *);
 
 #ifndef _INSQYPSR_SOURCE_
 #endif

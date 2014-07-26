@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/21/14            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                   DEFRULE MODULE                    */
    /*******************************************************/
@@ -37,6 +37,9 @@
 /*                                                           */
 /*            Added EnvGetDisjunctCount and                  */
 /*            EnvGetNthDisjunct functions.                   */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -267,7 +270,7 @@ globle struct defruleModule *GetDefruleModuleItem(
 /*******************************************************************/
 globle void *EnvFindDefrule(
   void *theEnv,
-  char *defruleName)
+  const char *defruleName)
   {   
    return(FindNamedConstruct(theEnv,defruleName,DefruleData(theEnv)->DefruleConstruct)); 
   }

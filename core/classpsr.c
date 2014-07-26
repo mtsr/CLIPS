@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  03/04/08          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                  CLASS PARSER MODULE                */
    /*******************************************************/
@@ -25,6 +25,9 @@
 /*      6.30: Added support to allow CreateClassScopeMap to   */
 /*            be used by other functions.                     */
 /*                                                            */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
+/*                                                           */
 /**************************************************************/
 
 /* =========================================
@@ -80,9 +83,9 @@
    =========================================
    ***************************************** */
 
-static intBool ValidClassName(void *,char *,DEFCLASS **);
-static intBool ParseSimpleQualifier(void *,char *,char *,char *,char *,intBool *,intBool *);
-static intBool ReadUntilClosingParen(void *,char *,struct token *);
+static intBool ValidClassName(void *,const char *,DEFCLASS **);
+static intBool ParseSimpleQualifier(void *,const char *,const char *,const char *,const char *,intBool *,intBool *);
+static intBool ReadUntilClosingParen(void *,const char *,struct token *);
 static void AddClass(void *,DEFCLASS *);
 static void BuildSubclassLinks(void *,DEFCLASS *);
 static void FormInstanceTemplate(void *,DEFCLASS *);
@@ -145,7 +148,7 @@ static void CreatePublicSlotMessageHandlers(void *,DEFCLASS *);
   ***************************************************************************************/
 globle int ParseDefclass(
   void *theEnv,
-  char *readSource)
+  const char *readSource)
   {
    SYMBOL_HN *cname;
    DEFCLASS *cls;
@@ -386,7 +389,7 @@ globle int ParseDefclass(
  ***********************************************************/
 static intBool ValidClassName(
   void *theEnv,
-  char *theClassName,
+  const char *theClassName,
   DEFCLASS **theDefclass)
   {
    *theDefclass = (DEFCLASS *) EnvFindDefclass(theEnv,theClassName);
@@ -441,10 +444,10 @@ static intBool ValidClassName(
  ***************************************************************/
 static intBool ParseSimpleQualifier(
   void *theEnv,
-  char *readSource,
-  char *classQualifier,
-  char *clearRelation,
-  char *setRelation,
+  const char *readSource,
+  const char *classQualifier,
+  const char *clearRelation,
+  const char *setRelation,
   intBool *alreadyTestedFlag,
   intBool *binaryFlag)
   {
@@ -491,7 +494,7 @@ ParseSimpleQualifierError:
  ***************************************************/
 static intBool ReadUntilClosingParen(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   struct token *inputToken)
   {
    int cnt = 1,lparen_read = FALSE;

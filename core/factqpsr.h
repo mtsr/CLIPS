@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.23  01/31/05          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -16,7 +16,11 @@
 /*      Gary D. Riley                                        */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Added fact-set queries.                        */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -39,8 +43,8 @@
 #define LOCALE extern
 #endif
 
-LOCALE EXPRESSION *FactParseQueryNoAction(void *,EXPRESSION *,char *);
-LOCALE EXPRESSION *FactParseQueryAction(void *,EXPRESSION *,char *);
+LOCALE EXPRESSION *FactParseQueryNoAction(void *,EXPRESSION *,const char *);
+LOCALE EXPRESSION *FactParseQueryAction(void *,EXPRESSION *,const char *);
 
 #ifndef _FACTQPSR_SOURCE_
 #endif

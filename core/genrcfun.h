@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/05/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -17,6 +17,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -160,14 +163,14 @@ LOCALE long FindMethodByIndex(DEFGENERIC *,long);
 LOCALE void PreviewGeneric(void *);
 LOCALE void PrintMethod(void *,char *,int,DEFMETHOD *);
 #endif
-LOCALE DEFGENERIC *CheckGenericExists(void *,char *,char *);
-LOCALE long CheckMethodExists(void *,char *,DEFGENERIC *,long);
+LOCALE DEFGENERIC *CheckGenericExists(void *,const char *,const char *);
+LOCALE long CheckMethodExists(void *,const char *,DEFGENERIC *,long);
 
 #if ! OBJECT_SYSTEM
 LOCALE char *TypeName(void *,int);
 #endif
 
-LOCALE void PrintGenericName(void *,char *,DEFGENERIC *);
+LOCALE void PrintGenericName(void *,const char *,DEFGENERIC *);
 
 #endif
 

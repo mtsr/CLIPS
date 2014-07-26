@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24 06/05/06             */
+   /*             CLIPS Version 6.30  07/25/14             */
    /*                                                     */
    /*      CONSTRUCT PROFILING FUNCTIONS HEADER FILE      */
    /*******************************************************/
@@ -17,6 +17,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -68,7 +71,7 @@ struct profileFunctionData
    int ProfileUserFunctions;
    int ProfileConstructs;
    struct constructProfileInfo *ActiveProfileFrame;
-   char *OutputString;
+   const char *OutputString;
   };
 
 #define ProfileFunctionData(theEnv) ((struct profileFunctionData *) GetEnvironmentData(theEnv,PROFLFUN_DATA))
@@ -88,10 +91,10 @@ struct profileFunctionData
    LOCALE double                         SetProfilePercentThreshold(void *,double);
    LOCALE double                         GetProfilePercentThresholdCommand(void *);
    LOCALE double                         GetProfilePercentThreshold(void *);
-   LOCALE intBool                        Profile(void *,char *);
+   LOCALE intBool                        Profile(void *,const char *);
    LOCALE void                           DeleteProfileData(void *,void *);
    LOCALE void                          *CreateProfileData(void *);
-   LOCALE char                          *SetProfileOutputString(void *,char *);
+   LOCALE const char                    *SetProfileOutputString(void *,const char *);
 
 #endif
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.20  01/31/02          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -15,6 +15,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -42,7 +45,7 @@ struct messageHandlerData
    unsigned WatchHandlers;
    unsigned WatchMessages;
 #endif
-   char *hndquals[4];
+   const char *hndquals[4];
    SYMBOL_HN *SELF_SYMBOL;
    SYMBOL_HN *CurrentMessageName;
    HANDLER_LINK *CurrentCore;
@@ -83,14 +86,14 @@ struct messageHandlerData
    
    LOCALE void             SetupMessageHandlers(void *);
    LOCALE char            *EnvGetDefmessageHandlerName(void *,void *,int);
-   LOCALE char            *EnvGetDefmessageHandlerType(void *,void *,int);
+   LOCALE const char      *EnvGetDefmessageHandlerType(void *,void *,int);
    LOCALE int              EnvGetNextDefmessageHandler(void *,void *,int);
    LOCALE HANDLER         *GetDefmessageHandlerPointer(void *,int);
 #if DEBUGGING_FUNCTIONS
    LOCALE unsigned         EnvGetDefmessageHandlerWatch(void *,void *,int);
    LOCALE void             EnvSetDefmessageHandlerWatch(void *,int,void *,int);
 #endif
-   LOCALE unsigned         EnvFindDefmessageHandler(void *,void *,char *,char *); 
+   LOCALE unsigned         EnvFindDefmessageHandler(void *,void *,const char *,const char *);
    LOCALE int              EnvIsDefmessageHandlerDeletable(void *,void *,int);
    LOCALE void             UndefmessageHandlerCommand(void *);
    LOCALE int              EnvUndefmessageHandler(void *,void *,int);
@@ -100,9 +103,9 @@ struct messageHandlerData
    LOCALE void             ListDefmessageHandlersCommand(void *);
    LOCALE void             PreviewSendCommand(void *); 
    LOCALE char            *EnvGetDefmessageHandlerPPForm(void *,void *,int);
-   LOCALE void             EnvListDefmessageHandlers(void *,char *,void *,int);
-   LOCALE void             EnvPreviewSend(void *,char *,void *,char *);
-   LOCALE long             DisplayHandlersInLinks(void *,char *,PACKED_CLASS_LINKS *,int);
+   LOCALE void             EnvListDefmessageHandlers(void *,const char *,void *,int);
+   LOCALE void             EnvPreviewSend(void *,const char *,void *,const char *);
+   LOCALE long             DisplayHandlersInLinks(void *,const char *,PACKED_CLASS_LINKS *,int);
 #endif
 
 #endif

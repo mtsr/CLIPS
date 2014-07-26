@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  03/02/07            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                 I/O FUNCTIONS MODULE                */
    /*******************************************************/
@@ -35,6 +35,10 @@
 /*                                                           */
 /*            Added a+, w+, rb, ab, r+b, w+b, and a+b modes  */
 /*            for the open function.                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
+/*                                                           */
 /*************************************************************/
 
 #define _IOFUN_SOURCE_
@@ -94,10 +98,10 @@ struct IOFunctionData
 #if IO_FUNCTIONS
    static void             ReadTokenFromStdin(void *,struct token *);
    static char            *ControlStringCheck(void *,int);
-   static char             FindFormatFlag(char *,size_t *,char *,size_t);
-   static char            *PrintFormatFlag(void *,char *,int,int);
-   static char            *FillBuffer(void *,char *,size_t *,size_t *);
-   static void             ReadNumber(void *,char *,struct token *,int);
+   static char             FindFormatFlag(const char *,size_t *,char *,size_t);
+   static char            *PrintFormatFlag(void *,const char *,int,int);
+   static char            *FillBuffer(void *,const char *,size_t *,size_t *);
+   static void             ReadNumber(void *,const char *,struct token *,int);
 #endif
 
 /**************************************/
@@ -146,7 +150,7 @@ globle void IOFunctionDefinitions(
 globle void PrintoutFunction(
   void *theEnv)
   {
-   char *dummyid;
+   const char *dummyid;
    int i, argCount;
    DATA_OBJECT theArgument;
 
@@ -254,7 +258,7 @@ globle void ReadFunction(
   {
    struct token theToken;
    int numberOfArguments;
-   char *logicalName = NULL;
+   const char *logicalName = NULL;
 
    /*===============================================*/
    /* Check for an appropriate number of arguments. */
@@ -434,7 +438,7 @@ globle int OpenFunction(
   void *theEnv)
   {
    int numberOfArguments;
-   char *fileName, *logicalName, *accessMode = NULL;
+   const char *fileName, *logicalName, *accessMode = NULL;
    DATA_OBJECT theArgument;
 
    /*========================================*/
@@ -530,7 +534,7 @@ globle int CloseFunction(
   void *theEnv)
   {
    int numberOfArguments;
-   char *logicalName;
+   const char *logicalName;
 
    /*======================================*/
    /* Check for valid number of arguments. */
@@ -576,7 +580,7 @@ globle int GetCharFunction(
   void *theEnv)
   {
    int numberOfArguments;
-   char *logicalName;
+   const char *logicalName;
 
    if ((numberOfArguments = EnvArgCountCheck(theEnv,"get-char",NO_MORE_THAN,1)) == -1)
      { return(-1); }
@@ -614,7 +618,7 @@ globle void PutCharFunction(
   void *theEnv)
   {
    int numberOfArguments;
-   char *logicalName;
+   const char *logicalName;
    DATA_OBJECT theValue;
    long long theChar;
    FILE *theFile;
@@ -678,7 +682,7 @@ globle void PutCharFunction(
 globle int RemoveFunction(
   void *theEnv)
   {
-   char *theFileName;
+   const char *theFileName;
 
    /*======================================*/
    /* Check for valid number of arguments. */
@@ -707,7 +711,7 @@ globle int RemoveFunction(
 globle int RenameFunction(
   void *theEnv)
   {
-   char *oldFileName, *newFileName;
+   const char *oldFileName, *newFileName;
 
    /*========================================*/
    /* Check for a valid number of arguments. */
@@ -739,7 +743,8 @@ globle void *FormatFunction(
   {
    int argCount;
    size_t start_pos;
-   char *formatString, *logicalName;
+   char *formatString;
+   const char *logicalName;
    char formatFlagType;
    int  f_cur_arg = 3;
    size_t form_pos = 0;
@@ -899,7 +904,7 @@ static char *ControlStringCheck(
 /*   a format flag in the format string.       */
 /***********************************************/
 static char FindFormatFlag(
-  char *formatString,
+  const char *formatString,
   size_t *a,
   char *formatBuffer,
   size_t bufferMax)
@@ -1017,7 +1022,7 @@ static char FindFormatFlag(
 /**********************************************************************/
 static char *PrintFormatFlag(
   void *theEnv,
-  char *formatString,
+  const char *formatString,
   int whichArg,
   int formatType)
   {
@@ -1122,7 +1127,7 @@ globle void ReadlineFunction(
    char *buffer;
    size_t line_max = 0;
    int numberOfArguments;
-   char *logicalName;
+   const char *logicalName;
 
    returnValue->type = STRING;
 
@@ -1188,7 +1193,7 @@ globle void ReadlineFunction(
 /*************************************************************/
 static char *FillBuffer(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   size_t *currentPosition,
   size_t *maximumSize)
   {
@@ -1294,7 +1299,7 @@ globle void ReadNumberFunction(
   {
    struct token theToken;
    int numberOfArguments;
-   char *logicalName = NULL;
+   const char *logicalName = NULL;
 
    /*===============================================*/
    /* Check for an appropriate number of arguments. */
@@ -1390,7 +1395,7 @@ globle void ReadNumberFunction(
 /********************************************/
 static void ReadNumber(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   struct token *theToken,
   int isStdin)
   {

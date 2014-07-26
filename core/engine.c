@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -39,6 +39,9 @@
 /*            Removed pseudo-facts used in not CEs.          */
 /*                                                           */
 /*            Added context information for run functions.   */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -892,7 +895,7 @@ globle void EnvClearFocusStack(
 /*   to the ListOfRunFunctions.    */
 /***********************************/
 globle intBool AddRunFunction(
-  char *name,
+  const char *name,
   void (*functionPtr)(void),
   int priority)
   {
@@ -911,7 +914,7 @@ globle intBool AddRunFunction(
 /*   to the ListOfBeforeRunFunctions.    */
 /*****************************************/
 globle intBool AddBeforeRunFunction(
-  char *name,
+  const char *name,
   void (*functionPtr)(void *),
   int priority)
   {
@@ -932,7 +935,7 @@ globle intBool AddBeforeRunFunction(
 /**************************************/
 globle intBool EnvAddRunFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*functionPtr)(void *),
   int priority)
   {
@@ -948,7 +951,7 @@ globle intBool EnvAddRunFunction(
 /********************************************/
 globle intBool EnvAddBeforeRunFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*functionPtr)(void *, void *),
   int priority)
   {
@@ -964,7 +967,7 @@ globle intBool EnvAddBeforeRunFunction(
 /*****************************************/
 globle intBool EnvAddRunFunctionWithContext(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*functionPtr)(void *),
   int priority,
   void *context)
@@ -982,7 +985,7 @@ globle intBool EnvAddRunFunctionWithContext(
 /***********************************************/
 globle intBool EnvAddBeforeRunFunctionWithContext(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*functionPtr)(void *, void *),
   int priority,
   void *context)
@@ -1000,7 +1003,7 @@ globle intBool EnvAddBeforeRunFunctionWithContext(
 /********************************************/
 globle intBool EnvRemoveRunFunction(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    int found;
 
@@ -1018,7 +1021,7 @@ globle intBool EnvRemoveRunFunction(
 /**************************************************/
 globle intBool EnvRemoveBeforeRunFunction(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    int found;
 
@@ -1147,12 +1150,12 @@ globle void RemoveAllBreakpoints(
 /***********************************/
 globle void EnvShowBreaks(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   void *vTheModule)
   {
    ListItemsDriver(theEnv,logicalName,(struct defmodule *) vTheModule,
                    NULL,NULL,
-                   EnvGetNextDefrule,(char *(*)(void *)) GetConstructNameString,
+                   EnvGetNextDefrule,(const char *(*)(void *)) GetConstructNameString,
                    NULL,EnvDefruleHasBreakpoint);
    }
 
@@ -1277,7 +1280,7 @@ globle void ListFocusStackCommand(
 /***************************************/
 globle void EnvListFocusStack(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
    struct focus *theFocus;
 

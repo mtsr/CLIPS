@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.22  06/15/04            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                DEFFACTS PARSER MODULE               */
    /*******************************************************/
@@ -16,6 +16,9 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -46,7 +49,7 @@
 /************************************************************/
 globle int ParseDeffacts(
   void *theEnv,
-  char *readSource)
+  const char *readSource)
   {
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    SYMBOL_HN *deffactsName;

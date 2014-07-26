@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                 AGENDA HEADER FILE                  */
    /*******************************************************/
@@ -30,6 +30,9 @@
 /*      6.30: Added salience groups to improve performance   */
 /*            with large numbers of activations of different */
 /*            saliences.                                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -138,7 +141,7 @@ struct agendaData
    LOCALE intBool                 MoveActivationToTop(void *,void *);
    LOCALE intBool                 EnvDeleteActivation(void *,void *);
    LOCALE intBool                 DetachActivation(void *,void *);
-   LOCALE void                    EnvAgenda(void *,char *,void *);
+   LOCALE void                    EnvAgenda(void *,const char *,void *);
    LOCALE void                    RemoveActivation(void *,void *,int,int);
    LOCALE void                    RemoveAllActivations(void *);
    LOCALE int                     EnvGetAgendaChanged(void *);

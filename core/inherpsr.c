@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.20  01/31/02          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*             MULTIPLE INHERITANCE PARSER MODULE      */
    /*******************************************************/
@@ -16,6 +16,9 @@
 /*                                                            */
 /* Revision History:                                          */
 /*                                                            */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
+/*                                                           */
 /**************************************************************/
 
 /* =========================================
@@ -70,7 +73,7 @@ static PARTIAL_ORDER *InitializePartialOrderTable(void *,PARTIAL_ORDER *,PACKED_
 static void RecordPartialOrders(void *,PARTIAL_ORDER *,DEFCLASS *,PACKED_CLASS_LINKS *,long);
 static PARTIAL_ORDER *FindPartialOrder(PARTIAL_ORDER *,DEFCLASS *);
 static void PrintPartialOrderLoop(void *,PARTIAL_ORDER *);
-static void PrintClassLinks(void *,char *,char *,CLASS_LINK *);
+static void PrintClassLinks(void *,const char *,const char *,CLASS_LINK *);
 
 /* =========================================
    *****************************************
@@ -113,7 +116,7 @@ static void PrintClassLinks(void *,char *,char *,CLASS_LINK *);
  ***************************************************************/
 globle PACKED_CLASS_LINKS *ParseSuperclasses(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   SYMBOL_HN *newClassName)
   {
    CLASS_LINK *clink = NULL,*cbot = NULL,*ctmp;
@@ -819,8 +822,8 @@ static void PrintPartialOrderLoop(
  ***************************************************/
 static void PrintClassLinks(
   void *theEnv,
-  char *logicalName,
-  char *title,
+  const char *logicalName,
+  const char *title,
   CLASS_LINK *clink)
   {
    if (title != NULL)

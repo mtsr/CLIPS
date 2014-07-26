@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.24  06/05/06           */
+   /*              CLIPS Version 6.30  07/25/14           */
    /*                                                     */
    /*           INSTANCE MULTIFIELD SLOT MODULE           */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -57,8 +60,8 @@
    =========================================
    ***************************************** */
 
-static INSTANCE_TYPE *CheckMultifieldSlotInstance(void *,char *);
-static INSTANCE_SLOT *CheckMultifieldSlotModify(void *,int,char *,INSTANCE_TYPE *,
+static INSTANCE_TYPE *CheckMultifieldSlotInstance(void *,const char *);
+static INSTANCE_SLOT *CheckMultifieldSlotModify(void *,int,const char *,INSTANCE_TYPE *,
                                        EXPRESSION *,long *,long *,DATA_OBJECT *);
 static void AssignSlotToDataObject(DATA_OBJECT *,INSTANCE_SLOT *);
 
@@ -355,7 +358,7 @@ globle intBool DirectMVDeleteCommand(
  **********************************************************************/
 static INSTANCE_TYPE *CheckMultifieldSlotInstance(
   void *theEnv,
-  char *func)
+  const char *func)
   {
    INSTANCE_TYPE *ins;
    DATA_OBJECT temp;
@@ -415,7 +418,7 @@ static INSTANCE_TYPE *CheckMultifieldSlotInstance(
 static INSTANCE_SLOT *CheckMultifieldSlotModify(
   void *theEnv,
   int code,
-  char *func,
+  const char *func,
   INSTANCE_TYPE *ins,
   EXPRESSION *args,
   long *rb,

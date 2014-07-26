@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/04/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -18,6 +18,7 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Modifications to use the system constant       */
 /*            FILENAME_MAX to check file name lengths.       */
 /*            DR0856                                         */
@@ -36,6 +37,9 @@
 /*                                                           */
 /*            Support for run-time programs directly passing */
 /*            the hash tables for initialization.            */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -121,10 +125,10 @@
 /***************************************/
 
    void                               ConstructsToCCommand(void *);
-   static int                         ConstructsToC(void *,char *,char *,char *,long long,long long);
+   static int                         ConstructsToC(void *,const char *,const char *,char *,long long,long long);
    static void                        WriteFunctionExternDeclarations(void *,FILE *);
-   static int                         FunctionsToCode(void *theEnv,char *,char *,char *);
-   static int                         WriteInitializationFunction(void *,char *,char *,char *);
+   static int                         FunctionsToCode(void *theEnv,const char *,const char *,char *);
+   static int                         WriteInitializationFunction(void *,const char *,const char *,char *);
    static void                        DumpExpression(void *,struct expr *);
    static void                        MarkConstruct(void *,struct constructHeader *,void *);
    static void                        HashedExpressionsToCode(void *);
@@ -176,7 +180,8 @@ static void DeallocateConstructCompilerData(
 globle void ConstructsToCCommand(
   void *theEnv)
   {
-   char *fileName, *pathName, *fileNameBuffer;
+   char *fileName, *fileNameBuffer;
+   const char *pathName;
    DATA_OBJECT theArg;
    int argCount;
    long long id, max; 
@@ -323,8 +328,8 @@ globle void ConstructsToCCommand(
 /***************************************/
 static int ConstructsToC(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   long long theImageID,
   long long max)
@@ -622,8 +627,8 @@ static void WriteFunctionExternDeclarations(
 /****************************************************/
 static int FunctionsToCode(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer)
   {
    short i = 0;
@@ -726,8 +731,8 @@ globle void PrintFunctionReference(
 /******************************************/
 static int WriteInitializationFunction(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer)
   {
    FILE *fp;
@@ -823,8 +828,8 @@ static int WriteInitializationFunction(
 /**************************************************/
 globle FILE *NewCFile(
   void *theEnv,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int id,
   int version,
@@ -1141,11 +1146,11 @@ globle void ConstructsToCCommandDefinition(
 /*********************************************************/
 globle struct CodeGeneratorItem *AddCodeGeneratorItem(
   void *theEnv,
-  char *name,
+  const char *name,
   int priority,
   void (*beforeFunction)(void *),
   void (*initFunction)(void *,FILE *,int,int),
-  int (*generateFunction)(void *,char *,char *,char *,int,FILE *,int,int),
+  int (*generateFunction)(void *,const char *,const char *,char *,int,FILE *,int,int),
   int arrayCount)
   {
    struct CodeGeneratorItem *newPtr, *currentPtr, *lastPtr = NULL;
@@ -1341,21 +1346,21 @@ globle FILE *CloseFileIfNeeded(
 globle FILE *OpenFileIfNeeded(
   void *theEnv,
   FILE *theFile,
-  char *fileName,
-  char *pathName,
+  const char *fileName,
+  const char *pathName,
   char *fileNameBuffer,
   int fileID,
   int imageID,
   int *fileCount,
   int arrayVersion,
   FILE *headerFP,
-  char *structureName,
+  const char *structureName,
   char *structPrefix,
   int reopenOldFile,
   struct CodeGeneratorFile *codeFile)
   {
    char arrayName[80];
-   char *newName;
+   const char *newName;
    int newID, newVersion;
 
    /*===========================================*/
@@ -1478,8 +1483,8 @@ globle void ConstructHeaderToCode(
   int imageID,
   int maxIndices,
   int moduleCount,
-  char *constructModulePrefix,
-  char *constructPrefix)
+  const char *constructModulePrefix,
+  const char *constructPrefix)
   {
    /*================*/
    /* Construct Name */
@@ -1538,7 +1543,7 @@ globle void ConstructModuleToCode(
   int imageID,
   int maxIndices,
   int constructIndex,
-  char *constructPrefix)
+  const char *constructPrefix)
   {
    struct defmoduleItemHeader *theModuleItem;
 

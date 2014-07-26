@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/22/14          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*              OBJECT MESSAGE DISPATCH CODE           */
    /*******************************************************/
@@ -21,6 +21,9 @@
 /*            AUXILIARY_MESSAGE_HANDLERS compilation flags.  */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -130,8 +133,8 @@ globle intBool DirectMessage(
 globle void EnvSend(
   void *theEnv,
   DATA_OBJECT *idata,
-  char *msg,
-  char *args,
+  const char *msg,
+  const char *args,
   DATA_OBJECT *result)
   {
    int error;
@@ -532,7 +535,7 @@ globle HANDLER_LINK *JoinHandlerLinks(
  ***************************************************/
 globle void PrintHandlerSlotGetFunction(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   void *theValue)
   {
 #if DEVELOPER
@@ -652,7 +655,7 @@ HandlerGetError:
  ***************************************************/
 globle void PrintHandlerSlotPutFunction(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   void *theValue)
   {
 #if DEVELOPER

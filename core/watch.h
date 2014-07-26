@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                  WATCH HEADER FILE                  */
    /*******************************************************/
@@ -21,6 +21,9 @@
 /*                                                           */
 /*            Added EnvSetWatchItem function.                */
 /*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_watch
@@ -34,11 +37,11 @@
 
 struct watchItem
   {
-   char *name;
+   const char *name;
    unsigned *flag;
    int code,priority;
    unsigned (*accessFunc)(void *,int,unsigned,struct expr *);
-   unsigned (*printFunc)(void *,char *,int,struct expr *);
+   unsigned (*printFunc)(void *,const char *,int,struct expr *);
    struct watchItem *next;
   };
 
@@ -63,19 +66,19 @@ struct watchData
 #define SetWatchItem(a,b) EnvSetWatchItem(GetCurrentEnvironment(),a,b)
 
 #if ALLOW_ENVIRONMENT_GLOBALS
-   LOCALE intBool                        Watch(char *);
-   LOCALE intBool                        Unwatch(char *);
+   LOCALE intBool                        Watch(const char *);
+   LOCALE intBool                        Unwatch(const char *);
 #endif
 
-   LOCALE intBool                        EnvWatch(void *,char *);
-   LOCALE intBool                        EnvUnwatch(void *,char *);
+   LOCALE intBool                        EnvWatch(void *,const char *);
+   LOCALE intBool                        EnvUnwatch(void *,const char *);
    LOCALE void                           InitializeWatchData(void *);   
-   LOCALE int                            EnvSetWatchItem(void *,char *,unsigned,struct expr *);
-   LOCALE int                            EnvGetWatchItem(void *,char *);
-   LOCALE intBool                        AddWatchItem(void *,char *,int,unsigned *,int,
+   LOCALE int                            EnvSetWatchItem(void *,const char *,unsigned,struct expr *);
+   LOCALE int                            EnvGetWatchItem(void *,const char *);
+   LOCALE intBool                        AddWatchItem(void *,const char *,int,unsigned *,int,
                                                       unsigned (*)(void *,int,unsigned,struct expr *),
-                                                      unsigned (*)(void *,char *,int,struct expr *));
-   LOCALE char                          *GetNthWatchName(void *,int);
+                                                      unsigned (*)(void *,const char *,int,struct expr *));
+   LOCALE const char                    *GetNthWatchName(void *,int);
    LOCALE int                            GetNthWatchValue(void *,int);
    LOCALE void                           WatchCommand(void *);
    LOCALE void                           UnwatchCommand(void *);

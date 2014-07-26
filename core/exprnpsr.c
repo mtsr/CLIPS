@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              EXPRESSION PARSER MODULE               */
    /*******************************************************/
@@ -27,6 +27,10 @@
 /*            defgeneric exported by the specified module,   */
 /*            but not necessarily imported by the current    */
 /*            module.                                        */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
+/*                                                           */
 /*************************************************************/
 
 #define _EXPRNPSR_SOURCE_
@@ -73,7 +77,7 @@
 /***************************************************/
 globle struct expr *Function0Parse(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
    struct token theToken;
    struct expr *top;
@@ -103,7 +107,7 @@ globle struct expr *Function0Parse(
 /*******************************************************/
 globle struct expr *Function1Parse(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
    struct token theToken;
    struct expr *top;
@@ -135,8 +139,8 @@ globle struct expr *Function1Parse(
 /****************************************************/
 globle struct expr *Function2Parse(
   void *theEnv,
-  char *logicalName,
-  char *name)
+  const char *logicalName,
+  const char *name)
   {
    struct FunctionDefinition *theFunction;
    struct expr *top;
@@ -428,8 +432,8 @@ globle void PopRtnBrkContexts(
 globle int CheckExpressionAgainstRestrictions(
   void *theEnv,
   struct expr *theExpression,
-  char *restrictions,
-  char *functionName)
+  const char *restrictions,
+  const char *functionName)
   {
    char theChar[2];
    int i = 0, j = 1;
@@ -556,7 +560,7 @@ globle int CheckExpressionAgainstRestrictions(
 globle struct expr *CollectArguments(
   void *theEnv,
   struct expr *top,
-  char *logicalName)
+  const char *logicalName)
   {
    int errorFlag;
    struct expr *lastOne, *nextOne;
@@ -603,7 +607,7 @@ globle struct expr *CollectArguments(
 /********************************************/
 globle struct expr *ArgumentParse(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   int *errorFlag)
   {
    struct expr *top;
@@ -662,7 +666,7 @@ globle struct expr *ArgumentParse(
 /************************************************************/
 globle struct expr *ParseAtomOrExpression(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   struct token *useToken)
   {
    struct token theToken, *thisToken;
@@ -708,10 +712,10 @@ globle struct expr *ParseAtomOrExpression(
 /*********************************************/
 globle struct expr *GroupActions(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   struct token *theToken,
   int readFirstToken,
-  char *endWord,
+  const char *endWord,
   int functionNameParsed)
   {
    struct expr *top, *nextOne, *lastOne = NULL;
@@ -860,11 +864,11 @@ globle intBool EnvGetSequenceOperatorRecognition(
 /*******************************************/
 globle EXPRESSION *ParseConstantArguments(
   void *theEnv,
-  char *argstr,
+  const char *argstr,
   int *error)
   {
    EXPRESSION *top = NULL,*bot = NULL,*tmp;
-   char *router = "***FNXARGS***";
+   const char *router = "***FNXARGS***";
    struct token tkn;
 
    *error = FALSE;

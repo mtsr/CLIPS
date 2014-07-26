@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  05/17/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*              MESSAGE-HANDLER PARSER FUNCTIONS       */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*                    compilation flag.                      */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -75,7 +78,7 @@
    =========================================
    ***************************************** */
 
-static intBool IsParameterSlotReference(void *,char *);
+static intBool IsParameterSlotReference(void *,const char *);
 static int SlotReferenceVar(void *,EXPRESSION *,void *);
 static int BindSlotReference(void *,EXPRESSION *,void *);
 static SLOT_DESC *CheckSlotReference(void *,DEFCLASS *,int,void *,intBool,EXPRESSION *);
@@ -103,7 +106,7 @@ static void GenHandlerSlotReference(void *,EXPRESSION *,unsigned short,SLOT_DESC
  ***********************************************************************/
 globle int ParseDefmessageHandler(
   void *theEnv,
-  char *readSource)
+  const char *readSource)
   {
    DEFCLASS *cls;
    SYMBOL_HN *cname,*mname,*wildcard;
@@ -318,9 +321,10 @@ globle void CreateGetAndPutHandlers(
   {
    char *className,*slotName;
    size_t bufsz;
-   char *buf,*handlerRouter = "*** Default Public Handlers ***";
+   char *buf;
+   const char *handlerRouter = "*** Default Public Handlers ***";
    int oldPWL,oldCM;
-   char *oldRouter;
+   const char *oldRouter;
    char *oldString;
    long oldIndex;
 
@@ -417,7 +421,7 @@ globle void CreateGetAndPutHandlers(
  *****************************************************************/
 static intBool IsParameterSlotReference(
   void *theEnv,
-  char *pname)
+  const char *pname)
   {
    if ((strncmp(pname,SELF_STRING,SELF_LEN) == 0) ?
                   (pname[SELF_LEN] == SELF_SLOT_REF) : FALSE)

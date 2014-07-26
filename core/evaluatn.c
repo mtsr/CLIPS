@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/22/14            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                  EVALUATION MODULE                  */
    /*******************************************************/
@@ -24,6 +24,9 @@
 /*                                                           */
 /*      6.30: Added support for passing context information  */ 
 /*            to user defined functions.                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -72,7 +75,7 @@
 /***************************************/
 
    static void                    DeallocateEvaluationData(void *);
-   static void                    PrintCAddress(void *,char *,void *);
+   static void                    PrintCAddress(void *,const char *,void *);
    static void                    NewCAddress(void *,DATA_OBJECT *);
    /*
    static intBool                 DiscardCAddress(void *,void *);
@@ -542,7 +545,7 @@ globle void ReturnValues(
 /***************************************************/
 globle void PrintDataObject(
   void *theEnv,
-  char *fileid,
+  const char *fileid,
   DATA_OBJECT_PTR argPtr)
   {
    switch(argPtr->type)
@@ -737,8 +740,8 @@ globle void AtomDeinstall(
 /********************************************/
 globle int EnvFunctionCall(
   void *theEnv,
-  char *name,
-  char *args,
+  const char *name,
+  const char *args,
   DATA_OBJECT *result)
   {
    FUNCTION_REFERENCE theReference;
@@ -771,7 +774,7 @@ globle int EnvFunctionCall(
 globle int FunctionCall2(
   void *theEnv,
   FUNCTION_REFERENCE *theReference,
-  char *args,
+  const char *args,
   DATA_OBJECT *result)
   {
    EXPRESSION *argexps;
@@ -973,7 +976,7 @@ unsigned long GetAtomicHashValue(
 /***********************************************************/
 globle struct expr *FunctionReferenceExpression(
   void *theEnv,
-  char *name)
+  const char *name)
   {
 #if DEFGENERIC_CONSTRUCT
    void *gfunc;
@@ -1025,7 +1028,7 @@ globle struct expr *FunctionReferenceExpression(
 /******************************************************************/
 globle intBool GetFunctionReference(
   void *theEnv,
-  char *name,
+  const char *name,
   FUNCTION_REFERENCE *theReference)
   {
 #if DEFGENERIC_CONSTRUCT
@@ -1155,7 +1158,7 @@ globle int EvaluateAndStoreInDataObject(
 /*******************************************************/
 static void PrintCAddress(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   void *theValue)
   {
    char buffer[20];

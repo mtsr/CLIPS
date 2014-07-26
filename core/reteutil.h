@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              RETE UTILITY HEADER FILE               */
    /*******************************************************/
@@ -21,6 +21,9 @@
 /*            DR0867                                         */
 /*                                                           */
 /*      6.30: Added support for hashed alpha memories.       */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -47,7 +50,7 @@
 #define LOCALE extern
 #endif
 
-   LOCALE void                           PrintPartialMatch(void *,char *,struct partialMatch *);
+   LOCALE void                           PrintPartialMatch(void *,const char *,struct partialMatch *);
    LOCALE struct partialMatch           *CopyPartialMatch(void *,struct partialMatch *);
    LOCALE struct partialMatch           *MergePartialMatches(void *,struct partialMatch *,struct partialMatch *);
    LOCALE long int                       IncrementPseudoFactIndex(void);
@@ -69,7 +72,7 @@
    LOCALE struct multifieldMarker       *CopyMultifieldMarkers(void *,struct multifieldMarker *);
    LOCALE struct partialMatch           *CreateAlphaMatch(void *,void *,struct multifieldMarker *,
                                                           struct patternNodeHeader *,unsigned long);
-   LOCALE void                           TraceErrorToRule(void *,struct joinNode *,char *);
+   LOCALE void                           TraceErrorToRule(void *,struct joinNode *,const char *);
    LOCALE void                           InitializePatternHeader(void *,struct patternNodeHeader *);
    LOCALE void                           MarkRuleNetwork(void *,int);
    LOCALE void                           TagRuleNetwork(void *,long *,long *,long *,long *);
@@ -83,7 +86,7 @@
    LOCALE void                           MarkRuleJoins(struct joinNode *,int);
    LOCALE void                           AddBlockedLink(struct partialMatch *,struct partialMatch *);
    LOCALE void                           RemoveBlockedLink(struct partialMatch *);
-   LOCALE unsigned long                  PrintBetaMemory(void *,char *,struct betaMemory *,int,char *,int);
+   LOCALE unsigned long                  PrintBetaMemory(void *,const char *,struct betaMemory *,int,const char *,int);
 
 #endif
 

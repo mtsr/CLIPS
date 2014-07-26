@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/02/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*               CLASS INITIALIZATION MODULE           */
    /*******************************************************/
@@ -26,6 +26,9 @@
 /*            Corrected code to remove run-time program       */
 /*            compiler warning.                               */
 /*                                                            */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
+/*                                                           */
 /**************************************************************/
 
 /* =========================================
@@ -108,7 +111,7 @@ static void DeallocateDefclassData(void *);
 
 #if (! RUN_TIME)
 static void DestroyDefclassAction(void *,struct constructHeader *,void *);
-static DEFCLASS *AddSystemClass(void *,char *,DEFCLASS *);
+static DEFCLASS *AddSystemClass(void *,const char *,DEFCLASS *);
 static void *AllocateModule(void *);
 static void  ReturnModule(void *,void *);
 #else
@@ -683,7 +686,7 @@ static void SetupDefclasses(
  *********************************************************/
 static DEFCLASS *AddSystemClass(
   void *theEnv,
-  char *name,
+  const char *name,
   DEFCLASS *parent)
   {
    DEFCLASS *sys;

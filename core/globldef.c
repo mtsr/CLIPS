@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/22/14            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                  DEFGLOBAL MODULE                   */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*                                                           */
 /*            Corrected code to remove run-time program      */
 /*            compiler warning.                              */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -240,7 +243,7 @@ globle struct defglobalModule *GetDefglobalModuleItem(
 /*****************************************************/
 globle void *EnvFindDefglobal(
   void *theEnv,
-  char *defglobalName)
+  const char *defglobalName)
   { 
    return(FindNamedConstruct(theEnv,defglobalName,DefglobalData(theEnv)->DefglobalConstruct)); 
   }
@@ -600,7 +603,7 @@ globle int QGetDefglobalValue(
 /************************************************************/
 globle intBool EnvGetDefglobalValue(
   void *theEnv,
-  char *variableName,
+  const char *variableName,
   DATA_OBJECT_PTR vPtr)
   {
    struct defglobal *theDefglobal;
@@ -619,7 +622,7 @@ globle intBool EnvGetDefglobalValue(
 /****************************************************************/
 globle intBool EnvSetDefglobalValue(
   void *theEnv,
-  char *variableName,
+  const char *variableName,
   DATA_OBJECT_PTR vPtr)
   {
    struct defglobal *theGlobal;

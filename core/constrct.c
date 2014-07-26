@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/22/14            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*            Added environment parameter to GenOpen.        */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -120,9 +123,11 @@ static void DeallocateConstructData(
 /*   which is called when a construct parsing     */
 /*    error occurs to be changed.                 */
 /**************************************************/
-globle void (*EnvSetParserErrorCallback(void *theEnv,void (*functionPtr)(void *,char *,char *,char *,long)))(void *,char *,char *,char*,long)
+globle void (*EnvSetParserErrorCallback(void *theEnv,
+                                        void (*functionPtr)(void *,const char *,const char *,const char *,long)))
+            (void *,const char *,const char *,const char*,long)
   {
-   void (*tmpPtr)(void *,char *,char *,char *,long);
+   void (*tmpPtr)(void *,const char *,const char *,const char *,long);
 
    tmpPtr = ConstructData(theEnv)->ParserErrorCallback;
    ConstructData(theEnv)->ParserErrorCallback = functionPtr;
@@ -135,7 +140,7 @@ globle void (*EnvSetParserErrorCallback(void *theEnv,void (*functionPtr)(void *,
 /*************************************************/
 globle struct construct *FindConstruct(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    struct construct *currentPtr;
 
@@ -158,7 +163,7 @@ globle struct construct *FindConstruct(
 /***********************************************************/
 globle int RemoveConstruct(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    struct construct *currentPtr, *lastPtr = NULL;
 
@@ -188,7 +193,7 @@ globle int RemoveConstruct(
 /***************************/
 #if ALLOW_ENVIRONMENT_GLOBALS
 globle int Save(
-  char *fileName)  
+  const char *fileName)
   {
    return EnvSave(GetCurrentEnvironment(),fileName);
   }  
@@ -199,7 +204,7 @@ globle int Save(
 /************************************************/
 globle int EnvSave(
   void *theEnv,
-  char *fileName)
+  const char *fileName)
   {
    struct callFunctionItem *saveFunction;
    FILE *filePtr;
@@ -310,7 +315,7 @@ globle int EnvSave(
 /*******************************************************/
 globle intBool RemoveSaveFunction(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    int found;
 
@@ -523,7 +528,7 @@ globle int (*SetBeforeResetFunction(void *theEnv,
 /*   to ListOfResetFunctions.        */
 /*************************************/
 globle intBool AddResetFunction(
-  char *name,
+  const char *name,
   void (*functionPtr)(void),
   int priority)
   {
@@ -544,7 +549,7 @@ globle intBool AddResetFunction(
 /****************************************/
 globle intBool EnvAddResetFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*functionPtr)(void *),
   int priority)
   {
@@ -560,7 +565,7 @@ globle intBool EnvAddResetFunction(
 /**********************************************/
 globle intBool EnvRemoveResetFunction(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    int found;
 
@@ -704,7 +709,7 @@ globle intBool ClearReady(
 /******************************************/
 globle intBool AddClearReadyFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   int (*functionPtr)(void *),
   int priority)
   {
@@ -721,7 +726,7 @@ globle intBool AddClearReadyFunction(
 /************************************************/
 globle intBool RemoveClearReadyFunction(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    int found;
 
@@ -739,7 +744,7 @@ globle intBool RemoveClearReadyFunction(
 /*   to ListOfClearFunctions.        */
 /*************************************/
 globle intBool AddClearFunction(
-  char *name,
+  const char *name,
   void (*functionPtr)(void),
   int priority)
   {
@@ -761,7 +766,7 @@ globle intBool AddClearFunction(
 /****************************************/
 globle intBool EnvAddClearFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*functionPtr)(void *),
   int priority)
   {
@@ -778,7 +783,7 @@ globle intBool EnvAddClearFunction(
 /**********************************************/
 globle intBool EnvRemoveClearFunction(
   void *theEnv,
-  char *name)
+  const char *name)
   {
    int found;
 
@@ -924,10 +929,10 @@ globle void DestroyConstructHeader(
 /*****************************************************/
 globle struct construct *AddConstruct(
   void *theEnv,
-  char *name,
-  char *pluralName,
-  int (*parseFunction)(void *,char *),
-  void *(*findFunction)(void *,char *),
+  const char *name,
+  const char *pluralName,
+  int (*parseFunction)(void *,const char *),
+  void *(*findFunction)(void *,const char *),
   SYMBOL_HN *(*getConstructNameFunction)(struct constructHeader *),
   char *(*getPPFormFunction)(void *,struct constructHeader *),
   struct defmoduleItemHeader *(*getModuleItemFunction)(struct constructHeader *),
@@ -975,8 +980,8 @@ globle struct construct *AddConstruct(
 /************************************/
 globle intBool AddSaveFunction(
   void *theEnv,
-  char *name,
-  void (*functionPtr)(void *,void *,char *),
+  const char *name,
+  void (*functionPtr)(void *,void *,const char *),
   int priority)
   {
 #if (! RUN_TIME) && (! BLOAD_ONLY)

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  06/05/06          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*                    BLOAD MODULE                     */
    /*******************************************************/
@@ -19,6 +19,9 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -45,7 +48,7 @@
 /***************************************/
 
    static struct FunctionDefinition **ReadNeededFunctions(void *,long *,int *);
-   static struct FunctionDefinition  *FastFindFunction(void *,char *,struct FunctionDefinition *);
+   static struct FunctionDefinition  *FastFindFunction(void *,const char *,struct FunctionDefinition *);
    static int                         ClearBload(void *);
    static void                        AbortBload(void *);
    static int                         BloadOutOfMemoryFunction(void *,size_t);
@@ -84,7 +87,7 @@ static void DeallocateBloadData(
 /******************************/
 globle int EnvBload(
   void *theEnv,
-  char *fileName)
+  const char *fileName)
   {
    long numberOfFunctions;
    unsigned long space;
@@ -519,7 +522,7 @@ static struct FunctionDefinition **ReadNeededFunctions(
 /*****************************************/
 static struct FunctionDefinition *FastFindFunction(
   void *theEnv,
-  char *functionName,
+  const char *functionName,
   struct FunctionDefinition *lastFunction)
   {
    struct FunctionDefinition *theList, *theFunction;
@@ -687,7 +690,7 @@ static void AbortBload(
 /********************************************/
 globle void AddBeforeBloadFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*func)(void *),
   int priority)
   {
@@ -702,7 +705,7 @@ globle void AddBeforeBloadFunction(
 /*******************************************/
 globle void AddAfterBloadFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*func)(void *),
   int priority)
   {
@@ -717,7 +720,7 @@ globle void AddAfterBloadFunction(
 /**************************************************/
 globle void AddClearBloadReadyFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   int (*func)(void *),
   int priority)
   {
@@ -734,7 +737,7 @@ globle void AddClearBloadReadyFunction(
 /*********************************************/
 globle void AddAbortBloadFunction(
   void *theEnv,
-  char *name,
+  const char *name,
   void (*func)(void *),
   int priority)
   {
@@ -770,7 +773,7 @@ static int BloadOutOfMemoryFunction(
 /*****************************************************/
 globle void CannotLoadWithBloadMessage(
   void *theEnv,
-  char *constructName)
+  const char *constructName)
   {
    PrintErrorID(theEnv,"BLOAD",1,TRUE);
    EnvPrintRouter(theEnv,WERROR,"Cannot load ");
@@ -788,7 +791,7 @@ globle int BloadCommand(
   void *theEnv)
   {
 #if (! RUN_TIME) && (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)
-   char *fileName;
+   const char *fileName;
 
    if (EnvArgCountCheck(theEnv,"bload",EXACTLY,1) == -1) return(FALSE);
    fileName = GetFileName(theEnv,"bload",1);

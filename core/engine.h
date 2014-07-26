@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                 ENGINE HEADER FILE                  */
    /*******************************************************/
@@ -33,6 +33,9 @@
 /*            analyze join network performance.              */
 /*                                                           */
 /*            Added context information for run functions.   */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -148,24 +151,24 @@ struct engineData
 #endif
 
    LOCALE long long               EnvRun(void *,long long);
-   LOCALE intBool                 EnvAddRunFunction(void *,char *,
+   LOCALE intBool                 EnvAddRunFunction(void *,const char *,
                                                     void (*)(void *),int);
-   LOCALE intBool                 EnvAddRunFunctionWithContext(void *,char *,
+   LOCALE intBool                 EnvAddRunFunctionWithContext(void *,const char *,
                                                                void (*)(void *),int,void *);
-   LOCALE intBool                 AddRunFunction(char *,void (*)(void),int);
-   LOCALE intBool                 EnvRemoveRunFunction(void *,char *);
-   LOCALE intBool                 EnvAddBeforeRunFunction(void *,char *,
+   LOCALE intBool                 AddRunFunction(const char *,void (*)(void),int);
+   LOCALE intBool                 EnvRemoveRunFunction(void *,const char *);
+   LOCALE intBool                 EnvAddBeforeRunFunction(void *,const char *,
                                                     void (*)(void *,void *),int);
-   LOCALE intBool                 EnvAddBeforeRunFunctionWithContext(void *,char *,
+   LOCALE intBool                 EnvAddBeforeRunFunctionWithContext(void *,const char *,
                                                                void (*)(void *, void *),int,void *);
-   LOCALE intBool                 AddBeforeRunFunction(char *,void (*)(void *),int);
-   LOCALE intBool                 EnvRemoveBeforeRunFunction(void *,char *);
+   LOCALE intBool                 AddBeforeRunFunction(const char *,void (*)(void *),int);
+   LOCALE intBool                 EnvRemoveBeforeRunFunction(void *,const char *);
    LOCALE void                    InitializeEngine(void *);
    LOCALE void                    EnvSetBreak(void *,void *);
    LOCALE void                    EnvHalt(void *);
    LOCALE intBool                 EnvRemoveBreak(void *,void *);
    LOCALE void                    RemoveAllBreakpoints(void *);
-   LOCALE void                    EnvShowBreaks(void *,char *,void *);
+   LOCALE void                    EnvShowBreaks(void *,const char *,void *);
    LOCALE intBool                 EnvDefruleHasBreakpoint(void *,void *);
    LOCALE void                    RunCommand(void *);
    LOCALE void                    SetBreakCommand(void *);
@@ -180,7 +183,7 @@ struct engineData
    LOCALE int                     EnvGetFocusChanged(void *);
    LOCALE void                    EnvSetFocusChanged(void *,int);
    LOCALE void                    ListFocusStackCommand(void *);
-   LOCALE void                    EnvListFocusStack(void *,char *);
+   LOCALE void                    EnvListFocusStack(void *,const char *);
    LOCALE void                    GetFocusStackFunction(void *,DATA_OBJECT_PTR);
    LOCALE void                    EnvGetFocusStack(void *,DATA_OBJECT_PTR);
    LOCALE void                   *PopFocusFunction(void *);

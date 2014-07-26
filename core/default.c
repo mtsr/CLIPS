@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*               DEFAULT ATTRIBUTE MODULE              */
    /*******************************************************/
@@ -21,6 +21,9 @@
 /*                                                           */
 /*      6.24: Support for deftemplate-slot-default-value     */
 /*            function.                                      */ 
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -259,7 +262,7 @@ static void *FindDefaultValue(
 /**********************************************/
 globle struct expr *ParseDefault(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   int multifield,
   int dynamic,
   int evalStatic,

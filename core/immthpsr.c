@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  07/01/05          */
+   /*               CLIPS Version 6.30  07/25/14          */
    /*                                                     */
    /*         IMPLICIT SYSTEM METHODS PARSING MODULE      */
    /*******************************************************/
@@ -19,6 +19,9 @@
 /*                                                           */
 /*      6.24: Added pragmas to remove unused parameter       */
 /*            warnings.                                      */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -54,9 +57,9 @@
    =========================================
    ***************************************** */
 
-static void FormMethodsFromRestrictions(void *,DEFGENERIC *,char *,EXPRESSION *);
+static void FormMethodsFromRestrictions(void *,DEFGENERIC *,const char *,EXPRESSION *);
 static RESTRICTION *ParseRestrictionType(void *,int);
-static EXPRESSION *GenTypeExpression(void *,EXPRESSION *,int,int,char *);
+static EXPRESSION *GenTypeExpression(void *,EXPRESSION *,int,int,const char *);
 
 /* =========================================
    *****************************************
@@ -112,7 +115,7 @@ globle void AddImplicitMethods(
 static void FormMethodsFromRestrictions(
   void *theEnv,
   DEFGENERIC *gfunc,
-  char *rstring,
+  const char *rstring,
   EXPRESSION *actions)
   {
    DEFMETHOD *meth;
@@ -382,7 +385,7 @@ static EXPRESSION *GenTypeExpression(
   EXPRESSION *top,
   int nonCOOLCode,
   int primitiveCode,
-  char *COOLName)
+  const char *COOLName)
   {
 #if OBJECT_SYSTEM
 #if MAC_XCD

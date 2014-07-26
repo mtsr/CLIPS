@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  03/04/08            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*          DEFTEMPLATE FUNCTION HEADER FILE           */
    /*******************************************************/
@@ -31,6 +31,9 @@
 /*      6.30: Moved default type constants (NO_DEFAULT,      */
 /*            STATIC_DEFAULT, and DYNAMIC_DEFAULT) to        */
 /*            constant.h                                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -75,36 +78,36 @@
 #define DeftemplateSlotExistP(a,b) EnvDeftemplateSlotExistP(GetCurrentEnvironment(),a,b)
 #define DeftemplateSlotDefaultP(a,b) EnvDeftemplateSlotDefaultP(GetCurrentEnvironment(),a,b)
 
-   LOCALE intBool                        UpdateModifyDuplicate(void *,struct expr *,char *,void *);
-   LOCALE struct expr                   *ModifyParse(void *,struct expr *,char *);
-   LOCALE struct expr                   *DuplicateParse(void *,struct expr *,char *);
+   LOCALE intBool                        UpdateModifyDuplicate(void *,struct expr *,const char *,void *);
+   LOCALE struct expr                   *ModifyParse(void *,struct expr *,const char *);
+   LOCALE struct expr                   *DuplicateParse(void *,struct expr *,const char *);
    LOCALE void                           DeftemplateFunctions( void *);
    LOCALE void                           ModifyCommand(void *,DATA_OBJECT_PTR);
    LOCALE void                           DuplicateCommand(void *,DATA_OBJECT_PTR);
    LOCALE void                           DeftemplateSlotNamesFunction(void *,DATA_OBJECT *);
    LOCALE void                           EnvDeftemplateSlotNames(void *,void *,DATA_OBJECT *);
    LOCALE void                           DeftemplateSlotDefaultValueFunction(void *,DATA_OBJECT *);
-   LOCALE intBool                        EnvDeftemplateSlotDefaultValue(void *,void *,char *,DATA_OBJECT *);
+   LOCALE intBool                        EnvDeftemplateSlotDefaultValue(void *,void *,const char *,DATA_OBJECT *);
    LOCALE void                           DeftemplateSlotCardinalityFunction(void *,DATA_OBJECT *);
-   LOCALE void                           EnvDeftemplateSlotCardinality(void *,void *,char *,DATA_OBJECT *);
+   LOCALE void                           EnvDeftemplateSlotCardinality(void *,void *,const char *,DATA_OBJECT *);
    LOCALE void                           DeftemplateSlotAllowedValuesFunction(void *,DATA_OBJECT *);
-   LOCALE void                           EnvDeftemplateSlotAllowedValues(void *,void *,char *,DATA_OBJECT *);
+   LOCALE void                           EnvDeftemplateSlotAllowedValues(void *,void *,const char *,DATA_OBJECT *);
    LOCALE void                           DeftemplateSlotRangeFunction(void *,DATA_OBJECT *);
-   LOCALE void                           EnvDeftemplateSlotRange(void *,void *,char *,DATA_OBJECT *);
+   LOCALE void                           EnvDeftemplateSlotRange(void *,void *,const char *,DATA_OBJECT *);
    LOCALE void                           DeftemplateSlotTypesFunction(void *,DATA_OBJECT *);
-   LOCALE void                           EnvDeftemplateSlotTypes(void *,void *,char *,DATA_OBJECT *);
+   LOCALE void                           EnvDeftemplateSlotTypes(void *,void *,const char *,DATA_OBJECT *);
    LOCALE int                            DeftemplateSlotMultiPFunction(void *);
-   LOCALE int                            EnvDeftemplateSlotMultiP(void *,void *,char *);
+   LOCALE int                            EnvDeftemplateSlotMultiP(void *,void *,const char *);
    LOCALE int                            DeftemplateSlotSinglePFunction(void *);
-   LOCALE int                            EnvDeftemplateSlotSingleP(void *,void *,char *);
+   LOCALE int                            EnvDeftemplateSlotSingleP(void *,void *,const char *);
    LOCALE int                            DeftemplateSlotExistPFunction(void *);
-   LOCALE int                            EnvDeftemplateSlotExistP(void *,void *,char *);
+   LOCALE int                            EnvDeftemplateSlotExistP(void *,void *,const char *);
    LOCALE void                          *DeftemplateSlotDefaultPFunction(void *);
-   LOCALE int                            EnvDeftemplateSlotDefaultP(void *,void *,char *);
+   LOCALE int                            EnvDeftemplateSlotDefaultP(void *,void *,const char *);
    LOCALE int                            DeftemplateSlotFacetExistPFunction(void *);
-   LOCALE int                            EnvDeftemplateSlotFacetExistP(void *,void *,char *,char *);
+   LOCALE int                            EnvDeftemplateSlotFacetExistP(void *,void *,const char *,const char *);
    LOCALE void                           DeftemplateSlotFacetValueFunction(void *,DATA_OBJECT *);
-   LOCALE int                            EnvDeftemplateSlotFacetValue(void *,void *,char *,char *,DATA_OBJECT *);
+   LOCALE int                            EnvDeftemplateSlotFacetValue(void *,void *,const char *,const char *,DATA_OBJECT *);
 
 #endif
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*         DEFMODULE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -44,9 +47,9 @@
    LOCALE void                           DefmoduleBasicCommands(void *);
    LOCALE void                           EnvGetDefmoduleList(void *,DATA_OBJECT_PTR);
    LOCALE void                           PPDefmoduleCommand(void *);
-   LOCALE int                            PPDefmodule(void *,char *,char *);
+   LOCALE int                            PPDefmodule(void *,const char *,const char *);
    LOCALE void                           ListDefmodulesCommand(void *);
-   LOCALE void                           EnvListDefmodules(void *,char *);
+   LOCALE void                           EnvListDefmodules(void *,const char *);
 
 #endif
 

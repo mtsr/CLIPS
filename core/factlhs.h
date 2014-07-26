@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                FACT BUILD HEADER FILE               */
    /*******************************************************/
@@ -15,6 +15,9 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -40,8 +43,8 @@
 #endif
 
    LOCALE int                            FactPatternParserFind(SYMBOL_HN *);
-   LOCALE struct lhsParseNode           *FactPatternParse(void *,char *,struct token *);
-   LOCALE struct lhsParseNode           *SequenceRestrictionParse(void *,char *,struct token *);
+   LOCALE struct lhsParseNode           *FactPatternParse(void *,const char *,struct token *);
+   LOCALE struct lhsParseNode           *SequenceRestrictionParse(void *,const char *,struct token *);
    LOCALE struct lhsParseNode           *CreateInitialFactPattern(void *);
 
 #endif

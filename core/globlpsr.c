@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*              DEFGLOBAL PARSER MODULE                */
    /*******************************************************/
@@ -21,6 +21,9 @@
 /*                                                           */
 /*            Made the construct redefinition message more   */
 /*            prominent.                                     */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -59,7 +62,7 @@
 /***************************************/
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
-   static intBool                 GetVariableDefinition(void *,char *,int *,int,struct token *);
+   static intBool                 GetVariableDefinition(void *,const char *,int *,int,struct token *);
    static void                    AddDefglobal(void *,SYMBOL_HN *,DATA_OBJECT_PTR,struct expr *);
 #endif
 
@@ -69,7 +72,7 @@
 /*********************************************************************/
 globle intBool ParseDefglobal(
   void *theEnv,
-  char *readSource)
+  const char *readSource)
   {
    int defglobalError = FALSE;
 #if (! RUN_TIME) && (! BLOAD_ONLY)
@@ -190,7 +193,7 @@ globle intBool ParseDefglobal(
 /***************************************************************/
 static intBool GetVariableDefinition(
   void *theEnv,
-  char *readSource,
+  const char *readSource,
   int *defglobalError,
   int tokenRead,
   struct token *theToken)
@@ -231,7 +234,7 @@ static intBool GetVariableDefinition(
 #if DEBUGGING_FUNCTIONS
    if ((EnvGetWatchItem(theEnv,"compilations") == ON) && GetPrintWhileLoading(theEnv))
      {
-      char *outRouter = WDIALOG;
+      const char *outRouter = WDIALOG;
       if (QFindDefglobal(theEnv,variableName) != NULL) 
         {
          outRouter = WWARNING;
@@ -485,7 +488,7 @@ globle intBool ReplaceGlobalVariable(
 /*****************************************************************/
 globle void GlobalReferenceErrorMessage(
   void *theEnv,
-  char *variableName)
+  const char *variableName)
   {
    PrintErrorID(theEnv,"GLOBLPSR",1,TRUE);
    EnvPrintRouter(theEnv,WERROR,"\nGlobal variable ?*");

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                   DEVELOPER MODULE                  */
    /*******************************************************/
@@ -22,6 +22,9 @@
 /*            DEFRULE_CONSTRUCT.                             */
 /*                                                           */
 /*      6.30: Added support for hashed alpha memories.       */
+/*                                                           */
+/*            Added const qualifiers and type casts to       */
+/*            remove C++ warnings.                           */
 /*                                                           */
 /*************************************************************/
 
@@ -303,21 +306,21 @@ globle intBool ValidateFactIntegrity(
              (theSegment->theFields[i].type == STRING) ||
              (theSegment->theFields[i].type == INSTANCE_NAME))
            {
-            theSymbol = theSegment->theFields[i].value;
+            theSymbol = (SYMBOL_HN *) theSegment->theFields[i].value;
             if (theSymbol->count <= 0)
               { return FALSE; }
            }
 
          if (theSegment->theFields[i].type == INTEGER)
            {
-            theInteger = theSegment->theFields[i].value;
+            theInteger = (INTEGER_HN *) theSegment->theFields[i].value;
             if (theInteger->count <= 0)
               { return FALSE; }
            }
 
          if (theSegment->theFields[i].type == FLOAT)
            {
-            theFloat = theSegment->theFields[i].value;
+            theFloat = (FLOAT_HN *) theSegment->theFields[i].value;
             if (theFloat->count <= 0)
               { return FALSE; }
            }
@@ -336,7 +339,7 @@ globle void ShowFactPatternNetwork(
   {
    struct factPatternNode *patternPtr;
    struct deftemplate *theDeftemplate;
-   char *theName;
+   const char *theName;
    int depth = 0, i;
 
    theName = GetConstructName(theEnv,"show-fpn","template name");

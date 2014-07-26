@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  07/01/05            */
+   /*             CLIPS Version 6.30  07/25/14            */
    /*                                                     */
    /*                PRINT UTILITY MODULE                 */
    /*******************************************************/
@@ -25,6 +25,9 @@
 /*            Added DataObjectToString function.             */
 /*                                                           */
 /*            Added SlotExistError function.                 */
+/*                                                           */
+/*      6.30: Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -70,7 +73,7 @@ globle void InitializePrintUtilityData(
 /***********************************************************/
 globle void PrintInChunks(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   char *bigString)
   {
    char tc, *subString;
@@ -97,7 +100,7 @@ globle void PrintInChunks(
 /************************************************************/
 globle void PrintFloat(
   void *theEnv,
-  char *fileid,
+  const char *fileid,
   double number)
   {
    char *theString;
@@ -111,7 +114,7 @@ globle void PrintFloat(
 /****************************************************/
 globle void PrintLongInteger(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   long long number)
   {
    char printBuffer[32];
@@ -125,7 +128,7 @@ globle void PrintLongInteger(
 /**************************************/
 globle void PrintAtom(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   int type,
   void *value)
   {
@@ -218,10 +221,10 @@ globle void PrintAtom(
 /**********************************************************/
 globle void PrintTally(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   long long count,
-  char *singular,
-  char *plural)
+  const char *singular,
+  const char *plural)
   {
    if (count == 0) return;
 
@@ -241,7 +244,7 @@ globle void PrintTally(
 /********************************************/
 globle void PrintErrorID(
   void *theEnv,
-  char *module,
+  const char *module,
   int errorID,
   int printCR)
   {
@@ -261,7 +264,7 @@ globle void PrintErrorID(
 /**********************************************/
 globle void PrintWarningID(
   void *theEnv,
-  char *module,
+  const char *module,
   int warningID,
   int printCR)
   {
@@ -281,8 +284,8 @@ globle void PrintWarningID(
 /***************************************************/
 globle void CantFindItemErrorMessage(
   void *theEnv,
-  char *itemType,
-  char *itemName)
+  const char *itemType,
+  const char *itemName)
   {
    PrintErrorID(theEnv,"PRNTUTIL",1,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Unable to find ");
@@ -298,9 +301,9 @@ globle void CantFindItemErrorMessage(
 /*****************************************************/
 globle void CantFindItemInFunctionErrorMessage(
   void *theEnv,
-  char *itemType,
-  char *itemName,
-  char *func)
+  const char *itemType,
+  const char *itemName,
+  const char *func)
   {
    PrintErrorID(theEnv,"PRNTUTIL",1,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Unable to find ");
@@ -318,8 +321,8 @@ globle void CantFindItemInFunctionErrorMessage(
 /*****************************************************/
 globle void CantDeleteItemErrorMessage(
   void *theEnv,
-  char *itemType,
-  char *itemName)
+  const char *itemType,
+  const char *itemName)
   {
    PrintErrorID(theEnv,"PRNTUTIL",4,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Unable to delete ");
@@ -335,8 +338,8 @@ globle void CantDeleteItemErrorMessage(
 /****************************************************/
 globle void AlreadyParsedErrorMessage(
   void *theEnv,
-  char *itemType,
-  char *itemName)
+  const char *itemType,
+  const char *itemName)
   {
    PrintErrorID(theEnv,"PRNTUTIL",5,TRUE);
    EnvPrintRouter(theEnv,WERROR,"The ");
@@ -350,7 +353,7 @@ globle void AlreadyParsedErrorMessage(
 /*********************************************************/
 globle void SyntaxErrorMessage(
   void *theEnv,
-  char *location)
+  const char *location)
   {
    PrintErrorID(theEnv,"PRNTUTIL",2,TRUE);
    EnvPrintRouter(theEnv,WERROR,"Syntax Error");
@@ -371,7 +374,7 @@ globle void SyntaxErrorMessage(
 /****************************************************/
 globle void LocalVariableErrorMessage(
   void *theEnv,
-  char *byWhat)
+  const char *byWhat)
   {
    PrintErrorID(theEnv,"PRNTUTIL",6,TRUE);
    EnvPrintRouter(theEnv,WERROR,"Local variables can not be accessed by ");
@@ -385,7 +388,7 @@ globle void LocalVariableErrorMessage(
 /******************************************/
 globle void SystemError(
   void *theEnv,
-  char *module,
+  const char *module,
   int errorID)
   {
    PrintErrorID(theEnv,"PRNTUTIL",3,TRUE);
@@ -411,7 +414,7 @@ globle void SystemError(
 /*******************************************************/
 globle void DivideByZeroErrorMessage(
   void *theEnv,
-  char *functionName)
+  const char *functionName)
   {
    PrintErrorID(theEnv,"PRNTUTIL",7,FALSE);
    EnvPrintRouter(theEnv,WERROR,"Attempt to divide by zero in ");
@@ -467,13 +470,13 @@ globle char *LongIntegerToString(
 /*******************************************************************/
 /* DataObjectToString: Converts a DATA_OBJECT to KB string format. */
 /*******************************************************************/
-globle char *DataObjectToString(
+globle const char *DataObjectToString(
   void *theEnv,
   DATA_OBJECT *theDO)
   {
    void *thePtr;
    char *theString, *newString;
-   char *prefix, *postfix;
+   const char *prefix, *postfix;
    size_t length;
    struct externalAddressHashNode *theAddress;
    char buffer[30];
@@ -572,8 +575,8 @@ globle char *DataObjectToString(
 /************************************************************/
 globle void SalienceInformationError(
   void *theEnv,
-  char *constructType,
-  char *constructName)
+  const char *constructType,
+  const char *constructName)
   {
    PrintErrorID(theEnv,"PRNTUTIL",8,TRUE);
    EnvPrintRouter(theEnv,WERROR,"This error occurred while evaluating the salience");
@@ -624,8 +627,8 @@ globle void SalienceNonIntegerError(
 /***************************************************/
 globle void SlotExistError(
   void *theEnv,
-  char *sname,
-  char *func)
+  const char *sname,
+  const char *func)
   {
    PrintErrorID(theEnv,"INSFUN",3,FALSE);
    EnvPrintRouter(theEnv,WERROR,"No such slot ");
