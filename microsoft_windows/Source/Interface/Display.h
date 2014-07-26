@@ -73,7 +73,7 @@ struct displayWindowData
    LOCALE BOOL                           display_InitInstance(HINSTANCE);
    LOCALE void                           display_OnSetFocus(HWND,HWND);
    LOCALE void                           display_OnPaint(HWND);
-   LOCALE int                            DisplayPrint(HWND,char *);
+   LOCALE int                            DisplayPrint(HWND,const char *);
    LOCALE LRESULT CALLBACK               displayWndProc(HWND,UINT,WPARAM,LPARAM);
    LOCALE void                           ClearDialogWnd(void);
    LOCALE void                           ExitToShell(void);

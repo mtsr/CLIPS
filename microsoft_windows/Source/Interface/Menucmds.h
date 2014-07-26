@@ -36,7 +36,7 @@
    LOCALE void                           DoLoad(HWND,WORD);
    LOCALE void                           SaveBinaryFile(HWND);
    LOCALE void                           OpenDribbleFile(HWND,WORD);
-   LOCALE BOOL                           DoCommandCompletion(HWND,char *,int);
+   LOCALE BOOL                           DoCommandCompletion(HWND,const char *,int);
 
 #endif
 

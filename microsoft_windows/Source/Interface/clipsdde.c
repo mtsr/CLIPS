@@ -98,7 +98,7 @@ HDDEDATA CALLBACK DDECallBack(
    HWND hWnd;
    char *TheData;
    char *Data;
-   char *theString;
+   const char *theString;
    void *theEnv = GetCurrentEnvironment();
    
    /* 

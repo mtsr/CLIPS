@@ -48,7 +48,7 @@ void EditComplete(
   {
    long start = 0, end = 0;
    char *buffer;
-   char *completeStr;
+   const char *completeStr;
    int lineBegin, iLength;
    unsigned theLine;
    /* Macintosh Version. */

@@ -162,7 +162,7 @@ void DoLoad(
 /*******************************************/
 BOOL DoCommandCompletion(
   HWND hwnd,
-  char *buffer,
+  const char *buffer,
   int fromEditor)
   {
    unsigned int numberOfMatches = 0;

@@ -307,7 +307,7 @@ BOOL displayWindow_New(
    theData->topCommand->prev = NULL;
    theData->topCommand->command = (char *) malloc(1);
    theData->topCommand->command[0] = '\0';
-   
+
    CreateTerminal(theData);
 
    SetWindowLong(DialogWindow,GWL_USERDATA,(long) theData);
@@ -792,7 +792,8 @@ static void display_OnCommand(
   {	 
    HANDLE hData;
    LPSTR  pData;
-   char *buffer, *tempText;
+   const char *buffer;
+   char *tempText;
    size_t length, x, p;
    struct displayWindowData *theData;
    HGLOBAL h;
@@ -1767,7 +1768,7 @@ void DisplayLineCountAndStart(
 #endif
 int DisplayPrint( 
   HWND hwnd,
-  char *buffer)
+  const char *buffer)
   {       
    unsigned Loc = 0; 
    char *str; 

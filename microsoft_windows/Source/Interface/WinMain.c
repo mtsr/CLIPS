@@ -73,10 +73,10 @@ void UserFunctions(void);
 /***************************************/
 
    static void                    SetUpRouters(void *);
-   static intBool                 QueryInterfaceRouter(void *,char *);
-   static int                     PrintInterfaceRouter(void *,char *,char *);
+   static intBool                 QueryInterfaceRouter(void *,const char *);
+   static int                     PrintInterfaceRouter(void *,const char *,const char *);
    static int                     ExitInterfaceRouter(void *,int);
-   static int                     GetcInterfaceRouter(void *,char *);
+   static int                     GetcInterfaceRouter(void *,const char *);
    static int                     InterfaceEventFunction(void *);
    static void                    WinRunEvent(void *);
 
@@ -239,7 +239,7 @@ static int ExitInterfaceRouter(
 #endif
 static intBool QueryInterfaceRouter(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
 #if WIN_MCW
 #pragma unused(theEnv)
@@ -263,8 +263,8 @@ static intBool QueryInterfaceRouter(
 /******************************************/
 static int PrintInterfaceRouter(
   void *theEnv,
-  char *logicalName,
-  char *str)
+  const char *logicalName,
+  const char *str)
   {
    FILE *fptr;
 
@@ -284,7 +284,7 @@ static int PrintInterfaceRouter(
 /*******************************************/
 static int GetcInterfaceRouter(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   { 
    FILE *fptr;
    MSG msg;
