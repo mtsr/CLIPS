@@ -197,9 +197,13 @@
 #define ID_WINDOW_TILE_HORZ             40073
 #define ID_WINDOW_TILE_VERT             40074
 #define ID_WINDOW_SPLIT                 40075
-#define ID_HELP_CLIPS                   40076
-#define ID_HELP_COMPLETE                40077
-#define ID_HELP_ABOUT                   40078
+#define ID_HELP_HOME_PAGE               40076
+#define ID_HELP_DOCUMENTATION           40077
+#define ID_HELP_CLIPSESG                40078
+#define ID_HELP_SOURCEFORGE             40079
+#define ID_HELP_STACK_OVERFLOW          40080
+#define ID_HELP_COMPLETE                40087
+#define ID_HELP_ABOUT                   40088
 #define ID_APP_EXIT                     40099
 
 #define ID_BROWSE_RULE                  40111

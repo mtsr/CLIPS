@@ -30,6 +30,9 @@
 +-------------------------------*/
 #include <windows.h>
 #include <windowsx.h>
+
+#include <Shellapi.h>
+
 //#include <stdlib.h>
 //#include <string.h>
 
@@ -347,9 +350,6 @@ void DoHelpChoice(
   HWND hwnd,
   WORD wParam)
   {  
-   BOOL bGotHelp;
-   TCHAR msg[256];
-   
    switch (wParam)
      {   
       /*---------------------+
@@ -360,16 +360,25 @@ void DoHelpChoice(
         DialogBox(GetWindowInstance(hwnd),"AboutBox",hwnd,(DLGPROC) AboutDlgProc);
         break;
 
-      case ID_HELP_CLIPS:        
-        bGotHelp = WinHelp(hwnd,getHelpFileName("CLIPS6"),HELP_INDEX,(DWORD) 0) ;
+	  case ID_HELP_HOME_PAGE:
+		ShellExecute(NULL, "open", "http://clipsrules.sourceforge.net/", NULL, NULL, SW_SHOWNORMAL);
+		break; 
 
-        if (! bGotHelp)
-          {
-           LoadString(GetWindowInstance(hwnd),IDS_HELP_FAILED,
-                      msg, DIM(msg));
-           MessageBox((HWND) GetFocus(),msg,getAppName(),MB_OK|MB_ICONHAND);
-          }     
+      case ID_HELP_DOCUMENTATION: 
+		ShellExecute(NULL, "open", "http://clipsrules.sourceforge.net/OnlineDocs.html", NULL, NULL, SW_SHOWNORMAL); 
         break;
+
+	  case ID_HELP_CLIPSESG:
+		ShellExecute(NULL, "open", "http://groups.google.com/group/CLIPSESG/", NULL, NULL, SW_SHOWNORMAL);
+		break; 
+
+	  case ID_HELP_SOURCEFORGE:
+		ShellExecute(NULL, "open", "http://sourceforge.net/p/clipsrules/discussion", NULL, NULL, SW_SHOWNORMAL);
+		break; 
+
+	  case ID_HELP_STACK_OVERFLOW:
+		ShellExecute(NULL, "open", "http://stackoverflow.com/questions/tagged/clips", NULL, NULL, SW_SHOWNORMAL);
+		break; 
      }   
   }
 

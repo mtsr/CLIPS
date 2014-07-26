@@ -619,7 +619,11 @@ static void mainframe_OnCommand(
         break;
 
       case ID_HELP_ABOUT:
-      case ID_HELP_CLIPS:
+	  case ID_HELP_HOME_PAGE:
+      case ID_HELP_DOCUMENTATION:
+	  case ID_HELP_CLIPSESG:
+	  case ID_HELP_SOURCEFORGE:
+	  case ID_HELP_STACK_OVERFLOW:
       case ID_HELP_COMPLETE:
         DoHelpChoice(hwnd,(WORD) id);
         break;
