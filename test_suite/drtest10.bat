@@ -133,3 +133,11 @@
 (reset)
 (assert (bar 1))
 (assert (huge 1))
+(clear) ; SourceForge Bug
+
+(defclass FOO
+   (is-a USER)
+   (slot _foo (default ?NONE)))
+(make-instance foo1 of FOO)
+(make-instance foo2 of FOO (_foo))
+(clear)
