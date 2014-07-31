@@ -41,6 +41,8 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Fixed slot override default ?NONE bug.         */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -565,8 +567,19 @@ globle int DirectPutSlotValue(
                                            (EXPRESSION *) sp->desc->defaultValue,val,TRUE))
            return(FALSE);
         }
+      else if (sp->desc->defaultValue != NULL)
+        { val = (DATA_OBJECT *) sp->desc->defaultValue; }
       else
-        val = (DATA_OBJECT *) sp->desc->defaultValue;
+        {
+         PrintErrorID(theEnv,"INSMNGR",14,FALSE);
+         EnvPrintRouter(theEnv,WERROR,"Override required for slot ");
+         EnvPrintRouter(theEnv,WERROR,ValueToString(sp->desc->slotName->name));
+         EnvPrintRouter(theEnv,WERROR," in instance ");
+         EnvPrintRouter(theEnv,WERROR,ValueToString(ins->name));
+         EnvPrintRouter(theEnv,WERROR,".\n");
+         SetEvaluationError(theEnv,TRUE);
+         return(FALSE);
+        }
      }
 #if DEFRULE_CONSTRUCT
    if (EngineData(theEnv)->JoinOperationInProgress && sp->desc->reactive &&
