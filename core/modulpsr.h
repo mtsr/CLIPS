@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*             DEFMODULE PARSER HEADER FILE            */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Fixed linkage issue when DEFMODULE_CONSTRUCT   */
+/*            compiler flag is set to 0.                     */
 /*                                                           */
 /*************************************************************/
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*          PROCEDURAL FUNCTIONS PARSER MODULE         */
    /*******************************************************/
@@ -24,6 +24,9 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
 /*                                                           */
 /*************************************************************/
 
@@ -70,7 +73,9 @@ struct procedureParserData
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-#if (! RUN_TIME) && (! BLOAD_ONLY)
+#if (! RUN_TIME)
+   static void                    DeallocateProceduralFunctionData(void *);
+#if (! BLOAD_ONLY)
    static struct expr            *WhileParse(void *,struct expr *,const char *);
    static struct expr            *LoopForCountParse(void *,struct expr *,const char *);
    static void                    ReplaceLoopCountVars(void *,SYMBOL_HN *,EXPRESSION *,int);
@@ -81,7 +86,7 @@ struct procedureParserData
    static struct expr            *ReturnParse(void *,struct expr *,const char *);
    static struct expr            *BreakParse(void *,struct expr *,const char *);
    static struct expr            *SwitchParse(void *,struct expr *,const char *);
-   static void                    DeallocateProceduralFunctionData(void *);
+#endif
 #endif
 
 #if ! RUN_TIME

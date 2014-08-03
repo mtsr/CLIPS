@@ -26,6 +26,9 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed linkage issue when BLOAD_AND_SAVE        */
+/*            compiler flag is set to 0.                     */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -60,6 +63,7 @@
 #include "msgfun.h"
 #include "router.h"
 #include "scanner.h"
+#include "sysdep.h"
 #include "utility.h"
 
 #define _CLASSFUN_SOURCE_

@@ -36,6 +36,10 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed linkage issue when DEBUGGING_FUNCTIONS   */
+/*            is set to 0 and PROFILING_FUNCTIONS is set to  */
+/*            1.                                             */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -713,7 +717,7 @@ globle intBool EnvUndefmethod(
 #endif
   }
 
-#if DEBUGGING_FUNCTIONS
+#if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
 
 /*****************************************************
   NAME         : EnvGetDefmethodDescription
@@ -745,6 +749,9 @@ globle void EnvGetDefmethodDescription(
    mi = FindMethodByIndex(gfunc,theIndex);
    PrintMethod(theEnv,buf,buflen,&gfunc->methods[mi]);
   }
+#endif /* DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS */
+
+#if DEBUGGING_FUNCTIONS
 
 /*********************************************************
   NAME         : EnvGetDefgenericWatch
@@ -1012,7 +1019,7 @@ globle void EnvListDefmethods(
    PrintTally(theEnv,logicalName,count,"method","methods");
   }
 
-#endif
+#endif /* DEBUGGING_FUNCTIONS */
 
 /***************************************************************
   NAME         : GetDefgenericListFunction
@@ -1992,15 +1999,6 @@ globle void SetDefgenericWatch(
    EnvSetDefgenericWatch(GetCurrentEnvironment(),newState,theGeneric);
   }
 
-globle void GetDefmethodDescription(
-  char *buf,
-  int buflen,
-  void *ptr,
-  long theIndex)
-  {
-   EnvGetDefmethodDescription(GetCurrentEnvironment(),buf,buflen,ptr,theIndex);
-  }
-
 globle char *GetDefmethodPPForm(
   void *ptr,
   long theIndex)
@@ -2031,6 +2029,19 @@ globle void SetDefmethodWatch(
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
+
+#if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
+
+globle void GetDefmethodDescription(
+  char *buf,
+  int buflen,
+  void *ptr,
+  long theIndex)
+  {
+   EnvGetDefmethodDescription(GetCurrentEnvironment(),buf,buflen,ptr,theIndex);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS */
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

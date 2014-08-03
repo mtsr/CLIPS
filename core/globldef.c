@@ -29,6 +29,9 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
+/*                                                           */
 /*************************************************************/
 
 #define _GLOBLDEF_SOURCE_
@@ -77,7 +80,9 @@
    static void                    DecrementDefglobalBusyCount(void *,void *);
    static void                    DeallocateDefglobalData(void *);
    static void                    DestroyDefglobalAction(void *,struct constructHeader *,void *);
+#if (! BLOAD_ONLY)
    static void                    DestroyDefglobal(void *,void *);
+#endif
 
 /**************************************************************/
 /* InitializeDefglobals: Initializes the defglobal construct. */
@@ -332,11 +337,11 @@ static void ReturnDefglobal(
 /* DestroyDefglobal: Returns the data structures associated  */
 /*   with a defglobal construct to the pool of free memory. */
 /************************************************************/
+#if (! BLOAD_ONLY)
 static void DestroyDefglobal(
   void *theEnv,
   void *vTheDefglobal)
   {
-#if (! BLOAD_ONLY)
    struct defglobal *theDefglobal = (struct defglobal *) vTheDefglobal;
    
    if (theDefglobal == NULL) return;
@@ -363,9 +368,9 @@ static void DestroyDefglobal(
 
    rtn_struct(theEnv,defglobal,theDefglobal);
 #endif
-#endif
   }
-  
+#endif
+
 /************************************************/
 /* QSetDefglobalValue: Lowest level routine for */
 /*   setting a defglobal's value.               */

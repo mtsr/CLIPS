@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -27,6 +27,9 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
 /*                                                           */
 /*************************************************************/
 
@@ -506,6 +509,8 @@ static int FindConstructBeginning(
    return(FALSE);
   }
 
+#if (! RUN_TIME) && (! BLOAD_ONLY)
+
 /*************************************************/
 /* FindError: Find routine for the error router. */
 /*************************************************/
@@ -664,6 +669,8 @@ globle void FlushParsingMessages(
    ConstructData(theEnv)->CurWrnPos = 0;
    ConstructData(theEnv)->MaxWrnChars = 0;
   }
+
+#endif
 
 /***********************************************************/
 /* ParseConstruct: Parses a construct. Returns an integer. */

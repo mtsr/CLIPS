@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                PRINT UTILITY MODULE                 */
    /*******************************************************/
@@ -28,6 +28,9 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
 /*                                                           */
 /*************************************************************/
 
@@ -248,9 +251,11 @@ globle void PrintErrorID(
   int errorID,
   int printCR)
   {
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    FlushParsingMessages(theEnv);
    EnvSetErrorFileName(theEnv,EnvGetParsingFileName(theEnv));
    ConstructData(theEnv)->ErrLineNumber = GetLineCount(theEnv);
+#endif
    if (printCR) EnvPrintRouter(theEnv,WERROR,"\n");
    EnvPrintRouter(theEnv,WERROR,"[");
    EnvPrintRouter(theEnv,WERROR,module);
@@ -268,9 +273,11 @@ globle void PrintWarningID(
   int warningID,
   int printCR)
   {
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    FlushParsingMessages(theEnv);
    EnvSetWarningFileName(theEnv,EnvGetParsingFileName(theEnv));
    ConstructData(theEnv)->WrnLineNumber = GetLineCount(theEnv);
+#endif
    if (printCR) EnvPrintRouter(theEnv,WWARNING,"\n");
    EnvPrintRouter(theEnv,WWARNING,"[");
    EnvPrintRouter(theEnv,WWARNING,module);

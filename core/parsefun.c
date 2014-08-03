@@ -25,6 +25,9 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Fixed function declaration issue when          */
+/*            BLOAD_ONLY compiler flag is set to 1.          */
+/*                                                           */
 /*************************************************************/
 
 #define _PARSEFUN_SOURCE_
@@ -403,7 +406,7 @@ globle void CheckSyntaxFunction(
 /************************************************/
 globle int CheckSyntax(
   void *theEnv,
-  char *theString,
+  const char *theString,
   DATA_OBJECT_PTR returnValue)
   {
    PrintErrorID(theEnv,"PARSEFUN",1,FALSE);

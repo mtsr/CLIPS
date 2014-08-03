@@ -29,6 +29,9 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
+/*                                                           */
 /*************************************************************/
 
 #define _CONSTRCT_SOURCE_
@@ -96,6 +99,7 @@ static void DeallocateConstructData(
    DeallocateCallList(theEnv,ConstructData(theEnv)->ListOfClearFunctions);
    DeallocateCallList(theEnv,ConstructData(theEnv)->ListOfClearReadyFunctions);
    
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    if (ConstructData(theEnv)->ErrorString != NULL)
      { genfree(theEnv,ConstructData(theEnv)->ErrorString,sizeof(ConstructData(theEnv)->ErrorString) + 1); }
 
@@ -104,10 +108,11 @@ static void DeallocateConstructData(
 
    ConstructData(theEnv)->ErrorString = NULL;
    ConstructData(theEnv)->WarningString = NULL;
-     
+
    EnvSetParsingFileName(theEnv,NULL);
    EnvSetWarningFileName(theEnv,NULL);
    EnvSetErrorFileName(theEnv,NULL);
+#endif
    
    tmpPtr = ConstructData(theEnv)->ListOfConstructs;
    while (tmpPtr != NULL)
@@ -982,11 +987,14 @@ globle void Reset()
    EnvReset(GetCurrentEnvironment());
   }  
 
+#if (! RUN_TIME) && (! BLOAD_ONLY)
+
 globle int Save(
   const char *fileName)
   {
    return EnvSave(GetCurrentEnvironment(),fileName);
   }  
+#endif
 
 #endif
 

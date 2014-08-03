@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 RULE DELETION MODULE                */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*      6.30: Added support for hashed alpha memories.       */
+/*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
 /*                                                           */
 /*************************************************************/
 
@@ -190,7 +193,7 @@ globle void DestroyDefrule(
   void *vTheDefrule)
   {
    struct defrule *theDefrule = (struct defrule *) vTheDefrule;
-   struct defrule *nextDisjunct, *tmpPtr;
+   struct defrule *nextDisjunct;
    int first = TRUE;
    
    if (theDefrule == NULL) return;
@@ -206,7 +209,9 @@ globle void DestroyDefrule(
            { ReturnPackedExpression(theEnv,theDefrule->dynamicSalience); }
 
          if (theDefrule->header.ppForm != NULL)
-           { 
+           {
+            struct defrule *tmpPtr;
+
             rm(theEnv,theDefrule->header.ppForm,strlen(theDefrule->header.ppForm) + 1);
             
             /*=======================================================*/

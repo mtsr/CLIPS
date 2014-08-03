@@ -27,6 +27,9 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Fixed linkage issue when BLOAD_AND_SAVE        */
+/*            compiler flag is set to 0.                     */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -60,6 +63,7 @@
 #include "router.h"
 #include "scanner.h"
 #include "strngrtr.h"
+#include "sysdep.h"
 
 #define _MSGPSR_SOURCE_
 #include "msgpsr.h"

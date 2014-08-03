@@ -25,6 +25,10 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed linkage issue when DEBUGGING_FUNCTIONS   */
+/*            is set to 0 and PROFILING_FUNCTIONS is set to  */
+/*            1.                                             */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_genrccom
@@ -76,8 +80,10 @@
 #if ! OBJECT_SYSTEM
    LOCALE void                           TypeCommand(void *,DATA_OBJECT *);
 #endif
-#if DEBUGGING_FUNCTIONS
+#if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
    LOCALE void                           EnvGetDefmethodDescription(void *,char *,int,void *,long);
+#endif
+#if DEBUGGING_FUNCTIONS
    LOCALE unsigned                       EnvGetDefgenericWatch(void *,void *);
    LOCALE void                           EnvSetDefgenericWatch(void *,unsigned,void *);
    LOCALE unsigned                       EnvGetDefmethodWatch(void *,void *,long);
@@ -124,12 +130,14 @@
    LOCALE unsigned                       GetDefgenericWatch(void *);
    LOCALE void                           ListDefgenerics(const char *,struct defmodule *);
    LOCALE void                           SetDefgenericWatch(unsigned,void *);
-   LOCALE void                           GetDefmethodDescription(char *,int,void *,long );
    LOCALE char                          *GetDefmethodPPForm(void *,long);
    LOCALE unsigned                       GetDefmethodWatch(void *,long);
    LOCALE void                           ListDefmethods(const char *,void *);
    LOCALE void                           SetDefmethodWatch(unsigned,void *,long);
 #endif /* DEBUGGING_FUNCTIONS */
+#if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
+   LOCALE void                           GetDefmethodDescription(char *,int,void *,long );
+#endif /* DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS */
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

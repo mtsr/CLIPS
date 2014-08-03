@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -19,6 +19,9 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
 /*                                                           */
 /*************************************************************/
 
@@ -60,6 +63,7 @@
                                                                     int (*)(void *,void *),
                                                                     const char *,int,int,int,int);
    LOCALE void                           ImportExportConflictMessage(void *,const char *,const char *,const char *,const char *);
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    LOCALE void                           FlushParsingMessages(void *);
    LOCALE char                          *EnvGetParsingFileName(void *);
    LOCALE void                           EnvSetParsingFileName(void *,const char *);
@@ -69,6 +73,7 @@
    LOCALE void                           EnvSetWarningFileName(void *,const char *);
    LOCALE void                           CreateErrorCaptureRouter(void *);
    LOCALE void                           DeleteErrorCaptureRouter(void *);
+#endif
 
 #endif
 

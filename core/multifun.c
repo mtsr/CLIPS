@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*             MULTIFIELD FUNCTIONS MODULE             */
    /*******************************************************/
@@ -36,6 +36,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Fixed linkage issue when DEFMODULE_CONSTRUCT   */
+/*            compiler flag is set to 0.                     */
 /*                                                           */
 /*************************************************************/
 
@@ -85,15 +88,15 @@ typedef struct fieldVarStack
 
 #if MULTIFIELD_FUNCTIONS
    static intBool                 MVRangeCheck(long,long,long *,int);
+   static void                    MultifieldPrognDriver(void *,DATA_OBJECT_PTR,const char *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    static struct expr            *MultifieldPrognParser(void *,struct expr *,const char *);
    static struct expr            *ForeachParser(void *,struct expr *,const char *);
    static void                    ReplaceMvPrognFieldVars(void *,SYMBOL_HN *,struct expr *,int);
-#endif
-#endif
+#endif /* (! BLOAD_ONLY) && (! RUN_TIME) */
+#endif /* MULTIFIELD_FUNCTIONS */
    static void                    MVRangeError(void *,long,long,long,const char *);
-   static void                    MultifieldPrognDriver(void *,DATA_OBJECT_PTR,const char *);
-#endif
+#endif /* MULTIFIELD_FUNCTIONS || OBJECT_SYSTEM */
 
 /***************************************/
 /* LOCAL INTERNAL VARIABLE DEFINITIONS */
@@ -1264,7 +1267,7 @@ static void ReplaceMvPrognFieldVars(
      }
   }
 
-#endif
+#endif /* (! BLOAD_ONLY) && (! RUN_TIME) */
 
 /*****************************************/
 /* MultifieldPrognFunction: H/L access   */
@@ -1401,7 +1404,7 @@ globle long GetMvPrognIndex(
    return(tmpField->index);
   }
 
-#endif
+#endif /* MULTIFIELD_FUNCTIONS */
 
 #if OBJECT_SYSTEM || MULTIFIELD_FUNCTIONS
 
@@ -1688,4 +1691,4 @@ globle int DeleteMultiValueField(
    return(TRUE);
   }
 
-#endif
+#endif /* OBJECT_SYSTEM || MULTIFIELD_FUNCTIONS */

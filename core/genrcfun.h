@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -20,6 +20,15 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Fixed linkage issue when DEBUGGING_FUNCTIONS   */
+/*            is set to 0 and PROFILING_FUNCTIONS is set to  */
+/*            1.                                             */
+/*                                                           */
+/*            Fixed typing issue when OBJECT_SYSTEM          */
+/*            compiler flag is set to 0.                     */
 /*                                                           */
 /*************************************************************/
 
@@ -138,43 +147,41 @@ struct defgenericData
 #endif
 
 #if ! RUN_TIME
-LOCALE intBool ClearDefgenericsReady(void *);
-LOCALE void *AllocateDefgenericModule(void *);
-LOCALE void FreeDefgenericModule(void *,void *);
+   LOCALE intBool                        ClearDefgenericsReady(void *);
+   LOCALE void                          *AllocateDefgenericModule(void *);
+   LOCALE void                           FreeDefgenericModule(void *,void *);
 #endif
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
 
-LOCALE int ClearDefmethods(void *);
-LOCALE int RemoveAllExplicitMethods(void *,DEFGENERIC *);
-LOCALE void RemoveDefgeneric(void *,void *);
-LOCALE int ClearDefgenerics(void *);
-LOCALE void MethodAlterError(void *,DEFGENERIC *);
-LOCALE void DeleteMethodInfo(void *,DEFGENERIC *,DEFMETHOD *);
-LOCALE void DestroyMethodInfo(void *,DEFGENERIC *,DEFMETHOD *);
-LOCALE int MethodsExecuting(DEFGENERIC *);
+   LOCALE int                            ClearDefmethods(void *);
+   LOCALE int                            RemoveAllExplicitMethods(void *,DEFGENERIC *);
+   LOCALE void                           RemoveDefgeneric(void *,void *);
+   LOCALE int                            ClearDefgenerics(void *);
+   LOCALE void                           MethodAlterError(void *,DEFGENERIC *);
+   LOCALE void                           DeleteMethodInfo(void *,DEFGENERIC *,DEFMETHOD *);
+   LOCALE void                           DestroyMethodInfo(void *,DEFGENERIC *,DEFMETHOD *);
+   LOCALE int                            MethodsExecuting(DEFGENERIC *);
 #endif
 #if ! OBJECT_SYSTEM
-LOCALE intBool SubsumeType(int,int);
+   LOCALE intBool                        SubsumeType(int,int);
 #endif
 
-LOCALE long FindMethodByIndex(DEFGENERIC *,long);
+   LOCALE long                           FindMethodByIndex(DEFGENERIC *,long);
+#if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
+   LOCALE void                           PrintMethod(void *,char *,int,DEFMETHOD *);
+#endif
 #if DEBUGGING_FUNCTIONS
-LOCALE void PreviewGeneric(void *);
-LOCALE void PrintMethod(void *,char *,int,DEFMETHOD *);
+   LOCALE void                           PreviewGeneric(void *);
 #endif
-LOCALE DEFGENERIC *CheckGenericExists(void *,const char *,const char *);
-LOCALE long CheckMethodExists(void *,const char *,DEFGENERIC *,long);
+   LOCALE DEFGENERIC                    *CheckGenericExists(void *,const char *,const char *);
+   LOCALE long                           CheckMethodExists(void *,const char *,DEFGENERIC *,long);
 
 #if ! OBJECT_SYSTEM
-LOCALE char *TypeName(void *,int);
+   LOCALE const char                    *TypeName(void *,int);
 #endif
 
-LOCALE void PrintGenericName(void *,const char *,DEFGENERIC *);
+   LOCALE void                           PrintGenericName(void *,const char *,DEFGENERIC *);
 
 #endif
-
-
-
-
 

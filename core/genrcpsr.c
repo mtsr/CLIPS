@@ -28,6 +28,12 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed linkage issue when BLOAD_AND_SAVE        */
+/*            compiler flag is set to 0.                     */
+/*                                                           */
+/*            Fixed typing issue when OBJECT_SYSTEM          */
+/*            compiler flag is set to 0.                     */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -63,6 +69,7 @@
 #include "prccode.h"
 #include "router.h"
 #include "scanner.h"
+#include "sysdep.h"
 
 #define _GENRCPSR_SOURCE_
 #include "genrcpsr.h"
@@ -1252,7 +1259,7 @@ static intBool RedundantClasses(
   void *c1,
   void *c2)
   {
-   char *tname;
+   const char *tname;
 
 #if OBJECT_SYSTEM
    if (HasSuperclass((DEFCLASS *) c1,(DEFCLASS *) c2))

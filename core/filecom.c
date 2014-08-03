@@ -30,6 +30,9 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
+/*                                                           */
 /*************************************************************/
 
 #define _FILECOM_SOURCE_
@@ -146,10 +149,10 @@ globle void FileCommandDefinitions(
    EnvDefineFunction2(theEnv,"load",'b',PTIEF LoadCommand,"LoadCommand","11k");
    EnvDefineFunction2(theEnv,"load*",'b',PTIEF LoadStarCommand,"LoadStarCommand","11k");
 #if BLOAD_AND_BSAVE
-   InitializeBsaveData(theEnv);
    EnvDefineFunction2(theEnv,"bsave",'b', PTIEF BsaveCommand,"BsaveCommand","11k");
 #endif
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
+   InitializeBsaveData(theEnv);
    InitializeBloadData(theEnv);
    EnvDefineFunction2(theEnv,"bload",'b',PTIEF BloadCommand,"BloadCommand","11k");
 #endif
@@ -766,7 +769,9 @@ globle int OpenBatch(
 
    if (FileCommandData(theEnv)->TopOfBatchList != NULL)
      { FileCommandData(theEnv)->TopOfBatchList->lineNumber = GetLineCount(theEnv); }
-     
+
+#if (! RUN_TIME) && (! BLOAD_ONLY)
+
    /*========================================================================*/
    /* If this is the first batch file, remember the prior parsing file name. */
    /*========================================================================*/
@@ -782,6 +787,7 @@ globle int OpenBatch(
    SetLineCount(theEnv,0);
 
    CreateErrorCaptureRouter(theEnv);
+#endif
 
    /*====================================*/
    /* Add the newly opened batch file to */
@@ -899,8 +905,10 @@ globle int RemoveBatch(
      {
       fileBatch = TRUE;
       GenClose(theEnv,(FILE *) FileCommandData(theEnv)->TopOfBatchList->inputSource);
+#if (! RUN_TIME) && (! BLOAD_ONLY)
       FlushParsingMessages(theEnv);
       DeleteErrorCaptureRouter(theEnv);
+#endif
      }
    else
      {
@@ -937,12 +945,14 @@ globle int RemoveBatch(
       FileCommandData(theEnv)->BatchMaximumPosition = 0;
       rv = 0;
 
+#if (! RUN_TIME) && (! BLOAD_ONLY)
       if (fileBatch)
         {
          EnvSetParsingFileName(theEnv,FileCommandData(theEnv)->batchPriorParsingFile);
          DeleteString(theEnv,FileCommandData(theEnv)->batchPriorParsingFile);
          FileCommandData(theEnv)->batchPriorParsingFile = NULL;
         }
+#endif
      }
 
    /*===========================================*/
@@ -955,11 +965,12 @@ globle int RemoveBatch(
       FileCommandData(theEnv)->BatchSource = FileCommandData(theEnv)->TopOfBatchList->inputSource;
       FileCommandData(theEnv)->BatchCurrentPosition = 0;
       rv = 1;
-
+#if (! RUN_TIME) && (! BLOAD_ONLY)
       if (FileCommandData(theEnv)->TopOfBatchList->batchType == FILE_BATCH)
         { EnvSetParsingFileName(theEnv,FileCommandData(theEnv)->TopOfBatchList->fileName); }
         
       SetLineCount(theEnv,FileCommandData(theEnv)->TopOfBatchList->lineNumber);
+#endif
      }
 
    /*====================================================*/
@@ -1044,9 +1055,10 @@ globle int EnvBatchStar(
    char *theString = NULL;
    size_t position = 0;
    size_t maxChars = 0;
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    char *oldParsingFileName;
    long oldLineCountValue;
-
+#endif
    /*======================*/
    /* Open the batch file. */
    /*======================*/
@@ -1062,13 +1074,15 @@ globle int EnvBatchStar(
    /*======================================*/
    /* Setup for capturing errors/warnings. */
    /*======================================*/
-   
+
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    oldParsingFileName = CopyString(theEnv,EnvGetParsingFileName(theEnv));
    EnvSetParsingFileName(theEnv,fileName);
 
    CreateErrorCaptureRouter(theEnv);
      
    oldLineCountValue = SetLineCount(theEnv,1);
+#endif
 
    /*========================*/
    /* Reset the error state. */
@@ -1099,8 +1113,9 @@ globle int EnvBatchStar(
          theString = NULL;
          maxChars = 0;
          position = 0;
-         
+#if (! RUN_TIME) && (! BLOAD_ONLY)
          FlushParsingMessages(theEnv);
+#endif
         }
         
       if ((inchar == '\r') || (inchar == '\n'))
@@ -1120,6 +1135,7 @@ globle int EnvBatchStar(
    /* Cleanup for capturing errors/warnings. */
    /*========================================*/
 
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    FlushParsingMessages(theEnv);
    DeleteErrorCaptureRouter(theEnv);
      
@@ -1127,6 +1143,7 @@ globle int EnvBatchStar(
    
    EnvSetParsingFileName(theEnv,oldParsingFileName);
    DeleteString(theEnv,oldParsingFileName);
+#endif
 
    return(TRUE);
   }

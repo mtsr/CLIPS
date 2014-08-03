@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*              DEFMODULE PARSER MODULE                */
    /*******************************************************/
@@ -21,6 +21,9 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Fixed linkage issue when DEFMODULE_CONSTRUCT   */
+/*            compiler flag is set to 0.                     */
 /*                                                           */
 /*************************************************************/
 
@@ -66,16 +69,6 @@
    static intBool                    DeleteDefmodule(void *,void *);
    static int                        FindMultiImportConflict(void *,struct defmodule *);
    static void                       NotExportedErrorMessage(void *,const char *,const char *,const char *);
-
-/*********************************************/
-/* GetNumberOfDefmodules: Returns the number */
-/*   of defmodules currently defined.        */
-/*********************************************/
-globle long GetNumberOfDefmodules(
-  void *theEnv)
-  {
-   return(DefmoduleData(theEnv)->NumberOfDefmodules);
-  }
 
 /******************************************/
 /* SetNumberOfDefmodules: Sets the number */
@@ -1133,5 +1126,19 @@ globle int FindImportExportConflict(
   }
 
 #endif /* DEFMODULE_CONSTRUCT && (! RUN_TIME) && (! BLOAD_ONLY) */
+
+/*********************************************/
+/* GetNumberOfDefmodules: Returns the number */
+/*   of defmodules currently defined.        */
+/*********************************************/
+globle long GetNumberOfDefmodules(
+  void *theEnv)
+  {
+#if DEFMODULE_CONSTRUCT && (! RUN_TIME) && (! BLOAD_ONLY)
+   return(DefmoduleData(theEnv)->NumberOfDefmodules);
+#else
+   return 1L;
+#endif
+  }
 
 

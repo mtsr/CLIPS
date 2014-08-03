@@ -23,6 +23,9 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_constrct
@@ -181,7 +184,9 @@ struct constructData
    LOCALE void                           Reset();
    LOCALE intBool                        RemoveClearFunction(const char *);
    LOCALE intBool                        RemoveResetFunction(const char *);
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    LOCALE int                            Save(const char *);
+#endif
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

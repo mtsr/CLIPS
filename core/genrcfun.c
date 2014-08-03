@@ -28,6 +28,13 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed linkage issue when DEBUGGING_FUNCTIONS   */
+/*            is set to 0 and PROFILING_FUNCTIONS is set to  */
+/*            1.                                             */
+/*                                                           */
+/*            Fixed typing issue when OBJECT_SYSTEM          */
+/*            compiler flag is set to 0.                     */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -488,66 +495,7 @@ globle long FindMethodByIndex(
    return(-1);
   }
 
-#if DEBUGGING_FUNCTIONS
-
-/*************************************************************
-  NAME         : PreviewGeneric
-  DESCRIPTION  : Allows the user to see a printout of all the
-                   applicable methods for a particular generic
-                   function call
-  INPUTS       : None
-  RETURNS      : Nothing useful
-  SIDE EFFECTS : Any side-effects of evaluating the generic
-                   function arguments
-                 and evaluating query-functions to determine
-                   the set of applicable methods
-  NOTES        : H/L Syntax: (preview-generic <func> <args>)
- *************************************************************/
-globle void PreviewGeneric(
-  void *theEnv)
-  {
-   DEFGENERIC *gfunc;
-   DEFGENERIC *previousGeneric;
-   int oldce;
-   DATA_OBJECT temp;
-
-   EvaluationData(theEnv)->EvaluationError = FALSE;
-   if (EnvArgTypeCheck(theEnv,"preview-generic",1,SYMBOL,&temp) == FALSE)
-     return;
-   gfunc = LookupDefgenericByMdlOrScope(theEnv,DOToString(temp));
-   if (gfunc == NULL)
-     {
-      PrintErrorID(theEnv,"GENRCFUN",3,FALSE);
-      EnvPrintRouter(theEnv,WERROR,"Unable to find generic function ");
-      EnvPrintRouter(theEnv,WERROR,DOToString(temp));
-      EnvPrintRouter(theEnv,WERROR," in function preview-generic.\n");
-      return;
-     }
-   oldce = ExecutingConstruct(theEnv);
-   SetExecutingConstruct(theEnv,TRUE);
-   previousGeneric = DefgenericData(theEnv)->CurrentGeneric;
-   DefgenericData(theEnv)->CurrentGeneric = gfunc;
-   EvaluationData(theEnv)->CurrentEvaluationDepth++;
-   PushProcParameters(theEnv,GetFirstArgument()->nextArg,
-                          CountArguments(GetFirstArgument()->nextArg),
-                          EnvGetDefgenericName(theEnv,(void *) gfunc),"generic function",
-                          UnboundMethodErr);
-   if (EvaluationData(theEnv)->EvaluationError)
-     {
-      PopProcParameters(theEnv);
-      DefgenericData(theEnv)->CurrentGeneric = previousGeneric;
-      EvaluationData(theEnv)->CurrentEvaluationDepth--;
-      SetExecutingConstruct(theEnv,oldce);
-      return;
-     }
-   gfunc->busy++;
-   DisplayGenericCore(theEnv,gfunc);
-   gfunc->busy--;
-   PopProcParameters(theEnv);
-   DefgenericData(theEnv)->CurrentGeneric = previousGeneric;
-   EvaluationData(theEnv)->CurrentEvaluationDepth--;
-   SetExecutingConstruct(theEnv,oldce);
-  }
+#if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
 
 /******************************************************************
   NAME         : PrintMethod
@@ -613,7 +561,70 @@ globle void PrintMethod(
      }
   }
 
-#endif
+#endif /* DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS */
+
+#if DEBUGGING_FUNCTIONS
+
+/*************************************************************
+  NAME         : PreviewGeneric
+  DESCRIPTION  : Allows the user to see a printout of all the
+                   applicable methods for a particular generic
+                   function call
+  INPUTS       : None
+  RETURNS      : Nothing useful
+  SIDE EFFECTS : Any side-effects of evaluating the generic
+                   function arguments
+                 and evaluating query-functions to determine
+                   the set of applicable methods
+  NOTES        : H/L Syntax: (preview-generic <func> <args>)
+ *************************************************************/
+globle void PreviewGeneric(
+  void *theEnv)
+  {
+   DEFGENERIC *gfunc;
+   DEFGENERIC *previousGeneric;
+   int oldce;
+   DATA_OBJECT temp;
+
+   EvaluationData(theEnv)->EvaluationError = FALSE;
+   if (EnvArgTypeCheck(theEnv,"preview-generic",1,SYMBOL,&temp) == FALSE)
+     return;
+   gfunc = LookupDefgenericByMdlOrScope(theEnv,DOToString(temp));
+   if (gfunc == NULL)
+     {
+      PrintErrorID(theEnv,"GENRCFUN",3,FALSE);
+      EnvPrintRouter(theEnv,WERROR,"Unable to find generic function ");
+      EnvPrintRouter(theEnv,WERROR,DOToString(temp));
+      EnvPrintRouter(theEnv,WERROR," in function preview-generic.\n");
+      return;
+     }
+   oldce = ExecutingConstruct(theEnv);
+   SetExecutingConstruct(theEnv,TRUE);
+   previousGeneric = DefgenericData(theEnv)->CurrentGeneric;
+   DefgenericData(theEnv)->CurrentGeneric = gfunc;
+   EvaluationData(theEnv)->CurrentEvaluationDepth++;
+   PushProcParameters(theEnv,GetFirstArgument()->nextArg,
+                          CountArguments(GetFirstArgument()->nextArg),
+                          EnvGetDefgenericName(theEnv,(void *) gfunc),"generic function",
+                          UnboundMethodErr);
+   if (EvaluationData(theEnv)->EvaluationError)
+     {
+      PopProcParameters(theEnv);
+      DefgenericData(theEnv)->CurrentGeneric = previousGeneric;
+      EvaluationData(theEnv)->CurrentEvaluationDepth--;
+      SetExecutingConstruct(theEnv,oldce);
+      return;
+     }
+   gfunc->busy++;
+   DisplayGenericCore(theEnv,gfunc);
+   gfunc->busy--;
+   PopProcParameters(theEnv);
+   DefgenericData(theEnv)->CurrentGeneric = previousGeneric;
+   EvaluationData(theEnv)->CurrentEvaluationDepth--;
+   SetExecutingConstruct(theEnv,oldce);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
 
 /***************************************************
   NAME         : CheckGenericExists
@@ -699,7 +710,7 @@ globle long CheckMethodExists(
                  printed for unrecognized types
   NOTES        : Used only when COOL is not present
  *******************************************************/
-globle char *TypeName(
+globle const char *TypeName(
   void *theEnv,
   int tcode)
   {
