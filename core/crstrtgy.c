@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*         CONFLICT RESOLUTION STRATEGY MODULE         */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -1072,6 +1074,25 @@ static const char *GetStrategyName(
 
    return(sname);
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle int SetStrategy(
+  int value)
+  {
+   return EnvSetStrategy(GetCurrentEnvironment(),value);
+  }
+
+globle int GetStrategy()
+  {
+   return EnvGetStrategy(GetCurrentEnvironment());
+  }
+
+#endif
 
 #endif /* DEFRULE_CONSTRUCT */
 

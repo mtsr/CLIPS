@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 ROUTER HEADER FILE                  */
    /*******************************************************/
@@ -24,6 +24,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -89,14 +91,6 @@ struct routerData
 #define LOCALE extern
 #endif
 
-#define ExitRouter(a) EnvExitRouter(GetCurrentEnvironment(),a)
-#define GetcRouter(a) EnvGetcRouter(GetCurrentEnvironment(),a)
-#define PrintRouter(a,b) EnvPrintRouter(GetCurrentEnvironment(),a,b)
-#define UngetcRouter(a,b) EnvUngetcRouter(GetCurrentEnvironment(),a,b)
-#define ActivateRouter(a) EnvActivateRouter(GetCurrentEnvironment(),a)
-#define DeactivateRouter(a) EnvDeactivateRouter(GetCurrentEnvironment(),a)
-#define DeleteRouter(a) EnvDeleteRouter(GetCurrentEnvironment(),a)
-
    LOCALE void                           InitializeDefaultRouters(void *);
    LOCALE int                            EnvPrintRouter(void *,const char *,const char *);
    LOCALE int                            EnvGetcRouter(void *,const char *);
@@ -136,6 +130,24 @@ struct routerData
    LOCALE void                           ExitCommand(void *);
    LOCALE int                            PrintNRouter(void *,const char *,const char *,unsigned long);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE int                            ActivateRouter(const char *);
+   LOCALE intBool                        AddRouter(const char *,int,
+                                                   int (*)(const char *),
+                                                   int (*)(const char *,const char *),
+                                                   int (*)(const char *),
+                                                   int (*)(int,const char *),
+                                                   int (*)(int));
+   LOCALE int                            DeactivateRouter(const char *);
+   LOCALE int                            DeleteRouter(const char *);
+   LOCALE void                           ExitRouter(int);
+   LOCALE int                            GetcRouter(const char *);
+   LOCALE int                            PrintRouter(const char *,const char *);
+   LOCALE int                            UngetcRouter(int,const char *);
+   
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_router */
 
 

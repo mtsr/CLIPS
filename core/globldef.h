@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                DEFGLOBAL HEADER FILE                */
    /*******************************************************/
@@ -21,6 +21,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -81,10 +83,6 @@ struct defglobalModule
    struct defmoduleItemHeader header;
   };
 
-#define EnvGetDefglobalName(theEnv,x) GetConstructNameString((struct constructHeader *) x)
-#define EnvGetDefglobalPPForm(theEnv,x) GetConstructPPForm(theEnv,(struct constructHeader *) x)
-#define EnvDefglobalModule(theEnv,x) GetConstructModuleName((struct constructHeader *) x)
-
 #define DefglobalData(theEnv) ((struct defglobalData *) GetEnvironmentData(theEnv,DEFGLOBAL_DATA))
 
 #ifdef LOCALE
@@ -96,18 +94,6 @@ struct defglobalModule
 #else
 #define LOCALE extern
 #endif
-
-#define DefglobalModule(x) GetConstructModuleName((struct constructHeader *) x)
-#define FindDefglobal(a) EnvFindDefglobal(GetCurrentEnvironment(),a)
-#define GetDefglobalName(x) GetConstructNameString((struct constructHeader *) x)
-#define GetDefglobalPPForm(x) GetConstructPPForm(GetCurrentEnvironment(),(struct constructHeader *) x)
-#define GetDefglobalValue(a,b) EnvGetDefglobalValue(GetCurrentEnvironment(),a,b)
-#define GetDefglobalValueForm(a,b,c) EnvGetDefglobalValueForm(GetCurrentEnvironment(),a,b,c)
-#define GetGlobalsChanged() EnvGetGlobalsChanged(GetCurrentEnvironment())
-#define GetNextDefglobal(a) EnvGetNextDefglobal(GetCurrentEnvironment(),a)
-#define IsDefglobalDeletable(a) EnvIsDefglobalDeletable(GetCurrentEnvironment(),a)
-#define SetDefglobalValue(a,b) EnvSetDefglobalValue(GetCurrentEnvironment(),a,b)
-#define SetGlobalsChanged(a) EnvSetGlobalsChanged(GetCurrentEnvironment(),a)
 
    LOCALE void                           InitializeDefglobals(void *);
    LOCALE void                          *EnvFindDefglobal(void *,const char *);
@@ -125,10 +111,26 @@ struct defglobalModule
    LOCALE void                           UpdateDefglobalScope(void *);
    LOCALE void                          *GetNextDefglobalInScope(void *,void *);
    LOCALE int                            QGetDefglobalValue(void *,void *,DATA_OBJECT_PTR);
+   LOCALE char                          *EnvDefglobalModule(void *,void *);
+   LOCALE char                          *EnvGetDefglobalName(void *,void *);
+   LOCALE char                          *EnvGetDefglobalPPForm(void *,void *);
 
-#ifndef _GLOBLDEF_SOURCE_
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
 
-#endif
+   LOCALE char                          *DefglobalModule(void *);
+   LOCALE void                          *FindDefglobal(const char *);
+   LOCALE char                          *GetDefglobalName(void *);
+   LOCALE char                          *GetDefglobalPPForm(void *);
+   LOCALE intBool                        GetDefglobalValue(const char *,DATA_OBJECT_PTR);
+   LOCALE void                           GetDefglobalValueForm(char *,unsigned,void *);
+   LOCALE int                            GetGlobalsChanged();
+   LOCALE void                          *GetNextDefglobal(void *);
+   LOCALE intBool                        IsDefglobalDeletable(void *);
+   LOCALE intBool                        SetDefglobalValue(const char *,DATA_OBJECT_PTR);
+   LOCALE void                           SetGlobalsChanged(int);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_globldef */
 
 

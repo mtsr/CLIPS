@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*               EVALUATION HEADER FILE                */
    /*******************************************************/
@@ -22,6 +22,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -196,9 +198,6 @@ struct evaluationData
 #define LOCALE extern
 #endif
 
-#define SetMultifieldErrorValue(a) EnvSetMultifieldErrorValue(GetCurrentEnvironment(),a)
-#define FunctionCall(a,b,c) EnvFunctionCall(GetCurrentEnvironment(),a,b,c)
-
    LOCALE void                           InitializeEvaluationData(void *);
    LOCALE int                            EvaluateExpression(void *,struct expr *,struct dataObject *);
    LOCALE void                           SetEvaluationError(void *,intBool);
@@ -227,10 +226,11 @@ struct evaluationData
    LOCALE intBool                        DOsEqual(DATA_OBJECT_PTR,DATA_OBJECT_PTR);
    LOCALE int                            EvaluateAndStoreInDataObject(void *,int,EXPRESSION *,DATA_OBJECT *,int);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
 
+   LOCALE void                           SetMultifieldErrorValue(void *,DATA_OBJECT_PTR);
+   LOCALE int                            FunctionCall(const char *,const char *,DATA_OBJECT *);
 
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
-
-
-
+#endif /* _H_evaluatn */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                 BLOAD HEADER FILE                   */
    /*******************************************************/
@@ -21,6 +21,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -73,8 +75,6 @@ struct bloadData
 
 #define FunctionPointer(i) ((struct FunctionDefinition *) (((i) == -1L) ? NULL : BloadData(theEnv)->FunctionArray[i]))
 
-#define Bload(a) EnvBload(GetCurrentEnvironment(),a)
-
    LOCALE void                    InitializeBloadData(void *);
    LOCALE int                     BloadCommand(void *);
    LOCALE intBool                 EnvBload(void *,const char *);
@@ -85,6 +85,10 @@ struct bloadData
    LOCALE void                    AddClearBloadReadyFunction(void *,const char *,int (*)(void *),int);
    LOCALE void                    AddAbortBloadFunction(void *,const char *,void (*)(void *),int);
    LOCALE void                    CannotLoadWithBloadMessage(void *,const char *);
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+   LOCALE int                     Bload(const char *);
+#endif
 
 #endif
 

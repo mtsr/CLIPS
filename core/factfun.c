@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*               FACT FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -49,6 +49,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -641,6 +643,48 @@ globle struct fact *GetFactAddressOrIndexArgument(
    ExpectedTypeError1(theEnv,theFunction,position,"fact-address or fact-index");
    return(NULL);
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void *FactDeftemplate(
+  void *vTheFact)
+  {
+   return EnvFactDeftemplate(GetCurrentEnvironment(),vTheFact);
+  }
+
+globle int FactExistp(
+  void *vTheFact)
+  {
+   return EnvFactExistp(GetCurrentEnvironment(),vTheFact);
+  }
+
+globle void FactSlotNames(
+  void *vTheFact,
+  DATA_OBJECT *returnValue)
+  {
+   return EnvFactSlotNames(GetCurrentEnvironment(),vTheFact,returnValue);
+  }
+
+globle void GetFactList(
+  DATA_OBJECT_PTR returnValue,
+  void *vTheModule)
+  {
+   EnvGetFactList(GetCurrentEnvironment(),returnValue,vTheModule);
+  }
+
+globle void PPFact(
+  void *vTheFact,
+  const char *logicalName,
+  int ignoreDefaults)
+  {
+   EnvPPFact(GetCurrentEnvironment(),vTheFact,logicalName,ignoreDefaults);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFTEMPLATE_CONSTRUCT */
 

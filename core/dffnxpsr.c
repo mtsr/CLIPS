@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -435,7 +437,7 @@ static DEFFUNCTION *AddDeffunction(
       dfuncPtr->busy = oldbusy;
       ReturnPackedExpression(theEnv,dfuncPtr->code);
       dfuncPtr->code = NULL;
-      SetDeffunctionPPForm((void *) dfuncPtr,NULL);
+      EnvSetDeffunctionPPForm(theEnv,(void *) dfuncPtr,NULL);
 
       /* =======================================
          Remove the deffunction from the list so
@@ -470,7 +472,7 @@ static DEFFUNCTION *AddDeffunction(
 #if DEBUGGING_FUNCTIONS
    EnvSetDeffunctionWatch(theEnv,DFHadWatch ? TRUE : DeffunctionData(theEnv)->WatchDeffunctions,(void *) dfuncPtr);
    if ((EnvGetConserveMemory(theEnv) == FALSE) && (headerp == FALSE))
-     SetDeffunctionPPForm((void *) dfuncPtr,CopyPPBuffer(theEnv));
+     EnvSetDeffunctionPPForm(theEnv,(void *) dfuncPtr,CopyPPBuffer(theEnv));
 #endif
    return(dfuncPtr);
   }

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                OBJECT MESSAGE COMMANDS              */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -248,7 +250,7 @@ static void DeallocateMessageHandlerData(
   SIDE EFFECTS : None
   NOTES        : None
  *****************************************************/
-char *EnvGetDefmessageHandlerName(
+globle char *EnvGetDefmessageHandlerName(
   void *theEnv,
   void *ptr,
   int theIndex)
@@ -1150,5 +1152,99 @@ static void PrintHandlerWatchFlag(
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
-#endif
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle unsigned FindDefmessageHandler(
+  void *ptr,
+  const char *hname,
+  const char *htypestr)
+  {
+   return EnvFindDefmessageHandler(GetCurrentEnvironment(),ptr,hname,htypestr);
+  }
+
+globle char *GetDefmessageHandlerName(
+  void *ptr,
+  int theIndex)
+  {
+   return EnvGetDefmessageHandlerName(GetCurrentEnvironment(),ptr,theIndex);
+  }
+
+globle const char *GetDefmessageHandlerType(
+  void *ptr,
+  int theIndex)
+  {
+   return EnvGetDefmessageHandlerType(GetCurrentEnvironment(),ptr,theIndex);
+  }
+
+globle int GetNextDefmessageHandler(
+  void *ptr,
+  int theIndex)
+  {
+   return EnvGetNextDefmessageHandler(GetCurrentEnvironment(),ptr,theIndex);
+  }
+
+globle int IsDefmessageHandlerDeletable(
+  void *ptr,
+  int theIndex)
+  {
+   return EnvIsDefmessageHandlerDeletable(GetCurrentEnvironment(),ptr,theIndex);
+  }
+
+globle int UndefmessageHandler(
+  void *vptr,
+  int mhi)
+  {
+   return EnvUndefmessageHandler(GetCurrentEnvironment(),vptr,mhi);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle char *GetDefmessageHandlerPPForm(
+  void *ptr,
+  int theIndex)
+  {
+   return EnvGetDefmessageHandlerPPForm(GetCurrentEnvironment(),ptr,theIndex);
+  }
+
+globle unsigned GetDefmessageHandlerWatch(
+  void *theClass,
+  int theIndex)
+  {
+   return EnvGetDefmessageHandlerWatch(GetCurrentEnvironment(),theClass,theIndex);
+  }
+
+globle void ListDefmessageHandlers(
+  const char *logName,
+  void *vptr,
+  int inhp)
+  {
+   EnvListDefmessageHandlers(GetCurrentEnvironment(),logName,vptr,inhp);
+  }
+
+globle void PreviewSend(
+  const char *logicalName,
+  void *clsptr,
+  const char *msgname)
+  {
+   EnvPreviewSend(GetCurrentEnvironment(),logicalName,clsptr,msgname);
+  }
+
+globle void SetDefmessageHandlerWatch(
+  int newState,
+  void *theClass,
+  int theIndex)
+  {
+   EnvSetDefmessageHandlerWatch(GetCurrentEnvironment(),newState,theClass,theIndex);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* OBJECT_SYSTEM */
 

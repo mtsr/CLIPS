@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                RULE COMMANDS MODULE                 */
    /*******************************************************/
@@ -37,6 +37,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -82,6 +84,7 @@
 #if DEVELOPER
    static void                    ShowJoins(void *,void *);
 #endif
+#if DEBUGGING_FUNCTIONS
    static long long               ListAlphaMatches(void *,struct joinInformation *,int);
    static long long               ListBetaMatches(void *,struct joinInformation *,long,long,int);
    static void                    ListBetaJoinActivity(void *,struct joinInformation *,long,long,int,DATA_OBJECT *);
@@ -93,6 +96,7 @@
    static const char             *BetaHeaderString(void *,struct joinInformation *,long,long);
    static const char             *ActivityHeaderString(void *,struct joinInformation *,long,long);
    static void                    JoinActivityReset(void *,struct constructHeader *,void *);
+#endif
 
 /****************************************************************/
 /* DefruleCommands: Initializes defrule commands and functions. */
@@ -431,7 +435,7 @@ globle void EnvMatches(
       
          if (output == VERBOSE)
            {
-            PrintPartialMatch(theEnv,WDISPLAY,GetActivationBasis(agendaPtr));
+            PrintPartialMatch(theEnv,WDISPLAY,EnvGetActivationBasis(theEnv,agendaPtr));
             EnvPrintRouter(theEnv,WDISPLAY,"\n");
            }
         }
@@ -1546,5 +1550,44 @@ globle void ShowAlphaHashTable(
    }
 
 #endif /* DEVELOPER */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+#if DEBUGGING_FUNCTIONS
+
+globle void Matches(
+  void *theRule,
+  int output,
+  DATA_OBJECT *result)
+  {
+   EnvMatches(GetCurrentEnvironment(),theRule,output,result);
+  }
+
+globle void JoinActivity(
+  void *theRule,
+  int output,
+  DATA_OBJECT *result)
+  {
+   EnvJoinActivity(GetCurrentEnvironment(),theRule,output,result);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+globle intBool GetBetaMemoryResizing()
+  {   
+   return EnvGetBetaMemoryResizing(GetCurrentEnvironment());
+  }
+
+globle intBool SetBetaMemoryResizing(
+  int value)
+  {
+   return EnvSetBetaMemoryResizing(GetCurrentEnvironment(),value);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFRULE_CONSTRUCT */

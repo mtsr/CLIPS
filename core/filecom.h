@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*              FILE COMMANDS HEADER FILE              */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Converted API macros to function calls.        */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_filecom
@@ -38,11 +40,6 @@
 #else
 #define LOCALE extern
 #endif
-
-#define DribbleActive() EnvDribbleActive(GetCurrentEnvironment())
-#define DribbleOn(a) EnvDribbleOn(GetCurrentEnvironment(),a)
-#define DribbleOff() EnvDribbleOff(GetCurrentEnvironment())
-#define BatchStar(a) EnvBatchStar(GetCurrentEnvironment(),a)
 
    LOCALE void                           FileCommandDefinitions(void *);
    LOCALE intBool                        EnvDribbleOn(void *,const char *);
@@ -65,7 +62,16 @@
    LOCALE int                            DribbleOnCommand(void *);
    LOCALE int                            DribbleOffCommand(void *);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE intBool                        DribbleActive(void);
+   LOCALE intBool                        DribbleOn(const char *);
+   LOCALE intBool                        DribbleOff(void);
+   LOCALE int                            BatchStar(const char *);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_filecom */
 
 
 

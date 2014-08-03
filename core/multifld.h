@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                MULTIFIELD HEADER FILE               */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -71,19 +73,6 @@ typedef struct field * FIELD_PTR;
 #define EnvGetMFType(theEnv,target,index)  (((struct field *) ((struct multifield *) (target))->theFields)[index-1].type)
 #define EnvGetMFValue(theEnv,target,index)  (((struct field *) ((struct multifield *) (target))->theFields)[index-1].value)
 
-/*==================*/
-/* ENVIRONMENT DATA */
-/*==================*/
-/*
-#define MULTIFIELD_DATA 51
-
-struct multifieldData
-  { 
-   struct multifield *ListOfMultifields;
-  };
-
-#define MultifieldData(theEnv) ((struct multifieldData *) GetEnvironmentData(theEnv,MULTIFIELD_DATA))
-*/
 #ifdef LOCALE
 #undef LOCALE
 #endif
@@ -92,8 +81,6 @@ struct multifieldData
 #else
 #define LOCALE extern
 #endif
-   
-#define CreateMultifield(a) EnvCreateMultifield(GetCurrentEnvironment(),a)
 
    LOCALE void                           InitializeMultifieldData(void *);
    LOCALE void                          *CreateMultifield2(void *,long);
@@ -115,7 +102,13 @@ struct multifieldData
    LOCALE struct multifield             *GetMultifieldList(void *);
    LOCALE void                          *ImplodeMultifield(void *,DATA_OBJECT *);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                          *CreateMultifield(long);
+   
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_multifld */
 
 
 

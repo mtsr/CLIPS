@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*         DEFGLOBAL BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Converted API macros to function calls.        */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_globlbsc
@@ -42,12 +44,6 @@
 #define LOCALE extern
 #endif
 
-#define GetDefglobalList(a,b) EnvGetDefglobalList(GetCurrentEnvironment(),a,b)
-#define GetDefglobalWatch(a) EnvGetDefglobalWatch(GetCurrentEnvironment(),a)
-#define ListDefglobals(a,b) EnvListDefglobals(GetCurrentEnvironment(),a,b)
-#define SetDefglobalWatch(a,b) EnvSetDefglobalWatch(GetCurrentEnvironment(),a,b)
-#define Undefglobal(a) EnvUndefglobal(GetCurrentEnvironment(),a)
-
    LOCALE void                           DefglobalBasicCommands(void *);
    LOCALE void                           UndefglobalCommand(void *);
    LOCALE intBool                        EnvUndefglobal(void *,void *);
@@ -57,15 +53,29 @@
    LOCALE void                           PPDefglobalCommand(void *);
    LOCALE int                            PPDefglobal(void *,const char *,const char *);
    LOCALE void                           ListDefglobalsCommand(void *);
-   LOCALE void                           EnvListDefglobals(void *,const char *,void *);
+#if DEBUGGING_FUNCTIONS
    LOCALE unsigned                       EnvGetDefglobalWatch(void *,void *);
+   LOCALE void                           EnvListDefglobals(void *,const char *,void *);
    LOCALE void                           EnvSetDefglobalWatch(void *,unsigned,void *);
+#endif
    LOCALE void                           ResetDefglobals(void *);
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                           GetDefglobalList(DATA_OBJECT_PTR,void *);
+#if DEBUGGING_FUNCTIONS
+   LOCALE unsigned                       GetDefglobalWatch(void *);
+   LOCALE void                           ListDefglobals(const char *,void *);
+   LOCALE void                           SetDefglobalWatch(unsigned,void *);
+#endif
+   LOCALE intBool                        Undefglobal(void *);
+   
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #ifndef _GLOBLBSC_SOURCE_
    extern unsigned                       WatchGlobals;
 #endif
 
-#endif
+#endif /* _H_globlbsc */
 
 

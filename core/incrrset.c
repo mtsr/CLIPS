@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*              INCREMENTAL RESET MODULE               */
    /*******************************************************/
@@ -24,6 +24,8 @@
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*      6.30: Added support for hashed alpha memories.       */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -628,5 +630,24 @@ globle int GetIncrementalResetCommand(
 
    return(oldValue);
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool GetIncrementalReset()
+  {   
+   return EnvGetIncrementalReset(GetCurrentEnvironment());
+  }
+
+globle intBool SetIncrementalReset(
+  int value)
+  {
+   return EnvSetIncrementalReset(GetCurrentEnvironment(),value);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFRULE_CONSTRUCT */

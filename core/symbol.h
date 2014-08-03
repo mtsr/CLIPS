@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 SYMBOL HEADER FILE                  */
    /*******************************************************/
@@ -26,6 +26,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -235,14 +237,6 @@ struct symbolData
   };
 
 #define SymbolData(theEnv) ((struct symbolData *) GetEnvironmentData(theEnv,SYMBOL_DATA))
-#define EnvFalseSymbol(theEnv) SymbolData(theEnv)->FalseSymbolHN
-#define EnvTrueSymbol(theEnv) SymbolData(theEnv)->TrueSymbolHN
-
-#define FalseSymbol() SymbolData(GetCurrentEnvironment())->FalseSymbolHN
-#define TrueSymbol() SymbolData(GetCurrentEnvironment())->TrueSymbolHN
-#define AddSymbol(a) EnvAddSymbol(GetCurrentEnvironment(),a)
-#define AddLong(a) EnvAddLong(GetCurrentEnvironment(),a)
-#define AddDouble(a) EnvAddDouble(GetCurrentEnvironment(),a)
 
    LOCALE void                           InitializeAtomTables(void *,struct symbolHashNode **,struct floatHashNode **,
                                                               struct integerHashNode **,struct bitMapHashNode **,
@@ -283,8 +277,20 @@ struct symbolData
    LOCALE void                           ClearBitString(void *,unsigned);
    LOCALE void                           SetAtomicValueIndices(void *,int);
    LOCALE void                           RestoreAtomicValueBuckets(void *);
+   LOCALE void                          *EnvFalseSymbol(void *);
+   LOCALE void                          *EnvTrueSymbol(void *);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                          *AddDouble(double);
+   LOCALE void                          *AddLong(long long);
+   LOCALE void                          *AddSymbol(const char *);
+   LOCALE void                          *FalseSymbol();
+   LOCALE void                          *TrueSymbol();
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_symbol */
 
 
 

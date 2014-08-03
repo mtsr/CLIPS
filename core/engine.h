@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 ENGINE HEADER FILE                  */
    /*******************************************************/
@@ -36,6 +36,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -109,6 +111,8 @@ struct engineData
 
 #define EngineData(theEnv) ((struct engineData *) GetEnvironmentData(theEnv,ENGINE_DATA))
 
+#define MAX_PATTERNS_CHECKED 64
+
 #ifdef LOCALE
 #undef LOCALE
 #endif
@@ -119,49 +123,16 @@ struct engineData
 #define LOCALE extern
 #endif
 
-/**************************************************************/
-/* The GetFocus function is remapped under certain conditions */
-/* because it conflicts with a Windows 3.1 function.          */
-/**************************************************************/
-/*
-#if ! ((GENERIC || IBM) && WINDOW_INTERFACE)
-#define WRGetFocus GetFocus
-#endif
-*/
-#define MAX_PATTERNS_CHECKED 64
-
-#define ClearFocusStack() EnvClearFocusStack(GetCurrentEnvironment())
-#define DefruleHasBreakpoint(a) EnvDefruleHasBreakpoint(GetCurrentEnvironment(),a)
-#define Focus(a) EnvFocus(GetCurrentEnvironment(),a)
-#define GetFocus() EnvGetFocus(GetCurrentEnvironment())
-#define GetFocusChanged() EnvGetFocusChanged(GetCurrentEnvironment())
-#define GetFocusStack(a) EnvGetFocusStack(GetCurrentEnvironment(),a)
-#define GetNextFocus(a) EnvGetNextFocus(GetCurrentEnvironment(),a)
-#define Halt() EnvHalt(GetCurrentEnvironment())
-#define ListFocusStack(a) EnvListFocusStack(GetCurrentEnvironment(),a)
-#define PopFocus() EnvPopFocus(GetCurrentEnvironment())
-#define RemoveBreak(a) EnvRemoveBreak(GetCurrentEnvironment(),a)
-#define RemoveRunFunction(a) EnvRemoveRunFunction(GetCurrentEnvironment(),a)
-#define SetBreak(a) EnvSetBreak(GetCurrentEnvironment(),a)
-#define SetFocusChanged(a) EnvSetFocusChanged(GetCurrentEnvironment(),a)
-#define ShowBreaks(a,b) EnvShowBreaks(GetCurrentEnvironment(),a,b)
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-   LOCALE long long               Run(long long);
-#endif
-
    LOCALE long long               EnvRun(void *,long long);
    LOCALE intBool                 EnvAddRunFunction(void *,const char *,
                                                     void (*)(void *),int);
    LOCALE intBool                 EnvAddRunFunctionWithContext(void *,const char *,
                                                                void (*)(void *),int,void *);
-   LOCALE intBool                 AddRunFunction(const char *,void (*)(void),int);
    LOCALE intBool                 EnvRemoveRunFunction(void *,const char *);
    LOCALE intBool                 EnvAddBeforeRunFunction(void *,const char *,
                                                     void (*)(void *,void *),int);
    LOCALE intBool                 EnvAddBeforeRunFunctionWithContext(void *,const char *,
                                                                void (*)(void *, void *),int,void *);
-   LOCALE intBool                 AddBeforeRunFunction(const char *,void (*)(void *),int);
    LOCALE intBool                 EnvRemoveBeforeRunFunction(void *,const char *);
    LOCALE void                    InitializeEngine(void *);
    LOCALE void                    EnvSetBreak(void *,void *);
@@ -193,7 +164,33 @@ struct engineData
    LOCALE intBool                 EnvGetHaltRules(void *);
    LOCALE void                    EnvSetHaltRules(void *,intBool);
    LOCALE struct activation      *NextActivationToFire(void *);
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE intBool                 AddBeforeRunFunction(const char *,void (*)(void *),int);
+   LOCALE intBool                 AddRunFunction(const char *,void (*)(void),int);
+   LOCALE void                    ClearFocusStack(void);
+   LOCALE void                    Focus(void *);
+   LOCALE void                    GetFocusStack(DATA_OBJECT_PTR);
+   LOCALE void                   *GetFocus(void *);
+   LOCALE int                     GetFocusChanged(void);
+   LOCALE void                   *GetNextFocus(void *);
+   LOCALE void                    Halt(void);
+   LOCALE void                   *PopFocus(void);
+   LOCALE intBool                 RemoveRunFunction(const char *);
+   LOCALE long long               Run(long long);
+   LOCALE void                    SetFocusChanged(int);
+#if DEBUGGING_FUNCTIONS
+   LOCALE intBool                 DefruleHasBreakpoint(void *);
+   LOCALE void                    ListFocusStack(const char *);
+   LOCALE intBool                 RemoveBreak(void *);
+   LOCALE void                    SetBreak(void *);
+   LOCALE void                    ShowBreaks(const char *,void *);
 #endif
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_engine */
 
 
 

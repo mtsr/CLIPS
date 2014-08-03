@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*              OBJECT MESSAGE DISPATCH CODE           */
    /*******************************************************/
@@ -24,6 +24,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -1386,5 +1388,22 @@ static void EarlySlotBindError(
    PrintInstanceNameAndClass(theEnv,WERROR,theInstance,TRUE);
   }
 
-#endif
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void Send(
+  DATA_OBJECT *idata,
+  const char *msg,
+  const char *args,
+  DATA_OBJECT *result)
+  {
+   EnvSend(GetCurrentEnvironment(),idata,msg,args,result);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* OBJECT_SYSTEM */
 

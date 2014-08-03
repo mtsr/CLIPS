@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*         DEFFACTS BASIC COMMANDS HEADER FILE         */
    /*******************************************************/
@@ -23,8 +23,10 @@
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*            Added const qualifiers to remove C++           */
+/*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -294,6 +296,38 @@ globle void EnvListDeffacts(
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void GetDeffactsList(
+  DATA_OBJECT_PTR returnValue,
+  void *theModule)
+  {
+   EnvGetDeffactsList(GetCurrentEnvironment(),returnValue,theModule);
+  }
+
+globle intBool Undeffacts(
+  void *theDeffacts)
+  {
+   return EnvUndeffacts(GetCurrentEnvironment(),theDeffacts);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle void ListDeffacts(
+  const char *logicalName,
+  void *theModule)
+  {
+   EnvListDeffacts(GetCurrentEnvironment(),logicalName,theModule);
+  }
+
+#endif
+
+#endif
 
 #endif /* DEFFACTS_CONSTRUCT */
 

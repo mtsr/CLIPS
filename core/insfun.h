@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                INSTANCE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -30,6 +30,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -69,42 +71,45 @@ typedef struct igarbage
 #define LOCALE extern
 #endif
 
-#define DecrementInstanceCount(a) EnvDecrementInstanceCount(GetCurrentEnvironment(),a)
-#define GetInstancesChanged() EnvGetInstancesChanged(GetCurrentEnvironment())
-#define IncrementInstanceCount(a) EnvIncrementInstanceCount(GetCurrentEnvironment(),a)
-#define SetInstancesChanged(a) EnvSetInstancesChanged(GetCurrentEnvironment(),a)
-
-LOCALE void EnvIncrementInstanceCount(void *,void *);
-LOCALE void EnvDecrementInstanceCount(void *,void *);
-LOCALE void InitializeInstanceTable(void *);
-LOCALE void CleanupInstances(void *);
-LOCALE unsigned HashInstance(SYMBOL_HN *);
-LOCALE void DestroyAllInstances(void *);
-LOCALE void RemoveInstanceData(void *,INSTANCE_TYPE *);
-LOCALE INSTANCE_TYPE *FindInstanceBySymbol(void *,SYMBOL_HN *);
-LOCALE INSTANCE_TYPE *FindInstanceInModule(void *,SYMBOL_HN *,struct defmodule *,
+   LOCALE void                           EnvIncrementInstanceCount(void *,void *);
+   LOCALE void                           EnvDecrementInstanceCount(void *,void *);
+   LOCALE void                           InitializeInstanceTable(void *);
+   LOCALE void                           CleanupInstances(void *);
+   LOCALE unsigned                       HashInstance(SYMBOL_HN *);
+   LOCALE void                           DestroyAllInstances(void *);
+   LOCALE void                           RemoveInstanceData(void *,INSTANCE_TYPE *);
+   LOCALE INSTANCE_TYPE                 *FindInstanceBySymbol(void *,SYMBOL_HN *);
+   LOCALE INSTANCE_TYPE                 *FindInstanceInModule(void *,SYMBOL_HN *,struct defmodule *,
                                            struct defmodule *,unsigned);
-LOCALE INSTANCE_SLOT *FindInstanceSlot(void *,INSTANCE_TYPE *,SYMBOL_HN *);
-LOCALE int FindInstanceTemplateSlot(void *,DEFCLASS *,SYMBOL_HN *);
-LOCALE int PutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *,const char *);
-LOCALE int DirectPutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *);
-LOCALE intBool ValidSlotValue(void *,DATA_OBJECT *,SLOT_DESC *,INSTANCE_TYPE *,const char *);
-LOCALE INSTANCE_TYPE *CheckInstance(void *,const char *);
-LOCALE void NoInstanceError(void *,const char *,const char *);
-LOCALE void StaleInstanceAddress(void *,const char *,int);
-LOCALE int EnvGetInstancesChanged(void *);
-LOCALE void EnvSetInstancesChanged(void *,int);
-LOCALE void PrintSlot(void *,const char *,SLOT_DESC *,INSTANCE_TYPE *,const char *);
-LOCALE void PrintInstanceNameAndClass(void *,const char *,INSTANCE_TYPE *,intBool);
-LOCALE void PrintInstanceName(void *,const char *,void *);
-LOCALE void PrintInstanceLongForm(void *,const char *,void *);
-
+   LOCALE INSTANCE_SLOT                 *FindInstanceSlot(void *,INSTANCE_TYPE *,SYMBOL_HN *);
+   LOCALE int                            FindInstanceTemplateSlot(void *,DEFCLASS *,SYMBOL_HN *);
+   LOCALE int                            PutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *,const char *);
+   LOCALE int                            DirectPutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *);
+   LOCALE intBool                        ValidSlotValue(void *,DATA_OBJECT *,SLOT_DESC *,INSTANCE_TYPE *,const char *);
+   LOCALE INSTANCE_TYPE                 *CheckInstance(void *,const char *);
+   LOCALE void                           NoInstanceError(void *,const char *,const char *);
+   LOCALE void                           StaleInstanceAddress(void *,const char *,int);
+   LOCALE int                            EnvGetInstancesChanged(void *);
+   LOCALE void                           EnvSetInstancesChanged(void *,int);
+   LOCALE void                           PrintSlot(void *,const char *,SLOT_DESC *,INSTANCE_TYPE *,const char *);
+   LOCALE void                           PrintInstanceNameAndClass(void *,const char *,INSTANCE_TYPE *,intBool);
+   LOCALE void                           PrintInstanceName(void *,const char *,void *);
+   LOCALE void                           PrintInstanceLongForm(void *,const char *,void *);
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-LOCALE void DecrementObjectBasisCount(void *,void *);
-LOCALE void IncrementObjectBasisCount(void *,void *);
-LOCALE void MatchObjectFunction(void *,void *);
-LOCALE intBool NetworkSynchronized(void *,void *);
+   LOCALE void                           DecrementObjectBasisCount(void *,void *);
+   LOCALE void                           IncrementObjectBasisCount(void *,void *);
+   LOCALE void                           MatchObjectFunction(void *,void *);
+   LOCALE intBool                        NetworkSynchronized(void *,void *);
 #endif
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                           DecrementInstanceCount(void *);
+   LOCALE int                            GetInstancesChanged(void);
+   LOCALE void                           IncrementInstanceCount(void *);
+   LOCALE void                           SetInstancesChanged(int);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif
 

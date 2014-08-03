@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -26,6 +26,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -186,18 +188,6 @@ globle int RemoveConstruct(
 
    return(FALSE);
   }
-
-/***************************/
-/* Save: C access routine  */
-/*   for the save command. */
-/***************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle int Save(
-  const char *fileName)
-  {
-   return EnvSave(GetCurrentEnvironment(),fileName);
-  }  
-#endif
 
 /************************************************/
 /* Save: C access routine for the save command. */
@@ -415,17 +405,6 @@ globle void ResetCommand(
    return;
   }
 
-/****************************/
-/* Reset: C access routine  */
-/*   for the reset command. */
-/****************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle void Reset()
-  {
-   EnvReset(GetCurrentEnvironment());
-  }  
-#endif
-
 /******************************/
 /* EnvReset: C access routine */
 /*   for the reset command.   */
@@ -522,27 +501,6 @@ globle int (*SetBeforeResetFunction(void *theEnv,
    return(tempFunction);
   }
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-/*************************************/
-/* AddResetFunction: Adds a function */
-/*   to ListOfResetFunctions.        */
-/*************************************/
-globle intBool AddResetFunction(
-  const char *name,
-  void (*functionPtr)(void),
-  int priority)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-   
-   ConstructData(theEnv)->ListOfResetFunctions = 
-      AddFunctionToCallList(theEnv,name,priority,(void (*)(void *)) functionPtr,
-                            ConstructData(theEnv)->ListOfResetFunctions,FALSE);
-   return(TRUE);
-  }
-#endif
-
 /****************************************/
 /* EnvAddResetFunction: Adds a function */
 /*   to ListOfResetFunctions.           */
@@ -577,17 +535,6 @@ globle intBool EnvRemoveResetFunction(
    return(FALSE);
   }
 
-/****************************/
-/* Clear: C access routine  */
-/*   for the clear command. */
-/****************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle void Clear()
-  {
-   EnvClear(GetCurrentEnvironment());
-  }  
-#endif
-    
 /*****************************************************/
 /* EnvClear: C access routine for the clear command. */
 /*****************************************************/
@@ -738,28 +685,6 @@ globle intBool RemoveClearReadyFunction(
    return(FALSE);
   }
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-/*************************************/
-/* AddClearFunction: Adds a function */
-/*   to ListOfClearFunctions.        */
-/*************************************/
-globle intBool AddClearFunction(
-  const char *name,
-  void (*functionPtr)(void),
-  int priority)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-   
-   ConstructData(theEnv)->ListOfClearFunctions =
-      AddFunctionToCallList(theEnv,name,priority,
-                            (void (*)(void *)) functionPtr,
-                            ConstructData(theEnv)->ListOfClearFunctions,FALSE);
-   return(1);
-  }
-#endif
-    
 /****************************************/
 /* EnvAddClearFunction: Adds a function */
 /*   to ListOfClearFunctions.           */
@@ -997,3 +922,72 @@ globle intBool AddSaveFunction(
 
    return(1);
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool AddClearFunction(
+  const char *name,
+  void (*functionPtr)(void),
+  int priority)
+  {
+   void *theEnv;
+   
+   theEnv = GetCurrentEnvironment();
+   
+   ConstructData(theEnv)->ListOfClearFunctions =
+      AddFunctionToCallList(theEnv,name,priority,
+                            (void (*)(void *)) functionPtr,
+                            ConstructData(theEnv)->ListOfClearFunctions,FALSE);
+   return(1);
+  }
+
+globle intBool AddResetFunction(
+  const char *name,
+  void (*functionPtr)(void),
+  int priority)
+  {
+   void *theEnv;
+   
+   theEnv = GetCurrentEnvironment();
+   
+   ConstructData(theEnv)->ListOfResetFunctions = 
+      AddFunctionToCallList(theEnv,name,priority,(void (*)(void *)) functionPtr,
+                            ConstructData(theEnv)->ListOfResetFunctions,FALSE);
+   return(TRUE);
+  }
+
+globle void Clear()
+  {
+   EnvClear(GetCurrentEnvironment());
+  }  
+
+globle intBool RemoveClearFunction(
+  const char *name)
+  {
+   return EnvRemoveClearFunction(GetCurrentEnvironment(),name);
+  }
+
+globle intBool RemoveResetFunction(
+  const char *name)
+  {
+   return EnvRemoveResetFunction(GetCurrentEnvironment(),name);
+  }
+
+globle void Reset()
+  {
+   EnvReset(GetCurrentEnvironment());
+  }  
+
+globle int Save(
+  const char *fileName)
+  {
+   return EnvSave(GetCurrentEnvironment(),fileName);
+  }  
+
+#endif
+
+

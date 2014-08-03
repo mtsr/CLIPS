@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*        CLASS INFO PROGRAMMATIC ACCESS MODULE        */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*      6.30: Added const qualifiers to remove C++            */
 /*            deprecation warnings.                           */
 /*                                                            */
+/*            Converted API macros to function calls.        */
+/*                                                           */
 /**************************************************************/
 
 /* =========================================
@@ -1144,5 +1146,116 @@ static SLOT_DESC *SlotInfoSlot(
    result->begin = 0;
    return(cls->instanceTemplate[i]);
   }
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool ClassAbstractP(
+  void *clsptr)
+  {
+   return EnvClassAbstractP(GetCurrentEnvironment(),clsptr);
+  }
+
+#if DEFRULE_CONSTRUCT
+globle intBool ClassReactiveP(
+  void *clsptr)
+  {
+   return EnvClassReactiveP(GetCurrentEnvironment(),clsptr);
+  }
+#endif
+
+globle void ClassSlots(
+  void *clsptr,
+  DATA_OBJECT *result,
+  int inhp)
+  {
+   EnvClassSlots(GetCurrentEnvironment(),clsptr,result,inhp);
+  }
+
+globle void ClassSubclasses(
+  void *clsptr,
+  DATA_OBJECT *result,
+  int inhp)
+  {
+   EnvClassSubclasses(GetCurrentEnvironment(),clsptr,result,inhp);
+  }
+
+globle void ClassSuperclasses(
+  void *clsptr,
+  DATA_OBJECT *result,
+  int inhp)
+  {
+   EnvClassSuperclasses(GetCurrentEnvironment(),clsptr,result,inhp);
+  }
+
+globle void SlotAllowedValues(
+  void *clsptr,
+  const char *sname,
+  DATA_OBJECT *result)
+  {
+   EnvSlotAllowedValues(GetCurrentEnvironment(),clsptr,sname,result);
+  }
+
+globle void SlotAllowedClasses(
+  void *clsptr,
+  const char *sname,
+  DATA_OBJECT *result)
+  {
+   EnvSlotAllowedClasses(GetCurrentEnvironment(),clsptr,sname,result);
+  }
+
+globle void SlotCardinality(
+  void *clsptr,
+  const char *sname,
+  DATA_OBJECT *result)
+  {
+   EnvSlotCardinality(GetCurrentEnvironment(),clsptr,sname,result);
+  }
+
+globle void SlotFacets(
+  void *clsptr,
+  const char *sname,
+  DATA_OBJECT *result)
+  {
+   EnvSlotFacets(GetCurrentEnvironment(),clsptr,sname,result);
+  }
+
+globle void SlotRange(
+  void *clsptr,
+  const char *sname,
+  DATA_OBJECT *result)
+  {
+   EnvSlotRange(GetCurrentEnvironment(),clsptr,sname,result);
+  }
+
+globle void SlotSources(
+  void *clsptr,
+  const char *sname,
+  DATA_OBJECT *result)
+  {
+   EnvSlotSources(GetCurrentEnvironment(),clsptr,sname,result);
+  }
+
+globle void SlotTypes(
+  void *clsptr,
+  const char *sname,
+  DATA_OBJECT *result)
+  {
+   EnvSlotTypes(GetCurrentEnvironment(),clsptr,sname,result);
+  }
+
+globle void GetDefmessageHandlerList(
+  void *clsptr,
+  DATA_OBJECT *result,
+  int inhp)
+  {
+   EnvGetDefmessageHandlerList(GetCurrentEnvironment(),clsptr,result,inhp);
+  }
+
+#endif
+
 
 #endif

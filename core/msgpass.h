@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -52,8 +54,6 @@ typedef struct messageHandlerLink
 #define LOCALE extern
 #endif
 
-#define Send(a,b,c,d) EnvSend(GetCurrentEnvironment(),a,b,c,d)
-
    LOCALE intBool          DirectMessage(void *,SYMBOL_HN *,INSTANCE_TYPE *,
                                          DATA_OBJECT *,EXPRESSION *);
    LOCALE void             EnvSend(void *,DATA_OBJECT *,const char *,const char *,DATA_OBJECT *);
@@ -75,7 +75,13 @@ typedef struct messageHandlerLink
    LOCALE void             DynamicHandlerGetSlot(void *,DATA_OBJECT *);
    LOCALE void             DynamicHandlerPutSlot(void *,DATA_OBJECT *);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void             Send(DATA_OBJECT *,const char *,const char *,DATA_OBJECT *);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_object */
 
 
 

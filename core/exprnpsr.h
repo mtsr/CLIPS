@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*            EXPRESSION PARSER HEADER FILE            */
    /*******************************************************/
@@ -20,6 +20,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -55,9 +57,6 @@ typedef struct saved_contexts
 #define LOCALE extern
 #endif
 
-#define GetSequenceOperatorRecognition() EnvGetSequenceOperatorRecognition(GetCurrentEnvironment())
-#define SetSequenceOperatorRecognition(a) EnvSetSequenceOperatorRecognition(GetCurrentEnvironment(),a)
-
    LOCALE struct expr                   *Function0Parse(void *,const char *);
    LOCALE struct expr                   *Function1Parse(void *,const char *);
    LOCALE struct expr                   *Function2Parse(void *,const char *,const char *);
@@ -71,11 +70,22 @@ typedef struct saved_contexts
    LOCALE EXPRESSION                    *ParseConstantArguments(void *,const char *,int *);
    LOCALE intBool                        EnvSetSequenceOperatorRecognition(void *,int);
    LOCALE intBool                        EnvGetSequenceOperatorRecognition(void *);
-   LOCALE struct expr                   *GroupActions(void *,const char *,struct token *,int,const char *,int);
+   LOCALE struct expr                   *GroupActions(void *,const char *,struct token *,
+                                                      int,const char *,int);
    LOCALE struct expr                   *RemoveUnneededProgn(void *,struct expr *);
+
 #if (! RUN_TIME)
-   LOCALE int                     CheckExpressionAgainstRestrictions(void *,struct expr *,const char *,const char *);
+
+   LOCALE int                            CheckExpressionAgainstRestrictions(void *,struct expr *,
+                                                                            const char *,const char *);
 #endif
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE intBool                        SetSequenceOperatorRecognition(int);
+   LOCALE intBool                        GetSequenceOperatorRecognition();
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif
 

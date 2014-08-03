@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*              EXPRESSION PARSER MODULE               */
    /*******************************************************/
@@ -30,6 +30,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -958,3 +960,23 @@ globle struct expr *RemoveUnneededProgn(
 
    return(theExpression);
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool SetSequenceOperatorRecognition(
+  int value)
+  {
+   return EnvSetSequenceOperatorRecognition(GetCurrentEnvironment(),value);
+  }
+
+globle intBool GetSequenceOperatorRecognition()
+  {
+   return EnvGetSequenceOperatorRecognition(GetCurrentEnvironment());
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+

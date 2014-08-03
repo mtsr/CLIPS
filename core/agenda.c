@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                    AGENDA MODULE                    */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -326,6 +328,20 @@ globle void *EnvGetNextActivation(
      { return((void *) (((struct activation *) actPtr)->next)); }
   }
 
+/***********************************************/
+/* EnvGetActivationBasis: Returns the basis of */
+/*   the rule associated with an activation.   */
+/***********************************************/
+globle struct partialMatch *EnvGetActivationBasis(
+  void *theEnv,
+  void *actPtr)
+  {
+#if MAC_XCD
+#pragma unused(theEnv)
+#endif
+   return ((struct activation *) actPtr)->basis;
+  }
+
 /*********************************************/
 /* EnvGetActivationName: Returns the name of */
 /*   the rule associated with an activation. */
@@ -339,6 +355,34 @@ globle char *EnvGetActivationName(
 #endif
 
    return(ValueToString(((struct activation *) actPtr)->theRule->header.name)); 
+  }
+
+/******************************************/
+/* EnvGetActivationRule: Returns the rule */
+/*   associated with an activation.       */
+/******************************************/
+globle struct defrule *EnvGetActivationRule(
+  void *theEnv,
+  void *actPtr)
+  {
+#if MAC_XCD
+#pragma unused(theEnv)
+#endif
+   return ((struct activation *) actPtr)->theRule;
+  }
+
+/**************************************************/
+/* EnvGetActivationSalience: Returns the salience */
+/*   of the rule associated with an activation.   */
+/**************************************************/
+globle int EnvGetActivationSalience(
+  void *theEnv,
+  void *actPtr)
+  {
+#if MAC_XCD
+#pragma unused(theEnv)
+#endif
+   return ((struct activation *) actPtr)->salience;
   }
 
 /**************************************/
@@ -1309,6 +1353,112 @@ globle void AgendaCommand(
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void Agenda(
+  const char *logicalName,
+  void *vTheModule)
+  {
+   EnvAgenda(GetCurrentEnvironment(),logicalName,vTheModule);
+  }
+
+globle intBool DeleteActivation(
+  void *theActivation)
+  {
+   return EnvDeleteActivation(GetCurrentEnvironment(),theActivation);
+  }
+  
+globle struct partialMatch *GetActivationBasis(
+  void *actPtr)
+  {
+   return EnvGetActivationBasis(GetCurrentEnvironment(),actPtr);
+  }
+
+globle char *GetActivationName(
+  void *actPtr)
+  {
+   return EnvGetActivationName(GetCurrentEnvironment(),actPtr);
+  }
+
+globle void GetActivationPPForm(
+  char *buffer,
+  unsigned bufferLength,
+  void *theActivation)
+  {
+   EnvGetActivationPPForm(GetCurrentEnvironment(),buffer,bufferLength,theActivation);
+  }
+
+globle struct defrule *GetActivationRule(
+  void *actPtr)
+  {
+   return EnvGetActivationRule(GetCurrentEnvironment(),actPtr);
+  }
+
+globle int GetActivationSalience(
+  void *actPtr)
+  {
+   return EnvGetActivationSalience(GetCurrentEnvironment(),actPtr);
+  }
+
+globle int GetAgendaChanged()
+  {
+   return EnvGetAgendaChanged(GetCurrentEnvironment());
+  }
+
+globle void *GetNextActivation(
+  void *actPtr)
+  {
+   return EnvGetNextActivation(GetCurrentEnvironment(),actPtr);
+  }
+
+globle intBool Refresh(
+  void *theRule)
+  {
+   return EnvRefresh(GetCurrentEnvironment(),theRule);
+  }
+
+globle void RefreshAgenda(
+  void *vTheModule)
+  {
+   EnvRefreshAgenda(GetCurrentEnvironment(),vTheModule);
+  }
+
+globle void ReorderAgenda(
+  void *vTheModule)
+  {
+   EnvReorderAgenda(GetCurrentEnvironment(),vTheModule);
+  }
+
+globle void SetAgendaChanged(
+  int value)
+  {
+   EnvSetAgendaChanged(GetCurrentEnvironment(),value);
+  }
+
+globle int SetActivationSalience(
+  void *actPtr,
+  int value)
+  {
+   return EnvSetActivationSalience(GetCurrentEnvironment(),actPtr,value);
+  }
+
+globle intBool GetSalienceEvaluation()
+  {
+   return EnvGetSalienceEvaluation(GetCurrentEnvironment());
+  }
+
+globle intBool SetSalienceEvaluation(
+  int value)
+  {
+   return EnvSetSalienceEvaluation(GetCurrentEnvironment(),value);
+  }
+
+#endif
 
 #endif /* DEFRULE_CONSTRUCT */
 

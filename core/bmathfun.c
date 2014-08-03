@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*             BASIC MATH FUNCTIONS MODULE             */
    /*******************************************************/
@@ -21,6 +21,8 @@
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -816,3 +818,17 @@ globle void MaxFunction(
    return;
   }
 
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool GetAutoFloatDividend()
+  {
+   return EnvGetAutoFloatDividend(GetCurrentEnvironment());
+  }
+
+globle intBool SetAutoFloatDividend(
+  int value)
+  {
+   return EnvSetAutoFloatDividend(GetCurrentEnvironment(),value);
+  }
+
+#endif

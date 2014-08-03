@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -32,6 +32,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -2108,6 +2110,89 @@ static struct expr *ModAndDupParse(
   }
 
 #endif /* (! RUN_TIME) && (! BLOAD_ONLY) */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void DeftemplateSlotNames(
+  void *vTheDeftemplate,
+  DATA_OBJECT *returnValue)
+  {
+   EnvDeftemplateSlotNames(GetCurrentEnvironment(),vTheDeftemplate,returnValue);
+  }
+
+globle intBool DeftemplateSlotDefaultValue(
+  void *vTheDeftemplate,
+  const char *slotName,
+  DATA_OBJECT_PTR theValue)
+  {
+   return EnvDeftemplateSlotDefaultValue(GetCurrentEnvironment(),vTheDeftemplate,slotName,theValue);
+  }
+
+globle void DeftemplateSlotCardinality(
+  void *vTheDeftemplate,
+  const char *slotName,
+  DATA_OBJECT *result)
+  {
+   EnvDeftemplateSlotCardinality(GetCurrentEnvironment(),vTheDeftemplate,slotName,result);
+  }
+
+globle void DeftemplateSlotAllowedValues(
+  void *vTheDeftemplate,
+  const char *slotName,
+  DATA_OBJECT *result)
+  {
+   EnvDeftemplateSlotAllowedValues(GetCurrentEnvironment(),vTheDeftemplate,slotName,result);
+  }
+
+globle void DeftemplateSlotRange(
+  void *vTheDeftemplate,
+  const char *slotName,
+  DATA_OBJECT *result)
+  {
+   EnvDeftemplateSlotRange(GetCurrentEnvironment(),vTheDeftemplate,slotName,result);
+  }
+
+globle void DeftemplateSlotTypes(
+  void *vTheDeftemplate,
+  const char *slotName,
+  DATA_OBJECT *result)
+  {
+   EnvDeftemplateSlotTypes(GetCurrentEnvironment(),vTheDeftemplate,slotName,result);
+  }
+
+globle int DeftemplateSlotMultiP(
+  void *vTheDeftemplate,
+  const char *slotName)
+  {
+   return EnvDeftemplateSlotMultiP(GetCurrentEnvironment(),vTheDeftemplate,slotName);
+  }
+
+globle int DeftemplateSlotSingleP(
+  void *vTheDeftemplate,
+  const char *slotName)
+  {
+   return EnvDeftemplateSlotSingleP(GetCurrentEnvironment(),vTheDeftemplate,slotName);
+  }
+
+globle int DeftemplateSlotExistP(
+  void *vTheDeftemplate,
+  const char *slotName)
+  {
+   return EnvDeftemplateSlotExistP(GetCurrentEnvironment(),vTheDeftemplate,slotName);
+  }
+
+globle int DeftemplateSlotDefaultP(
+  void *vTheDeftemplate,
+  const char *slotName)
+  {
+   return EnvDeftemplateSlotDefaultP(GetCurrentEnvironment(),vTheDeftemplate,slotName);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFTEMPLATE_CONSTRUCT */
 

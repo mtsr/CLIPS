@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -1196,3 +1198,27 @@ globle size_t UTF8CharNum(
      
    return charnum;
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void IncrementGCLocks()
+  {
+   EnvIncrementGCLocks(GetCurrentEnvironment());
+  }
+
+globle void DecrementGCLocks()
+  {
+   EnvDecrementGCLocks(GetCurrentEnvironment());
+  }
+
+globle intBool RemovePeriodicFunction(
+  const char *name)
+  {
+   return EnvRemovePeriodicFunction(GetCurrentEnvironment(),name);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */

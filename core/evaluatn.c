@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                  EVALUATION MODULE                  */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -1170,9 +1172,9 @@ static void PrintCAddress(
    EnvPrintRouter(theEnv,logicalName,">");
   }
 
-/*******************************************************/
-/* NewCAddress:  */
-/*******************************************************/
+/****************/
+/* NewCAddress: */
+/****************/
 static void NewCAddress(
   void *theEnv,
   DATA_OBJECT *rv)
@@ -1206,4 +1208,27 @@ static intBool DiscardCAddress(
    return TRUE;
   }
 */
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void SetMultifieldErrorValue(
+  void *theEnv,
+  DATA_OBJECT_PTR returnValue)
+  {
+   EnvSetMultifieldErrorValue(GetCurrentEnvironment(),returnValue);
+  }
+
+globle int FunctionCall(
+  const char *name,
+  const char *args,
+  DATA_OBJECT *result)
+  {
+   return EnvFunctionCall(GetCurrentEnvironment(),name,args,result);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

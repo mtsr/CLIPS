@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  07/25/14           */
+   /*              CLIPS Version 6.30  08/02/14           */
    /*                                                     */
    /*                INSTANCE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*            Fixed slot override default ?NONE bug.         */
 /*                                                           */
@@ -1325,8 +1327,39 @@ static void NetworkModifyForSharedSlot(
      NetworkModifyForSharedSlot(theEnv,sharedTraversalID,cls->directSubclasses.classArray[i],sd);
   }
 
-#endif
+#endif /* DEFRULE_CONSTRUCT */
 
-#endif
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void DecrementInstanceCount(
+  void *vptr)
+  {
+   EnvDecrementInstanceCount(GetCurrentEnvironment(),vptr);
+  }
+
+globle int GetInstancesChanged()
+  {
+   return EnvGetInstancesChanged(GetCurrentEnvironment());
+  }
+
+globle void IncrementInstanceCount(
+  void *vptr)
+  {
+   EnvIncrementInstanceCount(GetCurrentEnvironment(),vptr);
+  }
+
+globle void SetInstancesChanged(
+  int changed)
+  {
+   EnvSetInstancesChanged(GetCurrentEnvironment(),changed);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* OBJECT_SYSTEM */
 
 

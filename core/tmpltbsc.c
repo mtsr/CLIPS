@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*          DEFTEMPLATE BASIC COMMANDS MODULE          */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -327,6 +329,52 @@ globle unsigned DeftemplateWatchPrint(
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void GetDeftemplateList(
+  DATA_OBJECT_PTR returnValue,
+  void *theModule)
+  {
+   EnvGetDeftemplateList(GetCurrentEnvironment(),returnValue,theModule);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle unsigned GetDeftemplateWatch(
+  void *theTemplate)
+  {
+   return EnvGetDeftemplateWatch(GetCurrentEnvironment(),theTemplate);
+  }
+
+globle void ListDeftemplates(
+  const char *logicalName,
+  void *theModule)
+  {
+   EnvListDeftemplates(GetCurrentEnvironment(),logicalName,theModule);
+  }
+
+globle void SetDeftemplateWatch(
+  unsigned newState,
+  void *theTemplate)
+  {
+   EnvSetDeftemplateWatch(GetCurrentEnvironment(),newState,theTemplate);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+globle intBool Undeftemplate(
+  void *theDeftemplate)
+  {
+   return EnvUndeftemplate(GetCurrentEnvironment(),theDeftemplate);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
 
 #endif /* DEFTEMPLATE_CONSTRUCT */
 

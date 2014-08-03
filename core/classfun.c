@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                CLASS FUNCTIONS MODULE               */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -721,7 +723,7 @@ LOCALE void RemoveDefclass(
       rm(theEnv,(void *) cls->handlerOrderMap,(sizeof(unsigned) * cls->handlerCount));
      }
      
-   SetDefclassPPForm((void *) cls,NULL);
+   EnvSetDefclassPPForm(theEnv,(void *) cls,NULL);
    DeassignClassID(theEnv,(unsigned) cls->id);
    rtn_struct(theEnv,defclass,cls);
   }

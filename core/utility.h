@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 UTILITY HEADER FILE                 */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -107,10 +109,6 @@ struct utilityData
 #define LOCALE extern
 #endif
 
-#define DecrementGCLocks() EnvDecrementGCLocks(GetCurrentEnvironment())
-#define IncrementGCLocks() EnvIncrementGCLocks(GetCurrentEnvironment())
-#define RemovePeriodicFunction(a) EnvRemovePeriodicFunction(GetCurrentEnvironment(),a)
-
    LOCALE void                           InitializeUtilityData(void *);
    LOCALE intBool                        AddCleanupFunction(void *,const char *,void (*)(void *),int);
    LOCALE intBool                        EnvAddPeriodicFunction(void *,const char *,void (*)(void *),int);
@@ -158,7 +156,16 @@ struct utilityData
    LOCALE void                           CallCleanupFunctions(void *);
    LOCALE void                           CallPeriodicTasks(void *);
    LOCALE void                           CleanCurrentGarbageFrame(void *,struct dataObject *);
-#endif
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                           IncrementGCLocks();
+   LOCALE void                           DecrementGCLocks();
+   LOCALE intBool                        RemovePeriodicFunction(const char *);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_utility */
 
 
 

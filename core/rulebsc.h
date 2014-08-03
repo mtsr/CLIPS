@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*         DEFRULE BASIC COMMANDS HEADER FILE          */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Converted API macros to function calls.        */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_rulebsc
@@ -46,14 +48,6 @@
 #else
 #define LOCALE extern
 #endif
-
-#define GetDefruleList(a,b) EnvGetDefruleList(GetCurrentEnvironment(),a,b)
-#define GetDefruleWatchActivations(a) EnvGetDefruleWatchActivations(GetCurrentEnvironment(),a)
-#define GetDefruleWatchFirings(a) EnvGetDefruleWatchFirings(GetCurrentEnvironment(),a)
-#define ListDefrules(a,b) EnvListDefrules(GetCurrentEnvironment(),a,b)
-#define SetDefruleWatchActivations(a,b) EnvSetDefruleWatchActivations(GetCurrentEnvironment(),a,b)
-#define SetDefruleWatchFirings(a,b) EnvSetDefruleWatchFirings(GetCurrentEnvironment(),a,b)
-#define Undefrule(a) EnvUndefrule(GetCurrentEnvironment(),a)
 
    LOCALE void                           DefruleBasicCommands(void *);
    LOCALE void                           UndefruleCommand(void *);
@@ -74,6 +68,20 @@
    LOCALE unsigned                       DefruleWatchPrint(void *,const char *,int,struct expr *);
 #endif
 
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                           GetDefruleList(DATA_OBJECT_PTR,void *);
+#if DEBUGGING_FUNCTIONS
+   LOCALE unsigned                       GetDefruleWatchActivations(void *);
+   LOCALE unsigned                       GetDefruleWatchFirings(void *);
+   LOCALE void                           ListDefrules(const char *,void *);
+   LOCALE void                           SetDefruleWatchActivations(unsigned,void *);
+   LOCALE void                           DefruleWatchFirings(unsigned,void *);
 #endif
+   LOCALE intBool                        Undefrule(void *);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_rulebsc */
 
 

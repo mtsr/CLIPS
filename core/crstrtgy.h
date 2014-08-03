@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*      CONFLICT RESOLUTION STRATEGY HEADER MODULE     */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*      6.30: Added salience groups to improve performance   */
 /*            with large numbers of activations of different */
 /*            saliences.                                     */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -58,16 +60,19 @@
 #define LOCALE extern
 #endif
 
-#define GetStrategy() EnvGetStrategy(GetCurrentEnvironment())
-#define SetStrategy(a) EnvSetStrategy(GetCurrentEnvironment(),a)
-
    LOCALE void                           PlaceActivation(void *,ACTIVATION **,ACTIVATION *,struct salienceGroup *);
    LOCALE int                            EnvSetStrategy(void *,int);
    LOCALE int                            EnvGetStrategy(void *);
    LOCALE void                          *SetStrategyCommand(void *);
    LOCALE void                          *GetStrategyCommand(void *);
 
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE int                            SetStrategy(int);
+   LOCALE int                            GetStrategy(void);
+
 #endif
 
+#endif /* _H_crstrtgy */
 
 

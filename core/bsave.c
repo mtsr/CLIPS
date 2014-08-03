@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                     BSAVE MODULE                    */
    /*******************************************************/
@@ -25,6 +25,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -591,6 +593,24 @@ globle intBool AddBinaryItem(
   }
 
 #endif /* BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if BLOAD_AND_BSAVE
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool Bsave(
+  const char *fileName)
+  {
+   return EnvBsave(GetCurrentEnvironment(),fileName);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* BLOAD_AND_BSAVE */
 
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -25,6 +25,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -252,7 +254,7 @@ globle void RemoveDefgeneric(
    if (gfunc->mcnt != 0)
      rm(theEnv,(void *) gfunc->methods,(sizeof(DEFMETHOD) * gfunc->mcnt));
    DecrementSymbolCount(theEnv,GetDefgenericNamePointer((void *) gfunc));
-   SetDefgenericPPForm((void *) gfunc,NULL);
+   EnvSetDefgenericPPForm(theEnv,(void *) gfunc,NULL);
    ClearUserDataList(theEnv,gfunc->header.usrData);
    rtn_struct(theEnv,defgeneric,gfunc);
   }

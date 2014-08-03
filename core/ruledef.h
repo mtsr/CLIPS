@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 DEFRULE HEADER FILE                 */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -130,10 +132,6 @@ struct defruleData
 #endif
   };
 
-#define EnvGetDefruleName(theEnv,x) GetConstructNameString((struct constructHeader *) x)
-#define EnvGetDefrulePPForm(theEnv,x) GetConstructPPForm(theEnv,(struct constructHeader *) x)
-#define EnvDefruleModule(theEnv,x) GetConstructModuleName((struct constructHeader *) x)
-
 #define DefruleData(theEnv) ((struct defruleData *) GetEnvironmentData(theEnv,DEFRULE_DATA))
 
 #define GetPreviousJoin(theJoin) \
@@ -155,13 +153,6 @@ struct defruleData
 #define LOCALE extern
 #endif
 
-#define DefruleModule(x) GetConstructModuleName((struct constructHeader *) x)
-#define FindDefrule(a) EnvFindDefrule(GetCurrentEnvironment(),a)
-#define GetDefruleName(x) GetConstructNameString((struct constructHeader *) x)
-#define GetDefrulePPForm(x) GetConstructPPForm(GetCurrentEnvironment(),(struct constructHeader *) x)
-#define GetNextDefrule(a) EnvGetNextDefrule(GetCurrentEnvironment(),a)
-#define IsDefruleDeletable(a) EnvIsDefruleDeletable(GetCurrentEnvironment(),a)
-
    LOCALE void                           InitializeDefrules(void *);
    LOCALE void                          *EnvFindDefrule(void *,const char *);
    LOCALE void                          *EnvGetNextDefrule(void *,void *);
@@ -175,6 +166,22 @@ struct defruleData
 #endif
    LOCALE long                           EnvGetDisjunctCount(void *,void *);
    LOCALE void                          *EnvGetNthDisjunct(void *,void *,long);
-#endif
+   LOCALE char                          *EnvDefruleModule(void *,void *);
+   LOCALE char                          *EnvGetDefruleName(void *,void *);
+   LOCALE char                          *EnvGetDefrulePPForm(void *,void *);
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE char                          *DefruleModule(void *);
+   LOCALE void                          *FindDefrule(const char *);
+   LOCALE char                          *GetDefruleName(void *);
+   LOCALE char                          *GetDefrulePPForm(void *);
+   LOCALE void                          *GetNextDefrule(void *);
+   LOCALE intBool                        IsDefruleDeletable(void *);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+
+#endif /* _H_ruledef */
 
 

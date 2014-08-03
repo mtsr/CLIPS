@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  07/25/14           */
+   /*              CLIPS Version 6.30  08/02/14           */
    /*                                                     */
    /*                INSTANCE COMMAND MODULE              */
    /*******************************************************/
@@ -32,6 +32,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -546,7 +548,7 @@ globle void EnvInstances(
      PrintTally(theEnv,logicalName,count,"instance","instances");
   }
 
-#endif
+#endif /* DEBUGGING_FUNCTIONS */
 
 /*********************************************************
   NAME         : EnvMakeInstance
@@ -785,22 +787,6 @@ globle char *EnvGetInstanceName(
    return(ValueToString(((INSTANCE_TYPE *) iptr)->name));
   }
 
-/***************************************************
-  NAME         : GetInstanceName
-  DESCRIPTION  : Returns name of instance
-  INPUTS       : Pointer to instance
-  RETURNS      : Name of instance
-  SIDE EFFECTS : None
-  NOTES        : None
- ***************************************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle char *GetInstanceName(
-  void *iptr)
-  {
-   return EnvGetInstanceName(GetCurrentEnvironment(),iptr);
-  }
-#endif
-  
 /***************************************************
   NAME         : EnvGetInstanceClass
   DESCRIPTION  : Returns class of instance
@@ -1615,5 +1601,120 @@ static INSTANCE_SLOT *FindISlotByName(
    return(FindInstanceSlot(theEnv,ins,ssym));
   }
 
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle char *GetInstanceName(
+  void *iptr)
+  {
+   return EnvGetInstanceName(GetCurrentEnvironment(),iptr);
+  }
+
+globle void *CreateRawInstance(
+  void *cptr,
+  const char *iname)
+  {
+   return EnvCreateRawInstance(GetCurrentEnvironment(),cptr,iname);
+  }
+
+globle intBool DeleteInstance(
+  void *iptr)
+  {
+   return EnvDeleteInstance(GetCurrentEnvironment(),iptr);
+  }
+
+globle void DirectGetSlot(
+  void *ins,
+  const char *sname,
+  DATA_OBJECT *result)
+  {
+   EnvDirectGetSlot(GetCurrentEnvironment(),ins,sname,result);
+  }
+
+globle int DirectPutSlot(
+  void *ins,
+  const char *sname,
+  DATA_OBJECT *val)
+  {
+   return EnvDirectPutSlot(GetCurrentEnvironment(),ins,sname,val);
+  }
+
+globle void *FindInstance(
+  void *theModule,
+  const char *iname,
+  unsigned searchImports)
+  {
+   return EnvFindInstance(GetCurrentEnvironment(),theModule,iname,searchImports);
+  }
+
+globle void *GetInstanceClass(
+  void *iptr)
+  {
+   return EnvGetInstanceClass(GetCurrentEnvironment(),iptr);
+  }
+
+globle void GetInstancePPForm(
+  char *buf,
+  unsigned buflen,
+  void *iptr)
+  {
+   EnvGetInstancePPForm(GetCurrentEnvironment(),buf,buflen,iptr);
+  }
+
+globle void *GetNextInstance(
+  void *iptr)
+  {
+   return EnvGetNextInstance(GetCurrentEnvironment(),iptr);
+  }
+
+globle void *GetNextInstanceInClass(
+  void *cptr,
+  void *iptr)
+  {
+   return EnvGetNextInstanceInClass(GetCurrentEnvironment(),cptr,iptr);
+  }
+
+globle void *GetNextInstanceInClassAndSubclasses(
+  void **cptr,
+  void *iptr,
+  DATA_OBJECT *iterationInfo)
+  {
+   return EnvGetNextInstanceInClassAndSubclasses(GetCurrentEnvironment(),cptr,iptr,iterationInfo);
+  }
+
+#if DEBUGGING_FUNCTIONS
+globle void Instances(
+  const char *logicalName,
+  void *theVModule,
+  const char *className,
+  int inheritFlag)
+  {
+   EnvInstances(GetCurrentEnvironment(),logicalName,theVModule,className,inheritFlag);
+  }
 #endif
+
+globle void *MakeInstance(
+  const char *mkstr)
+  {
+   return EnvMakeInstance(GetCurrentEnvironment(),mkstr);
+  }
+
+globle intBool UnmakeInstance(
+  void *iptr)
+  {
+   return EnvUnmakeInstance(GetCurrentEnvironment(),iptr);
+  }
+
+globle int ValidInstanceAddress(
+  void *iptr)
+  {
+   return EnvValidInstanceAddress(GetCurrentEnvironment(),iptr);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* OBJECT_SYSTEM */
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -1812,5 +1814,225 @@ globle void TypeCommand(
 
 #endif
 
-#endif
+/*#############################*/
+/* Additional Access Functions */
+/*#############################*/
+
+globle SYMBOL_HN *GetDefgenericNamePointer(
+  void *theDefgeneric)
+  {
+   return GetConstructNamePointer((struct constructHeader *) theDefgeneric);
+  }
+
+globle void SetNextDefgeneric(
+  void *theDefgeneric,
+  void *targetDefgeneric)
+  {
+   SetNextConstruct((struct constructHeader *) theDefgeneric,
+                    (struct constructHeader *) targetDefgeneric);
+  }
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+globle char *EnvDefgenericModule(
+  void *theEnv,
+  void *theDefgeneric)
+  {
+   return GetConstructModuleName((struct constructHeader *) theDefgeneric);
+  }
+
+globle char *EnvGetDefgenericName(
+  void *theEnv,
+  void *theDefgeneric)
+  {
+   return GetConstructNameString((struct constructHeader *) theDefgeneric);
+  }
+
+globle char *EnvGetDefgenericPPForm(
+  void *theEnv,
+  void *theDefgeneric)
+  {
+   return GetConstructPPForm(theEnv,(struct constructHeader *) theDefgeneric);
+  }
+
+globle SYMBOL_HN *EnvGetDefgenericNamePointer(
+  void *theEnv,
+  void *theDefgeneric)
+  {
+   return GetConstructNamePointer((struct constructHeader *) theDefgeneric);
+  }
+
+globle void EnvSetDefgenericPPForm(
+  void *theEnv,
+  void *theDefgeneric,
+  char *thePPForm)
+  {
+   SetConstructPPForm(theEnv,(struct constructHeader *) theDefgeneric,thePPForm);
+  }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void SetDefgenericPPForm(
+  void *theDefgeneric,
+  char *thePPForm)
+  {
+   EnvSetDefgenericPPForm(GetCurrentEnvironment(),theDefgeneric,thePPForm);
+  }
+
+globle char *DefgenericModule(
+  void *theDefgeneric)
+  {
+   return EnvDefgenericModule(GetCurrentEnvironment(),theDefgeneric);
+  }
+
+globle void *FindDefgeneric(
+  const char *genericModuleAndName)
+  {
+   return EnvFindDefgeneric(GetCurrentEnvironment(),genericModuleAndName);
+  }
+
+globle void GetDefgenericList(
+  DATA_OBJECT *returnValue,
+  struct defmodule *theModule)
+  {
+   EnvGetDefgenericList(GetCurrentEnvironment(),returnValue,theModule);
+  }
+
+globle char *GetDefgenericName(
+  void *theDefgeneric)
+  {
+   return EnvGetDefgenericName(GetCurrentEnvironment(),theDefgeneric);
+  }
+
+globle char *GetDefgenericPPForm(
+  void *theDefgeneric)
+  {
+   return EnvGetDefgenericPPForm(GetCurrentEnvironment(),theDefgeneric);
+  }
+
+globle void *GetNextDefgeneric(
+  void *ptr)
+  {
+   return EnvGetNextDefgeneric(GetCurrentEnvironment(),ptr);
+  }
+
+globle int IsDefgenericDeletable(
+  void *ptr)
+  {
+   return EnvIsDefgenericDeletable(GetCurrentEnvironment(),ptr);
+  }
+
+globle intBool Undefgeneric(
+  void *vptr)
+  {
+   return EnvUndefgeneric(GetCurrentEnvironment(),vptr);
+  }
+
+globle void GetDefmethodList(
+  void *vgfunc,
+  DATA_OBJECT_PTR returnValue)
+  {
+   EnvGetDefmethodList(GetCurrentEnvironment(),vgfunc,returnValue);
+  }
+
+globle void GetMethodRestrictions(
+  void *vgfunc,
+  long mi,
+  DATA_OBJECT *result)
+  {
+   EnvGetMethodRestrictions(GetCurrentEnvironment(),vgfunc,mi,result);
+  }
+
+globle long GetNextDefmethod(
+  void *ptr,
+  long theIndex)
+  {
+   return EnvGetNextDefmethod(GetCurrentEnvironment(),ptr,theIndex);
+  }
+
+globle int IsDefmethodDeletable(
+  void *ptr,
+  long theIndex)
+  {
+   return EnvIsDefmethodDeletable(GetCurrentEnvironment(),ptr,theIndex);
+  }
+
+globle intBool Undefmethod(
+  void *vptr,
+  long mi)
+  {
+  return EnvUndefmethod(GetCurrentEnvironment(),vptr,mi);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle unsigned GetDefgenericWatch(
+  void *theGeneric)
+  {
+   return EnvGetDefgenericWatch(GetCurrentEnvironment(),theGeneric);
+  }
+
+globle void ListDefgenerics(
+  const char *logicalName,
+  struct defmodule *theModule)
+  {
+   EnvListDefgenerics(GetCurrentEnvironment(),logicalName,theModule);
+  }
+
+globle void SetDefgenericWatch(
+  unsigned newState,
+  void *theGeneric)
+  {
+   EnvSetDefgenericWatch(GetCurrentEnvironment(),newState,theGeneric);
+  }
+
+globle void GetDefmethodDescription(
+  char *buf,
+  int buflen,
+  void *ptr,
+  long theIndex)
+  {
+   EnvGetDefmethodDescription(GetCurrentEnvironment(),buf,buflen,ptr,theIndex);
+  }
+
+globle char *GetDefmethodPPForm(
+  void *ptr,
+  long theIndex)
+  {
+   return EnvGetDefmethodPPForm(GetCurrentEnvironment(),ptr,theIndex);
+  }
+
+globle unsigned GetDefmethodWatch(
+  void *theGeneric,
+  long theIndex)
+  {
+   return EnvGetDefmethodWatch(GetCurrentEnvironment(),theGeneric,theIndex);
+  }
+
+globle void ListDefmethods(
+  const char *logicalName,
+  void *vptr)
+  {
+   return EnvListDefmethods(GetCurrentEnvironment(),logicalName,vptr);
+  }
+
+globle void SetDefmethodWatch(
+  unsigned newState,
+  void *theGeneric,
+  long theIndex)
+  {
+   EnvSetDefmethodWatch(GetCurrentEnvironment(),newState,theGeneric,theIndex);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* DEFGENERIC_CONSTRUCT */
 

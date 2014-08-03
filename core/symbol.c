@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                    SYMBOL MODULE                    */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -1731,3 +1733,56 @@ globle void RestoreAtomicValueBuckets(
   }
 
 #endif /* BLOAD_AND_BSAVE || CONSTRUCT_COMPILER || BSAVE_INSTANCES */
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+globle void *EnvFalseSymbol(
+  void *theEnv)
+  {
+   return SymbolData(theEnv)->FalseSymbolHN;
+  }
+
+globle void *EnvTrueSymbol(
+  void *theEnv)
+  {
+   return SymbolData(theEnv)->TrueSymbolHN;
+  }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void *AddSymbol(
+  const char *str)
+  {
+   return EnvAddSymbol(GetCurrentEnvironment(),str);
+  }
+
+globle void *AddLong(
+  long long number)
+  {
+   return EnvAddLong(GetCurrentEnvironment(),number);
+  }
+
+globle void *AddDouble(
+  double number)
+  {
+   return EnvAddDouble(GetCurrentEnvironment(),number);
+  }
+
+globle void *FalseSymbol()
+  {
+   return SymbolData(GetCurrentEnvironment())->FalseSymbolHN;
+  }
+
+globle void *TrueSymbol()
+  {
+   return SymbolData(GetCurrentEnvironment())->TrueSymbolHN;
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+

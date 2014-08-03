@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 DEFTEMPLATE MODULE                  */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -521,7 +523,83 @@ globle void DeftemplateRunTimeInitialize(
    DoForAllConstructs(theEnv,RuntimeDeftemplateAction,DeftemplateData(theEnv)->DeftemplateModuleIndex,TRUE,NULL); 
   }
 
-#endif
+#endif /* RUN_TIME */
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+globle char *EnvDeftemplateModule(
+  void *theEnv,
+  void *theDeftemplate)
+  {
+   return GetConstructModuleName((struct constructHeader *) theDeftemplate);
+  }
+
+globle char *EnvGetDeftemplateName(
+  void *theEnv,
+  void *theDeftemplate)
+  {
+   return GetConstructNameString((struct constructHeader *) theDeftemplate);
+  }
+
+globle char *EnvGetDeftemplatePPForm(
+  void *theEnv,
+  void *theDeftemplate)
+  {
+   return GetConstructPPForm(theEnv,(struct constructHeader *) theDeftemplate);
+  }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle char *DeftemplateModule(
+  void *theDeftemplate)
+  {
+   return EnvDeftemplateModule(GetCurrentEnvironment(),theDeftemplate);
+  }
+
+globle void *FindDeftemplate(
+  const char *deftemplateName)
+  {
+   return EnvFindDeftemplate(GetCurrentEnvironment(),deftemplateName);
+  }
+
+globle char *GetDeftemplateName(
+  void *theDeftemplate)
+  {
+   return EnvGetDeftemplateName(GetCurrentEnvironment(),theDeftemplate);
+  }
+
+globle char *GetDeftemplatePPForm(
+  void *theDeftemplate)
+  {
+   return EnvGetDeftemplatePPForm(GetCurrentEnvironment(),theDeftemplate);
+  }
+
+globle void *GetNextDeftemplate(
+  void *deftemplatePtr)
+  {
+   return EnvGetNextDeftemplate(GetCurrentEnvironment(),deftemplatePtr);
+  }
+
+globle intBool IsDeftemplateDeletable(
+  void *vTheDeftemplate)
+  {
+   return EnvIsDeftemplateDeletable(GetCurrentEnvironment(),vTheDeftemplate);
+  }
+
+globle void *GetNextFactInTemplate(
+  void *theTemplate,
+  void *factPtr)
+  {
+   return EnvGetNextFactInTemplate(GetCurrentEnvironment(),theTemplate,factPtr);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFTEMPLATE_CONSTRUCT */
 

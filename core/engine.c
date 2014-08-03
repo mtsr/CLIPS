@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -42,6 +42,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -120,17 +122,6 @@ static void DeallocateEngineData(
      }
   }
 
-/**********************************************/
-/* Run: C access routine for the run command. */
-/**********************************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle long long Run(
-  long long runLimit)
-  {
-   return EnvRun(GetCurrentEnvironment(),runLimit);
-  }
-#endif
-  
 /*************************************************/
 /* EnvRun: C access routine for the run command. */
 /*************************************************/
@@ -256,8 +247,8 @@ globle long long EnvRun(
       DetachActivation(theEnv,theActivation);
       theTM = AddTrackedMemory(theEnv,theActivation,sizeof(struct activation));
       ruleFiring = EnvGetActivationName(theEnv,theActivation);
-      theBasis = (struct partialMatch *) GetActivationBasis(theActivation);
-      EngineData(theEnv)->ExecutingRule = (struct defrule *) GetActivationRule(theActivation);
+      theBasis = (struct partialMatch *) EnvGetActivationBasis(theEnv,theActivation);
+      EngineData(theEnv)->ExecutingRule = (struct defrule *) EnvGetActivationRule(theEnv,theActivation);
 
       /*=============================================*/
       /* Update the number of rules that have fired. */
@@ -482,7 +473,7 @@ globle long long EnvRun(
 
       if (theActivation != NULL)
         {
-         if (((struct defrule *) GetActivationRule(theActivation))->afterBreakpoint)
+         if (((struct defrule *) EnvGetActivationRule(theEnv,theActivation))->afterBreakpoint)
            {
             EngineData(theEnv)->HaltRules = TRUE;
             EnvPrintRouter(theEnv,WDIALOG,"Breaking on rule ");
@@ -889,46 +880,6 @@ globle void EnvClearFocusStack(
    EngineData(theEnv)->FocusChanged = TRUE;
   }
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-/***********************************/
-/* AddRunFunction: Adds a function */
-/*   to the ListOfRunFunctions.    */
-/***********************************/
-globle intBool AddRunFunction(
-  const char *name,
-  void (*functionPtr)(void),
-  int priority)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-
-   EngineData(theEnv)->ListOfRunFunctions = 
-       AddFunctionToCallList(theEnv,name,priority,(void (*)(void *)) functionPtr,
-                             EngineData(theEnv)->ListOfRunFunctions,TRUE);
-   return(1);
-  }
-
-/*****************************************/
-/* AddBeforeRunFunction: Adds a function */
-/*   to the ListOfBeforeRunFunctions.    */
-/*****************************************/
-globle intBool AddBeforeRunFunction(
-  const char *name,
-  void (*functionPtr)(void *),
-  int priority)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-
-   EngineData(theEnv)->ListOfBeforeRunFunctions = 
-       AddFunctionToCallListWithArg(theEnv,name,priority,(void (*)(void *,void *)) functionPtr,
-                             EngineData(theEnv)->ListOfBeforeRunFunctions,TRUE);
-   return(1);
-  }
-#endif
-
 /**************************************/
 /* EnvAddRunFunction: Adds a function */
 /*   to the ListOfRunFunctions.       */
@@ -1293,7 +1244,7 @@ globle void EnvListFocusStack(
      }
   }
 
-#endif
+#endif /* DEBUGGING_FUNCTIONS */
 
 /***********************************************/
 /* GetFocusStackFunction: H/L access routine   */
@@ -1492,6 +1443,142 @@ globle intBool EnvGetHaltRules(
   {
    return(EngineData(theEnv)->HaltRules);
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool AddBeforeRunFunction(
+  const char *name,
+  void (*functionPtr)(void *),
+  int priority)
+  {
+   void *theEnv;
+   
+   theEnv = GetCurrentEnvironment();
+
+   EngineData(theEnv)->ListOfBeforeRunFunctions = 
+       AddFunctionToCallListWithArg(theEnv,name,priority,(void (*)(void *,void *)) functionPtr,
+                             EngineData(theEnv)->ListOfBeforeRunFunctions,TRUE);
+   return(1);
+  }
+
+globle intBool AddRunFunction(
+  const char *name,
+  void (*functionPtr)(void),
+  int priority)
+  {
+   void *theEnv;
+   
+   theEnv = GetCurrentEnvironment();
+
+   EngineData(theEnv)->ListOfRunFunctions = 
+       AddFunctionToCallList(theEnv,name,priority,(void (*)(void *)) functionPtr,
+                             EngineData(theEnv)->ListOfRunFunctions,TRUE);
+   return(1);
+  }
+
+globle void ClearFocusStack()
+  {
+   EnvClearFocusStack(GetCurrentEnvironment());
+  }
+
+globle void Focus(
+  void *vTheModule)
+  {
+   EnvFocus(GetCurrentEnvironment(),vTheModule);
+  }
+
+globle void GetFocusStack(
+  DATA_OBJECT_PTR returnValue)
+  {
+   EnvGetFocusStack(GetCurrentEnvironment(),returnValue);
+  }
+
+globle void *GetFocus(
+  void *theEnv)
+  {
+   return EnvGetFocus(GetCurrentEnvironment());
+  }
+
+globle int GetFocusChanged()
+  {
+   return EnvGetFocusChanged(GetCurrentEnvironment());
+  }
+
+globle void *GetNextFocus(
+  void *theFocus)
+  {
+   return EnvGetNextFocus(GetCurrentEnvironment(),theFocus);
+  }
+
+globle void Halt()
+  {
+   EnvHalt(GetCurrentEnvironment());
+  }
+
+globle void *PopFocus()
+  {
+   return EnvPopFocus(GetCurrentEnvironment());
+  }
+
+globle intBool RemoveRunFunction(
+  const char *name)
+  {
+   return EnvRemoveRunFunction(GetCurrentEnvironment(),name);
+  }
+
+globle long long Run(
+  long long runLimit)
+  {
+   return EnvRun(GetCurrentEnvironment(),runLimit);
+  }
+
+globle void SetFocusChanged(
+  int value)
+  {
+   EnvSetFocusChanged(GetCurrentEnvironment(),value);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle void ListFocusStack(
+  const char *logicalName)
+  {
+   return EnvListFocusStack(GetCurrentEnvironment(),logicalName);
+  }
+
+globle intBool DefruleHasBreakpoint(
+  void *theRule)
+  {
+   return EnvDefruleHasBreakpoint(GetCurrentEnvironment(),theRule);
+  }
+
+globle intBool RemoveBreak(
+  void *theRule)
+  {
+   return EnvRemoveBreak(GetCurrentEnvironment(),theRule);
+  }
+
+globle void SetBreak(
+  void *theRule)
+  {
+   EnvSetBreak(GetCurrentEnvironment(),theRule);
+  }
+
+globle void ShowBreaks(
+  const char *logicalName,
+  void *vTheModule)
+  {
+   EnvShowBreaks(GetCurrentEnvironment(),logicalName,vTheModule);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
 
 #endif /* DEFRULE_CONSTRUCT */
 

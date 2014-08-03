@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                  DEFMODULE MODULE                   */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -275,9 +277,9 @@ globle void *EnvGetCurrentModule(
 /**************************************************************/
 globle void *EnvSetCurrentModule(
   void *theEnv,
-  void *xNewValue)
+  void *vNewValue)
   {
-   struct defmodule *newValue = (struct defmodule *) xNewValue;
+   struct defmodule *newValue = (struct defmodule *) vNewValue;
    struct callFunctionItem *changeFunctions;
    void *rv;
 
@@ -776,4 +778,46 @@ globle void IllegalModuleSpecifierMessage(
    EnvPrintRouter(theEnv,WERROR,"Illegal use of the module specifier.\n");
   }
 
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void *FindDefmodule(
+  const char *defmoduleName)
+  {
+   return EnvFindDefmodule(GetCurrentEnvironment(),defmoduleName);
+  }
+
+globle void *GetCurrentModule()
+  {
+   return EnvGetCurrentModule(GetCurrentEnvironment());
+  }
+
+globle char *GetDefmoduleName(
+  void *defmodulePtr)
+  {
+   return EnvGetDefmoduleName(GetCurrentEnvironment(),defmodulePtr);
+  }
+
+globle char *GetDefmodulePPForm(
+  void *defmodulePtr)
+  {
+   return EnvGetDefmodulePPForm(GetCurrentEnvironment(),defmodulePtr);
+  }
+
+globle void *GetNextDefmodule(
+  void *defmodulePtr)
+  {
+   return EnvGetNextDefmodule(GetCurrentEnvironment(),defmodulePtr);
+  }
+
+globle void *SetCurrentModule(
+  void *vNewValue)
+  {
+   return EnvSetCurrentModule(GetCurrentEnvironment(),vNewValue);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                  CLASS PARSER MODULE                */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*                                                            */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /**************************************************************/
 
@@ -603,7 +605,7 @@ static void AddClass(
 
 #if DEBUGGING_FUNCTIONS
    if (EnvGetConserveMemory(theEnv) == FALSE)
-     SetDefclassPPForm((void *) cls,CopyPPBuffer(theEnv));
+     EnvSetDefclassPPForm(theEnv,(void *) cls,CopyPPBuffer(theEnv));
 #endif
 
 #if DEFMODULE_CONSTRUCT

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                    MEMORY MODULE                    */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*            Corrected code to remove compiler warnings.    */
+/*                                                           */
+/*      6.30: Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -967,4 +969,47 @@ globle void ReturnAllBlocks(
 
    MemoryData(theEnv)->TopMemoryBlock = NULL;
   }
-#endif
+
+#endif /* BLOCK_MEMORY */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool GetConserveMemory()
+  {
+   return EnvGetConserveMemory(GetCurrentEnvironment());
+  }
+
+globle long int MemRequests()
+  {
+   return EnvMemRequests(GetCurrentEnvironment());
+  }
+
+globle long int MemUsed()
+  {
+   return EnvMemUsed(GetCurrentEnvironment());
+  }
+
+globle long int ReleaseMem(
+  long int maximum,
+  int printMessage)
+  {
+   return EnvReleaseMem(GetCurrentEnvironment(),maximum,printMessage);
+  }
+
+globle intBool SetConserveMemory(
+  intBool value)
+  {
+   return EnvSetConserveMemory(GetCurrentEnvironment(),value);
+  }
+
+globle int (*SetOutOfMemoryFunction(void *theEnv,int (*functionPtr)(void *,size_t)))(void *,size_t)
+  {
+   return EnvSetOutOfMemoryFunction(GetCurrentEnvironment(),functionPtr);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+

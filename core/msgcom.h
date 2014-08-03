@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -18,6 +18,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -72,18 +74,6 @@ struct messageHandlerData
 #define PRINT_STRING  "print"
 #define CREATE_STRING "create"
 
-#define FindDefmessageHandler(a,b,c) EnvFindDefmessageHandler(GetCurrentEnvironment(),a,b,c)
-#define GetDefmessageHandlerName(a,b) EnvGetDefmessageHandlerName(GetCurrentEnvironment(),a,b)
-#define GetDefmessageHandlerPPForm(a,b) EnvGetDefmessageHandlerPPForm(GetCurrentEnvironment(),a,b)
-#define GetDefmessageHandlerType(a,b) EnvGetDefmessageHandlerType(GetCurrentEnvironment(),a,b)
-#define GetDefmessageHandlerWatch(a,b) EnvGetDefmessageHandlerWatch(GetCurrentEnvironment(),a,b)
-#define GetNextDefmessageHandler(a,b) EnvGetNextDefmessageHandler(GetCurrentEnvironment(),a,b)
-#define IsDefmessageHandlerDeletable(a,b) EnvIsDefmessageHandlerDeletable(GetCurrentEnvironment(),a,b)
-#define ListDefmessageHandlers(a,b,c) EnvListDefmessageHandlers(GetCurrentEnvironment(),a,b,c)
-#define PreviewSend(a,b,c) EnvPreviewSend(GetCurrentEnvironment(),a,b,c)
-#define SetDefmessageHandlerWatch(a,b,c) EnvSetDefmessageHandlerWatch(GetCurrentEnvironment(),a,b,c)
-#define UndefmessageHandler(a,b) EnvUndefmessageHandler(GetCurrentEnvironment(),a,b)
-   
    LOCALE void             SetupMessageHandlers(void *);
    LOCALE char            *EnvGetDefmessageHandlerName(void *,void *,int);
    LOCALE const char      *EnvGetDefmessageHandlerType(void *,void *,int);
@@ -97,7 +87,6 @@ struct messageHandlerData
    LOCALE int              EnvIsDefmessageHandlerDeletable(void *,void *,int);
    LOCALE void             UndefmessageHandlerCommand(void *);
    LOCALE int              EnvUndefmessageHandler(void *,void *,int);
-
 #if DEBUGGING_FUNCTIONS
    LOCALE void             PPDefmessageHandlerCommand(void *);
    LOCALE void             ListDefmessageHandlersCommand(void *);
@@ -108,7 +97,25 @@ struct messageHandlerData
    LOCALE long             DisplayHandlersInLinks(void *,const char *,PACKED_CLASS_LINKS *,int);
 #endif
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE unsigned         FindDefmessageHandler(void *,const char *,const char *);
+   LOCALE char            *GetDefmessageHandlerName(void *,int);
+   LOCALE const char      *GetDefmessageHandlerType(void *,int);
+   LOCALE int              GetNextDefmessageHandler(void *,int);
+   LOCALE int              IsDefmessageHandlerDeletable(void *,int);
+   LOCALE int              UndefmessageHandler(void *,int);
+#if DEBUGGING_FUNCTIONS
+   LOCALE char            *GetDefmessageHandlerPPForm(void *,int);
+   LOCALE unsigned         GetDefmessageHandlerWatch(void *,int);
+   LOCALE void             ListDefmessageHandlers(const char *,void *,int);
+   LOCALE void             PreviewSend(const char *,void *,const char *);
+   LOCALE void             SetDefmessageHandlerWatch(int,void *,int);
+#endif /* DEBUGGING_FUNCTIONS */
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_msgcom */
 
 
 

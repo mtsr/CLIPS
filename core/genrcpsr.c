@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -25,6 +25,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -166,7 +168,7 @@ globle intBool ParseDefgeneric(
    gfunc = AddGeneric(theEnv,gname,&newGeneric);
 
 #if DEBUGGING_FUNCTIONS
-   SetDefgenericPPForm((void *) gfunc,EnvGetConserveMemory(theEnv) ? NULL : CopyPPBuffer(theEnv));
+   EnvSetDefgenericPPForm(theEnv,(void *) gfunc,EnvGetConserveMemory(theEnv) ? NULL : CopyPPBuffer(theEnv));
 #endif
    return(FALSE);
   }
@@ -761,7 +763,7 @@ static void CreateDefaultGenericPPForm(
    genericName = EnvGetDefgenericName(theEnv,(void *) gfunc);
    buf = (char *) gm2(theEnv,(sizeof(char) * (strlen(moduleName) + strlen(genericName) + 17)));
    gensprintf(buf,"(defgeneric %s::%s)\n",moduleName,genericName);
-   SetDefgenericPPForm((void *) gfunc,buf);
+   EnvSetDefgenericPPForm(theEnv,(void *) gfunc,buf);
   }
 
 #endif

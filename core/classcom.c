@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                  CLASS COMMANDS MODULE              */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*                                                            */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /**************************************************************/
 
@@ -548,7 +550,7 @@ globle unsigned DefclassWatchPrint(
                                       EnvGetDefclassWatchInstances,EnvSetDefclassWatchInstances));
   }
 
-#endif
+#endif /* DEBUGGING_FUNCTIONS */
 
 /*********************************************************
   NAME         : GetDefclassListFunction
@@ -822,4 +824,174 @@ static const char *GetClassDefaultsModeName(
    return(sname);
   }
 
-#endif
+/*#############################*/
+/* Additional Access Functions */
+/*#############################*/
+
+globle SYMBOL_HN *GetDefclassNamePointer(
+  void *theClass)
+  {
+   return GetConstructNamePointer((struct constructHeader *) theClass);
+  }
+
+globle void SetNextDefclass(
+  void *theClass,
+  void *targetClass)
+  {
+   SetNextConstruct((struct constructHeader *) theClass,
+                    (struct constructHeader *) targetClass);
+  }
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+globle char *EnvGetDefclassName(
+  void *theEnv,
+  void *theClass)
+  {
+   return EnvGetConstructNameString(theEnv,(struct constructHeader *) theClass);
+  }
+
+globle char *EnvGetDefclassPPForm(
+  void *theEnv,
+  void *theClass)
+  {
+   return GetConstructPPForm(theEnv,(struct constructHeader *) theClass);
+  }
+
+globle struct defmoduleItemHeader *EnvGetDefclassModule(
+  void *theEnv,
+  void *theClass)
+  {
+   return GetConstructModuleItem((struct constructHeader *) theClass);
+  }
+
+globle char *EnvDefclassModule(
+  void *theEnv,
+  void *theClass)
+  {
+   return GetConstructModuleName((struct constructHeader *) theClass);
+  }
+
+globle void EnvSetDefclassPPForm(
+  void *theEnv,
+  void *theClass,
+  char *thePPForm)
+  {
+   SetConstructPPForm(theEnv,(struct constructHeader *) theClass,thePPForm);
+  }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void *FindDefclass(
+  const char *classAndModuleName)
+  {
+   return EnvFindDefclass(GetCurrentEnvironment(),classAndModuleName);
+  }
+
+globle void GetDefclassList(
+  DATA_OBJECT *returnValue,
+  struct defmodule *theModule)
+  {
+   EnvGetDefclassList(GetCurrentEnvironment(),returnValue,theModule);
+  }
+
+globle void *GetNextDefclass(
+  void *theEnv,
+  void *ptr)
+  {
+   return EnvGetNextDefclass(GetCurrentEnvironment(),ptr);
+  }
+
+globle intBool IsDefclassDeletable(
+  void *ptr)
+  {
+   return EnvIsDefclassDeletable(GetCurrentEnvironment(),ptr);
+  }
+
+globle intBool Undefclass(
+  void *theDefclass)
+  {
+   return EnvUndefclass(GetCurrentEnvironment(),theDefclass);
+  }
+
+globle unsigned short SetClassDefaultsMode(
+  unsigned short value)
+  {
+   return EnvSetClassDefaultsMode(GetCurrentEnvironment(),value);
+  }
+
+globle unsigned short GetClassDefaultsMode()
+  {
+   return EnvGetClassDefaultsMode(GetCurrentEnvironment());
+  }
+
+globle char *GetDefclassName(
+  void *theClass)
+  {
+   return EnvGetDefclassName(GetCurrentEnvironment(),theClass);
+  }
+
+globle char *GetDefclassPPForm(
+  void *theClass)
+  {
+   return EnvGetDefclassPPForm(GetCurrentEnvironment(),theClass);
+  }
+
+globle struct defmoduleItemHeader *GetDefclassModule(
+  void *theClass)
+  {
+   return EnvGetDefclassModule(GetCurrentEnvironment(),theClass);
+  }
+
+globle char *DefclassModule(
+  void *theClass)
+  {
+   return EnvDefclassModule(GetCurrentEnvironment(),theClass);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle unsigned GetDefclassWatchInstances(
+  void *theClass)
+  {
+   return EnvGetDefclassWatchInstances(GetCurrentEnvironment(),theClass);
+  }
+
+globle unsigned GetDefclassWatchSlots(
+  void *theClass)
+  {
+   return EnvGetDefclassWatchSlots(GetCurrentEnvironment(),theClass);
+  }
+
+globle void ListDefclasses(
+  const char *logicalName,
+  struct defmodule *theModule)
+  {
+   EnvListDefclasses(GetCurrentEnvironment(),logicalName,theModule);
+  }
+
+globle void SetDefclassWatchInstances(
+  unsigned newState,
+  void *theClass)
+  {
+   return EnvSetDefclassWatchInstances(GetCurrentEnvironment(),newState,theClass);
+  }
+
+globle void SetDefclassWatchSlots(
+  unsigned newState,
+  void *theClass)
+  {
+   return EnvSetDefclassWatchSlots(GetCurrentEnvironment(),newState,theClass);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* OBJECT_SYSTEM */

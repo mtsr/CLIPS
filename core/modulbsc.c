@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*         DEFMODULE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -21,6 +21,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -215,6 +217,30 @@ globle void EnvListDefmodules(
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void GetDefmoduleList(
+  DATA_OBJECT_PTR returnValue)
+  {
+   EnvGetDefmoduleList(GetCurrentEnvironment(),returnValue);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle void ListDefmodules(
+  const char *logicalName)
+  {
+   EnvListDefmodules(GetCurrentEnvironment(),logicalName);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFMODULE_CONSTRUCT */
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*               DEFTEMPLATE HEADER FILE               */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -112,9 +114,6 @@ struct deftemplateData
 #endif
   };
 
-#define EnvGetDeftemplateName(theEnv,x) GetConstructNameString((struct constructHeader *) x)
-#define EnvGetDeftemplatePPForm(theEnv,x) GetConstructPPForm(theEnv,(struct constructHeader *) x)
-#define EnvDeftemplateModule(theEnv,x) GetConstructModuleName((struct constructHeader *) x)
 #define DeftemplateData(theEnv) ((struct deftemplateData *) GetEnvironmentData(theEnv,DEFTEMPLATE_DATA))
 
 #ifdef LOCALE
@@ -127,14 +126,6 @@ struct deftemplateData
 #define LOCALE extern
 #endif
 
-#define FindDeftemplate(a) EnvFindDeftemplate(GetCurrentEnvironment(),a)
-#define GetNextDeftemplate(a) EnvGetNextDeftemplate(GetCurrentEnvironment(),a)
-#define IsDeftemplateDeletable(a) EnvIsDeftemplateDeletable(GetCurrentEnvironment(),a)
-#define GetDeftemplateName(x) GetConstructNameString((struct constructHeader *) x)
-#define GetDeftemplatePPForm(x) GetConstructPPForm(GetCurrentEnvironment(),(struct constructHeader *) x)
-#define GetNextFactInTemplate(a,b) EnvGetNextFactInTemplate(GetCurrentEnvironment(),a,b)
-#define DeftemplateModule(x) GetConstructModuleName((struct constructHeader *) x)
-
    LOCALE void                           InitializeDeftemplates(void *);
    LOCALE void                          *EnvFindDeftemplate(void *,const char *);
    LOCALE void                          *EnvGetNextDeftemplate(void *,void *);
@@ -145,11 +136,25 @@ struct deftemplateData
    LOCALE void                           IncrementDeftemplateBusyCount(void *,void *);
    LOCALE void                           DecrementDeftemplateBusyCount(void *,void *);
    LOCALE void                          *CreateDeftemplateScopeMap(void *,struct deftemplate *);
-
 #if RUN_TIME
    LOCALE void                           DeftemplateRunTimeInitialize(void *);
 #endif
-   
-#endif
+   LOCALE char                          *EnvDeftemplateModule(void *,void *);
+   LOCALE char                          *EnvGetDeftemplateName(void *,void *);
+   LOCALE char                          *EnvGetDeftemplatePPForm(void *,void *);
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE char                          *DeftemplateModule(void *);
+   LOCALE void                          *FindDeftemplate(const char *);
+   LOCALE char                          *GetDeftemplateName(void *);
+   LOCALE char                          *GetDeftemplatePPForm(void *);
+   LOCALE void                          *GetNextDeftemplate(void *);
+   LOCALE intBool                        IsDeftemplateDeletable(void *);
+   LOCALE void                          *GetNextFactInTemplate(void *,void *);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_tmpltdef */
 
 

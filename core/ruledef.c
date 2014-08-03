@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                   DEFRULE MODULE                    */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -410,7 +412,7 @@ static void AddBetaMemoriesToRule(
      { AddBetaMemoriesToRule(theEnv,theNode->rightSideEntryStructure); }
   }
   
-#endif
+#endif /* RUN_TIME */
 
 #if RUN_TIME || BLOAD_ONLY || BLOAD || BLOAD_AND_BSAVE
 
@@ -493,7 +495,76 @@ globle void AddBetaMemoriesToJoin(
      { theNode->rightMemory = NULL; }
   }
 
-#endif
+#endif /* RUN_TIME || BLOAD_ONLY || BLOAD || BLOAD_AND_BSAVE */
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+globle char *EnvDefruleModule(
+  void *theEnv,
+  void *theDefrule)
+  {
+   return GetConstructModuleName((struct constructHeader *) theDefrule);
+  }
+
+globle char *EnvGetDefruleName(
+  void *theEnv,
+  void *theDefrule)
+  {
+   return GetConstructNameString((struct constructHeader *) theDefrule);
+  }
+
+globle char *EnvGetDefrulePPForm(
+  void *theEnv,
+  void *theDefrule)
+  {
+   return GetConstructPPForm(theEnv,(struct constructHeader *) theDefrule);
+  }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle char *DefruleModule(
+  void *theDefrule)
+  {
+   return EnvDefruleModule(GetCurrentEnvironment(),theDefrule);
+  }
+
+globle void *FindDefrule(
+  const char *defruleName)
+  {
+   return EnvFindDefrule(GetCurrentEnvironment(),defruleName);
+  }
+
+globle char *GetDefruleName(
+  void *theDefrule)
+  {
+   return EnvGetDefruleName(GetCurrentEnvironment(),theDefrule);
+  }
+
+globle char *GetDefrulePPForm(
+  void *theDefrule)
+  {
+   return EnvGetDefrulePPForm(GetCurrentEnvironment(),theDefrule);
+  }
+
+globle void *GetNextDefrule(
+  void *defrulePtr)
+  {
+   return EnvGetNextDefrule(GetCurrentEnvironment(),defrulePtr);
+  }
+
+globle intBool IsDefruleDeletable(
+  void *vTheDefrule)
+  {
+   return EnvIsDefruleDeletable(GetCurrentEnvironment(),vTheDefrule);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFRULE_CONSTRUCT */
 

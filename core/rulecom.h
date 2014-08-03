@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/21/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*             DEFRULE COMMANDS HEADER FILE            */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*                                                           */
 /*            Added get-join-hashing and set-join-hashing    */
 /*            functions.                                     */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -62,14 +64,6 @@ struct joinInformation
    struct joinNode *nextJoin;
   };
 
-/* TBD Remove
-#define Matches(a) EnvMatches(GetCurrentEnvironment(),a)
-#define JoinActivity(a,b) EnvJoinActivity(GetCurrentEnvironment(),a,b)
-#define MatchesCount(a) EnvMatchesCount(GetCurrentEnvironment(),a)
-#define GetBetaMemoryResizing() EnvGetBetaMemoryResizing(GetCurrentEnvironment())
-#define SetBetaMemoryResizing(a) EnvSetBetaMemoryResizing(GetCurrentEnvironment(),a)
-*/
-
 #define VERBOSE  0
 #define SUCCINCT 1
 #define TERSE    2
@@ -98,6 +92,15 @@ struct joinInformation
    LOCALE void                           ShowAlphaHashTable(void *);
 #endif
 
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+#if DEBUGGING_FUNCTIONS
+   LOCALE void                           Matches(void *,int,DATA_OBJECT *);
+   LOCALE void                           JoinActivity(void *,int,DATA_OBJECT *);
 #endif
+   LOCALE intBool                        GetBetaMemoryResizing();
+   LOCALE intBool                        SetBetaMemoryResizing(int);
 
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
+#endif /* _H_rulecom */

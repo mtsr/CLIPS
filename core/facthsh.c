@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  05/17/06            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 FACT HASHING MODULE                 */
    /*******************************************************/
@@ -21,6 +21,8 @@
 /*      6.24: Removed LOGICAL_DEPENDENCIES compilation flag. */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -394,6 +396,25 @@ globle void ShowFactHashTable(
    }
 
 #endif /* DEVELOPER */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool GetFactDuplication()
+  {   
+   return EnvGetFactDuplication(GetCurrentEnvironment());
+  }
+
+globle intBool SetFactDuplication(
+  int value)
+  {
+   return EnvSetFactDuplication(GetCurrentEnvironment(),value);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFTEMPLATE_CONSTRUCT */
 

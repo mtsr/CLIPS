@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                  DEFGLOBAL MODULE                   */
    /*******************************************************/
@@ -26,6 +26,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -796,6 +798,108 @@ globle void *GetNextDefglobalInScope(
 
    return(NULL);
   }
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+globle char *EnvDefglobalModule(
+  void *theEnv,
+  void *theDefglobal)
+  {
+   return GetConstructModuleName((struct constructHeader *) theDefglobal);
+  }
+
+globle char *EnvGetDefglobalName(
+  void *theEnv,
+  void *theDefglobal)
+  {
+   return GetConstructNameString((struct constructHeader *) theDefglobal);
+  }
+
+globle char *EnvGetDefglobalPPForm(
+  void *theEnv,
+  void *theDefglobal)
+  {
+   return GetConstructPPForm(theEnv,(struct constructHeader *) theDefglobal);
+  }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle char *DefglobalModule(
+  void *theDefglobal)
+  {
+   return EnvDefglobalModule(GetCurrentEnvironment(),theDefglobal);
+  }
+
+globle void *FindDefglobal(
+  const char *defglobalName)
+  {
+   return EnvFindDefglobal(GetCurrentEnvironment(),defglobalName);
+  }
+
+globle char *GetDefglobalName(
+  void *theDefglobal)
+  {
+   return EnvGetDefglobalName(GetCurrentEnvironment(),theDefglobal);
+  }
+
+globle char *GetDefglobalPPForm(
+  void *theDefglobal)
+  {
+   return EnvGetDefglobalPPForm(GetCurrentEnvironment(),theDefglobal);
+  }
+
+globle intBool GetDefglobalValue(
+  const char *variableName,
+  DATA_OBJECT_PTR vPtr)
+  {
+   return EnvGetDefglobalValue(GetCurrentEnvironment(),variableName,vPtr);
+  }
+
+globle void GetDefglobalValueForm(
+  char *buffer,
+  unsigned bufferLength,
+  void *vTheGlobal)
+  {
+   EnvGetDefglobalValueForm(GetCurrentEnvironment(),buffer,bufferLength,vTheGlobal);
+  }
+
+globle int GetGlobalsChanged()
+  {
+   return EnvGetGlobalsChanged(GetCurrentEnvironment());
+  }
+
+globle void *GetNextDefglobal(
+  void *defglobalPtr)
+  {
+   return EnvGetNextDefglobal(GetCurrentEnvironment(),defglobalPtr);
+  }
+
+globle intBool IsDefglobalDeletable(
+  void *ptr)
+  {
+   return EnvIsDefglobalDeletable(GetCurrentEnvironment(),ptr);
+  }
+
+globle intBool SetDefglobalValue(
+  const char *variableName,
+  DATA_OBJECT_PTR vPtr)
+  {
+   return EnvSetDefglobalValue(GetCurrentEnvironment(),variableName,vPtr);
+  }
+
+globle void SetGlobalsChanged(
+  int value)
+  {
+   return EnvSetGlobalsChanged(GetCurrentEnvironment(),value);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFGLOBAL_CONSTRUCT */
 

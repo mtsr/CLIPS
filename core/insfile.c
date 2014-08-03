@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  07/25/14           */
+   /*              CLIPS Version 6.30  08/02/14           */
    /*                                                     */
    /*         INSTANCE LOAD/SAVE (ASCII/BINARY) MODULE    */
    /*******************************************************/
@@ -25,6 +25,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -1638,8 +1640,71 @@ static void FreeReadBuffer(
      }
   }
 
+#endif /* BLOAD_INSTANCES */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+#if BLOAD_INSTANCES
+globle long BinaryLoadInstances(
+  const char *theFile)
+  {
+   return EnvBinaryLoadInstances(GetCurrentEnvironment(),theFile);
+  }
 #endif
 
+#if BSAVE_INSTANCES
+globle long BinarySaveInstances(
+  const char *file,
+  int saveCode,
+  EXPRESSION *classExpressionList,
+  intBool inheritFlag)
+  {
+   return EnvBinarySaveInstances(GetCurrentEnvironment(),file,saveCode,classExpressionList,inheritFlag);
+  }
 #endif
+
+globle long LoadInstances(
+  const char *file)
+  {
+   return EnvLoadInstances(GetCurrentEnvironment(),file);
+  }
+
+globle long LoadInstancesFromString(
+  const char *theString,
+  int theMax)
+  {
+   return EnvLoadInstancesFromString(GetCurrentEnvironment(),theString,theMax);
+  }
+
+globle long RestoreInstances(
+  const char *file)
+  {
+   return EnvRestoreInstances(GetCurrentEnvironment(),file);
+  }
+
+globle long RestoreInstancesFromString(
+  const char *theString,
+  int theMax)
+  {
+   return EnvRestoreInstancesFromString(GetCurrentEnvironment(),theString,theMax);
+  }
+
+globle long SaveInstances(
+  const char *file,
+  int saveCode,
+  EXPRESSION *classExpressionList,
+  intBool inheritFlag)
+  {
+   return EnvSaveInstances(GetCurrentEnvironment(),file,saveCode,classExpressionList,inheritFlag);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+
+#endif /* OBJECT_SYSTEM */
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                FACT COMMANDS MODULE                 */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -1298,6 +1300,49 @@ static struct expr *AssertParse(
   }
 
 #endif /* (! RUN_TIME) */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+#if DEBUGGING_FUNCTIONS
+
+globle void Facts(
+  const char *logicalName,
+  void *vTheModule,
+  long long start,
+  long long end,
+  long long max)
+  {
+   EnvFacts(GetCurrentEnvironment(),logicalName,vTheModule,start,end,max);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+globle intBool LoadFacts(
+  const char *fileName)
+  {
+   return EnvLoadFacts(GetCurrentEnvironment(),fileName);
+  }
+
+globle intBool SaveFacts(
+  const char *fileName,
+  int saveCode,
+  struct expr *theList)
+  {
+   return EnvSaveFacts(GetCurrentEnvironment(),fileName,saveCode,theList);
+  }
+
+globle intBool LoadFactsFromString(
+  const char *theString,
+  int theMax)
+  {
+   return EnvLoadFactsFromString(GetCurrentEnvironment(),theString,theMax);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFTEMPLATE_CONSTRUCT */
 

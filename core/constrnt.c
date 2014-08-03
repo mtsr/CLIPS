@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  07/01/05            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 CONSTRAINT MODULE                   */
    /*******************************************************/
@@ -24,6 +24,8 @@
 /*      6.24: Added allowed-classes slot facet.              */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -619,3 +621,32 @@ globle intBool EnvGetStaticConstraintChecking(
    return(ConstraintData(theEnv)->StaticConstraintChecking); 
   }
 
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool SetDynamicConstraintChecking(
+  int value)
+  {
+   return EnvSetDynamicConstraintChecking(GetCurrentEnvironment(),value);
+  }
+
+globle intBool GetDynamicConstraintChecking()
+  { 
+   return EnvGetDynamicConstraintChecking(GetCurrentEnvironment());
+  }
+
+globle intBool SetStaticConstraintChecking(
+  int value)
+  {
+   return EnvSetStaticConstraintChecking(GetCurrentEnvironment(),value);
+  }
+
+globle intBool GetStaticConstraintChecking()
+  {    
+   return EnvGetStaticConstraintChecking(GetCurrentEnvironment());
+  }
+
+#endif

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                  WATCH HEADER FILE                  */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -62,14 +64,6 @@ struct watchData
 #define LOCALE extern
 #endif
 
-#define GetWatchItem(a) EnvGetWatchItem(GetCurrentEnvironment(),a)
-#define SetWatchItem(a,b) EnvSetWatchItem(GetCurrentEnvironment(),a,b)
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-   LOCALE intBool                        Watch(const char *);
-   LOCALE intBool                        Unwatch(const char *);
-#endif
-
    LOCALE intBool                        EnvWatch(void *,const char *);
    LOCALE intBool                        EnvUnwatch(void *,const char *);
    LOCALE void                           InitializeWatchData(void *);   
@@ -86,7 +80,16 @@ struct watchData
    LOCALE void                           WatchFunctionDefinitions(void *);
    LOCALE int                            GetWatchItemCommand(void *);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE intBool                        Watch(const char *);
+   LOCALE intBool                        Unwatch(const char *);
+   LOCALE int                            GetWatchItem(const char *);
+   LOCALE int                            SetWatchItem(const char *,unsigned,struct expr *);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_watch */
 
 
 

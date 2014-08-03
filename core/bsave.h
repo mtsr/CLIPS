@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/02/14          */
    /*                                                     */
    /*                 BSAVE HEADER FILE                   */
    /*******************************************************/
@@ -21,6 +21,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -90,8 +92,6 @@ struct bsaveData
 
 #define BsaveData(theEnv) ((struct bsaveData *) GetEnvironmentData(theEnv,BSAVE_DATA))
 
-#define Bsave(a) EnvBsave(GetCurrentEnvironment(),a)
-
    LOCALE void                    InitializeBsaveData(void *);
    LOCALE int                     BsaveCommand(void *);
 #if BLOAD_AND_BSAVE
@@ -109,11 +109,13 @@ struct bsaveData
                                                 void (*)(void *),
                                                 void (*)(void *));
 
-#ifndef _BSAVE_SOURCE_
-   extern struct BinaryItem      *ListOfBinaryItems;
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE intBool                 Bsave(const char *);
 
 #endif
+
+#endif /* _H_bsave */
 
 
 

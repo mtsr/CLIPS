@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -966,20 +968,6 @@ globle intBool EnvGetFactSlot(
    return(TRUE);
   }
 
-/****************************************/
-/* GetFactSlot: Returns the slot value  */
-/*   from the specified slot of a fact. */
-/****************************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle intBool GetFactSlot(
-  void *vTheFact,
-  const char *slotName,
-  DATA_OBJECT *theValue)
-  {
-   return(EnvGetFactSlot(GetCurrentEnvironment(),vTheFact,slotName,theValue));
-  }
-#endif
-
 /***************************************/
 /* EnvPutFactSlot: Sets the slot value */
 /*   of the specified slot of a fact.  */
@@ -1503,18 +1491,6 @@ globle long long EnvFactIndex(
    return(((struct fact *) factPtr)->factIndex);
   }
 
-/**********************************/
-/* FactIndex: C access routine    */
-/*   for the fact-index function. */
-/**********************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle long long FactIndex(
-  void *factPtr)
-  {
-   return(EnvFactIndex(GetCurrentEnvironment(),factPtr));
-  }
-#endif
-
 /*************************************/
 /* EnvAssertString: C access routine */
 /*   for the assert-string function. */
@@ -1637,27 +1613,6 @@ globle struct fact *FindIndexedFact(
    return(NULL);
   }
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-/**************************************/
-/* AddAssertFunction: Adds a function */
-/*   to the ListOfAssertFunctions.    */
-/**************************************/
-globle intBool AddAssertFunction(
-  const char *name,
-  void (*functionPtr)(void *,void *),
-  int priority)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-
-   FactData(theEnv)->ListOfAssertFunctions =
-       AddFunctionToCallListWithArg(theEnv,name,priority,(void (*)(void *, void *)) functionPtr,
-                             FactData(theEnv)->ListOfAssertFunctions,TRUE);
-   return(1);
-  }
-#endif
-
 /*****************************************/
 /* EnvAddAssertFunction: Adds a function */
 /*   to the ListOfAssertFunctions.       */
@@ -1711,27 +1666,6 @@ globle intBool EnvRemoveAssertFunction(
    return(FALSE);
   }
   
-#if ALLOW_ENVIRONMENT_GLOBALS
-/***************************************/
-/* AddRetractFunction: Adds a function */
-/*   to the ListOfRetractFunctions.    */
-/***************************************/
-globle intBool AddRetractFunction(
-  const char *name,
-  void (*functionPtr)(void *,void *),
-  int priority)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-
-   FactData(theEnv)->ListOfRetractFunctions =
-       AddFunctionToCallListWithArg(theEnv,name,priority,(void (*)(void *, void *)) functionPtr,
-                             FactData(theEnv)->ListOfRetractFunctions,TRUE);
-   return(1);
-  }
-#endif
-
 /******************************************/
 /* EnvAddRetractFunction: Adds a function */
 /*   to the ListOfRetractFunctions.       */
@@ -1784,27 +1718,6 @@ globle intBool EnvRemoveRetractFunction(
 
    return(FALSE);
   }
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-/**************************************/
-/* AddModifyFunction: Adds a function */
-/*   to the ListOfModifyFunctions.    */
-/**************************************/
-globle intBool AddModifyFunction(
-  const char *name,
-  void (*functionPtr)(void *,void *,void *),
-  int priority)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-
-   FactData(theEnv)->ListOfModifyFunctions =
-       AddFunctionToCallListWithArg(theEnv,name,priority,(void (*)(void *, void *)) functionPtr,
-                             FactData(theEnv)->ListOfModifyFunctions,TRUE);
-   return(1);
-  }
-#endif
 
 /*****************************************/
 /* EnvAddModifyFunction: Adds a function */
@@ -1859,6 +1772,168 @@ globle intBool EnvRemoveModifyFunction(
 
    return(FALSE);
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool AddAssertFunction(
+  const char *name,
+  void (*functionPtr)(void *,void *),
+  int priority)
+  {
+   void *theEnv;
+   
+   theEnv = GetCurrentEnvironment();
+
+   FactData(theEnv)->ListOfAssertFunctions =
+       AddFunctionToCallListWithArg(theEnv,name,priority,(void (*)(void *, void *)) functionPtr,
+                             FactData(theEnv)->ListOfAssertFunctions,TRUE);
+   return(1);
+  }
+
+globle intBool AddModifyFunction(
+  const char *name,
+  void (*functionPtr)(void *,void *,void *),
+  int priority)
+  {
+   void *theEnv;
+   
+   theEnv = GetCurrentEnvironment();
+
+   FactData(theEnv)->ListOfModifyFunctions =
+       AddFunctionToCallListWithArg(theEnv,name,priority,(void (*)(void *, void *)) functionPtr,
+                             FactData(theEnv)->ListOfModifyFunctions,TRUE);
+   return(1);
+  }
+
+globle intBool AddRetractFunction(
+  const char *name,
+  void (*functionPtr)(void *,void *),
+  int priority)
+  {
+   void *theEnv;
+   
+   theEnv = GetCurrentEnvironment();
+
+   FactData(theEnv)->ListOfRetractFunctions =
+       AddFunctionToCallListWithArg(theEnv,name,priority,(void (*)(void *, void *)) functionPtr,
+                             FactData(theEnv)->ListOfRetractFunctions,TRUE);
+   return(1);
+  }
+
+globle void *Assert(
+  void *vTheFact)
+  {
+   return EnvAssert(GetCurrentEnvironment(),vTheFact);
+  }
+
+globle void *AssertString(
+  const char *theString)
+  {
+   return EnvAssertString(GetCurrentEnvironment(),theString);
+  }
+
+globle intBool AssignFactSlotDefaults(
+  void *theEnv,
+  void *vTheFact)
+  {
+   return EnvAssignFactSlotDefaults(GetCurrentEnvironment(),vTheFact);
+  }
+
+globle struct fact *CreateFact(
+  void *vTheDeftemplate)
+  {
+   return EnvCreateFact(GetCurrentEnvironment(),vTheDeftemplate);
+  }
+
+globle void DecrementFactCount(
+  void *factPtr)
+  {
+   EnvDecrementFactCount(GetCurrentEnvironment(),factPtr);
+  }
+
+globle long long FactIndex(
+  void *factPtr)
+  {
+   return(EnvFactIndex(GetCurrentEnvironment(),factPtr));
+  }
+
+globle int GetFactListChanged(
+  void *theEnv)
+  {
+   return EnvGetFactListChanged(GetCurrentEnvironment());
+  }
+
+globle void GetFactPPForm(
+  char *buffer,
+  unsigned bufferLength,
+  void *theFact)
+  {
+   EnvGetFactPPForm(GetCurrentEnvironment(),buffer,bufferLength,theFact);
+  }
+
+globle intBool GetFactSlot(
+  void *vTheFact,
+  const char *slotName,
+  DATA_OBJECT *theValue)
+  {
+   return(EnvGetFactSlot(GetCurrentEnvironment(),vTheFact,slotName,theValue));
+  }
+
+globle void *GetNextFact(
+  void *factPtr)
+  {
+   return EnvGetNextFact(GetCurrentEnvironment(),factPtr);
+  }
+
+globle void IncrementFactCount(
+  void *factPtr)
+  {
+   EnvIncrementFactCount(GetCurrentEnvironment(),factPtr);
+  }
+
+globle intBool PutFactSlot(
+  void *vTheFact,
+  const char *slotName,
+  DATA_OBJECT *theValue)
+  {
+   return EnvPutFactSlot(GetCurrentEnvironment(),vTheFact,slotName,theValue);
+  }
+
+globle intBool RemoveAssertFunction(
+  const char *name)
+  {
+   return EnvRemoveAssertFunction(GetCurrentEnvironment(),name);
+  }
+
+globle intBool RemoveModifyFunction(
+  const char *name)
+  {
+   return EnvRemoveModifyFunction(GetCurrentEnvironment(),name);
+  }
+
+globle intBool RemoveRetractFunction(
+  const char *name)
+  {
+   return EnvRemoveRetractFunction(GetCurrentEnvironment(),name);
+  }
+
+globle intBool Retract(
+  void *vTheFact)
+  {
+   return EnvRetract(GetCurrentEnvironment(),vTheFact);
+  }
+
+globle void SetFactListChanged(
+  int value)
+  {
+   EnvSetFactListChanged(GetCurrentEnvironment(),value);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT */
 

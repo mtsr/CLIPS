@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*              FACT FUNCTIONS HEADER FILE             */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Converted API macros to function calls.        */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_factfun
@@ -42,12 +44,6 @@
 #define LOCALE extern
 #endif
 
-#define FactDeftemplate(a) EnvFactDeftemplate(GetCurrentEnvironment(),a)
-#define FactExistp(a) EnvFactExistp(GetCurrentEnvironment(),a)
-#define FactSlotNames(a,b) EnvFactSlotNames(GetCurrentEnvironment(),a,b)
-#define GetFactList(a,b) EnvGetFactList(GetCurrentEnvironment(),a,b)
-#define PPFact(a,b,c) EnvPPFact(GetCurrentEnvironment(),a,b,c)
-
    LOCALE void                           FactFunctionDefinitions(void *);
    LOCALE void                          *FactRelationFunction(void *);
    LOCALE void                          *FactRelation(void *);
@@ -64,5 +60,15 @@
    LOCALE void                           EnvPPFact(void *,void *,const char *,int);
    LOCALE struct fact                   *GetFactAddressOrIndexArgument(void *,const char *,int,int);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                          *FactDeftemplate(void *);
+   LOCALE int                            FactExistp(void *);
+   LOCALE void                           FactSlotNames(void *,DATA_OBJECT *);
+   LOCALE void                           GetFactList(DATA_OBJECT_PTR,void *);
+   LOCALE void                           PPFact(void *,const char *,int);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_factfun */
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                  I/O ROUTER MODULE                  */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -387,71 +389,6 @@ globle void AbortExit(
    RouterData(theEnv)->Abort = TRUE;
   }
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-/*********************************************************/
-/* AddRouter: Adds an I/O router to the list of routers. */
-/*********************************************************/
-globle intBool AddRouter(
-  const char *routerName,
-  int priority,
-  int (*queryFunction)(const char *),
-  int (*printFunction)(const char *,const char *),
-  int (*getcFunction)(const char *),
-  int (*ungetcFunction)(int,const char *),
-  int (*exitFunction)(int))
-  {
-   struct router *newPtr, *lastPtr, *currentPtr;
-   void *theEnv;
-   char *nameCopy;
-      
-   theEnv = GetCurrentEnvironment();
-
-   newPtr = get_struct(theEnv,router);
-
-   nameCopy = (char *) genalloc(theEnv,strlen(routerName) + 1);
-   genstrcpy(nameCopy,routerName);     
-   newPtr->name = nameCopy;   
-   
-   newPtr->active = TRUE;
-   newPtr->environmentAware = FALSE;
-   newPtr->priority = priority;
-   newPtr->context = NULL;
-   newPtr->query = (int (*)(void *,const char *)) queryFunction;
-   newPtr->printer = (int (*)(void *,const char *,const char *)) printFunction;
-   newPtr->exiter = (int (*)(void *,int)) exitFunction;
-   newPtr->charget = (int (*)(void *,const char *)) getcFunction;
-   newPtr->charunget = (int (*)(void *,int,const char *)) ungetcFunction;
-   newPtr->next = NULL;
-
-   if (RouterData(theEnv)->ListOfRouters == NULL)
-     {
-      RouterData(theEnv)->ListOfRouters = newPtr;
-      return(1);
-     }
-
-   lastPtr = NULL;
-   currentPtr = RouterData(theEnv)->ListOfRouters;
-   while ((currentPtr != NULL) ? (priority < currentPtr->priority) : FALSE)
-     {
-      lastPtr = currentPtr;
-      currentPtr = currentPtr->next;
-     }
-
-   if (lastPtr == NULL)
-     {
-      newPtr->next = RouterData(theEnv)->ListOfRouters;
-      RouterData(theEnv)->ListOfRouters = newPtr;
-     }
-   else
-     {
-      newPtr->next = currentPtr;
-      lastPtr->next = newPtr;
-     }
-
-   return(1);
-  }
-#endif
-
 /************************************************************/
 /* EnvAddRouter: Adds an I/O router to the list of routers. */
 /************************************************************/
@@ -532,9 +469,9 @@ globle intBool EnvAddRouterWithContext(
    return(1);
   }
 
-/*****************************************************************/
+/********************************************************************/
 /* EnvDeleteRouter: Removes an I/O router from the list of routers. */
-/*****************************************************************/
+/********************************************************************/
 globle int EnvDeleteRouter(
   void *theEnv,
   const char *routerName)
@@ -746,3 +683,117 @@ globle int PrintNRouter(
    genfree(theEnv,tempStr,length+1);
    return(rv);
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle int ActivateRouter(
+  const char *routerName)
+  {
+   return EnvActivateRouter(GetCurrentEnvironment(),routerName);
+  }
+
+globle intBool AddRouter(
+  const char *routerName,
+  int priority,
+  int (*queryFunction)(const char *),
+  int (*printFunction)(const char *,const char *),
+  int (*getcFunction)(const char *),
+  int (*ungetcFunction)(int,const char *),
+  int (*exitFunction)(int))
+  {
+   struct router *newPtr, *lastPtr, *currentPtr;
+   void *theEnv;
+   char *nameCopy;
+      
+   theEnv = GetCurrentEnvironment();
+
+   newPtr = get_struct(theEnv,router);
+
+   nameCopy = (char *) genalloc(theEnv,strlen(routerName) + 1);
+   genstrcpy(nameCopy,routerName);     
+   newPtr->name = nameCopy;   
+   
+   newPtr->active = TRUE;
+   newPtr->environmentAware = FALSE;
+   newPtr->priority = priority;
+   newPtr->context = NULL;
+   newPtr->query = (int (*)(void *,const char *)) queryFunction;
+   newPtr->printer = (int (*)(void *,const char *,const char *)) printFunction;
+   newPtr->exiter = (int (*)(void *,int)) exitFunction;
+   newPtr->charget = (int (*)(void *,const char *)) getcFunction;
+   newPtr->charunget = (int (*)(void *,int,const char *)) ungetcFunction;
+   newPtr->next = NULL;
+
+   if (RouterData(theEnv)->ListOfRouters == NULL)
+     {
+      RouterData(theEnv)->ListOfRouters = newPtr;
+      return(1);
+     }
+
+   lastPtr = NULL;
+   currentPtr = RouterData(theEnv)->ListOfRouters;
+   while ((currentPtr != NULL) ? (priority < currentPtr->priority) : FALSE)
+     {
+      lastPtr = currentPtr;
+      currentPtr = currentPtr->next;
+     }
+
+   if (lastPtr == NULL)
+     {
+      newPtr->next = RouterData(theEnv)->ListOfRouters;
+      RouterData(theEnv)->ListOfRouters = newPtr;
+     }
+   else
+     {
+      newPtr->next = currentPtr;
+      lastPtr->next = newPtr;
+     }
+
+   return(1);
+  }
+
+globle int DeactivateRouter(
+  const char *routerName)
+  {
+   return EnvDeactivateRouter(GetCurrentEnvironment(),routerName);
+  }
+
+globle int DeleteRouter(
+  const char *routerName)
+  {
+   return EnvDeleteRouter(GetCurrentEnvironment(),routerName);
+  }
+
+globle void ExitRouter(
+  int num)
+  {
+   EnvExitRouter(GetCurrentEnvironment(),num);
+  }
+
+globle int GetcRouter(
+  const char *logicalName)
+  {
+   return EnvGetcRouter(GetCurrentEnvironment(),logicalName);
+  }
+
+globle int PrintRouter(
+  const char *logicalName,
+  const char *str)
+  {
+   return EnvPrintRouter(GetCurrentEnvironment(),logicalName,str);
+  }
+
+globle int UngetcRouter(
+  int ch,
+  const char *logicalName)
+  {
+   return EnvUngetcRouter(GetCurrentEnvironment(),ch,logicalName);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+

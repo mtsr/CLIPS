@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*       DEFTEMPLATE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Converted API macros to function calls.        */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_tmpltbsc
@@ -46,12 +48,6 @@
 #define LOCALE extern
 #endif
 
-#define GetDeftemplateList(a,b) EnvGetDeftemplateList(GetCurrentEnvironment(),a,b)
-#define ListDeftemplates(a,b) EnvListDeftemplates(GetCurrentEnvironment(),a,b)
-#define Undeftemplate(a) EnvUndeftemplate(GetCurrentEnvironment(),a)
-#define GetDeftemplateWatch(a) EnvGetDeftemplateWatch(GetCurrentEnvironment(),a)
-#define SetDeftemplateWatch(a,b) EnvSetDeftemplateWatch(GetCurrentEnvironment(),a,b)
-
    LOCALE void                           DeftemplateBasicCommands(void *);
    LOCALE void                           UndeftemplateCommand(void *);
    LOCALE intBool                        EnvUndeftemplate(void *,void *);
@@ -69,6 +65,18 @@
    LOCALE unsigned                       DeftemplateWatchPrint(void *,const char *,int,struct expr *);
 #endif
 
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                           GetDeftemplateList(DATA_OBJECT_PTR,void *);
+#if DEBUGGING_FUNCTIONS
+   LOCALE unsigned                       GetDeftemplateWatch(void *);
+   LOCALE void                           ListDeftemplates(const char *,void *);
+   LOCALE void                           SetDeftemplateWatch(unsigned,void *);
 #endif
+   LOCALE intBool                        Undeftemplate(void *);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_tmpltbsc */
 
 

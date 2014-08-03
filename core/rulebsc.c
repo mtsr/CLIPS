@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*          DEFRULE BASIC COMMANDS HEADER FILE         */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -467,6 +469,64 @@ globle unsigned DefruleWatchPrint(
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void GetDefruleList(
+  DATA_OBJECT_PTR returnValue,
+  void *theModule)
+  {
+   EnvGetDefruleList(GetCurrentEnvironment(),returnValue,theModule);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle unsigned GetDefruleWatchActivations(
+  void *rulePtr)
+  {
+   return EnvGetDefruleWatchActivations(GetCurrentEnvironment(),rulePtr);
+  }
+
+globle unsigned GetDefruleWatchFirings(
+  void *rulePtr)
+  {
+   return EnvGetDefruleWatchFirings(GetCurrentEnvironment(),rulePtr);
+  }
+
+globle void ListDefrules(
+  const char *logicalName,
+  void *theModule)
+  {
+   EnvListDefrules(GetCurrentEnvironment(),logicalName,theModule);
+  }
+
+globle void SetDefruleWatchActivations(
+  unsigned newState,
+  void *rulePtr)
+  {
+   EnvSetDefruleWatchActivations(GetCurrentEnvironment(),newState,rulePtr);
+  }
+
+globle void DefruleWatchFirings(
+  unsigned newState,
+  void *rulePtr)
+  {
+   EnvSetDefruleWatchFirings(GetCurrentEnvironment(),newState,rulePtr);
+  }
+
+#endif
+
+globle intBool Undefrule(
+  void *theDefrule)
+  {
+   return EnvUndefrule(GetCurrentEnvironment(),theDefrule);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFTEMPLATE_CONSTRUCT */
 

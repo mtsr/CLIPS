@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -20,6 +20,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -123,15 +125,6 @@ struct constructData
 #define LOCALE extern
 #endif
 
-#define RemoveClearFunction(a) EnvRemoveClearFunction(GetCurrentEnvironment(),a)
-#define RemoveResetFunction(a) EnvRemoveResetFunction(GetCurrentEnvironment(),a)
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-   LOCALE void                           Clear(void);
-   LOCALE void                           Reset(void);
-   LOCALE int                            Save(const char *);
-#endif
-
    LOCALE void                           EnvClear(void *);
    LOCALE void                           EnvReset(void *);
    LOCALE int                            EnvSave(void *,const char *);
@@ -140,12 +133,10 @@ struct constructData
    LOCALE intBool                        AddSaveFunction(void *,const char *,void (*)(void *,void *,const char *),int);
    LOCALE intBool                        RemoveSaveFunction(void *,const char *);
    LOCALE intBool                        EnvAddResetFunction(void *,const char *,void (*)(void *),int);
-   LOCALE intBool                        AddResetFunction(const char *,void (*)(void),int);
    LOCALE intBool                        EnvRemoveResetFunction(void *,const char *);
    LOCALE intBool                        AddClearReadyFunction(void *,const char *,int (*)(void *),int);
    LOCALE intBool                        RemoveClearReadyFunction(void *,const char *);
    LOCALE intBool                        EnvAddClearFunction(void *,const char *,void (*)(void *),int);
-   LOCALE intBool                        AddClearFunction(const char *,void (*)(void),int);
    LOCALE intBool                        EnvRemoveClearFunction(void *,const char *);
    LOCALE struct construct              *AddConstruct(void *,const char *,const char *,
                                                       int (*)(void *,const char *),
@@ -181,10 +172,20 @@ struct constructData
                                                                                        const char *,long)))
                                             (void *,const char *,const char *,const char*,long);
 
-#endif
 
+#if ALLOW_ENVIRONMENT_GLOBALS
 
+   LOCALE intBool                        AddClearFunction(const char *,void (*)(void),int);
+   LOCALE intBool                        AddResetFunction(const char *,void (*)(void),int);
+   LOCALE void                           Clear();
+   LOCALE void                           Reset();
+   LOCALE intBool                        RemoveClearFunction(const char *);
+   LOCALE intBool                        RemoveResetFunction(const char *);
+   LOCALE int                            Save(const char *);
 
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_constrct */
 
 
 

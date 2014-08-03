@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*               FACT COMMANDS HEADER FILE             */
    /*******************************************************/
@@ -18,6 +18,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -38,11 +40,6 @@
 #define LOCALE extern
 #endif
 
-#define Facts(a,b,c,d,e) EnvFacts(GetCurrentEnvironment(),a,b,c,d,e)
-#define LoadFacts(a) EnvLoadFacts(GetCurrentEnvironment(),a)
-#define SaveFacts(a,b,c) EnvSaveFacts(GetCurrentEnvironment(),a,b,c)
-#define LoadFactsFromString(a,b) EnvLoadFactsFromString(GetCurrentEnvironment(),a,b)
-
    LOCALE void                           FactCommandDefinitions(void *);
    LOCALE void                           AssertCommand(void *,DATA_OBJECT_PTR);
    LOCALE void                           RetractCommand(void *);
@@ -58,6 +55,17 @@
    LOCALE int                            EnvLoadFactsFromString(void *,const char *,int);
    LOCALE long long                      FactIndexFunction(void *);
 
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+#if DEBUGGING_FUNCTIONS
+   LOCALE void                           Facts(const char *,void *,long long,long long,long long);
 #endif
+   LOCALE intBool                        LoadFacts(const char *);
+   LOCALE intBool                        SaveFacts(const char *,int,struct expr *);
+   LOCALE intBool                        LoadFactsFromString(const char *,int);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_factcom */
 
 

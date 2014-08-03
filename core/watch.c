@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                    WATCH MODULE                     */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -160,17 +162,6 @@ globle intBool EnvWatch(
    return(EnvSetWatchItem(theEnv,itemName,ON,NULL));
   }
 
-/**************************************************/
-/* Watch: C access routine for the watch command. */
-/**************************************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle intBool Watch(
-  const char *itemName)
-  {
-   return(EnvWatch(GetCurrentEnvironment(),itemName));
-  }
-#endif
-
 /*********************************************************/
 /* EnvUnwatch: C access routine for the unwatch command. */
 /*********************************************************/
@@ -180,17 +171,6 @@ globle intBool EnvUnwatch(
   {
    return(EnvSetWatchItem(theEnv,itemName,OFF,NULL));
   }
-
-/******************************************************/
-/* Unwatch: C access routine for the unwatch command. */
-/******************************************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle intBool Unwatch(
-  const char *itemName)
-  {
-   return(EnvUnwatch(GetCurrentEnvironment(),itemName));
-  }
-#endif
 
 /***********************************************************************/
 /* EnvSetWatchItem: Sets the state of a specified watch item to either */
@@ -622,6 +602,40 @@ static int CaptureWatchPrints(
 #endif
    return(1);
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle intBool Watch(
+  const char *itemName)
+  {
+   return(EnvWatch(GetCurrentEnvironment(),itemName));
+  }
+
+globle intBool Unwatch(
+  const char *itemName)
+  {
+   return(EnvUnwatch(GetCurrentEnvironment(),itemName));
+  }
+
+globle int GetWatchItem(
+  const char *itemName)
+  {
+   return EnvGetWatchItem(GetCurrentEnvironment(),itemName);
+  }
+
+globle int SetWatchItem(
+  const char *itemName,
+  unsigned newState,
+  struct expr *argExprs)
+  {
+   return EnvSetWatchItem(GetCurrentEnvironment(),itemName,newState,argExprs);
+  }
+
+#endif
 
 #endif /* DEBUGGING_FUNCTIONS */
 

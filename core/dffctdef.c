@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*              DEFFACTS DEFINITION MODULE             */
    /*******************************************************/
@@ -26,6 +26,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -270,7 +272,76 @@ static void ReturnDeffacts(
    rtn_struct(theEnv,deffacts,theDeffacts);
 #endif
   }
-  
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+globle char *EnvDeffactsModule(
+  void *theEnv,
+  void *theDeffacts)
+  {
+   return GetConstructModuleName((struct constructHeader *) theDeffacts);
+  }
+
+globle char *EnvGetDeffactsName(
+  void *theEnv,
+  void *theDeffacts)
+  {
+   return GetConstructNameString((struct constructHeader *) theDeffacts);
+  }
+
+globle char *EnvGetDeffactsPPForm(
+  void *theEnv,
+  void *theDeffacts)
+  {
+   return GetConstructPPForm(theEnv,(struct constructHeader *) theDeffacts);
+  }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void *FindDeffacts(
+  const char *deffactsName)
+  {
+   return EnvFindDeffacts(GetCurrentEnvironment(),deffactsName);
+  }
+
+globle void *GetNextDeffacts(
+  void *deffactsPtr)
+  {
+   return EnvGetNextDeffacts(GetCurrentEnvironment(),deffactsPtr);
+  }
+
+globle intBool IsDeffactsDeletable(
+  void *ptr)
+  {
+   return EnvIsDeffactsDeletable(GetCurrentEnvironment(),ptr);
+  }
+
+globle char *DeffactsModule(
+  void *theDeffacts)
+  {
+   return EnvDeffactsModule(GetCurrentEnvironment(),theDeffacts);
+  }
+
+globle char *GetDeffactsName(
+  void *theDeffacts)
+  {
+   return EnvGetDeffactsName(GetCurrentEnvironment(),theDeffacts);
+  }
+
+globle char *GetDeffactsPPForm(
+  void *theDeffacts)
+  {
+   return EnvGetDeffactsPPForm(GetCurrentEnvironment(),theDeffacts);
+  }
+
+#endif
+
 #endif /* DEFFACTS_CONSTRUCT */
 
 

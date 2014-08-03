@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                DEFMODULE HEADER FILE                */
    /*******************************************************/
@@ -25,6 +25,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -202,13 +204,6 @@ struct defmoduleData
 #define LOCALE extern
 #endif
 
-#define FindDefmodule(a) EnvFindDefmodule(GetCurrentEnvironment(),a)
-#define GetCurrentModule() EnvGetCurrentModule(GetCurrentEnvironment())
-#define GetDefmoduleName(a) EnvGetDefmoduleName(GetCurrentEnvironment(),a)
-#define GetDefmodulePPForm(a) EnvGetDefmodulePPForm(GetCurrentEnvironment(),a)
-#define GetNextDefmodule(a) EnvGetNextDefmodule(GetCurrentEnvironment(),a)
-#define SetCurrentModule(a) EnvSetCurrentModule(GetCurrentEnvironment(),a)
-
    LOCALE void                           InitializeDefmodules(void *);
    LOCALE void                          *EnvFindDefmodule(void *,const char *);
    LOCALE char                          *EnvGetDefmoduleName(void *,void *);
@@ -239,6 +234,17 @@ struct defmoduleData
    LOCALE void                           IllegalModuleSpecifierMessage(void *);
    LOCALE void                           AllocateDefmoduleGlobals(void *);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                          *FindDefmodule(const char *);
+   LOCALE void                          *GetCurrentModule(void);
+   LOCALE char                          *GetDefmoduleName(void *);
+   LOCALE char                          *GetDefmodulePPForm(void *);
+   LOCALE void                          *GetNextDefmodule(void *);
+   LOCALE void                          *SetCurrentModule(void *);
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_moduldef */
 
 

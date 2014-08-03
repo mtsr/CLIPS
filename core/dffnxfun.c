@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 DEFFUNCTION MODULE                  */
    /*******************************************************/
@@ -32,6 +32,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -427,10 +429,10 @@ globle void RemoveDeffunction(
 
    if (dptr == NULL)
      return;
-   DecrementSymbolCount(theEnv,GetDeffunctionNamePointer((void *) dptr));
+   DecrementSymbolCount(theEnv,EnvGetDeffunctionNamePointer(theEnv,(void *) dptr));
    ExpressionDeinstall(theEnv,dptr->code);
    ReturnPackedExpression(theEnv,dptr->code);
-   SetDeffunctionPPForm((void *) dptr,NULL);
+   EnvSetDeffunctionPPForm(theEnv,(void *) dptr,NULL);
    ClearUserDataList(theEnv,dptr->header.usrData);
    rtn_struct(theEnv,deffunctionStruct,dptr);
   }
@@ -816,7 +818,7 @@ static intBool RemoveAllDeffunctions(
             EnvPrintRouter(theEnv,WWARNING,"Deffunction ");
             EnvPrintRouter(theEnv,WWARNING,EnvGetDeffunctionName(theEnv,(void *) dtmp));
             EnvPrintRouter(theEnv,WWARNING," only partially deleted due to usage by other constructs.\n");
-            SetDeffunctionPPForm((void *) dtmp,NULL);
+            EnvSetDeffunctionPPForm(theEnv,(void *) dtmp,NULL);
             success = FALSE;
            }
          else
@@ -1031,6 +1033,128 @@ globle unsigned EnvGetDeffunctionWatch(
   }
 
 #endif
+
+/*##################################*/
+/* Additional Environment Functions */
+/*##################################*/
+
+globle char *EnvDeffunctionModule(
+  void *theEnv,
+  void *theDeffunction)
+  {
+   return GetConstructModuleName((struct constructHeader *) theDeffunction);
+  }
+
+globle char *EnvGetDeffunctionName(
+  void *theEnv,
+  void *theDeffunction)
+  {
+   return GetConstructNameString((struct constructHeader *) theDeffunction);
+  }
+
+globle char *EnvGetDeffunctionPPForm(
+  void *theEnv,
+  void *theDeffunction)
+  {
+   return GetConstructPPForm(theEnv,(struct constructHeader *) theDeffunction);
+  }
+
+globle SYMBOL_HN *EnvGetDeffunctionNamePointer(
+  void *theEnv,
+  void *theDeffunction)
+  {
+   return GetConstructNamePointer((struct constructHeader *) theDeffunction);
+  }
+
+globle void EnvSetDeffunctionPPForm(
+  void *theEnv,
+  void *theDeffunction,
+  char *thePPForm)
+  {
+   SetConstructPPForm(theEnv,(struct constructHeader *) theDeffunction,thePPForm);
+  }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle char *DeffunctionModule(
+  void *theDeffunction)
+  {
+   return EnvDeffunctionModule(GetCurrentEnvironment(),theDeffunction);
+  }
+
+globle void *FindDeffunction(
+  const char *deffunctionName)
+  {
+   return EnvFindDeffunction(GetCurrentEnvironment(),deffunctionName);
+  }
+
+globle void *GetNextDeffunction(
+  void *deffunctionPtr)
+  {
+   return EnvGetNextDeffunction(GetCurrentEnvironment(),deffunctionPtr);
+  }
+
+globle intBool IsDeffunctionDeletable(
+  void *ptr)
+  {
+   return EnvIsDeffunctionDeletable(GetCurrentEnvironment(),ptr);
+  }
+
+globle char *GetDeffunctionName(
+  void *theDeffunction)
+  {
+   return EnvGetDeffunctionName(GetCurrentEnvironment(),theDeffunction);
+  }
+
+globle char *GetDeffunctionPPForm(
+  void *theDeffunction)
+  {
+   return EnvGetDeffunctionPPForm(GetCurrentEnvironment(),theDeffunction);
+  }
+
+globle intBool Undeffunction(
+  void *vptr)
+  {
+   return EnvUndeffunction(GetCurrentEnvironment(),vptr);
+  }
+
+globle void GetDeffunctionList(
+  DATA_OBJECT *returnValue,
+  struct defmodule *theModule)
+  {
+   EnvGetDeffunctionList(GetCurrentEnvironment(),returnValue,theModule);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle void ListDeffunctions(
+  const char *logicalName,
+  struct defmodule *theModule)
+  {
+   EnvListDeffunctions(GetCurrentEnvironment(),logicalName,theModule);
+  }
+
+globle unsigned GetDeffunctionWatch(
+  void *dptr)
+  {
+   return EnvGetDeffunctionWatch(GetCurrentEnvironment(),dptr);
+  }
+
+globle void SetDeffunctionWatch(
+  unsigned newState,
+  void *dptr)
+  {
+   EnvSetDeffunctionWatch(GetCurrentEnvironment(),newState,dptr);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
 
 #endif
 

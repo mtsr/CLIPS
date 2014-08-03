@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*         DEFGLOBAL BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -326,9 +328,54 @@ static unsigned DefglobalWatchPrint(
                                     EnvGetDefglobalWatch,EnvSetDefglobalWatch));
   }
 
-#endif
+#endif /* ! RUN_TIME */
 
 #endif /* DEBUGGING_FUNCTIONS */
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+globle void GetDefglobalList(
+  DATA_OBJECT_PTR returnValue,
+  void *theModule)
+  {
+   EnvGetDefglobalList(GetCurrentEnvironment(),returnValue,theModule);
+  }
+
+#if DEBUGGING_FUNCTIONS
+
+globle unsigned GetDefglobalWatch(
+  void *theGlobal)
+  {
+   return EnvGetDefglobalWatch(GetCurrentEnvironment(),theGlobal);
+  }
+
+globle void ListDefglobals(
+  const char *logicalName,
+  void *vTheModule)
+  {
+   EnvListDefglobals(GetCurrentEnvironment(),logicalName,vTheModule);
+  }
+
+globle void SetDefglobalWatch(
+  unsigned newState,
+  void *theGlobal)
+  {
+   EnvSetDefglobalWatch(GetCurrentEnvironment(),newState,theGlobal);
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+globle intBool Undefglobal(
+  void *theDefglobal)
+  {
+   return EnvUndefglobal(GetCurrentEnvironment(),theDefglobal);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 #endif /* DEFGLOBAL_CONSTRUCT */
 

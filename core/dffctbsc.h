@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*         DEFFACTS BASIC COMMANDS HEADER FILE         */
    /*******************************************************/
@@ -26,6 +26,8 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Converted API macros to function calls.        */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_dffctbsc
@@ -45,10 +47,6 @@
 #define LOCALE extern
 #endif
 
-#define GetDeffactsList(a,b) EnvGetDeffactsList(GetCurrentEnvironment(),a,b)
-#define ListDeffacts(a,b) EnvListDeffacts(GetCurrentEnvironment(),a,b)
-#define Undeffacts(a) EnvUndeffacts(GetCurrentEnvironment(),a)
-
    LOCALE void                           DeffactsBasicCommands(void *);
    LOCALE void                           UndeffactsCommand(void *);
    LOCALE intBool                        EnvUndeffacts(void *,void *);
@@ -60,5 +58,15 @@
    LOCALE void                           ListDeffactsCommand(void *);
    LOCALE void                           EnvListDeffacts(void *,const char *,void *);
 
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE void                           GetDeffactsList(DATA_OBJECT_PTR,void *);
+   LOCALE intBool                        Undeffacts(void *);
+#if DEBUGGING_FUNCTIONS
+   LOCALE void                           ListDeffacts(const char *,void *);
 #endif
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_dffctbsc */
 

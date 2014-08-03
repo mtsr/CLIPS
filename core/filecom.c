@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*                 FILE COMMANDS MODULE                */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -550,7 +552,8 @@ globle void SetDribbleStatusFunction(
   {
    FileCommandData(theEnv)->DribbleStatusFunction = fnptr;
   }
-#endif
+
+#endif /* DEBUGGING_FUNCTIONS */
 
 /*************************************************/
 /* FindBatch: Find routine for the batch router. */
@@ -1230,5 +1233,38 @@ globle int SaveCommand(
   }
 #endif
 
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+#if DEBUGGING_FUNCTIONS
+
+globle intBool DribbleActive()
+  {
+   return EnvDribbleActive(GetCurrentEnvironment());
+  }
+
+globle intBool DribbleOn(
+  const char *fileName)
+  {
+   return EnvDribbleOn(GetCurrentEnvironment(),fileName);
+  }
+
+globle intBool DribbleOff()
+  {
+   return EnvDribbleOff(GetCurrentEnvironment());
+  }
+
+#endif /* DEBUGGING_FUNCTIONS */
+
+globle int BatchStar(
+  const char *fileName)
+  {
+   return EnvBatchStar(GetCurrentEnvironment(),fileName);
+  }
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 

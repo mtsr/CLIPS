@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*            MEMORY ALLOCATION HEADER FILE            */
    /*******************************************************/
@@ -19,6 +19,8 @@
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*      6.30: Added get_mem and rtn_mem macros.              */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -138,13 +140,6 @@ struct memoryData
 
 #define MemoryData(theEnv) ((struct memoryData *) GetEnvironmentData(theEnv,MEMORY_DATA))
 
-#define GetConserveMemory() EnvGetConserveMemory(GetCurrentEnvironment())
-#define MemRequests() EnvMemRequests(GetCurrentEnvironment())
-#define MemUsed() EnvMemUsed(GetCurrentEnvironment())
-#define ReleaseMem(a,b) EnvReleaseMem(GetCurrentEnvironment(),a,b)
-#define SetConserveMemory(a) EnvSetConserveMemory(GetCurrentEnvironment(),a)
-#define SetOutOfMemoryFunction(a) EnvSetOutOfMemoryFunction(GetCurrentEnvironment(),a)
-
    LOCALE void                           InitializeMemory(void *);
    LOCALE void                          *genalloc(void *,size_t);
    LOCALE int                            DefaultOutOfMemoryFunction(void *,size_t);
@@ -170,7 +165,18 @@ struct memoryData
    LOCALE void                           genmemcpy(char *,char *,unsigned long);
    LOCALE void                           ReturnAllBlocks(void *);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+   LOCALE intBool                        GetConserveMemory(void);
+   LOCALE long int                       MemRequests(void);
+   LOCALE long int                       MemUsed(void);
+   LOCALE long int                       ReleaseMem(long int,int);
+   LOCALE intBool                        SetConserveMemory(intBool);
+   LOCALE int                          (*SetOutOfMemoryFunction(void *,int (*)(void *,size_t)))(void *,size_t);
+ 
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_memalloc */
 
 
 

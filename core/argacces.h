@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/02/14            */
    /*                                                     */
    /*             ARGUMENT ACCESS HEADER FILE             */
    /*******************************************************/
@@ -25,6 +25,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -52,15 +54,6 @@
 #define LOCALE extern
 #endif
 
-#define RtnArgCount() EnvRtnArgCount(GetCurrentEnvironment())
-#define ArgCountCheck(a,b,c) EnvArgCountCheck(GetCurrentEnvironment(),a,b,c)
-#define ArgRangeCheck(a,b,c) EnvArgRangeCheck(GetCurrentEnvironment(),a,b,c)
-#define RtnLexeme(a) EnvRtnLexeme(GetCurrentEnvironment(),a)
-#define RtnDouble(a) EnvRtnDouble(GetCurrentEnvironment(),a)
-#define RtnLong(a) EnvRtnLong(GetCurrentEnvironment(),a)
-#define RtnUnknown(a,b) EnvRtnUnknown(GetCurrentEnvironment(),a,b)
-#define ArgTypeCheck(a,b,c,d) EnvArgTypeCheck(GetCurrentEnvironment(),a,b,c,d)
-
    LOCALE int                            EnvRtnArgCount(void *);
    LOCALE int                            EnvArgCountCheck(void *,const char *,int,int);
    LOCALE int                            EnvArgRangeCheck(void *,const char *,int,int);
@@ -81,6 +74,19 @@
    LOCALE struct defmodule              *GetModuleName(void *,const char *,int,int *);
    LOCALE void                          *GetFactOrInstanceArgument(void *,int,DATA_OBJECT *,const char *);
    LOCALE void                           IllegalLogicalNameMessage(void *,const char *);
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+  LOCALE int                             ArgCountCheck(const char *,int,int);
+  LOCALE int                             ArgRangeCheck(const char *,int,int);
+  LOCALE int                             ArgTypeCheck(const char *,int,int,DATA_OBJECT_PTR);
+  LOCALE int                             RtnArgCount(void);
+  LOCALE double                          RtnDouble(int);
+  LOCALE char                           *RtnLexeme(int);
+  LOCALE long long                       RtnLong(int);
+  LOCALE DATA_OBJECT_PTR                 RtnUnknown(int,DATA_OBJECT_PTR);
+
+#endif
 
 #endif
 
