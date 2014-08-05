@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/05/14            */
    /*                                                     */
    /*                   DEVELOPER MODULE                  */
    /*******************************************************/
@@ -25,6 +25,9 @@
 /*                                                           */
 /*            Added const qualifiers and type casts to       */
 /*            remove C++ warnings.                           */
+/*                                                           */
+/*            Replaced deprecated WCLIPS logical name with   */
+/*            WPROMPT.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -631,7 +634,7 @@ static void ValidateRuleBetaMemoriesAction(
 globle void ValidateBetaMemories(
   void *theEnv)
   {
-  EnvPrintRouter(theEnv, WCLIPS,"ValidateBetaMemories");
+  EnvPrintRouter(theEnv,WPROMPT,"ValidateBetaMemories");
    DoForAllConstructs(theEnv,ValidateRuleBetaMemoriesAction,DefruleData(theEnv)->DefruleModuleIndex,FALSE,NULL); 
   }
 
