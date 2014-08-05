@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/05/14            */
    /*                                                     */
    /*                DEFGLOBAL HEADER FILE                */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Moved WatchGlobals global to defglobalData.    */
 /*                                                           */
 /*************************************************************/
 
@@ -57,7 +59,10 @@ struct defglobalData
   { 
    struct construct *DefglobalConstruct;
    int DefglobalModuleIndex;  
-   int ChangeToGlobals;   
+   int ChangeToGlobals;
+#if DEBUGGING_FUNCTIONS
+   unsigned WatchGlobals;
+#endif
    intBool ResetGlobals;
    struct entityRecord GlobalInfo;
    struct entityRecord DefglobalPtrRecord;

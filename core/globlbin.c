@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.21  06/15/03            */
+   /*             CLIPS Version 6.30  08/05/14            */
    /*                                                     */
    /*            DEFGLOBAL BSAVE/BLOAD MODULE             */
    /*******************************************************/
@@ -17,6 +17,8 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Moved WatchGlobals global to defglobalData.    */
 /*                                                           */
 /*************************************************************/
 
@@ -387,7 +389,7 @@ static void UpdateDefglobal(
                          (int) sizeof(struct defglobal),(void *) DefglobalBinaryData(theEnv)->DefglobalArray);
 
 #if DEBUGGING_FUNCTIONS
-   DefglobalBinaryData(theEnv)->DefglobalArray[obji].watch = WatchGlobals;
+   DefglobalBinaryData(theEnv)->DefglobalArray[obji].watch = DefglobalData(theEnv)->WatchGlobals;
 #endif
    DefglobalBinaryData(theEnv)->DefglobalArray[obji].initial = HashedExpressionPointer(bdp->initial);
    DefglobalBinaryData(theEnv)->DefglobalArray[obji].current.type = RVOID;

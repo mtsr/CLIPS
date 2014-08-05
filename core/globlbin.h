@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  08/05/14            */
    /*                                                     */
    /*             DEFGLOBAL BINARY HEADER FILE            */
    /*******************************************************/
@@ -16,6 +16,8 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Moved WatchGlobals global to defglobalData.    */
 /*                                                           */
 /*************************************************************/
 

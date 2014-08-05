@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/05/14            */
    /*                                                     */
    /*         DEFGLOBAL BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Moved WatchGlobals global to defglobalData.    */
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
@@ -71,14 +73,6 @@
    static unsigned                DefglobalWatchPrint(void *,const char *,int,struct expr *);
 #endif
 
-/****************************************/
-/* GLOBAL INTERNAL VARIABLE DEFINITIONS */
-/****************************************/
-
-#if DEBUGGING_FUNCTIONS
-   globle unsigned              WatchGlobals = OFF;
-#endif
-
 /*****************************************************************/
 /* DefglobalBasicCommands: Initializes basic defglobal commands. */
 /*****************************************************************/
@@ -96,7 +90,7 @@ globle void DefglobalBasicCommands(
 #if DEBUGGING_FUNCTIONS
    EnvDefineFunction2(theEnv,"list-defglobals",'v', PTIEF ListDefglobalsCommand,"ListDefglobalsCommand","01w");
    EnvDefineFunction2(theEnv,"ppdefglobal",'v',PTIEF PPDefglobalCommand,"PPDefglobalCommand","11w");
-   AddWatchItem(theEnv,"globals",0,&WatchGlobals,0,DefglobalWatchAccess,DefglobalWatchPrint);
+   AddWatchItem(theEnv,"globals",0,&DefglobalData(theEnv)->WatchGlobals,0,DefglobalWatchAccess,DefglobalWatchPrint);
 #endif
 
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)

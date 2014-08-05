@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/15/14            */
    /*                                                     */
    /*              DEFGLOBAL PARSER MODULE                */
    /*******************************************************/
@@ -24,6 +24,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Moved WatchGlobals global to defglobalData.    */
 /*                                                           */
 /*************************************************************/
 
@@ -388,7 +390,7 @@ static void AddDefglobal(
    /*=================================*/
 
 #if DEBUGGING_FUNCTIONS
-   defglobalPtr->watch = GlobalHadWatch ? TRUE : WatchGlobals;
+   defglobalPtr->watch = GlobalHadWatch ? TRUE : DefglobalData(theEnv)->WatchGlobals;
 #endif
 
    /*======================================*/

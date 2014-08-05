@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/05/14            */
    /*                                                     */
    /*         DEFGLOBAL BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -22,6 +22,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Moved WatchGlobals global to defglobalData.    */
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
@@ -71,10 +73,6 @@
    LOCALE intBool                        Undefglobal(void *);
    
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
-#ifndef _GLOBLBSC_SOURCE_
-   extern unsigned                       WatchGlobals;
-#endif
 
 #endif /* _H_globlbsc */
 
