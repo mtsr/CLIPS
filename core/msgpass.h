@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/02/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -16,12 +16,23 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.24: Removed IMPERATIVE_MESSAGE_HANDLERS            */
-/*                    compilation flag.                      */
+/*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
+/*                                                           */
+/*      6.24: Removed IMPERATIVE_MESSAGE_HANDLERS and        */
+/*            AUXILIARY_MESSAGE_HANDLERS compilation flags.  */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: The return value of DirectMessage indicates    */
+/*            whether an execution error has occurred.       */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */

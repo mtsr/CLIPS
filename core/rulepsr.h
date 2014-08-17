@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*               RULE PARSING HEADER FILE              */
    /*******************************************************/
@@ -16,7 +16,20 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.24: Removed DYNAMIC_SALIENCE, INCREMENTAL_RESET,   */
+/*            and LOGICAL_DEPENDENCIES compilation flags.    */
+/*                                                           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW and       */
+/*            MAC_MCW).                                      */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            GetConstructNameAndComment API change.         */
+/*                                                           */
+/*            Added support for hashed memories.             */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -41,6 +54,6 @@
    LOCALE void                           DumpRuleAnalysis(void *,struct lhsParseNode *);
 #endif
 
-#endif
+#endif /* _H_rulepsr */
 
 

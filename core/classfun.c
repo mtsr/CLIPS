@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                CLASS FUNCTIONS MODULE               */
    /*******************************************************/
@@ -21,7 +21,17 @@
 /*            Corrected code to remove run-time program      */
 /*            compiler warning.                              */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Borland C (IBM_TBC) and Metrowerks CodeWarrior */
+/*            (MAC_MCW, IBM_MCW) are no longer supported.    */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Used genstrcpy and genstrcat instead of strcpy */
+/*            and strcat.                                    */
+/*                                                           */             
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */

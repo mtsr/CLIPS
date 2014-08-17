@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*            DEFAULT ATTRIBUTE HEADER FILE            */
    /*******************************************************/
@@ -21,7 +21,9 @@
 /*      6.24: Support for deftemplate-slot-default-value     */
 /*            function.                                      */ 
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Support for long long integers.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -49,7 +51,7 @@
    LOCALE void                           DeriveDefaultFromConstraints(void *,CONSTRAINT_RECORD *,DATA_OBJECT *,int,int);
    LOCALE struct expr                   *ParseDefault(void *,const char *,int,int,int,int *,int *,int *);
 
-#endif
+#endif /* _H_default */
 
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                PRINT UTILITY MODULE                 */
    /*******************************************************/
@@ -26,7 +26,20 @@
 /*                                                           */
 /*            Added SlotExistError function.                 */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Support for long long integers.                */
+/*                                                           */
+/*            Support for DATA_OBJECT_ARRAY primitive.       */
+/*                                                           */
+/*            Support for typed EXTERNAL_ADDRESS.            */
+/*                                                           */
+/*            Used gensprintf and genstrcat instead of       */
+/*            sprintf and strcat.                            */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Added code for capturing errors/warnings.      */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Fixed linkage issue when BLOAD_ONLY compiler   */

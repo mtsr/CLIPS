@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                    MEMORY MODULE                    */
    /*******************************************************/
@@ -24,7 +24,16 @@
 /*                                                           */
 /*            Corrected code to remove compiler warnings.    */
 /*                                                           */
-/*      6.30: Converted API macros to function calls.        */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems.                   */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Removed genlongalloc/genlongfree functions.    */
+/*                                                           */
+/*            Added get_mem and rtn_mem macros.              */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 

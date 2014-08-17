@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                  MATCH HEADER FILE                  */
    /*******************************************************/
@@ -16,7 +16,10 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Added support for hashed memories.             */
+/*                                                           */
+/*            Added additional members to partialMatch to    */
+/*            support changes to the matching algorithm.     */
 /*                                                           */
 /*************************************************************/
 
@@ -126,7 +129,7 @@ struct multifieldMarker
 #define set_nth_pm_value(thePM,thePos,theVal) (thePM->binds[thePos].gm.theValue = (void *) theVal)
 #define set_nth_pm_match(thePM,thePos,theVal) (thePM->binds[thePos].gm.theMatch = theVal)
 
-#endif
+#endif /* _H_match */
 
 
 

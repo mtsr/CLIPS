@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.21  06/15/03            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*            DEFTEMPLATE BSAVE/BLOAD MODULE           */
    /*******************************************************/
@@ -17,8 +17,13 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Added support for templates maintaining their  */
 /*            own list of facts.                             */
+/*                                                           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Support for deftemplate slot facets.           */
 /*                                                           */
 /*************************************************************/
 

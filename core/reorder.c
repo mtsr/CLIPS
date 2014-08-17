@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  06/14/14            */
    /*                                                     */
    /*                    REORDER MODULE                   */
    /*******************************************************/
@@ -25,7 +25,15 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Support for join network changes.              */
+/*                                                           */
+/*            Changes to the algorithm for processing        */
+/*            not/and CE groups.                             */
+/*                                                           */
+/*            Additional optimizations for combining         */
+/*            conditional elements.                          */
+/*                                                           */
+/*            Added support for hashed alpha memories.       */
 /*                                                           */
 /*************************************************************/
 

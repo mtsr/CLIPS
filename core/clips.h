@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  03/04/08            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                   API HEADER FILE                   */
    /*******************************************************/
@@ -19,7 +19,8 @@
 /*      6.24: Added filertr.h and tmpltfun.h to include      */
 /*            list.                                          */
 /*                                                           */
-/*      6.30: Added classpsr.h to include list.              */
+/*      6.30: Added classpsr.h, iofun.h, and strngrtr.h to   */
+/*            include list.                                  */
 /*                                                           */
 /*************************************************************/
 

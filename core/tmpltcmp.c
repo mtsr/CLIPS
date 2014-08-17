@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*          DEFTEMPLATE CONSTRUCTS-TO-C MODULE         */
    /*******************************************************/
@@ -21,7 +21,20 @@
 /*      6.23: Added support for templates maintaining their  */
 /*            own list of facts.                             */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Added support for path name argument to        */
+/*            constructs-to-c.                               */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Support for deftemplate slot facets.           */
+/*                                                           */
+/*            Added code for deftemplate run time            */
+/*            initialization of hashed comparisons to        */
+/*            constants.                                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

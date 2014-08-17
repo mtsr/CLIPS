@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/15/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*              DEFGLOBAL PARSER MODULE                */
    /*******************************************************/
@@ -22,7 +22,11 @@
 /*            Made the construct redefinition message more   */
 /*            prominent.                                     */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW and       */
+/*            MAC_MCW).                                      */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Moved WatchGlobals global to defglobalData.    */

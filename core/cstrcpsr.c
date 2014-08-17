@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -25,7 +25,17 @@
 /*                                                           */
 /*            Added pragmas to remove compilation warnings.  */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Added code for capturing errors/warnings.      */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW, MAC_MCW, */
+/*            and IBM_TBC).                                  */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            GetConstructNameAndComment API change.         */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Fixed linkage issue when BLOAD_ONLY compiler   */

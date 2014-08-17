@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  12/04/07            */
    /*                                                     */
    /*                  DRIVE HEADER FILE                  */
    /*******************************************************/
@@ -20,7 +20,12 @@
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Split out functions to improve performance.    */
+/*      6.30: Added support for hashed memories.             */
+/*                                                           */
+/*            Added additional developer statistics to help  */
+/*            analyze join network performance.              */
+/*                                                           */
+/*            Removed pseudo-facts used in not CE.           */
 /*                                                           */
 /*************************************************************/
 
@@ -57,7 +62,7 @@
    intBool                        EvaluateSecondaryNetworkTest(void *,struct partialMatch *,struct joinNode *);
    void                           EPMDrive(void *,struct partialMatch *,struct joinNode *);
    
-#endif
+#endif /* _H_drive */
 
 
 

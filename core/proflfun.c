@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*         CONSTRUCT PROFILING FUNCTIONS MODULE        */
    /*******************************************************/
@@ -16,6 +16,7 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Modified OutputProfileInfo to allow a before   */
 /*            and after prefix so that a string buffer does  */
 /*            not need to be created to contain the entire   */
@@ -29,7 +30,12 @@
 /*            Corrected code to remove run-time program      */
 /*            compiler warnings.                             */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Used gensprintf instead of sprintf.            */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_TBC).         */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

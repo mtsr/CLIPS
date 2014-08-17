@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*            STRING I/O ROUTER HEADER FILE            */
    /*******************************************************/
@@ -17,7 +17,15 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Used genstrcpy instead of strcpy.              */
+/*                                                           */             
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -72,6 +80,6 @@ struct stringRouterData
    LOCALE int                            OpenStringDestination(void *,const char *,char *,size_t);
    LOCALE int                            CloseStringDestination(void *,const char *);
 
-#endif
+#endif /* _H_strngrtr */
 
 

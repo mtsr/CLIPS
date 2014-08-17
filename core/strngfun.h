@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*             STRING FUNCTIONS HEADER FILE            */
    /*******************************************************/
@@ -16,7 +16,24 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
+/*                                                           */
+/*      6.30: Support for long long integers.                */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW and       */
+/*            MAC_MCW).                                      */
+/*                                                           */
+/*            Used gensprintf instead of sprintf.            */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Added support for UTF-8 strings to str-length, */
+/*            str-index, and sub-string functions.           */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -60,7 +77,7 @@
    LOCALE void                           StringToFieldFunction(void *,DATA_OBJECT *);
    LOCALE void                           StringToField(void *,const char *,DATA_OBJECT *);
 
-#endif
+#endif /* _H_strngfun */
 
 
 

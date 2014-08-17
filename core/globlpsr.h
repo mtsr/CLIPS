@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*             DEFGLOBAL PARSER HEADER FILE            */
    /*******************************************************/
@@ -18,8 +18,17 @@
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*            Made the construct redefinition message more   */
+/*            prominent.                                     */
+/*                                                           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW and       */
+/*            MAC_MCW).                                      */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Moved WatchGlobals global to defglobalData.    */
 /*                                                           */
 /*************************************************************/
 
@@ -49,7 +58,7 @@ struct defglobal;
    LOCALE intBool                 ReplaceGlobalVariable(void *,struct expr *);
    LOCALE void                    GlobalReferenceErrorMessage(void *,const char *);
 
-#endif
+#endif /* _H_globlpsr */
 
 
 

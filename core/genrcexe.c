@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -19,7 +19,13 @@
 /*                                                           */
 /*      6.24: Removed IMPERATIVE_METHODS compilation flag.   */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Support for long long integers.                */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                  I/O ROUTER MODULE                  */
    /*******************************************************/
@@ -17,6 +17,7 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.24: Removed conversion of '\r' to '\n' from the    */
 /*            EnvGetcRouter function.                        */
 /*                                                           */
@@ -27,6 +28,8 @@
 /*                                                           */
 /*      6.30: Fixed issues with passing context to routers.  */
 /*                                                           */
+/*            Added AwaitingInput flag.                      */
+/*                                                           */             
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */

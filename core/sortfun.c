@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  07/01/05            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                SORT FUNCTIONS MODULE                */
    /*******************************************************/
@@ -15,11 +15,15 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*      6.24: The sort function leaks memory when called     */
 /*            with a multifield value of length zero.        */
 /*            DR0864                                         */
+/*                                                           */
+/*      6.30: Added environment cleanup call function        */
+/*            DeallocateSortFunctionData.                    */
 /*                                                           */
 /*************************************************************/
 

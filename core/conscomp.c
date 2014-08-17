@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -38,7 +38,18 @@
 /*            Support for run-time programs directly passing */
 /*            the hash tables for initialization.            */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Added path name argument to constructs-to-c.   */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW, MAC_MCW, */
+/*            IBM_TBC, IBM_MSC, IBM_ICB, IBM_ZTC, and        */
+/*            IBM_SC).                                       */
+/*                                                           */
+/*            Use genstrcpy instead of strcpy.               */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

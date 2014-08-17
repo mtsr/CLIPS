@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  05/17/06          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -18,6 +18,9 @@
 /*                                                           */
 /*      6.24: Converted INSTANCE_PATTERN_MATCHING to         */
 /*            DEFRULE_CONSTRUCT.                             */
+/*                                                           */
+/*      6.30: Added support for hashed memories and other    */
+/*            join network changes.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -53,9 +56,9 @@
    LOCALE void             GenObjectLengthTest(void *,struct lhsParseNode *);
    LOCALE void             GenObjectZeroLengthTest(void *,struct lhsParseNode *);
 
-#endif
+#endif /* DEFRULE_CONSTRUCT && OBJECT_SYSTEM && (! RUN_TIME) && (! BLOAD_ONLY) */
 
-#endif
+#endif /* _H_objrtgen */
 
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*            FACT-SET QUERIES PARSER MODULE           */
    /*******************************************************/
@@ -16,6 +16,7 @@
 /*      Gary D. Riley                                        */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Added fact-set queries.                        */
 /*                                                           */
 /*            Changed name of variable exp to theExp         */
@@ -24,7 +25,11 @@
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Fixed memory leaks when error occurred.        */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

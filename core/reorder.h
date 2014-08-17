@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                 REORDER HEADER FILE                 */
    /*******************************************************/
@@ -25,7 +25,15 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Support for join network changes.              */
+/*                                                           */
+/*            Changes to the algorithm for processing        */
+/*            not/and CE groups.                             */
+/*                                                           */
+/*            Additional optimizations for combining         */
+/*            conditional elements.                          */
+/*                                                           */
+/*            Added support for hashed alpha memories.       */
 /*                                                           */
 /*************************************************************/
 
@@ -104,19 +112,19 @@ struct lhsParseNode
    struct lhsParseNode *bottom;
   };
 
-LOCALE struct lhsParseNode           *ReorderPatterns(void *,struct lhsParseNode *,int *);
-LOCALE struct lhsParseNode           *CopyLHSParseNodes(void *,struct lhsParseNode *);
-LOCALE void                           CopyLHSParseNode(void *,struct lhsParseNode *,struct lhsParseNode *,int);
-LOCALE struct lhsParseNode           *GetLHSParseNode(void *);
-LOCALE void                           ReturnLHSParseNodes(void *,struct lhsParseNode *);
-LOCALE struct lhsParseNode           *ExpressionToLHSParseNodes(void *,struct expr *);
-LOCALE struct expr                   *LHSParseNodesToExpression(void *,struct lhsParseNode *);
-LOCALE void                           AddInitialPatterns(void *,struct lhsParseNode *);
-LOCALE int                            IsExistsSubjoin(struct lhsParseNode *,int);
-LOCALE struct lhsParseNode           *CombineLHSParseNodes(void *,struct lhsParseNode *,struct lhsParseNode *);
-LOCALE void                           AssignPatternMarkedFlag(struct lhsParseNode *,short);
+   LOCALE struct lhsParseNode           *ReorderPatterns(void *,struct lhsParseNode *,int *);
+   LOCALE struct lhsParseNode           *CopyLHSParseNodes(void *,struct lhsParseNode *);
+   LOCALE void                           CopyLHSParseNode(void *,struct lhsParseNode *,struct lhsParseNode *,int);
+   LOCALE struct lhsParseNode           *GetLHSParseNode(void *);
+   LOCALE void                           ReturnLHSParseNodes(void *,struct lhsParseNode *);
+   LOCALE struct lhsParseNode           *ExpressionToLHSParseNodes(void *,struct expr *);
+   LOCALE struct expr                   *LHSParseNodesToExpression(void *,struct lhsParseNode *);
+   LOCALE void                           AddInitialPatterns(void *,struct lhsParseNode *);
+   LOCALE int                            IsExistsSubjoin(struct lhsParseNode *,int);
+   LOCALE struct lhsParseNode           *CombineLHSParseNodes(void *,struct lhsParseNode *,struct lhsParseNode *);
+   LOCALE void                           AssignPatternMarkedFlag(struct lhsParseNode *,short);
 
-#endif
+#endif /* _H_reorder */
 
 
 

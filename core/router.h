@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                 ROUTER HEADER FILE                  */
    /*******************************************************/
@@ -17,12 +17,19 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*      6.24: Removed conversion of '\r' to '\n' from the    */
+/*            EnvGetcRouter function.                        */
+/*                                                           */
+/*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*            Added support for passing context information  */ 
 /*            to the router functions.                       */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Fixed issues with passing context to routers.  */
+/*                                                           */
+/*            Added AwaitingInput flag.                      */
+/*                                                           */             
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */

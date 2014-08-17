@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -24,7 +24,22 @@
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added UTF-8 routines.                          */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Added CopyString, DeleteString,                */
+/*            InsertInString,and EnlargeString functions.    */
+/*                                                           */
+/*            Used genstrncpy function instead of strncpy    */
+/*            function.                                      */
+/*                                                           */
+/*            Support for typed EXTERNAL_ADDRESS.            */
+/*                                                           */
+/*            Support for tracked memory (allows memory to   */
+/*            be freed if CLIPS is exited while executing).  */
+/*                                                           */
+/*            Added UTF-8 routines.                          */
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */

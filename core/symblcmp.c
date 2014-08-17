@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*           SYMBOL CONSTRUCT COMPILER MODULE          */
    /*******************************************************/
@@ -24,7 +24,12 @@
 /*                                                           */
 /*            Corrected code to remove compiler warnings.    */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Added support for path name argument to        */
+/*            constructs-to-c.                               */
+/*                                                           */
+/*            Support for long long integers.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

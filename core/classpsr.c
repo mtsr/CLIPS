@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/02/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                  CLASS PARSER MODULE                */
    /*******************************************************/
@@ -15,6 +15,7 @@
 /* Contributing Programmer(s):                                */
 /*                                                            */
 /* Revision History:                                          */
+/*                                                            */
 /*      6.24: Added allowed-classes slot facet.               */
 /*                                                            */
 /*            Converted INSTANCE_PATTERN_MATCHING to          */
@@ -25,11 +26,15 @@
 /*      6.30: Added support to allow CreateClassScopeMap to   */
 /*            be used by other functions.                     */
 /*                                                            */
-/*            Added const qualifiers to remove C++           */
-/*            deprecation warnings.                          */
-/*                                                           */
-/*            Converted API macros to function calls.        */
-/*                                                           */
+/*            Changed integer type/precision.                 */
+/*                                                            */
+/*            GetConstructNameAndComment API change.          */
+/*                                                            */
+/*            Added const qualifiers to remove C++            */
+/*            deprecation warnings.                           */
+/*                                                            */
+/*            Converted API macros to function calls.         */
+/*                                                            */
 /**************************************************************/
 
 /* =========================================

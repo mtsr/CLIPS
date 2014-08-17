@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*              FACTS MANAGER HEADER FILE              */
    /*******************************************************/
@@ -19,10 +19,33 @@
 /*      6.23: Added support for templates maintaining their  */
 /*            own list of facts.                             */
 /*                                                           */
-/*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*      6.24: Removed LOGICAL_DEPENDENCIES compilation flag. */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*            AssignFactSlotDefaults function does not       */
+/*            properly handle defaults for multifield slots. */
+/*            DR0869                                         */
+/*                                                           */
+/*            Support for ppfact command.                    */
+/*                                                           */
+/*      6.30: Callback function support for assertion,       */
+/*            retraction, and modification of facts.         */
+/*                                                           */
+/*            Updates to fact pattern entity record.         */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*            Removed unused global variables.               */
 /*                                                           */

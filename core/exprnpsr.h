@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*            EXPRESSION PARSER HEADER FILE            */
    /*******************************************************/
@@ -16,9 +16,19 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
+/*      6.23: Changed name of variable exp to theExp         */
+/*            because of Unix compiler warnings of shadowed  */
+/*            definitions.                                   */
+/*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Module specifier can be used within an         */
+/*            expression to refer to a deffunction or        */
+/*            defgeneric exported by the specified module,   */
+/*            but not necessarily imported by the current    */
+/*            module.                                        */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
@@ -87,7 +97,7 @@ typedef struct saved_contexts
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
-#endif
+#endif /* _H_exprnpsr */
 
 
 

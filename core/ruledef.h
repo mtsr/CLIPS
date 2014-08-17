@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                 DEFRULE HEADER FILE                 */
    /*******************************************************/
@@ -22,9 +22,19 @@
 /*      6.24: Removed DYNAMIC_SALIENCE and                   */
 /*            LOGICAL_DEPENDENCIES compilation flags.        */
 /*                                                           */
+/*            Removed CONFLICT_RESOLUTION_STRATEGIES         */
+/*            compilation flag.                              */
+/*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*            Corrected code to remove run-time program      */
+/*            compiler warnings.                             */
+/*                                                           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Added support for hashed memories.             */
 /*                                                           */
 /*            Added additional developer statistics to help  */
 /*            analyze join network performance.              */
@@ -32,6 +42,9 @@
 /*            Added salience groups to improve performance   */
 /*            with large numbers of activations of different */
 /*            saliences.                                     */
+/*                                                           */
+/*            Added EnvGetDisjunctCount and                  */
+/*            EnvGetNthDisjunct functions.                   */
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */

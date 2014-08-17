@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                  ANALYSIS MODULE                    */
    /*******************************************************/
@@ -20,6 +20,8 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Join network rework and optimizations.         */
 /*                                                           */
 /*************************************************************/
 
@@ -99,7 +101,6 @@
                                                           int,struct symbolHashNode *,
                                                           struct lhsParseNode *,
                                                           int,int);
-   static void                    CombineNandExpressions(void *,struct lhsParseNode *);
    static int                     TestCEAnalysis(void *,struct lhsParseNode *,struct lhsParseNode *,int,int *,struct nandFrame *);
    static void                    ReleaseNandFrames(void *,struct nandFrame *);
 

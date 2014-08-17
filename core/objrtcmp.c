@@ -1,30 +1,36 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*    OBJECT PATTERN NETWORK CONSTRUCTS-TO-C MODULE    */
    /*******************************************************/
 
-/**************************************************************/
-/* Purpose: Saves object pattern network for constructs-to-c  */
-/*                                                            */
-/* Principal Programmer(s):                                   */
-/*      Brian L. Dantes                                       */
-/*                                                            */
-/* Contributing Programmer(s):                                */
-/*                                                            */
-/* Revision History:                                          */
-/*                                                            */
-/*      6.24: Converted INSTANCE_PATTERN_MATCHING to          */
-/*            DEFRULE_CONSTRUCT.                              */
-/*                                                            */
-/*            Added environment parameter to GenClose.        */
-/*                                                            */
-/*      6.30: Added const qualifiers to remove C++           */
+/*************************************************************/
+/* Purpose: Saves object pattern network for constructs-to-c */
+/*                                                           */
+/* Principal Programmer(s):                                  */
+/*      Brian L. Dantes                                      */
+/*                                                           */
+/* Contributing Programmer(s):                               */
+/*                                                           */
+/* Revision History:                                         */
+/*                                                           */
+/*      6.24: Converted INSTANCE_PATTERN_MATCHING to         */
+/*            DEFRULE_CONSTRUCT.                             */
+/*                                                           */
+/*            Added environment parameter to GenClose.       */
+/*                                                           */
+/*      6.30: Added support for path name argument to        */
+/*            constructs-to-c.                               */
+/*                                                           */
+/*            Added support for hashed comparisons to        */
+/*            constants.                                     */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/**************************************************************/
+/*************************************************************/
 /* =========================================
    *****************************************
                EXTERNAL DEFINITIONS

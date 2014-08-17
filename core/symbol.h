@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                 SYMBOL HEADER FILE                  */
    /*******************************************************/
@@ -19,12 +19,38 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
-/*      6.24: Support for run-time programs directly passing */
+/*      6.24: CLIPS crashing on AMD64 processor in the       */
+/*            function used to generate a hash value for     */
+/*            integers. DR0871                               */
+/*                                                           */
+/*            Support for run-time programs directly passing */
 /*            the hash tables for initialization.            */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*            Corrected code generating compilation          */
+/*            warnings.                                      */
+/*                                                           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Support for hashing EXTERNAL_ADDRESS data      */
+/*            type.                                          */
+/*                                                           */
+/*            Support for long long integers.                */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Used genstrcpy instead of strcpy.              */
+/*                                                           */             
+/*            Added support for external address hash table  */
+/*            and subtyping.                                 */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */

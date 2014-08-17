@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.24  06/05/06            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                  EXPRESSION MODULE                  */
    /*******************************************************/
@@ -24,6 +24,14 @@
 /*                                                           */
 /*      6.24: Corrected link errors with non-default         */
 /*            setup.h configuration settings.                */
+/*                                                           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW and       */
+/*            MAC_MCW).                                      */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Changed expression hashing value.              */
 /*                                                           */
 /*************************************************************/
 

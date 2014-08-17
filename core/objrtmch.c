@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  10/19/06          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -15,6 +15,7 @@
 /* Contributing Programmer(s):                                */
 /*                                                            */
 /* Revision History:                                          */
+/*                                                            */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859   */
 /*                                                            */
 /*      6.24: Removed INCREMENTAL_RESET and                   */
@@ -35,6 +36,11 @@
 /*                                                            */
 /*            Added support for hashed alpha memories.        */
 /*                                                            */
+/*            Support for long long integers.                */
+/*                                                           */
+/*            Added support for hashed comparisons to        */
+/*            constants.                                     */
+/*                                                           */
 /**************************************************************/
 /* =========================================
    *****************************************

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/02/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                     BSAVE MODULE                    */
    /*******************************************************/
@@ -23,7 +23,14 @@
 /*            Added environment parameter to GenClose.       */
 /*            Added environment parameter to GenOpen.        */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Used genstrncpy instead of strncpy.            */
+/*                                                           */
+/*            Borland C (IBM_TBC) and Metrowerks CodeWarrior */
+/*            (MAC_MCW, IBM_MCW) are no longer supported.    */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */

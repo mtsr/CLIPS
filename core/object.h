@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.20  01/31/02          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                OBJECT SYSTEM DEFINITIONS            */
    /*******************************************************/
@@ -16,6 +16,10 @@
 /*                                                           */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
 /*                                                           */
 /*************************************************************/
 
@@ -206,7 +210,7 @@ struct messageHandler
    struct userData *usrData;
   };
 
-#endif
+#endif /* _H_object */
 
 
 

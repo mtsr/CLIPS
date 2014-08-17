@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.24  05/17/06           */
+   /*              CLIPS Version 6.30  08/16/14           */
    /*                                                     */
    /*           INSTANCE MODIFY AND DUPLICATE MODULE      */
    /*******************************************************/
@@ -16,6 +16,7 @@
 /*                                                           */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*            Changed name of variable exp to theExp         */
@@ -24,6 +25,13 @@
 /*                                                           */
 /*      6.24: Converted INSTANCE_PATTERN_MATCHING to         */
 /*            DEFRULE_CONSTRUCT.                             */
+/*                                                           */
+/*      6.30: Added DATA_OBJECT_ARRAY primitive type.        */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            The return value of DirectMessage indicates    */
+/*            whether an execution error has occurred.       */
 /*                                                           */
 /*************************************************************/
 

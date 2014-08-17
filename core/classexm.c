@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                 CLASS EXAMINATION MODULE            */
    /*******************************************************/
@@ -15,6 +15,7 @@
 /* Contributing Programmer(s):                                */
 /*                                                            */
 /* Revision History:                                          */
+/*                                                            */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859   */
 /*                                                            */
 /*            Modified the slot-writablep function to return  */
@@ -35,6 +36,12 @@
 /*      6.30: Used %zd for printing size_t arguments.         */
 /*                                                            */
 /*            Added EnvSlotDefaultP function.                 */
+/*                                                            */
+/*            Borland C (IBM_TBC) and Metrowerks CodeWarrior  */
+/*            (MAC_MCW, IBM_MCW) are no longer supported.     */
+/*                                                            */
+/*            Used gensprintf and genstrcat instead of        */
+/*            sprintf and strcat.                             */
 /*                                                            */
 /*            Added const qualifiers to remove C++            */
 /*            deprecation warnings.                           */

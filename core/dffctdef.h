@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                DEFFACTS HEADER FILE                 */
    /*******************************************************/
@@ -19,7 +19,11 @@
 /*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
@@ -104,8 +108,8 @@ struct deffactsModule
    LOCALE char                          *GetDeffactsName(void *);
    LOCALE char                          *GetDeffactsPPForm(void *);
    
-#endif
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
-#endif
+#endif /* _H_dffctdef */
 
 

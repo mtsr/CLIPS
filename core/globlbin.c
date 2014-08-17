@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/05/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*            DEFGLOBAL BSAVE/BLOAD MODULE             */
    /*******************************************************/
@@ -18,7 +18,9 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Moved WatchGlobals global to defglobalData.    */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Moved WatchGlobals global to defglobalData.    */
 /*                                                           */
 /*************************************************************/
 

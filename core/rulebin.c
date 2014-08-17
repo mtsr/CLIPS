@@ -1,8 +1,7 @@
-
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*              DEFRULE BSAVE/BLOAD MODULE             */
    /*******************************************************/
@@ -24,7 +23,9 @@
 /*            DYNAMIC_SALIENCE, and LOGICAL_DEPENDENCIES     */
 /*            compilation flags.                             */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Added support for alpha memories.              */
 /*                                                           */
 /*            Added salience groups to improve performance   */
 /*            with large numbers of activations of different */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                   FACT BUILD MODULE                 */
    /*******************************************************/
@@ -22,6 +22,9 @@
 /*      6.24: Removed INCREMENTAL_RESET compilation flag.    */
 /*                                                           */
 /*      6.30: Added support for hashed alpha memories.       */
+/*                                                           */
+/*            Added support for hashed comparisons to        */
+/*            constants.                                     */
 /*                                                           */
 /*************************************************************/
 

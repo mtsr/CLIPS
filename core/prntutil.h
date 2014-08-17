@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*              PRINT UTILITY HEADER FILE              */
    /*******************************************************/
@@ -25,8 +25,24 @@
 /*                                                           */
 /*            Added SlotExistError function.                 */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Support for long long integers.                */
+/*                                                           */
+/*            Support for DATA_OBJECT_ARRAY primitive.       */
+/*                                                           */
+/*            Support for typed EXTERNAL_ADDRESS.            */
+/*                                                           */
+/*            Used gensprintf and genstrcat instead of       */
+/*            sprintf and strcat.                            */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Added code for capturing errors/warnings.      */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Fixed linkage issue when BLOAD_ONLY compiler   */
+/*            flag is set to 1.                              */
 /*                                                           */
 /*************************************************************/
 
@@ -62,6 +78,7 @@ struct printUtilityData
 #else
 #define LOCALE extern
 #endif
+
    LOCALE void                           InitializePrintUtilityData(void *);
    LOCALE void                           PrintInChunks(void *,const char *,char *);
    LOCALE void                           PrintFloat(void *,const char *,double);
@@ -86,7 +103,7 @@ struct printUtilityData
    LOCALE void                           CantFindItemInFunctionErrorMessage(void *,const char *,const char *,const char *);
    LOCALE void                           SlotExistError(void *,const char *,const char *);
 
-#endif
+#endif /* _H_prntutil */
 
 
 

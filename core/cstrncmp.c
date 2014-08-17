@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*          CONSTRAINT CONSTRUCTS-TO-C MODULE          */
    /*******************************************************/
@@ -22,7 +22,10 @@
 /*                                                           */
 /*            Added environment parameter to GenClose.       */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Added support for path name argument to        */
+/*            constructs-to-c.                               */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*               RULE BUILD HEADER FILE                */
    /*******************************************************/
@@ -21,6 +21,14 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.24: Removed INCREMENTAL_RESET compilation flag.    */
+/*                                                           */
+/*            Corrected code to remove compiler warnings.    */
+/*                                                           */
+/*      6.30: Changes to constructing join network.          */
+/*                                                           */
+/*            Added support for hashed memories.             */
 /*                                                           */
 /*************************************************************/
 
@@ -47,7 +55,7 @@
 
    LOCALE struct joinNode               *ConstructJoins(void *,int,struct lhsParseNode *,int,struct joinNode *,int,int);
 
-#endif
+#endif /* _H_rulebld */
 
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*         FACT RETE PRINT FUNCTIONS HEADER FILE       */
    /*******************************************************/
@@ -16,7 +16,15 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Updates to support new struct members.         */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -48,6 +56,6 @@
    LOCALE void                           PrintFactPNConstant1(void *,const char *,void *);
    LOCALE void                           PrintFactPNConstant2(void *,const char *,void *);
 
-#endif
+#endif /* _H_factprt */
 
 

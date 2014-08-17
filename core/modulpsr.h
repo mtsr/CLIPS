@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*             DEFMODULE PARSER HEADER FILE            */
    /*******************************************************/
@@ -16,7 +16,11 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: GetConstructNameAndComment API change.         */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Fixed linkage issue when DEFMODULE_CONSTRUCT   */
@@ -62,6 +66,6 @@ struct portConstructItem
    LOCALE struct portConstructItem      *ValidPortConstructItem(void *,const char *);
    LOCALE int                            FindImportExportConflict(void *,const char *,struct defmodule *,const char *);
 
-#endif
+#endif /* _H_modulpsr */
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -18,6 +18,7 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*            Corrected compilation errors for files         */
@@ -40,6 +41,19 @@
 /*                                                           */
 /*            Added context information for run functions.   */
 /*                                                           */
+/*            Added before rule firing callback function.    */ 
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Added EnvHalt function.                        */
+/*                                                           */
+/*            Used gensprintf instead of sprintf.            */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
@@ -1578,7 +1592,6 @@ globle void ShowBreaks(
 #endif /* DEBUGGING_FUNCTIONS */
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 
 #endif /* DEFRULE_CONSTRUCT */
 

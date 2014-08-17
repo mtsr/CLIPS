@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -14,11 +14,20 @@
 /*                                                           */
 /* Contributing Programmer(s):                               */
 /*                                                           */
-/* Revision History:                                         */
-/*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
-/*            deprecation warnings.                          */
-/*                                                           */
+/* Revision History:                                          */
+/*                                                            */
+/*      6.24: Converted INSTANCE_PATTERN_MATCHING to          */
+/*            DEFRULE_CONSTRUCT.                              */
+/*                                                            */
+/*            Renamed BOOLEAN macro type to intBool.          */
+/*                                                            */
+/*      6.30: Changed integer type/precision.                 */
+/*                                                            */
+/*            Support for long long integers.                 */
+/*                                                            */
+/*            Added const qualifiers to remove C++            */
+/*            deprecation warnings.                           */
+/*                                                            */
 /*************************************************************/
 
 #ifndef _H_clsltpsr

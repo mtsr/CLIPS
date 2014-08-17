@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*              RETE UTILITY HEADER FILE               */
    /*******************************************************/
@@ -17,10 +17,27 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.24: Rule with exists CE has incorrect activation.  */
+/*      6.24: Removed INCREMENTAL_RESET compilation flag.    */
+/*                                                           */
+/*            Rule with exists CE has incorrect activation.  */
 /*            DR0867                                         */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Support for join network changes.              */
+/*                                                           */
+/*            Support for using an asterick (*) to indicate  */
+/*            that existential patterns are matched.         */
+/*                                                           */
+/*            Support for partial match changes.             */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW and       */
+/*            MAC_MCW).                                      */
+/*                                                           */
+/*            Added support for hashed memories.             */
+/*                                                           */
+/*            Removed pseudo-facts used in not CEs.          */
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
@@ -88,7 +105,7 @@
    LOCALE void                           RemoveBlockedLink(struct partialMatch *);
    LOCALE unsigned long                  PrintBetaMemory(void *,const char *,struct betaMemory *,int,const char *,int);
 
-#endif
+#endif /* _H_reteutil */
 
 
 

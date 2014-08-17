@@ -1,25 +1,27 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*             MULTIPLE INHERITANCE PARSER MODULE      */
    /*******************************************************/
 
-/**************************************************************/
-/* Purpose: Parsing Routines for Multiple Inheritance         */
-/*                                                            */
-/* Principal Programmer(s):                                   */
-/*      Brian L. Dantes                                       */
-/*                                                            */
-/* Contributing Programmer(s):                                */
-/*                                                            */
-/* Revision History:                                          */
-/*                                                            */
-/*      6.30: Added const qualifiers to remove C++           */
+/*************************************************************/
+/* Purpose: Parsing Routines for Multiple Inheritance        */
+/*                                                           */
+/* Principal Programmer(s):                                  */
+/*      Brian L. Dantes                                      */
+/*                                                           */
+/* Contributing Programmer(s):                               */
+/*                                                           */
+/* Revision History:                                         */
+/*                                                           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/**************************************************************/
+/*************************************************************/
 
 /* =========================================
    *****************************************

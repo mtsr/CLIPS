@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                 RETE UTILITY MODULE                 */
    /*******************************************************/
@@ -22,7 +22,20 @@
 /*            Rule with exists CE has incorrect activation.  */
 /*            DR0867                                         */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Support for join network changes.              */
+/*                                                           */
+/*            Support for using an asterick (*) to indicate  */
+/*            that existential patterns are matched.         */
+/*                                                           */
+/*            Support for partial match changes.             */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW and       */
+/*            MAC_MCW).                                      */
+/*                                                           */
+/*            Added support for hashed memories.             */
 /*                                                           */
 /*            Removed pseudo-facts used in not CEs.          */
 /*                                                           */

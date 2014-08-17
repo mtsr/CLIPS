@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                 I/O FUNCTIONS MODULE                */
    /*******************************************************/
@@ -19,6 +19,7 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.24: Added the get-char, set-locale, and            */
 /*            read-number functions.                         */
 /*                                                           */
@@ -29,14 +30,34 @@
 /*            Moved IllegalLogicalNameMessage function to    */
 /*            argacces.c.                                    */
 /*                                                           */
-/*      6.30: Removed the undocumented use of t in the       */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Support for long long integers.                */
+/*                                                           */
+/*            Removed the undocumented use of t in the       */
 /*            printout command to perform the same function  */
 /*            as crlf.                                       */
+/*                                                           */
+/*            Replaced EXT_IO and BASIC_IO compiler flags    */
+/*            with IO_FUNCTIONS compiler flag.               */
 /*                                                           */
 /*            Added a+, w+, rb, ab, r+b, w+b, and a+b modes  */
 /*            for the open function.                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW and       */
+/*            MAC_MCW).                                      */
+/*                                                           */
+/*            Used gensprintf instead of sprintf.            */
+/*                                                           */
+/*            Added put-char function.                       */
+/*                                                           */
+/*            Added SetFullCRLF which allows option to       */
+/*            specify crlf as \n or \r\n.                    */
+/*                                                           */
+/*            Added AwaitingInput flag.                      */
+/*                                                           */             
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

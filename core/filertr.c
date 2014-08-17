@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*               FILE I/O ROUTER MODULE                */
    /*******************************************************/
@@ -23,7 +23,18 @@
 /*                                                           */
 /*            Added pragmas to remove compilation warnings.  */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Used gengetc and genungetchar rather than      */
+/*            getc and ungetc.                               */
+/*                                                           */
+/*            Replaced BASIC_IO and ADVANCED_IO compiler     */
+/*            flags with the single IO_FUNCTIONS compiler    */
+/*            flag.                                          */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

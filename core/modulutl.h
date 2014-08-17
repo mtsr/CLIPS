@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*            DEFMODULE UTILITY HEADER FILE            */
    /*******************************************************/
@@ -19,7 +19,9 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Used genstrncpy instead of strncpy.            */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -65,7 +67,7 @@
                                                          int,void *);
    LOCALE intBool                        ConstructExported(void *,const char *,struct symbolHashNode *,struct symbolHashNode *);
    
-#endif
+#endif /* _H_modulutl */
 
 
 

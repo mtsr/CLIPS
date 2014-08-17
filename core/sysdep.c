@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -16,6 +16,7 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Modified GenOpen to check the file length      */
 /*            against the system constant FILENAME_MAX.      */
 /*                                                           */
@@ -34,7 +35,44 @@
 /*                                                           */
 /*            Removed GenOpen check against FILENAME_MAX.    */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, IBM_ICB, IBM_TBC, IBM_ZTC, and        */
+/*            IBM_SC).                                       */
+/*                                                           */
+/*            Renamed IBM_MSC and WIN_MVC compiler flags     */
+/*            and IBM_GCC to WIN_GCC.                        */
+/*                                                           */
+/*            Added LINUX and DARWIN compiler flags.         */
+/*                                                           */
+/*            Removed HELP_FUNCTIONS compilation flag and    */
+/*            associated functionality.                      */
+/*                                                           */
+/*            Removed EMACS_EDITOR compilation flag and      */
+/*            associated functionality.                      */
+/*                                                           */
+/*            Combined BASIC_IO and EXT_IO compilation       */
+/*            flags into the single IO_FUNCTIONS flag.       */
+/*                                                           */
+/*            Changed the EX_MATH compilation flag to        */
+/*            EXTENDED_MATH_FUNCTIONS.                       */
+/*                                                           */
+/*            Support for typed EXTERNAL_ADDRESS.            */
+/*                                                           */
+/*            GenOpen function checks for UTF-8 Byte Order   */
+/*            Marker.                                        */
+/*                                                           */
+/*            Added gengetchar, genungetchar, genprintfile,  */
+/*            genstrcpy, genstrncpy, genstrcat, genstrncat,  */
+/*            and gensprintf functions.                      */
+/*                                                           */
+/*            Added SetJmpBuffer function.                   */
+/*                                                           */
+/*            Added environment argument to genexit.         */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

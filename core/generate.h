@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                GENERATE HEADER FILE                 */
    /*******************************************************/
@@ -17,6 +17,14 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Added support for hashed alpha memories.       */
+/*                                                           */
+/*            Added support for hashed comparisons to        */
+/*            constants.                                     */
+/*                                                           */
+/*            Reimplemented algorithm for comparisons to     */
+/*            variables contained within not/and CEs.        */
 /*                                                           */
 /*************************************************************/
 
@@ -48,7 +56,7 @@
    LOCALE struct expr                   *GetvarReplace(void *,struct lhsParseNode *,int,struct nandFrame *);
    LOCALE void                           AddNandUnification(void *,struct lhsParseNode *,struct nandFrame *);
 
-#endif
+#endif /* _H_generate */
 
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                RETRACT HEADER FILE                  */
    /*******************************************************/
@@ -18,13 +18,19 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.24: Rule with exists CE has incorrect activation.  */
+/*      6.24: Removed LOGICAL_DEPENDENCIES compilation flag. */
+/*                                                           */
+/*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*            Rule with exists CE has incorrect activation.  */
 /*            DR0867                                         */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Added support for hashed memories.             */
 /*                                                           */
 /*            Added additional developer statistics to help  */
 /*            analyze join network performance.              */
+/*                                                           */
+/*            Removed pseudo-facts used in not CEs.          */
 /*                                                           */
 /*************************************************************/
 
@@ -63,7 +69,7 @@ LOCALE void                           DeletePartialMatches(void *,struct partial
 LOCALE void                           PosEntryRetractBeta(void *,struct partialMatch *,struct partialMatch *);
 LOCALE void                           PosEntryRetractAlpha(void *,struct partialMatch *);
 
-#endif
+#endif /* _H_retract */
 
 
 

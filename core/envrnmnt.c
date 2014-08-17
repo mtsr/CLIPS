@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                ENVIRONMENT MODULE                   */
    /*******************************************************/
@@ -32,6 +32,9 @@
 /*      6.30: Added support for passing context information  */ 
 /*            to user defined functions and callback         */
 /*            functions.                                     */
+/*                                                           */
+/*            Support for hashing EXTERNAL_ADDRESS data      */
+/*            type.                                          */
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */

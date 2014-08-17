@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                 DEFTEMPLATE MODULE                  */
    /*******************************************************/
@@ -18,6 +18,7 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Added support for templates maintaining their  */
 /*            own list of facts.                             */
 /*                                                           */
@@ -26,7 +27,17 @@
 /*            Corrected code to remove run-time program      */
 /*            compiler warnings.                             */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Added code for deftemplate run time            */
+/*            initialization of hashed comparisons to        */
+/*            constants.                                     */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Support for deftemplate slot facets.           */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
@@ -435,9 +446,9 @@ globle void *EnvGetNextFactInTemplate(
 
 #if ! RUN_TIME
 
-/*******************************************************************/
-/* CreateDeftemplateScopeMap:    */
-/*******************************************************************/
+/******************************/
+/* CreateDeftemplateScopeMap: */
+/******************************/
 globle void *CreateDeftemplateScopeMap(
   void *theEnv,
   struct deftemplate *theDeftemplate)

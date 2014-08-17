@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.39  07/25/14            */
+   /*             CLIPS Version 6.39  08/16/14            */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -16,6 +16,7 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*            Corrected compilation errors for files         */
@@ -34,7 +35,27 @@
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Support for long long integers.                */
+/*                                                           */
+/*            Used gensprintf instead of sprintf.            */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems.                   */
+/*                                                           */
+/*            Renamed EX_MATH compiler flag to               */
+/*            EXTENDED_MATH_FUNCTIONS.                       */
+/*                                                           */
+/*            Combined BASIC_IO and EXT_IO compilation       */
+/*            flags into the IO_FUNCTIONS compilation flag.  */
+/*                                                           */    
+/*            Removed code associated with HELP_FUNCTIONS    */
+/*            and EMACS_EDITOR compiler flags.               */
+/*                                                           */    
+/*            Added operating-system function.               */
+/*                                                           */ 
+/*            Added new function (for future use).           */
+/*                                                           */ 
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

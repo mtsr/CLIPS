@@ -2,7 +2,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*            DEFRULE CONSTRUCTS-TO-C MODULE           */
    /*******************************************************/
@@ -22,7 +22,16 @@
 /*      6.24: Removed DYNAMIC_SALIENCE and                   */
 /*            LOGICAL_DEPENDENCIES compilation flags.        */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Added support for path name argument to        */
+/*            constructs-to-c.                               */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Support for join network changes.              */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -82,7 +91,7 @@ static void BeforeDefrulesCode(
   {
    long int moduleCount, ruleCount, joinCount, linkCount;
 
-   TagRuleNetwork(theEnv,&moduleCount,&ruleCount,&joinCount, &linkCount);
+   TagRuleNetwork(theEnv,&moduleCount,&ruleCount,&joinCount,&linkCount);
   }
 
 /*********************************************************/

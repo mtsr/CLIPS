@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*              DEFTEMPLATE LHS HEADER FILE            */
    /*******************************************************/
@@ -16,7 +16,11 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Support for rete network exists node.          */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -44,7 +48,7 @@
 
    LOCALE struct lhsParseNode           *DeftemplateLHSParse(void *,const char *,struct deftemplate *);
 
-#endif
+#endif /* _H_tmpltlhs */
 
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -16,7 +16,9 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -40,16 +42,13 @@
 #define LOCALE extern
 #endif
 
-LOCALE PACKED_CLASS_LINKS *ParseSuperclasses(void *,const char *,SYMBOL_HN *);
-LOCALE PACKED_CLASS_LINKS *FindPrecedenceList(void *,DEFCLASS *,PACKED_CLASS_LINKS *);
-LOCALE void PackClassLinks(void *,PACKED_CLASS_LINKS *,CLASS_LINK *);
+   LOCALE PACKED_CLASS_LINKS            *ParseSuperclasses(void *,const char *,SYMBOL_HN *);
+   LOCALE PACKED_CLASS_LINKS            *FindPrecedenceList(void *,DEFCLASS *,PACKED_CLASS_LINKS *);
+   LOCALE void                           PackClassLinks(void *,PACKED_CLASS_LINKS *,CLASS_LINK *);
 
-#ifndef _INHERPSR_SOURCE_
-#endif
+#endif /* OBJECT_SYSTEM && (! BLOAD_ONLY) && (! RUN_TIME) */
 
-#endif
-
-#endif
+#endif /* _H_inherpsr */
 
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  10/19/06          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -23,7 +23,12 @@
 /*            ResetObjectMatchTimeTags did not pass in the   */
 /*            environment argument when BLOAD_ONLY was set.  */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Added support for hashed comparisons to        */
+/*            constants.                                     */
+/*                                                           */
+/*            Added support for hashed alpha memories.       */
 /*                                                           */
 /*************************************************************/
 

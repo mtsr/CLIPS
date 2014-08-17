@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*               EXTERNAL FUNCTION MODULE              */
    /*******************************************************/
@@ -24,8 +24,12 @@
 /*      6.30: Added support for passing context information  */ 
 /*            to user defined functions.                     */
 /*                                                           */
+/*            Support for long long integers.                */
+/*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Converted API macros to function calls.        */
 /*                                                           */
 /*************************************************************/
 
@@ -107,27 +111,6 @@ static void DeallocateExternalFunctionData(
 
 #if (! RUN_TIME)
 
-/************************************************************/
-/* DefineFunction: Used to define a system or user external */
-/*   function so that the KB can access it.                 */
-/************************************************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle int DefineFunction(
-  const char *name,
-  int returnType,
-  int (*pointer)(void),
-  const char *actualName)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-
-   return(DefineFunction3(theEnv,name,returnType,
-                          (int (*)(void *)) pointer,
-                          actualName,NULL,FALSE,NULL));
-  }
-#endif
-
 /***************************************************************/
 /* EnvDefineFunction: Used to define a system or user external */
 /*   function so that the KB can access it.                    */
@@ -156,28 +139,6 @@ globle int EnvDefineFunctionWithContext(
   {
    return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,TRUE,context));
   }
-  
-/*************************************************************/
-/* DefineFunction2: Used to define a system or user external */
-/*   function so that the KB can access it.                  */
-/*************************************************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-globle int DefineFunction2(
-  const char *name,
-  int returnType,
-  int (*pointer)(void),
-  const char *actualName,
-  const char *restrictions)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-
-   return(DefineFunction3(theEnv,name,returnType,
-                          (int (*)(void *)) pointer,
-                          actualName,restrictions,FALSE,NULL));
-  }
-#endif
   
 /*************************************************************/
 /* EnvDefineFunction2: Used to define a system or user external */
@@ -737,3 +698,45 @@ globle int GetMaximumArgs(
    
    return(-1); 
   }
+
+/*#####################################*/
+/* ALLOW_ENVIRONMENT_GLOBALS Functions */
+/*#####################################*/
+
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+#if (! RUN_TIME)
+globle int DefineFunction(
+  const char *name,
+  int returnType,
+  int (*pointer)(void),
+  const char *actualName)
+  {
+   void *theEnv;
+   
+   theEnv = GetCurrentEnvironment();
+
+   return(DefineFunction3(theEnv,name,returnType,
+                          (int (*)(void *)) pointer,
+                          actualName,NULL,FALSE,NULL));
+  }
+
+globle int DefineFunction2(
+  const char *name,
+  int returnType,
+  int (*pointer)(void),
+  const char *actualName,
+  const char *restrictions)
+  {
+   void *theEnv;
+   
+   theEnv = GetCurrentEnvironment();
+
+   return(DefineFunction3(theEnv,name,returnType,
+                          (int (*)(void *)) pointer,
+                          actualName,restrictions,FALSE,NULL));
+  }
+
+#endif /* (! RUN_TIME) */
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */

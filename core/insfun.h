@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/02/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                INSTANCE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -16,6 +16,16 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
+/*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
+/*                                                           */
+/*            Changed name of variable log to logName        */
+/*            because of Unix compiler warnings of shadowed  */
+/*            definitions.                                   */
+/*                                                           */
+/*            Changed name of variable exp to theExp         */
+/*            because of Unix compiler warnings of shadowed  */
+/*            definitions.                                   */
+/*                                                           */
 /*      6.24: Link error occurs for the SlotExistError       */
 /*            function when OBJECT_SYSTEM is set to 0 in     */
 /*            setup.h. DR0865                                */
@@ -28,12 +38,24 @@
 /*            Moved EvaluateAndStoreInDataObject to          */
 /*            evaluatn.c                                     */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Support for long long integers.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
-/*************************************************************/
+/*            Fixed slot override default ?NONE bug.         */
+/*                                                           */
+//*************************************************************/
 
 #ifndef _H_insfun
 #define _H_insfun
@@ -111,7 +133,7 @@ typedef struct igarbage
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
-#endif
+#endif /* _H_insfun */
 
 
 

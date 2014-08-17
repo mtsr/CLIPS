@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  05/17/06          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -20,6 +20,17 @@
 /*            DEFRULE_CONSTRUCT.                             */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Support for long long integers.                */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Added support for hashed alpha memories.       */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -193,7 +204,6 @@ struct objectReteData
 
 #define ObjectReteData(theEnv) ((struct objectReteData *) GetEnvironmentData(theEnv,OBJECT_RETE_DATA))
 
-
 #ifdef LOCALE
 #undef LOCALE
 #endif
@@ -204,12 +214,12 @@ struct objectReteData
 #define LOCALE extern
 #endif
 
-LOCALE void InstallObjectPrimitives(void *);
-LOCALE intBool ObjectCmpConstantFunction(void *,void *,DATA_OBJECT *);
+   LOCALE void                    InstallObjectPrimitives(void *);
+   LOCALE intBool                 ObjectCmpConstantFunction(void *,void *,DATA_OBJECT *);
 
-#endif
+#endif /* DEFRULE_CONSTRUCT && OBJECT_SYSTEM */
 
-#endif
+#endif /* _H_objrtfnx */
 
 
 

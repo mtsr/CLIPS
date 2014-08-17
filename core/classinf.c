@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*        CLASS INFO PROGRAMMATIC ACCESS MODULE        */
    /*******************************************************/
@@ -15,6 +15,7 @@
 /* Contributing Programmer(s):                                */
 /*                                                            */
 /* Revision History:                                          */
+/*                                                            */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859   */
 /*                                                            */
 /*            Changed name of variable exp to theExp          */
@@ -28,11 +29,16 @@
 /*                                                            */
 /*            Renamed BOOLEAN macro type to intBool.          */
 /*                                                            */
-/*      6.30: Added const qualifiers to remove C++            */
+/*      6.30: Borland C (IBM_TBC) and Metrowerks CodeWarrior  */
+/*            (MAC_MCW, IBM_MCW) are no longer supported.     */
+/*                                                            */
+/*            Changed integer type/precision.                 */
+/*                                                            */
+/*            Added const qualifiers to remove C++            */
 /*            deprecation warnings.                           */
 /*                                                            */
-/*            Converted API macros to function calls.        */
-/*                                                           */
+/*            Converted API macros to function calls.         */
+/*                                                            */
 /**************************************************************/
 
 /* =========================================

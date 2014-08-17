@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*          DEFTEMPLATE UTILITIES HEADER FILE          */
    /*******************************************************/
@@ -16,6 +16,9 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
+/*      6.23: Added support for templates maintaining their  */
+/*            own list of facts.                             */
+/*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*            Added additional arguments to                  */
@@ -24,7 +27,11 @@
 /*            Added additional arguments to                  */
 /*            PrintTemplateFact function.                    */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Support for long long integers.                */
+/*                                                           */
+/*            Used gensprintf instead of sprintf.            */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -71,7 +78,7 @@
    LOCALE struct templateSlot           *FindSlot(struct deftemplate *,struct symbolHashNode *,short *);
    LOCALE struct deftemplate            *CreateImpliedDeftemplate(void *,SYMBOL_HN *,int);
 
-#endif
+#endif /* _H_tmpltutl */
 
 
 

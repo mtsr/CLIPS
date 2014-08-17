@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*             DEFRULE COMMANDS HEADER FILE            */
    /*******************************************************/
@@ -20,17 +20,30 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*      6.24: Removed CONFLICT_RESOLUTION_STRATEGIES         */
+/*            INCREMENTAL_RESET, and LOGICAL_DEPENDENCIES    */
+/*            compilation flags.                             */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW and       */
+/*            MAC_MCW).                                      */
+/*                                                           */
+/*            Added support for hashed memories.             */
 /*                                                           */
 /*            Improvements to matches command.               */
 /*                                                           */
 /*            Add join-activity and join-activity-reset      */
 /*            commands.                                      */
 /*                                                           */
-/*            Added get-join-hashing and set-join-hashing    */
-/*            functions.                                     */
+/*            Added get-beta-memory-resizing and             */
+/*            set-beta-memory-resizing functions.            */
+/*                                                           */
+/*            Added timetag function.                        */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */

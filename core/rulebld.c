@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/21/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                  RULE BUILD MODULE                  */
    /*******************************************************/
@@ -26,7 +26,9 @@
 /*                                                           */
 /*            Corrected code to remove compiler warnings.    */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Changes to constructing join network.          */
+/*                                                           */
+/*            Added support for hashed memories.             */
 /*                                                           */
 /*************************************************************/
 

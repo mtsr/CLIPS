@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.20  01/31/02            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*        FACT RETE FUNCTION GENERATION HEADER FILE    */
    /*******************************************************/
@@ -15,6 +15,11 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.30: Support for performance optimizations.         */
+/*                                                           */
+/*            Increased maximum values for pattern/slot      */
+/*            indices.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -222,4 +227,4 @@ struct factCheckLengthPNCall
    LOCALE struct expr               *FactGenCheckLength(void *,struct lhsParseNode *);
    LOCALE struct expr               *FactGenCheckZeroLength(void *,unsigned);
 
-#endif
+#endif /* _H_factgen */

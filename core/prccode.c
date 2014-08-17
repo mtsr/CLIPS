@@ -1,36 +1,48 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
 
-/***************************************************************/
-/* Purpose: Procedural Code Support Routines for Deffunctions, */
-/*          Generic Function Methods,Message-Handlers          */
-/*          and Rules                                          */
-/*                                                             */
-/* Principal Programmer(s):                                    */
-/*      Brian L. Dantes                                        */
-/*                                                             */
-/* Contributing Programmer(s):                                 */
-/*                                                             */
-/* Revision History:                                           */
-/*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859    */
-/*                                                             */
-/*            Changed name of variable log to logName          */
-/*            because of Unix compiler warnings of shadowed    */
-/*            definitions.                                     */
-/*                                                             */
-/*      6.24: Renamed BOOLEAN macro type to intBool.           */
-/*                                                             */
-/*            Added pragmas to remove compilation warnings.    */
-/*                                                             */
-/*      6.30: Added const qualifiers to remove C++             */
-/*            deprecation warnings.                            */
-/*                                                             */
-/***************************************************************/
+/**************************************************************/
+/* Purpose: Procedural Code Support Routines for              */
+/*          Deffunctions, Generic Function Methods,           */
+/*          Message-Handlersand Rules                         */
+/*                                                            */
+/* Principal Programmer(s):                                   */
+/*      Brian L. Dantes                                       */
+/*                                                            */
+/* Contributing Programmer(s):                                */
+/*                                                            */
+/* Revision History:                                          */
+/*                                                            */
+/*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859   */
+/*                                                            */
+/*            Changed name of variable log to logName         */
+/*            because of Unix compiler warnings of shadowed   */
+/*            definitions.                                    */
+/*                                                            */
+/*      6.24: Renamed BOOLEAN macro type to intBool.          */
+/*                                                            */
+/*            Added pragmas to remove compilation warnings.   */
+/*                                                            */
+/*      6.30: Updated ENTITY_RECORD definitions to include    */
+/*            additional NULL initializers.                   */
+/*                                                            */
+/*            Added ReleaseProcParameters call.               */
+/*                                                            */
+/*            Added tracked memory calls.                     */
+/*                                                            */
+/*            Removed conditional code for unsupported        */
+/*            compilers/operating systems (IBM_MCW,           */
+/*            MAC_MCW, and IBM_TBC).                          */
+/*                                                            */
+/*            Added const qualifiers to remove C++            */
+/*            deprecation warnings.                           */
+/*                                                            */
+/**************************************************************/
 
 /* =========================================
    *****************************************

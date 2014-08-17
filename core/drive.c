@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/21/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                    DRIVE MODULE                     */
    /*******************************************************/
@@ -17,6 +17,7 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*      6.24: Removed INCREMENTAL_RESET and                  */
@@ -27,7 +28,7 @@
 /*            Rule with exists CE has incorrect activation.  */
 /*            DR0867                                         */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.       */
+/*      6.30: Added support for hashed memories.             */
 /*                                                           */
 /*            Added additional developer statistics to help  */
 /*            analyze join network performance.              */

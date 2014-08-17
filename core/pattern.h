@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                PATTERN HEADER FILE                  */
    /*******************************************************/
@@ -24,7 +24,9 @@
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Added support for hashed alpha memories.       */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -173,7 +175,7 @@ struct patternData
    LOCALE intBool                        RemoveHashedPatternNode(void *,void *,void *,unsigned short,void *);
    LOCALE void                          *FindHashedPatternNode(void *,void *,unsigned short,void *);
 
-#endif
+#endif /* _H_pattern */
 
 
 

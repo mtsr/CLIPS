@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -16,9 +16,20 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*      6.23: Changed name of variable log to logName        */
+/*            because of Unix compiler warnings of shadowed  */
+/*            definitions.                                   */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.24: Removed IMPERATIVE_MESSAGE_HANDLERS and        */
+/*            AUXILIARY_MESSAGE_HANDLERS compilation flags.  */
+/*                                                           */
+/*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Support for long long integers.                */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -94,7 +105,7 @@ typedef struct handlerSlotReference
    LOCALE void             WatchHandler(void *,const char *,HANDLER_LINK *,const char *);
 #endif
 
-#endif
+#endif /* _H_msgfun */
 
 
 

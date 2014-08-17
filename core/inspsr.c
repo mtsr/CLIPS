@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  07/25/14           */
+   /*              CLIPS Version 6.30  08/16/14           */
    /*                                                     */
    /*                INSTANCE PARSER MODULE               */
    /*******************************************************/
@@ -15,6 +15,7 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859  */
 /*                                                           */
 /*            Changed name of variable exp to theExp         */
@@ -25,6 +26,8 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Fixed ParseSlotOverrides memory release issue. */
 /*                                                           */
 /*************************************************************/
 

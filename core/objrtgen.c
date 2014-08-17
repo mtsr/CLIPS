@@ -1,30 +1,34 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.24  05/17/06          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*    INFERENCE ENGINE OBJECT PARSING ROUTINES MODULE  */
    /*******************************************************/
 
-/**************************************************************/
-/* Purpose: RETE Network Parsing Interface for Objects        */
-/*                                                            */
-/* Principal Programmer(s):                                   */
-/*      Brian L. Dantes                                       */
-/*                                                            */
-/* Contributing Programmer(s):                                */
-/*                                                            */
-/* Revision History:                                          */
-/*      6.23: Changed name of variable exp to theExp          */
-/*            because of Unix compiler warnings of shadowed   */
-/*            definitions.                                    */
-/*                                                            */
-/*      6.24: Converted INSTANCE_PATTERN_MATCHING to          */
-/*            DEFRULE_CONSTRUCT.                              */
-/*                                                            */
-/*            Renamed BOOLEAN macro type to intBool.          */
-/*                                                            */
-/**************************************************************/
+/*************************************************************/
+/* Purpose: RETE Network Parsing Interface for Objects       */
+/*                                                           */
+/* Principal Programmer(s):                                  */
+/*      Brian L. Dantes                                      */
+/*                                                           */
+/* Contributing Programmer(s):                               */
+/*                                                           */
+/* Revision History:                                         */
+/*                                                           */
+/*      6.23: Changed name of variable exp to theExp         */
+/*            because of Unix compiler warnings of shadowed  */
+/*            definitions.                                   */
+/*                                                           */
+/*      6.24: Converted INSTANCE_PATTERN_MATCHING to         */
+/*            DEFRULE_CONSTRUCT.                             */
+/*                                                           */
+/*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Added support for hashed memories and other    */
+/*            join network changes.                          */
+/*                                                           */
+/*************************************************************/
 /* =========================================
    *****************************************
                EXTERNAL DEFINITIONS

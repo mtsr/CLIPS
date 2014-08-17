@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*             CONSTRAINT PARSER HEADER FILE           */
    /*******************************************************/
@@ -16,11 +16,18 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
+/*      6.23: Changed name of variable exp to theExp         */
+/*            because of Unix compiler warnings of shadowed  */
+/*            definitions.                                   */
+/*                                                           */
 /*      6.24: Added allowed-classes slot facet.              */
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Used gensprintf instead of sprintf.            */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -73,9 +80,9 @@ typedef struct constraintParseRecord CONSTRAINT_PARSE_RECORD;
                                                            CONSTRAINT_RECORD *,CONSTRAINT_RECORD *);
    LOCALE void                           OverlayConstraintParseRecord(CONSTRAINT_PARSE_RECORD *,
                                                                       CONSTRAINT_PARSE_RECORD *);
-#endif
+#endif /* (! RUN_TIME) && (! BLOAD_ONLY) */
 
-#endif
+#endif /* _H_cstrnpsr */
 
 
 

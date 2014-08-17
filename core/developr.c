@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/05/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                   DEVELOPER MODULE                  */
    /*******************************************************/
@@ -22,6 +22,12 @@
 /*            DEFRULE_CONSTRUCT.                             */
 /*                                                           */
 /*      6.30: Added support for hashed alpha memories.       */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*            Functions enable-gc-heuristics and             */
+/*            disable-gc-heuristics are no longer supported. */
+/*                                                           */
+/*            Changed integer type/precision.                */
 /*                                                           */
 /*            Added const qualifiers and type casts to       */
 /*            remove C++ warnings.                           */

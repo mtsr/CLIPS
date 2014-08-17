@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  10/19/06            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*           DEFRULE BSAVE/BLOAD HEADER FILE           */
    /*******************************************************/
@@ -18,8 +18,18 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added support for hashed alpha memories.        */
-/*                                                            */
+/*      6.24: Removed CONFLICT_RESOLUTION_STRATEGIES,        */
+/*            DYNAMIC_SALIENCE, and LOGICAL_DEPENDENCIES     */
+/*            compilation flags.                             */
+/*                                                           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Added support for alpha memories.              */
+/*                                                           */
+/*            Added salience groups to improve performance   */
+/*            with large numbers of activations of different */
+/*            saliences.                                     */
+/*                                                           */
 /*************************************************************/
 
 #if (! RUN_TIME)
@@ -135,8 +145,9 @@ struct defruleBinaryData
                                                                         struct patternNodeHeader *);
    LOCALE void                          *BloadDefruleModuleReference(void *,int);
 
-#endif
-#endif
+#endif /* _H_rulebin */ 
+
+#endif /* (! RUN_TIME) */
 
 
 

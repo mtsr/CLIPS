@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/05/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                  SETUP HEADER FILE                  */
    /*******************************************************/
@@ -20,6 +20,7 @@
 /* Contributing Programmer(s):                               */
 /*                                                           */
 /* Revision History:                                         */
+/*                                                           */
 /*      6.24: Default locale modification.                   */
 /*                                                           */
 /*            Removed CONFLICT_RESOLUTION_STRATEGIES,        */
@@ -33,7 +34,26 @@
 /*                                                           */
 /*            Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Used #ifndef for preprocessor definitions so   */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_MCW,          */
+/*            MAC_MCW, IBM_ICB, IBM_TBC, IBM_ZTC, and        */
+/*            IBM_SC).                                       */
+/*                                                           */
+/*            Renamed IBM_MSC and WIN_MVC compiler flags     */
+/*            and IBM_GCC to WIN_GCC.                        */
+/*                                                           */
+/*            Added LINUX and DARWIN compiler flags.         */
+/*                                                           */
+/*            Removed HELP_FUNCTIONS compilation flag and    */
+/*            associated functionality.                      */
+/*                                                           */
+/*            Removed EMACS_EDITOR compilation flag and      */
+/*            associated functionality.                      */
+/*                                                           */
+/*            Combined BASIC_IO and EXT_IO compilation       */
+/*            flags into the single IO_FUNCTIONS flag.       */
+/*                                                           */
+/*            Used #ifndef for preprocessor definitions so   */
 /*            they can be set at the project or makefile     */
 /*            level.                                         */
 /*                                                           */

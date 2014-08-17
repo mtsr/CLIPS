@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*            EXTERNAL FUNCTIONS HEADER FILE           */
    /*******************************************************/
@@ -22,8 +22,13 @@
 /*      6.30: Added support for passing context information  */ 
 /*            to user defined functions.                     */
 /*                                                           */
+/*            Support for long long integers.                */
+/*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Replaced ALLOW_ENVIRONMENT_GLOBALS macros      */
+/*            with functions.                                */
 /*                                                           */
 /*************************************************************/
 
@@ -100,9 +105,6 @@ struct FunctionHash
 #define SIZE_FUNCTION_HASH 517
 #endif
 
-   LOCALE int                            DefineFunction(const char *,int,int (*)(void),const char *);
-   LOCALE int                            DefineFunction2(const char *,int,int (*)(void),const char *,const char *);
-
    LOCALE void                           InitializeExternalFunctionData(void *);
    LOCALE int                            EnvDefineFunction(void *,const char *,int,
                                                            int (*)(void *),const char *);
@@ -127,7 +129,16 @@ struct FunctionHash
    LOCALE int                            GetMinimumArgs(struct FunctionDefinition *);
    LOCALE int                            GetMaximumArgs(struct FunctionDefinition *);
 
-#endif
+#if ALLOW_ENVIRONMENT_GLOBALS
+
+#if (! RUN_TIME)
+   LOCALE int                            DefineFunction(const char *,int,int (*)(void),const char *);
+   LOCALE int                            DefineFunction2(const char *,int,int (*)(void),const char *,const char *);
+#endif /* (! RUN_TIME) */
+
+#endif /* ALLOW_ENVIRONMENT_GLOBALS */
+
+#endif /* _H_extnfunc */
 
 
 

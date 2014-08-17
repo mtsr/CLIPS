@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*              COMMAND LINE HEADER FILE               */
    /*******************************************************/
@@ -23,7 +23,30 @@
 /*            additional functions for use by an interface   */
 /*            layered on top of CLIPS.                       */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Local variables set with the bind function     */
+/*            persist until a reset/clear command is issued. */
+/*                                                           */
+/*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Metrowerks CodeWarrior (MAC_MCW, IBM_MCW) is   */
+/*            no longer supported.                           */
+/*                                                           */
+/*            UTF-8 support.                                 */
+/*                                                           */
+/*            Command history and editing support            */
+/*                                                           */
+/*            Used genstrcpy instead of strcpy.              */
+/*                                                           */             
+/*            Added before command execution callback        */
+/*            function.                                      */
+/*                                                           */  
+/*            Fixed RouteCommand return value.               */           
+/*                                                           */             
+/*            Added AwaitingInput flag.                      */
+/*                                                           */             
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/

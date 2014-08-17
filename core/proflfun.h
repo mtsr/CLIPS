@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14             */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*      CONSTRUCT PROFILING FUNCTIONS HEADER FILE      */
    /*******************************************************/
@@ -16,9 +16,25 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
+/*      6.23: Modified OutputProfileInfo to allow a before   */
+/*            and after prefix so that a string buffer does  */
+/*            not need to be created to contain the entire   */
+/*            prefix. This allows a buffer overflow problem  */
+/*            to be corrected. DR0857.                       */
+/*                                                           */
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*            Added pragmas to remove compilation warnings.  */
+/*                                                           */
+/*            Corrected code to remove run-time program      */
+/*            compiler warnings.                             */
+/*                                                           */
+/*      6.30: Used gensprintf instead of sprintf.            */
+/*                                                           */
+/*            Removed conditional code for unsupported       */
+/*            compilers/operating systems (IBM_TBC).         */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -96,6 +112,6 @@ struct profileFunctionData
    LOCALE void                          *CreateProfileData(void *);
    LOCALE const char                    *SetProfileOutputString(void *,const char *);
 
-#endif
+#endif /* _H_proflfun */
 
 

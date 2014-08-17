@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*                 SCANNER HEADER FILE                 */
    /*******************************************************/
@@ -17,7 +17,15 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added const qualifiers to remove C++           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Support for long long integers.                */
+/*                                                           */
+/*            Added SetLineCount function.                   */
+/*                                                           */
+/*            Added UTF-8 support.                           */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
 /*************************************************************/
@@ -70,7 +78,7 @@ struct scannerData
    LOCALE void                           IncrementLineCount(void *);
    LOCALE void                           DecrementLineCount(void *);
 
-#endif
+#endif /* _H_scanner */
 
 
 

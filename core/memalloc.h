@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/02/14            */
+   /*             CLIPS Version 6.30  08/16/14            */
    /*                                                     */
    /*            MEMORY ALLOCATION HEADER FILE            */
    /*******************************************************/
@@ -16,9 +16,21 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.24: Renamed BOOLEAN macro type to intBool.         */
+/*      6.24: Removed HaltExecution check from the           */
+/*            EnvReleaseMem function. DR0863                 */
 /*                                                           */
-/*      6.30: Added get_mem and rtn_mem macros.              */
+/*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*            Corrected code to remove compiler warnings.    */
+/*                                                           */
+/*      6.30: Removed conditional code for unsupported       */
+/*            compilers/operating systems.                   */
+/*                                                           */
+/*            Changed integer type/precision.                */
+/*                                                           */
+/*            Removed genlongalloc/genlongfree functions.    */
+/*                                                           */
+/*            Added get_mem and rtn_mem macros.              */
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */

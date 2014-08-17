@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  07/25/14          */
+   /*               CLIPS Version 6.30  08/16/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -16,12 +16,25 @@
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
-/*      6.30: Added support to allow CreateClassScopeMap to  */
-/*            be used by other functions.                    */
-/*                                                           */
-/*            Added const qualifiers to remove C++           */
-/*            deprecation warnings.                          */
-/*                                                           */
+/*      6.24: Added allowed-classes slot facet.               */
+/*                                                            */
+/*            Converted INSTANCE_PATTERN_MATCHING to          */
+/*            DEFRULE_CONSTRUCT.                              */
+/*                                                            */
+/*            Renamed BOOLEAN macro type to intBool.          */
+/*                                                            */
+/*      6.30: Added support to allow CreateClassScopeMap to   */
+/*            be used by other functions.                     */
+/*                                                            */
+/*            Changed integer type/precision.                 */
+/*                                                            */
+/*            GetConstructNameAndComment API change.          */
+/*                                                            */
+/*            Added const qualifiers to remove C++            */
+/*            deprecation warnings.                           */
+/*                                                            */
+/*            Converted API macros to function calls.         */
+/*                                                            */
 /*************************************************************/
 
 #ifndef _H_classpsr
