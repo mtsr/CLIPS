@@ -55,7 +55,7 @@
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE intBool                        GetResetGlobals();
+   LOCALE intBool                        GetResetGlobals(void);
    LOCALE intBool                        SetResetGlobals(int);
 #if DEBUGGING_FUNCTIONS
    LOCALE void                           ShowDefglobals(const char *,void *);

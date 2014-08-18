@@ -631,7 +631,6 @@ static void BetaJoinsDriver(
    
    if (theJoin->joinFromTheRight)
      {
-      tmpPtr = (struct joinNode *) theJoin->rightSideEntryStructure;
       BetaJoinsDriver(theEnv,(struct joinNode *) theJoin->rightSideEntryStructure,betaIndex-1,theJoinInfoArray,theJoin->rightMemory,theJoin);
      }
    else if (theJoin->lastLevel != NULL)
@@ -794,9 +793,6 @@ static const char *BetaHeaderString(
    long lastIndex;
    char buffer[32];
    
-   theInfo = &infoArray[joinIndex];
-   theJoin = theInfo->theJoin;
-
    /*=============================================*/
    /* Determine which joins need to be traversed. */
    /*=============================================*/
@@ -804,6 +800,7 @@ static const char *BetaHeaderString(
    for (i = 0; i < arraySize; i++)
      { infoArray[i].marked = FALSE; }
      
+   theInfo = &infoArray[joinIndex];
    theJoin = theInfo->theJoin;
    lastIndex = joinIndex;
    
@@ -920,7 +917,6 @@ static long long ListBetaMatches(
   int output)
   {
    long betaCount = 0;
-   struct joinNode *theJoin;
    struct joinInformation *theInfo;
    long int count;
 
@@ -929,8 +925,6 @@ static long long ListBetaMatches(
 
    theInfo = &infoArray[joinIndex];
    
-   theJoin = theInfo->theJoin;
-
    if (output == VERBOSE)
      {
       EnvPrintRouter(theEnv,WDISPLAY,"Partial matches for CEs ");
@@ -1140,9 +1134,6 @@ static const char *ActivityHeaderString(
    long lastIndex;
    char buffer[32];
    
-   theInfo = &infoArray[joinIndex];
-   theJoin = theInfo->theJoin;
-
    /*=============================================*/
    /* Determine which joins need to be traversed. */
    /*=============================================*/
@@ -1150,6 +1141,7 @@ static const char *ActivityHeaderString(
    for (i = 0; i < arraySize; i++)
      { infoArray[i].marked = FALSE; }
      
+   theInfo = &infoArray[joinIndex];
    theJoin = theInfo->theJoin;
    lastIndex = joinIndex;
 

@@ -140,7 +140,7 @@ struct defglobalModule
    LOCALE char                          *GetDefglobalPPForm(void *);
    LOCALE intBool                        GetDefglobalValue(const char *,DATA_OBJECT_PTR);
    LOCALE void                           GetDefglobalValueForm(char *,unsigned,void *);
-   LOCALE int                            GetGlobalsChanged();
+   LOCALE int                            GetGlobalsChanged(void);
    LOCALE void                          *GetNextDefglobal(void *);
    LOCALE intBool                        IsDefglobalDeletable(void *);
    LOCALE intBool                        SetDefglobalValue(const char *,DATA_OBJECT_PTR);

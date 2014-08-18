@@ -119,12 +119,6 @@ struct routerData
                                                    int (*)(void *,const char *),
                                                    int (*)(void *,int,const char *),
                                                    int (*)(void *,int));
-   LOCALE intBool                        AddRouter(const char *,int,
-                                                   int (*)(const char *),
-                                                   int (*)(const char *,const char *),
-                                                   int (*)(const char *),
-                                                   int (*)(int,const char *),
-                                                   int (*)(int));
    LOCALE int                            EnvDeleteRouter(void *,const char *);
    LOCALE int                            QueryRouters(void *,const char *);
    LOCALE int                            EnvDeactivateRouter(void *,const char *);

@@ -111,7 +111,7 @@ struct joinInformation
    LOCALE void                           Matches(void *,int,DATA_OBJECT *);
    LOCALE void                           JoinActivity(void *,int,DATA_OBJECT *);
 #endif
-   LOCALE intBool                        GetBetaMemoryResizing();
+   LOCALE intBool                        GetBetaMemoryResizing(void);
    LOCALE intBool                        SetBetaMemoryResizing(int);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

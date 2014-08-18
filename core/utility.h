@@ -176,8 +176,8 @@ struct utilityData
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE void                           IncrementGCLocks();
-   LOCALE void                           DecrementGCLocks();
+   LOCALE void                           IncrementGCLocks(void);
+   LOCALE void                           DecrementGCLocks(void);
    LOCALE intBool                        RemovePeriodicFunction(const char *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

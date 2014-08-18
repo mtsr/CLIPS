@@ -93,7 +93,7 @@ typedef struct saved_contexts
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    LOCALE intBool                        SetSequenceOperatorRecognition(int);
-   LOCALE intBool                        GetSequenceOperatorRecognition();
+   LOCALE intBool                        GetSequenceOperatorRecognition(void);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

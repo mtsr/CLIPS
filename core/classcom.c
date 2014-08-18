@@ -984,14 +984,14 @@ globle void SetDefclassWatchInstances(
   unsigned newState,
   void *theClass)
   {
-   return EnvSetDefclassWatchInstances(GetCurrentEnvironment(),newState,theClass);
+   EnvSetDefclassWatchInstances(GetCurrentEnvironment(),newState,theClass);
   }
 
 globle void SetDefclassWatchSlots(
   unsigned newState,
   void *theClass)
   {
-   return EnvSetDefclassWatchSlots(GetCurrentEnvironment(),newState,theClass);
+   EnvSetDefclassWatchSlots(GetCurrentEnvironment(),newState,theClass);
   }
 
 #endif /* DEBUGGING_FUNCTIONS */

@@ -673,7 +673,7 @@ globle void FactSlotNames(
   void *vTheFact,
   DATA_OBJECT *returnValue)
   {
-   return EnvFactSlotNames(GetCurrentEnvironment(),vTheFact,returnValue);
+   EnvFactSlotNames(GetCurrentEnvironment(),vTheFact,returnValue);
   }
 
 globle void GetFactList(

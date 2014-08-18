@@ -117,7 +117,6 @@ globle int VariableAnalysis(
   struct lhsParseNode *patternPtr)
   {
    int errorFlag = FALSE;
-   struct lhsParseNode *topNode;
    struct nandFrame *theNandFrames = NULL, *tempNandPtr;
    int currentDepth = 1;
 
@@ -129,7 +128,6 @@ globle int VariableAnalysis(
    /* previously bound).                                   */
    /*======================================================*/
 
-   topNode = patternPtr;
    while (patternPtr != NULL)
      {
       /*==================================*/

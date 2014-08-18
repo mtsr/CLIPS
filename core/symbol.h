@@ -311,8 +311,8 @@ struct symbolData
    LOCALE void                          *AddDouble(double);
    LOCALE void                          *AddLong(long long);
    LOCALE void                          *AddSymbol(const char *);
-   LOCALE void                          *FalseSymbol();
-   LOCALE void                          *TrueSymbol();
+   LOCALE void                          *FalseSymbol(void);
+   LOCALE void                          *TrueSymbol(void);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

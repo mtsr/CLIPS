@@ -195,8 +195,8 @@ struct constructData
 
    LOCALE intBool                        AddClearFunction(const char *,void (*)(void),int);
    LOCALE intBool                        AddResetFunction(const char *,void (*)(void),int);
-   LOCALE void                           Clear();
-   LOCALE void                           Reset();
+   LOCALE void                           Clear(void);
+   LOCALE void                           Reset(void);
    LOCALE intBool                        RemoveClearFunction(const char *);
    LOCALE intBool                        RemoveResetFunction(const char *);
 #if (! RUN_TIME) && (! BLOAD_ONLY)

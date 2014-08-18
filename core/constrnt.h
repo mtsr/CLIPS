@@ -127,9 +127,9 @@ struct constraintData
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    LOCALE intBool                        SetDynamicConstraintChecking(int);
-   LOCALE intBool                        GetDynamicConstraintChecking();
+   LOCALE intBool                        GetDynamicConstraintChecking(void);
    LOCALE intBool                        SetStaticConstraintChecking(int);
-   LOCALE intBool                        GetStaticConstraintChecking();
+   LOCALE intBool                        GetStaticConstraintChecking(void);
 
 #endif
 

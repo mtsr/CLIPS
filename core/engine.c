@@ -1561,7 +1561,7 @@ globle void SetFocusChanged(
 globle void ListFocusStack(
   const char *logicalName)
   {
-   return EnvListFocusStack(GetCurrentEnvironment(),logicalName);
+   EnvListFocusStack(GetCurrentEnvironment(),logicalName);
   }
 
 globle intBool DefruleHasBreakpoint(
