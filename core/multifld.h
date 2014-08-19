@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/19/14            */
    /*                                                     */
    /*                MULTIFIELD HEADER FILE               */
    /*******************************************************/
@@ -35,6 +35,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Fixed issue with StoreInMultifield when        */
+/*            asserting void values in implied deftemplate   */
+/*            facts.                                         */
 /*                                                           */
 /*************************************************************/
 
@@ -92,7 +96,6 @@ typedef struct field * FIELD_PTR;
 #define LOCALE extern
 #endif
 
-   LOCALE void                           InitializeMultifieldData(void *);
    LOCALE void                          *CreateMultifield2(void *,long);
    LOCALE void                           ReturnMultifield(void *,struct multifield *);
    LOCALE void                           MultifieldInstall(void *,struct multifield *);

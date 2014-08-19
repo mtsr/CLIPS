@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/19/14            */
    /*                                                     */
    /*                  MULTIFIELD MODULE                  */
    /*******************************************************/
@@ -36,6 +36,10 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Fixed issue with StoreInMultifield when        */
+/*            asserting void values in implied deftemplate   */
+/*            facts.                                         */
+/*                                                           */
 /*************************************************************/
 
 #define _MULTIFLD_SOURCE_
@@ -59,41 +63,6 @@
 
 #include "multifld.h"
 
-/***************************************/
-/* LOCAL INTERNAL FUNCTION DEFINITIONS */
-/***************************************/
-
-   //static void                    DeallocateMultifieldData(void *);
-
-/***************************************************/
-/* InitializeMultifieldData: Allocates environment */
-/*    data for multifield values.                  */
-/***************************************************/
-globle void InitializeMultifieldData(
-  void *theEnv)
-  {
-   //AllocateEnvironmentData(theEnv,MULTIFIELD_DATA,sizeof(struct multifieldData),DeallocateMultifieldData);
-  }
-
-/*****************************************************/
-/* DeallocateMultifieldData: Deallocates environment */
-/*    data for multifield values.                    */
-/*****************************************************/
-/*
-static void DeallocateMultifieldData(
-  void *theEnv)
-  {
-   struct multifield *tmpPtr, *nextPtr; 
-   
-   tmpPtr = MultifieldData(theEnv)->ListOfMultifields;
-   while (tmpPtr != NULL)
-     {
-      nextPtr = tmpPtr->next;
-      ReturnMultifield(theEnv,tmpPtr);
-      tmpPtr = nextPtr;
-     }
-  }
-*/
 /**********************/
 /* CreateMultifield2: */
 /**********************/
@@ -440,7 +409,6 @@ globle void StoreInMultifield(
       SetpValue(returnValue,(void *) theMultifield);
       return;
      }
-
    else
      {
       /*========================================*/
@@ -450,7 +418,8 @@ globle void StoreInMultifield(
 
       val_arr = (DATA_OBJECT *) gm3(theEnv,(long) sizeof(DATA_OBJECT) * argCount);
       seg_size = 0;
-      for(i = 1 ; i <= argCount ; i++ , expptr = expptr->nextArg)
+      
+      for (i = 1; i <= argCount; i++, expptr = expptr->nextArg)
         {
          EvaluateExpression(theEnv,expptr,&val_ptr);
          if (EvaluationData(theEnv)->EvaluationError)
@@ -497,20 +466,20 @@ globle void StoreInMultifield(
       /* Copy each argument into new segment.  */
       /*========================================*/
 
-      for(k=0,j=1; k < argCount;k++)
+      for (k = 0, j = 1; k < argCount; k++)
         {
          if (GetpType(val_arr+k) == MULTIFIELD)
            {
             start = GetpDOBegin(val_arr+k);
             end = GetpDOEnd(val_arr+k);
             orig_ptr = (struct multifield *) GetpValue(val_arr+k);
-            for(i=start; i< end + 1; i++,j++)
+            for (i = start; i < end + 1; i++, j++)
               {
                SetMFType(theMultifield,j,(GetMFType(orig_ptr,i)));
                SetMFValue(theMultifield,j,(GetMFValue(orig_ptr,i)));
               }
            }
-         else if (GetpType(val_arr+k) != MULTIFIELD)
+         else if (GetpType(val_arr+k) != RVOID)
            {
             SetMFType(theMultifield,j,(short) (GetpType(val_arr+k)));
             SetMFValue(theMultifield,j,(GetpValue(val_arr+k)));

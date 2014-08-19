@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/19/14            */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -332,7 +332,6 @@ globle void EnvInitializeEnvironment(
    InitializeConstructData(theEnvironment);
    InitializeEvaluationData(theEnvironment);
    InitializeExternalFunctionData(theEnvironment);
-   InitializeMultifieldData(theEnvironment);
    InitializePrettyPrintData(theEnvironment);
    InitializePrintUtilityData(theEnvironment);
    InitializeScannerData(theEnvironment);
