@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/20/14            */
    /*                                                     */
    /*                FACT COMMANDS MODULE                 */
    /*******************************************************/
@@ -36,6 +36,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Added code to prevent a clear command from     */
+/*            being executed during fact assertions via      */
+/*            Increment/DecrementClearReadyLocks API.        */
 /*                                                           */
 /*************************************************************/
 
@@ -189,6 +193,8 @@ globle void AssertCommand(
    /* the newly created fact.                           */
    /*===================================================*/
 
+   EnvIncrementClearReadyLocks(theEnv);
+
    theField = newFact->theProposition.theFields;
 
    for (theExpression = theExpression->nextArg, i = 0;
@@ -228,6 +234,8 @@ globle void AssertCommand(
 
       if (slotPtr != NULL) slotPtr = slotPtr->next;
      }
+     
+   EnvDecrementClearReadyLocks(theEnv);
 
    /*============================================*/
    /* If an error occured while generating the   */

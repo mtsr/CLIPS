@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/20/14            */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -54,6 +54,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Added code to prevent a clear command from     */
+/*            being executed during fact assertions via      */
+/*            Increment/DecrementClearReadyLocks API.        */
 /*                                                           */
 /*************************************************************/
 
@@ -209,7 +213,9 @@ static void DuplicateModifyCommand(
    /*==================================================*/
 
    testPtr = GetFirstArgument();
+   EnvIncrementClearReadyLocks(theEnv);
    EvaluateExpression(theEnv,testPtr,&computeResult);
+   EnvDecrementClearReadyLocks(theEnv);
 
    /*==============================================================*/
    /* If an integer is supplied, then treat it as a fact-index and */
@@ -357,9 +363,11 @@ static void DuplicateModifyCommand(
          /*===================================================*/
          /* Evaluate the expression to be stored in the slot. */
          /*===================================================*/
-
+         
+         EnvIncrementClearReadyLocks(theEnv);
          EvaluateExpression(theEnv,testPtr->argList,&computeResult);
          SetEvaluationError(theEnv,FALSE);
+         EnvDecrementClearReadyLocks(theEnv);
 
          /*====================================================*/
          /* If the expression evaluated to a multifield value, */
@@ -394,8 +402,10 @@ static void DuplicateModifyCommand(
          /* Determine the new value of the slot. */
          /*======================================*/
 
+         EnvIncrementClearReadyLocks(theEnv);
          StoreInMultifield(theEnv,&computeResult,testPtr->argList,FALSE);
          SetEvaluationError(theEnv,FALSE);
+         EnvDecrementClearReadyLocks(theEnv);
 
          /*=============================*/
          /* Store the value in the slot */

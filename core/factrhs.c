@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/20/14            */
    /*                                                     */
    /*            FACT RHS PATTERN PARSER MODULE           */
    /*******************************************************/
@@ -24,6 +24,10 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Added code to prevent a clear command from     */
+/*            being executed during fact assertions via      */
+/*            Increment/DecrementClearReadyLocks API.        */
 /*                                                           */
 /*************************************************************/
 
@@ -596,6 +600,7 @@ globle struct fact *StringToFact(
    /* Copy the fields to the fact data structure. */
    /*=============================================*/
 
+   EnvIncrementClearReadyLocks(theEnv);
    ExpressionInstall(theEnv,assertArgs); /* DR0836 */
    whichField = 0;
    for (tempPtr = assertArgs->nextArg; tempPtr != NULL; tempPtr = tempPtr->nextArg)
@@ -607,6 +612,7 @@ globle struct fact *StringToFact(
      }
    ExpressionDeinstall(theEnv,assertArgs); /* DR0836 */
    ReturnExpression(theEnv,assertArgs);
+   EnvDecrementClearReadyLocks(theEnv);
 
    /*==================*/
    /* Return the fact. */

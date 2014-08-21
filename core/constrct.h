@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/20/14            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -40,6 +40,10 @@
 /*                                                           */
 /*            Fixed linkage issue when BLOAD_ONLY compiler   */
 /*            flag is set to 1.                              */
+/*                                                           */
+/*            Added code to prevent a clear command from     */
+/*            being executed during fact assertions via      */
+/*            Increment/DecrementClearReadyLocks API.        */
 /*                                                           */
 /*************************************************************/
 
@@ -103,6 +107,7 @@ struct constructData
    int ClearInProgress;
    int ResetReadyInProgress;
    int ResetInProgress;
+   short ClearReadyLocks;
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    struct callFunctionItem *ListOfSaveFunctions;
    intBool PrintWhileLoading;
@@ -156,6 +161,8 @@ struct constructData
    LOCALE intBool                        RemoveClearReadyFunction(void *,const char *);
    LOCALE intBool                        EnvAddClearFunction(void *,const char *,void (*)(void *),int);
    LOCALE intBool                        EnvRemoveClearFunction(void *,const char *);
+   LOCALE void                           EnvIncrementClearReadyLocks(void *);
+   LOCALE void                           EnvDecrementClearReadyLocks(void *);
    LOCALE struct construct              *AddConstruct(void *,const char *,const char *,
                                                       int (*)(void *,const char *),
                                                       void *(*)(void *,const char *),

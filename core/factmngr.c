@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/20/14            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -52,6 +52,10 @@
 /*            Converted API macros to function calls.        */
 /*                                                           */
 /*            Removed unused global variables.               */
+/*                                                           */
+/*            Added code to prevent a clear command from     */
+/*            being executed during fact assertions via      */
+/*            JoinOperationInProgress mechanism.             */
 /*                                                           */
 /*************************************************************/
 
@@ -1581,6 +1585,13 @@ static void ResetFacts(
 static int ClearFactsReady(
   void *theEnv)
   {
+   /*======================================*/
+   /* Facts can not be deleted when a join */
+   /* operation is already in progress.    */
+   /*======================================*/
+
+   if (EngineData(theEnv)->JoinOperationInProgress) return(FALSE);
+   
    /*====================================*/
    /* Initialize the fact index to zero. */
    /*====================================*/

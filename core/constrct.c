@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/20/14            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -43,6 +43,10 @@
 /*                                                           */
 /*            Fixed linkage issue when BLOAD_ONLY compiler   */
 /*            flag is set to 1.                              */
+/*                                                           */
+/*            Added code to prevent a clear command from     */
+/*            being executed during fact assertions via      */
+/*            Increment/DecrementClearReadyLocks API.        */
 /*                                                           */
 /*************************************************************/
 
@@ -552,6 +556,27 @@ globle intBool EnvRemoveResetFunction(
    return(FALSE);
   }
 
+/*******************************************/
+/* EnvIncrementClearReadyLocks: Increments */
+/*   the number of clear ready locks.      */
+/*******************************************/
+globle void EnvIncrementClearReadyLocks(
+  void *theEnv)
+  {
+   ConstructData(theEnv)->ClearReadyLocks++;
+  }
+
+/*******************************************/
+/* EnvDecrementClearReadyLocks: Decrements */
+/*   the number of clear locks.            */
+/*******************************************/
+globle void EnvDecrementClearReadyLocks(
+  void *theEnv)
+  {
+   if (ConstructData(theEnv)->ClearReadyLocks > 0)
+     { ConstructData(theEnv)->ClearReadyLocks--; }
+  }
+
 /*****************************************************/
 /* EnvClear: C access routine for the clear command. */
 /*****************************************************/
@@ -575,7 +600,8 @@ globle void EnvClear(
    /*===================================*/
 
    ConstructData(theEnv)->ClearReadyInProgress = TRUE;
-   if (ClearReady(theEnv) == FALSE)
+   if ((ConstructData(theEnv)->ClearReadyLocks > 0) ||
+       (ClearReady(theEnv) == FALSE))
      {
       PrintErrorID(theEnv,"CONSTRCT",1,FALSE);
       EnvPrintRouter(theEnv,WERROR,"Some constructs are still in use. Clear cannot continue.\n");
