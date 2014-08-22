@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*             CONSTRAINT CHECKING MODULE              */
    /*******************************************************/
@@ -34,6 +34,10 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Dynamic constraint checking for the            */
+/*            allowed-classes constraint now searches        */
+/*            imported modules.                              */
 /*                                                           */
 /*************************************************************/
 
@@ -451,7 +455,8 @@ globle intBool CheckAllowedClassesConstraint(
         tmpPtr != NULL;
         tmpPtr = tmpPtr->nextArg)
      {
-      cmpClass = (DEFCLASS *) EnvFindDefclass(theEnv,ValueToString(tmpPtr->value));
+      //cmpClass = (DEFCLASS *) EnvFindDefclass(theEnv,ValueToString(tmpPtr->value));
+      cmpClass = (DEFCLASS *) LookupDefclassByMdlOrScope(theEnv,ValueToString(tmpPtr->value));
       if (cmpClass == NULL) continue;
       if (cmpClass == insClass) return(TRUE);
       if (EnvSubclassP(theEnv,insClass,cmpClass)) return(TRUE);

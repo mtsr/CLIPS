@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*            CONSTRAINT CHECKING HEADER FILE          */
    /*******************************************************/
@@ -29,6 +29,10 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Dynamic constraint checking for the            */
+/*            allowed-classes constraint now searches        */
+/*            imported modules.                              */
 /*                                                           */
 /*************************************************************/
 
