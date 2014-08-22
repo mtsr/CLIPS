@@ -255,5 +255,75 @@ CLIPS> (make-instance foo2 of FOO (_foo))
 [INSMNGR14] Override required for slot _foo in instance foo2.
 [PRCCODE4] Execution halted during the actions of message-handler put-_foo primary in class FOO
 FALSE
+CLIPS> (clear) ; SourceForge Assert/Clear Bug
+CLIPS> (defrule foo (a ?x&:(progn (clear) TRUE)) =>)
+CLIPS> (assert (a 1))
+[INSMNGR12] Cannot delete instances of reactive classes while
+  pattern-matching is in process.
+[PRCCODE4] Execution halted during the actions of message-handler delete primary in class USER
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+
+[FACTMCH1] This error occurred in the fact pattern network
+   Currently active fact: (a 1)
+   Problem resides in field #1
+      Of pattern #1 in rule foo
+
+<Fact-1>
+CLIPS> (send [initial-object] delete)
+TRUE
+CLIPS> (assert (a 2))
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+<Fact-2>
+CLIPS> (clear)
+CLIPS> (assert (a (clear)))
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+<Fact-1>
+CLIPS> (clear)
+CLIPS> (deffacts FOO (foo bar) (foo (clear)))
+CLIPS> (reset)
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+CLIPS> (clear)
+CLIPS> (assert-string "(a (clear))")
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+<Fact-1>
+CLIPS> (clear)
+CLIPS> (deftemplate foo (multislot x))
+CLIPS> (assert (foo (x (clear) 1)))
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+<Fact-1>
+CLIPS> (facts)
+f-0     (initial-fact)
+f-1     (foo (x 1))
+For a total of 2 facts.
+CLIPS> (modify 1 (x (clear) 2))
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+<Fact-2>
+CLIPS> (facts)
+f-0     (initial-fact)
+f-2     (foo (x 2))
+For a total of 2 facts.
+CLIPS> (clear) ; SourceForge Bug
+CLIPS> 
+(defmodule FOO
+   (export ?ALL))
+CLIPS>    
+(defclass FOO::DUMMY 
+   (is-a USER)
+   (slot foo))
+CLIPS>    
+(defmodule BAR
+   (import FOO ?ALL))
+CLIPS> 
+(defclass BAR::BAR 
+   (is-a USER)
+   (slot bar (allowed-classes DUMMY)))
+CLIPS> (set-dynamic-constraint-checking TRUE)
+FALSE
+CLIPS> 
+(make-instance b of BAR
+   (bar (make-instance f of DUMMY)))
+[b]
+CLIPS> (set-dynamic-constraint-checking FALSE)   
+TRUE
 CLIPS> (clear)
 CLIPS> (dribble-off)

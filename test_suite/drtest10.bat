@@ -140,4 +140,42 @@
    (slot _foo (default ?NONE)))
 (make-instance foo1 of FOO)
 (make-instance foo2 of FOO (_foo))
+(clear) ; SourceForge Assert/Clear Bug
+(defrule foo (a ?x&:(progn (clear) TRUE)) =>)
+(assert (a 1))
+(send [initial-object] delete)
+(assert (a 2))
+(clear)
+(assert (a (clear)))
+(clear)
+(deffacts FOO (foo bar) (foo (clear)))
+(reset)
+(clear)
+(assert-string "(a (clear))")
+(clear)
+(deftemplate foo (multislot x))
+(assert (foo (x (clear) 1)))
+(facts)
+(modify 1 (x (clear) 2))
+(facts)
+(clear) ; SourceForge Bug
+
+(defmodule FOO
+   (export ?ALL))
+   
+(defclass FOO::DUMMY 
+   (is-a USER)
+   (slot foo))
+   
+(defmodule BAR
+   (import FOO ?ALL))
+
+(defclass BAR::BAR 
+   (is-a USER)
+   (slot bar (allowed-classes DUMMY)))
+(set-dynamic-constraint-checking TRUE)
+
+(make-instance b of BAR
+   (bar (make-instance f of DUMMY)))
+(set-dynamic-constraint-checking FALSE)   
 (clear)

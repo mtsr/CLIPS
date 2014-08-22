@@ -306,6 +306,8 @@ D:
 E:
 For a total of 4 definstances.
 CLIPS> (clear) ; Test for scope
+CLIPS> (setgen 1)
+1
 CLIPS> (defmodule A (export ?ALL))
 CLIPS> (deftemplate A::foo (slot x))
 CLIPS> (defglobal A ?*foo* = 3)
@@ -316,10 +318,10 @@ CLIPS> (defmodule B (import A ?ALL))
 CLIPS> (deffacts B::foo (foo (x 3)))
 CLIPS> (defrule B::bar (foo (x 3)) => (printout t ?*foo* " " (foo)))
 CLIPS> (make-instance of FOO)
-[A::gen1] ;; Different Name OK
+[A::gen1]
 CLIPS> (instances)
 [initial-object] of INITIAL-OBJECT
-[gen1] of A::FOO ;; Should have same name as above
+[gen1] of A::FOO
 For a total of 2 instances.
 CLIPS> (clear) ; Test fact scoping
 CLIPS> (defmodule A)

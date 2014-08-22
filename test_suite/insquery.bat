@@ -55,49 +55,47 @@
 (make-instance d of D)
 (do-for-all-instances ((?a A)) TRUE
   (printout t ?a crlf))
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D))
+(do-for-all-instances ((?a D) (?b D) (?c D) (?d D) (?e D) (?f D) (?g D) (?h D) (?i D) (?j D) (?k D) (?l D) (?m D))
      TRUE 
-  (printout t "Should get a nesting error!" crlf
-              "The allowed nesting level was increased," crlf
-              "So this error hasn't been duplicated recently." crlf)
+  (printout t "Should get a nesting error!" crlf)
 ))))))))))))))))))))
 (any-instancep)
 (any-instancep TRUE)

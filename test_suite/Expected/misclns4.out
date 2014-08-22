@@ -573,5 +573,23 @@ Defining defgeneric: foobar
 [CSTRCPSR1] WARNING: Redefining defgeneric: foobar
 TRUE
 CLIPS> (unwatch compilations)
+CLIPS> (clear) ;; void value in implied deftemplate fact
+CLIPS> (assert (foo a (agenda) b (agenda) c (agenda)))
+<Fact-1>
+CLIPS> (assert (foo (agenda) a))
+<Fact-2>
+CLIPS> (facts)
+f-0     (initial-fact)
+f-1     (foo a b c)
+f-2     (foo a)
+For a total of 3 facts.
+CLIPS> (fact-slot-value 1 implied)
+(a b c)
+CLIPS> (fact-slot-value 2 implied)
+(a)
+CLIPS> (length$ (fact-slot-value 1 implied))
+3
+CLIPS> (length$ (fact-slot-value 2 implied))
+1
 CLIPS> (clear)
 CLIPS> (dribble-off)

@@ -325,4 +325,12 @@
 (watch compilations)
 (load "gnrcdef.clp")
 (unwatch compilations)
+(clear) ;; void value in implied deftemplate fact
+(assert (foo a (agenda) b (agenda) c (agenda)))
+(assert (foo (agenda) a))
+(facts)
+(fact-slot-value 1 implied)
+(fact-slot-value 2 implied)
+(length$ (fact-slot-value 1 implied))
+(length$ (fact-slot-value 2 implied))
 (clear)
