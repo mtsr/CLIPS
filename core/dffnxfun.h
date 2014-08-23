@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*              DEFFUNCTION HEADER FILE                */
    /*******************************************************/
@@ -120,10 +120,10 @@ struct deffunctionData
    LOCALE void                           DeffunctionGetBind(DATA_OBJECT *);
    LOCALE void                           DFRtnUnknown(DATA_OBJECT *);
    LOCALE void                           DFWildargs(DATA_OBJECT *);
-   LOCALE char                          *EnvDeffunctionModule(void *,void *);
+   LOCALE const char                    *EnvDeffunctionModule(void *,void *);
    LOCALE void                          *EnvFindDeffunction(void *,const char *);
    LOCALE void                           EnvGetDeffunctionList(void *,DATA_OBJECT *,struct defmodule *);
-   LOCALE char                          *EnvGetDeffunctionName(void *,void *);
+   LOCALE const char                    *EnvGetDeffunctionName(void *,void *);
    LOCALE SYMBOL_HN                     *EnvGetDeffunctionNamePointer(void *,void *);
    LOCALE char                          *EnvGetDeffunctionPPForm(void *,void *);
    LOCALE void                          *EnvGetNextDeffunction(void *,void *);
@@ -149,10 +149,10 @@ struct deffunctionData
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE char                          *DeffunctionModule(void *);
+   LOCALE const char                    *DeffunctionModule(void *);
    LOCALE void                          *FindDeffunction(const char *);
    LOCALE void                           GetDeffunctionList(DATA_OBJECT *,struct defmodule *);
-   LOCALE char                          *GetDeffunctionName(void *);
+   LOCALE const char                    *GetDeffunctionName(void *);
    LOCALE char                          *GetDeffunctionPPForm(void *);
    LOCALE void                          *GetNextDeffunction(void *);
    LOCALE intBool                        IsDeffunctionDeletable(void *);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                  DEFINSTANCES MODULE                */
    /*******************************************************/
@@ -950,7 +950,7 @@ static void ResetDefinstancesAction(
 /* Additional Environment Functions */
 /*##################################*/
 
-globle char *EnvGetDefinstancesName(
+globle const char *EnvGetDefinstancesName(
   void *theEnv,
   void *theDefinstances)
   {
@@ -972,7 +972,7 @@ globle void EnvSetDefinstancesPPForm(
    SetConstructPPForm(theEnv,(struct constructHeader *) theDefinstances,thePPForm);
   }
 
-globle char *EnvDefinstancesModule(
+globle const char *EnvDefinstancesModule(
   void *theEnv,
   void *theDefinstances)
   {
@@ -986,7 +986,7 @@ globle SYMBOL_HN *EnvGetDefinstancesNamePointer(
    return GetConstructNamePointer((struct constructHeader *) theDefinstances);
   }
 
-globle char *EnvDefinstancesModuleName(
+globle const char *EnvDefinstancesModuleName(
   void *theEnv,
   void *theDefinstances)
   {
@@ -999,7 +999,7 @@ globle char *EnvDefinstancesModuleName(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle char *DefinstancesModule(
+globle const char *DefinstancesModule(
   void *theDefinstances)
   {
    return EnvDefinstancesModule(GetCurrentEnvironment(),theDefinstances);
@@ -1018,7 +1018,7 @@ globle void GetDefinstancesList(
    EnvGetDefinstancesList(GetCurrentEnvironment(),returnValue,theModule);
   }
 
-globle char *GetDefinstancesName(
+globle const char *GetDefinstancesName(
   void *theDefinstances)
   {
    return EnvGetDefinstancesName(GetCurrentEnvironment(),theDefinstances);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -743,7 +743,7 @@ static QUERY_TEMPLATE *FormChain(
    struct deftemplate *templatePtr;
    QUERY_TEMPLATE *head,*bot,*tmp;
    register long i,end; /* 6.04 Bug Fix */
-   char *templateName;
+   const char *templateName;
    int count;
 
    if (val->type == DEFTEMPLATE_PTR)

@@ -2,7 +2,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*            DEFRULE CONSTRUCTS-TO-C MODULE           */
    /*******************************************************/
@@ -503,11 +503,19 @@ static void JoinToCode(
    /* Flags and Integer Values. */
    /*===========================*/
 
-   fprintf(joinFile,"{%d,%d,%d,%d,%d,0,0,%d,%d,0,0,0,0,",
+   fprintf(joinFile,"{%d,%d,%d,%d,%d,0,0,%d,%d,0,0,0,0,0,0,",
                    theJoin->firstJoin,theJoin->logicalJoin,
                    theJoin->joinFromTheRight,theJoin->patternIsNegated,
                    theJoin->patternIsExists,
+                   // initialize,
+                   // marked
                    theJoin->rhsType,theJoin->depth);
+                   // bsaveID
+                   // memoryLeftAdds
+                   // memoryRightAdds
+                   // memoryLeftDeletes
+                   // memoryRightDeletes
+                   // memoryCompares
 
    /*==========================*/
    /* Left and right Memories. */

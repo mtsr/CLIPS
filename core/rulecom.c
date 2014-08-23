@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                RULE COMMANDS MODULE                 */
    /*******************************************************/
@@ -264,7 +264,7 @@ globle void MatchesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
-   char *ruleName, *argument;
+   const char *ruleName, *argument;
    void *rulePtr;
    int numberOfArguments;
    DATA_OBJECT argPtr;
@@ -996,7 +996,7 @@ globle void JoinActivityCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
-   char *ruleName, *argument;
+   const char *ruleName, *argument;
    void *rulePtr;
    int numberOfArguments;
    DATA_OBJECT argPtr;

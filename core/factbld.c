@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                   FACT BUILD MODULE                 */
    /*******************************************************/
@@ -155,7 +155,7 @@ static struct patternNodeHeader *PlaceFactPattern(
    struct factPatternNode *nodeBeforeMatch, *newNode = NULL;
    unsigned endSlot;
    int count;
-   char *deftemplateName;
+   const char *deftemplateName;
 
    /*======================================================================*/
    /* Get the name of the deftemplate associated with the pattern being    */

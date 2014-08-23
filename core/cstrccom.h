@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*           CONSTRUCT COMMAND HEADER MODULE           */
    /*******************************************************/
@@ -57,9 +57,9 @@
    LOCALE struct defmodule              *GetConstructModule(void *,const char *,struct construct *);
    LOCALE intBool                        Undefconstruct(void *,void *,struct construct *);
    LOCALE void                           SaveConstruct(void *,void *,const char *,struct construct *);
-   LOCALE char                          *GetConstructNameString(struct constructHeader *);
-   LOCALE char                          *EnvGetConstructNameString(void *,struct constructHeader *);
-   LOCALE char                          *GetConstructModuleName(struct constructHeader *);
+   LOCALE const char                    *GetConstructNameString(struct constructHeader *);
+   LOCALE const char                    *EnvGetConstructNameString(void *,struct constructHeader *);
+   LOCALE const char                    *GetConstructModuleName(struct constructHeader *);
    LOCALE SYMBOL_HN                     *GetConstructNamePointer(struct constructHeader *);
    LOCALE void                           GetConstructListFunction(void *,const char *,DATA_OBJECT_PTR,
                                                                   struct construct *);

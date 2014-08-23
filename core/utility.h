@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                 UTILITY HEADER FILE                 */
    /*******************************************************/
@@ -134,7 +134,7 @@ struct utilityData
    LOCALE intBool                        EnvRemovePeriodicFunction(void *,const char *);
    LOCALE char                          *CopyString(void *,const char *);
    LOCALE void                           DeleteString(void *,char *);
-   LOCALE char                          *AppendStrings(void *,const char *,const char *);
+   LOCALE const char                    *AppendStrings(void *,const char *,const char *);
    LOCALE const char                    *StringPrintForm(void *,const char *);
    LOCALE char                          *AppendToString(void *,const char *,char *,size_t *,size_t *);
    LOCALE char                          *InsertInString(void *,const char *,size_t,char *,size_t *,size_t *);

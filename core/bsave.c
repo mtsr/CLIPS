@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                     BSAVE MODULE                    */
    /*******************************************************/
@@ -369,7 +369,7 @@ static void WriteNeededFunctions(
       if (functionList->bsaveIndex >= 0)
         {
          length = strlen(ValueToString(functionList->callFunctionName)) + 1;
-         GenWrite(ValueToString(functionList->callFunctionName),(unsigned long) length,fp);
+         GenWrite((void *) ValueToString(functionList->callFunctionName),(unsigned long) length,fp);
         }
      }
   }

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -94,7 +94,7 @@ struct messageHandlerData
 #define CREATE_STRING "create"
 
    LOCALE void             SetupMessageHandlers(void *);
-   LOCALE char            *EnvGetDefmessageHandlerName(void *,void *,int);
+   LOCALE const char      *EnvGetDefmessageHandlerName(void *,void *,int);
    LOCALE const char      *EnvGetDefmessageHandlerType(void *,void *,int);
    LOCALE int              EnvGetNextDefmessageHandler(void *,void *,int);
    LOCALE HANDLER         *GetDefmessageHandlerPointer(void *,int);
@@ -119,7 +119,7 @@ struct messageHandlerData
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    LOCALE unsigned         FindDefmessageHandler(void *,const char *,const char *);
-   LOCALE char            *GetDefmessageHandlerName(void *,int);
+   LOCALE const char      *GetDefmessageHandlerName(void *,int);
    LOCALE const char      *GetDefmessageHandlerType(void *,int);
    LOCALE int              GetNextDefmessageHandler(void *,int);
    LOCALE int              IsDefmessageHandlerDeletable(void *,int);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  08/16/14           */
+   /*              CLIPS Version 6.30  08/22/14           */
    /*                                                     */
    /*                INSTANCE COMMAND MODULE              */
    /*******************************************************/
@@ -412,7 +412,7 @@ globle void InstancesCommand(
   {
    int argno, inheritFlag = FALSE;
    void *theDefmodule;
-   char *className = NULL;
+   const char *className = NULL;
    DATA_OBJECT temp;
 
    theDefmodule = (void *) EnvGetCurrentModule(theEnv);
@@ -783,7 +783,7 @@ globle int EnvDirectPutSlot(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle char *EnvGetInstanceName(
+globle const char *EnvGetInstanceName(
   void *theEnv,
   void *iptr)
   {
@@ -1003,7 +1003,7 @@ globle void ClassCommand(
   DATA_OBJECT *result)
   {
    INSTANCE_TYPE *ins;
-   char *func;
+   const char *func;
    DATA_OBJECT temp;
 
    func = ValueToString(((struct FunctionDefinition *)
@@ -1616,7 +1616,7 @@ static INSTANCE_SLOT *FindISlotByName(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle char *GetInstanceName(
+globle const char *GetInstanceName(
   void *iptr)
   {
    return EnvGetInstanceName(GetCurrentEnvironment(),iptr);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                OBJECT MESSAGE COMMANDS              */
    /*******************************************************/
@@ -260,7 +260,7 @@ static void DeallocateMessageHandlerData(
   SIDE EFFECTS : None
   NOTES        : None
  *****************************************************/
-globle char *EnvGetDefmessageHandlerName(
+globle const char *EnvGetDefmessageHandlerName(
   void *theEnv,
   void *ptr,
   int theIndex)
@@ -976,7 +976,7 @@ static unsigned DefmessageHandlerWatchSupport(
   {
    struct defmodule *theModule;
    void *theClass;
-   char *theHandlerStr;
+   const char *theHandlerStr;
    int theType;
    int argIndex = 2;
    DATA_OBJECT tmpData;
@@ -1177,7 +1177,7 @@ globle unsigned FindDefmessageHandler(
    return EnvFindDefmessageHandler(GetCurrentEnvironment(),ptr,hname,htypestr);
   }
 
-globle char *GetDefmessageHandlerName(
+globle const char *GetDefmessageHandlerName(
   void *ptr,
   int theIndex)
   {

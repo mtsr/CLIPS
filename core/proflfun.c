@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*         CONSTRUCT PROFILING FUNCTIONS MODULE        */
    /*******************************************************/
@@ -153,7 +153,7 @@ globle void DeleteProfileData(
 globle void ProfileCommand(
   void *theEnv)
   {
-   char *argument;
+   const char *argument;
    DATA_OBJECT theValue;
 
    if (EnvArgCountCheck(theEnv,"profile",EXACTLY,1) == -1) return;

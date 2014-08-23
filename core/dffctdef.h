@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                DEFFACTS HEADER FILE                 */
    /*******************************************************/
@@ -95,8 +95,8 @@ struct deffactsModule
    LOCALE void                           CreateInitialFactDeffacts(void);
    LOCALE intBool                        EnvIsDeffactsDeletable(void *,void *);
    LOCALE struct deffactsModule         *GetDeffactsModuleItem(void *,struct defmodule *);
-   LOCALE char                          *EnvDeffactsModule(void *,void *);
-   LOCALE char                          *EnvGetDeffactsName(void *,void *);
+   LOCALE const char                    *EnvDeffactsModule(void *,void *);
+   LOCALE const char                    *EnvGetDeffactsName(void *,void *);
    LOCALE char                          *EnvGetDeffactsPPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
@@ -104,8 +104,8 @@ struct deffactsModule
    LOCALE void                          *FindDeffacts(const char *);
    LOCALE void                          *GetNextDeffacts(void *);
    LOCALE intBool                        IsDeffactsDeletable(void *);
-   LOCALE char                          *DeffactsModule(void *);
-   LOCALE char                          *GetDeffactsName(void *);
+   LOCALE const char                    *DeffactsModule(void *);
+   LOCALE const char                    *GetDeffactsName(void *);
    LOCALE char                          *GetDeffactsPPForm(void *);
    
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

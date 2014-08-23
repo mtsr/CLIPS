@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*         DEFMODULE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -46,6 +46,7 @@
 #include "router.h"
 #include "argacces.h"
 #include "bload.h"
+#include "multifld.h"
 #include "envrnmnt.h"
 
 #include "modulbsc.h"
@@ -140,7 +141,47 @@ globle void EnvGetDefmoduleList(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
-   OldGetConstructList(theEnv,returnValue,EnvGetNextDefmodule,EnvGetDefmoduleName); 
+   void *theConstruct;
+   unsigned long count = 0;
+   struct multifield *theList;
+
+   /*====================================*/
+   /* Determine the number of constructs */
+   /* of the specified type.             */
+   /*====================================*/
+
+   for (theConstruct = EnvGetNextDefmodule(theEnv,NULL);
+        theConstruct != NULL;
+        theConstruct = EnvGetNextDefmodule(theEnv,theConstruct))
+     { count++; }
+
+   /*===========================*/
+   /* Create a multifield large */
+   /* enough to store the list. */
+   /*===========================*/
+
+   SetpType(returnValue,MULTIFIELD);
+   SetpDOBegin(returnValue,1);
+   SetpDOEnd(returnValue,(long) count);
+   theList = (struct multifield *) EnvCreateMultifield(theEnv,count);
+   SetpValue(returnValue,(void *) theList);
+
+   /*====================================*/
+   /* Store the names in the multifield. */
+   /*====================================*/
+
+   for (theConstruct = EnvGetNextDefmodule(theEnv,NULL), count = 1;
+        theConstruct != NULL;
+        theConstruct = EnvGetNextDefmodule(theEnv,theConstruct), count++)
+     {
+      if (EvaluationData(theEnv)->HaltExecution == TRUE)
+        {
+         EnvSetMultifieldErrorValue(theEnv,returnValue);
+         return;
+        }
+      SetMFType(theList,count,SYMBOL);
+      SetMFValue(theList,count,EnvAddSymbol(theEnv,EnvGetDefmoduleName(theEnv,theConstruct)));
+     }
   }
 
 #if DEBUGGING_FUNCTIONS

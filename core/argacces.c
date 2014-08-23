@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*               ARGUMENT ACCESS MODULE                */
    /*******************************************************/
@@ -68,7 +68,7 @@
 /*   value of the argument is returned (i.e. the string "a" would  */
 /*   be returned for a, "a", and [a]).                             */
 /*******************************************************************/
-globle char *EnvRtnLexeme(
+globle const char *EnvRtnLexeme(
   void *theEnv,
   int argumentPosition)
   {
@@ -1076,7 +1076,7 @@ globle double RtnDouble(
    return EnvRtnDouble(GetCurrentEnvironment(),argumentPosition);
   }
 
-globle char *RtnLexeme(
+globle const char *RtnLexeme(
   int argumentPosition)
   {
    return EnvRtnLexeme(GetCurrentEnvironment(),argumentPosition);

@@ -143,7 +143,7 @@ globle int CheckSyntax(
   const char *theString,
   DATA_OBJECT_PTR returnValue)
   {
-   char *name;
+   const char *name;
    struct token theToken;
    struct expr *top;
    short rv;

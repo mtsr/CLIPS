@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                 SYMBOL HEADER FILE                  */
    /*******************************************************/
@@ -103,7 +103,7 @@ struct symbolHashNode
    unsigned int markedEphemeral : 1;
    unsigned int neededSymbol : 1;
    unsigned int bucket : 29;
-   char *contents;
+   const char *contents;
   };
 
 /************************************************************/
@@ -145,12 +145,12 @@ struct bitMapHashNode
    unsigned int markedEphemeral : 1;
    unsigned int neededBitMap : 1;
    unsigned int bucket : 29;
-   char *contents;
+   const char *contents;
    unsigned short size;
   };
 
 /************************************************************/
-/* externalAddressHashNode STRUCTURE:                                */
+/* externalAddressHashNode STRUCTURE:                       */
 /************************************************************/
 struct externalAddressHashNode
   {

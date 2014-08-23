@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                COMMAND LINE MODULE                  */
    /*******************************************************/
@@ -765,7 +765,7 @@ globle intBool RouteCommand(
   {
    DATA_OBJECT result;
    struct expr *top;
-   char *commandName;
+   const char *commandName;
    struct token theToken;
 
    if (command == NULL)
@@ -971,7 +971,7 @@ globle const char *GetCommandCompletionString(
    struct token lastToken;
    struct token theToken;
    char lastChar;
-   char *rs;
+   const char *rs;
    size_t length;
 
    /*=========================*/

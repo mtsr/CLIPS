@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -1733,7 +1733,7 @@ static SYMBOL_HN *CheckDeftemplateAndSlotArguments(
   int expectedArgs)
   {
    DATA_OBJECT tempDO;
-   char *deftemplateName;
+   const char *deftemplateName;
 
    /*============================================*/
    /* Check for the correct number of arguments. */

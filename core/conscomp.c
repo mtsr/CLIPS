@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -41,6 +41,8 @@
 /*      6.30: Added path name argument to constructs-to-c.   */
 /*                                                           */
 /*            Changed integer type/precision.                */
+/*                                                           */
+/*            Support for long long integers.                */
 /*                                                           */
 /*            Removed conditional code for unsupported       */
 /*            compilers/operating systems (IBM_MCW, MAC_MCW, */
@@ -191,7 +193,8 @@ static void DeallocateConstructCompilerData(
 globle void ConstructsToCCommand(
   void *theEnv)
   {
-   char *fileName, *fileNameBuffer;
+   const char *fileName;
+   char *fileNameBuffer;
    const char *pathName;
    DATA_OBJECT theArg;
    int argCount;
@@ -599,6 +602,7 @@ static void WriteFunctionExternDeclarations(
         {
          case 'i':
          case 'b':
+         case 'g':
          case 'l':
          case 'f':
          case 'd':

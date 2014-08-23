@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -772,7 +772,8 @@ static void CreateDefaultGenericPPForm(
   void *theEnv,
   DEFGENERIC *gfunc)
   {
-   char *moduleName,*genericName,*buf;
+   const char *moduleName, *genericName;
+   char *buf;
 
    moduleName = EnvGetDefmoduleName(theEnv,(void *) ((struct defmodule *) EnvGetCurrentModule(theEnv)));
    genericName = EnvGetDefgenericName(theEnv,(void *) gfunc);

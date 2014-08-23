@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/19/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -760,7 +760,7 @@ globle void gensystem(
    size_t bufferMaximum = 0;
    int numa, i;
    DATA_OBJECT tempValue;
-   char *theString;
+   const char *theString;
 
    /*===========================================*/
    /* Check for the corret number of arguments. */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -888,7 +888,7 @@ globle void PPDefmethodCommand(
   void *theEnv)
   {
    DATA_OBJECT temp;
-   char *gname;
+   const char *gname;
    DEFGENERIC *gfunc;
    int gi;
    
@@ -1849,14 +1849,14 @@ globle void SetNextDefgeneric(
 /* Additional Environment Functions */
 /*##################################*/
 
-globle char *EnvDefgenericModule(
+globle const char *EnvDefgenericModule(
   void *theEnv,
   void *theDefgeneric)
   {
    return GetConstructModuleName((struct constructHeader *) theDefgeneric);
   }
 
-globle char *EnvGetDefgenericName(
+globle const char *EnvGetDefgenericName(
   void *theEnv,
   void *theDefgeneric)
   {
@@ -1898,7 +1898,7 @@ globle void SetDefgenericPPForm(
    EnvSetDefgenericPPForm(GetCurrentEnvironment(),theDefgeneric,thePPForm);
   }
 
-globle char *DefgenericModule(
+globle const char *DefgenericModule(
   void *theDefgeneric)
   {
    return EnvDefgenericModule(GetCurrentEnvironment(),theDefgeneric);
@@ -1917,7 +1917,7 @@ globle void GetDefgenericList(
    EnvGetDefgenericList(GetCurrentEnvironment(),returnValue,theModule);
   }
 
-globle char *GetDefgenericName(
+globle const char *GetDefgenericName(
   void *theDefgeneric)
   {
    return EnvGetDefgenericName(GetCurrentEnvironment(),theDefgeneric);

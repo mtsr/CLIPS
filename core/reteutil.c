@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                 RETE UTILITY MODULE                 */
    /*******************************************************/
@@ -895,7 +895,7 @@ static void TraceErrorToRuleDriver(
   int priorRightJoinPatterns,
   int enteredJoinFromRight)
   {
-   char *name;
+   const char *name;
    int priorPatternCount;
    struct joinLink *theLinks;
 

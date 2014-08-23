@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -60,11 +60,11 @@
 #define LOCALE extern
 #endif
 
-   LOCALE char                   *EnvGetDefclassName(void *,void *);
+   LOCALE const char             *EnvGetDefclassName(void *,void *);
    LOCALE char                   *EnvGetDefclassPPForm(void *,void *);
    LOCALE struct defmoduleItemHeader 
                                  *EnvGetDefclassModule(void *,void *);
-   LOCALE char                   *EnvDefclassModule(void *,void *);
+   LOCALE const char             *EnvDefclassModule(void *,void *);
    LOCALE SYMBOL_HN              *GetDefclassNamePointer(void *);
    LOCALE void                    SetNextDefclass(void *,void *);
    LOCALE void                    EnvSetDefclassPPForm(void *,void *,char *);
@@ -108,13 +108,13 @@
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE char                   *DefclassModule(void *);
+   LOCALE const char             *DefclassModule(void *);
    LOCALE void                   *FindDefclass(const char *);
    LOCALE void                    GetDefclassList(DATA_OBJECT *,struct defmodule *);
    LOCALE unsigned short          GetClassDefaultsMode(void);
    LOCALE struct defmoduleItemHeader 
                                  *GetDefclassModule(void *);
-   LOCALE char                   *GetDefclassName(void *);
+   LOCALE const char             *GetDefclassName(void *);
    LOCALE char                   *GetDefclassPPForm(void *);
    LOCALE unsigned                GetDefclassWatchInstances(void *);
    LOCALE unsigned                GetDefclassWatchSlots(void *);

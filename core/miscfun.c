@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.39  08/16/14            */
+   /*             CLIPS Version 6.39  08/22/14            */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -421,7 +421,7 @@ globle long long ReleaseMemCommand(
 globle void ConserveMemCommand(
   void *theEnv)
   {
-   char *argument;
+   const char *argument;
    DATA_OBJECT theValue;
 
    /*===================================*/
@@ -519,7 +519,7 @@ globle long long MemRequestsCommand(
 globle void AproposCommand(
   void *theEnv)
   {
-   char *argument;
+   const char *argument;
    DATA_OBJECT argPtr;
    struct symbolHashNode *hashPtr = NULL;
    size_t theLength;
@@ -1139,7 +1139,7 @@ globle void FuncallFunction(
    int argCount, i, j;
    DATA_OBJECT theValue;
    FUNCTION_REFERENCE theReference;
-   char *name;
+   const char *name;
    struct multifield *theMultifield;
    struct expr *lastAdd = NULL, *nextAdd, *multiAdd;
    struct FunctionDefinition *theFunction;
@@ -1288,7 +1288,7 @@ globle void NewFunction(
   {
    int theType;
    DATA_OBJECT theValue;
-   char *name;
+   const char *name;
     
    /*==================================*/
    /* Set up the default return value. */
@@ -1344,7 +1344,7 @@ globle void CallFunction(
   {
    int theType;
    DATA_OBJECT theValue;
-   char *name;
+   const char *name;
    int argumentCount;
    struct externalAddressHashNode *theEA;
     

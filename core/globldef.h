@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                DEFGLOBAL HEADER FILE                */
    /*******************************************************/
@@ -128,15 +128,15 @@ struct defglobalModule
    LOCALE void                           UpdateDefglobalScope(void *);
    LOCALE void                          *GetNextDefglobalInScope(void *,void *);
    LOCALE int                            QGetDefglobalValue(void *,void *,DATA_OBJECT_PTR);
-   LOCALE char                          *EnvDefglobalModule(void *,void *);
-   LOCALE char                          *EnvGetDefglobalName(void *,void *);
+   LOCALE const char                    *EnvDefglobalModule(void *,void *);
+   LOCALE const char                    *EnvGetDefglobalName(void *,void *);
    LOCALE char                          *EnvGetDefglobalPPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE char                          *DefglobalModule(void *);
+   LOCALE const char                    *DefglobalModule(void *);
    LOCALE void                          *FindDefglobal(const char *);
-   LOCALE char                          *GetDefglobalName(void *);
+   LOCALE const char                    *GetDefglobalName(void *);
    LOCALE char                          *GetDefglobalPPForm(void *);
    LOCALE intBool                        GetDefglobalValue(const char *,DATA_OBJECT_PTR);
    LOCALE void                           GetDefglobalValueForm(char *,unsigned,void *);

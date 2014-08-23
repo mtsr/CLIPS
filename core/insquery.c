@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -725,7 +725,7 @@ static QUERY_CLASS *FormChain(
    DEFCLASS *cls;
    QUERY_CLASS *head,*bot,*tmp;
    register long i,end; /* 6.04 Bug Fix */
-   char *className;
+   const char *className;
    struct defmodule *currentModule;
 
    currentModule = ((struct defmodule *) EnvGetCurrentModule(theEnv));

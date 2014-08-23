@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -183,9 +183,6 @@ struct constructData
    LOCALE void                           SetExecutingConstruct(void *,int);
    LOCALE void                           InitializeConstructs(void *);
    LOCALE int                          (*SetBeforeResetFunction(void *,int (*)(void *)))(void *);
-   LOCALE void                           OldGetConstructList(void *,DATA_OBJECT *,
-                                                          void *(*)(void *,void *),
-                                                          char *(*)(void *,void *));
    LOCALE void                           ResetCommand(void *);
    LOCALE void                           ClearCommand(void *);
    LOCALE intBool                        ClearReady(void *);

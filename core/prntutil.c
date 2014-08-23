@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                PRINT UTILITY MODULE                 */
    /*******************************************************/
@@ -119,7 +119,7 @@ globle void PrintFloat(
   const char *fileid,
   double number)
   {
-   char *theString;
+   const char *theString;
 
    theString = FloatToString(theEnv,number);
    EnvPrintRouter(theEnv,fileid,theString);
@@ -445,7 +445,7 @@ globle void DivideByZeroErrorMessage(
 /*******************************************************/
 /* FloatToString: Converts number to KB string format. */
 /*******************************************************/
-globle char *FloatToString(
+globle const char *FloatToString(
   void *theEnv,
   double number)
   {
@@ -474,7 +474,7 @@ globle char *FloatToString(
 /*******************************************************************/
 /* LongIntegerToString: Converts long integer to KB string format. */
 /*******************************************************************/
-globle char *LongIntegerToString(
+globle const char *LongIntegerToString(
   void *theEnv,
   long long number)
   {
@@ -495,7 +495,8 @@ globle const char *DataObjectToString(
   DATA_OBJECT *theDO)
   {
    void *thePtr;
-   char *theString, *newString;
+   const char *theString;
+   char *newString;
    const char *prefix, *postfix;
    size_t length;
    struct externalAddressHashNode *theAddress;

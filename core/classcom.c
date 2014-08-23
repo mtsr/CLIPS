@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                  CLASS COMMANDS MODULE              */
    /*******************************************************/
@@ -763,7 +763,7 @@ globle void *SetClassDefaultsModeCommand(
   void *theEnv)
   {
    DATA_OBJECT argPtr;
-   char *argument;
+   const char *argument;
    unsigned short oldMode;
    
    oldMode = DefclassData(theEnv)->ClassDefaultsMode;
@@ -850,7 +850,7 @@ globle void SetNextDefclass(
 /* Additional Environment Functions */
 /*##################################*/
 
-globle char *EnvGetDefclassName(
+globle const char *EnvGetDefclassName(
   void *theEnv,
   void *theClass)
   {
@@ -871,7 +871,7 @@ globle struct defmoduleItemHeader *EnvGetDefclassModule(
    return GetConstructModuleItem((struct constructHeader *) theClass);
   }
 
-globle char *EnvDefclassModule(
+globle const char *EnvDefclassModule(
   void *theEnv,
   void *theClass)
   {
@@ -935,7 +935,7 @@ globle unsigned short GetClassDefaultsMode()
    return EnvGetClassDefaultsMode(GetCurrentEnvironment());
   }
 
-globle char *GetDefclassName(
+globle const char *GetDefclassName(
   void *theClass)
   {
    return EnvGetDefclassName(GetCurrentEnvironment(),theClass);
@@ -953,7 +953,7 @@ globle struct defmoduleItemHeader *GetDefclassModule(
    return EnvGetDefclassModule(GetCurrentEnvironment(),theClass);
   }
 
-globle char *DefclassModule(
+globle const char *DefclassModule(
   void *theClass)
   {
    return EnvDefclassModule(GetCurrentEnvironment(),theClass);

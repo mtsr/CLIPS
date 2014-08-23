@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*              PRINT UTILITY HEADER FILE              */
    /*******************************************************/
@@ -85,8 +85,8 @@ struct printUtilityData
    LOCALE void                           PrintLongInteger(void *,const char *,long long);
    LOCALE void                           PrintAtom(void *,const char *,int,void *);
    LOCALE void                           PrintTally(void *,const char *,long long,const char *,const char *);
-   LOCALE char                          *FloatToString(void *,double);
-   LOCALE char                          *LongIntegerToString(void *,long long);
+   LOCALE const char                    *FloatToString(void *,double);
+   LOCALE const char                    *LongIntegerToString(void *,long long);
    LOCALE const char                    *DataObjectToString(void *,DATA_OBJECT *);
    LOCALE void                           SyntaxErrorMessage(void *,const char *);
    LOCALE void                           SystemError(void *,const char *,int);

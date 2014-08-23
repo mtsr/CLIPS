@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -101,7 +101,7 @@ struct instanceData
    LOCALE int                            EnvValidInstanceAddress(void *,void *);
    LOCALE void                           EnvDirectGetSlot(void *,void *,const char *,DATA_OBJECT *);
    LOCALE int                            EnvDirectPutSlot(void *,void *,const char *,DATA_OBJECT *);
-   LOCALE char                          *EnvGetInstanceName(void *,void *);
+   LOCALE const char                    *EnvGetInstanceName(void *,void *);
    LOCALE void                          *EnvGetInstanceClass(void *,void *);
    LOCALE unsigned long GetGlobalNumberOfInstances(void *);
    LOCALE void                          *EnvGetNextInstance(void *,void *);
@@ -124,7 +124,7 @@ struct instanceData
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE char                          *GetInstanceName(void *);
+   LOCALE const char                    *GetInstanceName(void *);
    LOCALE void                          *CreateRawInstance(void *,const char *);
    LOCALE intBool                        DeleteInstance(void *);
    LOCALE void                           DirectGetSlot(void *,const char *,DATA_OBJECT *);

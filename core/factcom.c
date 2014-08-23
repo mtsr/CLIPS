@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                FACT COMMANDS MODULE                 */
    /*******************************************************/
@@ -791,7 +791,7 @@ globle int SaveFactsCommand(
   {
    const char *fileName;
    int numArgs, saveCode = LOCAL_SAVE;
-   char *argument;
+   const char *argument;
    DATA_OBJECT theValue;
    struct expr *theList = NULL;
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -110,8 +110,8 @@
    LOCALE void                           EnvGetMethodRestrictions(void *,void *,long,DATA_OBJECT *);
    LOCALE SYMBOL_HN                     *GetDefgenericNamePointer(void *);
    LOCALE void                           SetNextDefgeneric(void *,void *);
-   LOCALE char                          *EnvDefgenericModule(void *,void *);
-   LOCALE char                          *EnvGetDefgenericName(void *,void *);
+   LOCALE const char                    *EnvDefgenericModule(void *,void *);
+   LOCALE const char                    *EnvGetDefgenericName(void *,void *);
    LOCALE char                          *EnvGetDefgenericPPForm(void *,void *);
    LOCALE SYMBOL_HN                     *EnvGetDefgenericNamePointer(void *,void *);
    LOCALE void                           EnvSetDefgenericPPForm(void *,void *,char *);
@@ -119,10 +119,10 @@
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    LOCALE void                           SetDefgenericPPForm(void *,char *);
-   LOCALE char                          *DefgenericModule(void *);
+   LOCALE const char                    *DefgenericModule(void *);
    LOCALE void                          *FindDefgeneric(const char *);
    LOCALE void                           GetDefgenericList(DATA_OBJECT *,struct defmodule *);
-   LOCALE char                          *GetDefgenericName(void *);
+   LOCALE const char                    *GetDefgenericName(void *);
    LOCALE char                          *GetDefgenericPPForm(void *);
    LOCALE void                          *GetNextDefgeneric(void *);
    LOCALE int                            IsDefgenericDeletable(void *);

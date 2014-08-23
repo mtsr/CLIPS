@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                 AGENDA HEADER FILE                  */
    /*******************************************************/
@@ -124,7 +124,7 @@ struct agendaData
    LOCALE void                    ClearRuleFromAgenda(void *,void *);
    LOCALE void                   *EnvGetNextActivation(void *,void *);
    LOCALE struct partialMatch    *EnvGetActivationBasis(void *,void *);
-   LOCALE char                   *EnvGetActivationName(void *,void *);
+   LOCALE const char             *EnvGetActivationName(void *,void *);
    LOCALE struct defrule         *EnvGetActivationRule(void *,void *);
    LOCALE int                     EnvGetActivationSalience(void *,void *);
    LOCALE int                     EnvSetActivationSalience(void *,void *,int);
@@ -158,7 +158,7 @@ struct agendaData
    LOCALE void                    Agenda(const char *,void *);
    LOCALE intBool                 DeleteActivation(void *);
    LOCALE struct partialMatch    *GetActivationBasis(void *);
-   LOCALE char                   *GetActivationName(void *);
+   LOCALE const char             *GetActivationName(void *);
    LOCALE void                    GetActivationPPForm(char *,unsigned,void *);
    LOCALE struct defrule         *GetActivationRule(void *);
    LOCALE int                     GetActivationSalience(void *);

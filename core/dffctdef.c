@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*              DEFFACTS DEFINITION MODULE             */
    /*******************************************************/
@@ -281,14 +281,14 @@ static void ReturnDeffacts(
 /* Additional Environment Functions */
 /*##################################*/
 
-globle char *EnvDeffactsModule(
+globle const char *EnvDeffactsModule(
   void *theEnv,
   void *theDeffacts)
   {
    return GetConstructModuleName((struct constructHeader *) theDeffacts);
   }
 
-globle char *EnvGetDeffactsName(
+globle const char *EnvGetDeffactsName(
   void *theEnv,
   void *theDeffacts)
   {
@@ -326,13 +326,13 @@ globle intBool IsDeffactsDeletable(
    return EnvIsDeffactsDeletable(GetCurrentEnvironment(),ptr);
   }
 
-globle char *DeffactsModule(
+globle const char *DeffactsModule(
   void *theDeffacts)
   {
    return EnvDeffactsModule(GetCurrentEnvironment(),theDeffacts);
   }
 
-globle char *GetDeffactsName(
+globle const char *GetDeffactsName(
   void *theDeffacts)
   {
    return EnvGetDeffactsName(GetCurrentEnvironment(),theDeffacts);

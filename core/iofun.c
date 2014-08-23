@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                 I/O FUNCTIONS MODULE                */
    /*******************************************************/
@@ -118,9 +118,9 @@ struct IOFunctionData
 
 #if IO_FUNCTIONS
    static void             ReadTokenFromStdin(void *,struct token *);
-   static char            *ControlStringCheck(void *,int);
+   static const char      *ControlStringCheck(void *,int);
    static char             FindFormatFlag(const char *,size_t *,char *,size_t);
-   static char            *PrintFormatFlag(void *,const char *,int,int);
+   static const char      *PrintFormatFlag(void *,const char *,int,int);
    static char            *FillBuffer(void *,const char *,size_t *,size_t *);
    static void             ReadNumber(void *,const char *,struct token *,int);
 #endif
@@ -764,7 +764,7 @@ globle void *FormatFunction(
   {
    int argCount;
    size_t start_pos;
-   char *formatString;
+   const char *formatString;
    const char *logicalName;
    char formatFlagType;
    int  f_cur_arg = 3;
@@ -774,7 +774,7 @@ globle void *FormatFunction(
    size_t fmaxm = 0;
    size_t fpos = 0;
    void *hptr;
-   char *theString;
+   const char *theString;
 
    /*======================================*/
    /* Set default return value for errors. */
@@ -873,12 +873,12 @@ globle void *FormatFunction(
 /* ControlStringCheck:  Checks the 2nd parameter which is the format */
 /*   control string to see if there are enough matching arguments.   */
 /*********************************************************************/
-static char *ControlStringCheck(
+static const char *ControlStringCheck(
   void *theEnv,
   int argCount)
   {
    DATA_OBJECT t_ptr;
-   char *str_array;
+   const char *str_array;
    char print_buff[FLAG_MAX];
    size_t i;
    int per_count;
@@ -1041,14 +1041,15 @@ static char FindFormatFlag(
 /* PrintFormatFlag:  Prints out part of the total format string along */
 /*   with the argument for that part of the format string.            */
 /**********************************************************************/
-static char *PrintFormatFlag(
+static const char *PrintFormatFlag(
   void *theEnv,
   const char *formatString,
   int whichArg,
   int formatType)
   {
    DATA_OBJECT theResult;
-   char *theString, *printBuffer;
+   const char *theString;
+   char *printBuffer;
    size_t theLength;
    void *oldLocale;
       

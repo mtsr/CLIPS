@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*               STRING FUNCTIONS MODULE               */
    /*******************************************************/
@@ -301,7 +301,8 @@ globle void UpcaseFunction(
    DATA_OBJECT theArg;
    unsigned i;
    size_t slen;
-   char *osptr, *nsptr;
+   const char *osptr;
+   char *nsptr;
 
    /*===============================================*/
    /* Function upcase expects exactly one argument. */
@@ -364,7 +365,8 @@ globle void LowcaseFunction(
    DATA_OBJECT theArg;
    unsigned i;
    size_t slen;
-   char *osptr, *nsptr;
+   const char *osptr;
+   char *nsptr;
 
    /*================================================*/
    /* Function lowcase expects exactly one argument. */
@@ -480,7 +482,8 @@ globle void *SubStringFunction(
   void *theEnv)
   {
    DATA_OBJECT theArgument;
-   char *tempString, *returnString;
+   const char *tempString;
+   char *returnString;
    size_t start, end, i, j, length;
    void *returnValue;
 
@@ -564,7 +567,7 @@ globle void StrIndexFunction(
   DATA_OBJECT_PTR result)
   {
    DATA_OBJECT theArgument1, theArgument2;
-   char *strg1, *strg2, *strg3;
+   const char *strg1, *strg2, *strg3;
    size_t i, j;
 
    result->type = SYMBOL;
@@ -969,7 +972,7 @@ globle int EnvBuild(
   void *theEnv,
   const char *theString)
   {
-   char *constructType;
+   const char *constructType;
    struct token theToken;
    int errorFlag;
 

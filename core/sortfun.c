@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                SORT FUNCTIONS MODULE                */
    /*******************************************************/
@@ -121,7 +121,7 @@ globle void SortFunction(
    DATA_OBJECT *theArguments, *theArguments2;
    DATA_OBJECT theArg;
    struct multifield *theMultifield, *tempMultifield;
-   char *functionName;
+   const char *functionName;
    struct expr *functionReference;
    int argumentSize = 0;
    struct FunctionDefinition *fptr;

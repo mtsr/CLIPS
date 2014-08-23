@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -482,7 +482,7 @@ globle void DeleteString(
 /*   created is added to the SymbolTable, so it is not     */
 /*   necessary to deallocate the string returned.          */
 /***********************************************************/
-globle char *AppendStrings(
+globle const char *AppendStrings(
   void *theEnv,
   const char *str1,
   const char *str2)

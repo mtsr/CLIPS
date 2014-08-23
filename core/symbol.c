@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                    SYMBOL MODULE                    */
    /*******************************************************/
@@ -215,7 +215,7 @@ static void DeallocateSymbolData(
          nextSHPtr = shPtr->next;
          if (! shPtr->permanent)
            {
-            rm(theEnv,shPtr->contents,strlen(shPtr->contents)+1);
+            rm(theEnv,(void *) shPtr->contents,strlen(shPtr->contents)+1);
             rtn_struct(theEnv,symbolHashNode,shPtr);
            }  
          shPtr = nextSHPtr;
@@ -257,7 +257,7 @@ static void DeallocateSymbolData(
          nextBMHPtr = bmhPtr->next;
          if (! bmhPtr->permanent)
            {
-            rm(theEnv,bmhPtr->contents,bmhPtr->size);
+            rm(theEnv,(void *) bmhPtr->contents,bmhPtr->size);
             rtn_struct(theEnv,bitMapHashNode,bmhPtr); 
            } 
          bmhPtr = nextBMHPtr;
@@ -325,6 +325,7 @@ globle void *EnvAddSymbol(
    unsigned long tally;
    size_t length;
    SYMBOL_HN *past = NULL, *peek;
+   char *buffer;
 
     /*====================================*/
     /* Get the hash value for the string. */
@@ -364,12 +365,13 @@ globle void *EnvAddSymbol(
     else past->next = peek;
 
     length = strlen(str) + 1;
-    peek->contents = (char *) gm2(theEnv,length);
+    buffer = (char *) gm2(theEnv,length);
+    genstrcpy(buffer,str);
+    peek->contents = buffer;
     peek->next = NULL;
     peek->bucket = tally;
     peek->count = 0;
     peek->permanent = FALSE;
-    genstrcpy(peek->contents,str);
       
     /*================================================*/
     /* Add the string to the list of ephemeral items. */
@@ -575,6 +577,7 @@ globle void *EnvAddBitMap(
    unsigned long tally;
    unsigned i;
    BITMAP_HN *past = NULL, *peek;
+   char *buffer;
 
     /*====================================*/
     /* Get the hash value for the bitmap. */
@@ -618,14 +621,14 @@ globle void *EnvAddBitMap(
     if (past == NULL) SymbolData(theEnv)->BitMapTable[tally] = peek;
     else past->next = peek;
 
-    peek->contents = (char *) gm2(theEnv,size);
+    buffer = (char *) gm2(theEnv,size);
+    for (i = 0; i < size ; i++) buffer[i] = theBitMap[i];
+    peek->contents = buffer;
     peek->next = NULL;
     peek->bucket = tally;
     peek->count = 0;
     peek->permanent = FALSE;
     peek->size = (unsigned short) size;
-
-    for (i = 0; i < size ; i++) peek->contents[i] = theBitMap[i];
 
     /*================================================*/
     /* Add the bitmap to the list of ephemeral items. */
@@ -1061,12 +1064,12 @@ static void RemoveHashNode(
 
    if (type == SYMBOL)
      {
-      rm(theEnv,((SYMBOL_HN *) theValue)->contents,
+      rm(theEnv,(void *) ((SYMBOL_HN *) theValue)->contents,
          strlen(((SYMBOL_HN *) theValue)->contents) + 1);
      }
    else if (type == BITMAPARRAY)
      {
-      rm(theEnv,((BITMAP_HN *) theValue)->contents,
+      rm(theEnv,(void *) ((BITMAP_HN *) theValue)->contents,
          ((BITMAP_HN *) theValue)->size);
      }
    else if (type == EXTERNAL_ADDRESS)

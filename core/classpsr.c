@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*                  CLASS PARSER MODULE                */
    /*******************************************************/
@@ -860,7 +860,7 @@ globle void *CreateClassScopeMap(
   {
    unsigned scopeMapSize;
    char *scopeMap;
-   char *className;
+   const char *className;
    struct defmodule *matchModule,
                     *theModule;
    int moduleID,count;

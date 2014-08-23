@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*               TEXT PROCESSING MODULE                */
    /*******************************************************/
@@ -1184,7 +1184,7 @@ globle void *GetRegionCommand(
 globle int TossCommand(
   void *theEnv)
   {
-   char *file;   /*Name of the file */
+   const char *file;   /*Name of the file */
    DATA_OBJECT arg_ptr;
 
    if (EnvArgTypeCheck(theEnv,"toss",1,SYMBOL_OR_STRING,&arg_ptr) == FALSE)

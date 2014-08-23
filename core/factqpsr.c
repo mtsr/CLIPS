@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*            FACT-SET QUERIES PARSER MODULE           */
    /*******************************************************/
@@ -389,7 +389,7 @@ static intBool ReplaceTemplateNameWithReference(
   void *theEnv,
   EXPRESSION *theExp)
   {
-   char *theTemplateName;
+   const char *theTemplateName;
    void *theDeftemplate;
    int count;
 

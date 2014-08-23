@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                 DEFFUNCTION MODULE                  */
    /*******************************************************/
@@ -1047,14 +1047,14 @@ globle unsigned EnvGetDeffunctionWatch(
 /* Additional Environment Functions */
 /*##################################*/
 
-globle char *EnvDeffunctionModule(
+globle const char *EnvDeffunctionModule(
   void *theEnv,
   void *theDeffunction)
   {
    return GetConstructModuleName((struct constructHeader *) theDeffunction);
   }
 
-globle char *EnvGetDeffunctionName(
+globle const char *EnvGetDeffunctionName(
   void *theEnv,
   void *theDeffunction)
   {
@@ -1089,7 +1089,7 @@ globle void EnvSetDeffunctionPPForm(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle char *DeffunctionModule(
+globle const char *DeffunctionModule(
   void *theDeffunction)
   {
    return EnvDeffunctionModule(GetCurrentEnvironment(),theDeffunction);
@@ -1113,7 +1113,7 @@ globle intBool IsDeffunctionDeletable(
    return EnvIsDeffunctionDeletable(GetCurrentEnvironment(),ptr);
   }
 
-globle char *GetDeffunctionName(
+globle const char *GetDeffunctionName(
   void *theDeffunction)
   {
    return EnvGetDeffunctionName(GetCurrentEnvironment(),theDeffunction);

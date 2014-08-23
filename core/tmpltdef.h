@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*               DEFTEMPLATE HEADER FILE               */
    /*******************************************************/
@@ -153,15 +153,15 @@ struct deftemplateData
 #if RUN_TIME
    LOCALE void                           DeftemplateRunTimeInitialize(void *);
 #endif
-   LOCALE char                          *EnvDeftemplateModule(void *,void *);
-   LOCALE char                          *EnvGetDeftemplateName(void *,void *);
+   LOCALE const char                    *EnvDeftemplateModule(void *,void *);
+   LOCALE const char                    *EnvGetDeftemplateName(void *,void *);
    LOCALE char                          *EnvGetDeftemplatePPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE char                          *DeftemplateModule(void *);
+   LOCALE const char                    *DeftemplateModule(void *);
    LOCALE void                          *FindDeftemplate(const char *);
-   LOCALE char                          *GetDeftemplateName(void *);
+   LOCALE const char                    *GetDeftemplateName(void *);
    LOCALE char                          *GetDeftemplatePPForm(void *);
    LOCALE void                          *GetNextDeftemplate(void *);
    LOCALE intBool                        IsDeftemplateDeletable(void *);

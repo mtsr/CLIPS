@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*              MESSAGE-HANDLER PARSER FUNCTIONS       */
    /*******************************************************/
@@ -330,7 +330,7 @@ globle void CreateGetAndPutHandlers(
   void *theEnv,
   SLOT_DESC *sd)
   {
-   char *className,*slotName;
+   const char *className,*slotName;
    size_t bufsz;
    char *buf;
    const char *handlerRouter = "*** Default Public Handlers ***";
@@ -521,7 +521,7 @@ static int BindSlotReference(
   EXPRESSION *bindExp,
   void *userBuffer)
   {
-   char *bindName;
+   const char *bindName;
    struct token itkn;
    int oldpp;
    SLOT_DESC *sd;

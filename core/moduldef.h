@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                DEFMODULE HEADER FILE                */
    /*******************************************************/
@@ -215,7 +215,7 @@ struct defmoduleData
 
    LOCALE void                           InitializeDefmodules(void *);
    LOCALE void                          *EnvFindDefmodule(void *,const char *);
-   LOCALE char                          *EnvGetDefmoduleName(void *,void *);
+   LOCALE const char                    *EnvGetDefmoduleName(void *,void *);
    LOCALE char                          *EnvGetDefmodulePPForm(void *,void *);
    LOCALE void                          *EnvGetNextDefmodule(void *,void *);
    LOCALE void                           RemoveAllDefmodules(void *);
@@ -247,7 +247,7 @@ struct defmoduleData
 
    LOCALE void                          *FindDefmodule(const char *);
    LOCALE void                          *GetCurrentModule(void);
-   LOCALE char                          *GetDefmoduleName(void *);
+   LOCALE const char                    *GetDefmoduleName(void *);
    LOCALE char                          *GetDefmodulePPForm(void *);
    LOCALE void                          *GetNextDefmodule(void *);
    LOCALE void                          *SetCurrentModule(void *);

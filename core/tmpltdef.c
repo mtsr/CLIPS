@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                 DEFTEMPLATE MODULE                  */
    /*******************************************************/
@@ -455,7 +455,7 @@ globle void *CreateDeftemplateScopeMap(
   {
    unsigned scopeMapSize;
    char *scopeMap;
-   char *templateName;
+   const char *templateName;
    struct defmodule *matchModule, *theModule;
    int moduleID,count;
    void *theBitMap;
@@ -540,14 +540,14 @@ globle void DeftemplateRunTimeInitialize(
 /* Additional Environment Functions */
 /*##################################*/
 
-globle char *EnvDeftemplateModule(
+globle const char *EnvDeftemplateModule(
   void *theEnv,
   void *theDeftemplate)
   {
    return GetConstructModuleName((struct constructHeader *) theDeftemplate);
   }
 
-globle char *EnvGetDeftemplateName(
+globle const char *EnvGetDeftemplateName(
   void *theEnv,
   void *theDeftemplate)
   {
@@ -567,7 +567,7 @@ globle char *EnvGetDeftemplatePPForm(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle char *DeftemplateModule(
+globle const char *DeftemplateModule(
   void *theDeftemplate)
   {
    return EnvDeftemplateModule(GetCurrentEnvironment(),theDeftemplate);
@@ -579,7 +579,7 @@ globle void *FindDeftemplate(
    return EnvFindDeftemplate(GetCurrentEnvironment(),deftemplateName);
   }
 
-globle char *GetDeftemplateName(
+globle const char *GetDeftemplateName(
   void *theDeftemplate)
   {
    return EnvGetDeftemplateName(GetCurrentEnvironment(),theDeftemplate);

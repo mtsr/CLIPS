@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                 DEFRULE HEADER FILE                 */
    /*******************************************************/
@@ -179,15 +179,15 @@ struct defruleData
 #endif
    LOCALE long                           EnvGetDisjunctCount(void *,void *);
    LOCALE void                          *EnvGetNthDisjunct(void *,void *,long);
-   LOCALE char                          *EnvDefruleModule(void *,void *);
-   LOCALE char                          *EnvGetDefruleName(void *,void *);
+   LOCALE const char                    *EnvDefruleModule(void *,void *);
+   LOCALE const char                    *EnvGetDefruleName(void *,void *);
    LOCALE char                          *EnvGetDefrulePPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE char                          *DefruleModule(void *);
+   LOCALE const char                    *DefruleModule(void *);
    LOCALE void                          *FindDefrule(const char *);
-   LOCALE char                          *GetDefruleName(void *);
+   LOCALE const char                    *GetDefruleName(void *);
    LOCALE char                          *GetDefrulePPForm(void *);
    LOCALE void                          *GetNextDefrule(void *);
    LOCALE intBool                        IsDefruleDeletable(void *);

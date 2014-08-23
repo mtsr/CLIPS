@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                   DEFRULE MODULE                    */
    /*******************************************************/
@@ -389,9 +389,9 @@ globle void DefruleRunTimeInitialize(
         theModule = (struct defmodule *) EnvGetNextDefmodule(theEnv,theModule))
      {
       EnvSetCurrentModule(theEnv,(void *) theModule);
-      for (theRule = EnvGetNextDefrule(theEnv,NULL);
+      for (theRule = (struct defrule *) EnvGetNextDefrule(theEnv,NULL);
            theRule != NULL;
-           theRule = EnvGetNextDefrule(theEnv,theRule))
+           theRule = (struct defrule *) EnvGetNextDefrule(theEnv,theRule))
         { 
          for (theDisjunct = theRule;
               theDisjunct != NULL;
@@ -417,7 +417,7 @@ static void AddBetaMemoriesToRule(
      { AddBetaMemoriesToRule(theEnv,theNode->lastLevel); }
      
    if (theNode->joinFromTheRight)
-     { AddBetaMemoriesToRule(theEnv,theNode->rightSideEntryStructure); }
+     { AddBetaMemoriesToRule(theEnv,(struct joinNode *) theNode->rightSideEntryStructure); }
   }
   
 #endif /* RUN_TIME */
@@ -509,14 +509,14 @@ globle void AddBetaMemoriesToJoin(
 /* Additional Environment Functions */
 /*##################################*/
 
-globle char *EnvDefruleModule(
+globle const char *EnvDefruleModule(
   void *theEnv,
   void *theDefrule)
   {
    return GetConstructModuleName((struct constructHeader *) theDefrule);
   }
 
-globle char *EnvGetDefruleName(
+globle const char *EnvGetDefruleName(
   void *theEnv,
   void *theDefrule)
   {
@@ -536,7 +536,7 @@ globle char *EnvGetDefrulePPForm(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle char *DefruleModule(
+globle const char *DefruleModule(
   void *theDefrule)
   {
    return EnvDefruleModule(GetCurrentEnvironment(),theDefrule);
@@ -548,7 +548,7 @@ globle void *FindDefrule(
    return EnvFindDefrule(GetCurrentEnvironment(),defruleName);
   }
 
-globle char *GetDefruleName(
+globle const char *GetDefruleName(
   void *theDefrule)
   {
    return EnvGetDefruleName(GetCurrentEnvironment(),theDefrule);

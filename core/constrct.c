@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -785,61 +785,6 @@ globle void SetExecutingConstruct(
   int value)
   {
    ConstructData(theEnv)->Executing = value;
-  }
-
-/************************************************************/
-/* OldGetConstructList: Returns a list of all the construct */
-/*   names in a multifield value. It doesn't check the      */
-/*   number of arguments. It assumes that the restriction   */
-/*   string in DefineFunction2 call was "00".               */
-/************************************************************/
-globle void OldGetConstructList(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue,
-  void *(*nextFunction)(void *,void *),
-  char *(*nameFunction)(void *,void *))
-  {
-   void *theConstruct;
-   unsigned long count = 0;
-   struct multifield *theList;
-
-   /*====================================*/
-   /* Determine the number of constructs */
-   /* of the specified type.             */
-   /*====================================*/
-
-   for (theConstruct = (*nextFunction)(theEnv,NULL);
-        theConstruct != NULL;
-        theConstruct = (*nextFunction)(theEnv,theConstruct))
-     { count++; }
-
-   /*===========================*/
-   /* Create a multifield large */
-   /* enough to store the list. */
-   /*===========================*/
-
-   SetpType(returnValue,MULTIFIELD);
-   SetpDOBegin(returnValue,1);
-   SetpDOEnd(returnValue,(long) count);
-   theList = (struct multifield *) EnvCreateMultifield(theEnv,count);
-   SetpValue(returnValue,(void *) theList);
-
-   /*====================================*/
-   /* Store the names in the multifield. */
-   /*====================================*/
-
-   for (theConstruct = (*nextFunction)(theEnv,NULL), count = 1;
-        theConstruct != NULL;
-        theConstruct = (*nextFunction)(theEnv,theConstruct), count++)
-     {
-      if (EvaluationData(theEnv)->HaltExecution == TRUE)
-        {
-         EnvSetMultifieldErrorValue(theEnv,returnValue);
-         return;
-        }
-      SetMFType(theList,count,SYMBOL);
-      SetMFValue(theList,count,EnvAddSymbol(theEnv,(*nameFunction)(theEnv,theConstruct)));
-     }
   }
 
 /*******************************************************/

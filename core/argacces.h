@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*             ARGUMENT ACCESS HEADER FILE             */
    /*******************************************************/
@@ -59,7 +59,7 @@
    LOCALE int                            EnvRtnArgCount(void *);
    LOCALE int                            EnvArgCountCheck(void *,const char *,int,int);
    LOCALE int                            EnvArgRangeCheck(void *,const char *,int,int);
-   LOCALE char                          *EnvRtnLexeme(void *,int);
+   LOCALE const char                    *EnvRtnLexeme(void *,int);
    LOCALE double                         EnvRtnDouble(void *,int);
    LOCALE long long                      EnvRtnLong(void *,int);
    LOCALE struct dataObject             *EnvRtnUnknown(void *,int,struct dataObject *);
@@ -84,7 +84,7 @@
   LOCALE int                             ArgTypeCheck(const char *,int,int,DATA_OBJECT_PTR);
   LOCALE int                             RtnArgCount(void);
   LOCALE double                          RtnDouble(int);
-  LOCALE char                           *RtnLexeme(int);
+  LOCALE const char                     *RtnLexeme(int);
   LOCALE long long                       RtnLong(int);
   LOCALE DATA_OBJECT_PTR                 RtnUnknown(int,DATA_OBJECT_PTR);
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*              CONSTRUCT COMMANDS MODULE              */
    /*******************************************************/
@@ -652,7 +652,7 @@ globle void SaveConstruct(
 /* GetConstructModuleName: Generic routine for returning */
 /*   the name of the module to which a construct belongs */
 /*********************************************************/
-globle char *GetConstructModuleName(
+globle const char *GetConstructModuleName(
   struct constructHeader *theConstruct)
   { return(EnvGetDefmoduleName(NULL,(void *) theConstruct->whichModule->theModule)); }
 
@@ -660,7 +660,7 @@ globle char *GetConstructModuleName(
 /* GetConstructNameString: Generic routine for returning */
 /*   the name string of a construct.                     */
 /*********************************************************/
-globle char *GetConstructNameString(
+globle const char *GetConstructNameString(
   struct constructHeader *theConstruct)
   { return(ValueToString(theConstruct->name)); }
 
@@ -668,7 +668,7 @@ globle char *GetConstructNameString(
 /* EnvGetConstructNameString: Generic routine for */
 /*   returning the name string of a construct.    */
 /**************************************************/
-globle char *EnvGetConstructNameString(
+globle const char *EnvGetConstructNameString(
   void *theEnv,
   struct constructHeader *theConstruct)
   { 

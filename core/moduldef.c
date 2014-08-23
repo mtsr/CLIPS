@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                  DEFMODULE MODULE                   */
    /*******************************************************/
@@ -507,7 +507,7 @@ globle void *EnvGetNextDefmodule(
 /* EnvGetDefmoduleName: Returns the name */
 /*   of the specified defmodule.         */
 /*****************************************/
-globle char *EnvGetDefmoduleName(
+globle const char *EnvGetDefmoduleName(
   void *theEnv,
   void *defmodulePtr)
   { 
@@ -717,7 +717,7 @@ globle void *SetCurrentModuleCommand(
   void *theEnv)
   {
    DATA_OBJECT argPtr;
-   char *argument;
+   const char *argument;
    struct defmodule *theModule;
    SYMBOL_HN *defaultReturn;
 
@@ -802,7 +802,7 @@ globle void *GetCurrentModule()
    return EnvGetCurrentModule(GetCurrentEnvironment());
   }
 
-globle char *GetDefmoduleName(
+globle const char *GetDefmoduleName(
   void *defmodulePtr)
   {
    return EnvGetDefmoduleName(GetCurrentEnvironment(),defmodulePtr);

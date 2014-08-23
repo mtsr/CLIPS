@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  08/22/14            */
    /*                                                     */
    /*                    AGENDA MODULE                    */
    /*******************************************************/
@@ -351,7 +351,7 @@ globle struct partialMatch *EnvGetActivationBasis(
 /* EnvGetActivationName: Returns the name of */
 /*   the rule associated with an activation. */
 /*********************************************/
-globle char *EnvGetActivationName(
+globle const char *EnvGetActivationName(
   void *theEnv,
   void *actPtr)
   {
@@ -1120,7 +1120,7 @@ globle void *SetSalienceEvaluationCommand(
   void *theEnv)
   {
    DATA_OBJECT argPtr;
-   char *argument;
+   const char *argument;
    const char *oldValue;
 
    /*==================================================*/
@@ -1384,7 +1384,7 @@ globle struct partialMatch *GetActivationBasis(
    return EnvGetActivationBasis(GetCurrentEnvironment(),actPtr);
   }
 
-globle char *GetActivationName(
+globle const char *GetActivationName(
   void *actPtr)
   {
    return EnvGetActivationName(GetCurrentEnvironment(),actPtr);

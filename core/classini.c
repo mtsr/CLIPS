@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  08/22/14          */
    /*                                                     */
    /*               CLASS INITIALIZATION MODULE           */
    /*******************************************************/
@@ -793,7 +793,7 @@ static void UpdateDefclassesScope(
    int newModuleID,count;
    char *newScopeMap;
    unsigned newScopeMapSize;
-   char *className;
+   const char *className;
    struct defmodule *matchModule;
 
    newModuleID = (int) ((struct defmodule *) EnvGetCurrentModule(theEnv))->bsaveID;

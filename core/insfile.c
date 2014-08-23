@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  08/16/14           */
+   /*              CLIPS Version 6.30  08/22/14           */
    /*                                                     */
    /*         INSTANCE LOAD/SAVE (ASCII/BINARY) MODULE    */
    /*******************************************************/
@@ -205,7 +205,7 @@ globle long SaveInstancesCommand(
 globle long LoadInstancesCommand(
   void *theEnv)
   {
-   char *fileFound;
+   const char *fileFound;
    DATA_OBJECT temp;
    long instanceCount;
 
@@ -273,7 +273,7 @@ globle long EnvLoadInstancesFromString(
 globle long RestoreInstancesCommand(
   void *theEnv)
   {
-   char *fileFound;
+   const char *fileFound;
    DATA_OBJECT temp;
    long instanceCount;
 
@@ -343,7 +343,7 @@ globle long EnvRestoreInstancesFromString(
 globle long BinaryLoadInstancesCommand(
   void *theEnv)
   {
-   char *fileFound;
+   const char *fileFound;
    DATA_OBJECT temp;
    long instanceCount;
 
@@ -585,7 +585,7 @@ static long InstancesSaveCommandParser(
   const char *functionName,
   long (*saveFunction)(void *,const char *,int,EXPRESSION *,intBool))
   {
-   char *fileFound;
+   const char *fileFound;
    DATA_OBJECT temp;
    int argCount,saveCode = LOCAL_SAVE;
    EXPRESSION *classList = NULL;
