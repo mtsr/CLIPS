@@ -108,7 +108,7 @@ struct instanceData
    LOCALE void                          *GetNextInstanceInScope(void *,void *);
    LOCALE void                          *EnvGetNextInstanceInClass(void *,void *,void *);
    LOCALE void                          *EnvGetNextInstanceInClassAndSubclasses(void *,void **,void *,DATA_OBJECT *);
-   LOCALE void                           EnvGetInstancePPForm(void *,char *,unsigned,void *);
+   LOCALE void                           EnvGetInstancePPForm(void *,char *,size_t,void *);
    LOCALE void                           ClassCommand(void *,DATA_OBJECT *);
    LOCALE intBool                        DeleteInstanceCommand(void *);
    LOCALE intBool                        UnmakeInstanceCommand(void *);

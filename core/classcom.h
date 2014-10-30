@@ -61,7 +61,7 @@
 #endif
 
    LOCALE const char             *EnvGetDefclassName(void *,void *);
-   LOCALE char                   *EnvGetDefclassPPForm(void *,void *);
+   LOCALE const char             *EnvGetDefclassPPForm(void *,void *);
    LOCALE struct defmoduleItemHeader 
                                  *EnvGetDefclassModule(void *,void *);
    LOCALE const char             *EnvDefclassModule(void *,void *);
@@ -115,7 +115,7 @@
    LOCALE struct defmoduleItemHeader 
                                  *GetDefclassModule(void *);
    LOCALE const char             *GetDefclassName(void *);
-   LOCALE char                   *GetDefclassPPForm(void *);
+   LOCALE const char             *GetDefclassPPForm(void *);
    LOCALE unsigned                GetDefclassWatchInstances(void *);
    LOCALE unsigned                GetDefclassWatchSlots(void *);
    LOCALE void                   *GetNextDefclass(void *,void *);

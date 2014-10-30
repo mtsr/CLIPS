@@ -128,8 +128,8 @@ struct agendaData
    LOCALE struct defrule         *EnvGetActivationRule(void *,void *);
    LOCALE int                     EnvGetActivationSalience(void *,void *);
    LOCALE int                     EnvSetActivationSalience(void *,void *,int);
-   LOCALE void                    EnvGetActivationPPForm(void *,char *,unsigned,void *);
-   LOCALE void                    EnvGetActivationBasisPPForm(void *,char *,unsigned,void *);
+   LOCALE void                    EnvGetActivationPPForm(void *,char *,size_t,void *);
+   LOCALE void                    EnvGetActivationBasisPPForm(void *,char *,size_t,void *);
    LOCALE intBool                 MoveActivationToTop(void *,void *);
    LOCALE intBool                 EnvDeleteActivation(void *,void *);
    LOCALE intBool                 DetachActivation(void *,void *);

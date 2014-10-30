@@ -110,7 +110,7 @@ struct messageHandlerData
    LOCALE void             PPDefmessageHandlerCommand(void *);
    LOCALE void             ListDefmessageHandlersCommand(void *);
    LOCALE void             PreviewSendCommand(void *); 
-   LOCALE char            *EnvGetDefmessageHandlerPPForm(void *,void *,int);
+   LOCALE const char      *EnvGetDefmessageHandlerPPForm(void *,void *,int);
    LOCALE void             EnvListDefmessageHandlers(void *,const char *,void *,int);
    LOCALE void             EnvPreviewSend(void *,const char *,void *,const char *);
    LOCALE long             DisplayHandlersInLinks(void *,const char *,PACKED_CLASS_LINKS *,int);
@@ -125,7 +125,7 @@ struct messageHandlerData
    LOCALE int              IsDefmessageHandlerDeletable(void *,int);
    LOCALE int              UndefmessageHandler(void *,int);
 #if DEBUGGING_FUNCTIONS
-   LOCALE char            *GetDefmessageHandlerPPForm(void *,int);
+   LOCALE const char      *GetDefmessageHandlerPPForm(void *,int);
    LOCALE unsigned         GetDefmessageHandlerWatch(void *,int);
    LOCALE void             ListDefmessageHandlers(const char *,void *,int);
    LOCALE void             PreviewSend(const char *,void *,const char *);

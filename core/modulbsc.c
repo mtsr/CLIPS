@@ -123,7 +123,7 @@ static void SaveDefmodules(
   void *theModule,
   const char *logicalName)
   {
-   char *ppform;
+   const char *ppform;
 
    ppform = EnvGetDefmodulePPForm(theEnv,theModule);
    if (ppform != NULL)

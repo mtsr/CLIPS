@@ -133,7 +133,7 @@ globle void ReturnDefrule(
           }
          if (waste->header.ppForm != NULL)
            {
-            rm(theEnv,waste->header.ppForm,strlen(waste->header.ppForm) + 1);
+            rm(theEnv,(void *) waste->header.ppForm,strlen(waste->header.ppForm) + 1);
             waste->header.ppForm = NULL;
             
             /*=======================================================*/
@@ -216,7 +216,7 @@ globle void DestroyDefrule(
            {
             struct defrule *tmpPtr;
 
-            rm(theEnv,theDefrule->header.ppForm,strlen(theDefrule->header.ppForm) + 1);
+            rm(theEnv,(void *) theDefrule->header.ppForm,strlen(theDefrule->header.ppForm) + 1);
             
             /*=======================================================*/
             /* All of the rule disjuncts share the same pretty print */

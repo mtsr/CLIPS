@@ -125,10 +125,10 @@ struct deffunctionData
    LOCALE void                           EnvGetDeffunctionList(void *,DATA_OBJECT *,struct defmodule *);
    LOCALE const char                    *EnvGetDeffunctionName(void *,void *);
    LOCALE SYMBOL_HN                     *EnvGetDeffunctionNamePointer(void *,void *);
-   LOCALE char                          *EnvGetDeffunctionPPForm(void *,void *);
+   LOCALE const char                    *EnvGetDeffunctionPPForm(void *,void *);
    LOCALE void                          *EnvGetNextDeffunction(void *,void *);
    LOCALE int                            EnvIsDeffunctionDeletable(void *,void *);
-   LOCALE void                           EnvSetDeffunctionPPForm(void *,void *,char *);
+   LOCALE void                           EnvSetDeffunctionPPForm(void *,void *,const char *);
    LOCALE intBool                        EnvUndeffunction(void *,void *);
    LOCALE void                           GetDeffunctionListFunction(void *,DATA_OBJECT *);
    LOCALE void                          *GetDeffunctionModuleCommand(void *);
@@ -153,7 +153,7 @@ struct deffunctionData
    LOCALE void                          *FindDeffunction(const char *);
    LOCALE void                           GetDeffunctionList(DATA_OBJECT *,struct defmodule *);
    LOCALE const char                    *GetDeffunctionName(void *);
-   LOCALE char                          *GetDeffunctionPPForm(void *);
+   LOCALE const char                    *GetDeffunctionPPForm(void *);
    LOCALE void                          *GetNextDeffunction(void *);
    LOCALE intBool                        IsDeffunctionDeletable(void *);
    LOCALE intBool                        Undeffunction(void *);

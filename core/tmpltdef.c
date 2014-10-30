@@ -554,7 +554,7 @@ globle const char *EnvGetDeftemplateName(
    return GetConstructNameString((struct constructHeader *) theDeftemplate);
   }
 
-globle char *EnvGetDeftemplatePPForm(
+globle const char *EnvGetDeftemplatePPForm(
   void *theEnv,
   void *theDeftemplate)
   {
@@ -585,7 +585,7 @@ globle const char *GetDeftemplateName(
    return EnvGetDeftemplateName(GetCurrentEnvironment(),theDeftemplate);
   }
 
-globle char *GetDeftemplatePPForm(
+globle const char *GetDeftemplatePPForm(
   void *theDeftemplate)
   {
    return EnvGetDeftemplatePPForm(GetCurrentEnvironment(),theDeftemplate);

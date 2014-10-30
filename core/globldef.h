@@ -120,7 +120,7 @@ struct defglobalModule
    LOCALE struct defglobalModule        *GetDefglobalModuleItem(void *,struct defmodule *);
    LOCALE void                           QSetDefglobalValue(void *,struct defglobal *,DATA_OBJECT_PTR,int);
    LOCALE struct defglobal              *QFindDefglobal(void *,struct symbolHashNode *);
-   LOCALE void                           EnvGetDefglobalValueForm(void *,char *,unsigned,void *);
+   LOCALE void                           EnvGetDefglobalValueForm(void *,char *,size_t,void *);
    LOCALE int                            EnvGetGlobalsChanged(void *);
    LOCALE void                           EnvSetGlobalsChanged(void *,int);
    LOCALE intBool                        EnvGetDefglobalValue(void *,const char *,DATA_OBJECT_PTR);
@@ -130,14 +130,14 @@ struct defglobalModule
    LOCALE int                            QGetDefglobalValue(void *,void *,DATA_OBJECT_PTR);
    LOCALE const char                    *EnvDefglobalModule(void *,void *);
    LOCALE const char                    *EnvGetDefglobalName(void *,void *);
-   LOCALE char                          *EnvGetDefglobalPPForm(void *,void *);
+   LOCALE const char                    *EnvGetDefglobalPPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    LOCALE const char                    *DefglobalModule(void *);
    LOCALE void                          *FindDefglobal(const char *);
    LOCALE const char                    *GetDefglobalName(void *);
-   LOCALE char                          *GetDefglobalPPForm(void *);
+   LOCALE const char                    *GetDefglobalPPForm(void *);
    LOCALE intBool                        GetDefglobalValue(const char *,DATA_OBJECT_PTR);
    LOCALE void                           GetDefglobalValueForm(char *,unsigned,void *);
    LOCALE int                            GetGlobalsChanged(void);

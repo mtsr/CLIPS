@@ -522,7 +522,7 @@ globle const char *EnvGetDefmoduleName(
 /* EnvGetDefmodulePPForm: Returns the pretty print */
 /*   representation of the specified defmodule.    */
 /***************************************************/
-globle char *EnvGetDefmodulePPForm(
+globle const char *EnvGetDefmodulePPForm(
   void *theEnv,
   void *defmodulePtr)
   { 
@@ -808,7 +808,7 @@ globle const char *GetDefmoduleName(
    return EnvGetDefmoduleName(GetCurrentEnvironment(),defmodulePtr);
   }
 
-globle char *GetDefmodulePPForm(
+globle const char *GetDefmodulePPForm(
   void *defmodulePtr)
   {
    return EnvGetDefmodulePPForm(GetCurrentEnvironment(),defmodulePtr);

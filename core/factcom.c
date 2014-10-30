@@ -1213,7 +1213,7 @@ globle intBool EnvLoadFacts(
 globle intBool EnvLoadFactsFromString(
   void *theEnv,
   const char *theString,
-  int theMax)
+  long theMax)
   {
    const char *theStrRouter = "*** load-facts-from-string ***";
    struct token theToken;
@@ -1225,7 +1225,7 @@ globle intBool EnvLoadFactsFromString(
    /*==========================*/
 
    if ((theMax == -1) ? (!OpenStringSource(theEnv,theStrRouter,theString,0)) :
-                        (!OpenTextSource(theEnv,theStrRouter,theString,0,(unsigned) theMax)))
+                        (!OpenTextSource(theEnv,theStrRouter,theString,0,(size_t) theMax)))
      return(FALSE);
 
    /*=================*/

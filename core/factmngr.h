@@ -154,7 +154,7 @@ struct factsData
    LOCALE void                           FactDeinstall(void *,struct fact *);
    LOCALE void                          *EnvGetNextFact(void *,void *);
    LOCALE void                          *GetNextFactInScope(void *theEnv,void *);
-   LOCALE void                           EnvGetFactPPForm(void *,char *,unsigned,void *);
+   LOCALE void                           EnvGetFactPPForm(void *,char *,size_t,void *);
    LOCALE int                            EnvGetFactListChanged(void *);
    LOCALE void                           EnvSetFactListChanged(void *,int);
    LOCALE unsigned long                  GetNumberOfFacts(void *);

@@ -975,7 +975,7 @@ globle void *EnvGetNextInstanceInClassAndSubclasses(
 globle void EnvGetInstancePPForm(
   void *theEnv,
   char *buf,
-  unsigned buflen,
+  size_t buflen,
   void *iptr)
   {
    const char *pbuf = "***InstancePPForm***";

@@ -416,7 +416,7 @@ globle int EnvSetActivationSalience(
 globle void EnvGetActivationPPForm(
   void *theEnv,
   char *buffer,
-  unsigned bufferLength,
+  size_t bufferLength,
   void *theActivation)
   {
    OpenStringDestination(theEnv,"ActPPForm",buffer,bufferLength);
@@ -431,7 +431,7 @@ globle void EnvGetActivationPPForm(
 globle void EnvGetActivationBasisPPForm(
   void *theEnv,
   char *buffer,
-  unsigned bufferLength,
+  size_t bufferLength,
   void *vTheActivation)
   {
    struct activation *theActivation = (struct activation *) vTheActivation;

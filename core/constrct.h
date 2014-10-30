@@ -66,7 +66,7 @@ struct construct;
 struct constructHeader
   {
    struct symbolHashNode *name;
-   char *ppForm;
+   const char *ppForm;
    struct defmoduleItemHeader *whichModule;
    long bsaveID;
    struct constructHeader *next;
@@ -82,7 +82,7 @@ struct construct
    int (*parseFunction)(void *,const char *);
    void *(*findFunction)(void *,const char *);
    struct symbolHashNode *(*getConstructNameFunction)(struct constructHeader *);
-   char *(*getPPFormFunction)(void *,struct constructHeader *);
+   const char *(*getPPFormFunction)(void *,struct constructHeader *);
    struct defmoduleItemHeader *(*getModuleItemFunction)(struct constructHeader *);
    void *(*getNextItemFunction)(void *,void *);
    void (*setNextItemFunction)(struct constructHeader *,struct constructHeader *);
@@ -167,7 +167,7 @@ struct constructData
                                                       int (*)(void *,const char *),
                                                       void *(*)(void *,const char *),
                                                       SYMBOL_HN *(*)(struct constructHeader *),
-                                                      char *(*)(void *,struct constructHeader *),
+                                                      const char *(*)(void *,struct constructHeader *),
                                                       struct defmoduleItemHeader *(*)(struct constructHeader *),
                                                       void *(*)(void *,void *),
                                                       void (*)(struct constructHeader *,struct constructHeader *),

@@ -602,7 +602,7 @@ globle void SaveConstruct(
   const char *logicalName,
   struct construct *constructClass)
   {
-   char *ppform;
+   const char *ppform;
    struct constructHeader *theConstruct;
 
    /*==========================*/
@@ -1135,7 +1135,7 @@ globle struct defmoduleItemHeader *GetConstructModuleItem(
 /* GetConstructPPForm: Returns the pretty print  */
 /*   representation for the specified construct. */
 /*************************************************/
-globle char *GetConstructPPForm(
+globle const char *GetConstructPPForm(
   void *theEnv,
   struct constructHeader *theConstruct)
   { 
@@ -1378,7 +1378,7 @@ globle void InitializeConstructHeader(
 globle void SetConstructPPForm(
   void *theEnv,
   struct constructHeader *theConstruct,
-  char *ppForm)
+  const char *ppForm)
   {
    if (theConstruct->ppForm != NULL)
      {

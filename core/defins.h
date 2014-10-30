@@ -98,10 +98,10 @@ struct definstancesData
    LOCALE void                           EnvGetDefinstancesList(void *,DATA_OBJECT *,struct defmodule *);
    LOCALE const char                    *EnvGetDefinstancesName(void *,void *);
    LOCALE SYMBOL_HN                     *EnvGetDefinstancesNamePointer(void *,void *);
-   LOCALE char                          *EnvGetDefinstancesPPForm(void *,void *);
+   LOCALE const char                    *EnvGetDefinstancesPPForm(void *,void *);
    LOCALE void                          *EnvGetNextDefinstances(void *,void *);
    LOCALE int                            EnvIsDefinstancesDeletable(void *,void *);
-   LOCALE  void                          EnvSetDefinstancesPPForm(void *,void *,char *);
+   LOCALE void                           EnvSetDefinstancesPPForm(void *,void *,const char *);
    LOCALE intBool                        EnvUndefinstances(void *,void *);
    LOCALE void                           GetDefinstancesListFunction(void *,DATA_OBJECT *);
    LOCALE void                          *GetDefinstancesModuleCommand(void *);
@@ -119,7 +119,7 @@ struct definstancesData
    LOCALE void                          *FindDefinstances(const char *);
    LOCALE void                           GetDefinstancesList(DATA_OBJECT *,struct defmodule *);
    LOCALE const char                    *GetDefinstancesName(void *);
-   LOCALE char                          *GetDefinstancesPPForm(void *,void *);
+   LOCALE const char                    *GetDefinstancesPPForm(void *,void *);
    LOCALE void                          *GetNextDefinstances(void *);
    LOCALE int                            IsDefinstancesDeletable(void *);
 #if DEBUGGING_FUNCTIONS

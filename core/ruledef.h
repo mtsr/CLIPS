@@ -181,14 +181,14 @@ struct defruleData
    LOCALE void                          *EnvGetNthDisjunct(void *,void *,long);
    LOCALE const char                    *EnvDefruleModule(void *,void *);
    LOCALE const char                    *EnvGetDefruleName(void *,void *);
-   LOCALE char                          *EnvGetDefrulePPForm(void *,void *);
+   LOCALE const char                    *EnvGetDefrulePPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    LOCALE const char                    *DefruleModule(void *);
    LOCALE void                          *FindDefrule(const char *);
    LOCALE const char                    *GetDefruleName(void *);
-   LOCALE char                          *GetDefrulePPForm(void *);
+   LOCALE const char                    *GetDefrulePPForm(void *);
    LOCALE void                          *GetNextDefrule(void *);
    LOCALE intBool                        IsDefruleDeletable(void *);
 

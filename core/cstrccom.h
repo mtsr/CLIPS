@@ -69,7 +69,7 @@
    LOCALE void                           ListConstruct(void *,struct construct *,const char *,struct defmodule *);
    LOCALE void                           SetNextConstruct(struct constructHeader *,struct constructHeader *);
    LOCALE struct defmoduleItemHeader    *GetConstructModuleItem(struct constructHeader *);
-   LOCALE char                          *GetConstructPPForm(void *,struct constructHeader *);
+   LOCALE const char                    *GetConstructPPForm(void *,struct constructHeader *);
    LOCALE void                           PPConstructCommand(void *,const char *,struct construct *);
    LOCALE struct constructHeader        *GetNextConstructItem(void *,struct constructHeader *,int);
    LOCALE struct defmoduleItemHeader    *GetConstructModuleItemByIndex(void *,struct defmodule *,int);
@@ -82,7 +82,7 @@
                                                             void (*)(void *,struct constructHeader *,void *),
                                                             int,int,void *);
    LOCALE void                           InitializeConstructHeader(void *,const char *,struct constructHeader *,SYMBOL_HN *);
-   LOCALE void                           SetConstructPPForm(void *,struct constructHeader *,char *);
+   LOCALE void                           SetConstructPPForm(void *,struct constructHeader *,const char *);
    LOCALE void                          *LookupConstruct(void *,struct construct *,const char *,intBool);
 #if DEBUGGING_FUNCTIONS
    LOCALE unsigned                       ConstructPrintWatchAccess(void *,struct construct *,const char *,

@@ -741,7 +741,7 @@ globle intBool EnvUndefmethod(
 globle void EnvGetDefmethodDescription(
   void *theEnv,
   char *buf,
-  int buflen,
+  size_t buflen,
   void *ptr,
   long theIndex)
   {
@@ -943,7 +943,7 @@ globle void ListDefmethodsCommand(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************************/
-globle char *EnvGetDefmethodPPForm(
+globle const char *EnvGetDefmethodPPForm(
   void *theEnv,
   void *ptr,
   long theIndex)
@@ -1863,7 +1863,7 @@ globle const char *EnvGetDefgenericName(
    return GetConstructNameString((struct constructHeader *) theDefgeneric);
   }
 
-globle char *EnvGetDefgenericPPForm(
+globle const char *EnvGetDefgenericPPForm(
   void *theEnv,
   void *theDefgeneric)
   {
@@ -1880,7 +1880,7 @@ globle SYMBOL_HN *EnvGetDefgenericNamePointer(
 globle void EnvSetDefgenericPPForm(
   void *theEnv,
   void *theDefgeneric,
-  char *thePPForm)
+  const char *thePPForm)
   {
    SetConstructPPForm(theEnv,(struct constructHeader *) theDefgeneric,thePPForm);
   }
@@ -1893,7 +1893,7 @@ globle void EnvSetDefgenericPPForm(
 
 globle void SetDefgenericPPForm(
   void *theDefgeneric,
-  char *thePPForm)
+  const char *thePPForm)
   {
    EnvSetDefgenericPPForm(GetCurrentEnvironment(),theDefgeneric,thePPForm);
   }
@@ -1923,7 +1923,7 @@ globle const char *GetDefgenericName(
    return EnvGetDefgenericName(GetCurrentEnvironment(),theDefgeneric);
   }
 
-globle char *GetDefgenericPPForm(
+globle const char *GetDefgenericPPForm(
   void *theDefgeneric)
   {
    return EnvGetDefgenericPPForm(GetCurrentEnvironment(),theDefgeneric);
@@ -2005,7 +2005,7 @@ globle void SetDefgenericWatch(
    EnvSetDefgenericWatch(GetCurrentEnvironment(),newState,theGeneric);
   }
 
-globle char *GetDefmethodPPForm(
+globle const char *GetDefmethodPPForm(
   void *ptr,
   long theIndex)
   {

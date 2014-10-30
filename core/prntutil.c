@@ -90,7 +90,7 @@ globle void InitializePrintUtilityData(
 globle void PrintInChunks(
   void *theEnv,
   const char *logicalName,
-  char *bigString)
+  const char *bigString)
   {
    char tc, *subString;
 

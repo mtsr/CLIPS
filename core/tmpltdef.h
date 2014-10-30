@@ -155,14 +155,14 @@ struct deftemplateData
 #endif
    LOCALE const char                    *EnvDeftemplateModule(void *,void *);
    LOCALE const char                    *EnvGetDeftemplateName(void *,void *);
-   LOCALE char                          *EnvGetDeftemplatePPForm(void *,void *);
+   LOCALE const char                    *EnvGetDeftemplatePPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    LOCALE const char                    *DeftemplateModule(void *);
    LOCALE void                          *FindDeftemplate(const char *);
    LOCALE const char                    *GetDeftemplateName(void *);
-   LOCALE char                          *GetDeftemplatePPForm(void *);
+   LOCALE const char                    *GetDeftemplatePPForm(void *);
    LOCALE void                          *GetNextDeftemplate(void *);
    LOCALE intBool                        IsDeftemplateDeletable(void *);
    LOCALE void                          *GetNextFactInTemplate(void *,void *);

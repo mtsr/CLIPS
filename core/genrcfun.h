@@ -181,7 +181,7 @@ struct defgenericData
 
    LOCALE long                           FindMethodByIndex(DEFGENERIC *,long);
 #if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
-   LOCALE void                           PrintMethod(void *,char *,int,DEFMETHOD *);
+   LOCALE void                           PrintMethod(void *,char *,size_t,DEFMETHOD *);
 #endif
 #if DEBUGGING_FUNCTIONS
    LOCALE void                           PreviewGeneric(void *);

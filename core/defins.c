@@ -957,7 +957,7 @@ globle const char *EnvGetDefinstancesName(
    return GetConstructNameString((struct constructHeader *) theDefinstances);
   }
 
-globle char *EnvGetDefinstancesPPForm(
+globle const char *EnvGetDefinstancesPPForm(
   void *theEnv,
   void *theDefinstances)
   {
@@ -967,7 +967,7 @@ globle char *EnvGetDefinstancesPPForm(
 globle void EnvSetDefinstancesPPForm(
   void *theEnv,
   void *theDefinstances,
-  char *thePPForm)
+  const char *thePPForm)
   {
    SetConstructPPForm(theEnv,(struct constructHeader *) theDefinstances,thePPForm);
   }
@@ -1024,7 +1024,7 @@ globle const char *GetDefinstancesName(
    return EnvGetDefinstancesName(GetCurrentEnvironment(),theDefinstances);
   }
 
-globle char *GetDefinstancesPPForm(
+globle const char *GetDefinstancesPPForm(
   void *theEnv,
   void *theDefinstances)
   {

@@ -1488,7 +1488,7 @@ globle void *GetNextFactInScope(
 globle void EnvGetFactPPForm(
   void *theEnv,
   char *buffer,
-  unsigned bufferLength,
+  size_t bufferLength,
   void *theFact)
   {
    OpenStringDestination(theEnv,"FactPPForm",buffer,bufferLength);

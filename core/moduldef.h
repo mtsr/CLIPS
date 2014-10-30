@@ -216,7 +216,7 @@ struct defmoduleData
    LOCALE void                           InitializeDefmodules(void *);
    LOCALE void                          *EnvFindDefmodule(void *,const char *);
    LOCALE const char                    *EnvGetDefmoduleName(void *,void *);
-   LOCALE char                          *EnvGetDefmodulePPForm(void *,void *);
+   LOCALE const char                    *EnvGetDefmodulePPForm(void *,void *);
    LOCALE void                          *EnvGetNextDefmodule(void *,void *);
    LOCALE void                           RemoveAllDefmodules(void *);
    LOCALE int                            AllocateModuleStorage(void);
@@ -248,7 +248,7 @@ struct defmoduleData
    LOCALE void                          *FindDefmodule(const char *);
    LOCALE void                          *GetCurrentModule(void);
    LOCALE const char                    *GetDefmoduleName(void *);
-   LOCALE char                          *GetDefmodulePPForm(void *);
+   LOCALE const char                    *GetDefmodulePPForm(void *);
    LOCALE void                          *GetNextDefmodule(void *);
    LOCALE void                          *SetCurrentModule(void *);
 

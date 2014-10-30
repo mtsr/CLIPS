@@ -97,7 +97,7 @@ struct deffactsModule
    LOCALE struct deffactsModule         *GetDeffactsModuleItem(void *,struct defmodule *);
    LOCALE const char                    *EnvDeffactsModule(void *,void *);
    LOCALE const char                    *EnvGetDeffactsName(void *,void *);
-   LOCALE char                          *EnvGetDeffactsPPForm(void *,void *);
+   LOCALE const char                    *EnvGetDeffactsPPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
@@ -106,7 +106,7 @@ struct deffactsModule
    LOCALE intBool                        IsDeffactsDeletable(void *);
    LOCALE const char                    *DeffactsModule(void *);
    LOCALE const char                    *GetDeffactsName(void *);
-   LOCALE char                          *GetDeffactsPPForm(void *);
+   LOCALE const char                    *GetDeffactsPPForm(void *);
    
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

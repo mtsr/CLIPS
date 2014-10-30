@@ -523,7 +523,7 @@ globle const char *EnvGetDefruleName(
    return GetConstructNameString((struct constructHeader *) theDefrule);
   }
 
-globle char *EnvGetDefrulePPForm(
+globle const char *EnvGetDefrulePPForm(
   void *theEnv,
   void *theDefrule)
   {
@@ -554,7 +554,7 @@ globle const char *GetDefruleName(
    return EnvGetDefruleName(GetCurrentEnvironment(),theDefrule);
   }
 
-globle char *GetDefrulePPForm(
+globle const char *GetDefrulePPForm(
   void *theDefrule)
   {
    return EnvGetDefrulePPForm(GetCurrentEnvironment(),theDefrule);

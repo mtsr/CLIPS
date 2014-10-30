@@ -71,7 +71,7 @@
    LOCALE int                            LoadFactsCommand(void *);
    LOCALE int                            EnvSaveFacts(void *,const char *,int,struct expr *);
    LOCALE int                            EnvLoadFacts(void *,const char *);
-   LOCALE int                            EnvLoadFactsFromString(void *,const char *,int);
+   LOCALE int                            EnvLoadFactsFromString(void *,const char *,long);
    LOCALE long long                      FactIndexFunction(void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS

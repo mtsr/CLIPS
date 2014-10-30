@@ -80,7 +80,7 @@ struct printUtilityData
 #endif
 
    LOCALE void                           InitializePrintUtilityData(void *);
-   LOCALE void                           PrintInChunks(void *,const char *,char *);
+   LOCALE void                           PrintInChunks(void *,const char *,const char *);
    LOCALE void                           PrintFloat(void *,const char *,double);
    LOCALE void                           PrintLongInteger(void *,const char *,long long);
    LOCALE void                           PrintAtom(void *,const char *,int,void *);

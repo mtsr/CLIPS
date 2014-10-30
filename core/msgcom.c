@@ -687,7 +687,7 @@ globle void PreviewSendCommand(
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************/
-globle char *EnvGetDefmessageHandlerPPForm(
+globle const char *EnvGetDefmessageHandlerPPForm(
   void *theEnv,
   void *ptr,
   int theIndex)
@@ -1214,7 +1214,7 @@ globle int UndefmessageHandler(
 
 #if DEBUGGING_FUNCTIONS
 
-globle char *GetDefmessageHandlerPPForm(
+globle const char *GetDefmessageHandlerPPForm(
   void *ptr,
   int theIndex)
   {
