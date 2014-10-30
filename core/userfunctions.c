@@ -75,10 +75,10 @@ void UserFunctions()
 /*   included in another file.                             */
 /***********************************************************/
 void EnvUserFunctions(
-  void *theEnv)
+  void *environment)
   {
 #if MAC_XCD
-#pragma unused(theEnv)
+#pragma unused(environment)
 #endif
   }
 

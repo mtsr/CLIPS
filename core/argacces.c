@@ -30,6 +30,8 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Support for fact-address arguments.            */
+/*                                                           */
 /*************************************************************/
 
 #define _ARGACCES_SOURCE_
@@ -474,6 +476,7 @@ globle int EnvArgTypeCheck(
    else if (expectedType == MULTIFIELD) ExpectedTypeError1(theEnv,functionName,argumentPosition,"multifield");
    else if (expectedType == INTEGER_OR_FLOAT)  ExpectedTypeError1(theEnv,functionName,argumentPosition,"integer or float");
    else if (expectedType == SYMBOL_OR_STRING) ExpectedTypeError1(theEnv,functionName,argumentPosition,"symbol or string");
+   else if (expectedType == FACT_ADDRESS) ExpectedTypeError1(theEnv,functionName,argumentPosition,"fact address");
 #if OBJECT_SYSTEM
    else if (expectedType == INSTANCE_NAME) ExpectedTypeError1(theEnv,functionName,argumentPosition,"instance name");
    else if (expectedType == INSTANCE_ADDRESS) ExpectedTypeError1(theEnv,functionName,argumentPosition,"instance address");

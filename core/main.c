@@ -41,13 +41,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-#include <stdio.h>
-#include "setup.h"
 #include "clips.h"
-
-int main(int,char *[]);
-void UserFunctions(void);
-void EnvUserFunctions(void *);
 
 /****************************************/
 /* main: Starts execution of the expert */

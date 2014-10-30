@@ -27,6 +27,11 @@
 #ifndef _H_API
 #define _H_API
 
+#ifndef _STDIO_INCLUDED_
+#define _STDIO_INCLUDED_
+#include <stdio.h>
+#endif
+
 #include "setup.h"
 #ifndef _H_argacces
 #include "argacces.h"

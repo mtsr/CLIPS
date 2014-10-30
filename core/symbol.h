@@ -55,6 +55,9 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Added ValueToPointer and EnvValueToPointer     */
+/*            macros.                                        */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_symbol
@@ -215,6 +218,7 @@ struct symbolMatch
 #define ValueToLong(target) (((struct integerHashNode *) (target))->contents)
 #define ValueToInteger(target) ((int) (((struct integerHashNode *) (target))->contents))
 #define ValueToBitMap(target) ((void *) ((struct bitMapHashNode *) (target))->contents)
+#define ValueToPointer(target) ((void *) target)
 #define ValueToExternalAddress(target) ((void *) ((struct externalAddressHashNode *) (target))->externalAddress)
 
 #define EnvValueToString(theEnv,target) (((struct symbolHashNode *) (target))->contents)
@@ -222,6 +226,7 @@ struct symbolMatch
 #define EnvValueToLong(theEnv,target) (((struct integerHashNode *) (target))->contents)
 #define EnvValueToInteger(theEnv,target) ((int) (((struct integerHashNode *) (target))->contents))
 #define EnvValueToBitMap(theEnv,target) ((void *) ((struct bitMapHashNode *) (target))->contents)
+#define EnvValueToPointer(theEnv,target) ((void *) target)
 #define EnvValueToExternalAddress(theEnv,target) ((void *) ((struct externalAddressHashNode *) (target))->externalAddress)
 
 #define IncrementSymbolCount(theValue) (((SYMBOL_HN *) theValue)->count++)
