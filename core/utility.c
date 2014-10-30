@@ -59,6 +59,7 @@
 #define _STDIO_INCLUDED_
 #include <string.h>
 
+#include "commline.h"
 #include "envrnmnt.h"
 #include "evaluatn.h"
 #include "facthsh.h"
@@ -1058,6 +1059,13 @@ globle void EnvDecrementGCLocks(
   {
    if (UtilityData(theEnv)->GarbageCollectionLocks > 0)
      { UtilityData(theEnv)->GarbageCollectionLocks--; }
+     
+   if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+       (EvaluationData(theEnv)->CurrentExpression == NULL) && (UtilityData(theEnv)->GarbageCollectionLocks == 0))
+     { 
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
+     }
   }
  
 /********************************************/
