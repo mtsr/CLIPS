@@ -69,7 +69,11 @@
 /*            with Windows.h header file.                    */
 /*                                                           */    
 /*            Removed deprecated definitions.                */
-/*                                                           */    
+/*                                                           */
+/*            The ALLOW_ENVIRONMENT_GLOBALS flag now         */
+/*            defaults to 0. The use of functions enabled    */
+/*            by this flag is deprecated.                    */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_setup
@@ -456,7 +460,7 @@
 /*************************************************************/
 
 #ifndef ALLOW_ENVIRONMENT_GLOBALS
-#define ALLOW_ENVIRONMENT_GLOBALS 1
+#define ALLOW_ENVIRONMENT_GLOBALS 0
 #endif
 
 /********************************************/
