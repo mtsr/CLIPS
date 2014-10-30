@@ -60,7 +60,9 @@ void EnvUserFunctions(void *);
 /*   included in another file.                           */
 /*********************************************************/
 void UserFunctions()
-  {   
+  {
+   // Use of UserFunctions is deprecated.
+   // Use EnvUserFunctions instead.
   }
   
 /***********************************************************/

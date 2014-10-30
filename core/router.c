@@ -691,7 +691,6 @@ globle int PrintNRouter(
 /* ALLOW_ENVIRONMENT_GLOBALS Functions */
 /*#####################################*/
 
-
 #if ALLOW_ENVIRONMENT_GLOBALS
 
 globle int ActivateRouter(

@@ -111,10 +111,10 @@ static void DeallocateExternalFunctionData(
 
 #if (! RUN_TIME)
 
-/***************************************************************/
-/* EnvDefineFunction: Used to define a system or user external */
-/*   function so that the KB can access it.                    */
-/***************************************************************/
+/******************************************************/
+/* EnvDefineFunction: Used to define a system or user */
+/*   external function so that the KB can access it.  */
+/******************************************************/
 globle int EnvDefineFunction(
   void *theEnv,
   const char *name,
@@ -140,10 +140,10 @@ globle int EnvDefineFunctionWithContext(
    return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,TRUE,context));
   }
   
-/*************************************************************/
-/* EnvDefineFunction2: Used to define a system or user external */
-/*   function so that the KB can access it.                  */
-/*************************************************************/
+/*******************************************************/
+/* EnvDefineFunction2: Used to define a system or user */
+/*   external function so that the KB can access it.   */
+/*******************************************************/
 globle int EnvDefineFunction2(
   void *theEnv,
   const char *name,

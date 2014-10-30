@@ -321,9 +321,8 @@ globle long long EnvRun(
         }
 
       /*====================================================*/
-      /* Execute the rule's right hand side actions. If the */
-      /* rule has logical CEs, set up the pointer to the    */
-      /* rules logical join so the assert command will      */
+      /* If the rule has logical CEs, set up the pointer to */
+      /* the rules logical join so the assert command will  */
       /* attach the appropriate dependencies to the facts.  */
       /*====================================================*/
 
@@ -336,6 +335,10 @@ globle long long EnvRun(
         }
       else
         { EngineData(theEnv)->TheLogicalBind = NULL; }
+
+      /*=============================================*/
+      /* Execute the rule's right hand side actions. */
+      /*=============================================*/
 
       EvaluationData(theEnv)->CurrentEvaluationDepth++;
       SetEvaluationError(theEnv,FALSE);
@@ -358,6 +361,11 @@ globle long long EnvRun(
       EngineData(theEnv)->ExecutingRule->executing = FALSE;
       SetEvaluationError(theEnv,FALSE);
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
+      
+      /*=====================================*/
+      /* Remove information for logical CEs. */
+      /*=====================================*/
+      
       EngineData(theEnv)->TheLogicalJoin = NULL;
       
       if (EngineData(theEnv)->TheLogicalBind != NULL)
