@@ -92,6 +92,17 @@ globle void PrintInChunks(
   const char *logicalName,
   const char *bigString)
   {
+   /*=====================================================*/
+   /* This function was originally added because VMS had  */
+   /* a bug that didn't allow printing a string greater   */
+   /* than 512 bytes. Since this was over 25 years ago,   */
+   /* we'll assume no modern compiler has this limitation */
+   /* and just print the entire string.                   */
+   /*=====================================================*/
+   
+   EnvPrintRouter(theEnv,logicalName,bigString);
+
+/*
    char tc, *subString;
 
    subString = bigString;
@@ -109,6 +120,7 @@ globle void PrintInChunks(
      }
 
    EnvPrintRouter(theEnv,logicalName,subString);
+*/
   }
 
 /************************************************************/
