@@ -59,6 +59,7 @@
   {
    NSArrayController *theArrayController;
    NSMutableDictionary *bindingOptions = [NSMutableDictionary dictionary];
+   AppController *theDelegate = [NSApp delegate];
 	
    /*=====================================================================*/
    /* The action "cog" menu is implemented by using a button with the cog */
@@ -94,7 +95,7 @@
    [bindingOptions setObject: [NSNumber numberWithBool:YES] forKey:@"NSInsertsNullPlaceholder"];
 
    [environmentList bind: @"content" 
-                    toObject: [[[NSApp delegate] envController] terminalArrayController]
+                    toObject: [[theDelegate envController] terminalArrayController]
                     withKeyPath: @"arrangedObjects"
                     options: bindingOptions];
                     
@@ -102,14 +103,14 @@
    /* Locate and assign the application's environment controller. */
    /*=============================================================*/
   
-   [self setEnvironmentController: [[NSApp delegate] envController]];
+   [self setEnvironmentController: [theDelegate envController]];
   
    /*====================================================================*/
    /* Determine the environment to which this window should be attached. */
    /*====================================================================*/
     
    theArrayController 
-      = [[[NSApp delegate] envController] terminalArrayController];
+      = [[theDelegate envController] terminalArrayController];
       
    NSArray *theArray;
    NSUInteger theIndex;

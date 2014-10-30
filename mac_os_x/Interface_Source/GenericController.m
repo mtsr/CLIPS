@@ -46,6 +46,7 @@
   {
    NSArrayController *theArrayController;
    NSMutableDictionary *bindingOptions = [NSMutableDictionary dictionary];
+   AppController *theDelegate = [NSApp delegate];
 
    /*=====================================================================*/
    /* Create the binding for the environment displayed in the popup menu. */
@@ -55,7 +56,7 @@
    [bindingOptions setObject: [NSNumber numberWithBool:YES] forKey:@"NSInsertsNullPlaceholder"];
 
    [environmentList bind: @"content" 
-                    toObject: [[[NSApp delegate] envController] environmentArrayController]
+                    toObject: [[theDelegate envController] environmentArrayController]
                     withKeyPath: @"arrangedObjects"
                     options: bindingOptions];
    
@@ -63,14 +64,14 @@
    /* Locate and assign the application's environment controller. */
    /*=============================================================*/
   
-   [self setValue: [[NSApp delegate] envController] forKey: @"environmentController"];
+   [self setValue: [theDelegate envController] forKey: @"environmentController"];
    
    /*====================================================================*/
    /* Determine the environment to which this window should be attached. */
    /*====================================================================*/
     
    theArrayController 
-      = [[[NSApp delegate] envController] environmentArrayController];
+      = [[theDelegate envController] environmentArrayController];
       
    NSArray *theArray;
    NSUInteger theIndex;

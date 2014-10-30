@@ -54,7 +54,7 @@
 
       for (i = 1; i <= GetDOLength(slotNames); i++)
         {
-         char *theCSlotName = ValueToString(GetMFValue(GetValue(slotNames),i));
+         const char *theCSlotName = ValueToString(GetMFValue(GetValue(slotNames),i));
          NSString *theSlotName = [NSString stringWithUTF8String: theCSlotName];
          
          FactSlotValue(theEnvironment,theFact,ValueToString(GetMFValue(GetValue(slotNames),i)),&slotValue);
@@ -138,7 +138,7 @@
 
       for (i = 1; i <= GetDOLength(slotNames); i++)
         {
-         char *theCSlotName = ValueToString(GetMFValue(GetValue(slotNames),i));
+         const char *theCSlotName = ValueToString(GetMFValue(GetValue(slotNames),i));
          NSString *theSlotName = [NSString stringWithUTF8String: theCSlotName];
          
          EnvDirectGetSlot(theEnvironment,theInstance,ValueToString(GetMFValue(GetValue(slotNames),i)),&slotValue);

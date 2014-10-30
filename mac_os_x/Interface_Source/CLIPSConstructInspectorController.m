@@ -20,6 +20,8 @@
 /*****************/
 - (void) awakeFromNib
   {
+   AppController *theDelegate = [NSApp delegate];
+   
    /*======================================================*/
    /* Places a few pixels of white space between the edges */
    /* of the window and the rectangle in which the text is */
@@ -33,7 +35,7 @@
    /* Locate and assign the application's environment controller. */
    /*=============================================================*/
   
-   [self setEnvironmentController: [[NSApp delegate] envController]];
+   [self setEnvironmentController: [theDelegate envController]];
 
    /*==================================*/   
    /* Set up the horizontal scrollbar. */

@@ -348,7 +348,7 @@
   {
    struct focus *theFocus;
    struct activation *theActivation;
-   char *moduleName;
+   const char *moduleName;
    NSString *theStr;
    unsigned focusCount, agendaCount;
    CLIPSFocus *newFocus;
@@ -492,7 +492,7 @@
   {
    struct defmodule *theModule;
    CLIPSModule *newModule;
-   char *moduleName;
+   const char *moduleName;
    NSString *theStr;
    struct fact *theFact;
    CLIPSFactInstance *newFact;
@@ -583,7 +583,7 @@
   {
    struct defmodule *theModule;
    CLIPSModule *newModule;
-   char *moduleName;
+   const char *moduleName;
    NSString *theStr;
    struct instance *theInstance;
    CLIPSFactInstance *newInstance;
