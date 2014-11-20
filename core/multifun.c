@@ -1358,8 +1358,16 @@ static void MultifieldPrognDriver(
             return;
            }
 
-        CleanCurrentGarbageFrame(theEnv,NULL);
-        CallPeriodicTasks(theEnv);
+         /*===================================*/
+         /* Garbage collect if this isn't the */
+         /* last evaluation of the progn$.    */
+         /*===================================*/
+         
+         if ((i < end) || (theExp->nextArg != NULL))
+           {
+            CleanCurrentGarbageFrame(theEnv,NULL);
+            CallPeriodicTasks(theEnv);
+           }
         }
      }
      
