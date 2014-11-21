@@ -178,4 +178,19 @@
 (make-instance b of BAR
    (bar (make-instance f of DUMMY)))
 (set-dynamic-constraint-checking FALSE)   
+(clear) ; CLIPSESG Bug
+
+(deffunction generate (?a ?c)
+   (str-cat ?a ?c))
+
+(deffunction gm1 ()
+   (progn$ (?ctype (create$ aaa))
+      (generate 2 ?ctype)))
+
+(deffunction gm2 ()
+   (bind ?ctype aaa)
+   (generate 2 ?ctype))
+(gm1)
+(gm2)
+   
 (clear)
