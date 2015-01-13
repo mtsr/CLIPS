@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  08/22/14           */
+   /*              CLIPS Version 6.30  01/13/15           */
    /*                                                     */
    /*                INSTANCE PARSER MODULE               */
    /*******************************************************/
@@ -28,6 +28,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Fixed ParseSlotOverrides memory release issue. */
+/*                                                           */
+/*            It's now possible to create an instance of a   */
+/*            class that's not in scope if the module name   */
+/*            is specified.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -533,6 +537,9 @@ SlotOverrideError:
                  modified if class is found
   NOTES        : Searches current nd imported
                  modules for reference
+  CHANGES      : It's now possible to create an instance of a
+                 class that's not in scope if the module name
+                 is specified.
  ***************************************************/
 static intBool ReplaceClassNameWithReference(
   void *theEnv,
@@ -544,7 +551,8 @@ static intBool ReplaceClassNameWithReference(
    if (theExp->type == SYMBOL)
      {
       theClassName = ValueToString(theExp->value);
-      theDefclass = (void *) LookupDefclassInScope(theEnv,theClassName);
+      //theDefclass = (void *) LookupDefclassInScope(theEnv,theClassName);
+      theDefclass = (void *) LookupDefclassByMdlOrScope(theEnv,theClassName); // Module or scope is now allowed
       if (theDefclass == NULL)
         {
          CantFindItemErrorMessage(theEnv,"class",theClassName);

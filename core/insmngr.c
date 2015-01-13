@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  08/22/14           */
+   /*              CLIPS Version 6.30  01/13/15           */
    /*                                                     */
    /*            INSTANCE PRIMITIVE SUPPORT MODULE        */
    /*******************************************************/
@@ -34,6 +34,10 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Newly created instances can no longer use      */
+/*            a preexisting instance name of another class   */
+/*            [INSMNGR16].                                   */
 /*                                                           */
 /*************************************************************/
 
@@ -144,6 +148,9 @@ globle void InitializeInstanceCommand(
   NOTES        : H/L Syntax:
                  (active-make-instance <instance-name> of <class>
                     <slot-override>*)
+  CHANGES      : It's now possible to create an instance of a
+                 class that's not in scope if the module name
+                 is specified.
  ****************************************************************/
 globle void MakeInstanceCommand(
   void *theEnv,
@@ -179,7 +186,10 @@ globle void MakeInstanceCommand(
          SetEvaluationError(theEnv,TRUE);
          return;
         }
-      cls = LookupDefclassInScope(theEnv,DOToString(temp));
+    
+      //cls = LookupDefclassInScope(theEnv,DOToString(temp));
+      cls = LookupDefclassByMdlOrScope(theEnv,DOToString(temp)); // Module or scope is now allowed
+
       if (cls == NULL)
         {
          ClassExistError(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)),
@@ -218,19 +228,30 @@ globle void MakeInstanceCommand(
                  and new symbol created
   NOTES        : Used to differentiate between
                  instances of the same name in
-                 different modules
+                 different modules.
+                 Instances are now global in scope so
+                 each instance name must belong to a
+                 single instance. It's no longer
+                 necessary to return the full instance
+                 name.
  ***************************************************/
 globle SYMBOL_HN *GetFullInstanceName(
   void *theEnv,
   INSTANCE_TYPE *ins)
   {
+   /*
    const char *moduleName;
    char *buffer;
    size_t bufsz;
    SYMBOL_HN *iname;
-
+   */
+   
    if (ins == &InstanceData(theEnv)->DummyInstance)
      return((SYMBOL_HN *) EnvAddSymbol(theEnv,"Dummy Instance"));
+   
+   return(ins->name);
+     
+/*
    if (ins->garbage)
      return(ins->name);
    if (ins->cls->header.whichModule->theModule == ((struct defmodule *) EnvGetCurrentModule(theEnv)))
@@ -243,6 +264,7 @@ globle SYMBOL_HN *GetFullInstanceName(
    iname = (SYMBOL_HN *) EnvAddSymbol(theEnv,buffer);
    rm(theEnv,(void *) buffer,bufsz);
    return(iname);
+*/
   }
 
 /***************************************************
@@ -308,8 +330,21 @@ globle INSTANCE_TYPE *BuildInstance(
       iname = ExtractConstructName(theEnv,modulePosition,ValueToString(iname));
      }
    ins = InstanceLocationInfo(theEnv,cls,iname,&iprv,&hashTableIndex);
+      
    if (ins != NULL)
      {
+      if (ins->cls != cls)
+        {
+         PrintErrorID(theEnv,"INSMNGR",16,FALSE);
+         EnvPrintRouter(theEnv,WERROR,"The instance name ");
+         EnvPrintRouter(theEnv,WERROR,ValueToString(iname));
+         EnvPrintRouter(theEnv,WERROR," is in use by an instance of class ");
+         EnvPrintRouter(theEnv,WERROR,ValueToString(ins->cls->header.name));
+         EnvPrintRouter(theEnv,WERROR,".\n");
+         SetEvaluationError(theEnv,TRUE);
+         return(NULL);
+        }
+        
       if (ins->installed == 0)
         {
          PrintErrorID(theEnv,"INSMNGR",4,FALSE);
@@ -690,7 +725,9 @@ static INSTANCE_TYPE *NewInstance(
   RETURNS      : The address of the found instance, NULL otherwise
   SIDE EFFECTS : None
   NOTES        : Instance names only have to be unique within
-                 a module
+                 a module.
+                 Change: instance names must be unique regardless
+                 of module.
  *****************************************************************/
 static INSTANCE_TYPE *InstanceLocationInfo(
   void *theEnv,
@@ -710,6 +747,15 @@ static INSTANCE_TYPE *InstanceLocationInfo(
       module their classes are in
       ======================================== */
    *prv = NULL;
+   while (ins != NULL)
+     {
+      if (ins->name == iname)
+        { return(ins); }
+      *prv = ins;
+      ins = ins->nxtHash;
+     }
+      
+   /*
    while ((ins != NULL) ? (ins->name != iname) : FALSE)
      {
       *prv = ins;
@@ -723,6 +769,7 @@ static INSTANCE_TYPE *InstanceLocationInfo(
       *prv = ins;
       ins = ins->nxtHash;
      }
+   */
    return(NULL);
   }
 

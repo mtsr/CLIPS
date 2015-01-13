@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  08/22/14           */
+   /*              CLIPS Version 6.30  01/13/15           */
    /*                                                     */
    /*         INSTANCE LOAD/SAVE (ASCII/BINARY) MODULE    */
    /*******************************************************/
@@ -33,6 +33,11 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            For save-instances, bsave-instances, and       */
+/*            bload-instances, the class name does not       */
+/*            have to be in scope if the module name is      */
+/*            specified.                                     */
 /*                                                           */
 /*************************************************************/
 
@@ -676,7 +681,9 @@ static DATA_OBJECT *ProcessSaveClassList(
       if (saveCode == LOCAL_SAVE)
         theDefclass = LookupDefclassAnywhere(theEnv,currentModule,DOToString(tmp));
       else
-        theDefclass = LookupDefclassInScope(theEnv,DOToString(tmp));
+        //theDefclass = LookupDefclassInScope(theEnv,DOToString(tmp));
+        { theDefclass = LookupDefclassByMdlOrScope(theEnv,DOToString(tmp)); }
+
       if (theDefclass == NULL)
         goto ProcessClassListError;
       else if (theDefclass->abstract && (inheritFlag == FALSE))
@@ -1366,7 +1373,8 @@ static intBool LoadSingleBinaryInstance(
       Make sure the defclass exists
       and check the slot count
       ============================= */
-   theDefclass = LookupDefclassInScope(theEnv,ValueToString(className));
+   //theDefclass = LookupDefclassInScope(theEnv,ValueToString(className));
+   theDefclass = LookupDefclassByMdlOrScope(theEnv,ValueToString(className));
    if (theDefclass == NULL)
      {
       ClassExistError(theEnv,"bload-instances",ValueToString(className));

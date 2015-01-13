@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  08/16/14           */
+   /*              CLIPS Version 6.30  01/13/15           */
    /*                                                     */
    /*                INSTANCE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -55,6 +55,9 @@
 /*            Converted API macros to function calls.        */
 /*                                                           */
 /*            Fixed slot override default ?NONE bug.         */
+/*                                                           */
+/*            Instances of the form [<name>] are now         */
+/*            searched for in all modules.                   */
 /*                                                           */
 /*************************************************************/
 
@@ -336,7 +339,9 @@ globle void RemoveInstanceData(
   SIDE EFFECTS : None
   NOTES        : An instance is searched for by name first in the
                  current module - then in imported modules according
-                 to the order given in the current module's definition
+                 to the order given in the current module's definition.
+                 Instances of the form [<name>] are now searched for in
+                 all modules.
  ***************************************************************************/
 globle INSTANCE_TYPE *FindInstanceBySymbol(
   void *theEnv,
@@ -355,9 +360,21 @@ globle INSTANCE_TYPE *FindInstanceBySymbol(
    modulePosition = FindModuleSeparator(ValueToString(moduleAndInstanceName));
    if (modulePosition == FALSE)
      {
+      /*
       theModule = currentModule;
       instanceName = moduleAndInstanceName;
       searchImports = FALSE;
+      */
+      INSTANCE_TYPE *ins;
+
+      ins = InstanceData(theEnv)->InstanceTable[HashInstance(moduleAndInstanceName)];
+      while (ins != NULL)
+        {
+         if (ins->name == moduleAndInstanceName)
+           { return ins; }
+         ins = ins->nxtHash;
+        }
+      return(NULL);
      }
 
    /* =========================================
@@ -403,7 +420,9 @@ globle INSTANCE_TYPE *FindInstanceBySymbol(
                     given module as well
   RETURNS      : The instance (NULL if none found)
   SIDE EFFECTS : None
-  NOTES        : None
+  NOTES        : The class no longer needs to be in
+                 scope of the current module if the
+                 instance's module name has been specified.
  ***************************************************/
 globle INSTANCE_TYPE *FindInstanceInModule(
   void *theEnv,
@@ -438,8 +457,9 @@ globle INSTANCE_TYPE *FindInstanceInModule(
    for (ins = startInstance ;
         (ins != NULL) ? (ins->name == startInstance->name) : FALSE ;
         ins = ins->nxtHash)
-     if ((ins->cls->header.whichModule->theModule == theModule) &&
-          DefclassInScope(theEnv,ins->cls,currentModule))
+     //if ((ins->cls->header.whichModule->theModule == theModule) &&
+     //     DefclassInScope(theEnv,ins->cls,currentModule))
+     if (ins->cls->header.whichModule->theModule == theModule)
        return(ins);
 
    /* ================================

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  01/13/15          */
    /*                                                     */
    /*              OBJECT MESSAGE DISPATCH CODE           */
    /*******************************************************/
@@ -36,6 +36,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            It's no longer necessary for a defclass to be  */
+/*            in scope in order to sent a message to an      */
+/*            instance of that class.                        */
 /*                                                           */
 /*************************************************************/
 
@@ -946,7 +950,9 @@ globle void DynamicHandlerPutSlot(
                  or execution is halted, otherwise TRUE
   SIDE EFFECTS : Any side-effects of message execution
                     and caller's result buffer set
-  NOTES        : None
+  NOTES        : It's no longer necessary for a defclass
+                 to be in scope in order to sent a message
+                 to an instance of that class.
  *****************************************************/
 static intBool PerformMessage(
   void *theEnv,
@@ -1006,8 +1012,8 @@ static intBool PerformMessage(
          StaleInstanceAddress(theEnv,"send",0);
          SetEvaluationError(theEnv,TRUE);
         }
-      else if (DefclassInScope(theEnv,ins->cls,(struct defmodule *) EnvGetCurrentModule(theEnv)) == FALSE)
-        NoInstanceError(theEnv,ValueToString(ins->name),"send");
+      //else if (DefclassInScope(theEnv,ins->cls,(struct defmodule *) EnvGetCurrentModule(theEnv)) == FALSE)
+      //  NoInstanceError(theEnv,ValueToString(ins->name),"send");
       else
         {
          cls = ins->cls;

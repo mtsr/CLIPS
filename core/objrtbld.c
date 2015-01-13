@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  01/13/15          */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -1748,7 +1748,8 @@ static intBool ProcessClassRestriction(
      {
       if (chk->type == SYMBOL)
         {
-         chk->value = (void *) LookupDefclassInScope(theEnv,ValueToString(chk->value));
+         //chk->value = (void *) LookupDefclassInScope(theEnv,ValueToString(chk->value));
+         chk->value = (void *) LookupDefclassByMdlOrScope(theEnv,ValueToString(chk->value));
          if (chk->value == NULL)
            {
             PrintErrorID(theEnv,"OBJRTBLD",5,FALSE);
