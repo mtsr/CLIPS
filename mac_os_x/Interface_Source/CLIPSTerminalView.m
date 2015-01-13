@@ -490,15 +490,15 @@
 /*************************************************************/
 - (void) moveUpAndModifySelection: (id) sender
   {
-    CLIPSTerminalController *theController = (CLIPSTerminalController *) [self delegate];
+   CLIPSTerminalController *theController = (CLIPSTerminalController *) [self delegate];
 
-    if (theController == nil)
-      { [super moveUpAndModifySelection: sender]; }
-    else if (theController->currentCommand->next != NULL)
-      {
-       [theController SwitchCommandFrom: theController->currentCommand
-                                     To: theController->bottomCommand];
-      }
+   if (theController == nil)
+     { [super moveUpAndModifySelection: sender]; }
+   else if (theController->currentCommand->next != NULL)
+     {
+      [theController SwitchCommandFrom: theController->currentCommand
+                                    To: theController->bottomCommand];
+     }
   }
 
 /*****************************************************************/
@@ -507,15 +507,15 @@
 /*****************************************************************/
 - (void) moveDownAndModifySelection: (id) sender
   {
-    CLIPSTerminalController *theController = (CLIPSTerminalController *) [self delegate];
+   CLIPSTerminalController *theController = (CLIPSTerminalController *) [self delegate];
 
-    if (theController == nil)
-      { [super moveDownAndModifySelection: sender]; }
-    else if (theController->currentCommand->prev != NULL)
-      {
-       [theController SwitchCommandFrom: theController->currentCommand
-                                     To: theController->topCommand];
-      }
+   if (theController == nil)
+     { [super moveDownAndModifySelection: sender]; }
+   else if (theController->currentCommand->prev != NULL)
+     {
+      [theController SwitchCommandFrom: theController->currentCommand
+                                    To: theController->topCommand];
+     }
   }
 
 /*********************************************/

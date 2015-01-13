@@ -371,17 +371,16 @@
      { theCommand = ""; }
    length = strlen(theCommand);
  
-   /*============================================*/
-   /* Replace the current command in the window. */
-   /*============================================*/
+   /*=================================================*/
+   /* Determine the range which must be changed. This */
+   /* is done using the old CLIPS command string.     */
+   /*=================================================*/
    
    NSUInteger charOffset = [self->textView inputStringOffset];
    NSUInteger textLength = [[self->textView string] length];
    NSUInteger inputStart = textLength - charOffset;
 
    NSRange theRange = { inputStart, charOffset };
-   
-   [self->textView replaceCharactersInRange: theRange withString: newInput];
    
    /*==============================================*/
    /* Replace the old command with the contents of */
@@ -399,6 +398,12 @@
    
    SetCommandString([environment environment],newCommand->command);
    self->currentCommand = newCommand;
+
+   /*============================================*/
+   /* Replace the current command in the window. */
+   /*============================================*/
+   
+   [self->textView replaceCharactersInRange: theRange withString: newInput];
   }
 
 /*******************/
@@ -1590,7 +1595,7 @@
     /*=======================================*/
     
     NSUInteger charOffset = [textView inputStringOffset];
-       
+    
     /*================================*/
     /* Determine the start and end of */
     /* the input text in the buffer.  */
