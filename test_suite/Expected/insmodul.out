@@ -126,15 +126,17 @@ CLIPS> (defclass FOO (is-a USER) (role concrete))
 CLIPS> (definstances FOO (a of FOO))
 CLIPS> (defmodule BAR (export defclass BAR))
 CLIPS> (defclass BAR (is-a USER) (role concrete))
-CLIPS> (definstances BAR (a of BAR))
+CLIPS> (definstances BAR (b of BAR))
 CLIPS> (defmodule WOZ (import FOO defclass FOO))
 CLIPS> (defclass WOZ (is-a USER) (role concrete))
-CLIPS> (definstances WOZ (a of WOZ))
+CLIPS> (definstances WOZ (c of WOZ))
 CLIPS> (defmodule FRIBBAN (import BAR defclass BAR))
 CLIPS> (defclass FRIBBAN (is-a USER) (role concrete))
-CLIPS> (defmodule MAIN (import FOO ?ALL)
+CLIPS> 
+(defmodule MAIN (import FOO ?ALL)
                 (import BAR ?ALL))
-CLIPS> (deffunction MAIN::testit()
+CLIPS> 
+(deffunction MAIN::testit()
    (reset)
    (progn$ (?field (get-defmodule-list))
       (set-current-module ?field)
@@ -142,64 +144,85 @@ CLIPS> (deffunction MAIN::testit()
       (instances)
       (printout t crlf)
       (printout t (instance-existp [a]) " " 
-                  (defclass-module (class [::a])) " "
-                  (defclass-module (class (instance-address * a))) crlf)
+                  (instance-existp [::a]) " "
+                  (class (instance-address a)) crlf)
+      (printout t (instance-existp [b]) " " 
+                  (instance-existp [::b]) " "
+                  (class (instance-address b)) crlf)
+      (printout t (instance-existp [c]) " " 
+                  (instance-existp [::c]) " "
+                  (class (instance-address c)) crlf)
    )
 )
 CLIPS> (testit)
 MAIN:
 [initial-object] of INITIAL-OBJECT
 [a] of FOO::FOO
-[a] of BAR::BAR
+[b] of BAR::BAR
 For a total of 3 instances.
 
-FALSE BAR BAR
+TRUE TRUE FOO
+TRUE TRUE BAR
+TRUE FALSE WOZ
 FOO:
 [initial-object] of INITIAL-OBJECT
 [a] of FOO
 For a total of 2 instances.
 
-TRUE FOO FOO
+TRUE TRUE FOO
+TRUE FALSE BAR
+TRUE FALSE WOZ
 BAR:
 [initial-object] of INITIAL-OBJECT
-[a] of BAR
+[b] of BAR
 For a total of 2 instances.
 
-TRUE BAR BAR
+TRUE FALSE FOO
+TRUE TRUE BAR
+TRUE FALSE WOZ
 WOZ:
 [initial-object] of INITIAL-OBJECT
 [a] of FOO::FOO
-[a] of WOZ
+[c] of WOZ
 For a total of 3 instances.
 
-TRUE WOZ WOZ
+TRUE TRUE FOO
+TRUE FALSE BAR
+TRUE TRUE WOZ
 FRIBBAN:
 [initial-object] of INITIAL-OBJECT
-[a] of BAR::BAR
+[b] of BAR::BAR
 For a total of 2 instances.
 
-FALSE BAR BAR
+TRUE FALSE FOO
+TRUE TRUE BAR
+TRUE FALSE WOZ
 CLIPS> (clear)
 CLIPS> (defmodule FOO (export defclass A))
 CLIPS> (defclass A (is-a USER) (role concrete))
 CLIPS> (definstances A (a of A))
 CLIPS> (defmodule BAR (export defclass B))
 CLIPS> (defclass B (is-a USER) (role concrete))
-CLIPS> (definstances B (a of B))
+CLIPS> (definstances B (c of B))
 CLIPS> (defmodule WOZ (import BAR defclass B))
 CLIPS> (defclass A (is-a USER) (role concrete))
 CLIPS> (definstances A (b of A))
-CLIPS> (deffunction testit ()
+CLIPS> 
+(deffunction testit ()
   (reset)
   (set-current-module WOZ)
-  (printout t "TRUE FALSE TRUE TRUE FALSE" crlf)
+  (printout t "TRUE TRUE TRUE FALSE TRUE TRUE TRUE TRUE TRUE" crlf)
   (printout t
-     (instance-existp [b]) " "
      (instance-existp [a]) " "
+     (instance-existp [b]) " "
+     (instance-existp [c]) " "
      (instance-existp [::a]) " "
-     (instance-existp [BAR::a]) " "
-     (instance-existp [FOO::a]) crlf))
+     (instance-existp [::b]) " "
+     (instance-existp [::c]) " "
+     (instance-existp [FOO::a]) " "
+     (instance-existp [BAR::c]) " "
+     (instance-existp [WOZ::b]) crlf))
 CLIPS> (testit)
-TRUE FALSE TRUE TRUE FALSE
-TRUE FALSE TRUE TRUE FALSE
+TRUE TRUE TRUE FALSE TRUE TRUE TRUE TRUE TRUE
+TRUE TRUE TRUE FALSE TRUE TRUE TRUE TRUE TRUE
 CLIPS> (dribble-off)

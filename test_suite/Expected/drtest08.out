@@ -349,7 +349,7 @@ CLIPS> (defclass TEST (is-a USER)
   (role concrete))
 CLIPS> (defmodule TEST (import MAIN ?ALL))
 CLIPS> (make-instance test of TEST)
-[MAIN::test]
+[test]
 CLIPS> (do-for-instance ((?t TEST)) TRUE
   (send ?t print))
 [test] of TEST
@@ -631,11 +631,9 @@ CLIPS> (bind ?*x* (instance-address (make-instance foo of FOO)))
 CLIPS> (focus MAIN)
 TRUE
 CLIPS> (send [FOO::foo] print)
-[MSGPASS2] No such instance FOO::foo in function send.
-FALSE
+[foo] of FOO::FOO
 CLIPS> (send ?*x* print)
-[INSFUN2] No such instance foo in function send.
-FALSE
+[foo] of FOO::FOO
 CLIPS> (clear)               ; DR0786
 CLIPS> 
 (deftemplate nanu
