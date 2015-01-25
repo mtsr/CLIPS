@@ -193,4 +193,31 @@
 (gm1)
 (gm2)
    
+(clear) ; Dangling constructs
+
+(progn
+   (clear)
+   (build "(defrule foo (count) =>)")
+   (assert (count)))
+(deftemplate blah (slot x))
+
+(progn 
+   (clear)
+   (assert (blah (x 1))))
+   
+(defclass BLAH (is-a USER) (slot x))
+
+(progn
+   (clear)
+   (make-instance of BLAH (x 1)))
+(deffunction yabbo () (printout t "Hello, world!" crlf))
+
+(progn (clear)
+       (yabbo))
+
+(defmethod blah ((?x STRING))
+   (printout t ?x crlf))
+
+(progn (clear)
+       (blah "Hello, world!"))
 (clear)
