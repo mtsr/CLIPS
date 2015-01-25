@@ -258,16 +258,7 @@ FALSE
 CLIPS> (clear) ; SourceForge Assert/Clear Bug
 CLIPS> (defrule foo (a ?x&:(progn (clear) TRUE)) =>)
 CLIPS> (assert (a 1))
-[INSMNGR12] Cannot delete instances of reactive classes while
-  pattern-matching is in process.
-[PRCCODE4] Execution halted during the actions of message-handler delete primary in class USER
 [CONSTRCT1] Some constructs are still in use. Clear cannot continue.
-
-[FACTMCH1] This error occurred in the fact pattern network
-   Currently active fact: (a 1)
-   Problem resides in field #1
-      Of pattern #1 in rule foo
-
 <Fact-1>
 CLIPS> (send [initial-object] delete)
 TRUE
@@ -342,5 +333,42 @@ CLIPS> (gm1)
 CLIPS> (gm2)
 "2aaa"
 CLIPS>    
-(clear)
+(clear) ; Dangling constructs
+CLIPS> 
+(progn
+   (clear)
+   (build "(defrule foo (count) =>)")
+   (assert (count)))
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+<Fact-1>
+CLIPS> (deftemplate blah (slot x))
+CLIPS> 
+(progn 
+   (clear)
+   (assert (blah (x 1))))
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+<Fact-2>
+CLIPS>    
+(defclass BLAH (is-a USER) (slot x))
+CLIPS> 
+(progn
+   (clear)
+   (make-instance of BLAH (x 1)))
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+[gen509]
+CLIPS> (deffunction yabbo () (printout t "Hello, world!" crlf))
+CLIPS> 
+(progn (clear)
+       (yabbo))
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+Hello, world!
+CLIPS> 
+(defmethod blah ((?x STRING))
+   (printout t ?x crlf))
+CLIPS> 
+(progn (clear)
+       (blah "Hello, world!"))
+[CONSTRCT1] Some constructs are still in use. Clear cannot continue.
+Hello, world!
+CLIPS> (clear)
 CLIPS> (dribble-off)
