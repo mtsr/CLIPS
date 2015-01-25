@@ -88,7 +88,6 @@ struct groupReference
    static struct lhsParseNode    *CreateInitialPattern(void *);
    static struct lhsParseNode    *ReorderDriver(void *,struct lhsParseNode *,int *,int,int);
    static struct lhsParseNode    *AddRemainingInitialPatterns(void *,struct lhsParseNode *);
-   static void                    PrintNodes(void *,char *,struct lhsParseNode *);
    static struct lhsParseNode    *AssignPatternIndices(struct lhsParseNode *,short,int,short);
    static void                    PropagateIndexSlotPatternValues(struct lhsParseNode *,
                                                                   short,short,
@@ -96,10 +95,12 @@ struct groupReference
                                                                   short);
    static void                    PropagateJoinDepth(struct lhsParseNode *,short);
    static void                    PropagateNandDepth(struct lhsParseNode *,int,int);
-   static int                     VariableDepth(void *,struct variableReference *);
    static void                    MarkExistsNands(struct lhsParseNode *);
    static int                     PropagateWhichCE(struct lhsParseNode *,int);
-
+   /*
+   static void                    PrintNodes(void *,const char *,struct lhsParseNode *);
+   */
+   
 /********************************************/
 /* ReorderPatterns: Reorders a group of CEs */     
 /*   to accommodate KB Rete topology.       */
@@ -367,25 +368,6 @@ static void MarkExistsNands(
       currentDepth = theLHS->endNandDepth;
       theLHS = theLHS->bottom;
      }
-  }
-
-/**************************************************************/
-/* VariableDepth: Returns the most recent depth of a variable */
-/*   or -1 if the variable has not yet been bound.            */
-/**************************************************************/
-static int VariableDepth(
-  void *theName,
-  struct variableReference *variables)
-  {
-   while (variables != NULL)
-     {
-      if (variables->name == theName)
-        { return(variables->depth); }
-        
-      variables = variables->next;
-     }
-     
-   return -1;
   }
 
 /****************************************************************/
@@ -1494,76 +1476,6 @@ static struct lhsParseNode *AddRemainingInitialPatterns(
    return(rv);
   }   
 
-/**********************************************/
-/* PrintNodes: Debugging routine which prints */
-/*   the representation of a CE.              */
-/**********************************************/
-static void PrintNodes(
-  void *theEnv,
-  char *fileid,
-  struct lhsParseNode *theNode)
-  {
-   if (theNode == NULL) return;
-
-   while (theNode != NULL)
-     {
-      switch (theNode->type)
-        {
-         case PATTERN_CE:
-           EnvPrintRouter(theEnv,fileid,"(");
-           if (theNode->negated) EnvPrintRouter(theEnv,fileid,"n");
-           if (theNode->exists) EnvPrintRouter(theEnv,fileid,"x");
-           if (theNode->logical) EnvPrintRouter(theEnv,fileid,"l");
-           PrintLongInteger(theEnv,fileid,(long long) theNode->beginNandDepth);
-           EnvPrintRouter(theEnv,fileid,"-");
-           PrintLongInteger(theEnv,fileid,(long long) theNode->endNandDepth);
-           EnvPrintRouter(theEnv,fileid," ");
-           EnvPrintRouter(theEnv,fileid,ValueToString(theNode->right->bottom->value));
-           EnvPrintRouter(theEnv,fileid,")");
-           break;
-
-         case TEST_CE:
-           EnvPrintRouter(theEnv,fileid,"(test ");
-           PrintLongInteger(theEnv,fileid,(long long) theNode->beginNandDepth);
-           EnvPrintRouter(theEnv,fileid,"-");
-           PrintLongInteger(theEnv,fileid,(long long) theNode->endNandDepth);
-           EnvPrintRouter(theEnv,fileid,")");
-           break;
-
-         case NOT_CE:
-           if (theNode->logical) EnvPrintRouter(theEnv,fileid,"(lnot ");
-           else EnvPrintRouter(theEnv,fileid,"(not ");;
-           PrintNodes(theEnv,fileid,theNode->right);
-           EnvPrintRouter(theEnv,fileid,")");
-           break;
-
-         case OR_CE:
-           if (theNode->logical) EnvPrintRouter(theEnv,fileid,"(lor ");
-           else EnvPrintRouter(theEnv,fileid,"(or ");
-           PrintNodes(theEnv,fileid,theNode->right);
-           EnvPrintRouter(theEnv,fileid,")");
-           break;
-
-         case AND_CE:
-           if (theNode->logical) EnvPrintRouter(theEnv,fileid,"(land ");
-           else EnvPrintRouter(theEnv,fileid,"(and ");
-           PrintNodes(theEnv,fileid,theNode->right);
-           EnvPrintRouter(theEnv,fileid,")");
-           break;
-
-         default:
-           EnvPrintRouter(theEnv,fileid,"(unknown)");
-           break;
-
-        }
-
-      theNode = theNode->bottom;
-      if (theNode != NULL) EnvPrintRouter(theEnv,fileid," ");
-     }
-
-   return;
-  }
-
 /*************************************************************/
 /* AssignPatternIndices: For each pattern CE in the LHS of a */
 /*   rule, determines the pattern index for the CE. A simple */
@@ -1965,6 +1877,78 @@ globle struct lhsParseNode *CombineLHSParseNodes(
    expr1->right = expr2;
    return(tempPtr);
   }
+
+/**********************************************/
+/* PrintNodes: Debugging routine which prints */
+/*   the representation of a CE.              */
+/**********************************************/
+/*
+static void PrintNodes(
+  void *theEnv,
+  const char *fileid,
+  struct lhsParseNode *theNode)
+  {
+   if (theNode == NULL) return;
+
+   while (theNode != NULL)
+     {
+      switch (theNode->type)
+        {
+         case PATTERN_CE:
+           EnvPrintRouter(theEnv,fileid,"(");
+           if (theNode->negated) EnvPrintRouter(theEnv,fileid,"n");
+           if (theNode->exists) EnvPrintRouter(theEnv,fileid,"x");
+           if (theNode->logical) EnvPrintRouter(theEnv,fileid,"l");
+           PrintLongInteger(theEnv,fileid,(long long) theNode->beginNandDepth);
+           EnvPrintRouter(theEnv,fileid,"-");
+           PrintLongInteger(theEnv,fileid,(long long) theNode->endNandDepth);
+           EnvPrintRouter(theEnv,fileid," ");
+           EnvPrintRouter(theEnv,fileid,ValueToString(theNode->right->bottom->value));
+           EnvPrintRouter(theEnv,fileid,")");
+           break;
+
+         case TEST_CE:
+           EnvPrintRouter(theEnv,fileid,"(test ");
+           PrintLongInteger(theEnv,fileid,(long long) theNode->beginNandDepth);
+           EnvPrintRouter(theEnv,fileid,"-");
+           PrintLongInteger(theEnv,fileid,(long long) theNode->endNandDepth);
+           EnvPrintRouter(theEnv,fileid,")");
+           break;
+
+         case NOT_CE:
+           if (theNode->logical) EnvPrintRouter(theEnv,fileid,"(lnot ");
+           else EnvPrintRouter(theEnv,fileid,"(not ");;
+           PrintNodes(theEnv,fileid,theNode->right);
+           EnvPrintRouter(theEnv,fileid,")");
+           break;
+
+         case OR_CE:
+           if (theNode->logical) EnvPrintRouter(theEnv,fileid,"(lor ");
+           else EnvPrintRouter(theEnv,fileid,"(or ");
+           PrintNodes(theEnv,fileid,theNode->right);
+           EnvPrintRouter(theEnv,fileid,")");
+           break;
+
+         case AND_CE:
+           if (theNode->logical) EnvPrintRouter(theEnv,fileid,"(land ");
+           else EnvPrintRouter(theEnv,fileid,"(and ");
+           PrintNodes(theEnv,fileid,theNode->right);
+           EnvPrintRouter(theEnv,fileid,")");
+           break;
+
+         default:
+           EnvPrintRouter(theEnv,fileid,"(unknown)");
+           break;
+
+        }
+
+      theNode = theNode->bottom;
+      if (theNode != NULL) EnvPrintRouter(theEnv,fileid," ");
+     }
+
+   return;
+  }
+*/
 
 #endif
 
