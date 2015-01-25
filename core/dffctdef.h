@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                DEFFACTS HEADER FILE                 */
    /*******************************************************/
@@ -27,6 +27,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -91,6 +95,7 @@ struct deffactsModule
 
    LOCALE void                           InitializeDeffacts(void *);
    LOCALE void                          *EnvFindDeffacts(void *,const char *);
+   LOCALE void                          *EnvFindDeffactsInModule(void *,const char *);
    LOCALE void                          *EnvGetNextDeffacts(void *,void *);
    LOCALE void                           CreateInitialFactDeffacts(void);
    LOCALE intBool                        EnvIsDeffactsDeletable(void *,void *);

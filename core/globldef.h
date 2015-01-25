@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                DEFGLOBAL HEADER FILE                */
    /*******************************************************/
@@ -37,6 +37,10 @@
 /*                                                           */
 /*            Fixed linkage issue when BLOAD_ONLY compiler   */
 /*            flag is set to 1.                              */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -114,6 +118,7 @@ struct defglobalModule
 
    LOCALE void                           InitializeDefglobals(void *);
    LOCALE void                          *EnvFindDefglobal(void *,const char *);
+   LOCALE void                          *EnvFindDefglobalInModule(void *,const char *);
    LOCALE void                          *EnvGetNextDefglobal(void *,void *);
    LOCALE void                           CreateInitialFactDefglobal(void);
    LOCALE intBool                        EnvIsDefglobalDeletable(void *,void *);

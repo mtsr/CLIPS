@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*           CONSTRUCT COMMAND HEADER MODULE           */
    /*******************************************************/
@@ -22,6 +22,10 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -50,7 +54,8 @@
    LOCALE void                           AddConstructToModule(struct constructHeader *);
 #endif
    LOCALE intBool                        DeleteNamedConstruct(void *,const char *,struct construct *);
-   LOCALE void                          *FindNamedConstruct(void *,const char *,struct construct *);
+   LOCALE void                          *FindNamedConstructInModule(void *,const char *,struct construct *);
+   LOCALE void                          *FindNamedConstructInModuleOrImports(void *,const char *,struct construct *);
    LOCALE void                           UndefconstructCommand(void *,const char *,struct construct *);
    LOCALE int                            PPConstruct(void *,const char *,const char *,struct construct *);
    LOCALE SYMBOL_HN                     *GetConstructModuleCommand(void *,const char *,struct construct *);

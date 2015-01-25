@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/22/14          */
+   /*               CLIPS Version 6.30  01/25/15          */
    /*                                                     */
    /*                  CLASS PARSER MODULE                */
    /*******************************************************/
@@ -34,6 +34,10 @@
 /*            deprecation warnings.                           */
 /*                                                            */
 /*            Converted API macros to function calls.         */
+/*                                                            */
+/*            Changed find construct functionality so that    */
+/*            imported modules are search when locating a     */
+/*            named construct.                                */
 /*                                                            */
 /**************************************************************/
 
@@ -183,7 +187,7 @@ globle int ParseDefclass(
 #endif
 
    cname = GetConstructNameAndComment(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken,"defclass",
-                                      EnvFindDefclass,NULL,"#",TRUE,
+                                      EnvFindDefclassInModule,NULL,"#",TRUE,
                                       TRUE,TRUE,FALSE);
    if (cname == NULL)
      return(TRUE);
@@ -399,7 +403,7 @@ static intBool ValidClassName(
   const char *theClassName,
   DEFCLASS **theDefclass)
   {
-   *theDefclass = (DEFCLASS *) EnvFindDefclass(theEnv,theClassName);
+   *theDefclass = (DEFCLASS *) EnvFindDefclassInModule(theEnv,theClassName);
    if (*theDefclass != NULL)
      {
       /* ===================================
@@ -572,7 +576,7 @@ static void AddClass(
       form progeny links with all direct superclasses
       =============================================== */
    cls->hashTableIndex = HashClass(GetDefclassNamePointer((void *) cls));
-   ctmp = (DEFCLASS *) EnvFindDefclass(theEnv,EnvGetDefclassName(theEnv,(void *) cls));
+   ctmp = (DEFCLASS *) EnvFindDefclassInModule(theEnv,EnvGetDefclassName(theEnv,(void *) cls));
 
    if (ctmp != NULL)
      {

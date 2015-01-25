@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*              DEFFACTS DEFINITION MODULE             */
    /*******************************************************/
@@ -32,6 +32,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -177,7 +181,7 @@ static void InitializeDeffactsModules(
 #else
                          NULL,
 #endif
-                         EnvFindDeffacts);
+                         EnvFindDeffactsInModule);
   }
 
 /************************************************/
@@ -220,7 +224,19 @@ globle void *EnvFindDeffacts(
   void *theEnv,
   const char *deffactsName)
   { 
-   return(FindNamedConstruct(theEnv,deffactsName,DeffactsData(theEnv)->DeffactsConstruct)); 
+   return(FindNamedConstructInModuleOrImports(theEnv,deffactsName,DeffactsData(theEnv)->DeffactsConstruct)); 
+  }
+
+/**************************************************/
+/* EnvFindDeffactsInModule: Searches for a deffact in the */
+/*   list of deffacts. Returns a pointer to the   */
+/*   deffact if found, otherwise NULL.            */
+/**************************************************/
+globle void *EnvFindDeffactsInModule(
+  void *theEnv,
+  const char *deffactsName)
+  { 
+   return(FindNamedConstructInModule(theEnv,deffactsName,DeffactsData(theEnv)->DeffactsConstruct));
   }
 
 /*********************************************************/

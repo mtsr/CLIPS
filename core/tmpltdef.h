@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*               DEFTEMPLATE HEADER FILE               */
    /*******************************************************/
@@ -39,6 +39,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -142,6 +146,7 @@ struct deftemplateData
 
    LOCALE void                           InitializeDeftemplates(void *);
    LOCALE void                          *EnvFindDeftemplate(void *,const char *);
+   LOCALE void                          *EnvFindDeftemplateInModule(void *,const char *);
    LOCALE void                          *EnvGetNextDeftemplate(void *,void *);
    LOCALE intBool                        EnvIsDeftemplateDeletable(void *,void *);
    LOCALE void                          *EnvGetNextFactInTemplate(void *,void *,void *);

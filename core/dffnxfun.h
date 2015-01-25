@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*              DEFFUNCTION HEADER FILE                */
    /*******************************************************/
@@ -43,6 +43,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -122,6 +126,7 @@ struct deffunctionData
    LOCALE void                           DFWildargs(DATA_OBJECT *);
    LOCALE const char                    *EnvDeffunctionModule(void *,void *);
    LOCALE void                          *EnvFindDeffunction(void *,const char *);
+   LOCALE void                          *EnvFindDeffunctionInModule(void *,const char *);
    LOCALE void                           EnvGetDeffunctionList(void *,DATA_OBJECT *,struct defmodule *);
    LOCALE const char                    *EnvGetDeffunctionName(void *,void *);
    LOCALE SYMBOL_HN                     *EnvGetDeffunctionNamePointer(void *,void *);

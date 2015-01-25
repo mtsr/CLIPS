@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                 DEFFUNCTION MODULE                  */
    /*******************************************************/
@@ -43,6 +43,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -170,7 +174,7 @@ globle void SetupDeffunctions(
 #else
                                     NULL,
 #endif
-                                    EnvFindDeffunction);
+                                    EnvFindDeffunctionInModule);
 
    DeffunctionData(theEnv)->DeffunctionConstruct = AddConstruct(theEnv,"deffunction","deffunctions",
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -307,7 +311,24 @@ globle void *EnvFindDeffunction(
   void *theEnv,
   const char *dfnxModuleAndName)
   {
-   return(FindNamedConstruct(theEnv,dfnxModuleAndName,DeffunctionData(theEnv)->DeffunctionConstruct));
+   return(FindNamedConstructInModuleOrImports(theEnv,dfnxModuleAndName,DeffunctionData(theEnv)->DeffunctionConstruct));
+  }
+
+/***************************************************
+  NAME         : EnvFindDeffunctionInModule
+  DESCRIPTION  : Searches for a deffunction
+  INPUTS       : The name of the deffunction
+                 (possibly including a module name)
+  RETURNS      : Pointer to the deffunction if
+                 found, otherwise NULL
+  SIDE EFFECTS : None
+  NOTES        : None
+ ***************************************************/
+globle void *EnvFindDeffunctionInModule(
+  void *theEnv,
+  const char *dfnxModuleAndName)
+  {
+   return(FindNamedConstructInModule(theEnv,dfnxModuleAndName,DeffunctionData(theEnv)->DeffunctionConstruct));
   }
 
 /***************************************************

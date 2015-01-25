@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/22/14          */
+   /*               CLIPS Version 6.30  01/25/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -34,6 +34,10 @@
 /*            Fixed linkage issue when DEBUGGING_FUNCTIONS   */
 /*            is set to 0 and PROFILING_FUNCTIONS is set to  */
 /*            1.                                             */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -71,6 +75,7 @@
 
    LOCALE void                           SetupGenericFunctions(void *);
    LOCALE void                          *EnvFindDefgeneric(void *,const char *);
+   LOCALE void                          *EnvFindDefgenericInModule(void *,const char *);
    LOCALE DEFGENERIC                    *LookupDefgenericByMdlOrScope(void *,const char *);
    LOCALE DEFGENERIC                    *LookupDefgenericInScope(void *,const char *);
    LOCALE void                          *EnvGetNextDefgeneric(void *,void *);

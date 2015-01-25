@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                   DEFRULE MODULE                    */
    /*******************************************************/
@@ -50,6 +50,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that    */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -235,7 +239,7 @@ static void InitializeDefruleModules(
 #else
                                     NULL,
 #endif
-                                    EnvFindDefrule);
+                                    EnvFindDefruleInModule);
   }
 
 /***********************************************/
@@ -282,7 +286,18 @@ globle void *EnvFindDefrule(
   void *theEnv,
   const char *defruleName)
   {   
-   return(FindNamedConstruct(theEnv,defruleName,DefruleData(theEnv)->DefruleConstruct)); 
+   return(FindNamedConstructInModuleOrImports(theEnv,defruleName,DefruleData(theEnv)->DefruleConstruct)); 
+  }
+
+/*******************************************************************/
+/* EnvFindDefruleInModule: Searches for a defrule in the list of defrules. */
+/*   Returns a pointer to the defrule if found, otherwise NULL.    */
+/*******************************************************************/
+globle void *EnvFindDefruleInModule(
+  void *theEnv,
+  const char *defruleName)
+  {   
+   return(FindNamedConstructInModule(theEnv,defruleName,DefruleData(theEnv)->DefruleConstruct));
   }
 
 /************************************************************/

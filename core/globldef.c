@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                  DEFGLOBAL MODULE                   */
    /*******************************************************/
@@ -38,6 +38,10 @@
 /*                                                           */
 /*            Fixed linkage issue when BLOAD_ONLY compiler   */
 /*            flag is set to 1.                              */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -212,7 +216,7 @@ static void InitializeDefglobalModules(
 #else
                                     NULL,
 #endif
-                                    EnvFindDefglobal);
+                                    EnvFindDefglobalInModule);
 
 #if (! BLOAD_ONLY) && (! RUN_TIME) && DEFMODULE_CONSTRUCT
    AddPortConstructItem(theEnv,"defglobal",SYMBOL);
@@ -259,7 +263,19 @@ globle void *EnvFindDefglobal(
   void *theEnv,
   const char *defglobalName)
   { 
-   return(FindNamedConstruct(theEnv,defglobalName,DefglobalData(theEnv)->DefglobalConstruct)); 
+   return(FindNamedConstructInModuleOrImports(theEnv,defglobalName,DefglobalData(theEnv)->DefglobalConstruct)); 
+  }
+
+/*****************************************************/
+/* EnvFindDefglobalInModule: Searches for a defglobal in the */
+/*   list of defglobals. Returns a pointer to the    */
+/*   defglobal if found, otherwise NULL.             */
+/*****************************************************/
+globle void *EnvFindDefglobalInModule(
+  void *theEnv,
+  const char *defglobalName)
+  { 
+   return(FindNamedConstructInModule(theEnv,defglobalName,DefglobalData(theEnv)->DefglobalConstruct)); 
   }
 
 /********************************************************************/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                  DEFINSTANCES MODULE                */
    /*******************************************************/
@@ -42,6 +42,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -160,7 +164,7 @@ globle void SetupDefinstances(
 #else
                                     NULL,
 #endif
-                                    EnvFindDefinstances);
+                                    EnvFindDefinstancesInModule);
 
    DefinstancesData(theEnv)->DefinstancesConstruct =
       AddConstruct(theEnv,"definstances","definstances",
@@ -311,7 +315,24 @@ globle void *EnvFindDefinstances(
   void *theEnv,
   const char *name)
   {
-   return(FindNamedConstruct(theEnv,name,DefinstancesData(theEnv)->DefinstancesConstruct));
+   return(FindNamedConstructInModuleOrImports(theEnv,name,DefinstancesData(theEnv)->DefinstancesConstruct));
+  }
+
+/***************************************************
+  NAME         : EnvFindDefinstancesInModule
+  DESCRIPTION  : Looks up a definstance construct
+                   by name-string
+  INPUTS       : The symbolic name
+  RETURNS      : The definstance address, or NULL
+                    if not found
+  SIDE EFFECTS : None
+  NOTES        : None
+ ***************************************************/
+globle void *EnvFindDefinstancesInModule(
+  void *theEnv,
+  const char *name)
+  {
+   return(FindNamedConstructInModule(theEnv,name,DefinstancesData(theEnv)->DefinstancesConstruct));
   }
 
 /***************************************************
@@ -633,7 +654,7 @@ static SYMBOL_HN *ParseDefinstancesName(
 
    *active = FALSE;
    dname = GetConstructNameAndComment(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken,"definstances",
-                                      EnvFindDefinstances,EnvUndefinstances,"@",
+                                      EnvFindDefinstancesInModule,EnvUndefinstances,"@",
                                       TRUE,FALSE,TRUE,FALSE);
    if (dname == NULL)
      return(NULL);

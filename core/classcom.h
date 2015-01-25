@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/22/14          */
+   /*               CLIPS Version 6.30  01/25/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -28,6 +28,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -70,6 +74,7 @@
    LOCALE void                    EnvSetDefclassPPForm(void *,void *,char *);
 
    LOCALE void                   *EnvFindDefclass(void *,const char *);
+   LOCALE void                   *EnvFindDefclassInModule(void *,const char *);
    LOCALE DEFCLASS               *LookupDefclassByMdlOrScope(void *,const char *);
    LOCALE DEFCLASS               *LookupDefclassInScope(void *,const char *);
    LOCALE DEFCLASS               *LookupDefclassAnywhere(void *,struct defmodule *,const char *);

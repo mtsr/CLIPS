@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                 DEFTEMPLATE MODULE                  */
    /*******************************************************/
@@ -41,6 +41,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -200,7 +204,7 @@ static void InitializeDeftemplateModules(
 #else
                                     NULL,
 #endif
-                                    EnvFindDeftemplate);
+                                    EnvFindDeftemplateInModule);
 
 #if (! BLOAD_ONLY) && (! RUN_TIME) && DEFMODULE_CONSTRUCT
    AddPortConstructItem(theEnv,"deftemplate",SYMBOL);
@@ -247,7 +251,19 @@ globle void *EnvFindDeftemplate(
   void *theEnv,
   const char *deftemplateName)
   {  
-   return(FindNamedConstruct(theEnv,deftemplateName,DeftemplateData(theEnv)->DeftemplateConstruct)); 
+   return(FindNamedConstructInModuleOrImports(theEnv,deftemplateName,DeftemplateData(theEnv)->DeftemplateConstruct)); 
+  }
+
+/*****************************************************/
+/* EnvFindDeftemplateInModule: Searches for a deftemplate in */
+/*   the list of deftemplates. Returns a pointer to  */
+/*   the deftemplate if  found, otherwise NULL.      */
+/*****************************************************/
+globle void *EnvFindDeftemplateInModule(
+  void *theEnv,
+  const char *deftemplateName)
+  {  
+   return(FindNamedConstructInModule(theEnv,deftemplateName,DeftemplateData(theEnv)->DeftemplateConstruct));
   }
 
 /***********************************************************************/

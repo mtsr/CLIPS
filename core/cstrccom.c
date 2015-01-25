@@ -40,6 +40,10 @@
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*            Change find construct functionality so that    */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
+/*                                                           */
 /*************************************************************/
 
 #define _CSTRCCOM_SOURCE_
@@ -163,18 +167,61 @@ globle intBool DeleteNamedConstruct(
 #endif
   }
 
-/*******************************************/
-/* FindNamedConstruct: Generic routine for */
-/*   searching for a specified construct.  */
-/*******************************************/
-globle void *FindNamedConstruct(
+/********************************************************/
+/* FindNamedConstructInModuleOrImports: Generic routine */
+/*   for searching for a specified construct.           */
+/********************************************************/
+globle void *FindNamedConstructInModuleOrImports(
+  void *theEnv,
+  const char *constructName,
+  struct construct *constructClass)
+  {
+   void *theConstruct;
+   int count;
+
+   /*================================================*/
+   /* First look in the current or specified module. */
+   /*================================================*/
+   
+   theConstruct = FindNamedConstructInModule(theEnv,constructName,constructClass);
+   if (theConstruct != NULL) return theConstruct;
+   
+   /*=====================================*/
+   /* If there's a module specifier, then */
+   /* the construct does not exist.       */
+   /*=====================================*/
+
+   if (FindModuleSeparator(constructName))
+     { return(NULL); }
+   
+   /*========================================*/
+   /* Otherwise, search in imported modules. */
+   /*========================================*/
+
+   theConstruct = FindImportedConstruct(theEnv,constructClass->constructName,NULL,
+                                        constructName,&count,TRUE,NULL);
+         
+   if (count > 1)
+     {
+      AmbiguousReferenceErrorMessage(theEnv,constructClass->constructName,constructName);
+      return(NULL);
+     }
+         
+   return(theConstruct);
+  }
+
+/***********************************************/
+/* FindNamedConstructInModule: Generic routine */
+/*   for searching for a specified construct.  */
+/***********************************************/
+globle void *FindNamedConstructInModule(
   void *theEnv,
   const char *constructName,
   struct construct *constructClass)
   {
    void *theConstruct;
    SYMBOL_HN *findValue;
-
+     
    /*==========================*/
    /* Save the current module. */
    /*==========================*/

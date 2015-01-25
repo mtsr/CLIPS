@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  01/25/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -38,6 +38,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -135,7 +139,7 @@ globle intBool ParseDeffunction(
       Parse the name and comment fields of the deffunction.
       ===================================================== */
    deffunctionName = GetConstructNameAndComment(theEnv,readSource,&DeffunctionData(theEnv)->DFInputToken,"deffunction",
-                                                EnvFindDeffunction,NULL,
+                                                EnvFindDeffunctionInModule,NULL,
                                                 "!",TRUE,TRUE,TRUE,FALSE);
    if (deffunctionName == NULL)
      return(TRUE);
@@ -157,7 +161,7 @@ globle intBool ParseDeffunction(
 
    if (ConstructData(theEnv)->CheckSyntaxMode)
      {
-      dptr = (DEFFUNCTION *) EnvFindDeffunction(theEnv,ValueToString(deffunctionName));
+      dptr = (DEFFUNCTION *) EnvFindDeffunctionInModule(theEnv,ValueToString(deffunctionName));
       if (dptr == NULL)
         { dptr = AddDeffunction(theEnv,deffunctionName,NULL,min,max,0,TRUE); }
       else
@@ -356,7 +360,7 @@ static intBool ValidDeffunctionName(
      }
 #endif
 
-   theDeffunction = (struct constructHeader *) EnvFindDeffunction(theEnv,theDeffunctionName);
+   theDeffunction = (struct constructHeader *) EnvFindDeffunctionInModule(theEnv,theDeffunctionName);
    if (theDeffunction != NULL)
      {
       /* ===========================================
@@ -419,7 +423,7 @@ static DEFFUNCTION *AddDeffunction(
    /* use the existing structure and remove the pretty print form   */
    /* and interpretive code.                                        */
    /*===============================================================*/
-   dfuncPtr = (DEFFUNCTION *) EnvFindDeffunction(theEnv,ValueToString(name));
+   dfuncPtr = (DEFFUNCTION *) EnvFindDeffunctionInModule(theEnv,ValueToString(name));
    if (dfuncPtr == NULL)
      {
       dfuncPtr = get_struct(theEnv,deffunctionStruct);

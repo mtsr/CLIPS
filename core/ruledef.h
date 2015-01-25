@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                 DEFRULE HEADER FILE                 */
    /*******************************************************/
@@ -50,6 +50,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -168,6 +172,7 @@ struct defruleData
 
    LOCALE void                           InitializeDefrules(void *);
    LOCALE void                          *EnvFindDefrule(void *,const char *);
+   LOCALE void                          *EnvFindDefruleInModule(void *,const char *);
    LOCALE void                          *EnvGetNextDefrule(void *,void *);
    LOCALE struct defruleModule          *GetDefruleModuleItem(void *,struct defmodule *);
    LOCALE intBool                        EnvIsDefruleDeletable(void *,void *);

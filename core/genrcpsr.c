@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/22/14          */
+   /*               CLIPS Version 6.30  01/25/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -41,6 +41,10 @@
 /*                                                           */
 /*            Fixed typing issue when OBJECT_SYSTEM          */
 /*            compiler flag is set to 0.                     */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -156,7 +160,7 @@ globle intBool ParseDefgeneric(
 #endif
 
    gname = GetConstructNameAndComment(theEnv,readSource,&DefgenericData(theEnv)->GenericInputToken,"defgeneric",
-                                      EnvFindDefgeneric,NULL,"^",TRUE,
+                                      EnvFindDefgenericInModule,NULL,"^",TRUE,
                                       TRUE,TRUE,FALSE);
    if (gname == NULL)
      return(TRUE);
@@ -722,7 +726,7 @@ static intBool ValidGenericName(
       See if the defgeneric already exists in
       this module (or is imported from another)
       ========================================= */
-   theDefgeneric = (struct constructHeader *) EnvFindDefgeneric(theEnv,theDefgenericName);
+   theDefgeneric = (struct constructHeader *) EnvFindDefgenericInModule(theEnv,theDefgenericName);
    if (theDefgeneric != NULL)
      {
       /* ===========================================
@@ -804,7 +808,7 @@ static SYMBOL_HN *ParseMethodNameAndIndex(
 
    *theIndex = 0;
    gname = GetConstructNameAndComment(theEnv,readSource,&DefgenericData(theEnv)->GenericInputToken,"defgeneric",
-                                      EnvFindDefgeneric,NULL,"&",TRUE,FALSE,TRUE,TRUE);
+                                      EnvFindDefgenericInModule,NULL,"&",TRUE,FALSE,TRUE,TRUE);
    if (gname == NULL)
      return(NULL);
    if (GetType(DefgenericData(theEnv)->GenericInputToken) == INTEGER)
@@ -1311,7 +1315,7 @@ static DEFGENERIC *AddGeneric(
   {
    DEFGENERIC *gfunc;
 
-   gfunc = (DEFGENERIC *) EnvFindDefgeneric(theEnv,ValueToString(name));
+   gfunc = (DEFGENERIC *) EnvFindDefgenericInModule(theEnv,ValueToString(name));
    if (gfunc != NULL)
      {
       *newGeneric = FALSE;

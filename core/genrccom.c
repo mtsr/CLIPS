@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -45,6 +45,10 @@
 /*            Fixed linkage issue when DEBUGGING_FUNCTIONS   */
 /*            is set to 0 and PROFILING_FUNCTIONS is set to  */
 /*            1.                                             */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -186,7 +190,7 @@ globle void SetupGenericFunctions(
 #else
                                     NULL,
 #endif
-                                    EnvFindDefgeneric);
+                                    EnvFindDefgenericInModule);
 
    DefgenericData(theEnv)->DefgenericConstruct =  AddConstruct(theEnv,"defgeneric","defgenerics",
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -368,7 +372,24 @@ globle void *EnvFindDefgeneric(
   void *theEnv,
   const char *genericModuleAndName)
   {
-   return(FindNamedConstruct(theEnv,genericModuleAndName,DefgenericData(theEnv)->DefgenericConstruct));
+   return(FindNamedConstructInModuleOrImports(theEnv,genericModuleAndName,DefgenericData(theEnv)->DefgenericConstruct));
+  }
+
+/***************************************************
+  NAME         : EnvFindDefgenericInModule
+  DESCRIPTION  : Searches for a generic
+  INPUTS       : The name of the generic
+                 (possibly including a module name)
+  RETURNS      : Pointer to the generic if
+                 found, otherwise NULL
+  SIDE EFFECTS : None
+  NOTES        : None
+ ***************************************************/
+globle void *EnvFindDefgenericInModule(
+  void *theEnv,
+  const char *genericModuleAndName)
+  {
+   return(FindNamedConstructInModule(theEnv,genericModuleAndName,DefgenericData(theEnv)->DefgenericConstruct));
   }
 
 /***************************************************

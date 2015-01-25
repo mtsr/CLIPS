@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/22/14          */
+   /*               CLIPS Version 6.30  01/25/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -31,6 +31,10 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Changed find construct functionality so that   */
+/*            imported modules are search when locating a    */
+/*            named construct.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -95,6 +99,7 @@ struct definstancesData
    LOCALE const char                    *EnvDefinstancesModule(void *,void *);
    LOCALE const char                    *EnvDefinstancesModuleName(void *,void *);
    LOCALE void                          *EnvFindDefinstances(void *,const char *);
+   LOCALE void                          *EnvFindDefinstancesInModule(void *,const char *);
    LOCALE void                           EnvGetDefinstancesList(void *,DATA_OBJECT *,struct defmodule *);
    LOCALE const char                    *EnvGetDefinstancesName(void *,void *);
    LOCALE SYMBOL_HN                     *EnvGetDefinstancesNamePointer(void *,void *);

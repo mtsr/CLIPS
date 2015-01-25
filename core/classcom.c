@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/22/14          */
+   /*               CLIPS Version 6.30  01/25/15          */
    /*                                                     */
    /*                  CLASS COMMANDS MODULE              */
    /*******************************************************/
@@ -34,6 +34,10 @@
 /*            deprecation warnings.                           */
 /*                                                            */
 /*            Converted API macros to function calls.         */
+/*                                                            */
+/*            Changed find construct functionality so that    */
+/*            imported modules are search when locating a     */
+/*            named construct.                                */
 /*                                                            */
 /**************************************************************/
 
@@ -90,7 +94,49 @@ static const char *GetClassDefaultsModeName(unsigned short);
   SIDE EFFECTS : None
   NOTES        : None
  ******************************************************************/
-globle void *EnvFindDefclass(
+globle void *EnvFindDefclass( // TBD Needs to look in imported
+  void *theEnv,
+  const char *classAndModuleName)
+  {
+   SYMBOL_HN *classSymbol = NULL;
+   DEFCLASS *cls;
+   struct defmodule *theModule = NULL;
+   const char *className;
+
+   SaveCurrentModule(theEnv);
+   className = ExtractModuleAndConstructName(theEnv,classAndModuleName);
+   if (className != NULL)
+     {
+      classSymbol = FindSymbolHN(theEnv,ExtractModuleAndConstructName(theEnv,classAndModuleName));
+      theModule = ((struct defmodule *) EnvGetCurrentModule(theEnv));
+     }
+   RestoreCurrentModule(theEnv);
+
+   if (classSymbol == NULL)
+     return(NULL);
+   cls = DefclassData(theEnv)->ClassTable[HashClass(classSymbol)];
+   while (cls != NULL)
+     {
+      if (cls->header.name == classSymbol)
+        {
+         if (cls->system || (cls->header.whichModule->theModule == theModule))
+           return(cls->installed ? (void *) cls : NULL);
+        }
+      cls = cls->nxtHash;
+     }
+   return(NULL);
+  }
+
+/*******************************************************************
+  NAME         : EnvFindDefclass
+  DESCRIPTION  : Looks up a specified class in the class hash table
+                 (Only looks in current or specified module)
+  INPUTS       : The name-string of the class (including module)
+  RETURNS      : The address of the found class, NULL otherwise
+  SIDE EFFECTS : None
+  NOTES        : None
+ ******************************************************************/
+globle void *EnvFindDefclassInModule(
   void *theEnv,
   const char *classAndModuleName)
   {
