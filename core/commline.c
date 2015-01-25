@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                COMMAND LINE MODULE                  */
    /*******************************************************/
@@ -49,6 +49,10 @@
 /*                                                           */             
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Added code to keep track of pointers to        */
+/*            constructs that are contained externally to    */
+/*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*************************************************************/
 
@@ -767,6 +771,7 @@ globle intBool RouteCommand(
    struct expr *top;
    const char *commandName;
    struct token theToken;
+   int danglingConstructs;
 
    if (command == NULL)
      { return(0); }
@@ -875,6 +880,7 @@ globle intBool RouteCommand(
    /* Parse a function call. */
    /*========================*/
 
+   danglingConstructs = ConstructData(theEnv)->DanglingConstructs;
    CommandLineData(theEnv)->ParsingTopLevelCommand = TRUE;
    top = Function2Parse(theEnv,"command",commandName);
    CommandLineData(theEnv)->ParsingTopLevelCommand = FALSE;
@@ -890,7 +896,11 @@ globle intBool RouteCommand(
    /* Evaluate function call. */
    /*=========================*/
 
-   if (top == NULL) return(0);
+   if (top == NULL)
+     {
+      ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
+      return(0);
+     }
    
    ExpressionInstall(theEnv,top);
    
@@ -902,6 +912,7 @@ globle intBool RouteCommand(
    
    ExpressionDeinstall(theEnv,top);
    ReturnExpression(theEnv,top);
+   ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
    
    /*=================================================*/
    /* Print the return value of the function/command. */

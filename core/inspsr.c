@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  01/13/15           */
+   /*              CLIPS Version 6.30  01/25/15           */
    /*                                                     */
    /*                INSTANCE PARSER MODULE               */
    /*******************************************************/
@@ -32,6 +32,10 @@
 /*            It's now possible to create an instance of a   */
 /*            class that's not in scope if the module name   */
 /*            is specified.                                  */
+/*                                                           */
+/*            Added code to keep track of pointers to        */
+/*            constructs that are contained externally to    */
+/*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*************************************************************/
 
@@ -568,6 +572,9 @@ static intBool ReplaceClassNameWithReference(
         }
       theExp->type = DEFCLASS_PTR;
       theExp->value = theDefclass;
+      
+      if (! ConstructData(theEnv)->ParsingConstruct)
+        { ConstructData(theEnv)->DanglingConstructs++; }
      }
    return(TRUE);
   }

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -56,6 +56,10 @@
 /*            Added code to prevent a clear command from     */
 /*            being executed during fact assertions via      */
 /*            JoinOperationInProgress mechanism.             */
+/*                                                           */
+/*            Added code to keep track of pointers to        */
+/*            constructs that are contained externally to    */
+/*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*************************************************************/
 
@@ -1520,8 +1524,14 @@ globle void *EnvAssertString(
   const char *theString)
   {
    struct fact *theFact;
+   int danglingConstructs;
+   danglingConstructs = ConstructData(theEnv)->DanglingConstructs;
 
    if ((theFact = StringToFact(theEnv,theString)) == NULL) return(NULL);
+   
+   if ((! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+       (EvaluationData(theEnv)->CurrentExpression == NULL))
+     { ConstructData(theEnv)->DanglingConstructs = danglingConstructs; }
 
    return((void *) EnvAssert(theEnv,(void *) theFact));
   }

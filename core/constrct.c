@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -47,6 +47,10 @@
 /*            Added code to prevent a clear command from     */
 /*            being executed during fact assertions via      */
 /*            Increment/DecrementClearReadyLocks API.        */
+/*                                                           */
+/*            Added code to keep track of pointers to        */
+/*            constructs that are contained externally to    */
+/*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*************************************************************/
 
@@ -601,6 +605,7 @@ globle void EnvClear(
 
    ConstructData(theEnv)->ClearReadyInProgress = TRUE;
    if ((ConstructData(theEnv)->ClearReadyLocks > 0) ||
+       (ConstructData(theEnv)->DanglingConstructs > 0) ||
        (ClearReady(theEnv) == FALSE))
      {
       PrintErrorID(theEnv,"CONSTRCT",1,FALSE);

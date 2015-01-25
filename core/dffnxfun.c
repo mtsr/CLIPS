@@ -48,6 +48,10 @@
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
 /*                                                           */
+/*            Added code to keep track of pointers to        */
+/*            constructs that are contained externally to    */
+/*            to constructs, DanglingConstructs.             */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -730,6 +734,8 @@ static void IncrementDeffunctionBusyCount(
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
+   if (! ConstructData(theEnv)->ParsingConstruct)
+     { ConstructData(theEnv)->DanglingConstructs++; }
 
    ((DEFFUNCTION *) value)->busy++;
   }

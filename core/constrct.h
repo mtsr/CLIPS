@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -44,6 +44,10 @@
 /*            Added code to prevent a clear command from     */
 /*            being executed during fact assertions via      */
 /*            Increment/DecrementClearReadyLocks API.        */
+/*                                                           */
+/*            Added code to keep track of pointers to        */
+/*            constructs that are contained externally to    */
+/*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*************************************************************/
 
@@ -108,6 +112,7 @@ struct constructData
    int ResetReadyInProgress;
    int ResetInProgress;
    short ClearReadyLocks;
+   int DanglingConstructs;
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    struct callFunctionItem *ListOfSaveFunctions;
    intBool PrintWhileLoading;
