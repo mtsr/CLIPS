@@ -44,6 +44,9 @@
 /*            constructs that are contained externally to    */
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
+/*            Fixed str-cat bug that could be invoked by     */
+/*            (funcall str-cat).                             */
+/*                                                           */
 /*************************************************************/
 
 #define _STRNGFUN_SOURCE_
@@ -173,6 +176,8 @@ static void StrOrSymCatFunction(
    /*===============================================*/
 
    numArgs = EnvRtnArgCount(theEnv);
+   if (numArgs == 0) return;
+   
    arrayOfStrings = (SYMBOL_HN **) gm1(theEnv,(int) sizeof(SYMBOL_HN *) * numArgs);
    for (i = 0; i < numArgs; i++)   
      { arrayOfStrings[i] = NULL; }
