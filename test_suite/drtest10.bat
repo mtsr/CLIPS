@@ -220,4 +220,18 @@
 
 (progn (clear)
        (blah "Hello, world!"))
+(clear) ; Sourceforge bug
+(funcall str-cat)
+
+(deffunction bar1 (?func)
+   (bind $?a (create$))
+   (funcall ?func (expand$ $?a)))
+(bar1 "str-cat")
+(clear)
+
+(defclass BOO (is-a USER)
+   (multislot foo (cardinality -1 0)))
+   
+(defclass BOO (is-a USER)
+   (multislot foo (cardinality 0 -3)))
 (clear)
