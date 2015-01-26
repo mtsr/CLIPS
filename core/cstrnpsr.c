@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  01/25/15            */
    /*                                                     */
    /*               CONSTRAINT PARSER MODULE              */
    /*******************************************************/
@@ -30,6 +30,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Slot cardinality bug fix for minimum < 0.      */
 /*                                                           */
 /*************************************************************/
 
@@ -1093,6 +1095,13 @@ static intBool ParseRangeCardinalityAttribute(
         }
       else
         {
+         if (ValueToLong(inputToken.value) < 0LL)
+           {
+            PrintErrorID(theEnv,"CSTRNPSR",6,TRUE);
+            EnvPrintRouter(theEnv,WERROR,"Minimum cardinality value must be greater than or equal to zero\n");
+            return(FALSE);
+           }
+
          ReturnExpression(theEnv,constraints->minFields);
          constraints->minFields = GenConstant(theEnv,inputToken.type,inputToken.value);
         }
