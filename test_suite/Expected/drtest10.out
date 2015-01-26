@@ -370,5 +370,38 @@ CLIPS>
        (blah "Hello, world!"))
 [CONSTRCT1] Some constructs are still in use. Clear cannot continue.
 Hello, world!
+CLIPS> (clear) ; Sourceforge bug
+CLIPS> (funcall str-cat)
+""
+CLIPS> 
+(deffunction bar1 (?func)
+   (bind $?a (create$))
+   (funcall ?func (expand$ $?a)))
+CLIPS> (bar1 "str-cat")
+""
+CLIPS> (clear)
+CLIPS> 
+(defclass BOO (is-a USER)
+   (multislot foo (cardinality -1 0)))
+
+[CSTRNPSR6] Minimum cardinality value must be greater than or equal to zero
+
+ERROR:
+(defclass MAIN::BOO
+   (is-a USER)
+   (multislot foo
+      (cardinality -1
+CLIPS>    
+(defclass BOO (is-a USER)
+   (multislot foo (cardinality 0 -3)))
+
+[CSTRNPSR2] Minimum cardinality value must be less than
+or equal to the maximum cardinality value
+
+ERROR:
+(defclass MAIN::BOO
+   (is-a USER)
+   (multislot foo
+      (cardinality 0 -3)
 CLIPS> (clear)
 CLIPS> (dribble-off)
