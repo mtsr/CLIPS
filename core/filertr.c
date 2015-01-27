@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  01/26/15            */
    /*                                                     */
    /*               FILE I/O ROUTER MODULE                */
    /*******************************************************/
@@ -36,6 +36,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Added STDOUT and STDIN logical name            */
+/*            definitions.                                   */
 /*                                                           */
 /*************************************************************/
 
@@ -112,9 +115,9 @@ globle FILE *FindFptr(
    /* Check to see if standard input or output is requested. */
    /*========================================================*/
 
-   if (strcmp(logicalName,"stdout") == 0)
+   if (strcmp(logicalName,STDOUT) == 0)
      { return(stdout); }
-   else if (strcmp(logicalName,"stdin") == 0)
+   else if (strcmp(logicalName,STDIN) == 0)
      { return(stdin);  }
    else if (strcmp(logicalName,WTRACE) == 0)
      { return(stdout); }

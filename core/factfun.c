@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  01/26/15            */
    /*                                                     */
    /*               FACT FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -58,6 +58,9 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Added STDOUT and STDIN logical name            */
+/*            definitions.                                   */
 /*                                                           */
 /*************************************************************/
 
@@ -538,10 +541,10 @@ globle void PPFactFunction(
    /*===============================================================*/
 
    if (numberOfArguments == 1)
-     { logicalName = "stdout"; }
+     { logicalName = STDOUT; }
    else
      {
-      logicalName = GetLogicalName(theEnv,2,"stdout");
+      logicalName = GetLogicalName(theEnv,2,STDOUT);
       if (logicalName == NULL)
         {
          IllegalLogicalNameMessage(theEnv,"ppfact");

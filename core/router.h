@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  01/26/15            */
    /*                                                     */
    /*                 ROUTER HEADER FILE                  */
    /*******************************************************/
@@ -34,6 +34,9 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*            Added STDOUT and STDIN logical name            */
+/*            definitions.                                   */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_router
@@ -54,6 +57,8 @@
 #define WDIALOG "wdialog"
 #define WPROMPT  WPROMPT_STRING
 #define WDISPLAY "wdisplay"
+#define STDOUT "stdout"
+#define STDIN "stdin"
 
 #define ROUTER_DATA 46
 

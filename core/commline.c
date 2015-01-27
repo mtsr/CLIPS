@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.30  01/26/15            */
    /*                                                     */
    /*                COMMAND LINE MODULE                  */
    /*******************************************************/
@@ -53,6 +53,9 @@
 /*            Added code to keep track of pointers to        */
 /*            constructs that are contained externally to    */
 /*            to constructs, DanglingConstructs.             */
+/*                                                           */
+/*            Added STDOUT and STDIN logical name            */
+/*            definitions.                                   */
 /*                                                           */
 /*************************************************************/
 
@@ -535,7 +538,7 @@ globle void CommandLoop(
 
       if (BatchActive(theEnv) == TRUE)
         {
-         inchar = LLGetcBatch(theEnv,"stdin",TRUE);
+         inchar = LLGetcBatch(theEnv,STDIN,TRUE);
          if (inchar == EOF)
            { (*CommandLineData(theEnv)->EventFunction)(theEnv); }
          else
@@ -630,7 +633,7 @@ globle void CommandLoopBatchDriver(
 
       if (BatchActive(theEnv) == TRUE)
         {
-         inchar = LLGetcBatch(theEnv,"stdin",TRUE);
+         inchar = LLGetcBatch(theEnv,STDIN,TRUE);
          if (inchar == EOF)
            { return; }
          else
@@ -796,8 +799,8 @@ globle intBool RouteCommand(
       CloseStringSource(theEnv,"command");
       if (printResult)
         {
-         PrintAtom(theEnv,"stdout",theToken.type,theToken.value);
-         EnvPrintRouter(theEnv,"stdout","\n");
+         PrintAtom(theEnv,STDOUT,theToken.type,theToken.value);
+         EnvPrintRouter(theEnv,STDOUT,"\n");
         }
       return(1);
      }
@@ -816,8 +819,8 @@ globle intBool RouteCommand(
       rtn_struct(theEnv,expr,top);
       if (printResult)
         {
-         PrintDataObject(theEnv,"stdout",&result);
-         EnvPrintRouter(theEnv,"stdout","\n");
+         PrintDataObject(theEnv,STDOUT,&result);
+         EnvPrintRouter(theEnv,STDOUT,"\n");
         }
       return(1);
      }
@@ -920,8 +923,8 @@ globle intBool RouteCommand(
    
    if ((result.type != RVOID) && printResult)
      {
-      PrintDataObject(theEnv,"stdout",&result);
-      EnvPrintRouter(theEnv,"stdout","\n");
+      PrintDataObject(theEnv,STDOUT,&result);
+      EnvPrintRouter(theEnv,STDOUT,"\n");
      }
 
    return(1);
@@ -938,7 +941,7 @@ static int DefaultGetNextEvent(
   {
    int inchar;
 
-   inchar = EnvGetcRouter(theEnv,"stdin");
+   inchar = EnvGetcRouter(theEnv,STDIN);
 
    if (inchar == EOF) inchar = '\n';
 

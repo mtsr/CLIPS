@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/26/15            */
    /*                                                     */
    /*               TEXT PROCESSING MODULE                */
    /*******************************************************/
@@ -43,6 +43,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Added STDOUT and STDIN logical name            */
+/*            definitions.                                   */
 /*                                                           */
 /*************************************************************/
 
@@ -1077,7 +1080,7 @@ globle int PrintRegionCommand(
    if ((status != NO_FILE) && (status != NO_TOPIC) && (status != EXIT))
      {
       if (strcmp(params->name,"t") == 0)
-        genstrcpy(params->name,"stdout");
+        genstrcpy(params->name,STDOUT);
       EnvPrintRouter(theEnv,params->name,"\n");
       while (grab_string(theEnv,fp,buf,256) != NULL)
         EnvPrintRouter(theEnv,params->name,buf);

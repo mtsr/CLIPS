@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  01/26/15            */
    /*                                                     */
    /*                 I/O FUNCTIONS MODULE                */
    /*******************************************************/
@@ -59,6 +59,9 @@
 /*                                                           */             
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Added STDOUT and STDIN logical name            */
+/*            definitions.                                   */
 /*                                                           */
 /*************************************************************/
 
@@ -185,7 +188,7 @@ globle void PrintoutFunction(
    /* Get the logical name to which output is to be sent. */
    /*=====================================================*/
 
-   dummyid = GetLogicalName(theEnv,1,"stdout");
+   dummyid = GetLogicalName(theEnv,1,STDOUT);
    if (dummyid == NULL)
      {
       IllegalLogicalNameMessage(theEnv,"printout");
@@ -297,10 +300,10 @@ globle void ReadFunction(
    /*======================================================*/
 
    if (numberOfArguments == 0)
-     { logicalName = "stdin"; }
+     { logicalName = STDIN; }
    else if (numberOfArguments == 1)
      {
-      logicalName = GetLogicalName(theEnv,1,"stdin");
+      logicalName = GetLogicalName(theEnv,1,STDIN);
       if (logicalName == NULL)
         {
          IllegalLogicalNameMessage(theEnv,"read");
@@ -331,7 +334,7 @@ globle void ReadFunction(
    /* source is stdin, else just get token. */
    /*=======================================*/
 
-   if (strcmp(logicalName,"stdin") == 0)
+   if (strcmp(logicalName,STDIN) == 0)
      { ReadTokenFromStdin(theEnv,&theToken); }
    else
      { GetToken(theEnv,logicalName,&theToken); }
@@ -397,7 +400,7 @@ static void ReadTokenFromStdin(
       RouterData(theEnv)->CommandBufferInputCount = 0;
       RouterData(theEnv)->AwaitingInput = TRUE;
       inputStringSize = 0;
-      inchar = EnvGetcRouter(theEnv,"stdin");
+      inchar = EnvGetcRouter(theEnv,STDIN);
 
       /*========================================================*/
       /* Continue reading characters until a carriage return is */
@@ -412,7 +415,7 @@ static void ReadTokenFromStdin(
         {
          inputString = ExpandStringWithChar(theEnv,inchar,inputString,&RouterData(theEnv)->CommandBufferInputCount,
                                             &inputStringSize,inputStringSize + 80);
-         inchar = EnvGetcRouter(theEnv,"stdin");
+         inchar = EnvGetcRouter(theEnv,STDIN);
         }
 
       /*==================================================*/
@@ -607,10 +610,10 @@ globle int GetCharFunction(
      { return(-1); }
 
    if (numberOfArguments == 0 )
-     { logicalName = "stdin"; }
+     { logicalName = STDIN; }
    else
      {
-      logicalName = GetLogicalName(theEnv,1,"stdin");
+      logicalName = GetLogicalName(theEnv,1,STDIN);
       if (logicalName == NULL)
         {
          IllegalLogicalNameMessage(theEnv,"get-char");
@@ -652,10 +655,10 @@ globle void PutCharFunction(
    /*=======================*/
    
    if (numberOfArguments == 1)
-     { logicalName = "stdout"; }
+     { logicalName = STDOUT; }
    else
      {
-      logicalName = GetLogicalName(theEnv,1,"stdout");
+      logicalName = GetLogicalName(theEnv,1,STDOUT);
       if (logicalName == NULL)
         {
          IllegalLogicalNameMessage(theEnv,"put-char");
@@ -794,7 +797,7 @@ globle void *FormatFunction(
    /* First argument must be a logical name. */
    /*========================================*/
 
-   if ((logicalName = GetLogicalName(theEnv,1,"stdout")) == NULL)
+   if ((logicalName = GetLogicalName(theEnv,1,STDOUT)) == NULL)
      {
       IllegalLogicalNameMessage(theEnv,"format");
       SetHaltExecution(theEnv,TRUE);
@@ -1160,10 +1163,10 @@ globle void ReadlineFunction(
      }
 
    if (numberOfArguments == 0 )
-     { logicalName = "stdin"; }
+     { logicalName = STDIN; }
    else
      {
-      logicalName = GetLogicalName(theEnv,1,"stdin");
+      logicalName = GetLogicalName(theEnv,1,STDIN);
       if (logicalName == NULL)
         {
          IllegalLogicalNameMessage(theEnv,"readline");
@@ -1339,10 +1342,10 @@ globle void ReadNumberFunction(
    /*======================================================*/
 
    if (numberOfArguments == 0)
-     { logicalName = "stdin"; }
+     { logicalName = STDIN; }
    else if (numberOfArguments == 1)
      {
-      logicalName = GetLogicalName(theEnv,1,"stdin");
+      logicalName = GetLogicalName(theEnv,1,STDIN);
       if (logicalName == NULL)
         {
          IllegalLogicalNameMessage(theEnv,"read");
@@ -1373,7 +1376,7 @@ globle void ReadNumberFunction(
    /* source is stdin, else just get token. */
    /*=======================================*/
 
-   if (strcmp(logicalName,"stdin") == 0)
+   if (strcmp(logicalName,STDIN) == 0)
      { ReadNumber(theEnv,logicalName,&theToken,TRUE); }
    else
      { ReadNumber(theEnv,logicalName,&theToken,FALSE); }
