@@ -598,7 +598,6 @@
 - (IBAction) balance: (id) sender
   {
    NSRange selectionRange;
-   unsigned int cursorLocation;
    unsigned int leftMiddle, rightMiddle, textLength;
    unichar characterToCheck;
    int count, leftCount, rightCount;
@@ -621,13 +620,7 @@
    /*=================================*/
           
    selectionRange = [textView selectedRange];
-    
-   /*======================*/
-   /* Where is the cursor? */
-   /*======================*/
-    
-   cursorLocation = selectionRange.location;
-   
+       
    /*=============================================================*/
    /* Get information about the current selection to be balanced. */
    /*=============================================================*/
