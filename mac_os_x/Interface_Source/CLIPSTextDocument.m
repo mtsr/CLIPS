@@ -474,7 +474,7 @@
    /* Load the selection. */
    /*=====================*/
    
-   EnvPrintRouter(theEnvironment,"stdout","Loading Selection...\n");
+   EnvPrintRouter(theEnvironment,STDOUT,"Loading Selection...\n");
    FlushCommandString(theEnvironment);
    
    OpenTextSource(theEnvironment,"aecompiletext",theString,0,(unsigned) length); // TBD Make the name unique
@@ -579,7 +579,7 @@
    /* Load the buffer. */
    /*==================*/
    
-   EnvPrintRouter(theEnvironment,"stdout","Loading Buffer...\n");
+   EnvPrintRouter(theEnvironment,STDOUT,"Loading Buffer...\n");
    FlushCommandString(theEnvironment);
    
    OpenTextSource(theEnvironment,"aecompiletext",theString,0,(unsigned) length); // TBD Make the name unique

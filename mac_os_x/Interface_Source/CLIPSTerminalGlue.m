@@ -37,8 +37,8 @@ intBool QueryInterfaceRouter(
 #pragma unused(theEnv)
 #endif
    
-   if ( (strcmp(logicalName,"stdout") == 0) ||
-        (strcmp(logicalName,"stdin") == 0) ||
+   if ( (strcmp(logicalName,STDOUT) == 0) ||
+        (strcmp(logicalName,STDIN) == 0) ||
         (strcmp(logicalName,WPROMPT) == 0) ||
         (strcmp(logicalName,WTRACE) == 0) ||
         (strcmp(logicalName,WERROR) == 0) ||
