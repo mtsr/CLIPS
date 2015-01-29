@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.39  08/22/14            */
+   /*             CLIPS Version 6.39  01/29/15            */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -57,6 +57,9 @@
 /*                                                           */ 
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Removed deallocating message parameter from    */
+/*            EnvReleaseMem.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -411,7 +414,7 @@ globle long long ReleaseMemCommand(
    /* and return the amount of memory freed. */
    /*========================================*/
 
-   return(EnvReleaseMem(theEnv,-1L,FALSE));
+   return(EnvReleaseMem(theEnv,-1L));
   }
 
 /******************************************/

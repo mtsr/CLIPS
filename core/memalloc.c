@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  01/29/15            */
    /*                                                     */
    /*                    MEMORY MODULE                    */
    /*******************************************************/
@@ -34,6 +34,9 @@
 /*            Added get_mem and rtn_mem macros.              */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Removed deallocating message parameter from    */
+/*            EnvReleaseMem.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -128,11 +131,11 @@ globle void *genalloc(
         
    if (memPtr == NULL)
      {
-      EnvReleaseMem(theEnv,(long) ((size * 5 > 4096) ? size * 5 : 4096),FALSE);
+      EnvReleaseMem(theEnv,(long) ((size * 5 > 4096) ? size * 5 : 4096));
       memPtr = (char *) malloc(size);
       if (memPtr == NULL)
         {
-         EnvReleaseMem(theEnv,-1L,TRUE);
+         EnvReleaseMem(theEnv,-1L);
          memPtr = (char *) malloc(size);
          while (memPtr == NULL)
            {
@@ -284,16 +287,12 @@ globle long int UpdateMemoryRequests(
 /***********************************/
 globle long int EnvReleaseMem(
   void *theEnv,
-  long int maximum,
-  int printMessage)
+  long int maximum)
   {
    struct memoryPtr *tmpPtr, *memPtr;
    int i;
    long int returns = 0;
    long int amount = 0;
-
-   if (printMessage == TRUE)
-     { EnvPrintRouter(theEnv,WDIALOG,"\n*** DEALLOCATING MEMORY ***\n"); }
 
    for (i = (MEM_TABLE_SIZE - 1) ; i >= (int) sizeof(char *) ; i--)
      {
@@ -311,15 +310,8 @@ globle long int EnvReleaseMem(
         }
       MemoryData(theEnv)->MemoryTable[i] = NULL;
       if ((amount > maximum) && (maximum > 0))
-        {
-         if (printMessage == TRUE)
-           { EnvPrintRouter(theEnv,WDIALOG,"*** MEMORY  DEALLOCATED ***\n"); }
-         return(amount);
-        }
+        { return(amount); }
      }
-
-   if (printMessage == TRUE)
-     { EnvPrintRouter(theEnv,WDIALOG,"*** MEMORY  DEALLOCATED ***\n"); }
 
    return(amount);
   }

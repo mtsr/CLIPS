@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  01/29/15            */
    /*                                                     */
    /*            MEMORY ALLOCATION HEADER FILE            */
    /*******************************************************/
@@ -33,6 +33,9 @@
 /*            Added get_mem and rtn_mem macros.              */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*            Removed deallocating message parameter from    */
+/*            EnvReleaseMem.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -162,7 +165,7 @@ struct memoryData
    LOCALE long                           EnvMemRequests(void *);
    LOCALE long                           UpdateMemoryUsed(void *,long int);
    LOCALE long                           UpdateMemoryRequests(void *,long int);
-   LOCALE long                           EnvReleaseMem(void *,long,int);
+   LOCALE long                           EnvReleaseMem(void *,long);
    LOCALE void                          *gm1(void *,size_t);
    LOCALE void                          *gm2(void *,size_t);
    LOCALE void                          *gm3(void *,size_t);

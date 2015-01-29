@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  01/29/15            */
    /*                                                     */
    /*                ENVIRONMENT MODULE                   */
    /*******************************************************/
@@ -38,6 +38,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*            Removed deallocating message parameter from    */
+/*            EnvReleaseMem.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -583,7 +586,7 @@ globle intBool DestroyEnvironment(
 */
    theMemData = MemoryData(theEnvironment);
 
-   EnvReleaseMem(theEnvironment,-1,FALSE);
+   EnvReleaseMem(theEnvironment,-1);
 
    for (i = 0; i < MAXIMUM_ENVIRONMENT_POSITIONS; i++)
      {
@@ -600,7 +603,7 @@ globle intBool DestroyEnvironment(
 
    RemoveEnvironmentCleanupFunctions(theEnvironment);
    
-   EnvReleaseMem(theEnvironment,-1,FALSE);
+   EnvReleaseMem(theEnvironment,-1);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
    RemoveHashedEnvironment(theEnvironment);
