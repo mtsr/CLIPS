@@ -69,7 +69,8 @@
    LOCALE int                            GetFactDuplicationCommand(void *);
    LOCALE int                            SaveFactsCommand(void *);
    LOCALE int                            LoadFactsCommand(void *);
-   LOCALE int                            EnvSaveFacts(void *,const char *,int,struct expr *);
+   LOCALE int                            EnvSaveFacts(void *,const char *,int);
+   LOCALE int                            EnvSaveFactsDriver(void *,const char *,int,struct expr *);
    LOCALE int                            EnvLoadFacts(void *,const char *);
    LOCALE int                            EnvLoadFactsFromString(void *,const char *,long);
    LOCALE long long                      FactIndexFunction(void *);

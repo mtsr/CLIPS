@@ -846,7 +846,7 @@ globle int SaveFactsCommand(
    /* Call the SaveFacts driver routine. */
    /*====================================*/
 
-   if (EnvSaveFacts(theEnv,fileName,saveCode,theList) == FALSE)
+   if (EnvSaveFactsDriver(theEnv,fileName,saveCode,theList) == FALSE)
      { return(FALSE); }
 
    return(TRUE);
@@ -886,6 +886,17 @@ globle int LoadFactsCommand(
 /* EnvSaveFacts: C access routine for the save-facts command. */
 /**************************************************************/
 globle intBool EnvSaveFacts(
+  void *theEnv,
+  const char *fileName,
+  int saveCode)
+  {
+   return EnvSaveFactsDriver(theEnv,fileName,saveCode,NULL);
+  }
+
+/********************************************************************/
+/* EnvSaveFactsDriver: C access routine for the save-facts command. */
+/********************************************************************/
+globle intBool EnvSaveFactsDriver(
   void *theEnv,
   const char *fileName,
   int saveCode,
@@ -1347,10 +1358,9 @@ globle intBool LoadFacts(
 
 globle intBool SaveFacts(
   const char *fileName,
-  int saveCode,
-  struct expr *theList)
+  int saveCode)
   {
-   return EnvSaveFacts(GetCurrentEnvironment(),fileName,saveCode,theList);
+   return EnvSaveFacts(GetCurrentEnvironment(),fileName,saveCode);
   }
 
 globle intBool LoadFactsFromString(

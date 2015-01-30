@@ -78,10 +78,12 @@ struct instanceFileData
    LOCALE long                           SaveInstancesCommand(void *);
    LOCALE long                           LoadInstancesCommand(void *);
    LOCALE long                           RestoreInstancesCommand(void *);
-   LOCALE long                           EnvSaveInstances(void *,const char *,int,EXPRESSION *,intBool);
+   LOCALE long                           EnvSaveInstancesDriver(void *,const char *,int,EXPRESSION *,intBool);
+   LOCALE long                           EnvSaveInstances(void *,const char *,int);
 #if BSAVE_INSTANCES
    LOCALE long                           BinarySaveInstancesCommand(void *);
-   LOCALE long                           EnvBinarySaveInstances(void *,const char *,int,EXPRESSION *,intBool);
+   LOCALE long                           EnvBinarySaveInstancesDriver(void *,const char *,int,EXPRESSION *,intBool);
+   LOCALE long                           EnvBinarySaveInstances(void *,const char *,int);
 #endif
 #if BLOAD_INSTANCES
    LOCALE long                           BinaryLoadInstancesCommand(void *);

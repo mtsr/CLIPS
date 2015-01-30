@@ -195,7 +195,7 @@ globle void SetupInstanceFileCommands(
 globle long SaveInstancesCommand(
   void *theEnv)
   {
-   return(InstancesSaveCommandParser(theEnv,"save-instances",EnvSaveInstances));
+   return(InstancesSaveCommandParser(theEnv,"save-instances",EnvSaveInstancesDriver));
   }
 
 /******************************************************
@@ -442,6 +442,32 @@ globle long EnvBinaryLoadInstances(
 globle long EnvSaveInstances(
   void *theEnv,
   const char *file,
+  int saveCode)
+  {
+   return EnvSaveInstancesDriver(theEnv,file,saveCode,NULL,TRUE);
+  }
+
+/*******************************************************
+  NAME         : EnvSaveInstancesDriver
+  DESCRIPTION  : Saves current instances to named file
+  INPUTS       : 1) The name of the output file
+                 2) A flag indicating whether to
+                    save local (current module only)
+                    or visible instances
+                    LOCAL_SAVE or VISIBLE_SAVE
+                 3) A list of expressions containing
+                    the names of classes for which
+                    instances are to be saved
+                 4) A flag indicating if the subclasses
+                    of specified classes shoudl also
+                    be processed
+  RETURNS      : The number of instances saved
+  SIDE EFFECTS : Instances saved to file
+  NOTES        : None
+ *******************************************************/
+globle long EnvSaveInstancesDriver(
+  void *theEnv,
+  const char *file,
   int saveCode,
   EXPRESSION *classExpressionList,
   intBool inheritFlag)
@@ -502,11 +528,31 @@ globle long EnvSaveInstances(
 globle long BinarySaveInstancesCommand(
   void *theEnv)
   {
-   return(InstancesSaveCommandParser(theEnv,"bsave-instances",EnvBinarySaveInstances));
+   return(InstancesSaveCommandParser(theEnv,"bsave-instances",EnvBinarySaveInstancesDriver));
   }
 
 /*******************************************************
   NAME         : EnvBinarySaveInstances
+  DESCRIPTION  : Saves current instances to binary file
+  INPUTS       : 1) The name of the output file
+                 2) A flag indicating whether to
+                    save local (current module only)
+                    or visible instances
+                    LOCAL_SAVE or VISIBLE_SAVE
+  RETURNS      : The number of instances saved
+  SIDE EFFECTS : Instances saved to file
+  NOTES        : None
+ *******************************************************/
+globle long EnvBinarySaveInstances(
+  void *theEnv,
+  const char *file,
+  int saveCode)
+  {
+   return EnvBinarySaveInstancesDriver(theEnv,file,saveCode,NULL,TRUE);
+  }
+  
+/*******************************************************
+  NAME         : EnvBinarySaveInstancesDriver
   DESCRIPTION  : Saves current instances to binary file
   INPUTS       : 1) The name of the output file
                  2) A flag indicating whether to
@@ -523,7 +569,7 @@ globle long BinarySaveInstancesCommand(
   SIDE EFFECTS : Instances saved to file
   NOTES        : None
  *******************************************************/
-globle long EnvBinarySaveInstances(
+globle long EnvBinarySaveInstancesDriver(
   void *theEnv,
   const char *file,
   int saveCode,
