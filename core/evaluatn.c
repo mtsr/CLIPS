@@ -80,6 +80,7 @@
 
 #if OBJECT_SYSTEM
 #include "object.h"
+#include "inscom.h"
 #endif
 
 #include "evaluatn.h"
@@ -323,6 +324,9 @@ globle int EvaluateExpression(
                  returnValue->value =
                                 (* (void *(*)(void)) fptr->functionPointer)();
                 }
+              if (returnValue->value == NULL)
+                { returnValue->value = (void *) &InstanceData(theEnv)->DummyInstance; }
+                
               break;
             case 'o' :
               returnValue->type = INSTANCE_NAME;
