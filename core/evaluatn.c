@@ -342,6 +342,26 @@ globle int EvaluateExpression(
                 }
               break;
 #endif
+
+#if DEFTEMPLATE_CONSTRUCT
+            case 'y' :
+              returnValue->type = FACT_ADDRESS;
+              if (fptr->environmentAware)
+                {
+                 returnValue->value =
+                                (* (void *(*)(void *)) fptr->functionPointer)(theEnv);
+                }
+              else
+                {
+                 returnValue->value =
+                                (* (void *(*)(void)) fptr->functionPointer)();
+                }
+              if (returnValue->value == NULL)
+                { returnValue->value = (void *) &FactData(theEnv)->DummyFact; }
+                
+              break;
+#endif
+
             case 'c' :
               {
                char cbuff[2];

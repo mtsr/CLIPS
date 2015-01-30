@@ -579,6 +579,7 @@ static void WriteFunctionExternDeclarations(
 
          case 'a':
          case 'x':
+         case 'y':
            fprintf(fp,"void * ");
            break;
 
@@ -612,6 +613,7 @@ static void WriteFunctionExternDeclarations(
          case 'c':
          case 'a':
          case 'x':
+         case 'y':
          case 'v':
            if (theFunction->environmentAware) 
              { fprintf(fp,"void *"); }

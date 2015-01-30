@@ -555,6 +555,10 @@ globle CONSTRAINT_RECORD *FunctionCallToConstraintRecord(
         rv->instanceAddressesAllowed = TRUE;
         break;
 
+      case 'y':
+        rv->factAddressesAllowed = TRUE;
+        break;
+
       case 'v':
         rv->voidAllowed = TRUE;
         break;

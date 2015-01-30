@@ -229,6 +229,9 @@ globle int DefineFunction3(
 #if OBJECT_SYSTEM
         (returnType != 'x') &&
 #endif
+#if DEFTEMPLATE_CONSTRUCT
+        (returnType != 'y') &&
+#endif
         (returnType != 'w') )
      { return(0); }
 

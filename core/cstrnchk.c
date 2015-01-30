@@ -135,6 +135,10 @@ static int CheckFunctionReturnType(
         if (constraints->instanceAddressesAllowed) return(TRUE);
         else return(FALSE);
 
+      case 'y':
+        if (constraints->factAddressesAllowed) return(TRUE);
+        else return(FALSE);
+
       case 'o':
         if (constraints->instanceNamesAllowed) return(TRUE);
         else return(FALSE);
