@@ -404,6 +404,14 @@
    /*============================================*/
    
    [self->textView replaceCharactersInRange: theRange withString: newInput];
+   
+   /*===========================================*/
+   /* Scroll to the end of the terminal output. */
+   /*===========================================*/
+   
+   NSRange endRange = { [[textView string] length], 0 };
+   [textView setSelectedRange: endRange];
+   [textView scrollRangeToVisible: endRange];
   }
 
 /*******************/
