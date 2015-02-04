@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  02/03/15            */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -280,6 +280,9 @@ globle void RestorePriorGarbageFrame(
         
       if (returnValue != NULL) ValueDeinstall(theEnv,returnValue);
      }
+     
+   if (returnValue != NULL)
+     { EphemerateValue(theEnv,returnValue->type,returnValue->value); }
   }
 
 /*************************/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  02/03/15            */
    /*                                                     */
    /*                    SYMBOL MODULE                    */
    /*******************************************************/
@@ -96,7 +96,7 @@
 
    static void                    RemoveHashNode(void *,GENERIC_HN *,GENERIC_HN **,int,int);
    static void                    AddEphemeralHashNode(void *,GENERIC_HN *,struct ephemeron **,
-                                                       int,int);
+                                                       int,int,int);
    static void                    RemoveEphemeralHashNodes(void *,struct ephemeron **,
                                                            GENERIC_HN **,
                                                            int,int,int);
@@ -378,7 +378,7 @@ globle void *EnvAddSymbol(
     /*================================================*/
 
     AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralSymbolList,
-                         sizeof(SYMBOL_HN),AVERAGE_STRING_SIZE);
+                         sizeof(SYMBOL_HN),AVERAGE_STRING_SIZE,TRUE);
     UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
     /*===================================*/
@@ -467,7 +467,7 @@ globle void *EnvAddDouble(
     /*===============================================*/
 
     AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralFloatList,
-                         sizeof(FLOAT_HN),0);
+                         sizeof(FLOAT_HN),0,TRUE);
     UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
     
     /*==================================*/
@@ -531,7 +531,7 @@ globle void *EnvAddLong(
     /*=================================================*/
 
     AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralIntegerList,
-                         sizeof(INTEGER_HN),0);
+                         sizeof(INTEGER_HN),0,TRUE);
     UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
     /*====================================*/
@@ -635,7 +635,7 @@ globle void *EnvAddBitMap(
     /*================================================*/
 
     AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralBitMapList,
-                         sizeof(BITMAP_HN),sizeof(long));
+                         sizeof(BITMAP_HN),sizeof(long),TRUE);
     UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
     /*===================================*/
@@ -705,7 +705,7 @@ globle void *EnvAddExternalAddress(
     /*================================================*/
 
     AddEphemeralHashNode(theEnv,(GENERIC_HN *) peek,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralExternalAddressList,
-                         sizeof(EXTERNAL_ADDRESS_HN),sizeof(long));
+                         sizeof(EXTERNAL_ADDRESS_HN),sizeof(long),TRUE);
     UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
     /*=============================================*/
@@ -878,7 +878,7 @@ globle void DecrementSymbolCount(
    if (theValue->markedEphemeral == FALSE)
      {
       AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralSymbolList,
-                           sizeof(SYMBOL_HN),AVERAGE_STRING_SIZE);
+                           sizeof(SYMBOL_HN),AVERAGE_STRING_SIZE,TRUE);
       UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
@@ -907,7 +907,7 @@ globle void DecrementFloatCount(
    if (theValue->markedEphemeral == FALSE)
      {
       AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralFloatList,
-                           sizeof(FLOAT_HN),0);
+                           sizeof(FLOAT_HN),0,TRUE);
       UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
@@ -936,7 +936,7 @@ globle void DecrementIntegerCount(
    if (theValue->markedEphemeral == FALSE)
      {
       AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralIntegerList,
-                           sizeof(INTEGER_HN),0);
+                           sizeof(INTEGER_HN),0,TRUE);
       UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
@@ -971,7 +971,7 @@ globle void DecrementBitMapCount(
    if (theValue->markedEphemeral == FALSE)
      {
       AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralBitMapList,
-                           sizeof(BITMAP_HN),sizeof(long));
+                           sizeof(BITMAP_HN),sizeof(long),TRUE);
       UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
@@ -1006,7 +1006,7 @@ globle void DecrementExternalAddressCount(
    if (theValue->markedEphemeral == FALSE)
      {
       AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,&UtilityData(theEnv)->CurrentGarbageFrame->ephemeralExternalAddressList,
-                           sizeof(EXTERNAL_ADDRESS_HN),sizeof(long));
+                           sizeof(EXTERNAL_ADDRESS_HN),sizeof(long),TRUE);
       UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
      }
 
@@ -1100,7 +1100,8 @@ static void AddEphemeralHashNode(
   GENERIC_HN *theHashNode,
   struct ephemeron **theEphemeralList,
   int hashNodeSize,
-  int averageContentsSize)
+  int averageContentsSize,
+  int checkCount)
   {
    struct ephemeron *temp;
 
@@ -1109,7 +1110,7 @@ static void AddEphemeralHashNode(
    /* should never have been called.            */
    /*===========================================*/
 
-   if (theHashNode->count != 0)
+   if (checkCount && (theHashNode->count != 0))
      {
       SystemError(theEnv,"SYMBOL",12);
       EnvExitRouter(theEnv,EXIT_FAILURE);
@@ -1157,6 +1158,90 @@ globle void RemoveEphemeralAtoms(
    RemoveEphemeralHashNodes(theEnv,&theGarbageFrame->ephemeralExternalAddressList,(GENERIC_HN **) SymbolData(theEnv)->ExternalAddressTable,
                             sizeof(EXTERNAL_ADDRESS_HN),EXTERNAL_ADDRESS,0);
   }
+
+/**********************************************************/
+/* EphemerateMultifield: Marks the values of a multifield */
+/*   as ephemeral if they have not already been marker.   */
+/**********************************************************/
+globle void EphemerateMultifield(
+  void *theEnv,
+  struct multifield *theSegment)
+  {
+   unsigned long length, i;
+   struct field *theFields;
+
+   if (theSegment == NULL) return;
+
+   length = theSegment->multifieldLength;
+
+   theFields = theSegment->theFields;
+
+   for (i = 0 ; i < length ; i++)
+     { EphemerateValue(theEnv,theFields[i].type,theFields[i].value); }
+  }
+
+/***********************************************/
+/* EphemerateValue: Marks a value as ephemeral */
+/*   if it is not already marked.              */
+/***********************************************/
+globle void EphemerateValue(
+   void *theEnv,
+   int theType,
+   void *theValue)
+   {
+    SYMBOL_HN *theSymbol;
+    FLOAT_HN *theFloat;
+    INTEGER_HN *theInteger;
+    EXTERNAL_ADDRESS_HN *theExternalAddress;
+    
+    switch (theType)
+      {
+      case SYMBOL:
+      case STRING:
+#if OBJECT_SYSTEM
+      case INSTANCE_NAME:
+#endif
+        theSymbol = (SYMBOL_HN *) theValue;
+        if (theSymbol->markedEphemeral) return;
+        AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,
+                             &UtilityData(theEnv)->CurrentGarbageFrame->ephemeralSymbolList,
+                             sizeof(SYMBOL_HN),AVERAGE_STRING_SIZE,FALSE);
+        UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+        break;
+
+      case FLOAT:
+        theFloat = (FLOAT_HN *) theValue;
+        if (theFloat->markedEphemeral) return;
+        AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,
+                             &UtilityData(theEnv)->CurrentGarbageFrame->ephemeralFloatList,
+                             sizeof(FLOAT_HN),0,FALSE);
+        UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+        break;
+
+      case INTEGER:
+        theInteger = (INTEGER_HN *) theValue;
+        if (theInteger->markedEphemeral) return;
+        AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,
+                             &UtilityData(theEnv)->CurrentGarbageFrame->ephemeralIntegerList,
+                             sizeof(INTEGER_HN),0,FALSE);
+        UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+        break;
+
+      case EXTERNAL_ADDRESS:
+        theExternalAddress = (EXTERNAL_ADDRESS_HN *) theValue;
+        if (theExternalAddress->markedEphemeral) return;
+        AddEphemeralHashNode(theEnv,(GENERIC_HN *) theValue,
+                             &UtilityData(theEnv)->CurrentGarbageFrame->ephemeralExternalAddressList,
+                             sizeof(EXTERNAL_ADDRESS_HN),sizeof(long),FALSE);
+        UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+        break;
+        
+      case MULTIFIELD:
+        EphemerateMultifield(theEnv,(struct multifield *) theValue);
+        break;
+
+      }
+   }
 
 /****************************************************************/
 /* RemoveEphemeralHashNodes: Removes symbols from the ephemeral */
