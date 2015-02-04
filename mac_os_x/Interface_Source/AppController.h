@@ -22,6 +22,7 @@
 
 - (IBAction) showCLIPSHomePage: (id) sender;
 - (IBAction) showCLIPSDocumentation: (id) sender;
+- (IBAction) showCLIPSExamples: (id) sender;
 - (IBAction) showCLIPSExpertSystemGroup: (id) sender;
 - (IBAction) showCLIPSSourceForgeDiscussion: (id) sender;
 - (IBAction) showCLIPSStackOverflow: (id) sender;

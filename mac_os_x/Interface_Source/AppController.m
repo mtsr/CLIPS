@@ -114,6 +114,15 @@
        openURL: [NSURL URLWithString: @"http://clipsrules.sourceforge.net/"]];
   }
 
+/*****************************************************/
+/* showCLIPSExamples: Opens the CLIPS Examples Page. */
+/*****************************************************/
+- (IBAction) showCLIPSExamples: (id) sender
+  {
+   [[NSWorkspace sharedWorkspace] 
+       openURL: [NSURL URLWithString: @"https://sourceforge.net/p/clipsrules/code/HEAD/tree/examples/"]];
+  }
+
 /*****************************************/
 /* showCLIPSExpertSystemGroup: Opens the */
 /*   CLIPS Expert System Group Web Page. */
