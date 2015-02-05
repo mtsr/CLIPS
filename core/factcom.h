@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*               FACT COMMANDS HEADER FILE             */
    /*******************************************************/
@@ -81,7 +81,7 @@
    LOCALE void                           Facts(const char *,void *,long long,long long,long long);
 #endif
    LOCALE intBool                        LoadFacts(const char *);
-   LOCALE intBool                        SaveFacts(const char *,int,struct expr *);
+   LOCALE intBool                        SaveFacts(const char *,int);
    LOCALE intBool                        LoadFactsFromString(const char *,int);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

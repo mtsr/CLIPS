@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -1519,8 +1519,7 @@ globle void GetFocusStack(
    EnvGetFocusStack(GetCurrentEnvironment(),returnValue);
   }
 
-globle void *GetFocus(
-  void *theEnv)
+globle void *GetFocus()
   {
    return EnvGetFocus(GetCurrentEnvironment());
   }

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*               EVALUATION HEADER FILE                */
    /*******************************************************/
@@ -244,7 +244,7 @@ struct evaluationData
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE void                           SetMultifieldErrorValue(void *,DATA_OBJECT_PTR);
+   LOCALE void                           SetMultifieldErrorValue(DATA_OBJECT_PTR);
    LOCALE int                            FunctionCall(const char *,const char *,DATA_OBJECT *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

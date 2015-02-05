@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/29/15            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*            MEMORY ALLOCATION HEADER FILE            */
    /*******************************************************/
@@ -185,9 +185,9 @@ struct memoryData
    LOCALE intBool                        GetConserveMemory(void);
    LOCALE long int                       MemRequests(void);
    LOCALE long int                       MemUsed(void);
-   LOCALE long int                       ReleaseMem(long int,int);
+   LOCALE long int                       ReleaseMem(long);
    LOCALE intBool                        SetConserveMemory(intBool);
-   LOCALE int                          (*SetOutOfMemoryFunction(void *,int (*)(void *,size_t)))(void *,size_t);
+   LOCALE int                          (*SetOutOfMemoryFunction(int (*)(void *,size_t)))(void *,size_t);
  
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

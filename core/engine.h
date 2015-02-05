@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*                 ENGINE HEADER FILE                  */
    /*******************************************************/
@@ -190,7 +190,7 @@ struct engineData
    LOCALE void                    ClearFocusStack(void);
    LOCALE void                    Focus(void *);
    LOCALE void                    GetFocusStack(DATA_OBJECT_PTR);
-   LOCALE void                   *GetFocus(void *);
+   LOCALE void                   *GetFocus(void);
    LOCALE int                     GetFocusChanged(void);
    LOCALE void                   *GetNextFocus(void *);
    LOCALE void                    Halt(void);

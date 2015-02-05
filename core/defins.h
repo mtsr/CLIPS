@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  01/25/15          */
+   /*               CLIPS Version 6.30  02/04/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -124,7 +124,7 @@ struct definstancesData
    LOCALE void                          *FindDefinstances(const char *);
    LOCALE void                           GetDefinstancesList(DATA_OBJECT *,struct defmodule *);
    LOCALE const char                    *GetDefinstancesName(void *);
-   LOCALE const char                    *GetDefinstancesPPForm(void *,void *);
+   LOCALE const char                    *GetDefinstancesPPForm(void *);
    LOCALE void                          *GetNextDefinstances(void *);
    LOCALE int                            IsDefinstancesDeletable(void *);
 #if DEBUGGING_FUNCTIONS

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*            SYSTEM DEPENDENT HEADER FILE             */
    /*******************************************************/
@@ -104,7 +104,9 @@
 #define LOCALE extern
 #endif
 
+#if ALLOW_ENVIRONMENT_GLOBALS
    LOCALE void                        InitializeEnvironment(void);
+#endif
    LOCALE void                        EnvInitializeEnvironment(void *,struct symbolHashNode **,struct floatHashNode **,
 															   struct integerHashNode **,struct bitMapHashNode **,
 															   struct externalAddressHashNode **);

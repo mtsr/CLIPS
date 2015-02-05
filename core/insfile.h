@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.30  02/04/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -100,13 +100,13 @@ struct instanceFileData
    LOCALE long                           BinaryLoadInstances(const char *);
 #endif
 #if BSAVE_INSTANCES
-   LOCALE long                           BinarySaveInstances(const char *,int,EXPRESSION *,intBool);
+   LOCALE long                           BinarySaveInstances(const char *,int);
 #endif
    LOCALE long                           LoadInstances(const char *);
    LOCALE long                           LoadInstancesFromString(const char *,int);
    LOCALE long                           RestoreInstances(const char *);
    LOCALE long                           RestoreInstancesFromString(const char *,int);
-   LOCALE long                           SaveInstances(const char *,int,EXPRESSION *,intBool);
+   LOCALE long                           SaveInstances(const char *,int);
    
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

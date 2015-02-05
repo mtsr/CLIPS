@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/29/15            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*                    MEMORY MODULE                    */
    /*******************************************************/
@@ -112,11 +112,11 @@ globle void *genalloc(
    memPtr = (char *) RequestChunk(theEnv,size);
    if (memPtr == NULL)
      {
-      EnvReleaseMem(theEnv,(long) ((size * 5 > 4096) ? size * 5 : 4096),FALSE);
+      EnvReleaseMem(theEnv,(long) ((size * 5 > 4096) ? size * 5 : 4096));
       memPtr = (char *) RequestChunk(theEnv,size);
       if (memPtr == NULL)
         {
-         EnvReleaseMem(theEnv,-1L,TRUE);
+         EnvReleaseMem(theEnv,-1L);
          memPtr = (char *) RequestChunk(theEnv,size);
          while (memPtr == NULL)
            {
@@ -995,10 +995,9 @@ globle long int MemUsed()
   }
 
 globle long int ReleaseMem(
-  long int maximum,
-  int printMessage)
+  long int maximum)
   {
-   return EnvReleaseMem(GetCurrentEnvironment(),maximum,printMessage);
+   return EnvReleaseMem(GetCurrentEnvironment(),maximum);
   }
 
 globle intBool SetConserveMemory(
@@ -1007,7 +1006,7 @@ globle intBool SetConserveMemory(
    return EnvSetConserveMemory(GetCurrentEnvironment(),value);
   }
 
-globle int (*SetOutOfMemoryFunction(void *theEnv,int (*functionPtr)(void *,size_t)))(void *,size_t)
+globle int (*SetOutOfMemoryFunction(int (*functionPtr)(void *,size_t)))(void *,size_t)
   {
    return EnvSetOutOfMemoryFunction(GetCurrentEnvironment(),functionPtr);
   }

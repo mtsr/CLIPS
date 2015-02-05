@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*                  SETUP HEADER FILE                  */
    /*******************************************************/
@@ -101,23 +101,23 @@
 #endif
 
 #ifndef DARWIN
-#define DARWIN  0   /* Darwin Mac OS 10.9.1, presumably with gcc or Xcode 5.0 with Console */
+#define DARWIN  0   /* Darwin Mac OS 10.10.2, presumably with gcc or Xcode 6.1.1 with Console */
 #endif
 
 #ifndef MAC_XCD
-#define MAC_XCD 0   /* MacOS 10.9.1, with Xcode 5.0 and Cocoa GUI */
+#define MAC_XCD 0   /* MacOS 10.10.2, with Xcode 6.1.1 and Cocoa GUI */
 #endif
 
 #ifndef WIN_MVC
-#define WIN_MVC 0   /* Windows XP, with VC++ 2008 Express */
+#define WIN_MVC 0   /* Windows 7, with Visual Studio 2013 */
 #endif
+
+/* The following are unsupported: */
 
 #ifndef WIN_GCC
 #define WIN_GCC 0   /* Windows XP, with DJGPP 3.21 */
 #endif
 
-/* The following are unsupported: */
-                    
 #ifndef VAX_VMS                    
 #define VAX_VMS 0   /* VAX VMS */
 #endif

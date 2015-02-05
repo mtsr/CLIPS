@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*          DEFRULE BASIC COMMANDS HEADER FILE         */
    /*******************************************************/
@@ -525,7 +525,7 @@ globle void SetDefruleWatchActivations(
    EnvSetDefruleWatchActivations(GetCurrentEnvironment(),newState,rulePtr);
   }
 
-globle void DefruleWatchFirings(
+globle void SetDefruleWatchFirings(
   unsigned newState,
   void *rulePtr)
   {

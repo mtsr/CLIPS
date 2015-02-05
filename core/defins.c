@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*                  DEFINSTANCES MODULE                */
    /*******************************************************/
@@ -1046,7 +1046,6 @@ globle const char *GetDefinstancesName(
   }
 
 globle const char *GetDefinstancesPPForm(
-  void *theEnv,
   void *theDefinstances)
   {
    return EnvGetDefinstancesPPForm(GetCurrentEnvironment(),theDefinstances);

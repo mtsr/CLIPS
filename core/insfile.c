@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  01/13/15           */
+   /*              CLIPS Version 6.30  02/04/15           */
    /*                                                     */
    /*         INSTANCE LOAD/SAVE (ASCII/BINARY) MODULE    */
    /*******************************************************/
@@ -1719,11 +1719,9 @@ globle long BinaryLoadInstances(
 #if BSAVE_INSTANCES
 globle long BinarySaveInstances(
   const char *file,
-  int saveCode,
-  EXPRESSION *classExpressionList,
-  intBool inheritFlag)
+  int saveCode)
   {
-   return EnvBinarySaveInstances(GetCurrentEnvironment(),file,saveCode,classExpressionList,inheritFlag);
+   return EnvBinarySaveInstances(GetCurrentEnvironment(),file,saveCode);
   }
 #endif
 
@@ -1755,11 +1753,9 @@ globle long RestoreInstancesFromString(
 
 globle long SaveInstances(
   const char *file,
-  int saveCode,
-  EXPRESSION *classExpressionList,
-  intBool inheritFlag)
+  int saveCode)
   {
-   return EnvSaveInstances(GetCurrentEnvironment(),file,saveCode,classExpressionList,inheritFlag);
+   return EnvSaveInstances(GetCurrentEnvironment(),file,saveCode);
   }
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

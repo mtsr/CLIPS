@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -1874,7 +1874,6 @@ globle void *AssertString(
   }
 
 globle intBool AssignFactSlotDefaults(
-  void *theEnv,
   void *vTheFact)
   {
    return EnvAssignFactSlotDefaults(GetCurrentEnvironment(),vTheFact);

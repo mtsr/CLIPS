@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  01/25/15          */
+   /*               CLIPS Version 6.30  02/04/15          */
    /*                                                     */
    /*                  CLASS COMMANDS MODULE              */
    /*******************************************************/
@@ -952,7 +952,6 @@ globle void GetDefclassList(
   }
 
 globle void *GetNextDefclass(
-  void *theEnv,
   void *ptr)
   {
    return EnvGetNextDefclass(GetCurrentEnvironment(),ptr);

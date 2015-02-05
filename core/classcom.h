@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  01/25/15          */
+   /*               CLIPS Version 6.30  01/04/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -123,7 +123,7 @@
    LOCALE const char             *GetDefclassPPForm(void *);
    LOCALE unsigned                GetDefclassWatchInstances(void *);
    LOCALE unsigned                GetDefclassWatchSlots(void *);
-   LOCALE void                   *GetNextDefclass(void *,void *);
+   LOCALE void                   *GetNextDefclass(void *);
    LOCALE intBool                 IsDefclassDeletable(void *);
    LOCALE void                    ListDefclasses(const char *,struct defmodule *);
    LOCALE unsigned short          SetClassDefaultsMode(unsigned short);

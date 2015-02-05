@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*         DEFRULE BASIC COMMANDS HEADER FILE          */
    /*******************************************************/
@@ -90,7 +90,7 @@
    LOCALE unsigned                       GetDefruleWatchFirings(void *);
    LOCALE void                           ListDefrules(const char *,void *);
    LOCALE void                           SetDefruleWatchActivations(unsigned,void *);
-   LOCALE void                           DefruleWatchFirings(unsigned,void *);
+   LOCALE void                           SetDefruleWatchFirings(unsigned,void *);
 #endif
    LOCALE intBool                        Undefrule(void *);
 

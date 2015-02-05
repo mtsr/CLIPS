@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*                  EVALUATION MODULE                  */
    /*******************************************************/
@@ -1252,7 +1252,6 @@ static intBool DiscardCAddress(
 #if ALLOW_ENVIRONMENT_GLOBALS
 
 globle void SetMultifieldErrorValue(
-  void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
    EnvSetMultifieldErrorValue(GetCurrentEnvironment(),returnValue);
