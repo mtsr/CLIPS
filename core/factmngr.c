@@ -1897,8 +1897,7 @@ globle long long FactIndex(
    return(EnvFactIndex(GetCurrentEnvironment(),factPtr));
   }
 
-globle int GetFactListChanged(
-  void *theEnv)
+globle int GetFactListChanged()
   {
    return EnvGetFactListChanged(GetCurrentEnvironment());
   }

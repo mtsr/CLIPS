@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  02/04/15            */
    /*                                                     */
    /*              FACTS MANAGER HEADER FILE              */
    /*******************************************************/
@@ -195,11 +195,11 @@ struct factsData
    LOCALE intBool                        AddRetractFunction(const char *,void (*)(void *,void *),int);
    LOCALE void                          *Assert(void *);
    LOCALE void                          *AssertString(const char *);
-   LOCALE intBool                        AssignFactSlotDefaults(void *,void *);
+   LOCALE intBool                        AssignFactSlotDefaults(void *);
    LOCALE struct fact                   *CreateFact(void *);
    LOCALE void                           DecrementFactCount(void *);
    LOCALE long long                      FactIndex(void *);
-   LOCALE int                            GetFactListChanged(void *);
+   LOCALE int                            GetFactListChanged(void);
    LOCALE void                           GetFactPPForm(char *,unsigned,void *);
    LOCALE intBool                        GetFactSlot(void *,const char *,DATA_OBJECT *);
    LOCALE void                          *GetNextFact(void *);
