@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.30  02/05/15            */
    /*                                                     */
    /*              EXPRESSION PARSER MODULE               */
    /*******************************************************/
@@ -192,11 +192,12 @@ globle struct expr *Function2Parse(
 #endif
 
 #if DEFFUNCTION_CONSTRUCT
-   if ((theFunction == NULL)
 #if DEFGENERIC_CONSTRUCT
-        && (gfunc == NULL)
+   if ((theFunction == NULL)
+        && (gfunc == NULL))
+#else
+   if (theFunction == NULL)
 #endif
-     )
      if (moduleSpecified)
        { 
         if (ConstructExported(theEnv,"deffunction",moduleName,constructName) ||

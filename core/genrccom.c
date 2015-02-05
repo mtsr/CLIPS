@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.30  02/05/15            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -1413,8 +1413,10 @@ static void IncrementGenericBusyCount(
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    if (! ConstructData(theEnv)->ParsingConstruct)
      { ConstructData(theEnv)->DanglingConstructs++; }
+#endif
 
    ((DEFGENERIC *) value)->busy++;
   }

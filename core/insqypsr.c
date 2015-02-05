@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  01/25/15          */
+   /*               CLIPS Version 6.30  02/05/15          */
    /*                                                     */
    /*          INSTANCE-SET QUERIES PARSER MODULE         */
    /*******************************************************/
@@ -370,8 +370,10 @@ static intBool ReplaceClassNameWithReference(
       theExp->type = DEFCLASS_PTR;
       theExp->value = theDefclass;
       
+#if (! RUN_TIME) && (! BLOAD_ONLY)
       if (! ConstructData(theEnv)->ParsingConstruct)
         { ConstructData(theEnv)->DanglingConstructs++; }
+#endif
      }
    return(TRUE);
   }

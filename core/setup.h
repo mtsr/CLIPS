@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  02/04/15            */
+   /*             CLIPS Version 6.30  02/05/15            */
    /*                                                     */
    /*                  SETUP HEADER FILE                  */
    /*******************************************************/
@@ -211,7 +211,7 @@
 /*   construct is included.                         */
 /****************************************************/
 
-#ifndef DEFFACT_CONSTRUCT
+#ifndef DEFFACTS_CONSTRUCT
 #define DEFFACTS_CONSTRUCT 1
 #endif
 

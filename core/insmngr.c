@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  01/13/15           */
+   /*              CLIPS Version 6.30  02/05/15           */
    /*                                                     */
    /*            INSTANCE PRIMITIVE SUPPORT MODULE        */
    /*******************************************************/
@@ -581,11 +581,12 @@ globle intBool QuashInstance(
       rule, don't bother deleting its slots yet, for
       they may still be needed by pattern variables
       ============================================== */
-   if ((iflag == 1)
 #if DEFRULE_CONSTRUCT
-       && (ins->header.busyCount == 0)
+   if ((iflag == 1)
+       && (ins->header.busyCount == 0))
+#else
+   if (iflag == 1)
 #endif
-     )
      RemoveInstanceData(theEnv,ins);
 
    if ((ins->busy == 0) && 

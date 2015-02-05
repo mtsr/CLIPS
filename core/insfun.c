@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  01/13/15           */
+   /*              CLIPS Version 6.30  02/05/15           */
    /*                                                     */
    /*                INSTANCE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -204,11 +204,12 @@ globle void CleanupInstances(
    gtmp = InstanceData(theEnv)->InstanceGarbageList;
    while (gtmp != NULL)
      {
-      if ((gtmp->ins->busy == 0)
 #if DEFRULE_CONSTRUCT
-          && (gtmp->ins->header.busyCount == 0)
+      if ((gtmp->ins->busy == 0)
+          && (gtmp->ins->header.busyCount == 0))
+#else
+      if (gtmp->ins->busy == 0)
 #endif
-         )
         {
          DecrementSymbolCount(theEnv,gtmp->ins->name);
          rtn_struct(theEnv,instance,gtmp->ins);

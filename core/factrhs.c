@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.30  02/05/15            */
    /*                                                     */
    /*            FACT RHS PATTERN PARSER MODULE           */
    /*******************************************************/
@@ -351,8 +351,10 @@ globle struct expr *GetRHSPattern(
                                               error,endType,
                                               constantsOnly,theDeftemplate);
 
+#if (! RUN_TIME) && (! BLOAD_ONLY)
       if (! ConstructData(theEnv)->ParsingConstruct)
         { ConstructData(theEnv)->DanglingConstructs++; }
+#endif
 
       if (*error)
         {
@@ -369,8 +371,10 @@ globle struct expr *GetRHSPattern(
 
    firstOne = GenConstant(theEnv,DEFTEMPLATE_PTR,theDeftemplate);
 
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    if (! ConstructData(theEnv)->ParsingConstruct)
      { ConstructData(theEnv)->DanglingConstructs++; }
+#endif
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    SavePPBuffer(theEnv," ");
