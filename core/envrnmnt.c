@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/29/15            */
+   /*             CLIPS Version 6.30  02/05/15            */
    /*                                                     */
    /*                ENVIRONMENT MODULE                   */
    /*******************************************************/
@@ -41,6 +41,8 @@
 /*                                                           */
 /*            Removed deallocating message parameter from    */
 /*            EnvReleaseMem.                                 */
+/*                                                           */
+/*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
 /*************************************************************/
 
@@ -619,10 +621,6 @@ globle intBool DestroyEnvironment(
      
    free(theMemData->MemoryTable);
 
-#if BLOCK_MEMORY
-   ReturnAllBlocks(theEnvironment);
-#endif
-         
    for (i = 0; i < MAXIMUM_ENVIRONMENT_POSITIONS; i++)
      {
       if (theEnvironment->theData[i] != NULL)

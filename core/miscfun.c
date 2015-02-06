@@ -61,6 +61,8 @@
 /*            Removed deallocating message parameter from    */
 /*            EnvReleaseMem.                                 */
 /*                                                           */
+/*            Removed support for BLOCK_MEMORY.              */
+/*                                                           */
 /*************************************************************/
 
 #define _MISCFUN_SOURCE_
@@ -762,13 +764,6 @@ EnvPrintRouter(theEnv,WDISPLAY,"Multifield function package is ");
 
 EnvPrintRouter(theEnv,WDISPLAY,"Debugging function package is ");
 #if DEBUGGING_FUNCTIONS
-  EnvPrintRouter(theEnv,WDISPLAY,"ON\n");
-#else
-  EnvPrintRouter(theEnv,WDISPLAY,"OFF\n");
-#endif
-
-EnvPrintRouter(theEnv,WDISPLAY,"Block memory is ");
-#if BLOCK_MEMORY
   EnvPrintRouter(theEnv,WDISPLAY,"ON\n");
 #else
   EnvPrintRouter(theEnv,WDISPLAY,"OFF\n");

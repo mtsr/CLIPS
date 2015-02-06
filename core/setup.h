@@ -74,6 +74,8 @@
 /*            defaults to 0. The use of functions enabled    */
 /*            by this flag is deprecated.                    */
 /*                                                           */
+/*            Removed support for BLOCK_MEMORY.              */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_setup
@@ -421,23 +423,6 @@
 
 #ifndef PROFILING_FUNCTIONS
 #define PROFILING_FUNCTIONS 1
-#endif
-
-/************************************************************************/
-/* BLOCK_MEMORY: Causes memory to be allocated in large blocks.         */
-/*   INITBUFFERSIZE and BLOCKSIZE should both be set to less than the   */
-/*   maximum size of a signed integer.                                  */
-/************************************************************************/
-
-#ifndef BLOCK_MEMORY
-#define BLOCK_MEMORY 0
-#endif
-
-#if BLOCK_MEMORY
-
-#define INITBLOCKSIZE 32000
-#define BLOCKSIZE 32000
-
 #endif
 
 /*******************************************************************/

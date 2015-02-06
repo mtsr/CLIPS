@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  02/04/15            */
+   /*             CLIPS Version 6.30  02/05/15            */
    /*                                                     */
    /*            MEMORY ALLOCATION HEADER FILE            */
    /*******************************************************/
@@ -36,6 +36,8 @@
 /*                                                           */
 /*            Removed deallocating message parameter from    */
 /*            EnvReleaseMem.                                 */
+/*                                                           */
+/*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
 /*************************************************************/
 
@@ -142,12 +144,6 @@ struct memoryData
    long int MemoryCalls;
    intBool ConserveMemory;
    int (*OutOfMemoryFunction)(void *,size_t);
-#if BLOCK_MEMORY
-   struct blockInfo *TopMemoryBlock;
-   int BlockInfoSize;
-   int ChunkInfoSize;
-   int BlockMemoryInitialized;
-#endif
    struct memoryPtr *TempMemoryPtr;
    struct memoryPtr **MemoryTable;
    size_t TempSize;
