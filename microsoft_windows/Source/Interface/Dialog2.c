@@ -18,6 +18,9 @@
 /*                                                            */
 /* Revision History:                                          */
 /*                                                            */
+/*      6.30: Removed help button from command completion     */
+/*            dialog.                                         */
+/*                                                            */
 /**************************************************************/
 
 #define _DIALOG2_SOURCE_
@@ -60,6 +63,7 @@
 #include "initialization.h"
 #include "resource.h"
 #include "display.h"
+#include "MDI.h"
 #include "dialog2.h"
 
 char DialogName[80];
@@ -181,7 +185,7 @@ BOOL FAR PASCAL DeffactsManager(
    HANDLE hString;
    char *string;
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    hListBox = GetDlgItem(hDlg, IDC_LISTBOX);
 
@@ -315,7 +319,7 @@ BOOL FAR PASCAL DeftemplateManager(
    HANDLE hString;
    char *string;
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    switch (message)
      {  
@@ -458,7 +462,7 @@ BOOL FAR PASCAL DeffunctionManager(
    HANDLE hString;
    char *string;
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    switch (message)
      {  
@@ -592,7 +596,7 @@ BOOL FAR PASCAL DefmethodsManager(
    char Name[100];
    unsigned index;
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    switch (message)
      {  
@@ -738,7 +742,7 @@ BOOL FAR PASCAL DefinstancesManager(
    char *string;
    HANDLE hString;   
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
    
    switch (message)
      {  
@@ -867,7 +871,7 @@ BOOL FAR PASCAL DefclassManager(
    unsigned instances = GRAY;
    unsigned slots = GRAY;
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    switch (message)
      {  
@@ -1067,7 +1071,7 @@ BOOL FAR PASCAL DefmessageHandlerManager(
    char Name[100];
    unsigned index;
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    switch (message)
      {  
@@ -1207,7 +1211,7 @@ BOOL FAR PASCAL AgendaManager(
    char Buffer[200];
    unsigned index; 
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    switch (message)
      {  
@@ -1321,7 +1325,7 @@ BOOL FAR PASCAL DefglobalManager(
    HANDLE hString;
    char *string;
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
      
    switch (message)
      {  
@@ -1453,7 +1457,8 @@ BOOL FAR PASCAL DefruleManager(
    HANDLE hString;
    char *string;
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   DATA_OBJECT result;
+   void *theEnv = GlobalEnv;
    
    switch (message)
      {  
@@ -1556,8 +1561,7 @@ BOOL FAR PASCAL DefruleManager(
              +--------------*/
              
              if (wParam == IDC_PBUTTON3)
-               { 
-			    DATA_OBJECT result; 
+               {  
                 EnvPrintRouter(theEnv,WPROMPT,"(matches ");
                 EnvPrintRouter(theEnv,WPROMPT,string );
                 EnvPrintRouter(theEnv,WPROMPT,")\n");
@@ -1670,7 +1674,7 @@ BOOL FAR PASCAL DefgenericManager(
    char *string;
    HANDLE hString;
    HCURSOR hSaveCursor;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    switch (message)
      {  
@@ -1835,12 +1839,11 @@ BOOL FAR PASCAL CommandComplete(
         SendMessage(hListBox, LB_SETCURSEL,0, 0L);
         sprintf(DialogName,"Command Completion for \"%s\" - %4d Items",(LPSTR)lParam, count);
         SetWindowText( hDlg, (LPSTR)DialogName );
-        ShowButtons(hDlg,ENABLE, HIDE, HIDE, ENABLE, HIDE,
+        ShowButtons(hDlg,ENABLE, HIDE, HIDE, HIDE, HIDE,
                     HIDE, HIDE, HIDE, ENABLE );
         SetWindowText(GetDlgItem(hDlg, IDC_PBUTTON6 ), "&OK" );
-        SetWindowText(GetDlgItem(hDlg, IDC_PBUTTON4 ), "&Cancel" );
-        SetWindowText(GetDlgItem(hDlg, IDC_PBUTTON1 ), "&Help" );
-
+        SetWindowText(GetDlgItem(hDlg, IDC_PBUTTON1 ), "&Cancel" );
+        //SetWindowText(GetDlgItem(hDlg, IDC_PBUTTON1 ), "&Help" );
         return (TRUE);
       
 
@@ -1851,22 +1854,21 @@ BOOL FAR PASCAL CommandComplete(
            | Cancel |
            +-------*/
        
-           case IDC_PBUTTON4:
+           case IDC_PBUTTON1:
              CompleteString[0] = '\0';
              EndDialog( hDlg, IDC_CANCEL);
              return (TRUE);
           
-
            /*------------+
            | Help Button |
            +------------*/
-       
+       /*
            case IDC_PBUTTON1:
              index = (unsigned) SendMessage(hListBox, LB_GETCURSEL, 0, 0L);
              SendMessage(hListBox,LB_GETTEXT,index,(LPARAM)(CompleteString));
              WinHelp (hDlg, "CLIPS6.HLP", HELP_KEY, (DWORD) CompleteString);
              return (TRUE);
-       
+       */
 
            case IDC_LISTBOX:
              if (HIWORD(lParam) != LBN_DBLCLK)

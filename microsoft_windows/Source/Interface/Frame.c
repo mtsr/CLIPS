@@ -527,7 +527,7 @@ static void mainframe_OnCommand(
      {
       case ID_APP_EXIT:
         mainframe_OnExit(hwnd);
-        EnvExitRouter(GetCurrentEnvironment(),EXIT_SUCCESS);
+        EnvExitRouter(GlobalEnv,EXIT_SUCCESS);
         QuitDDE();
         return ;
 
@@ -621,6 +621,7 @@ static void mainframe_OnCommand(
       case ID_HELP_ABOUT:
 	  case ID_HELP_HOME_PAGE:
       case ID_HELP_DOCUMENTATION:
+      case ID_HELP_EXAMPLES:
 	  case ID_HELP_CLIPSESG:
 	  case ID_HELP_SOURCEFORGE:
 	  case ID_HELP_STACK_OVERFLOW:

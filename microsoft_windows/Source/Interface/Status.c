@@ -781,10 +781,10 @@ static void RedrawScreen(
    /*===================================*/
    
    count = 0;
-   valuePtr = (*theData->getNextValue)(GetCurrentEnvironment(),NULL);
+   valuePtr = (*theData->getNextValue)(GlobalEnv,NULL);
    while ((valuePtr != NULL) && (count < pos))
      {  
-      valuePtr = (*theData->getNextValue)(GetCurrentEnvironment(),valuePtr);
+      valuePtr = (*theData->getNextValue)(GlobalEnv,valuePtr);
       count++;
      }  
 
@@ -807,7 +807,7 @@ static void RedrawScreen(
       do
         {  
          pos = GetScrollPos(hwnd,SB_HORZ);
-         (*theData->getPPForm)(GetCurrentEnvironment(),Buffer,299,valuePtr);
+         (*theData->getPPForm)(GlobalEnv,Buffer,299,valuePtr);
          bufsize = lstrlen (Buffer);
          if (bufsize > sbmax) sbmax = bufsize;
          if (pos < bufsize)
@@ -818,7 +818,7 @@ static void RedrawScreen(
          Rect.top = Rect.top + theData->lineSize;
          count++;
         }
-      while (((valuePtr= (*theData->getNextValue)(GetCurrentEnvironment(),valuePtr)) != NULL) && 
+      while (((valuePtr= (*theData->getNextValue)(GlobalEnv,valuePtr)) != NULL) && 
              (count < theData->noLines));
         { SetScrollRange(hwnd,SB_HORZ,0,sbmax-1,TRUE); }
      }
@@ -925,25 +925,25 @@ static int CountActivations(
 /**********************************************************/
 void UpdateStatus(void)
   {  
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
    static long lastModuleIndex = -1;
 
    if (lastModuleIndex != DefmoduleData(theEnv)->ModuleChangeIndex)
      {
 #if DEFRULE_CONSTRUCT
-      EnvSetFocusChanged(theEnv,CLIPS_TRUE);
-      EnvSetAgendaChanged(theEnv,CLIPS_TRUE);
+      EnvSetFocusChanged(theEnv,TRUE);
+      EnvSetAgendaChanged(theEnv,TRUE);
 #endif
 #if DEFTEMPLATE_CONSTRUCT
-      EnvSetFactListChanged(theEnv,CLIPS_TRUE);
+      EnvSetFactListChanged(theEnv,TRUE);
 #endif
 #if OBJECT_SYSTEM
-      EnvSetInstancesChanged(theEnv,CLIPS_TRUE);
+      EnvSetInstancesChanged(theEnv,TRUE);
 #endif
 #if DEFGLOBAL_CONSTRUCT
-      EnvSetGlobalsChanged(theEnv,CLIPS_TRUE);
+      EnvSetGlobalsChanged(theEnv,TRUE);
 #endif
-      lastModuleIndex = DefmoduleData(GetCurrentEnvironment())->ModuleChangeIndex;
+      lastModuleIndex = DefmoduleData(GlobalEnv)->ModuleChangeIndex;
      }
 
 #if DEFRULE_CONSTRUCT
@@ -981,10 +981,10 @@ static void UpdateStatusContent(
    
    if (theData == NULL) return; 
      
-   if (! (*theData->getChanged)(GetCurrentEnvironment())) return;
+   if (! (*theData->getChanged)(GlobalEnv)) return;
    
-   (*theData->setChanged)(GetCurrentEnvironment(),CLIPS_FALSE);
-   theData->lastLine = (*theData->getCount)(GetCurrentEnvironment());
+   (*theData->setChanged)(GlobalEnv,FALSE);
+   theData->lastLine = (*theData->getCount)(GlobalEnv);
    UpdateStatusWndTitle(hwnd);
    UpdateWnd(hwnd);
   }
@@ -1033,7 +1033,7 @@ void UpdateWnd(
 static void UpdateStatusWndTitle(
   HWND hwnd)
   {  
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
    struct statusWindowData *theData;
    struct defmodule *theModule = (struct defmodule *) EnvGetCurrentModule(theEnv);
    char buffer[255];
@@ -1121,11 +1121,11 @@ static void SaveStatusWindow(
    if ((fp = fopen(ofn.lpstrFile,"w")) == NULL)
      { return; }
    
-   for (valuePtr = (*theData->getNextValue)(GetCurrentEnvironment(),NULL);
+   for (valuePtr = (*theData->getNextValue)(GlobalEnv,NULL);
         (valuePtr != NULL);
-        valuePtr = (*theData->getNextValue)(GetCurrentEnvironment(),valuePtr))
+        valuePtr = (*theData->getNextValue)(GlobalEnv,valuePtr))
      {  
-      (*theData->getPPForm)(GetCurrentEnvironment(),buffer,299,valuePtr);
+      (*theData->getPPForm)(GlobalEnv,buffer,299,valuePtr);
       fprintf(fp,"%s\n",buffer);
      }  
 

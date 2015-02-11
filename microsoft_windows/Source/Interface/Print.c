@@ -31,6 +31,7 @@
 #include "Status.h"
 #include "display.h"
 #include "resource.h"
+#include "MDI.h"
 
 #include "Print.h"
 
@@ -190,7 +191,7 @@ BOOL PrintWindowDriver(
       if (theStatusData == NULL) 
         { return TRUE; }
 
-      iTotalLines = (*theStatusData->getCount)(GetCurrentEnvironment());
+      iTotalLines = (*theStatusData->getCount)(GlobalEnv);
       
       memset(&lf,0,sizeof(LOGFONT));
       lf.lfHeight = -13;
@@ -399,15 +400,15 @@ static BOOL PrintIt(
               {                  
                iLineNum = iLinesPerPage * iPage;
                iLine = 0;
-               for (valuePtr = (*theStatusData->getNextValue)(GetCurrentEnvironment(),NULL), count = 0;
+               for (valuePtr = (*theStatusData->getNextValue)(GlobalEnv,NULL), count = 0;
                     valuePtr != NULL;
-                    valuePtr = (*theStatusData->getNextValue)(GetCurrentEnvironment(),valuePtr), count++)
+                    valuePtr = (*theStatusData->getNextValue)(GlobalEnv,valuePtr), count++)
                  {
                   if (count < iLineNum) continue;
                   if (count > (iLineNum + iLinesPerPage)) break;
                   if (count > iTotalLines) break;
                   
-                  (*theStatusData->getPPForm)(GetCurrentEnvironment(),(char *) pstrBuffer,(unsigned) iCharsPerLine,valuePtr);
+                  (*theStatusData->getPPForm)(GlobalEnv,(char *) pstrBuffer,(unsigned) iCharsPerLine,valuePtr);
 
                   TextOut(PrintDialog.hDC,0,yChar * iLine,pstrBuffer,(int) strlen(pstrBuffer));
                   

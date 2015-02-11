@@ -890,7 +890,7 @@ static void display_OnCommand(
         return;
 	    
       case ID_HELP_COMPLETE:
-        buffer = GetCommandString(GetCurrentEnvironment());         
+		  buffer = GetCommandString(GlobalEnv);
 
         if (buffer == NULL)
           {  
@@ -899,7 +899,7 @@ static void display_OnCommand(
           }
 
         length = strlen(buffer);
-        buffer = GetCommandCompletionString(GetCurrentEnvironment(),buffer,length);
+		buffer = GetCommandCompletionString(GlobalEnv, buffer, length);
 
         if (buffer == NULL)
           {
@@ -911,8 +911,8 @@ static void display_OnCommand(
 
         if (DoCommandCompletion(hwnd,buffer,1))
           {  
-           AppendCommandString(GetCurrentEnvironment(),&(CompleteString[length]));
-           EnvPrintRouter(GetCurrentEnvironment(),WPROMPT,(&(CompleteString[length])));
+			AppendCommandString(GlobalEnv, &(CompleteString[length]));
+			EnvPrintRouter(GlobalEnv, WPROMPT, (&(CompleteString[length])));
           }
        break;
 	 } 
@@ -995,7 +995,7 @@ static void display_OnKey(
        (vk != VK_UP) && (vk != VK_DOWN)) 
      { return; }
 
-   theEnv = GetCurrentEnvironment();  
+   theEnv = GlobalEnv;
    if (CommandLineData(theEnv)->EvaluatingTopLevelCommand || BatchActive(theEnv))
      { return; }          
           
@@ -1004,8 +1004,8 @@ static void display_OnKey(
    if (theData == NULL) 
      { return; }
    
-   commandSize = RouterData(GetCurrentEnvironment())->CommandBufferInputCount;
-   theCommand = GetCommandString(GetCurrentEnvironment());
+   commandSize = RouterData(GlobalEnv)->CommandBufferInputCount;
+   theCommand = GetCommandString(GlobalEnv);
 
    RemoveSelection(hwnd,theData);
       
@@ -2093,7 +2093,7 @@ void ClearDialogWnd(void)
    SetScrollPos(DialogWindow,SB_VERT,0,TRUE);
    SetScrollPos(DialogWindow,SB_HORZ,0,TRUE);
    InvalidateRect(DialogWindow,NULL,TRUE);
-   FlushCommandString(GetCurrentEnvironment());
+   FlushCommandString(GlobalEnv);
   }
 
 /******************************************/
@@ -2130,7 +2130,7 @@ void GetUserCmd(
    switch (wParam)
      {
       case VK_ESCAPE:
-        theEnv = GetCurrentEnvironment();  
+		  theEnv = GlobalEnv;
         if (CommandLineData(theEnv)->EvaluatingTopLevelCommand || BatchActive(theEnv))
           { break; }
               
@@ -2166,12 +2166,12 @@ void GetUserCmd(
       case '\t':  
         if (! screenOnly)
 	      {  
-	       if (GetCommandString(GetCurrentEnvironment()) == NULL)
-	         { SetCommandString(GetCurrentEnvironment(),"   "); }
+           if (GetCommandString(GlobalEnv) == NULL)
+             { SetCommandString(GlobalEnv, "   "); }
            else
-             { AppendCommandString(GetCurrentEnvironment(),"   "); }
+             { AppendCommandString(GlobalEnv, "   "); }
           }
-        EnvPrintRouter (GetCurrentEnvironment(),"stdout", "   " );
+        EnvPrintRouter (GlobalEnv,"stdout", "   " );
         break;
       
       /*=====================*/
@@ -2229,7 +2229,7 @@ static void HandleStandardCharacter(
    text[0] = theChar;
    text[1] = '\0';
    
-   theEnv = GetCurrentEnvironment();
+   theEnv = GlobalEnv;
   
    /*==============================*/
    /* Add to CLIPS command buffer. */
@@ -2396,7 +2396,7 @@ static int QuickBackSpace(
 	 
    text[0] = (char) VK_BACK;
    text[1] = '\0';
-   EnvPrintRouter(GetCurrentEnvironment(),"stdout",text);
+   EnvPrintRouter(GlobalEnv,"stdout",text);
    
    return rv;
   }
@@ -2423,7 +2423,7 @@ static void HandleBackSpace(
 
    if (! screenOnly)
      {      
-      theEnv = GetCurrentEnvironment();
+      theEnv = GlobalEnv;
       theCommand = GetCommandString(theEnv);
       
       theData->horizScroll = 1;
@@ -2929,17 +2929,17 @@ static void DisplayPaste(
    
    if (theData->caretOffset == 0)
      {  
-      AppendCommandString(GetCurrentEnvironment(),theString);
-      EnvPrintRouter(GetCurrentEnvironment(),WPROMPT,theString);
+      AppendCommandString(GlobalEnv,theString);
+      EnvPrintRouter(GlobalEnv,WPROMPT,theString);
       return;
      }
 
-   theEnv = GetCurrentEnvironment();
+   theEnv = GlobalEnv;
    theCommand = GetCommandString(theEnv);
    if (theCommand == NULL)
      { 
-      AppendCommandString(GetCurrentEnvironment(),theString);
-      EnvPrintRouter(GetCurrentEnvironment(),WPROMPT,theString);
+      AppendCommandString(GlobalEnv,theString);
+      EnvPrintRouter(GlobalEnv,WPROMPT,theString);
       return; 
 	 }
 
@@ -2994,9 +2994,9 @@ static void DisplayPaste(
    tempChars = theData->caretCharsBack;
    tempLines = theData->caretLinesBack;
          
-   EnvPrintRouter(GetCurrentEnvironment(),"stdout",preCommand);
-   EnvPrintRouter(GetCurrentEnvironment(),"stdout",theString);
-   EnvPrintRouter(GetCurrentEnvironment(),"stdout",postCommand);
+   EnvPrintRouter(GlobalEnv,"stdout",preCommand);
+   EnvPrintRouter(GlobalEnv,"stdout",theString);
+   EnvPrintRouter(GlobalEnv,"stdout",postCommand);
          
    /*============================*/
    /* Restore the caret offsets. */

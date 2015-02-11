@@ -199,9 +199,10 @@
 #define ID_WINDOW_SPLIT                 40075
 #define ID_HELP_HOME_PAGE               40076
 #define ID_HELP_DOCUMENTATION           40077
-#define ID_HELP_CLIPSESG                40078
-#define ID_HELP_SOURCEFORGE             40079
-#define ID_HELP_STACK_OVERFLOW          40080
+#define ID_HELP_EXAMPLES                40078
+#define ID_HELP_CLIPSESG                40079
+#define ID_HELP_SOURCEFORGE             40080
+#define ID_HELP_STACK_OVERFLOW          40081
 #define ID_HELP_COMPLETE                40087
 #define ID_HELP_ABOUT                   40088
 #define ID_APP_EXIT                     40099

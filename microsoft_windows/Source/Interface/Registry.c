@@ -39,7 +39,7 @@
 
 
 #include "dialog1.h"
-
+#include "MDI.h"
 #include "Registry.h"
 
 struct WindowInformation
@@ -140,7 +140,7 @@ void SaveWatchInformation()
    HKEY hKey;
    DWORD lpdwDisposition;
    struct WatchInformation watchInfo;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
     
    if (RegCreateKeyEx(HKEY_CURRENT_USER,TEXT("Software\\CLIPS\\CLIPSWin"),0,"",0,
                       KEY_READ | KEY_WRITE,NULL,&hKey,&lpdwDisposition) != ERROR_SUCCESS)
@@ -180,21 +180,20 @@ void SaveExecutionInformation()
    HKEY hKey;
    DWORD lpdwDisposition;
    struct ExecutionInformation executionInfo;
-   void *theEnv = GetCurrentEnvironment();
    
    if (RegCreateKeyEx(HKEY_CURRENT_USER,TEXT("Software\\CLIPS\\CLIPSWin"),0,"",0,
                       KEY_READ | KEY_WRITE,NULL,&hKey,&lpdwDisposition) != ERROR_SUCCESS)
      { return; }
               
-   executionInfo.salienceEvaluation = EnvGetSalienceEvaluation(theEnv);
-   executionInfo.strategy = EnvGetStrategy(theEnv);
-   executionInfo.staticConstraintChecking = (boolean) EnvGetStaticConstraintChecking(theEnv);
-   executionInfo.dynamicConstraintChecking = (boolean) EnvGetDynamicConstraintChecking(theEnv);
-   executionInfo.autoFloatDividend = (boolean) EnvGetAutoFloatDividend(theEnv);
-   executionInfo.resetGlobals = (boolean) EnvGetResetGlobals(theEnv);
-   executionInfo.factDuplication = (boolean) EnvGetFactDuplication(theEnv);
-   executionInfo.incrementalReset = (boolean) EnvGetIncrementalReset(theEnv);
-   executionInfo.sequenceOperatorRecognition = (boolean) EnvGetSequenceOperatorRecognition(theEnv);
+   executionInfo.salienceEvaluation = EnvGetSalienceEvaluation(GlobalEnv);
+   executionInfo.strategy = EnvGetStrategy(GlobalEnv);
+   executionInfo.staticConstraintChecking = (boolean) EnvGetStaticConstraintChecking(GlobalEnv);
+   executionInfo.dynamicConstraintChecking = (boolean) EnvGetDynamicConstraintChecking(GlobalEnv);
+   executionInfo.autoFloatDividend = (boolean) EnvGetAutoFloatDividend(GlobalEnv);
+   executionInfo.resetGlobals = (boolean) EnvGetResetGlobals(GlobalEnv);
+   executionInfo.factDuplication = (boolean) EnvGetFactDuplication(GlobalEnv);
+   executionInfo.incrementalReset = (boolean) EnvGetIncrementalReset(GlobalEnv);
+   executionInfo.sequenceOperatorRecognition = (boolean) EnvGetSequenceOperatorRecognition(GlobalEnv);
 
    if (RegSetValueEx(hKey,"Execution",0,REG_BINARY,(BYTE *) &executionInfo,
                      sizeof(struct ExecutionInformation)) != ERROR_SUCCESS)
@@ -281,20 +280,20 @@ static void RestoreWatchInformation()
       return;
      }
 
-   EnvSetWatchItem(GetCurrentEnvironment(),"compilations",watchInfo.compilations,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"facts",watchInfo.facts,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"instances",watchInfo.instances,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"rules",watchInfo.rules,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"generic-functions",watchInfo.genericFunctions,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"messages",watchInfo.messages,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"deffunctions",watchInfo.deffunctions,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"statistics",watchInfo.statistics,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"globals",watchInfo.globals,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"slots",watchInfo.slots,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"activations",watchInfo.activations,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"methods",watchInfo.methods,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"focus",watchInfo.focus,NULL);
-   EnvSetWatchItem(GetCurrentEnvironment(),"message-handlers",watchInfo.messageHandlers,NULL);
+   EnvSetWatchItem(GlobalEnv,"compilations",watchInfo.compilations,NULL);
+   EnvSetWatchItem(GlobalEnv, "facts", watchInfo.facts, NULL);
+   EnvSetWatchItem(GlobalEnv, "instances", watchInfo.instances, NULL);
+   EnvSetWatchItem(GlobalEnv, "rules", watchInfo.rules, NULL);
+   EnvSetWatchItem(GlobalEnv, "generic-functions", watchInfo.genericFunctions, NULL);
+   EnvSetWatchItem(GlobalEnv, "messages", watchInfo.messages, NULL);
+   EnvSetWatchItem(GlobalEnv, "deffunctions", watchInfo.deffunctions, NULL);
+   EnvSetWatchItem(GlobalEnv, "statistics", watchInfo.statistics, NULL);
+   EnvSetWatchItem(GlobalEnv, "globals", watchInfo.globals, NULL);
+   EnvSetWatchItem(GlobalEnv, "slots", watchInfo.slots, NULL);
+   EnvSetWatchItem(GlobalEnv, "activations", watchInfo.activations, NULL);
+   EnvSetWatchItem(GlobalEnv, "methods", watchInfo.methods, NULL);
+   EnvSetWatchItem(GlobalEnv, "focus", watchInfo.focus, NULL);
+   EnvSetWatchItem(GlobalEnv, "message-handlers", watchInfo.messageHandlers, NULL);
 
    RegCloseKey(hKey);
   }
@@ -310,7 +309,6 @@ static void RestoreExecutionInformation()
    struct ExecutionInformation executionInfo;
    DWORD type = REG_BINARY;
    DWORD size = sizeof(struct ExecutionInformation);
-   void *theEnv = GetCurrentEnvironment();
    
    if (RegCreateKeyEx(HKEY_CURRENT_USER,TEXT("Software\\CLIPS\\CLIPSWin"),0,"",0,
                       KEY_READ | KEY_WRITE,NULL,&hKey,&lpdwDisposition) != ERROR_SUCCESS)
@@ -323,15 +321,15 @@ static void RestoreExecutionInformation()
       return;
      }
 
-   EnvSetSalienceEvaluation(theEnv,executionInfo.salienceEvaluation);
-   EnvSetStrategy(theEnv,executionInfo.strategy);
-   EnvSetStaticConstraintChecking(theEnv,executionInfo.staticConstraintChecking);
-   EnvSetDynamicConstraintChecking(theEnv,executionInfo.dynamicConstraintChecking);
-   EnvSetAutoFloatDividend(theEnv,executionInfo.autoFloatDividend);
-   EnvSetResetGlobals(theEnv,executionInfo.resetGlobals);
-   EnvSetFactDuplication(theEnv,executionInfo.factDuplication);
-   EnvSetIncrementalReset(theEnv,executionInfo.incrementalReset);
-   EnvSetSequenceOperatorRecognition(theEnv,executionInfo.sequenceOperatorRecognition);
+   EnvSetSalienceEvaluation(GlobalEnv,executionInfo.salienceEvaluation);
+   EnvSetStrategy(GlobalEnv,executionInfo.strategy);
+   EnvSetStaticConstraintChecking(GlobalEnv,executionInfo.staticConstraintChecking);
+   EnvSetDynamicConstraintChecking(GlobalEnv,executionInfo.dynamicConstraintChecking);
+   EnvSetAutoFloatDividend(GlobalEnv,executionInfo.autoFloatDividend);
+   EnvSetResetGlobals(GlobalEnv,executionInfo.resetGlobals);
+   EnvSetFactDuplication(GlobalEnv,executionInfo.factDuplication);
+   EnvSetIncrementalReset(GlobalEnv,executionInfo.incrementalReset);
+   EnvSetSequenceOperatorRecognition(GlobalEnv,executionInfo.sequenceOperatorRecognition);
 
    RegCloseKey(hKey);
   }

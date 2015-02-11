@@ -66,6 +66,7 @@
 
 #include "EditUtil.h"
 #include "dialog1.h"
+#include "MDI.h"
 
 #include "display.h"
 #include "Print.h"
@@ -95,7 +96,7 @@ void DoExecutionChoice(
   WORD wParam)
   { 
    char buffer[20];
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    switch (wParam)
      {   
@@ -150,17 +151,17 @@ void DoExecutionChoice(
         break;
 
       case ID_EXECUTION_HALT:
-        if (EngineData(GetCurrentEnvironment())->ExecutingRule != NULL)
-          { EngineData(GetCurrentEnvironment())->HaltRules = CLIPS_TRUE; }
+        if (EngineData(GlobalEnv)->ExecutingRule != NULL)
+          { EngineData(GlobalEnv)->HaltRules = TRUE; }
         else
           {
-           SetHaltExecution(theEnv,CLIPS_TRUE);
+           SetHaltExecution(theEnv,TRUE);
            CloseAllBatchSources(theEnv);
           }
         break;
 
       case ID_EXECUTION_HALT_NOW:
-        SetHaltExecution(theEnv,CLIPS_TRUE);
+        SetHaltExecution(theEnv,TRUE);
         CloseAllBatchSources(theEnv);
         break;
      }
@@ -200,7 +201,7 @@ void DoWindowChoice(
       
       case ID_WIN_CLEAR:
         ClearDialogWnd();
-        PrintPrompt(GetCurrentEnvironment());
+        PrintPrompt(GlobalEnv);
         break;
      }  
      
@@ -368,6 +369,10 @@ void DoHelpChoice(
 		ShellExecute(NULL, "open", "http://clipsrules.sourceforge.net/OnlineDocs.html", NULL, NULL, SW_SHOWNORMAL); 
         break;
 
+      case ID_HELP_EXAMPLES: 
+		ShellExecute(NULL, "open", "https://sourceforge.net/p/clipsrules/code/HEAD/tree/examples/", NULL, NULL, SW_SHOWNORMAL); 
+        break;
+
 	  case ID_HELP_CLIPSESG:
 		ShellExecute(NULL, "open", "http://groups.google.com/group/CLIPSESG/", NULL, NULL, SW_SHOWNORMAL);
 		break; 
@@ -390,7 +395,7 @@ void DoModuleChoice(
   HMENU hMenu,
   WORD wParam)
   {
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
    char moduleName[255];
    
    GetMenuString(hMenu,wParam,(LPSTR) &moduleName,255,MF_BYCOMMAND);
@@ -404,7 +409,7 @@ void DoModuleChoice(
 void UpdateModuleMenu( 
   HMENU ModuleMenu)
   {  
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
    char moduleTitle[255];
    unsigned position;
    struct defmodule *theModule;
@@ -443,7 +448,7 @@ void UpdateModuleMenu(
 void UpdateMenu(
   HWND hwnd)
   {      
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
    HMENU hMenu = GetMenu(hwnd);
    static int value = 0;
    

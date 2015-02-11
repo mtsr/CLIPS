@@ -47,6 +47,7 @@
 #include "dialog2.h"
 #include "display.h"
 #include "menucmds.h"
+#include "MDI.h"
 
 /**********************************************************************/
 /* DoLoad: Function will display the common file dialog and will load */
@@ -63,7 +64,7 @@ void DoLoad(
    char Replace;
    int x;
    size_t size;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    File[0] = '\0';
    memset(&ofn,0,sizeof(OPENFILENAME));
@@ -171,7 +172,7 @@ BOOL DoCommandCompletion(
    DLGPROC theDlgProc;
      
    //HorizScroll = 1; ???
-   GlobalMatches = FindSymbolMatches(GetCurrentEnvironment(),buffer,&numberOfMatches,
+   GlobalMatches = FindSymbolMatches(GlobalEnv,buffer,&numberOfMatches,
                                             &commonPrefixLength);
 
    switch (numberOfMatches)
@@ -199,7 +200,7 @@ BOOL DoCommandCompletion(
           { RtnValue = FALSE; }
      }  
 
-   ReturnSymbolMatches(GetCurrentEnvironment(),GlobalMatches);
+   ReturnSymbolMatches(GlobalEnv,GlobalMatches);
    
    return (RtnValue);
   }
@@ -219,7 +220,7 @@ void OpenDribbleFile(
    char Replace;
    int x;
    size_t size;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
    HMENU hMenu = GetMenu(hMain);
 
    if (! EnvDribbleActive(theEnv))
@@ -308,7 +309,7 @@ void SaveBinaryFile(
    OPENFILENAME ofn;
    int x;
    size_t size;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    File[0] = '\0';
    memset ( &ofn,0, sizeof (OPENFILENAME));

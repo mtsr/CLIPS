@@ -151,10 +151,11 @@ BEGIN
     BEGIN
         MENUITEM "&About CLIPS...",             ID_HELP_ABOUT
         MENUITEM "CLIPS Home Page",             ID_HELP_HOME_PAGE
-        MENUITEM "Documentation",               ID_HELP_DOCUMENTATION
-        MENUITEM "CLIPSESG",                    ID_HELP_CLIPSESG
-        MENUITEM "SourceForge",                 ID_HELP_SOURCEFORGE
-        MENUITEM "Stack Overlow",               ID_HELP_STACK_OVERFLOW
+        MENUITEM "Online Documentation",        ID_HELP_DOCUMENTATION
+        MENUITEM "Online Examples",             ID_HELP_EXAMPLES
+        MENUITEM "CLIPS Expert System Group",   ID_HELP_CLIPSESG
+        MENUITEM "SourceForge Forums",          ID_HELP_SOURCEFORGE
+        MENUITEM "Stack Overflow Q&A",          ID_HELP_STACK_OVERFLOW
         MENUITEM SEPARATOR
         MENUITEM "&Command Complete...\tCtrl+J",ID_HELP_COMPLETE
         MENUITEM "&Status Line",                ID_VIEW_STATUS_BAR
@@ -277,7 +278,7 @@ CAPTION "About CLIPS 6.3"
 FONT 8, "MS Sans Serif"
 {
  CTEXT "CLIPS Version 6.3", -1, 39, 31, 40, 25, WS_CHILD | WS_VISIBLE | WS_GROUP
- CONTROL "07-25-14", -1, "STATIC", SS_CENTER | WS_CHILD | WS_VISIBLE | WS_GROUP, 45, 63, 28, 8
+ CONTROL "02-08-15", -1, "STATIC", SS_CENTER | WS_CHILD | WS_VISIBLE | WS_GROUP, 45, 63, 28, 8
  PUSHBUTTON "&OK", IDC_OK, 45, 82, 28, 14, WS_CHILD | WS_VISIBLE | WS_TABSTOP
  ICON "Clips_Icon", -1, 51, 5, 16, 16, WS_CHILD | WS_VISIBLE
 }
@@ -515,6 +516,7 @@ BEGIN
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
     ID_HELP_HOME_PAGE       "Open CLIPS Home Page in the default web browser"
     ID_HELP_DOCUMENTATION   "Open CLIPS documentation in the default web browser"
+    ID_HELP_EXAMPLES        "Open CLIPS examples in the default web browser"
     ID_HELP_CLIPSESG        "Open CLIPSESG discussion forum in the default web browser"
     ID_HELP_SOURCEFORGE     "Open SourceForge discussion forum in the default web browser"
     ID_HELP_STACK_OVERFLOW  "Open Stack Overflow discussion forum in the default web browser"

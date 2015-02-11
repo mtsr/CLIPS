@@ -35,6 +35,7 @@
 #include "dialog2.h"
 #include "menucmds.h"
 #include "frame.h"
+#include "MDI.h"
 #include "display.h"
 #include "resource.h"
 
@@ -69,7 +70,7 @@ void EditComplete(
    SendMessage(hWindow,EM_GETLINE,theLine,(LPARAM) buffer);
    buffer[iLength] = 0;
    
-   completeStr = GetCommandCompletionString(GetCurrentEnvironment(),buffer,
+   completeStr = GetCommandCompletionString(GlobalEnv,buffer,
                                             (unsigned) iLength);
    free(buffer);
      
@@ -289,7 +290,7 @@ void LoadBatchBufferSelection(
    size_t length;
    char *fullText, *tempText;
    size_t x, p;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
 
    /*==============================*/
    /* Save the original selection. */
@@ -371,7 +372,7 @@ void LoadBatchBufferSelection(
     
    if (command == ID_BUFFER_BATCH)
      {  
-      OpenStringBatch(GetCurrentEnvironment(),"BatchSelection",fullText,FALSE);
+      OpenStringBatch(GlobalEnv,"BatchSelection",fullText,FALSE);
      }
    else
      {  

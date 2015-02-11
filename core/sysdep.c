@@ -110,13 +110,13 @@ extern int LIB$SPAWN();
 #if MAC_XCD 
 #include <unistd.h>
 #endif
-
+/*
 #if WIN_MVC
 #define _UNICODE
 #define UNICODE 
 #include <Windows.h>
 #endif
-
+*/
 #if WIN_MVC
 #include <sys\types.h>
 #include <sys\timeb.h>

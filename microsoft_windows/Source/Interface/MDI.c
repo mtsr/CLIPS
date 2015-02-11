@@ -60,9 +60,6 @@ BOOL mdi_DisplayContextMenu(
 /*******************************************************/
 /* mdi_OnContextMenu: Pops up a context-specific menu. */
 /*******************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 BOOL mdi_OnContextMenu(
   HWND hwnd, 
   HWND hwndCtl, 
@@ -70,9 +67,6 @@ BOOL mdi_OnContextMenu(
   int yPos, 
   HMENU context)
   {
-#if WIN_MCW
-#pragma unused(hwndCtl)
-#endif
    POINT pt;
    RECT  rc;
 
@@ -219,9 +213,6 @@ void mdi_ConformMenus(
 /*   only exists in Windows/NT and Windows/96. To use in    */
 /*   Win32s, you must define USE_WM_MDICREATE.              */
 /************************************************************/                                
-#if WIN_BTC
-#pragma argsused
-#endif
 HWND mdi_Create(
   HWND hwnd, 
   DWORD styles, 
@@ -232,9 +223,6 @@ HWND mdi_Create(
   int width,
   int height)
   {
-#if WIN_MCW
-#pragma unused(styles)
-#endif
    HINSTANCE hinst = GetWindowInstance(hwnd);
    HWND hwndChild;
    TCHAR Class[80];

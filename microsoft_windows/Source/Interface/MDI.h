@@ -70,5 +70,6 @@ void mdi_ConformMenus(HMENU hMaster, HMENU hPopup);
 HWND mdi_Create(HWND hwnd, DWORD styles, unsigned classid,char *title,int,int,int,int);
 
 extern HWND MDIClientWnd;
+extern void *GlobalEnv;
 
 extern void ReportError(DWORD err);

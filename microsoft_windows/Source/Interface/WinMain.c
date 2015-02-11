@@ -80,6 +80,8 @@ void UserFunctions(void);
    static int                     InterfaceEventFunction(void *);
    static void                    WinRunEvent(void *);
 
+   void                          *GlobalEnv;
+
 /**************************************************/
 /* WinMain: Entry point for the application. This */
 /*   function initializes the application and     */
@@ -106,6 +108,7 @@ int WINAPI WinMain(
    /*=============================*/
    
    theEnv = CreateEnvironment(); 
+   GlobalEnv = theEnv;
 
    if (! initInstance(hInstance,IDR_MAINFRAME,nCmdShow,lpCmdLine)) 
      { return FALSE; }
@@ -121,7 +124,7 @@ int WINAPI WinMain(
    /*================================================================*/
 
 #if ! RUN_TIME
-   SetEventFunction(GetCurrentEnvironment(),InterfaceEventFunction);
+   SetEventFunction(theEnv,InterfaceEventFunction);
 #endif
 
    /*====================================*/
@@ -187,7 +190,7 @@ int WINAPI WinMain(
       free(fileName);
      }
  
-   CommandLoop(GetCurrentEnvironment());
+   CommandLoop(GlobalEnv);
    
    return TRUE;
   }

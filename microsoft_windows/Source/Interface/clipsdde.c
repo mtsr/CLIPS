@@ -54,6 +54,7 @@
 #include "menucmds.h"
 #include "clipsdde.h"
 */
+#include "MDI.h"
 #include "display.h"
 
 /*----------------------+
@@ -99,7 +100,7 @@ HDDEDATA CALLBACK DDECallBack(
    char *TheData;
    char *Data;
    const char *theString;
-   void *theEnv = GetCurrentEnvironment();
+   void *theEnv = GlobalEnv;
    
    /* 
    char theBuffer[100];
@@ -162,7 +163,7 @@ HDDEDATA CALLBACK DDECallBack(
 
         if (hsz1 == hszCommand)
           {
-           theString = DataObjectToString(GetCurrentEnvironment(),&DDE_RV);
+           theString = DataObjectToString(GlobalEnv,&DDE_RV);
 
            hData = DdeCreateDataHandle (idInst,
                                         (unsigned char *) theString,
@@ -175,14 +176,14 @@ HDDEDATA CALLBACK DDECallBack(
       case XTYP_EXECUTE:
         SetFocus(DialogWindow);
 
-        if (CommandLineData(GetCurrentEnvironment())->EvaluatingTopLevelCommand || 
-            BatchActive(GetCurrentEnvironment()) )
+        if (CommandLineData(GlobalEnv)->EvaluatingTopLevelCommand || 
+            BatchActive(GlobalEnv) )
           { return ((HDDEDATA) DDE_FBUSY  ); }
 
         Data = (char *) DdeAccessData ( hData, NULL);
         size = strlen((char *) Data) + 1;
 
-        TheData = (char *) genalloc ( GetCurrentEnvironment(),(unsigned) size );
+        TheData = (char *) genalloc ( GlobalEnv,(unsigned) size );
         DdeGetData ( hData, (LPBYTE)TheData, size, 0L );
         
         EnvPrintRouter(theEnv,WPROMPT,TheData);
@@ -192,11 +193,11 @@ HDDEDATA CALLBACK DDECallBack(
         
         if (DDE_RV.type != RVOID)
           {
-           PrintDataObject(GetCurrentEnvironment(),"stdout",&DDE_RV);
-           EnvPrintRouter(theEnv,"stdout","\n");
+           PrintDataObject(GlobalEnv,"stdout",&DDE_RV);
+           EnvPrintRouter(GlobalEnv,"stdout","\n");
           }
         
-        PrintPrompt(theEnv);
+        PrintPrompt(GlobalEnv);
         
         DdeUnaccessData(hData);
        
