@@ -67,7 +67,7 @@
    static BOOL                    status_OnContextMenu(HWND,HWND,int,int);
    static void                    RedrawScreen(HWND,HDC);
    static void                    UpdateWnd(HWND);
-   static void                    GetFocusPPForm(void *,char *,unsigned,void *);
+   static void                    GetFocusPPForm(void *,char *,size_t,void *);
    static int                     CountInstances(void *);
    static int                     CountDefglobals(void *);
    static int                     CountFocus(void *);
@@ -77,7 +77,7 @@
    static void                    UpdateStatusContent(HWND);
    static void                    SaveStatusWindow(HWND);
    static HWND                    statusWindow_New(HWND,char *,int,int,int,int,
-                                                   void (*)(void *,char *,unsigned,void *),
+                                                   void (*)(void *,char *,size_t,void *),
                                                    void *(*)(void *,void *),
 												   int (*)(void *),
                                                    void (*)(void *,int),
@@ -377,7 +377,7 @@ static HWND statusWindow_New(
   int ypos,
   int width,
   int height,
-  void (*getPPForm)(void *,char *,unsigned,void *),
+  void (*getPPForm)(void *,char *,size_t,void *),
   void *(*getNextValue)(void *,void *),
   int (*getChanged)(void *),
   void (*setChanged)(void *,int),
@@ -428,7 +428,8 @@ static HWND statusWindow_New(
       
    theData->lineSize = tm.tmHeight+ tm.tmExternalLeading;
      
-   SetWindowLong(hwndChild,GWL_USERDATA,(long) theData);
+   //SetWindowLong(hwndChild,GWL_USERDATA,(long) theData);
+   SetWindowLongPtr(hwndChild,GWLP_USERDATA, (LONG_PTR) theData);
    
    MoveWindow(hwndChild,xpos,ypos,width,height,TRUE);
    
@@ -450,7 +451,7 @@ static void status_OnCommand(
   {	 
    char buffer[255];
    struct statusWindowData *theData;
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -491,22 +492,16 @@ static void status_OnPaint(
 /************************************************/
 /* status_OnVScroll: */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void status_OnVScroll(
   HWND hwnd, 
   HWND hwndCtl, 
   UINT code, 
   int pos)
   {
-#if WIN_MCW
-#pragma unused(hwndCtl)
-#endif
    int min, max, cp;
    struct statusWindowData *theData;
    
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -553,22 +548,16 @@ static void status_OnVScroll(
 /************************************************/
 /* status_OnHScroll: */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void status_OnHScroll(
   HWND hwnd, 
   HWND hwndCtl, 
   UINT code, 
   int pos)
   {
-#if WIN_MCW
-#pragma unused(hwndCtl)
-#endif
    int min, max, cp;
    struct statusWindowData *theData;
    
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -612,22 +601,15 @@ static void status_OnHScroll(
 /************************************************/
 /* status_OnSize:    */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void status_OnSize(
   HWND hwnd, 
   UINT state, 
   int cx, 
   int cy)
   {
-#if WIN_MCW
-#pragma unused(state)
-#pragma unused(cx)
-#endif
    struct statusWindowData *theData;
    
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -641,19 +623,12 @@ static void status_OnSize(
 /************************************************/
 /* status_OnMDIActivate:    */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void status_OnMDIActivate(
   HWND hwnd,
   BOOL active,
   HWND hActivate,
   HWND hDeactivate)
   {
-#if WIN_MCW
-#pragma unused(hActivate)
-#pragma unused(hDeactivate)
-#endif
    if (active)
      {
       ShowWindow(hwnd,SW_SHOW);
@@ -678,7 +653,7 @@ static void status_OnClose(
    char buffer[255];
    struct statusWindowData *theData;
    
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -695,16 +670,10 @@ static void status_OnClose(
 /* status_OnUpdateMenu: Updates the menu */
 /*   and updates the toolbar as well.    */  
 /*****************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void status_OnUpdateMenu(
   HWND hwnd, 
   HMENU hmenu)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#endif
    EnableMenuItem(hmenu,ID_FILE_CLOSE,MF_ENABLED);
    EnableMenuItem(hmenu,ID_FILE_SAVE,MF_ENABLED);
    EnableMenuItem(hmenu,ID_FILE_SAVE_AS,MF_ENABLED);
@@ -760,7 +729,7 @@ static void RedrawScreen(
    struct statusWindowData *theData;
    LOGFONT lf;
    
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -834,7 +803,7 @@ static void RedrawScreen(
 static void GetFocusPPForm(
   void *theEnv,
   char *buffer,
-  unsigned bufferLength,
+  size_t bufferLength,
   void *vTheFocus)
   {  
    struct focus *theFocus = (struct focus *) vTheFocus;
@@ -977,7 +946,7 @@ static void UpdateStatusContent(
    
    if (! IsWindowVisible(hwnd)) return;
     
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) return; 
      
@@ -999,7 +968,7 @@ void UpdateWnd(
    struct statusWindowData *theData;
    int max;
    
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -1038,7 +1007,7 @@ static void UpdateStatusWndTitle(
    struct defmodule *theModule = (struct defmodule *) EnvGetCurrentModule(theEnv);
    char buffer[255];
        
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) return; 
    
@@ -1065,7 +1034,7 @@ static void SaveStatusWindow(
    void *valuePtr;
    char buffer[300];
    
-   theData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) return; 
 

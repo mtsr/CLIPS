@@ -87,19 +87,12 @@ void UserFunctions(void);
 /*   function initializes the application and     */
 /*   processes the message loop.                  */
 /**************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 int WINAPI WinMain(
   HINSTANCE hInstance, 
   HINSTANCE hPrevInstance, 
   LPSTR lpCmdLine, 
   int nCmdShow)
   {   
-#if WIN_MCW
-#pragma unused(hPrevInstance)
-#pragma unused(lpCmdLine)
-#endif
    void *theEnv;
    HWND hEditWnd;
    
@@ -211,16 +204,10 @@ static void SetUpRouters(
 /*   from the dialog window to make sure that     */
 /*   the user has an opportunity to save files.   */
 /**************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int ExitInterfaceRouter(
   void *theEnv,
   int num)
   {   
-#if WIN_MCW
-#pragma unused(theEnv)
-#endif
   MSG msg;
    if (num >= 0) return(TRUE);
    
@@ -237,16 +224,10 @@ static int ExitInterfaceRouter(
 /* QueryInterfaceRouter: Router function which recognizes */
 /*   I/O directed to the display window.                  */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static intBool QueryInterfaceRouter(
   void *theEnv,
   const char *logicalName)
   {
-#if WIN_MCW
-#pragma unused(theEnv)
-#endif
    if ( (strcmp(logicalName,"stdout") == 0) ||
         (strcmp(logicalName,"stdin") == 0) ||
         (strcmp(logicalName,WPROMPT) == 0) ||
@@ -298,7 +279,7 @@ static int GetcInterfaceRouter(
 
    //UpdateCursor(QUESTION_CURSOR);
    SetCursor(LoadCursor(NULL,IDC_HELP));
-   SetClassLong(DialogWindow,GCL_HCURSOR,(LONG) LoadCursor(NULL,IDC_HELP));
+   SetClassLongPtr(DialogWindow,GCLP_HCURSOR,(LONG_PTR) LoadCursor(NULL,IDC_HELP));
 
    GetMessage(&msg,NULL,0,0);
    TranslateMessage(&msg);
@@ -321,7 +302,7 @@ static int GetcInterfaceRouter(
               count = 0;
               //UpdateCursor(ARROW_CURSOR);
 	  		  SetCursor(LoadCursor(NULL,IDC_ARROW));
-		      SetClassLong(DialogWindow,GCL_HCURSOR,(LONG) LoadCursor(NULL,IDC_ARROW));
+		      SetClassLongPtr(DialogWindow,GCLP_HCURSOR,(LONG_PTR) LoadCursor(NULL,IDC_ARROW));
               msg.wParam = '\n';
               break;
 
@@ -337,7 +318,7 @@ static int GetcInterfaceRouter(
       DispatchMessage(&msg);
       //UpdateCursor(QUESTION_CURSOR);
       SetCursor(LoadCursor(NULL,IDC_HELP));
-	  SetClassLong(DialogWindow,GCL_HCURSOR,(LONG) LoadCursor(NULL,IDC_HELP));
+	  SetClassLongPtr(DialogWindow,GCLP_HCURSOR,(LONG_PTR) LoadCursor(NULL,IDC_HELP));
 
       GetMessage(&msg,NULL,0,0);
       TranslateMessage(&msg);
@@ -348,15 +329,9 @@ static int GetcInterfaceRouter(
 /* InterfaceEventFunction: Executes one */
 /*   pass of the main program loop.     */
 /****************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static int InterfaceEventFunction(
   void *theEnv)
   {  
-#if WIN_MCW
-#pragma unused(theEnv)
-#endif
    MSG msg;
    
      //UpdateCursor(ARROW_CURSOR);
@@ -394,15 +369,9 @@ static int InterfaceEventFunction(
 /*   to update the interface while rules are firing   *
 /*   or procedural code is executing.                 */
 /******************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void WinRunEvent(
   void *theEnv)
   {  
-#if WIN_MCW
-#pragma unused(theEnv)
-#endif
    MSG msg;
 
    UpdateStatus();

@@ -210,17 +210,11 @@ BOOL Toolbar_OnNotify(
 /* Toolbar_OnNeedText: Return the */
 /*   requested tool tip text.     */
 /**********************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 void Toolbar_OnNeedText(
   HWND hwnd, 
   int idCtrl, 
   LPTOOLTIPTEXT pttt)
   {
-#if WIN_MCW
-#pragma unused(idCtrl)
-#endif
    HINSTANCE hinst;
    TCHAR szPrompt [256] ;
 
@@ -233,7 +227,7 @@ void Toolbar_OnNeedText(
    hinst = GetWindowInstance (hwnd) ;
 
    // Load the string resource with the button ID
-   LoadString (hinst, pttt->hdr.idFrom, szPrompt, sizeof (szPrompt)) ;
+   LoadString (hinst, (UINT) pttt->hdr.idFrom, szPrompt, (int) sizeof (szPrompt)) ;
 
    // The tool tip is the part after the newline character
    pttt->lpszText = _tcschr (szPrompt, (TCHAR) '\n') ;

@@ -33,6 +33,9 @@
 // CreateMDIWindow does not exist in Win32s.
 //#define USE_WM_MDICREATE
 BOOL mdi_DisplayContextMenu(HWND,POINT,HMENU);
+
+static void mdi_ConformMenus(HMENU hMaster, HMENU hPopup);
+
 /********************************************************/
 /* mdi_DisplayContextMenu: Pops up a text context menu. */
 /********************************************************/
@@ -114,13 +117,13 @@ BOOL mdi_OnContextMenu(
    return FALSE;
   }
 
-/**************************************************************/
-/* mdi_ConformMenus4: For each menu item in hPopup, its state */
-/*   is set to be the same state as found in hMaster, unless  */
-/*   there is no such state in which case it is left alone.   */
-/*   This can only work with API level 4 and above.           */
-/**************************************************************/
-static void mdi_ConformMenus4(
+/*************************************************************/
+/* mdi_ConformMenus: For each menu item in hPopup, its state */
+/*   is set to be the same state as found in hMaster, unless */
+/*   there is no such state in which case it is left alone.  */
+/*   This can only work with API level 4 and above.          */
+/*************************************************************/
+static void mdi_ConformMenus(
   HMENU hMaster, 
   HMENU hPopup)
   {
@@ -143,7 +146,7 @@ static void mdi_ConformMenus4(
      { /* process each */
       VERIFY(GetMenuItemInfo(hPopup, i, TRUE, &getpopupinfo));
       if (getpopupinfo.hSubMenu != NULL)
-        { mdi_ConformMenus4(hMaster, getpopupinfo.hSubMenu); }
+        { mdi_ConformMenus(hMaster, getpopupinfo.hSubMenu); }
       else
         { 
          GetMenuItemInfo(hMaster, getpopupinfo.wID, FALSE, &masterinfo);
@@ -151,61 +154,6 @@ static void mdi_ConformMenus4(
          SetMenuItemInfo(hPopup, i, TRUE, &setpopupinfo);
         }
      }
-  }
-
-/***************************************************************/
-/* mdi_ConformMenus3: For each menu item in hPopup, its state  */
-/*   is set to be the same state as found in hMaster, unless   */
-/*   there is no such state in which case it is left alone.    */
-/*   This somewhat clunky version is required for API level 3. */
-/***************************************************************/
-static void mdi_ConformMenus3(
-  HMENU hMaster, 
-  HMENU hPopup)
-  {
-   unsigned count = (unsigned) GetMenuItemCount(hPopup);
-   unsigned i;
-   UINT popupstate;
-   HMENU submenu;
-
-   for (i = 0; i < count; i++)
-     { 
-      popupstate = GetMenuState(hPopup, i, MF_BYPOSITION);
-      if ((popupstate & ~0xFF) != 0)
-        { 
-         submenu = GetSubMenu(hPopup,(int) i);
-         mdi_ConformMenus3(hMaster, submenu);
-        } 
-      else
-        { 
-         UINT id = GetMenuItemID(hPopup,(int) i);
-         UINT masterstate = GetMenuState(hMaster, id, MF_BYCOMMAND);
-
-         EnableMenuItem(hPopup, i, MF_BYPOSITION |
-                        (masterstate & (MF_ENABLED | MF_DISABLED | MF_GRAYED)));
-         CheckMenuItem(hPopup, i, MF_BYPOSITION |
-                        (masterstate & (MF_CHECKED | MF_UNCHECKED)));
-        } 
-     } 
-  }
-
-/**************************************************************/
-/* mdi_ConformMenus:  For each menu item in hPopup, its state */
-/*   is set to be the same state as found in hMaster, unless  */
-/*   there is no such state in which case it is left alone.   */
-/**************************************************************/
-void mdi_ConformMenus(
-  HMENU hMaster, 
-  HMENU hPopup)
-  {
-   OSVERSIONINFO info;
-     
-   info.dwOSVersionInfoSize = sizeof(info);
-   GetVersionEx(&info);
-   if (info.dwMajorVersion < 4)
-     { mdi_ConformMenus3(hMaster, hPopup); }
-   else
-     { mdi_ConformMenus4(hMaster, hPopup); }
   }
 
 /************************************************************/

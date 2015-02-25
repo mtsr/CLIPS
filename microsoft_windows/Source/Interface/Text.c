@@ -280,7 +280,7 @@ BOOL text_Revert(
    char szTemp[128];
    struct textWindowData *theData;
    
-   theData = (struct textWindowData *) GetWindowLong(hEditWnd,GWL_USERDATA);
+   theData = (struct textWindowData *) GetWindowLong(hEditWnd,GWLP_USERDATA);
  
    
    /*===================================*/
@@ -315,7 +315,8 @@ BOOL text_Revert(
       if (theData == NULL) return(FALSE);
       
       strcpy((char *) &theData->fileName,(char *) fileName);
-      SetWindowLong(hEditWnd,GWL_USERDATA,(long) theData);
+      //SetWindowLong(hEditWnd,GWL_USERDATA,(long) theData);
+	  SetWindowLongPtr(hEditWnd,GWLP_USERDATA,(LONG_PTR) theData);
      }
    
    /*===================================================*/
@@ -398,9 +399,10 @@ BOOL text_SaveAs(
    /* so the save dialog will appear.    */
    /*====================================*/
    
-   oldData = (struct textWindowData *) GetWindowLong(hEditWnd,GWL_USERDATA);
-   SetWindowLong(hEditWnd,GWL_USERDATA,(long) NULL);
-   
+   oldData = (struct textWindowData *) GetWindowLong(hEditWnd,GWLP_USERDATA);
+   //SetWindowLong(hEditWnd,GWL_USERDATA,(long) NULL);
+   SetWindowLongPtr(hEditWnd,GWLP_USERDATA,(LONG_PTR) NULL);
+
    /*================*/
    /* Save the file. */
    /*================*/
@@ -413,7 +415,7 @@ BOOL text_SaveAs(
    /* old window data.                        */
    /*=========================================*/
    
-   theData = (struct textWindowData *) GetWindowLong(hEditWnd,GWL_USERDATA);
+   theData = (struct textWindowData *) GetWindowLongPtr(hEditWnd,GWLP_USERDATA);
    if (theData != NULL) 
      {
       SetWindowText(hEditWnd,szFileName);
@@ -421,7 +423,10 @@ BOOL text_SaveAs(
         { free(oldData); }
      }
    else
-     { SetWindowLong(hEditWnd,GWL_USERDATA,(long) oldData); }
+     { 
+	  //SetWindowLong(hEditWnd,GWL_USERDATA,(long) oldData); 
+	  SetWindowLongPtr(hEditWnd,GWLP_USERDATA,(LONG_PTR) oldData);
+	 }
    
    return(TRUE);
   }
@@ -438,7 +443,7 @@ BOOL text_Save(
    HFILE hFile;
    OFSTRUCT OfStruct;
    char szTemp[398];
-   int text_length; 
+   LRESULT text_length; 
    char *pEditBuffer;
    HICON hSaveCursor;
    unsigned ioStatus;
@@ -451,7 +456,7 @@ BOOL text_Save(
    /* Get the window data. */
    /*======================*/
    
-   theData = (struct textWindowData *) GetWindowLong(hEditWnd,GWL_USERDATA);
+   theData = (struct textWindowData *) GetWindowLong(hEditWnd,GWLP_USERDATA);
    if (theData == NULL)
      {
 	  if (! GetSaveFileName ((LPOPENFILENAME) &ofn))
@@ -462,7 +467,9 @@ BOOL text_Save(
         { return(FALSE); }
         
       strcpy((char *) &theData->fileName,(char *) szFileName);
-      SetWindowLong(hEditWnd,GWL_USERDATA,(long) theData);
+      //SetWindowLong(hEditWnd,GWL_USERDATA,(long) theData);
+      SetWindowLongPtr(hEditWnd,GWLP_USERDATA,(LONG_PTR) theData);
+	  
       SetWindowText(hEditWnd,szFileName);
      }
 
@@ -493,7 +500,7 @@ BOOL text_Save(
 
    hSaveCursor = SetCursor(hHourGlass);
    
-   ioStatus = _lwrite(hFile,pEditBuffer,strlen(pEditBuffer));
+   ioStatus = _lwrite(hFile,pEditBuffer,(UINT) strlen(pEditBuffer));
 
    _lclose(hFile);
 
@@ -519,19 +526,12 @@ BOOL text_Save(
 /***************************/
 /* text_OnMDIActivate:  */
 /******************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void text_OnMDIActivate(
   HWND hwnd, 
   BOOL active, 
   HWND hActivate, 
   HWND hDeactivate)
   {
-#if WIN_MCW
-#pragma unused(hActivate)
-#pragma unused(hDeactivate)
-#endif
    CheckMenuItem(TextMenu,GetWindowWord(hwnd,0), 
                  (unsigned) (active ? MF_CHECKED : MF_UNCHECKED));
                  
@@ -585,7 +585,7 @@ static void text_OnDestroy(
   {
    struct textWindowData *theData;
    
-   theData = (struct textWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct textWindowData *) GetWindowLong(hwnd,GWLP_USERDATA);
    if (theData != NULL)
      { free(theData); }
  
@@ -621,19 +621,12 @@ static void text_OnFont(
 *       When changes occur that affect possible menu/toolbar settings, cause
 *       the objects to update
 ****************************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void text_OnEdit(
   HWND hwnd, 
   int id, 
   HWND hctl, 
   UINT codeNotify)
   {
-#if WIN_MCW
-#pragma unused(hctl)
-#pragma unused(id)
-#endif
    switch(codeNotify)
      { 
       case EN_CHANGE:
@@ -758,20 +751,12 @@ static void text_OnSize(
 /* text_OnInitMenuPopup: Enables cut, */
 /*   copy, paste, etc.                */
 /**************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void text_OnInitMenuPopup(
   HWND hwnd, 
   HMENU hmenu, 
   UINT item, 
   BOOL sysmenu)
   {
-#if WIN_MCW
-#pragma unused(sysmenu)
-#pragma unused(hmenu)
-#pragma unused(item)
-#endif
    PostMessage(hwnd,UWM_UPDATE_MENU, 0, 0);
   }
 
@@ -796,16 +781,10 @@ static void text_OnUpdateMenu(
 /* text_OnSetFocus: Sets focus to edit control */
 /*   which is contained inside the MDI child.  */
 /***********************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void text_OnSetFocus(
   HWND hwnd,
   HWND oldfocus)
   {
-#if WIN_MCW
-#pragma unused(oldfocus)
-#endif
    SetFocus(GetDlgItem(hwnd,ID_EDIT_CONTROL));
   }
 
@@ -822,19 +801,12 @@ static void text_OnSetFocus(
 * Effect:
 *       Sets the text color
 ****************************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static HBRUSH text_OnCtlColorEdit(
   HWND hwnd,
   HDC hdc,
   HWND hchild,
   int type)
   {
-#if WIN_MCW
-#pragma unused(type)
-#pragma unused(hwnd)
-#endif
    return FORWARD_WM_CTLCOLOREDIT(hchild, hdc, hchild, SendMessage);
   }
 
@@ -919,7 +891,7 @@ static BOOL PrintFile(
 static void FixTextLineEndings(
   HWND hEditWnd)
   {  
-   long sel;
+   LRESULT sel;
    size_t i, textLength;
    int originalStart, originalEnd;
    char *fullText;

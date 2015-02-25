@@ -73,10 +73,6 @@ DATA_OBJECT DDE_RV;
 *    transactions sent to the function as a result of DDE
 *    Management Library (DDEML) calls by other applications.
 *************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-
 HDDEDATA CALLBACK DDECallBack(  
   UINT uType,
   UINT uFmt,
@@ -87,15 +83,9 @@ HDDEDATA CALLBACK DDECallBack(
   DWORD dwData1,
   DWORD dwData2)
   {  
-#if MAC_MCW || WIN_MCW || MAC_XCD
-#pragma unused(hconv)
-#pragma unused(dwData1)
-#pragma unused(dwData2)
-#endif
-
    extern HSZ hszService; 
    extern char CompleteString[255];
-   DWORD size;
+   size_t size;
    HWND hWnd;
    char *TheData;
    char *Data;
@@ -167,11 +157,10 @@ HDDEDATA CALLBACK DDECallBack(
 
            hData = DdeCreateDataHandle (idInst,
                                         (unsigned char *) theString,
-                                        strlen(theString)+1,
+                                        (DWORD) strlen(theString)+1,
                                         0L, hsz2,CF_TEXT,0);
           }
-          
-        return (hData);
+         return (hData);
       
       case XTYP_EXECUTE:
         SetFocus(DialogWindow);
@@ -184,7 +173,7 @@ HDDEDATA CALLBACK DDECallBack(
         size = strlen((char *) Data) + 1;
 
         TheData = (char *) genalloc ( GlobalEnv,(unsigned) size );
-        DdeGetData ( hData, (LPBYTE)TheData, size, 0L );
+        DdeGetData ( hData, (LPBYTE) TheData, (DWORD) size, 0 );
         
         EnvPrintRouter(theEnv,WPROMPT,TheData);
         EnvPrintRouter(theEnv,WPROMPT,"\n");
@@ -260,9 +249,6 @@ void ShutDownDDE ( void )
 *   with the calling application and frees the specified function
 *   from the data segment bound to it by the StartUpDDE function.
 ***************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 void QuitDDE ( void )
 {  
    DdeUninitialize (idInst);

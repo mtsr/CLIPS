@@ -168,7 +168,7 @@ BOOL DoCommandCompletion(
   {
    unsigned int numberOfMatches = 0;
    int RtnValue = TRUE;
-   unsigned int commonPrefixLength = 0;
+   size_t commonPrefixLength = 0;
    DLGPROC theDlgProc;
      
    //HorizScroll = 1; ???
@@ -296,9 +296,6 @@ void OpenDribbleFile(
 /* SaveBinaryFile: Function will display the common file */
 /*    dialog and will save a CLIPS binary file.          */
 /*********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 void SaveBinaryFile(
   HWND hMain)
   {  

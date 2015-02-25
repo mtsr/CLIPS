@@ -301,11 +301,8 @@ LRESULT CALLBACK mainFrameWndProc(
          return DefFrameProc (hwnd, MDIClientWnd, message, 
                         wParam, lParam) ;
      } 
-#if WIN_BTC
-   /* avoids warning */
-#else
+
    return 0;
-#endif
   }
   
 /****************************************************/
@@ -424,16 +421,10 @@ static BOOL CALLBACK closeEnumProc(
 /* QuitEnumProc: Closes all edit windows */
 /*   in preparation of quitting.         */
 /*****************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static BOOL CALLBACK QuitEnumProc(
   HWND hwnd, 
   LPARAM lParam)
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
    int result;
 
    /*=================================================*/
@@ -487,15 +478,9 @@ static BOOL CALLBACK QuitEnumProc(
 * Effect: 
 *       Attempts to close all the MDI child windows, one at a time.
 ****************************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void mainframe_OnCloseAll(
   HWND hwnd)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#endif
    EnumChildWindows(MDIClientWnd,(WNDENUMPROC) closeEnumProc,(LPARAM) MDIClientWnd);
   }
 
@@ -677,15 +662,9 @@ static void mainframe_OnCommand(
 * Effect: 
 *       Closes the active MDI child
 ****************************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void mainframe_OnFileClose(
   HWND hwnd)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#endif
    sendToActiveMDI(MDIClientWnd,WM_CLOSE,0,0);
   }
 
@@ -789,16 +768,10 @@ static BOOL mainframe_OnContextMenu(
 //                  otherwise return FALSE to fail the window creation.
 //
 
-#if WIN_BTC
-#pragma argsused
-#endif
 static BOOL mainframe_OnCreate(
   HWND hwnd, 
   LPCREATESTRUCT lpCreateStruct)
   {
-#if WIN_MCW
-#pragma unused(lpCreateStruct)
-#endif
    CLIENTCREATESTRUCT ccs;
 
    ccs.hWindowMenu = NULL;
@@ -1028,9 +1001,6 @@ static void mainframe_OnPaint(
 //                  
 //
 
-#if WIN_BTC
-#pragma argsused
-#endif
 static void mainframe_OnRButtonDown(
   HWND hwnd, 
   BOOL fDoubleClick, 
@@ -1038,10 +1008,6 @@ static void mainframe_OnRButtonDown(
   int y, 
   UINT keyFlags)
   {
-#if WIN_MCW
-#pragma unused(fDoubleClick)
-#pragma unused(keyFlags)
-#endif
    POINT pt; // = { x, y } ;
     
    pt.x = x;
@@ -1060,16 +1026,10 @@ static void mainframe_OnRButtonDown(
 * Effect: 
 *       Sets the 
 ****************************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static HACCEL mainframe_OnSetAccel(
   HWND hwnd, 
   HACCEL newaccel)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#endif
    HACCEL oldaccel = haccel ;
    
    haccel = newaccel;
@@ -1277,19 +1237,11 @@ int AvailableFrameWidth()
    return(width);
   }
     
-#if WIN_BTC
-#pragma argsused
-#endif
 static void mainframe_OnSettingChange(
   HWND hwnd, 
   UINT uiFlag, 
   LPCTSTR pszMetrics)
   {
-#if WIN_MCW
-#pragma unused(pszMetrics)
-#pragma unused(hwnd)
-#pragma unused(uiFlag)
-#endif
   }
 
 /******************************************/
@@ -1398,16 +1350,10 @@ static void mainframe_OnSysColorChange(
 //  COMMENTS:
 //
 
-#if WIN_BTC
-#pragma argsused
-#endif
 BOOL CALLBACK mainframe_SysColorChangeNotification(
   HWND hwnd, 
   LPARAM lParam)
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
    // Forward the message to a child window
    FORWARD_WM_SYSCOLORCHANGE (hwnd, SendMessage) ;
 
@@ -1433,15 +1379,9 @@ BOOL CALLBACK mainframe_SysColorChangeNotification(
 //                  but not currently on the Windows NT.
 //
 
-#if WIN_BTC
-#pragma argsused
-#endif
 static void mainframe_OnUserChanged(
   HWND hwnd)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#endif
   }
 
 /*********************************************************/
@@ -1498,16 +1438,10 @@ BOOL mainframe_DisplayContextMenu(
 /* mainframe_OnMDIDestroy: If the last MDI child window */
 /*   is destroyed, reverts to the minimal menu.         */
 /********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static LRESULT mainframe_OnMDIDestroy(
   HWND hwnd)
   {
-
-#if WIN_MCW
-#pragma unused(hwnd)
-#endif   /*
+   /*
    HWND child = FORWARD_WM_MDIGETACTIVE(MDIClientWnd, SendMessage);
    
    if (child == NULL)
@@ -1540,18 +1474,12 @@ static void mainframe_OnUpdateToolbar(
 /*   of menu items.  First handles any local changes then */
 /*   forwards the message to the active child window.     */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void mainframe_OnInitMenuPopup(
   HWND hwnd, 
   HMENU hmenu, 
   UINT item, 
   BOOL sysmenu)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#endif
    BOOL modified;
    unsigned menuID;
    
@@ -1573,13 +1501,13 @@ static void mainframe_OnInitMenuPopup(
      {
       EnableMenuItem(hmenu,ID_FILE_SAVE_AS,MF_ENABLED);                                                         
       modified = Edit_GetModify(GetDlgItem(child,ID_EDIT_CONTROL));
-      if (GetWindowLong(child,GWL_USERDATA) == 0L)
+      if (GetWindowLongPtr(child,GWLP_USERDATA) == 0L)
         { modified = TRUE; }
       EnableMenuItem(hmenu,ID_FILE_SAVE,(UINT) (modified ? MF_ENABLED : MF_GRAYED));
       
       EnableMenuItem(hmenu,ID_FILE_REVERT,
                      (UINT) (modified ?
-                             ((GetWindowLong(child,GWL_USERDATA) != 0L) ? 
+                             ((GetWindowLongPtr(child,GWLP_USERDATA) != 0L) ? 
                                MF_ENABLED : MF_GRAYED) : MF_GRAYED));
      }
    else
@@ -1640,9 +1568,6 @@ static LRESULT sendToActiveMDI(
 /****************************************************/
 /* mainframe_OnMenuSelect: Updates the status line. */
 /****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void mainframe_OnMenuSelect(
   HWND hwnd, 
   HMENU hmenu, 
@@ -1650,10 +1575,6 @@ static void mainframe_OnMenuSelect(
   HMENU hmenuPopup, 
   UINT flags)
   {
-#if WIN_MCW
-#pragma unused(hmenu)
-#pragma unused(hmenuPopup)
-#endif
    TCHAR prompt[256];
    HWND status;
 
@@ -1675,18 +1596,11 @@ static void mainframe_OnMenuSelect(
 /****************************************************/
 /* mainframe_OnSetCursor: Updates the cursor.       */
 /****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static BOOL mainframe_OnSetCursor(
 	HWND hwnd,
 	WPARAM wParam,
 	LPARAM lParam)
 	{
-#if WIN_MCW
-#pragma unused(hwnd)
-#pragma unused(wParam)
-#endif
 		switch LOWORD(lParam)		{
 //		case HTCAPTION: 
 //		case HTCLIENT:

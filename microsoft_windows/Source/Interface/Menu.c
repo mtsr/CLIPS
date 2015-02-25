@@ -171,16 +171,10 @@ void DoExecutionChoice(
 /* DoWindowChoice: Process all menu options */
 /*   from the WINDOW menu.                  */
 /********************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 void DoWindowChoice(
   HWND hMain,
   WORD wParam)
   {
-#if WIN_MCW
-#pragma unused(hMain)
-#endif
    switch (wParam)
      {
       case ID_WIN_SHOW_ALL: 
@@ -502,7 +496,7 @@ void UpdateMenu(
 
          //StartWaitCursor();
 		 SetCursor(LoadCursor(NULL,IDC_WAIT));
-		 SetClassLong(DialogWindow,GCL_HCURSOR,(LONG) LoadCursor(NULL,IDC_WAIT));
+		 SetClassLongPtr(DialogWindow,GCLP_HCURSOR,(LONG_PTR) LoadCursor(NULL,IDC_WAIT));
         }
       else
         {  
@@ -535,7 +529,7 @@ void UpdateMenu(
         {  
          value = 1;
 		 SetCursor(LoadCursor(NULL,IDC_WAIT));
-		 SetClassLong(DialogWindow,GCL_HCURSOR,(LONG) LoadCursor(NULL,IDC_WAIT));
+		 SetClassLongPtr(DialogWindow,GCLP_HCURSOR,(LONG_PTR) LoadCursor(NULL,IDC_WAIT));
 
          /*=======================================*/
          /* Enable File, Execute & Browse Menu    */
@@ -566,7 +560,7 @@ void UpdateMenu(
          
          //StopWaitCursor();
 		 SetCursor(LoadCursor(NULL,IDC_ARROW));
-		 SetClassLong(DialogWindow,GCL_HCURSOR,(LONG) LoadCursor(NULL,IDC_ARROW));
+		 SetClassLongPtr(DialogWindow,GCLP_HCURSOR,(LONG_PTR) LoadCursor(NULL,IDC_ARROW));
         }
 
       /*-----------------------------------+
@@ -677,18 +671,12 @@ void UpdateMenu(
 /* AboutDlgProc: Callback Function for */
 /*   the About CLIPS Dialog Box.       */
 /***************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static BOOL CALLBACK AboutDlgProc(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {  
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
    switch (message)
      {  
       case WM_INITDIALOG:

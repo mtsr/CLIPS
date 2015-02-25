@@ -36,7 +36,7 @@
 #endif
 
    LOCALE void                           SetUpSearch(HWND,int);
-   LOCALE int                            StartSearch(HWND,WPARAM,LONG);
+   LOCALE int                            StartSearch(HWND,WPARAM,LPARAM);
    LOCALE void                           InitFindReplace(HWND);
 
 #ifndef _SEARCHDIALOG_SOURCE_

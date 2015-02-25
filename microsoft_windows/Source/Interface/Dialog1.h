@@ -33,10 +33,10 @@
 #define LOCALE extern
 #endif
 
-   LOCALE BOOL FAR PASCAL                WatchDlgProc(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               WatchDlgProc(HWND,UINT,WPARAM,LPARAM);
    LOCALE int                            SetCheckBox(HWND,WORD,int);
-   LOCALE BOOL FAR PASCAL                ExecDlg(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                OptionDlgProc(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               ExecDlg(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               OptionDlgProc(HWND,UINT,WPARAM,LPARAM);
 
 
 #ifndef _DIALOG1_SOURCE_

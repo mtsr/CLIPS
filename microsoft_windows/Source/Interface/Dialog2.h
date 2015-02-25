@@ -33,19 +33,19 @@
 #define LOCALE extern
 #endif
 
-   LOCALE BOOL FAR PASCAL                DeffactsManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                DeftemplateManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                DeffunctionManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                DefglobalManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                DefglobalManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                DefruleManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                AgendaManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                DefinstancesManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                DefgenericManager(HWND,UINT,WPARAM,LPARAM); 
-   LOCALE BOOL FAR PASCAL                DefmethodsManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                DefclassManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                DefmessageHandlerManager(HWND,UINT,WPARAM,LPARAM);
-   LOCALE BOOL FAR PASCAL                CommandComplete(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DeffactsManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DeftemplateManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DeffunctionManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DefglobalManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DefglobalManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DefruleManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               AgendaManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DefinstancesManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DefgenericManager(HWND,UINT,WPARAM,LPARAM); 
+   LOCALE INT_PTR CALLBACK               DefmethodsManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DefclassManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               DefmessageHandlerManager(HWND,UINT,WPARAM,LPARAM);
+   LOCALE INT_PTR CALLBACK               CommandComplete(HWND,UINT,WPARAM,LPARAM);
 
 #ifndef _DIALOG2_SOURCE_
    extern char                    CompleteString[];

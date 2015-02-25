@@ -29,7 +29,7 @@ struct statusWindowData
    int noLines;
    int lastLine;
    int lineSize;
-   void (*getPPForm)(void *,char *,unsigned,void *);
+   void (*getPPForm)(void *,char *,size_t,void *);
    void *(*getNextValue)(void *,void *);
    int (*getChanged)(void *);
    void (*setChanged)(void *,int);

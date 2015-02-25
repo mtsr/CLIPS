@@ -75,18 +75,12 @@ int SetCheckBox(
 /* ExecDlg: Callback function which allows the user */
 /*   to set various CLIPS execution options.        */
 /****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL ExecDlg(
+INT_PTR CALLBACK ExecDlg(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {   
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
    WPARAM item;
    void *theEnv = GlobalEnv;
    unsigned value;
@@ -288,18 +282,12 @@ BOOL FAR PASCAL ExecDlg(
 /* OptionDlgProc:  Callback function which allows the user */ 
 /*   to set various CLIPS interface execution preferences. */
 /***********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL OptionDlgProc (
+INT_PTR CALLBACK OptionDlgProc (
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {  
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
    static char Number[4];  
    int temp;
    int x;
@@ -364,18 +352,12 @@ BOOL FAR PASCAL OptionDlgProc (
 /* WatchDlgProc:  Callback function which allows the */
 /*   user to set watch options for CLIPS to display. */
 /*****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL WatchDlgProc(
+INT_PTR CALLBACK WatchDlgProc(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {  
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
    static int count = 0;
    WORD x;
    void *theEnv = GlobalEnv;

@@ -164,18 +164,12 @@ void ShowButtons(
 /* DeffactsManager: Callback Function for */
 /*   the Deffacts List Box Manager.       */
 /******************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL DeffactsManager(
+INT_PTR CALLBACK DeffactsManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
 #if DEFFACTS_CONSTRUCT
    HWND hListBox;
    void *deffactPtr = NULL;
@@ -298,18 +292,12 @@ BOOL FAR PASCAL DeffactsManager(
 /* DeftemplateManager: Callback Function for */
 /*   the Deftemplate List Box Manager.       */
 /*********************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL DeftemplateManager(
+INT_PTR CALLBACK DeftemplateManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
 #if DEFTEMPLATE_CONSTRUCT
    HWND hListBox = GetDlgItem(hDlg,IDC_LISTBOX);
    void *deftemplatePtr = NULL;
@@ -441,18 +429,12 @@ BOOL FAR PASCAL DeftemplateManager(
 /* DeffunctionManager: Callback Function for */
 /*   the Deffunction List Box Manager.       */
 /*********************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL DeffunctionManager(
+INT_PTR CALLBACK DeffunctionManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)  
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
 #if DEFFUNCTION_CONSTRUCT
    HWND hListBox = GetDlgItem(hDlg,IDC_LISTBOX);
    void *DeffunctionPtr = NULL;
@@ -581,7 +563,7 @@ BOOL FAR PASCAL DeffunctionManager(
 /* DefmethodsManager: Callback Function for */
 /*   the Defmethods List Box Manager.       */
 /********************************************/
-BOOL FAR PASCAL DefmethodsManager(
+INT_PTR CALLBACK DefmethodsManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
@@ -721,18 +703,12 @@ BOOL FAR PASCAL DefmethodsManager(
 /* DefinstancesManager: Callback Function for */
 /*   the DefInstances List Box Manager.       */
 /**********************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL DefinstancesManager(
+INT_PTR CALLBACK DefinstancesManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {        
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
 #if OBJECT_SYSTEM
    HWND hListBox = GetDlgItem(hDlg,IDC_LISTBOX);
    void *definstancesPtr = NULL;
@@ -848,18 +824,12 @@ BOOL FAR PASCAL DefinstancesManager(
 /* DefclassManager: Callback Function for */ 
 /*   the Defclass List Box Manager.       */
 /******************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL DefclassManager(
+INT_PTR CALLBACK DefclassManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)   
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
 #if OBJECT_SYSTEM
    HWND hListBox = GetDlgItem(hDlg, IDC_LISTBOX);
    void *defclassPtr = NULL;
@@ -1056,7 +1026,7 @@ BOOL FAR PASCAL DefclassManager(
 /* DefmessageHandlerManager: Callback Function for */
 /*   the DefmessageHandler List Box Manager.       */
 /***************************************************/
-BOOL FAR PASCAL DefmessageHandlerManager(
+INT_PTR CALLBACK DefmessageHandlerManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
@@ -1192,18 +1162,12 @@ BOOL FAR PASCAL DefmessageHandlerManager(
 /* AgendaManager: Callback Function for */
 /*   the Agenda List Box Manager.       */
 /****************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL AgendaManager(
+INT_PTR CALLBACK AgendaManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)   
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
 #if DEFRULE_CONSTRUCT
    HWND hListBox = GetDlgItem(hDlg, IDC_LISTBOX);
    void *activationPtr = NULL;
@@ -1304,18 +1268,12 @@ BOOL FAR PASCAL AgendaManager(
 /* DefglobalManager: Callback Function for */ 
 /*   the Defglobal List Box Manager.       */
 /*******************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL DefglobalManager(
+INT_PTR CALLBACK DefglobalManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
 #if DEFGLOBAL_CONSTRUCT
    HWND hListBox = GetDlgItem(hDlg,IDC_LISTBOX);
    int count = 0;
@@ -1436,18 +1394,12 @@ BOOL FAR PASCAL DefglobalManager(
 /* DefruleManager: Callback Function for */
 /*   the Defrule List Box Manager.       */
 /*****************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL DefruleManager(
+INT_PTR CALLBACK DefruleManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
 #if DEFRULE_CONSTRUCT
    HWND hListBox = GetDlgItem(hDlg,IDC_LISTBOX);
    int count = 0;
@@ -1653,18 +1605,12 @@ BOOL FAR PASCAL DefruleManager(
 /* DefgenericManager: Callback Function for */ 
 /*   the Defgeneric List Box Manager.       */
 /********************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-BOOL FAR PASCAL DefgenericManager(
+INT_PTR CALLBACK DefgenericManager(
   HWND hDlg,
   UINT message,
   WPARAM wParam,
   LPARAM lParam)
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#endif
 #if DEFGENERIC_CONSTRUCT
    HWND hListBox = GetDlgItem(hDlg,IDC_LISTBOX);
    void *defPtr = NULL;
@@ -1808,7 +1754,7 @@ BOOL FAR PASCAL DefgenericManager(
 /* CommandComplete: Callback Function for */ 
 /*   the Command Complete Dialog.         */
 /******************************************/
-BOOL FAR PASCAL CommandComplete(
+INT_PTR CALLBACK CommandComplete(
   HWND hDlg,
   UINT message,
   WPARAM wParam,

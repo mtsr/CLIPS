@@ -34,12 +34,10 @@
 #include "EditUtil.h"
 #include "SearchDialog.h"
 
-#define setProc(hwnd, proc) SetWindowLong(hwnd, GWL_USERDATA, (LPARAM)proc)
-#if WIN_BTC
-#define getProc(hwnd)       (FARPROC)GetWindowLong(hwnd, GWL_USERDATA)
-#else
-#define getProc(hwnd)       (WNDPROC)GetWindowLong(hwnd, GWL_USERDATA)
-#endif
+//#define setProc(hwnd, proc) SetWindowLong(hwnd, GWL_USERDATA, (LPARAM)proc)
+#define setProc(hwnd, proc) SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR) proc)
+//#define getProc(hwnd)       (WNDPROC)GetWindowLong(hwnd, GWL_USERDATA)
+#define getProc(hwnd)       (WNDPROC)GetWindowLongPtr(hwnd, GWLP_USERDATA)
 
 #define getRGB(hwnd)        (COLORREF)GetProp(hwnd, MAKEINTATOM(ATOM_TEXTCOLOR))
 #define setRGB(hwnd, rgb)   SetProp(hwnd, MAKEINTATOM(ATOM_TEXTCOLOR), (HANDLE)rgb)
@@ -54,18 +52,12 @@
 /* editsubclass_OnCtlColor: Sets the background */
 /*   brush, text color, and background color.   */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static HBRUSH editsubclass_OnCtlColor(
   HWND hwnd, 
   HDC hdc, 
   HWND hchild, 
   int type)
   {
-#if WIN_MCW
-#pragma unused(hchild)
-#endif
    HBRUSH EditBackgroundBrush = (HBRUSH) GetProp(hwnd, MAKEINTATOM(ATOM_BKG));
    LOGBRUSH lbr;
 

@@ -39,7 +39,7 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static BOOL CALLBACK           PrintDlgProc(HWND,UINT,WPARAM,LPARAM);
+   static INT_PTR CALLBACK        PrintDlgProc(HWND,UINT,WPARAM,LPARAM);
    static BOOL CALLBACK           AbortProc(HDC,int);
    static BOOL                    PrintIt(int,int,int,int,int,LPCTSTR,HWND);
 
@@ -85,19 +85,12 @@ void InitializePrintDialog(
 /* PrintDlgProc: Processes messages for the  */
 /*   cancel dialog displayed while printing. */
 /*********************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
-static BOOL CALLBACK PrintDlgProc(
+static INT_PTR CALLBACK PrintDlgProc(
   HWND hDlg, 
   UINT msg, 
   WPARAM wParam, 
   LPARAM lParam)
   {
-#if WIN_MCW
-#pragma unused(lParam)
-#pragma unused(wParam)
-#endif
    switch (msg)
      {
       case WM_INITDIALOG:
@@ -119,17 +112,10 @@ static BOOL CALLBACK PrintDlgProc(
 /* AbortProc: Handles dispatching */
 /*   of messages while printing.  */
 /**********************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static BOOL CALLBACK AbortProc(
   HDC hPrinterDC,
   int iCode)
   {
-#if WIN_MCW
-#pragma unused(iCode)
-#pragma unused(hPrinterDC)
-#endif
    MSG msg;
 
    while ((! bUserAbort) && PeekMessage(&msg,NULL,0,0,PM_REMOVE))
@@ -186,7 +172,7 @@ BOOL PrintWindowDriver(
 	 }
    else if (((ATOM) GetClassLong(hwnd,GCW_ATOM)) == StatusAtomClass)
      {   
-      theStatusData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+      theStatusData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
       if (theStatusData == NULL) 
         { return TRUE; }
@@ -201,7 +187,7 @@ BOOL PrintWindowDriver(
      }
    else if (((ATOM) GetClassLong(hwnd,GCW_ATOM)) == DisplayAtomClass)
      {
-      theDisplayData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+      theDisplayData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
       if (theDisplayData == NULL) 
         { return TRUE; }
@@ -337,14 +323,14 @@ static BOOL PrintIt(
      }
    else if (theAtom == StatusAtomClass)
      {   
-      theStatusData = (struct statusWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+      theStatusData = (struct statusWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
       if (theStatusData == NULL) 
         { return TRUE; }
      }
    else if (theAtom == DisplayAtomClass)
      {
-      theDisplayData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+      theDisplayData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
       if (theDisplayData == NULL) 
         { return TRUE; }

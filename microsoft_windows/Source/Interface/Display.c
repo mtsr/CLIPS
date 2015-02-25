@@ -46,8 +46,10 @@
 #include "frame.h"
 #include "findwnd.h"
 
-#define setProc(hwnd, proc) SetWindowLong(hwnd, GWL_USERDATA, (LPARAM)proc)
-#define getProc(hwnd)       (WNDPROC)GetWindowLong(hwnd, GWL_USERDATA)
+//#define setProc(hwnd, proc) SetWindowLong(hwnd, GWL_USERDATA, (LPARAM)proc)
+#define setProc(hwnd, proc) SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR) proc)
+//#define getProc(hwnd)       (WNDPROC)GetWindowLong(hwnd, GWL_USERDATA)
+#define getProc(hwnd)       (WNDPROC)GetWindowLongPtr(hwnd, GWLP_USERDATA)
 
 #define DEFAULT_COMMAND_MAX 20
 #define DISPLAY_FONT_NAME "Courier"
@@ -163,17 +165,11 @@ LRESULT CALLBACK displayWndProc(
 /************************************************/
 /* display_OnChar:     */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnChar(
   HWND hwnd, 
   TCHAR ch, 
   int cRepeat)
   {
-#if WIN_MCW
-#pragma unused(cRepeat)
-#endif
    GetUserCmd(hwnd,ch,FALSE,0);
   }
   
@@ -310,7 +306,8 @@ BOOL displayWindow_New(
 
    CreateTerminal(theData);
 
-   SetWindowLong(DialogWindow,GWL_USERDATA,(long) theData);
+   //SetWindowLong(DialogWindow,GWL_USERDATA,(long) theData);
+   SetWindowLongPtr(DialogWindow,GWLP_USERDATA,(LONG_PTR) theData);
 
    SetScrollRange(DialogWindow,SB_HORZ,0,255,TRUE);
 
@@ -323,19 +320,13 @@ BOOL displayWindow_New(
 /* display_OnUpdateMenu: Updates the menu */
 /*   based on the display window state.   */
 /******************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnUpdateMenu(
   HWND hdisplay,
   HMENU hmenu)
   {   
-#if WIN_MCW
-#pragma unused(hdisplay)
-#endif
    struct displayWindowData *theData;
   
-   theData = (struct displayWindowData *) GetWindowLong(hdisplay,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hdisplay,GWLP_USERDATA);
    
    if (theData == NULL)
      { return; }
@@ -378,15 +369,9 @@ static void display_OnUpdateMenu(
 /* display_OnClose: Overrides the close handler */
 /*   so the display window can't be closed.     */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnClose(
   HWND hwnd)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#endif
    return;
   }
  
@@ -410,25 +395,18 @@ static void display_OnEnterSizeMove(
 /* display_OnSize: Handles resizing */
 /*   of the dialog window.          */
 /************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnSize(
   HWND hwnd, 
   UINT state, 
   int cx, 
   int cy)
   {
-#if WIN_MCW
-#pragma unused(cx)
-#pragma unused(state)
-#endif
    int min, max, old, pos;
    int startBegin, startEnd;
    struct displayWindowData *theData;
    RECT rect;
 
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -544,24 +522,18 @@ void display_OnPaint(
 /************************************************/
 /* display_OnVScroll: */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnVScroll(
   HWND hwnd, 
   HWND hwndCtl, 
   UINT code, 
   int pos)
   {
-#if WIN_MCW
-#pragma unused(hwndCtl)
-#endif
    int min, max, cp, org;
    static int CaretON = TRUE;
    struct displayWindowData *theData;
    RECT rect;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -629,23 +601,17 @@ static void display_OnVScroll(
 /************************************************/
 /* display_OnHScroll: */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnHScroll(
   HWND hwnd, 
   HWND hwndCtl, 
   UINT code, 
   int pos)
   {
-#if WIN_MCW
-#pragma unused(hwndCtl)
-#endif
    int min, max, cp, org;
    struct displayWindowData *theData;
    RECT rect;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -694,19 +660,13 @@ static void display_OnHScroll(
 /************************************************/
 /* display_OnSetFocus: */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 void display_OnSetFocus(
   HWND hwnd, 
   HWND oldfocus)
   {
-#if WIN_MCW
-#pragma unused(oldfocus)
-#endif
    struct displayWindowData *theData;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -721,20 +681,14 @@ void display_OnSetFocus(
 /************************************************/
 /* display_OnKillFocus: */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 void display_OnKillFocus(
   HWND hwnd,
   HWND newFocus)
   {
-#if WIN_MCW
-#pragma unused(newFocus)
-#endif
    POINT thePoint;
    struct displayWindowData *theData;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -751,19 +705,12 @@ void display_OnKillFocus(
 /************************************************/
 /* display_OnMDIActivate: */
 /************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnMDIActivate(
   HWND hwnd, 
   BOOL active, 
   HWND hActivate, 
   HWND hDeactivate)
   {
-#if WIN_MCW
-#pragma unused(hDeactivate)
-#pragma unused(hActivate)
-#endif
    struct displayWindowData *theData;
 
    if (active)
@@ -775,7 +722,7 @@ static void display_OnMDIActivate(
         { DrawMenuBar(hMainFrame); }
      }
        
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    if (theData == NULL) return;        
        
    InvertSelection(hwnd,theData);
@@ -817,7 +764,7 @@ static void display_OnCommand(
 
         tempText[p] = '\0';
           
-        theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+        theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
         DisplayPaste(hwnd,theData,tempText); 
 
         free(tempText);
@@ -826,7 +773,7 @@ static void display_OnCommand(
         return;  
 
       case ID_EDIT_COPY:
-        theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+        theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
         tempText = DisplaySelectionText(hwnd,theData,&length);
         if (tempText == NULL) return;
         
@@ -864,7 +811,7 @@ static void display_OnCommand(
         return;
 
       case ID_EDIT_SELECT_ALL:
-        theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+        theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
         RemoveSelection(hwnd,theData);
         
         theData->selectionLineStart = 0;
@@ -873,7 +820,7 @@ static void display_OnCommand(
         DisplayLineCountAndStart(hwnd,&lines,&start);
   
         theData->selectionLineEnd = lines - 1;
-        theData->selectionCharEnd = strlen(theData->terminal[theData->lastLine]);
+        theData->selectionCharEnd = (int) strlen(theData->terminal[theData->lastLine]);
         
         InvalidateRect(hwnd,NULL,TRUE);
         
@@ -935,17 +882,10 @@ static BOOL display_OnContextMenu(
 /**********************************************************/
 /* display_OnTimer:  */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnTimer(
   HWND hwnd,
   UINT id)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#pragma unused(id)
-#endif
    static int value = 0;
    POINT thePoint;
 
@@ -954,7 +894,7 @@ static void display_OnTimer(
 
    value++;
    
-   SetClassLong(DialogWindow,GCL_HCURSOR,(LONG) WAIT[value]);
+   SetClassLongPtr(DialogWindow,GCLP_HCURSOR,(LONG_PTR) WAIT[value]);
 
    if (ChildWindowFromPointEx(MDIClientWnd,thePoint,CWP_SKIPINVISIBLE | CWP_SKIPDISABLED) == DialogWindow)
      { SetCursor(WAIT[value]); }
@@ -966,9 +906,6 @@ static void display_OnTimer(
 /**********************************************************/
 /* display_OnKey:  */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnKey(
   HWND hwnd,
   UINT vk,
@@ -976,11 +913,6 @@ static void display_OnKey(
   int repeatCount,
   UINT flags)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#pragma unused(repeatCount)
-#pragma unused(flags)
-#endif
    struct displayWindowData *theData;
    POINT thePoint;
    char *theCommand, theChar;
@@ -999,12 +931,12 @@ static void display_OnKey(
    if (CommandLineData(theEnv)->EvaluatingTopLevelCommand || BatchActive(theEnv))
      { return; }          
           
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
    
-   commandSize = RouterData(GlobalEnv)->CommandBufferInputCount;
+   commandSize = (int) RouterData(GlobalEnv)->CommandBufferInputCount;
    theCommand = GetCommandString(GlobalEnv);
 
    RemoveSelection(hwnd,theData);
@@ -1098,7 +1030,7 @@ static void display_OnKey(
               caretLine = theData->lastLine - theData->caretLinesBack;
               if (caretLine < 0)
                 { caretLine = DIALOG_SIZE + caretLine; }
-              theData->caretCharsBack = strlen(theData->terminal[caretLine]);
+              theData->caretCharsBack = (int) strlen(theData->terminal[caretLine]);
               
               thePoint.y += theData->lineSize; 
              }
@@ -1126,9 +1058,6 @@ static void display_OnKey(
 /**********************************************************/
 /* display_OnLButtonDown:  */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnLButtonDown(
   HWND hwnd,
   BOOL dblclk,
@@ -1136,14 +1065,10 @@ static void display_OnLButtonDown(
   int y,
   UINT keyflags)
   {
-#if WIN_MCW
-#pragma unused(dblclk)
-#pragma unused(keyflags)
-#endif
    int theLine, theCharacter;
    struct displayWindowData *theData;
  
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -1189,23 +1114,17 @@ static void display_OnLButtonDown(
 /**********************************************************/
 /* display_OnLButtonUp:  */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnLButtonUp(
   HWND hwnd,
   int x,
   int y,
   UINT keyflags)
   {
-#if WIN_MCW
-#pragma unused(keyflags)
-#endif
    struct displayWindowData *theData;
    
    if (GetCapture() != hwnd) return;
  
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      {
@@ -1262,21 +1181,12 @@ static void InvertSelection(
 /**********************************************************/
 /* display_OnMouseMove:  */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnMouseMove(
   HWND hwnd,
   int x,
   int y,
   UINT keyflags)
-  {
-#if WIN_MCW
-#pragma unused(x)
-#pragma unused(y)
-#pragma unused(keyflags)
-#endif
-   
+  {   
    if (GetCapture() != hwnd) return;   
 
    HoverX = x;
@@ -1286,18 +1196,11 @@ static void display_OnMouseMove(
 /**********************************************************/
 /* display_OnScrollTimer:  */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static void display_OnScrollTimer(
   HWND hwnd,
   int x,
   int y)
   {
-#if WIN_MCW
-#pragma unused(x)
-#pragma unused(y)
-#endif
    int theLine, theCharacter;
    struct displayWindowData *theData;
    int endBeforeStart;
@@ -1307,7 +1210,7 @@ static void display_OnScrollTimer(
    
    if (GetCapture() != hwnd) return;   
 
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -1475,7 +1378,7 @@ static int ComputeCaretX(
   {
    char *buffer; 
    int caretLine;
-   int count, pos;
+   size_t count, pos;
    size_t bufferLength;
 
    /*================================================*/
@@ -1494,7 +1397,7 @@ static int ComputeCaretX(
    bufferLength = strlen(buffer);
       
    if (theData->caretCharsBack == -1)
-     { theData->caretCharsBack = bufferLength; }
+     { theData->caretCharsBack = (int) bufferLength; }
       
    count = bufferLength - theData->caretCharsBack;    
      
@@ -1512,9 +1415,9 @@ static int ComputeCaretX(
    else if (pos == count)     
      { return(LEFT_MARGIN_SPACE); }
    else  if (pos != 0)   
-     { return(LEFT_MARGIN_SPACE + (count - pos) * theData->maxCharWidth); }
+     { return((int) (LEFT_MARGIN_SPACE + (count - pos) * theData->maxCharWidth)); }
    else
-     { return(LEFT_MARGIN_SPACE + count * theData->maxCharWidth); }
+     { return((int) (LEFT_MARGIN_SPACE + count * theData->maxCharWidth)); }
   }         
            
 /**************************************************/
@@ -1545,7 +1448,7 @@ static void FreeTerminalText(
    int i;
    struct displayWindowData *theData;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -1569,7 +1472,7 @@ static void DeleteTerminal(
   {  
    struct displayWindowData *theData;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -1595,7 +1498,7 @@ static void RedrawTerminal(
    LOGFONT lf;
    HRGN theRegion;
 
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -1737,7 +1640,7 @@ void DisplayLineCountAndStart(
   {
    struct displayWindowData *theData;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -1763,19 +1666,16 @@ void DisplayLineCountAndStart(
 /* DisplayPrint: Function will allocate memory used */
 /*   to store strings sent to the Dialog window.     */
 /*****************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 int DisplayPrint( 
   HWND hwnd,
   const char *buffer)
   {       
-   unsigned Loc = 0; 
+   size_t Loc = 0; 
    char *str; 
    size_t oldsize, size;
    struct displayWindowData *theData;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return(FALSE); }
@@ -1920,7 +1820,7 @@ static void SendToScreen(
    struct displayWindowData *theData;
    LOGFONT lf;
   
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -2062,7 +1962,7 @@ void ClearDialogWnd(void)
   {
    struct displayWindowData *theData;
    
-   theData = (struct displayWindowData *) GetWindowLong(DialogWindow,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(DialogWindow,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -2120,7 +2020,7 @@ void GetUserCmd(
    POINT thePoint;
    void *theEnv;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -2429,7 +2329,7 @@ static void HandleBackSpace(
       theData->horizScroll = 1;
 	  if (theCommand == NULL)
 	    { return; }
-      inputSize = strlen(theCommand);
+      inputSize = (unsigned) strlen(theCommand);
      }
                    
    if (inputSize == 0)
@@ -2548,7 +2448,7 @@ static void SaveDisplayWindow(
    FILE *fp;
    int lines, displayStart, iLineNum;
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) return; 
 
@@ -2648,7 +2548,7 @@ void UpdateCursor(
         break;
      }
    
-   SetClassLong(DialogWindow,GCL_HCURSOR,(LONG) myCursor);
+   SetClassLongPtr(DialogWindow,GCLP_HCURSOR,(LONG_PTR) myCursor);
 
    if (ChildWindowFromPointEx(MDIClientWnd,thePoint,CWP_SKIPINVISIBLE | CWP_SKIPDISABLED) == DialogWindow)
      { SetCursor(myCursor); }
@@ -2709,7 +2609,7 @@ globle int DisplayBeforeCommandExecution(
    /* that cause a completed command to be formed.       */
    /*====================================================*/
    
-   theData = (struct displayWindowData *) GetWindowLong(DialogWindow,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(DialogWindow,GWLP_USERDATA);
    
    if (theData->caretOffset != 0)
      { return FALSE; }
@@ -2819,7 +2719,7 @@ static void SwitchCommand(
    /* time a command is changed.       */
    /*==================================*/
    
-   theData = (struct displayWindowData *) GetWindowLong(DialogWindow,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(DialogWindow,GWLP_USERDATA);
    
    theData->caretOffset = 0;
    theData->caretLinesBack = 0;
@@ -2879,7 +2779,7 @@ void ClearCommandFromDisplay(
    /* time a command is removed.       */
    /*==================================*/
    
-   theData = (struct displayWindowData *) GetWindowLong(DialogWindow,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(DialogWindow,GWLP_USERDATA);
    
    theData->caretOffset = 0;
    theData->caretLinesBack = 0;
@@ -3029,7 +2929,7 @@ static void FlashBalancedParenthesis(
    POINT thePoint;
    char characterToCheck;
    unsigned short nestingDepth;
-   unsigned int caretLocation, position;
+   size_t caretLocation, position;
    size_t commandLength;
    char *theCommand;
    DWORD sTime;
@@ -3188,7 +3088,7 @@ static void FindInsertionPoint(
    /* Retrieve the window data. */
    /*===========================*/
    
-   theData = (struct displayWindowData *) GetWindowLong(hwnd,GWL_USERDATA);
+   theData = (struct displayWindowData *) GetWindowLongPtr(hwnd,GWLP_USERDATA);
    
    if (theData == NULL) 
      { return; }
@@ -3259,11 +3159,12 @@ static void FindInsertionPoint(
    else if (*theLine > (linesInUse - 1))
      {
       *theLine = linesInUse - 1;
-      *theCharacter = strlen(theData->terminal[theData->lastLine]);
+      *theCharacter = (int) strlen(theData->terminal[theData->lastLine]);
      }
    else
      {
-      int lineOfInterest, lineLength;
+      int lineOfInterest;
+	  int lineLength;
       char *theStr;
 
       lineOfInterest = theData->lastLine - (linesInUse - ((*theLine) + 1));
@@ -3271,10 +3172,10 @@ static void FindInsertionPoint(
         { lineOfInterest += (DIALOG_SIZE + 1); }
       
       theStr = theData->terminal[lineOfInterest];
-      lineLength = strlen(theStr);
+      lineLength = (int) strlen(theStr);
       
       if (*theCharacter > lineLength)
-        { *theCharacter = lineLength; }
+        { *theCharacter = (int) lineLength; }
      }
   }
   
@@ -3463,7 +3364,7 @@ char *DisplaySelectionText(
    /* struct lineRecord *linePtr; */
    char *linePtr;
    char *textPtr, *tempPtr;
-   long tempLength, addLength;
+   size_t tempLength, addLength;
    int i, numberOfLines, firstLine;
    int lineStart, charStart, lineEnd, charEnd;
    
@@ -3612,20 +3513,11 @@ char *DisplaySelectionText(
 /***********************************************/
 /* ScrollTimerProc:      */
 /***********************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static VOID CALLBACK ScrollTimerProc(
   HWND hwnd,
   UINT msg,
   UINT_PTR id,
   DWORD ticks)
   {
-#if WIN_MCW
-#pragma unused(hwnd)
-#pragma unused(msg)
-#pragma unused(id)
-#pragma unused(ticks)
-#endif
    PostMessage(hwnd,UWM_SCROLL,0,0);
   }

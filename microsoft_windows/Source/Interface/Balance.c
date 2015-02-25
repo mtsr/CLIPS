@@ -39,7 +39,7 @@
 #include "display.h"
 #include "resource.h"
 
-static void BalanceIt(int, int, int, int, char*, DWORD, HWND );
+static void BalanceIt(int, int, int, int, char*, size_t, HWND );
 
 /**************************************************/
 /* EditComplete: Handles Editor Complete Command. */
@@ -47,10 +47,10 @@ static void BalanceIt(int, int, int, int, char*, DWORD, HWND );
 void EditComplete(
   HWND hWindow)
   {
-   long start = 0, end = 0;
+   LRESULT start = 0, end = 0;
    char *buffer;
    const char *completeStr;
-   int lineBegin, iLength;
+   LRESULT lineBegin, iLength;
    unsigned theLine;
    /* Macintosh Version. */
 
@@ -65,7 +65,7 @@ void EditComplete(
    
    if (buffer == NULL) return;
    
-   *(int *) buffer = iLength;
+   *(int *) buffer = (int) iLength;
    
    SendMessage(hWindow,EM_GETLINE,theLine,(LPARAM) buffer);
    buffer[iLength] = 0;
@@ -218,7 +218,7 @@ static void BalanceIt(
   int left_count, 
   int right_count,
   char *text_ptr,
-  DWORD text_length,
+  size_t text_length,
   HWND hWindow)
   { 
    /*-----------------------------+
@@ -284,7 +284,7 @@ void LoadBatchBufferSelection(
   HWND hEditWnd,
   int command)
   {  
-   long sel;
+   LRESULT sel;
    size_t textLength;
    int originalStart, originalEnd, start;
    size_t length;
@@ -395,9 +395,9 @@ void LoadBatchBufferSelection(
 void DoComment(
   HWND hEditWnd)
   {
-   long start = 0, end = 0;
-   int startLine, endLine, theLine;
-   int lineBegin;
+   LRESULT start = 0, end = 0;
+   LRESULT startLine, endLine, theLine;
+   LRESULT lineBegin;
    
    /*=============================================*/
    /* Determine the start and end lines selected  */
@@ -439,8 +439,8 @@ void DoComment(
 void DoUncomment(
   HWND hEditWnd)
   {
-   long start = 0, end = 0;
-   int startLine, endLine, theLine;
+   LRESULT start = 0, end = 0;
+   LRESULT startLine, endLine, theLine;
    char buffer[32];
 
    /*=============================================*/

@@ -125,17 +125,11 @@ void SetUpSearch(
 /* StartSearch: Call back procedure for the common Dialog */
 /*   Box to do the shut down, search or replace.          */
 /**********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 int StartSearch(
   HWND hWnd,
   WPARAM wParam,
-  LONG lParam)
+  LPARAM lParam)
   {  
-#if WIN_MCW
-#pragma unused(wParam)
-#endif
    FINDREPLACE FAR *lpfr;
 
    lpfr = (FINDREPLACE FAR *) lParam;
@@ -172,17 +166,14 @@ int StartSearch(
 * DoSearch: Scans the edit buffer for mach items and can replace
 *   items if needed.
 ****************************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 void DoSearch(
   HWND hWnd,
   int Replace,
   int ReplaceAll,
   int MatchCase)
   {  
-   static char * pBase = NULL;
-   static char * pFound = NULL;
+   static char *pBase = NULL;
+   static char *pFound = NULL;
    int loc;
    size_t searchLen, replaceLen;
    size_t text_length;
@@ -263,7 +254,7 @@ void DoSearch(
 
       if (pFound != NULL)
         {
-         loc = pFound - pEditBuffer;
+         loc = (int) (pFound - pEditBuffer);
 
          SendMessage(hEditWnd,EM_SETSEL,(WPARAM) loc,(LPARAM) (loc + searchLen));
          SendMessage(hEditWnd,EM_SCROLLCARET,(WPARAM) 0,(LPARAM) 0L);
@@ -301,13 +292,10 @@ char *stristr(
    for (pStr = source;
       (pStr <= (source + sourceSize - targetSize)) && notfound;
       pStr++)
-#if WIN_BTC
-     { notfound = strnicmp(pStr,target,targetSize); }
-#endif
-#if WIN_MCW || WIN_MVC
+#if WIN_MVC
      { notfound = (int) _strnicmp(pStr,target,targetSize); }
 #endif
-#if (! WIN_BTC) && (! WIN_MCW) && (! WIN_MVC)
+#if (! WIN_MVC)
      { notfound = strnicmp(pStr,target,targetSize); }
 #endif
 

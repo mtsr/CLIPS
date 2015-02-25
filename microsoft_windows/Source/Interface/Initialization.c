@@ -166,7 +166,7 @@ BOOL initInstance(
       fileName[length-2] = 0;
 
       theCDS.dwData = CD_FILENAME;
-      theCDS.cbData = length - 1;
+      theCDS.cbData = (DWORD) (length - 1);
       theCDS.lpData = fileName;
 
       SendMessage(hwnd,WM_COPYDATA,
@@ -361,16 +361,10 @@ static BOOL registerWindowClasses(
 /* createMainFrameWindow: Create the application's main */
 /*   frame window and show the window as requested.     */
 /********************************************************/
-#if WIN_BTC
-#pragma argsused
-#endif
 static HWND createMainFrameWindow(
   HINSTANCE hinst, 
   int nCmdShow)
   {
-#if WIN_MCW
-#pragma unused(nCmdShow)
-#endif
    HWND  hwnd ;
    TCHAR ClassName [MAX_RESOURCESTRING + 1] ;
    TCHAR Title [MAX_RESOURCESTRING + 1] ;
