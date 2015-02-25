@@ -5,7 +5,19 @@
 namespace CLIPS
 {
 #define CLIPS_COMPILED_AS_C_PLUS_PLUS 0
-
+/*
+typedef enum Type 
+  { FLOAT, 
+    INTEGER, 
+    SYMBOL, 
+    STRING, 
+    MULTIFIELD, 
+    EXTERNAL_ADDRESS, 
+    FACT_ADDRESS, 
+    INSTANCE_ADDRESS, 
+    INSTANCE_NAME, 
+    VOID } Type;
+*/
 class CLIPSCPPRouter;
 
 class DataObject;
@@ -32,10 +44,10 @@ class CLIPSCPPEnv
 class CLIPSCPPRouter
   {
    public:
-      virtual int Query(CLIPSCPPEnv *,char *);
-      virtual int Print(CLIPSCPPEnv *,char *,char *);
-      virtual int Getc(CLIPSCPPEnv *,char *);
-      virtual int Ungetc(CLIPSCPPEnv *,int,char *);
+      virtual int Query(CLIPSCPPEnv *,const char *);
+      virtual int Print(CLIPSCPPEnv *,const char *,const char *);
+      virtual int Getc(CLIPSCPPEnv *,const char *);
+      virtual int Ungetc(CLIPSCPPEnv *,int,const char *);
       virtual int Exit(CLIPSCPPEnv *,int);
   };
   
@@ -54,7 +66,7 @@ class Value
      virtual DataObject GetFactSlot(char *) const;
 
    private:
-     virtual char *GetRawInstanceName() const; 
+     virtual const char *GetRawInstanceName() const; 
   };
 
 class VoidValue : public Value
@@ -72,7 +84,7 @@ class StringValue : public Value
   {  
    public:
      StringValue();
-     StringValue(char *);
+     StringValue(const char *);
      StringValue(const StringValue& v);
      virtual ~StringValue();
      /* virtual StringValue& operator= (const StringValue& v); */
@@ -87,7 +99,7 @@ class SymbolValue : public Value
   { 
    public:
      SymbolValue();
-     SymbolValue(char *);
+     SymbolValue(const char *);
      SymbolValue(const SymbolValue& v);
      virtual ~SymbolValue();
      /* virtual SymbolValue& operator= (const SymbolValue& v); */
@@ -102,7 +114,7 @@ class InstanceNameValue : public Value
   { 
    public:
      InstanceNameValue();
-     InstanceNameValue(char *);
+     InstanceNameValue(const char *);
      InstanceNameValue(const InstanceNameValue& v);
      virtual ~InstanceNameValue();
      /* virtual InstanceNameValue& operator= (const InstanceNameValue& v); */
@@ -171,7 +183,7 @@ class InstanceAddressValue : public Value
      virtual InstanceAddressValue *clone() const; 
   
    private:
-     virtual char *GetRawInstanceName() const;
+     virtual const char *GetRawInstanceName() const;
      void *theEnvironment;
      void *theInstanceAddress;
   };
