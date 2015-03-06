@@ -247,7 +247,6 @@
 		B5BCF0C709AD245B000E597B /* clips.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCEF7309AD245A000E597B /* clips.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5BCF0C809AD245B000E597B /* clsltpsr.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEF7409AD245A000E597B /* clsltpsr.c */; };
 		B5BCF0C909AD245B000E597B /* clsltpsr.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCEF7509AD245A000E597B /* clsltpsr.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B5BCF0CA09AD245B000E597B /* cmptblty.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCEF7609AD245A000E597B /* cmptblty.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5BCF0CB09AD245B000E597B /* commline.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEF7709AD245A000E597B /* commline.c */; };
 		B5BCF0CC09AD245B000E597B /* commline.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCEF7809AD245A000E597B /* commline.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5BCF0CD09AD245B000E597B /* conscomp.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCEF7909AD245A000E597B /* conscomp.c */; };
@@ -554,7 +553,7 @@
 		B5BCF20109AD245C000E597B /* watch.c in Sources */ = {isa = PBXBuildFile; fileRef = B5BCF0AD09AD245B000E597B /* watch.c */; };
 		B5BCF20209AD245C000E597B /* watch.h in Headers */ = {isa = PBXBuildFile; fileRef = B5BCF0AE09AD245B000E597B /* watch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B5BCF3AE09AD30A1000E597B /* CLIPS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5BCEF5509AD23BF000E597B /* CLIPS.framework */; };
-		B5BCF45F09AD30F4000E597B /* CLIPS.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5BCEF5509AD23BF000E597B /* CLIPS.framework */; };
+		B5BCF45F09AD30F4000E597B /* CLIPS.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5BCEF5509AD23BF000E597B /* CLIPS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		B5C0243309C28C6C00221A69 /* CLIPSAgendaBrowser.nib in Resources */ = {isa = PBXBuildFile; fileRef = B5C0243109C28C6C00221A69 /* CLIPSAgendaBrowser.nib */; };
 		B5CE5D870D7DB62B002166A8 /* CLIPSInstanceController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CE5D860D7DB62B002166A8 /* CLIPSInstanceController.m */; };
 		B5CE5DCD0D7DDF12002166A8 /* CLIPSInstanceBrowser.nib in Resources */ = {isa = PBXBuildFile; fileRef = B5CE5DCB0D7DDF12002166A8 /* CLIPSInstanceBrowser.nib */; };
@@ -693,7 +692,6 @@
 		B5BCEF7309AD245A000E597B /* clips.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = clips.h; path = CLIPS_Source/clips.h; sourceTree = "<group>"; };
 		B5BCEF7409AD245A000E597B /* clsltpsr.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = clsltpsr.c; path = CLIPS_Source/clsltpsr.c; sourceTree = "<group>"; };
 		B5BCEF7509AD245A000E597B /* clsltpsr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = clsltpsr.h; path = CLIPS_Source/clsltpsr.h; sourceTree = "<group>"; };
-		B5BCEF7609AD245A000E597B /* cmptblty.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cmptblty.h; path = CLIPS_Source/cmptblty.h; sourceTree = "<group>"; };
 		B5BCEF7709AD245A000E597B /* commline.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = commline.c; path = CLIPS_Source/commline.c; sourceTree = "<group>"; };
 		B5BCEF7809AD245A000E597B /* commline.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = commline.h; path = CLIPS_Source/commline.h; sourceTree = "<group>"; };
 		B5BCEF7909AD245A000E597B /* conscomp.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = conscomp.c; path = CLIPS_Source/conscomp.c; sourceTree = "<group>"; };
@@ -1195,7 +1193,6 @@
 				B5BCEF7209AD245A000E597B /* classpsr.h */,
 				B5BCEF7309AD245A000E597B /* clips.h */,
 				B5BCEF7509AD245A000E597B /* clsltpsr.h */,
-				B5BCEF7609AD245A000E597B /* cmptblty.h */,
 				B5BCEF7809AD245A000E597B /* commline.h */,
 				B5BCEF7A09AD245A000E597B /* conscomp.h */,
 				B5BCEF7B09AD245A000E597B /* constant.h */,
@@ -1511,8 +1508,8 @@
 				B5BCF09009AD245A000E597B /* symbol.c */,
 				B5BCF09209AD245A000E597B /* sysdep.c */,
 				B5BCF09409AD245A000E597B /* textpro.c */,
-				B5BCF09609AD245A000E597B /* tmpltbin.c */,
 				B5BCF09809AD245B000E597B /* tmpltbsc.c */,
+				B5BCF09609AD245A000E597B /* tmpltbin.c */,
 				B5BCF09A09AD245B000E597B /* tmpltcmp.c */,
 				B5BCF09C09AD245B000E597B /* tmpltdef.c */,
 				B5BCF09E09AD245B000E597B /* tmpltfun.c */,
@@ -1555,7 +1552,6 @@
 				B5BCF0C609AD245B000E597B /* classpsr.h in Headers */,
 				B5BCF0C709AD245B000E597B /* clips.h in Headers */,
 				B5BCF0C909AD245B000E597B /* clsltpsr.h in Headers */,
-				B5BCF0CA09AD245B000E597B /* cmptblty.h in Headers */,
 				B5BCF0CC09AD245B000E597B /* commline.h in Headers */,
 				B5BCF0CE09AD245B000E597B /* conscomp.h in Headers */,
 				B5BCF0CF09AD245B000E597B /* constant.h in Headers */,
@@ -1781,7 +1777,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0610;
 			};
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "CLIPS" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2356,7 +2352,11 @@
 					"WINDOW_INTERFACE=1",
 					"MAC_XCD=1",
 				);
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx;
@@ -2522,7 +2522,11 @@
 					"WINDOW_INTERFACE=1",
 					"MAC_XCD=1",
 				);
+				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
