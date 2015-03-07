@@ -198,13 +198,10 @@ TRUE
 CLIPS> (open "Temp/iofun.dat" temp "w")
 TRUE
 CLIPS> (printout temp red crlf)
-CLIPS> (read temp)
-EOF
 CLIPS> (close temp)
 TRUE
 CLIPS> (open "Temp/iofun.dat" temp "r")
 TRUE
-CLIPS> (printout temp green crlf)
 CLIPS> (read temp)
 red
 CLIPS> (read temp)
