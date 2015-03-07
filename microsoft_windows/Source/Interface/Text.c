@@ -885,9 +885,9 @@ static BOOL PrintFile(
    return(TRUE);
   }
   
-/*************************************/
-/* FixTextLineEndings:  */
-/*************************************/
+/***********************/
+/* FixTextLineEndings: */
+/***********************/
 static void FixTextLineEndings(
   HWND hEditWnd)
   {  
@@ -910,6 +910,7 @@ static void FixTextLineEndings(
    /*==========================*/
    
    textLength = (size_t) SendMessage(hEditWnd,WM_GETTEXTLENGTH,0,0);
+   if (textLength == 0) return;
    fullText = (char *) malloc(textLength+1);
    if (fullText == NULL )
      { return; }

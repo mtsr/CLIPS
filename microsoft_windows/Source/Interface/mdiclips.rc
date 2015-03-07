@@ -155,7 +155,7 @@ BEGIN
         MENUITEM "Online Examples",             ID_HELP_EXAMPLES
         MENUITEM "CLIPS Expert System Group",   ID_HELP_CLIPSESG
         MENUITEM "SourceForge Forums",          ID_HELP_SOURCEFORGE
-        MENUITEM "Stack Overflow Q&A",          ID_HELP_STACK_OVERFLOW
+        MENUITEM "Stack Overflow Q&&A",          ID_HELP_STACK_OVERFLOW
         MENUITEM SEPARATOR
         MENUITEM "&Command Complete...\tCtrl+J",ID_HELP_COMPLETE
         MENUITEM "&Status Line",                ID_VIEW_STATUS_BAR
