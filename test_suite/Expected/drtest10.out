@@ -403,5 +403,28 @@ ERROR:
    (is-a USER)
    (multislot foo
       (cardinality 0 -3)
+CLIPS> (clear) ; Continuous operation issue
+CLIPS> (defglobal ?*num* = 37)
+CLIPS> (defglobal ?*val* = FALSE)
+CLIPS> 
+(deffunction get-number ()
+   (bind ?*num* (+ ?*num* 1)))
+CLIPS> 
+(deffunction muck ()
+   (bind ?*val* (create$ (get-number) (get-number))))
+CLIPS> 
+(deffacts startup
+   (muck-around))
+CLIPS>    
+(defrule muck-around
+   ?f0 <- (muck-around)
+   =>
+   (retract ?f0) 
+   (muck)
+   (assert (muck-around)))
+CLIPS> (reset)
+CLIPS> (run 1)
+CLIPS> ?*val*
+(38 39)
 CLIPS> (clear)
 CLIPS> (dribble-off)

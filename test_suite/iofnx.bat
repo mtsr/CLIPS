@@ -27,10 +27,10 @@ xyz abc
 
 
     a    
-(open "Temp//iofnx1.tmp" mydata "w")     ; 10.5.2.4
+(open "Temp/iofnx1.tmp" mydata "w")     ; 10.5.2.4
 (printout mydata "red green")      ; 10.5.2.4
 (close mydata)                     ; 10.5.2.4
-(open "Temp//iofnx1.tmp" mydata)   ; 10.5.2.4
+(open "Temp/iofnx1.tmp" mydata)    ; 10.5.2.4
 (read mydata)                      ; 10.5.2.4
 (read mydata)                      ; 10.5.2.4
 (read mydata)                      ; 10.5.2.4
@@ -46,7 +46,7 @@ abc
 xyz abc
 (readline)                         ; 10.5.2.5 - ""
 
-(open "Temp//iofnx1.tmp" 7.8923)   ; 10.5.2.5
+(open "Temp/iofnx1.tmp" 7.8923)    ; 10.5.2.5
 (readline 7.8923)                  ; 10.5.2.5
 (readline 7.8923)                  ; 10.5.2.5
 (close 7.8923)                     ; 10.5.2.5
@@ -72,3 +72,44 @@ xyz abc
 (format nil "%f" abc)              ; 10.5.2.6
 (format nil "%g" (create$))        ; 10.5.2.6
 (format t "%o" 9.8)                ; 10.5.2.6
+(remove "Temp/iofun.dat")          ; Open function modes
+(open "Temp/iofun.dat" temp "bogus")
+(close temp)
+(remove "Temp/iofun.dat") 
+(open "Temp/iofun.dat" temp "r")
+(close temp)
+(remove "Temp/iofun.dat") 
+(open "Temp/iofun.dat" temp "w")
+(close temp)
+(remove "Temp/iofun.dat") 
+(open "Temp/iofun.dat" temp "a")
+(close temp)
+(remove "Temp/iofun.dat") 
+(open "Temp/iofun.dat" temp "rb")
+(close temp)
+(remove "Temp/iofun.dat") 
+(open "Temp/iofun.dat" temp "wb")
+(close temp)
+(remove "Temp/iofun.dat") 
+(open "Temp/iofun.dat" temp "ab")
+(close temp)
+(remove "Temp/iofun.dat") 
+(open "Temp/iofun.dat" temp "w")
+(printout temp red crlf)
+(read temp)
+(close temp)
+(open "Temp/iofun.dat" temp "r")
+(printout temp green crlf)
+(read temp)
+(read temp)
+(close temp)
+(open "Temp/iofun.dat" temp "a")
+(read temp)
+(printout temp green crlf)
+(close temp)
+(open "Temp/iofun.dat" temp "r")
+(read temp)
+(read temp)
+(read temp)
+(close temp)
+(remove "Temp/iofun.dat") 

@@ -19,7 +19,7 @@ CLIPS> (open blah5.dat blah5 r)           ; 10.5.2.1
 [ARGACCES5] Function open expected argument #3 to be of type string
 FALSE
 CLIPS> (open blah6.dat blah6 "x")         ; 10.5.2.1
-[ARGACCES5] Function open expected argument #3 to be of type string with value "r", "w", "a", "r+", "w+", "rb", "wb", "ab", "r+b", or "w+b"
+[ARGACCES5] Function open expected argument #3 to be of type string with value "r", "w", "a", "rb", "wb", or "ab"
 FALSE
 CLIPS> (open blah7.dat blah7 8)           ; 10.5.2.1
 [ARGACCES5] Function open expected argument #3 to be of type string
@@ -59,12 +59,12 @@ CLIPS> (read)                             ; 10.5.2.4 - a
 
     a    
 a
-CLIPS> (open "Temp//iofnx1.tmp" mydata "w")     ; 10.5.2.4
+CLIPS> (open "Temp/iofnx1.tmp" mydata "w")     ; 10.5.2.4
 TRUE
 CLIPS> (printout mydata "red green")      ; 10.5.2.4
 CLIPS> (close mydata)                     ; 10.5.2.4
 TRUE
-CLIPS> (open "Temp//iofnx1.tmp" mydata)   ; 10.5.2.4
+CLIPS> (open "Temp/iofnx1.tmp" mydata)    ; 10.5.2.4
 TRUE
 CLIPS> (read mydata)                      ; 10.5.2.4
 red
@@ -94,7 +94,7 @@ xyz abc
 CLIPS> (readline)                         ; 10.5.2.5 - ""
 
 ""
-CLIPS> (open "Temp//iofnx1.tmp" 7.8923)   ; 10.5.2.5
+CLIPS> (open "Temp/iofnx1.tmp" 7.8923)    ; 10.5.2.5
 TRUE
 CLIPS> (readline 7.8923)                  ; 10.5.2.5
 "red green"
@@ -150,4 +150,84 @@ CLIPS> (format nil "%g" (create$))        ; 10.5.2.6
 ""
 CLIPS> (format t "%o" 9.8)                ; 10.5.2.6
 11"11"
+CLIPS> (remove "Temp/iofun.dat")          ; Open function modes
+FALSE
+CLIPS> (open "Temp/iofun.dat" temp "bogus")
+[ARGACCES5] Function open expected argument #3 to be of type string with value "r", "w", "a", "rb", "wb", or "ab"
+FALSE
+CLIPS> (close temp)
+FALSE
+CLIPS> (remove "Temp/iofun.dat") 
+FALSE
+CLIPS> (open "Temp/iofun.dat" temp "r")
+FALSE
+CLIPS> (close temp)
+FALSE
+CLIPS> (remove "Temp/iofun.dat") 
+FALSE
+CLIPS> (open "Temp/iofun.dat" temp "w")
+TRUE
+CLIPS> (close temp)
+TRUE
+CLIPS> (remove "Temp/iofun.dat") 
+TRUE
+CLIPS> (open "Temp/iofun.dat" temp "a")
+TRUE
+CLIPS> (close temp)
+TRUE
+CLIPS> (remove "Temp/iofun.dat") 
+TRUE
+CLIPS> (open "Temp/iofun.dat" temp "rb")
+FALSE
+CLIPS> (close temp)
+FALSE
+CLIPS> (remove "Temp/iofun.dat") 
+FALSE
+CLIPS> (open "Temp/iofun.dat" temp "wb")
+TRUE
+CLIPS> (close temp)
+TRUE
+CLIPS> (remove "Temp/iofun.dat") 
+TRUE
+CLIPS> (open "Temp/iofun.dat" temp "ab")
+TRUE
+CLIPS> (close temp)
+TRUE
+CLIPS> (remove "Temp/iofun.dat") 
+TRUE
+CLIPS> (open "Temp/iofun.dat" temp "w")
+TRUE
+CLIPS> (printout temp red crlf)
+CLIPS> (read temp)
+EOF
+CLIPS> (close temp)
+TRUE
+CLIPS> (open "Temp/iofun.dat" temp "r")
+TRUE
+CLIPS> (printout temp green crlf)
+CLIPS> (read temp)
+red
+CLIPS> (read temp)
+EOF
+CLIPS> (close temp)
+TRUE
+CLIPS> (open "Temp/iofun.dat" temp "a")
+TRUE
+CLIPS> (read temp)
+EOF
+CLIPS> (printout temp green crlf)
+CLIPS> (close temp)
+TRUE
+CLIPS> (open "Temp/iofun.dat" temp "r")
+TRUE
+CLIPS> (read temp)
+red
+CLIPS> (read temp)
+green
+CLIPS> (read temp)
+EOF
+CLIPS> (close temp)
+TRUE
+CLIPS> (remove "Temp/iofun.dat") 
+TRUE
 CLIPS> (dribble-off)
