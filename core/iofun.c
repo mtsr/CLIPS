@@ -41,8 +41,8 @@
 /*            Replaced EXT_IO and BASIC_IO compiler flags    */
 /*            with IO_FUNCTIONS compiler flag.               */
 /*                                                           */
-/*            Added a+, w+, rb, ab, r+b, w+b, and a+b modes  */
-/*            for the open function.                         */
+/*            Added rb and ab and removed r+ modes for the   */
+/*            open function.                                 */
 /*                                                           */
 /*            Removed conditional code for unsupported       */
 /*            compilers/operating systems (IBM_MCW and       */
@@ -526,19 +526,13 @@ globle int OpenFunction(
    if ((strcmp(accessMode,"r") != 0) &&
        (strcmp(accessMode,"w") != 0) &&
        (strcmp(accessMode,"a") != 0) &&
-       (strcmp(accessMode,"r+") != 0) &&
-       (strcmp(accessMode,"w+") != 0) &&
-       (strcmp(accessMode,"a+") != 0) &&
        (strcmp(accessMode,"rb") != 0) &&
        (strcmp(accessMode,"wb") != 0) &&
-       (strcmp(accessMode,"ab") != 0) &&
-       (strcmp(accessMode,"r+b") != 0) &&
-       (strcmp(accessMode,"w+b") != 0) &&
-       (strcmp(accessMode,"a+b") != 0))
+       (strcmp(accessMode,"ab") != 0))
      {
       SetHaltExecution(theEnv,TRUE);
       SetEvaluationError(theEnv,TRUE);
-      ExpectedTypeError1(theEnv,"open",3,"string with value \"r\", \"w\", \"a\", \"r+\", \"w+\", \"rb\", \"wb\", \"ab\", \"r+b\", or \"w+b\"");
+      ExpectedTypeError1(theEnv,"open",3,"string with value \"r\", \"w\", \"a\", \"rb\", \"wb\", or \"ab\"");
       return(0);
      }
 
