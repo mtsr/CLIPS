@@ -67,6 +67,9 @@
 #define LOCALE extern
 #endif
 
+#define NETWORK_ASSERT  0
+#define NETWORK_RETRACT 1
+
    LOCALE void                           PrintPartialMatch(void *,const char *,struct partialMatch *);
    LOCALE struct partialMatch           *CopyPartialMatch(void *,struct partialMatch *);
    LOCALE struct partialMatch           *MergePartialMatches(void *,struct partialMatch *,struct partialMatch *);

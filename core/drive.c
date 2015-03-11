@@ -65,7 +65,7 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    EmptyDrive(void *,struct joinNode *,struct partialMatch *);
+   static void                    EmptyDrive(void *,struct joinNode *,struct partialMatch *,int);
    static void                    JoinNetErrorMessage(void *,struct joinNode *);
    
 /************************************************/
@@ -92,7 +92,7 @@ globle void NetworkAssert(
 
    if (join->firstJoin)
      {
-      EmptyDrive(theEnv,join,binds);
+      EmptyDrive(theEnv,join,binds,NETWORK_ASSERT);
       return;
      }
 
@@ -100,7 +100,7 @@ globle void NetworkAssert(
    /* Enter the join from the right. */
    /*================================*/
 
-   NetworkAssertRight(theEnv,binds,join);
+   NetworkAssertRight(theEnv,binds,join,NETWORK_ASSERT);
 
    return;
   }
@@ -113,7 +113,8 @@ globle void NetworkAssert(
 globle void NetworkAssertRight(
   void *theEnv,
   struct partialMatch *rhsBinds,
-  struct joinNode *join)
+  struct joinNode *join,
+  int operation)
   {
    struct partialMatch *lhsBinds, *nextBind;
    int exprResult, restore = FALSE;
@@ -132,7 +133,7 @@ globle void NetworkAssertRight(
 
    if (join->firstJoin)
      {
-      EmptyDrive(theEnv,join,rhsBinds);
+      EmptyDrive(theEnv,join,rhsBinds,operation);
       return;
      }
   
@@ -266,20 +267,20 @@ globle void NetworkAssertRight(
          if (join->patternIsExists)
            {
             AddBlockedLink(lhsBinds,rhsBinds);
-            PPDrive(theEnv,lhsBinds,NULL,join);
+            PPDrive(theEnv,lhsBinds,NULL,join,operation);
            }
          else if (join->patternIsNegated || join->joinFromTheRight)
            {
             AddBlockedLink(lhsBinds,rhsBinds);
             if (lhsBinds->children != NULL)
-              { PosEntryRetractBeta(theEnv,lhsBinds,lhsBinds->children); }
+              { PosEntryRetractBeta(theEnv,lhsBinds,lhsBinds->children,operation); }
             /*
             if (lhsBinds->dependents != NULL) 
               { RemoveLogicalSupport(theEnv,lhsBinds); }
             */
            } 
          else
-           { PPDrive(theEnv,lhsBinds,rhsBinds,join); }
+           { PPDrive(theEnv,lhsBinds,rhsBinds,join,operation); }
         }
 
       /*====================================*/
@@ -311,7 +312,8 @@ globle void NetworkAssertRight(
 globle void NetworkAssertLeft(
   void *theEnv,
   struct partialMatch *lhsBinds,
-  struct joinNode *join)
+  struct joinNode *join,
+  int operation)
   {
    struct partialMatch *rhsBinds;
    int exprResult, restore = FALSE;
@@ -319,6 +321,9 @@ globle void NetworkAssertLeft(
    struct partialMatch *oldLHSBinds = NULL;
    struct partialMatch *oldRHSBinds = NULL;
    struct joinNode *oldJoin = NULL;
+
+   if ((operation == NETWORK_RETRACT) && PartialMatchWillBeDeleted(theEnv,lhsBinds))
+     { return; }
 
    /*=========================================================*/
    /* If an incremental reset is being performed and the join */
@@ -369,7 +374,7 @@ globle void NetworkAssertLeft(
         }
 
       if (exprResult)
-        { PPDrive(theEnv,lhsBinds,NULL,join); }
+        { PPDrive(theEnv,lhsBinds,NULL,join,operation); }
                 
       return;
      }
@@ -413,6 +418,12 @@ globle void NetworkAssertLeft(
 
    while (rhsBinds != NULL)
      {
+      if ((operation == NETWORK_RETRACT) && PartialMatchWillBeDeleted(theEnv,rhsBinds))
+        {
+         rhsBinds = rhsBinds->nextInMemory;
+         continue;
+        }
+
       join->memoryCompares++;
 
       /*===================================================*/
@@ -480,7 +491,7 @@ globle void NetworkAssertLeft(
          if ((join->patternIsNegated == FALSE) &&
              (join->patternIsExists == FALSE) &&
              (join->joinFromTheRight == FALSE))
-           { PPDrive(theEnv,lhsBinds,rhsBinds,join); }
+           { PPDrive(theEnv,lhsBinds,rhsBinds,join,operation); }
 
          /*==================================================*/
          /* At most, one partial match will be generated for */
@@ -490,7 +501,7 @@ globle void NetworkAssertLeft(
          else if (join->patternIsExists)
            { 
             AddBlockedLink(lhsBinds,rhsBinds);
-            PPDrive(theEnv,lhsBinds,NULL,join);
+            PPDrive(theEnv,lhsBinds,NULL,join,operation);
             EngineData(theEnv)->GlobalLHSBinds = oldLHSBinds;
             EngineData(theEnv)->GlobalRHSBinds = oldRHSBinds;
             EngineData(theEnv)->GlobalJoin = oldJoin;
@@ -546,10 +557,10 @@ globle void NetworkAssertLeft(
            { SetEvaluationError(theEnv,FALSE); }
            
          if (exprResult)
-            { PPDrive(theEnv,lhsBinds,NULL,join); }
+            { PPDrive(theEnv,lhsBinds,NULL,join,operation); }
 		}
       else
-        { PPDrive(theEnv,lhsBinds,NULL,join); } 
+        { PPDrive(theEnv,lhsBinds,NULL,join,operation); }
      }
 
    /*=========================================*/
@@ -882,7 +893,8 @@ globle void PPDrive(
   void *theEnv,
   struct partialMatch *lhsBinds,
   struct partialMatch *rhsBinds,
-  struct joinNode *join)
+  struct joinNode *join,
+  int operation)
   {
    struct partialMatch *linker;
    struct joinLink *listOfJoins;
@@ -934,9 +946,9 @@ globle void PPDrive(
       UpdateBetaPMLinks(theEnv,linker,lhsBinds,rhsBinds,listOfJoins->join,hashValue,listOfJoins->enterDirection);
       
       if (listOfJoins->enterDirection == LHS)
-        { NetworkAssertLeft(theEnv,linker,listOfJoins->join); }
+        { NetworkAssertLeft(theEnv,linker,listOfJoins->join,operation); }
       else
-        { NetworkAssertRight(theEnv,linker,listOfJoins->join); }
+        { NetworkAssertRight(theEnv,linker,listOfJoins->join,operation); }
       
       listOfJoins = listOfJoins->next;
      }
@@ -952,7 +964,8 @@ globle void PPDrive(
 globle void EPMDrive(
   void *theEnv,
   struct partialMatch *parent,
-  struct joinNode *join)
+  struct joinNode *join,
+  int operation)
   {
    struct partialMatch *linker;
    struct joinLink *listOfJoins;
@@ -967,9 +980,9 @@ globle void EPMDrive(
       UpdateBetaPMLinks(theEnv,linker,parent,NULL,listOfJoins->join,0,listOfJoins->enterDirection); 
 
       if (listOfJoins->enterDirection == LHS)
-        { NetworkAssertLeft(theEnv,linker,listOfJoins->join); }
+        { NetworkAssertLeft(theEnv,linker,listOfJoins->join,operation); }
       else
-        { NetworkAssertRight(theEnv,linker,listOfJoins->join); }
+        { NetworkAssertRight(theEnv,linker,listOfJoins->join,operation); }
         
       listOfJoins = listOfJoins->next;
      }
@@ -983,7 +996,8 @@ globle void EPMDrive(
 static void EmptyDrive(
   void *theEnv,
   struct joinNode *join,
-  struct partialMatch *rhsBinds)
+  struct partialMatch *rhsBinds,
+  int operation)
   {
    struct partialMatch *linker, *existsParent = NULL, *notParent;
    struct joinLink *listOfJoins;
@@ -1057,7 +1071,7 @@ static void EmptyDrive(
       AddBlockedLink(notParent,rhsBinds);
       
       if (notParent->children != NULL)
-        { PosEntryRetractBeta(theEnv,notParent,notParent->children); }
+        { PosEntryRetractBeta(theEnv,notParent,notParent->children,operation); }
       /*
       if (notParent->dependents != NULL) 
 		{ RemoveLogicalSupport(theEnv,notParent); } 
@@ -1140,9 +1154,9 @@ static void EmptyDrive(
         { UpdateBetaPMLinks(theEnv,linker,NULL,rhsBinds,listOfJoins->join,hashValue,listOfJoins->enterDirection); }
 
       if (listOfJoins->enterDirection == LHS)
-        { NetworkAssertLeft(theEnv,linker,listOfJoins->join); }
+        { NetworkAssertLeft(theEnv,linker,listOfJoins->join,operation); }
       else
-        { NetworkAssertRight(theEnv,linker,listOfJoins->join); }
+        { NetworkAssertRight(theEnv,linker,listOfJoins->join,operation); }
         
       listOfJoins = listOfJoins->next;
      }

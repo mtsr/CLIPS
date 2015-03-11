@@ -122,6 +122,7 @@ typedef struct igarbage
    LOCALE void                           IncrementObjectBasisCount(void *,void *);
    LOCALE void                           MatchObjectFunction(void *,void *);
    LOCALE intBool                        NetworkSynchronized(void *,void *);
+   LOCALE intBool                        InstanceIsDeleted(void *,void *);
 #endif
 
 #if ALLOW_ENVIRONMENT_GLOBALS

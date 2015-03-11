@@ -164,6 +164,7 @@ struct factsData
    LOCALE void                           PrintFactIdentifier(void *,const char *,void *);
    LOCALE void                           DecrementFactBasisCount(void *,void *);
    LOCALE void                           IncrementFactBasisCount(void *,void *);
+   LOCALE intBool                        FactIsDeleted(void *,void *);
    LOCALE void                           ReturnFact(void *,struct fact *);
    LOCALE void                           MatchFactFunction(void *,void *);
    LOCALE intBool                        EnvPutFactSlot(void *,void *,const char *,DATA_OBJECT *);

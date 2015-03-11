@@ -136,9 +136,10 @@ globle void SetupInstances(
                                                   DecrementObjectBasisCount,
                                                   IncrementObjectBasisCount,
                                                   MatchObjectFunction,
-                                                  NetworkSynchronized
+                                                  NetworkSynchronized,
+                                                  InstanceIsDeleted
 #else
-                                                  NULL,NULL,NULL,NULL
+                                                  NULL,NULL,NULL,NULL,NULL
 #endif
                                                 };
                                                 

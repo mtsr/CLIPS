@@ -66,8 +66,9 @@ LOCALE void                           ReturnPartialMatch(void *,struct partialMa
 LOCALE void                           DestroyPartialMatch(void *,struct partialMatch *);
 LOCALE void                           FlushGarbagePartialMatches(void *);
 LOCALE void                           DeletePartialMatches(void *,struct partialMatch *);
-LOCALE void                           PosEntryRetractBeta(void *,struct partialMatch *,struct partialMatch *);
-LOCALE void                           PosEntryRetractAlpha(void *,struct partialMatch *);
+LOCALE void                           PosEntryRetractBeta(void *,struct partialMatch *,struct partialMatch *,int);
+LOCALE void                           PosEntryRetractAlpha(void *,struct partialMatch *,int);
+LOCALE intBool                        PartialMatchWillBeDeleted(void *,struct partialMatch *);
 
 #endif /* _H_retract */
 

@@ -142,7 +142,8 @@ globle void InitializeFacts(
                                                    DecrementFactBasisCount,
                                                    IncrementFactBasisCount,
                                                    MatchFactFunction,
-                                                   NULL
+                                                   NULL,
+                                                   FactIsDeleted
                                                  };
                                                  
    struct fact dummyFact = { { NULL, NULL, 0, 0L }, NULL, NULL, -1L, 0, 1,
@@ -380,6 +381,20 @@ globle void IncrementFactBasisCount(
      {
       AtomInstall(theEnv,theSegment->theFields[i].type,theSegment->theFields[i].value);
      }
+  }
+
+/******************/
+/* FactIsDeleted: */
+/******************/
+globle intBool FactIsDeleted(
+  void *theEnv,
+  void *theFact)
+  {
+#if MAC_XCD
+#pragma unused(theEnv)
+#endif
+
+   return(((struct fact *) theFact)->garbage);
   }
 
 /**************************************************/

@@ -323,7 +323,7 @@ static void PrimeJoinFromLeftMemory(
               }
            }
 
-         EPMDrive(theEnv,notParent,joinPtr);
+         EPMDrive(theEnv,notParent,joinPtr,NETWORK_ASSERT);
         }
       else
         {  
@@ -383,7 +383,7 @@ static void PrimeJoinFromLeftMemory(
          
          UpdateBetaPMLinks(theEnv,linker,theList->leftParent,theList->rightParent,joinPtr,hashValue,LHS);
          
-         NetworkAssertLeft(theEnv,linker,joinPtr);
+         NetworkAssertLeft(theEnv,linker,joinPtr,NETWORK_ASSERT);
         }
      }
   }
@@ -443,7 +443,7 @@ static void PrimeJoinFromRightMemory(
               { return; }
            }
 
-         EPMDrive(theEnv,notParent,joinPtr);
+         EPMDrive(theEnv,notParent,joinPtr,NETWORK_ASSERT);
         }
 
       return;
@@ -489,7 +489,7 @@ static void PrimeJoinFromRightMemory(
            { return; }
         }
 
-      EPMDrive(theEnv,notParent,joinPtr);
+      EPMDrive(theEnv,notParent,joinPtr,NETWORK_ASSERT);
      }
   }
   

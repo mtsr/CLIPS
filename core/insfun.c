@@ -1237,6 +1237,27 @@ globle intBool NetworkSynchronized(
 
    return(((INSTANCE_TYPE *) vins)->reteSynchronized);
   }
+
+/***************************************************
+  NAME         : InstanceIsDeleted
+  DESCRIPTION  : Determines if an instance has been
+                 deleted
+  INPUTS       : The instance
+  RETURNS      : TRUE if instance has been deleted, 
+                 FALSE otherwise
+  SIDE EFFECTS : None
+  NOTES        : None
+ ***************************************************/
+globle intBool InstanceIsDeleted(
+  void *theEnv,
+  void *vins)
+  {
+#if MAC_XCD
+#pragma unused(theEnv)
+#endif
+
+   return(((INSTANCE_TYPE *) vins)->garbage);
+  }
 #endif
 
 /* =========================================

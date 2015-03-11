@@ -51,6 +51,7 @@ struct patternEntityRecord
    void (*incrementBasisCount)(void *,void *);
    void (*matchFunction)(void *,void *);
    intBool (*synchronized)(void *,void *);
+   intBool (*isDeleted)(void *,void *);
   };
 
 typedef struct patternEntityRecord PTRN_ENTITY_RECORD;

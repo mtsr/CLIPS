@@ -148,7 +148,7 @@ static void ResetDefrules(
    for (theLink = DefruleData(theEnv)->RightPrimeJoins;
         theLink != NULL;
         theLink = theLink->next)
-     { PosEntryRetractAlpha(theEnv,theLink->join->rightMemory->beta[0]); }
+     { PosEntryRetractAlpha(theEnv,theLink->join->rightMemory->beta[0],NETWORK_ASSERT); }
 
    for (theLink = DefruleData(theEnv)->LeftPrimeJoins;
         theLink != NULL;
@@ -169,7 +169,7 @@ static void ResetDefrules(
          notParent->marker = notParent;
          
          if (notParent->children != NULL)
-           { PosEntryRetractBeta(theEnv,notParent,notParent->children); }
+           { PosEntryRetractBeta(theEnv,notParent,notParent->children,NETWORK_ASSERT); }
            /*
          if (notParent->dependents != NULL) 
            { RemoveLogicalSupport(theEnv,notParent); } */
@@ -208,7 +208,7 @@ static void ResetDefrulesPrime(
 
          notParent->marker = NULL;
 
-         EPMDrive(theEnv,notParent,theLink->join);
+         EPMDrive(theEnv,notParent,theLink->join,NETWORK_ASSERT);
         }
      }
 
