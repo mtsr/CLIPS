@@ -1067,12 +1067,12 @@ static void TestEntireTemplate(
            }
         }
 
-      CleanCurrentGarbageFrame(theEnv,NULL);
-      CallPeriodicTasks(theEnv);
-        
       theFact = theFact->nextTemplateFact;
       while ((theFact != NULL) ? (theFact->garbage == 1) : FALSE)
         theFact = theFact->nextTemplateFact;
+
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
      }
      
    RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);

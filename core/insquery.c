@@ -1089,13 +1089,13 @@ static void TestEntireClass(
               AddSolution(theEnv);
            }
         }
-        
-      CleanCurrentGarbageFrame(theEnv,NULL);
-      CallPeriodicTasks(theEnv);
-        
+         
       ins = ins->nxtClass;
       while ((ins != NULL) ? (ins->garbage == 1) : FALSE)
         ins = ins->nxtClass;
+
+      CleanCurrentGarbageFrame(theEnv,NULL);
+      CallPeriodicTasks(theEnv);
      }
    
    RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);
