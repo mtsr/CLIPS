@@ -549,15 +549,15 @@ static void UnlinkBetaPartialMatchfromAlphaAndBetaLineage(
    
    if (thePM->children != NULL)
      {
-      if (thePM->betaMemory)
-        {
-         for (tempPM = thePM->children; tempPM != NULL; tempPM = tempPM->nextLeftChild)
-           { tempPM->leftParent = NULL; }
-        }
-      else
+      if (thePM->rhsMemory)
         {
          for (tempPM = thePM->children; tempPM != NULL; tempPM = tempPM->nextRightChild)
            { tempPM->rightParent = NULL; }
+        }
+      else
+        {
+         for (tempPM = thePM->children; tempPM != NULL; tempPM = tempPM->nextLeftChild)
+           { tempPM->leftParent = NULL; }
         }
         
       thePM->children = NULL;

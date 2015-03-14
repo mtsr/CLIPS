@@ -86,6 +86,7 @@ LOCALE void PutClassInTable(void *,DEFCLASS *);
 LOCALE void RemoveClassFromTable(void *,DEFCLASS *);
 LOCALE void AddClassLink(void *,PACKED_CLASS_LINKS *,DEFCLASS *,int);
 LOCALE void DeleteSubclassLink(void *,DEFCLASS *,DEFCLASS *);
+LOCALE void DeleteSuperclassLink(void *,DEFCLASS *,DEFCLASS *);
 LOCALE DEFCLASS *NewClass(void *,SYMBOL_HN *);
 LOCALE void DeletePackedClassLinks(void *,PACKED_CLASS_LINKS *,int);
 LOCALE void AssignClassID(void *,DEFCLASS *);

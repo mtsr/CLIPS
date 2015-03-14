@@ -435,6 +435,50 @@ globle void DeleteSubclassLink(
    PACKED_CLASS_LINKS *src,dst;
 
    src = &sclass->directSubclasses;
+
+   for (deletedIndex = 0 ; deletedIndex < src->classCount ; deletedIndex++)
+     if (src->classArray[deletedIndex] == cls)
+       break;
+   if (deletedIndex == src->classCount)
+     return;
+   if (src->classCount > 1)
+     {
+      dst.classArray = (DEFCLASS **) gm2(theEnv,(sizeof(DEFCLASS *) * (src->classCount - 1)));
+      if (deletedIndex != 0)
+        GenCopyMemory(DEFCLASS *,deletedIndex,dst.classArray,src->classArray);
+      GenCopyMemory(DEFCLASS *,src->classCount - deletedIndex - 1,
+                 dst.classArray + deletedIndex,src->classArray + deletedIndex + 1);
+     }
+   else
+     dst.classArray = NULL;
+   dst.classCount = (unsigned short) (src->classCount - 1);
+   DeletePackedClassLinks(theEnv,src,FALSE);
+   src->classCount = dst.classCount;
+   src->classArray = dst.classArray;
+  }
+
+
+/***************************************************
+  NAME         : DeleteSuperclassLink
+  DESCRIPTION  : Removes a class from another
+                 class's superclass list
+  INPUTS       : 1) The subclass whose superclass
+                    list is to be modified
+                 2) The superclass to be removed
+  RETURNS      : Nothing useful
+  SIDE EFFECTS : The subclass list is changed
+  NOTES        : None
+ ***************************************************/
+globle void DeleteSuperclassLink(
+  void *theEnv,
+  DEFCLASS *sclass,
+  DEFCLASS *cls)
+  {
+   long deletedIndex;
+   PACKED_CLASS_LINKS *src,dst;
+   
+   src = &sclass->directSuperclasses;
+
    for (deletedIndex = 0 ; deletedIndex < src->classCount ; deletedIndex++)
      if (src->classArray[deletedIndex] == cls)
        break;
@@ -689,6 +733,12 @@ LOCALE void RemoveDefclass(
       ==================================================== */
    for (i = 0 ; i < cls->directSuperclasses.classCount ; i++)
      DeleteSubclassLink(theEnv,cls->directSuperclasses.classArray[i],cls);
+
+   /* ====================================================
+      Remove all of this class's subclasses' links to it
+      ==================================================== */
+   for (i = 0 ; i < cls->directSubclasses.classCount ; i++)
+     DeleteSuperclassLink(theEnv,cls->directSubclasses.classArray[i],cls);
 
    RemoveClassFromTable(theEnv,cls);
 

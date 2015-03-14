@@ -1112,9 +1112,9 @@ static void DetachObjectPattern(
      }
    alphaPtr->patternNode->alphaNode = NULL;
    RemoveHashedExpression(theEnv,alphaPtr->header.rightHash);
+   upperLevel = alphaPtr->patternNode;
    rtn_struct(theEnv,objectAlphaNode,alphaPtr);
 
-   upperLevel = alphaPtr->patternNode;
    if (upperLevel->nextLevel != NULL)
      return;
 

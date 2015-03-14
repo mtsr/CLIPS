@@ -744,10 +744,10 @@ static DEFCLASS *AddSystemClass(
 /*****************************************************
   NAME         : AllocateModule
   DESCRIPTION  : Creates and initializes a
-                 list of deffunctions for a new module
+                 list of defclasses for a new module
   INPUTS       : None
-  RETURNS      : The new deffunction module
-  SIDE EFFECTS : Deffunction module created
+  RETURNS      : The new defclass module
+  SIDE EFFECTS : Defclass module created
   NOTES        : None
  *****************************************************/
 static void *AllocateModule(
@@ -758,11 +758,11 @@ static void *AllocateModule(
 
 /***************************************************
   NAME         : ReturnModule
-  DESCRIPTION  : Removes a deffunction module and
-                 all associated deffunctions
-  INPUTS       : The deffunction module
+  DESCRIPTION  : Removes a defclass module and
+                 all associated defclasses
+  INPUTS       : The defclass module
   RETURNS      : Nothing useful
-  SIDE EFFECTS : Module and deffunctions deleted
+  SIDE EFFECTS : Module and defclasses deleted
   NOTES        : None
  ***************************************************/
 static void ReturnModule(
