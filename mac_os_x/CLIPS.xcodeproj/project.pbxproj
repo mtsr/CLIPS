@@ -645,7 +645,6 @@
 		B57AFA0B0BA9F90F002491B9 /* CLIPSModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CLIPSModule.m; path = Interface_Source/CLIPSModule.m; sourceTree = "<group>"; };
 		B591DCA60A13C16D0021AA02 /* CLIPSTextMenu.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CLIPSTextMenu.m; path = Interface_Source/CLIPSTextMenu.m; sourceTree = "<group>"; };
 		B591DCA70A13C16D0021AA02 /* CLIPSTextMenu.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CLIPSTextMenu.h; path = Interface_Source/CLIPSTextMenu.h; sourceTree = "<group>"; };
-		B594317509B4CA7800936A6B /* ToDo.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = ToDo.txt; sourceTree = "<group>"; };
 		B5997A580D4D9B9E00C9B896 /* CLIPS Console */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CLIPS Console"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B59D13FF179C5C1A00E1A6C7 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		B5AC0A4209B21DA100297B9E /* EnvController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = EnvController.h; path = Interface_Source/EnvController.h; sourceTree = "<group>"; };
@@ -1072,7 +1071,6 @@
 			isa = PBXGroup;
 			children = (
 				B59D13FF179C5C1A00E1A6C7 /* Cocoa.framework */,
-				B594317509B4CA7800936A6B /* ToDo.txt */,
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				B5BCF20509AD249F000E597B /* CLIPS Source */,
 				B54DA5D109AE1D4C00D9DF3D /* CLIPS Source Headers */,
