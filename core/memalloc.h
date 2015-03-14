@@ -51,7 +51,9 @@ struct chunkInfo;
 struct blockInfo;
 struct memoryPtr;
 
+#ifndef MEM_TABLE_SIZE
 #define MEM_TABLE_SIZE 500
+#endif
 
 #ifdef LOCALE
 #undef LOCALE
@@ -83,6 +85,11 @@ struct memoryPtr
   {
    struct memoryPtr *next;
   };
+
+#if (MEM_TABLE_SIZE > 0)
+/*
+ * Normal memory management case
+ */
 
 #define get_struct(theEnv,type) \
   ((MemoryData(theEnv)->MemoryTable[sizeof(struct type)] == NULL) ? \
@@ -132,6 +139,27 @@ struct memoryPtr
      MemoryData(theEnv)->TempMemoryPtr->next = MemoryData(theEnv)->MemoryTable[MemoryData(theEnv)->TempSize], \
      MemoryData(theEnv)->MemoryTable[MemoryData(theEnv)->TempSize] =  MemoryData(theEnv)->TempMemoryPtr) : \
     (genfree(theEnv,(void *) ptr,MemoryData(theEnv)->TempSize),(struct memoryPtr *) ptr)))
+
+#else // MEM_TABLE_SIZE == 0
+/*
+ * Debug case (routes all memory management through genalloc/genfree to take advantage of
+ * platform, memory debugging aids)
+ */
+#define get_struct(theEnv,type) ((struct type *) genalloc(theEnv,sizeof(struct type)))
+
+#define rtn_struct(theEnv,type,struct_ptr) (genfree(theEnv,struct_ptr,sizeof(struct type)))
+
+#define rtn_sized_struct(theEnv,size,struct_ptr) (genfree(theEnv,struct_ptr,size))
+
+#define get_var_struct(theEnv,type,vsize) ((struct type *) genalloc(theEnv,(sizeof(struct type) + vsize)))
+
+#define rtn_var_struct(theEnv,type,vsize,struct_ptr) (genfree(theEnv,struct_ptr,sizeof(struct type)+vsize))
+
+#define get_mem(theEnv,size) ((struct type *) genalloc(theEnv,(size_t) (size)))
+
+#define rtn_mem(theEnv,size,ptr) (genfree(theEnv,ptr,size))
+
+#endif
 
 #define GenCopyMemory(type,cnt,dst,src) \
    memcpy((void *) (dst),(void *) (src),sizeof(type) * (size_t) (cnt))

@@ -618,8 +618,10 @@ globle intBool DestroyEnvironment(
       printf("\n[ENVRNMNT8] MemoryCalls = %ld.\n",(long) theMemData->MemoryCalls); 
       rv = FALSE;     
      }
-     
+
+#if (MEM_TABLE_SIZE > 0)
    free(theMemData->MemoryTable);
+#endif
 
    for (i = 0; i < MAXIMUM_ENVIRONMENT_POSITIONS; i++)
      {

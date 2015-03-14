@@ -72,12 +72,11 @@
 globle void InitializeMemory(
   void *theEnv)
   {
-   int i;
-
    AllocateEnvironmentData(theEnv,MEMORY_DATA,sizeof(struct memoryData),NULL);
 
    MemoryData(theEnv)->OutOfMemoryFunction = DefaultOutOfMemoryFunction;
-   
+
+#if (MEM_TABLE_SIZE > 0)
    MemoryData(theEnv)->MemoryTable = (struct memoryPtr **)
                  malloc((STD_SIZE) (sizeof(struct memoryPtr *) * MEM_TABLE_SIZE));
 
@@ -87,8 +86,15 @@ globle void InitializeMemory(
       EnvPrintRouter(theEnv,WERROR,"Out of memory.\n");
       EnvExitRouter(theEnv,EXIT_FAILURE);
      }
-
-   for (i = 0; i < MEM_TABLE_SIZE; i++) MemoryData(theEnv)->MemoryTable[i] = NULL;
+   else
+     {
+      int i;
+      
+      for (i = 0; i < MEM_TABLE_SIZE; i++) MemoryData(theEnv)->MemoryTable[i] = NULL;
+     }
+#else // MEM_TABLE_SIZE == 0
+      MemoryData(theEnv)->MemoryTable = NULL;
+#endif 
   }
 
 /***************************************************/
