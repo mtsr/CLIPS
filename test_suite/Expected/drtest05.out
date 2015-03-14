@@ -106,19 +106,6 @@ CLIPS> (reset)                            ; DR0445
 ==> f-3     (total (net-name 4) (cong 5))
 CLIPS> (run)                              ; DR0445
 <== f-2     (total (net-name 8) (cong nil))
-[ARGACCES5] Function <= expected argument #1 to be of type integer or float
-
-[DRIVE1] This error occurred in the join network
-   Problem resides in associated join
-      Of pattern #3 in rule p410
-
-[ARGACCES5] Function <= expected argument #2 to be of type integer or float
-
-[DRIVE1] This error occurred in the join network
-   Problem resides in associated join
-      Of pattern #3 in rule p410
-
-[PRCCODE4] Execution halted during the actions of defrule p403.
 CLIPS> (unwatch facts)                    ; DR0445
 CLIPS> (clear)                            ; DR0447
 CLIPS> (deffacts one                      ; DR0447

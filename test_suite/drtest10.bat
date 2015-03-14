@@ -256,4 +256,46 @@
 (reset)
 (run 1)
 ?*val*
+(clear) ; SourceForge Crash Bug
+
+(deftemplate table
+   (slot table-id (type INTEGER)))
+
+(deftemplate modeler-instance
+   (slot class (type SYMBOL) (default ?NONE))
+   (slot id (type SYMBOL) (default ?NONE)))
+
+(deftemplate table-modeler-binding
+   (slot modeler (type SYMBOL))
+   (slot table-id))
+
+(deffacts start
+   (table (table-id 100002))
+   (table (table-id 100003))
+   (modeler-instance (class TIME-PROFILER) (id gen4)) 
+   (table-modeler-binding (modeler gen4) (table-id 100003)) 
+   (modeler-instance (class TIME-PROFILER) (id gen6))
+   (table-modeler-binding (modeler gen6) (table-id 100002)))
+
+(defrule mark   
+   (modeler-instance (id ?m1))
+   (modeler-instance (id ?m2&~?m1))
+   (not (and (table-modeler-binding (modeler ?m1) (table-id ?t1))
+             (table-modeler-binding (modeler ?m2) (table-id ?t2&~?t1))
+             (table (table-id ?t1))
+             (table (table-id ?t2))))
+   (not (and
+             (table-modeler-binding (modeler ?m2) (table-id ?t3))
+             (table-modeler-binding (modeler ?m1) (table-id ?t4&~?t3))
+             (table (table-id ?t4))))
+   =>)
+
+(defrule remove 
+   =>)
+(reset)
+(matches mark)
+(retract 2)
+(matches mark)
+(retract 3)
+(matches mark)
 (clear)

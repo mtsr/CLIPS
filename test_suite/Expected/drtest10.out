@@ -426,5 +426,200 @@ CLIPS> (reset)
 CLIPS> (run 1)
 CLIPS> ?*val*
 (38 39)
+CLIPS> (clear) ; SourceForge Crash Bug
+CLIPS> 
+(deftemplate table
+   (slot table-id (type INTEGER)))
+CLIPS> 
+(deftemplate modeler-instance
+   (slot class (type SYMBOL) (default ?NONE))
+   (slot id (type SYMBOL) (default ?NONE)))
+CLIPS> 
+(deftemplate table-modeler-binding
+   (slot modeler (type SYMBOL))
+   (slot table-id))
+CLIPS> 
+(deffacts start
+   (table (table-id 100002))
+   (table (table-id 100003))
+   (modeler-instance (class TIME-PROFILER) (id gen4)) 
+   (table-modeler-binding (modeler gen4) (table-id 100003)) 
+   (modeler-instance (class TIME-PROFILER) (id gen6))
+   (table-modeler-binding (modeler gen6) (table-id 100002)))
+CLIPS> 
+(defrule mark   
+   (modeler-instance (id ?m1))
+   (modeler-instance (id ?m2&~?m1))
+   (not (and (table-modeler-binding (modeler ?m1) (table-id ?t1))
+             (table-modeler-binding (modeler ?m2) (table-id ?t2&~?t1))
+             (table (table-id ?t1))
+             (table (table-id ?t2))))
+   (not (and
+             (table-modeler-binding (modeler ?m2) (table-id ?t3))
+             (table-modeler-binding (modeler ?m1) (table-id ?t4&~?t3))
+             (table (table-id ?t4))))
+   =>)
+CLIPS> 
+(defrule remove 
+   =>)
+CLIPS> (reset)
+CLIPS> (matches mark)
+Matches for Pattern 1
+f-3
+f-5
+Matches for Pattern 2
+f-3
+f-5
+Matches for Pattern 3
+f-4
+f-6
+Matches for Pattern 4
+f-4
+f-6
+Matches for Pattern 5
+f-1
+f-2
+Matches for Pattern 6
+f-1
+f-2
+Matches for Pattern 7
+f-4
+f-6
+Matches for Pattern 8
+f-4
+f-6
+Matches for Pattern 9
+f-1
+f-2
+Partial matches for CEs 1 - 2
+f-3,f-5
+f-5,f-3
+Partial matches for CEs 1 - 3
+f-5,f-3,f-6
+f-3,f-5,f-4
+Partial matches for CEs 1 - 4
+f-5,f-3,f-6,f-4
+f-3,f-5,f-4,f-6
+Partial matches for CEs 1 - 5
+f-3,f-5,f-4,f-6,f-2
+f-5,f-3,f-6,f-4,f-1
+Partial matches for CEs 1 - 6
+f-5,f-3,f-6,f-4,f-1,f-2
+f-3,f-5,f-4,f-6,f-2,f-1
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6)
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7)
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7) - 5 (P8)
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7) - 6 (P9)
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7 - P9)
+ None
+Activations
+ None
+(18 10 0)
+CLIPS> (retract 2)
+CLIPS> (matches mark)
+Matches for Pattern 1
+f-3
+f-5
+Matches for Pattern 2
+f-3
+f-5
+Matches for Pattern 3
+f-4
+f-6
+Matches for Pattern 4
+f-4
+f-6
+Matches for Pattern 5
+f-1
+Matches for Pattern 6
+f-1
+Matches for Pattern 7
+f-4
+f-6
+Matches for Pattern 8
+f-4
+f-6
+Matches for Pattern 9
+f-1
+Partial matches for CEs 1 - 2
+f-3,f-5
+f-5,f-3
+Partial matches for CEs 1 - 3
+f-5,f-3,f-6
+f-3,f-5,f-4
+Partial matches for CEs 1 - 4
+f-5,f-3,f-6,f-4
+f-3,f-5,f-4,f-6
+Partial matches for CEs 1 - 5
+f-5,f-3,f-6,f-4,f-1
+Partial matches for CEs 1 - 6
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6)
+f-5,f-3,*
+f-3,f-5,*
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7)
+f-3,f-5,*,f-6
+f-5,f-3,*,f-4
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7) - 5 (P8)
+f-5,f-3,*,f-4,f-6
+f-3,f-5,*,f-6,f-4
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7) - 6 (P9)
+f-5,f-3,*,f-4,f-6,f-1
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7 - P9)
+ None
+Activations
+ None
+(15 14 0)
+CLIPS> (retract 3)
+CLIPS> (matches mark)
+Matches for Pattern 1
+f-5
+Matches for Pattern 2
+f-5
+Matches for Pattern 3
+f-4
+f-6
+Matches for Pattern 4
+f-4
+f-6
+Matches for Pattern 5
+f-1
+Matches for Pattern 6
+f-1
+Matches for Pattern 7
+f-4
+f-6
+Matches for Pattern 8
+f-4
+f-6
+Matches for Pattern 9
+f-1
+Partial matches for CEs 1 - 2
+ None
+Partial matches for CEs 1 - 3
+ None
+Partial matches for CEs 1 - 4
+ None
+Partial matches for CEs 1 - 5
+ None
+Partial matches for CEs 1 - 6
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6)
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7)
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7) - 5 (P8)
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7) - 6 (P9)
+ None
+Partial matches for CEs 1 (P1) - 2 (P2) , 3 (P3 - P6) , 4 (P7 - P9)
+ None
+Activations
+ None
+(13 0 0)
 CLIPS> (clear)
 CLIPS> (dribble-off)
