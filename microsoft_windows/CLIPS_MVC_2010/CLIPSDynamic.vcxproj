@@ -107,7 +107,6 @@
     <ClCompile Include="..\Source\CLIPS\classinf.c" />
     <ClCompile Include="..\Source\CLIPS\classini.c" />
     <ClCompile Include="..\Source\CLIPS\classpsr.c" />
-    <ClCompile Include="..\Source\Integration\CLIPSDLL32.c" />
     <ClCompile Include="..\Source\CLIPS\clsltpsr.c" />
     <ClCompile Include="..\Source\CLIPS\commline.c" />
     <ClCompile Include="..\Source\CLIPS\conscomp.c" />
@@ -259,6 +258,7 @@
     <ClCompile Include="..\Source\CLIPS\userfunctions.c" />
     <ClCompile Include="..\Source\CLIPS\utility.c" />
     <ClCompile Include="..\Source\CLIPS\watch.c" />
+    <ClCompile Include="..\Source\Integration\CLIPSDLL.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CLIPS\agenda.h" />
@@ -274,8 +274,6 @@
     <ClInclude Include="..\Source\CLIPS\classini.h" />
     <ClInclude Include="..\Source\CLIPS\classpsr.h" />
     <ClInclude Include="..\Source\CLIPS\clips.h" />
-    <ClInclude Include="..\Source\Integration\CLIPSWin32.h" />
-    <ClInclude Include="..\Source\Integration\CLIPSWin32defs.h" />
     <ClInclude Include="..\Source\CLIPS\clsltpsr.h" />
     <ClInclude Include="..\Source\CLIPS\commline.h" />
     <ClInclude Include="..\Source\CLIPS\conscomp.h" />
@@ -433,6 +431,7 @@
     <ClInclude Include="..\Source\CLIPS\usrsetup.h" />
     <ClInclude Include="..\Source\CLIPS\utility.h" />
     <ClInclude Include="..\Source\CLIPS\watch.h" />
+    <ClInclude Include="..\Source\Integration\CLIPSDLL.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

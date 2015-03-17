@@ -2,7 +2,7 @@
 
 extern "C"
 {
-#include "CLIPSWin32.h"
+#include "CLIPSDLL.h"
 }
 
 /********/

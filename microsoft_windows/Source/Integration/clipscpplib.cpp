@@ -20,12 +20,12 @@ extern "C"
 #include <windows.h>
 #if CLIPS_COMPILED_AS_C_PLUS_PLUS
 #include "clips.h"
-#include "CLIPSWin32.h"
+#include "CLIPSDLL.h"
 #else
 extern "C"
   {
    #include "clips.h"
-   #include "CLIPSWin32.h"
+   #include "CLIPSDLL.h"
   }
 #endif
 #endif

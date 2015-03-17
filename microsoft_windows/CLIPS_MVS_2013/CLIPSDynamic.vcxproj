@@ -194,7 +194,7 @@
     <ClCompile Include="..\Source\CLIPS\classinf.c" />
     <ClCompile Include="..\Source\CLIPS\classini.c" />
     <ClCompile Include="..\Source\CLIPS\classpsr.c" />
-    <ClCompile Include="..\Source\Integration\CLIPSDLL32.c" />
+    <ClCompile Include="..\Source\Integration\CLIPSDLL.c" />
     <ClCompile Include="..\Source\CLIPS\clsltpsr.c" />
     <ClCompile Include="..\Source\CLIPS\commline.c" />
     <ClCompile Include="..\Source\CLIPS\conscomp.c" />
@@ -361,7 +361,7 @@
     <ClInclude Include="..\Source\CLIPS\classini.h" />
     <ClInclude Include="..\Source\CLIPS\classpsr.h" />
     <ClInclude Include="..\Source\CLIPS\clips.h" />
-    <ClInclude Include="..\Source\Integration\CLIPSWin32.h" />
+    <ClInclude Include="..\Source\Integration\CLIPSDLL.h" />
     <ClInclude Include="..\Source\CLIPS\clsltpsr.h" />
     <ClInclude Include="..\Source\CLIPS\commline.h" />
     <ClInclude Include="..\Source\CLIPS\conscomp.h" />
