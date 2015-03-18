@@ -47,13 +47,13 @@ class WineDemo implements ActionListener
    
    DefaultTableModel wineList;
   
-   JComboBox preferredColor; 
-   JComboBox preferredBody; 
-   JComboBox preferredSweetness; 
+   JComboBox<String> preferredColor; 
+   JComboBox<String> preferredBody; 
+   JComboBox<String> preferredSweetness; 
 
-   JComboBox mainCourse; 
-   JComboBox sauce; 
-   JComboBox flavor; 
+   JComboBox<String> mainCourse; 
+   JComboBox<String> sauce; 
+   JComboBox<String> flavor; 
    
    JLabel jlab; 
 
@@ -81,7 +81,7 @@ class WineDemo implements ActionListener
    Thread executionThread;
 
    class WeightCellRenderer extends JProgressBar implements TableCellRenderer 
-     {
+     {     
       public WeightCellRenderer() 
         {
          super(JProgressBar.HORIZONTAL,0,100);
@@ -185,17 +185,17 @@ class WineDemo implements ActionListener
                                                                  TitledBorder.ABOVE_TOP));
  
       preferencesPanel.add(new JLabel(wineResources.getString("ColorLabel")));
-      preferredColor = new JComboBox(preferredColorChoices); 
+      preferredColor = new JComboBox<String>(preferredColorChoices); 
       preferencesPanel.add(preferredColor);
       preferredColor.addActionListener(this);
      
       preferencesPanel.add(new JLabel(wineResources.getString("BodyLabel")));
-      preferredBody = new JComboBox(preferredBodyChoices); 
+      preferredBody = new JComboBox<String>(preferredBodyChoices); 
       preferencesPanel.add(preferredBody);
       preferredBody.addActionListener(this);
 
       preferencesPanel.add(new JLabel(wineResources.getString("SweetnessLabel")));
-      preferredSweetness = new JComboBox(preferredSweetnessChoices); 
+      preferredSweetness = new JComboBox<String>(preferredSweetnessChoices); 
       preferencesPanel.add(preferredSweetness);
       preferredSweetness.addActionListener(this);
 
@@ -212,17 +212,17 @@ class WineDemo implements ActionListener
                                                                  TitledBorder.ABOVE_TOP));
  
       mealPanel.add(new JLabel(wineResources.getString("MainCourseLabel")));
-      mainCourse = new JComboBox(mainCourseChoices); 
+      mainCourse = new JComboBox<String>(mainCourseChoices); 
       mealPanel.add(mainCourse);
       mainCourse.addActionListener(this);
     
       mealPanel.add(new JLabel(wineResources.getString("SauceLabel")));
-      sauce = new JComboBox(sauceChoices); 
+      sauce = new JComboBox<String>(sauceChoices); 
       mealPanel.add(sauce);
       sauce.addActionListener(this);
 
       mealPanel.add(new JLabel(wineResources.getString("FlavorLabel")));
-      flavor = new JComboBox(flavorChoices); 
+      flavor = new JComboBox<String>(flavorChoices); 
       mealPanel.add(flavor);
       flavor.addActionListener(this);
       

@@ -103,11 +103,11 @@
 #endif
 
 #ifndef DARWIN
-#define DARWIN  0   /* Darwin Mac OS 10.10.2, presumably with gcc or Xcode 6.1.1 with Console */
+#define DARWIN  0   /* Darwin Mac OS 10.10.2, presumably with gcc or Xcode 6.2 with Console */
 #endif
 
 #ifndef MAC_XCD
-#define MAC_XCD 0   /* MacOS 10.10.2, with Xcode 6.1.1 and Cocoa GUI */
+#define MAC_XCD 0   /* MacOS 10.10.2, with Xcode 6.2 and Cocoa GUI */
 #endif
 
 #ifndef WIN_MVC

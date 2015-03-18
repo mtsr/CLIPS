@@ -49,17 +49,17 @@ struct clipsJNIData
 
 #define CLIPSJNIData(theEnv) ((struct clipsJNIData *) GetEnvironmentData(theEnv,CLIPSJNI_DATA))
 
-static int        QueryJNIRouter(void *,char *);
+static int        QueryJNIRouter(void *,const char *);
 static int        ExitJNIRouter(void *,int);
-static int        PrintJNIRouter(void *,char *,char *);
-static int        GetcJNIRouter(void *,char *);
-static int        UngetcJNIRouter(void *,int,char *);
+static int        PrintJNIRouter(void *,const char *,const char *);
+static int        GetcJNIRouter(void *,const char *);
+static int        UngetcJNIRouter(void *,int,const char *);
 static void       DeallocateJNIData(void *);
 static jobject    ConvertSingleFieldValue(JNIEnv *,jobject,void *,int,void *);
 static jobject    ConvertDataObject(JNIEnv *,jobject,void *,DATA_OBJECT *);
 static void      *JLongToPointer(jlong);
 static jlong      PointerToJLong(void *);
-static void       PrintJavaAddress(void *,char *,void *);
+static void       PrintJavaAddress(void *,const char *,void *);
 static void       NewJavaAddress(void *,DATA_OBJECT *);
 static intBool    CallJavaMethod(void *,DATA_OBJECT *,DATA_OBJECT *);
 static intBool    DiscardJavaAddress(void *,void *);
@@ -95,7 +95,7 @@ static void DeallocateJNIData(
 /*************************************************/
 static int QueryJNIRouter(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
    jobject context;
    jclass cls;
@@ -151,8 +151,8 @@ static int ExitJNIRouter(
 /**************************************************/
 static int PrintJNIRouter(
   void *theEnv,
-  char *logicalName,
-  char *str)
+  const char *logicalName,
+  const char *str)
   {
    jobject context;
    JNIEnv *env;
@@ -189,7 +189,7 @@ static int PrintJNIRouter(
 /************************************************/
 static int GetcJNIRouter(
   void *theEnv,
-  char *logicalName)
+  const char *logicalName)
   {
    jint theChar;
    jobject context;
@@ -226,7 +226,7 @@ static int GetcJNIRouter(
 static int UngetcJNIRouter(
   void *theEnv,
   int ch,
-  char *logicalName)
+  const char *logicalName)
   {
    jint theChar;
    jobject context;
@@ -1487,7 +1487,7 @@ static jlong PointerToJLong(
 /*******************************************************/
 static void PrintJavaAddress(
   void *theEnv,
-  char *logicalName,
+  const char *logicalName,
   void *theValue)
   {
    jobject theObject;
@@ -1534,7 +1534,7 @@ static void NewJavaAddress(
    jclass theClass, tempClass;
    int numberOfArguments;
    JNIEnv *env;
-   char *className;
+   const char *className;
    char *classDescriptor;
    DATA_OBJECT theValue;
    size_t i, length;
@@ -1818,7 +1818,7 @@ static intBool CallJavaMethod(
    jsize theSize, c; 
    jsize paramCount, p; 
    DATA_OBJECT theValue;
-   char *methodName;
+   const char *methodName;
    jstring str;
    char *cStr;
    int found = FALSE, matches;
