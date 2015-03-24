@@ -134,7 +134,6 @@ public abstract class PrimitiveValue
    /************/
    public void retain()
      {
-      //System.out.println("PrimitiveValue retain");
      }
 
    /************/
@@ -142,7 +141,6 @@ public abstract class PrimitiveValue
    /************/
    public void release()
      {
-      //System.out.println("PrimitiveValue release");
      }
      
    /*************/

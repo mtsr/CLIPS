@@ -1,3 +1,7 @@
+JAVA_HOME = c:\Program Files\Java\jdk1.8.0_31
+JAVA_INCLUDE = $(JAVA_HOME)\include
+JAVA_LIB = $(JAVA_HOME)\lib
+
 OBJS = agenda.obj analysis.obj argacces.obj bload.obj bmathfun.obj bsave.obj \
  	classcom.obj classexm.obj classfun.obj classinf.obj classini.obj \
  	classpsr.obj clsltpsr.obj commline.obj conscomp.obj constrct.obj \
@@ -6,7 +10,7 @@ OBJS = agenda.obj analysis.obj argacces.obj bload.obj bmathfun.obj bsave.obj \
  	cstrnutl.obj default.obj defins.obj developr.obj dffctbin.obj dffctbsc.obj \
  	dffctcmp.obj dffctdef.obj dffctpsr.obj dffnxbin.obj dffnxcmp.obj \
  	dffnxexe.obj dffnxfun.obj dffnxpsr.obj dfinsbin.obj dfinscmp.obj drive.obj \
- 	edbasic.obj edmain.obj edmisc.obj edstruct.obj edterm.obj emathfun.obj \
+ 	emathfun.obj \
  	engine.obj envrnmnt.obj evaluatn.obj expressn.obj exprnbin.obj exprnops.obj \
  	exprnpsr.obj extnfunc.obj factbin.obj factbld.obj factcmp.obj factcom.obj \
  	factfun.obj factgen.obj facthsh.obj factlhs.obj factmch.obj factmngr.obj \
@@ -30,10 +34,10 @@ OBJS = agenda.obj analysis.obj argacces.obj bload.obj bmathfun.obj bsave.obj \
  	utility.obj watch.obj CLIPSJNI_Environment.obj
 
 .c.obj :
-	cl -c -DWIN_MVC -DALLOW_ENVIRONMENT_GLOBALS=0 /I"c:\Program Files\Java\jdk1.6.0_24\include" /I"c:\Program Files\Java\jdk1.6.0_24\include\win32" $<
+	cl -c -DWIN_MVC -DALLOW_ENVIRONMENT_GLOBALS=0 /I"$(JAVA_INCLUDE)" /I"$(JAVA_INCLUDE)\win32" $<
 
 CLIPSJNI.dll : $(OBJS)
-	link /libpath:"c:\Program Files\Java\jdk1.6.0\lib" *.obj /dll /out:CLIPSJNI.dll
+	link /libpath:"$(JAVA_LIB)" *.obj /dll /out:CLIPSJNI.dll
 
 CLIPSJNI_Environment.obj: CLIPSJNI_Environment.c setup.h envrnmnt.h \
   symbol.h usrsetup.h clips.h argacces.h \
@@ -352,16 +356,6 @@ drive.obj: drive.c setup.h envrnmnt.h symbol.h usrsetup.h agenda.h \
   scanner.h pprint.h utility.h symblcmp.h constrnt.h cstrccom.h network.h \
   match.h pattern.h reorder.h engine.h lgcldpnd.h retract.h memalloc.h \
   prntutil.h reteutil.h router.h incrrset.h drive.h
-
-edbasic.obj: edbasic.c setup.h envrnmnt.h symbol.h usrsetup.h
-
-edmain.obj: edmain.c setup.h envrnmnt.h symbol.h usrsetup.h
-
-edmisc.obj: edmisc.c setup.h envrnmnt.h symbol.h usrsetup.h
-
-edstruct.obj: edstruct.c setup.h envrnmnt.h symbol.h usrsetup.h
-
-edterm.obj: edterm.c setup.h envrnmnt.h symbol.h usrsetup.h
 
 emathfun.obj: emathfun.c setup.h envrnmnt.h symbol.h usrsetup.h argacces.h \
   expressn.h exprnops.h exprnpsr.h extnfunc.h userdata.h scanner.h \

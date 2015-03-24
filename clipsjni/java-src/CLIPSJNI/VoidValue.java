@@ -9,21 +9,4 @@ public class VoidValue extends PrimitiveValue
      {
       super(null);
      }
-
-   /************/
-   /* retain: */
-   /************/
-   public void retain()
-     {
-      //System.out.println("VoidValue retain");
-     }
-
-   /************/
-   /* release: */
-   /************/
-   public void release()
-     {
-      //System.out.println("VoidValue release");
-     }
-
   }

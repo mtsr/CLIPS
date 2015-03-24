@@ -51,20 +51,4 @@ public class FloatValue extends PrimitiveValue
      {
       return ((Double) getValue()).doubleValue();
      }
-
-   /***********/
-   /* retain: */
-   /***********/
-   public void retain()
-     {
-      //System.out.println("FloatValue retain");
-     }
-
-   /*************/
-   /* release: */
-   /*************/
-   public void release()
-     {
-      //System.out.println("FloatValue release");
-     }
   }
