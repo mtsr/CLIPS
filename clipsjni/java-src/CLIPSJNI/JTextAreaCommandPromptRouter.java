@@ -168,6 +168,12 @@ public class JTextAreaCommandPromptRouter extends JTextAreaRouter implements Car
             jta.getCaret().setDot(jta.getText().length() - caretOffset);
            }
         }
+      else if (kc == KeyEvent.VK_ESCAPE)
+        {
+         caretOffset = 0;
+         jta.getCaret().setDot(jta.getText().length() - caretOffset);
+        }
+        
 
       e.consume();
      }
@@ -187,7 +193,7 @@ public class JTextAreaCommandPromptRouter extends JTextAreaRouter implements Car
 
          if ((e.getModifiers() & (KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0) return;
  
-         moveSelectionToEnd();
+         /* moveSelectionToEnd(); */
          
          char c = e.getKeyChar();
          
@@ -200,7 +206,7 @@ public class JTextAreaCommandPromptRouter extends JTextAreaRouter implements Car
             expandInputBuffer(c);
             balanceParentheses();
            }
-         else
+         else if (caretOffset == 0)
            {
             buffer.append(c);    
             jta.append(buffer.toString());
@@ -625,7 +631,7 @@ public class JTextAreaCommandPromptRouter extends JTextAreaRouter implements Car
    public void caretUpdate(
      CaretEvent e) 
      {
-      caretUpdateAction(e.getDot(), e.getMark(),this); 
+      caretUpdateAction(e.getDot(), e.getMark()); 
      }
     
    /*********************/
@@ -633,43 +639,40 @@ public class JTextAreaCommandPromptRouter extends JTextAreaRouter implements Car
    /*********************/  
    protected void caretUpdateAction(
      final int dot,
-     final int mark,
-     final JTextAreaCommandPromptRouter theRouter) 
+     final int mark) 
      {
       SwingUtilities.invokeLater(new Runnable() 
         {
          public void run()
            {
-            synchronized(theRouter)
-              {
-               /*==============================================*/
-               /* Attempting to move the caret outside of the  */
-               /* text for the current command is not allowed. */
-               /*==============================================*/
+            /*==============================================*/
+            /* Attempting to move the caret outside of the  */
+            /* text for the current command is not allowed. */
+            /*==============================================*/
             
-               if (dot == mark) 
-                 { 
-                  int tl = jta.getText().length();
-                  int il = (int) clips.getInputBufferCount();
+            if (dot == mark) 
+              { 
                
-                  if (dot < (tl -il))
-                    {
-                     caretOffset = il;
-                     jta.getCaret().setDot(tl-il);
-                    }
-                  else
-                    { caretOffset = tl - dot; }
-
-                  jta.getCaret().setVisible(true);
+               int tl = jta.getText().length();
+               int il = (int) clips.getInputBufferCount();
+               
+               if (dot < (tl -il))
+                 {
+                  caretOffset = il;
+                  jta.getCaret().setDot(tl-il);
                  }
-              
-               /*======================================*/
-               /* If text is selected, hide the caret. */
-               /*======================================*/
-            
                else
-                 { jta.getCaret().setVisible(false); }
+                 { caretOffset = tl - dot; }
+
+               jta.getCaret().setVisible(true);
               }
+              
+            /*======================================*/
+            /* If text is selected, hide the caret. */
+            /*======================================*/
+            
+            else
+              { jta.getCaret().setVisible(false); }
            }
         });
      }    

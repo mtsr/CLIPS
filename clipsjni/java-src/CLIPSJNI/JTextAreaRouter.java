@@ -3,12 +3,13 @@ package CLIPSJNI;
 import javax.swing.*; 
 import javax.swing.border.*; 
 import javax.swing.table.*;
+import javax.swing.BorderFactory;
 import java.awt.*; 
 import java.awt.event.*; 
 import java.io.Reader;
 import java.io.InputStreamReader;
 
-public class JTextAreaRouter implements Router, KeyListener
+public class JTextAreaRouter implements Router, KeyListener, FocusListener
   {  
    protected Environment clips;
    protected JTextArea jta;
@@ -43,6 +44,11 @@ public class JTextAreaRouter implements Router, KeyListener
       jta = new JTextArea();
       jta.setEditable(false);
       jta.addKeyListener(this);
+      jta.addFocusListener(this);
+      //jta.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.white,3),
+      //                                                BorderFactory.createEmptyBorder(5,5,5,0)));
+
+      jta.setBorder(BorderFactory.createEmptyBorder(5,5,5,0));
       
       buffer = new StringBuffer(); 
       
@@ -63,6 +69,20 @@ public class JTextAreaRouter implements Router, KeyListener
    public JTextArea getJTextArea() 
      {
       return jta;
+     }
+   
+   public void focusGained(FocusEvent e)
+     {
+      //jta.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.darkGray,3),
+      //                                                 BorderFactory.createEmptyBorder(5,5,5,0)));
+      jta.getCaret().setVisible(true);
+     }
+
+   public void focusLost(FocusEvent e)
+     {
+      //jta.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.white,3),
+      //                                                 BorderFactory.createEmptyBorder(5,5,5,0)));
+      jta.getCaret().setVisible(false);
      }
      
    public void keyPressed(KeyEvent e) 
