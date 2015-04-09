@@ -331,21 +331,27 @@ globle void *gm2(
   void *theEnv,
   size_t size)
   {
+#if (MEM_TABLE_SIZE > 0)
    struct memoryPtr *memPtr;
-   
+#endif
+
    if (size < sizeof(char *)) size = sizeof(char *);
 
+#if (MEM_TABLE_SIZE > 0)
    if (size >= MEM_TABLE_SIZE) return(genalloc(theEnv,(unsigned) size));
 
    memPtr = (struct memoryPtr *) MemoryData(theEnv)->MemoryTable[size];
    if (memPtr == NULL)
      {
-      return(genalloc(theEnv,(unsigned) size));
+      return(genalloc(theEnv,size));
      }
 
    MemoryData(theEnv)->MemoryTable[size] = memPtr->next;
 
    return ((void *) memPtr);
+#else
+   return(genalloc(theEnv,size));
+#endif
   }
 
 /*****************************************************/
@@ -355,10 +361,13 @@ globle void *gm3(
   void *theEnv,
   size_t size)
   {
+#if (MEM_TABLE_SIZE > 0)
    struct memoryPtr *memPtr;
+#endif
 
    if (size < (long) sizeof(char *)) size = sizeof(char *);
 
+#if (MEM_TABLE_SIZE > 0)
    if (size >= MEM_TABLE_SIZE) return(genalloc(theEnv,size));
 
    memPtr = (struct memoryPtr *) MemoryData(theEnv)->MemoryTable[(int) size];
@@ -368,6 +377,9 @@ globle void *gm3(
    MemoryData(theEnv)->MemoryTable[(int) size] = memPtr->next;
 
    return ((void *) memPtr);
+#else
+   return(genalloc(theEnv,size));
+#endif
   }
 
 /****************************************/
@@ -379,7 +391,9 @@ globle int rm(
   void *str,
   size_t size)
   {
+#if (MEM_TABLE_SIZE > 0)
    struct memoryPtr *memPtr;
+#endif
 
    if (size == 0)
      {
@@ -389,11 +403,16 @@ globle int rm(
 
    if (size < sizeof(char *)) size = sizeof(char *);
 
-   if (size >= MEM_TABLE_SIZE) return(genfree(theEnv,(void *) str,(unsigned) size));
+#if (MEM_TABLE_SIZE > 0)
+   if (size >= MEM_TABLE_SIZE) return(genfree(theEnv,(void *) str,size));
 
    memPtr = (struct memoryPtr *) str;
    memPtr->next = MemoryData(theEnv)->MemoryTable[size];
    MemoryData(theEnv)->MemoryTable[size] = memPtr;
+#else
+   return(genfree(theEnv,(void *) str,size));
+#endif
+
    return(1);
   }
 
@@ -407,7 +426,9 @@ globle int rm3(
   void *str,
   size_t size)
   {
+#if (MEM_TABLE_SIZE > 0)
    struct memoryPtr *memPtr;
+#endif
 
    if (size == 0)
      {
@@ -416,12 +437,17 @@ globle int rm3(
      }
 
    if (size < (long) sizeof(char *)) size = sizeof(char *);
-
-   if (size >= MEM_TABLE_SIZE) return(genfree(theEnv,(void *) str,(unsigned long) size));
+   
+#if (MEM_TABLE_SIZE > 0)
+   if (size >= MEM_TABLE_SIZE) return(genfree(theEnv,(void *) str,size));
 
    memPtr = (struct memoryPtr *) str;
    memPtr->next = MemoryData(theEnv)->MemoryTable[(int) size];
    MemoryData(theEnv)->MemoryTable[(int) size] = memPtr;
+#else
+   return(genfree(theEnv,(void *) str,size));
+#endif
+
    return(1);
   }
 
@@ -431,9 +457,11 @@ globle int rm3(
 globle unsigned long PoolSize(
   void *theEnv)
   {
+   unsigned long cnt = 0;
+
+#if (MEM_TABLE_SIZE > 0)
    register int i;
    struct memoryPtr *memPtr;
-   unsigned long cnt = 0;
 
    for (i = sizeof(char *) ; i < MEM_TABLE_SIZE ; i++)
      {
@@ -444,6 +472,8 @@ globle unsigned long PoolSize(
          memPtr = memPtr->next;
         }
      }
+#endif
+
    return(cnt);
   }
 
