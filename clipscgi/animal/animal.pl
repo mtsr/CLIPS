@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use CGI;
 
+use File::Spec;
+
 require File::Temp;
 use File::Temp ();
 use File::Temp qw/ :seekable /;
@@ -20,6 +22,7 @@ my $bfh;
 my $ffh;
 my $batchfilename;
 my $factfilename;
+my $escapefilename;
 
 ###################################
 # Create the batch and fact files #
@@ -51,7 +54,11 @@ say $bfh '(load* bccgi.clp)';
 say $bfh '(load* animalcgi.clp)';
 say $bfh '(reset)';
 say $bfh '(load-facts animal_en.fct)';
-say $bfh "(load-facts $factfilename)";
+
+$escapefilename = $factfilename;
+$escapefilename =~ s/\\/\\\\/g;
+say $bfh "(load-facts \"$escapefilename\")";
+
 say $bfh '(run)';
 say $bfh '(exit)';
 
@@ -120,7 +127,22 @@ close $ffh;
 # Run CLIPS and retrieve the results #
 ######################################
 
-my @output = `./clips -f2 $batchfilename`; 
+# Set the current working directory to
+# the one containing our perl script
+
+my $volume;
+my $directories;
+my $file;
+
+($volume,$directories,$file) = File::Spec->splitpath($0);
+                       
+chdir $directories;
+
+# Execute CLIPS
+
+my @output = `../clips -f2 $batchfilename`;
+
+# Retrieve the results
 
 my %info;
 
