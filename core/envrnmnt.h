@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  05/18/15            */
    /*                                                     */
    /*                ENVRNMNT HEADER FILE                 */
    /*******************************************************/
@@ -38,6 +38,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.31: Refactored code to reduce header dependencies  */
+/*            in sysdep.c.                                   */
 /*                                                           */
 /*************************************************************/
 
@@ -111,6 +114,10 @@ typedef struct environmentData * ENVIRONMENT_DATA_PTR;
    LOCALE void                          *SetEnvironmentFunctionContext(void *,void *);
    LOCALE void                          *GetEnvironmentCallbackContext(void *);
    LOCALE void                          *SetEnvironmentCallbackContext(void *,void *);
+   LOCALE void                           InterruptCurrentEnvironment(void);
+#if ALLOW_ENVIRONMENT_GLOBALS
+   LOCALE void                           InitializeEnvironment(void);
+#endif
 
 #endif /* _H_envrnmnt */
 

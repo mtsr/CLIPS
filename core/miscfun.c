@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.39  01/29/15            */
+   /*             CLIPS Version 6.31  05/18/15            */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -63,6 +63,9 @@
 /*                                                           */
 /*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
+/*      6.31: Refactored code to reduce header dependencies  */
+/*            in sysdep.c.                                   */
+/*                                                           */
 /*************************************************************/
 
 #define _MISCFUN_SOURCE_
@@ -118,7 +121,7 @@ globle void MiscFunctionDefinitions(
    EnvDefineFunction2(theEnv,"gensym",           'w', PTIEF GensymFunction,      "GensymFunction", "00");
    EnvDefineFunction2(theEnv,"gensym*",          'w', PTIEF GensymStarFunction,  "GensymStarFunction", "00");
    EnvDefineFunction2(theEnv,"setgen",           'g', PTIEF SetgenFunction,      "SetgenFunction", "11i");
-   EnvDefineFunction2(theEnv,"system",           'v', PTIEF gensystem,           "gensystem", "1*k");
+   EnvDefineFunction2(theEnv,"system",           'v', PTIEF SystemCommand,       "SystemCommand", "1*k");
    EnvDefineFunction2(theEnv,"length",           'g', PTIEF LengthFunction,      "LengthFunction", "11q");
    EnvDefineFunction2(theEnv,"length$",          'g', PTIEF LengthFunction,      "LengthFunction", "11q");
    EnvDefineFunction2(theEnv,"time",             'd', PTIEF TimeFunction,        "TimeFunction", "00");
@@ -1481,3 +1484,63 @@ globle double TimerFunction(
 
    return(gentime() - startTime);
   }
+
+/***************************************/
+/* SystemCommand: H/L access routine   */
+/*   for the system function.          */
+/***************************************/
+globle void SystemCommand(
+  void *theEnv)
+  {
+   char *commandBuffer = NULL;
+   size_t bufferPosition = 0;
+   size_t bufferMaximum = 0;
+   int numa, i;
+   DATA_OBJECT tempValue;
+   const char *theString;
+
+   /*===========================================*/
+   /* Check for the corret number of arguments. */
+   /*===========================================*/
+
+   if ((numa = EnvArgCountCheck(theEnv,"system",AT_LEAST,1)) == -1) return;
+
+   /*============================================================*/
+   /* Concatenate the arguments together to form a single string */
+   /* containing the command to be sent to the operating system. */
+   /*============================================================*/
+
+   for (i = 1 ; i <= numa; i++)
+     {
+      EnvRtnUnknown(theEnv,i,&tempValue);
+      if ((GetType(tempValue) != STRING) &&
+          (GetType(tempValue) != SYMBOL))
+        {
+         SetHaltExecution(theEnv,TRUE);
+         SetEvaluationError(theEnv,TRUE);
+         ExpectedTypeError2(theEnv,"system",i);
+         return;
+        }
+
+     theString = DOToString(tempValue);
+
+     commandBuffer = AppendToString(theEnv,theString,commandBuffer,&bufferPosition,&bufferMaximum);
+    }
+
+   if (commandBuffer == NULL) return;
+
+   /*=======================================*/
+   /* Execute the operating system command. */
+   /*=======================================*/
+   
+   gensystem(theEnv,commandBuffer);
+
+   /*==================================================*/
+   /* Return the string buffer containing the command. */
+   /*==================================================*/
+
+   rm(theEnv,commandBuffer,bufferMaximum);
+
+   return;
+  }
+

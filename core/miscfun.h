@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  05/18/15            */
    /*                                                     */
    /*          MISCELLANEOUS FUNCTIONS HEADER FILE        */
    /*******************************************************/
@@ -57,6 +57,9 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*      6.31: Refactored code to reduce header dependencies  */
+/*            in sysdep.c.                                   */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_miscfun
@@ -100,6 +103,7 @@
    LOCALE void                           CallFunction(void *,DATA_OBJECT *);
    LOCALE double                         TimerFunction(void *);
    LOCALE double                         TimeFunction(void *);
+   LOCALE void                           SystemCommand(void *);
 
 #endif /* _H_miscfun */
 

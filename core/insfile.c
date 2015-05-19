@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  02/04/15           */
+   /*              CLIPS Version 6.31  05/18/15           */
    /*                                                     */
    /*         INSTANCE LOAD/SAVE (ASCII/BINARY) MODULE    */
    /*******************************************************/
@@ -380,6 +380,7 @@ globle long EnvBinaryLoadInstances(
 
    if (GenOpenReadBinary(theEnv,"bload-instances",theFile) == 0)
      {
+      OpenErrorMessage(theEnv,"bload-instances",theFile);
       SetEvaluationError(theEnv,TRUE);
       return(-1L);
      }

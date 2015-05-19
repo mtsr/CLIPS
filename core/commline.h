@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  05/18/15            */
    /*                                                     */
    /*              COMMAND LINE HEADER FILE               */
    /*******************************************************/
@@ -48,6 +48,9 @@
 /*                                                           */             
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.31: Refactored code to reduce header dependencies  */
+/*            in sysdep.c.                                   */
 /*                                                           */
 /*************************************************************/
 
@@ -111,6 +114,7 @@ struct commandLineData
    LOCALE intBool                        CommandCompleteAndNotEmpty(void *);
    LOCALE void                           SetHaltCommandLoopBatch(void *,int);
    LOCALE int                            GetHaltCommandLoopBatch(void *);
+   LOCALE void                           RerouteStdin(void *,int,char *[]);
 
 #endif
 
