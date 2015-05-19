@@ -78,6 +78,9 @@
 /*      6.31: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
+/*            Modified gentime to return "comparable" epoch  */
+/*            based values across platforms.                 */
+/*                                                           */
 /*************************************************************/
 
 #define _SYSDEP_SOURCE_
@@ -102,21 +105,12 @@ extern int LIB$SPAWN();
 #endif
 
 #if MAC_XCD
-#include <Carbon/Carbon.h> 
-#define kTwoPower32 (4294967296.0)      /* 2^32 */
-#endif
-
-#if MAC_XCD
-#include <strings.h>
-#endif
-
-#if MAC_XCD 
+#include <sys/time.h>
 #include <unistd.h>
 #endif
 
 #if WIN_MVC
-#include <sys\types.h>
-#include <sys\timeb.h>
+#include <windows.h>
 #include <io.h>
 #include <fcntl.h>
 #include <signal.h>
@@ -250,56 +244,21 @@ globle void (*GetContinueEnvFunction(void *theEnv))(void *,int)
 /*********************************************************/
 globle double gentime()
   {
-#if   MAC_XCD
-   UnsignedWide result;
-
-   Microseconds(&result);
-
-   return(((((double) result.hi) * kTwoPower32) + result.lo) / 1000000.0);
-
-#elif UNIX_V || DARWIN
-#if defined(_POSIX_TIMERS) && (_POSIX_TIMERS > 0)
-   struct timespec now;
-   clock_gettime(
-
-#if defined(_POSIX_MONOTONIC_CLOCK)
-       CLOCK_MONOTONIC,
-#else
-       CLOCK_REALTIME,
-#endif
-       &now);
-  return (now.tv_nsec / 1000000000.0) + now.tv_sec;
-#else
+#if MAC_XCD || UNIX_V || DARWIN || LINUX || UNIX_7
    struct timeval now;
    gettimeofday(&now, 0);
    return (now.tv_usec / 1000000.0) + now.tv_sec;
-#endif
-
-#elif LINUX
-#if defined(_POSIX_TIMERS) && (_POSIX_TIMERS > 0) && defined(_POSIX_C_SOURCE) && (_POSIX_C_SOURCE >= 199309L)
-   struct timespec now;
-   clock_gettime(
-
-#if defined(_POSIX_MONOTONIC_CLOCK)
-       CLOCK_MONOTONIC,
+#elif WIN_MVC
+    FILETIME ft;
+    GetSystemTimeAsFileTime(&ft);
+    unsigned long long tt = ft.dwHighDateTime;
+    tt <<=32;
+    tt |= ft.dwLowDateTime;
+    tt /=10;
+    tt -= 11644473600000000ULL;
+	return (double) tt / 1000000.0;
 #else
-       CLOCK_REALTIME,
-#endif
-       &now);
-  return (now.tv_nsec / 1000000000.0) + now.tv_sec;
-#else
-   struct timeval now;
-   gettimeofday(&now, 0);
-   return (now.tv_usec / 1000000.0) + now.tv_sec;
-#endif
-
-#elif UNIX_7
-   struct timeval now;
-   gettimeofday(&now, 0);
-   return (now.tv_usec / 1000000.0) + now.tv_sec;
-
-#else
-   return((double) clock() / (double) CLOCKS_PER_SEC);
+   return((double) time(NULL));
 #endif
   }
 
