@@ -30,5 +30,11 @@ void __declspec(dllimport) __EnvDecrementInstanceCount(void *,void *);
 long long __declspec(dllimport) __EnvFactIndex(void *,void *);
 int __declspec(dllimport) __EnvGetFactSlot(void *,void *,char *,void *);  
 char __declspec(dllimport) * __EnvGetInstanceName(void *,void *); 
-
+int __declspec(dllimport) __EnvWatch(void *,char *);  
+int __declspec(dllimport) __EnvUnwatch(void *,char *);  
+int __declspec(dllexport) __EnvAddRouterWithContext(void *,const char *,int,int (*)(void *,const char *),
+                                                    int (*)(void *,const char *,const char *),int (*)(void *,const char *),
+                                                    int (*)(void *,int,const char *),int (*)(void *,int),void *);
+void __declspec(dllexport) * __GetEnvironmentContext(void *);
+void __declspec(dllexport) * __GetEnvironmentRouterContext(void *);
 #endif

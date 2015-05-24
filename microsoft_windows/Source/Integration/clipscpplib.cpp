@@ -34,13 +34,11 @@ extern "C"
 /* Static Functions */
 /*##################*/
 
-#ifndef CLIPS_DLL_WRAPPER
 static int CLIPSCPPQuery(void *,const char *);
 static int CLIPSCPPPrint(void *,const char *,const char *);
 static int CLIPSCPPGetc(void *,const char *);
 static int CLIPSCPPUngetc(void *,int,const char *);
 static int CLIPSCPPExit(void *,int);
-#endif
 static Value *ConvertSingleFieldValue(void *,int,void *);
 static DataObject ConvertDataObject(void *,DATA_OBJECT *);
 
@@ -243,15 +241,17 @@ static Value *ConvertSingleFieldValue(
    return new VoidValue();
   }
   
-#ifndef CLIPS_DLL_WRAPPER
-
 /*********/
 /* Watch */
 /*********/
 int CLIPSCPPEnv::Watch(
   char *item)
   {
+#ifndef CLIPS_DLL_WRAPPER
    return EnvWatch(theEnv,item);
+#else
+   return __EnvWatch(theEnv,item);
+#endif
   }
 
 /***********/
@@ -260,7 +260,11 @@ int CLIPSCPPEnv::Watch(
 int CLIPSCPPEnv::Unwatch(
   char *item)
   {
+#ifndef CLIPS_DLL_WRAPPER
    return EnvUnwatch(theEnv,item);
+#else
+   return __EnvUnwatch(theEnv,item);
+#endif
   }
   
 /*************/
@@ -271,9 +275,15 @@ int CLIPSCPPEnv::AddRouter(
   int priority,
   CLIPSCPPRouter *router)
   {
+#ifndef CLIPS_DLL_WRAPPER
    return EnvAddRouterWithContext(theEnv,routerName,priority,CLIPSCPPQuery,
                                   CLIPSCPPPrint,CLIPSCPPGetc,CLIPSCPPUngetc,
                                   CLIPSCPPExit,router);
+#else
+   return __EnvAddRouterWithContext(theEnv,routerName,priority,CLIPSCPPQuery,
+                                    CLIPSCPPPrint,CLIPSCPPGetc,CLIPSCPPUngetc,
+                                    CLIPSCPPExit,router);
+#endif
   }
   
 /*########################*/
@@ -331,8 +341,6 @@ int CLIPSCPPRouter::Exit(
   {
    return FALSE;
   }
-
-#endif
 
 /*####################*/
 /* DataObject Methods */
@@ -1138,8 +1146,6 @@ MultifieldValue *MultifieldValue::clone() const
    return new MultifieldValue(*this); 
   }
 
-#ifndef CLIPS_DLL_WRAPPER
-
 /*#########################*/
 /* Static Router Functions */
 /*#########################*/
@@ -1151,8 +1157,13 @@ static int CLIPSCPPQuery(
   void *theEnv,
   const char *logicalName)
   { 
+#ifndef CLIPS_DLL_WRAPPER
    CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) GetEnvironmentRouterContext(theEnv);
    CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) GetEnvironmentContext(theEnv);
+#else
+   CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) __GetEnvironmentRouterContext(theEnv);
+   CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) __GetEnvironmentContext(theEnv);
+#endif
    
    return(theRouter->Query(theCPPEnv,logicalName));
   }
@@ -1165,8 +1176,13 @@ static int CLIPSCPPPrint(
   const char *logicalName,
   const char *printString)
   { 
+#ifndef CLIPS_DLL_WRAPPER
    CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) GetEnvironmentRouterContext(theEnv);
    CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) GetEnvironmentContext(theEnv);
+#else
+   CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) __GetEnvironmentRouterContext(theEnv);
+   CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) __GetEnvironmentContext(theEnv);
+#endif
    
    return(theRouter->Print(theCPPEnv,logicalName,printString));
   }
@@ -1178,8 +1194,13 @@ static int CLIPSCPPGetc(
   void *theEnv,
   const char *logicalName)
   { 
+#ifndef CLIPS_DLL_WRAPPER
    CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) GetEnvironmentRouterContext(theEnv);
    CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) GetEnvironmentContext(theEnv);
+#else
+   CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) __GetEnvironmentRouterContext(theEnv);
+   CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) __GetEnvironmentContext(theEnv);
+#endif
    
    return(theRouter->Getc(theCPPEnv,logicalName));
   }
@@ -1192,8 +1213,13 @@ static int CLIPSCPPUngetc(
   int character,
   const char *logicalName)
   { 
+#ifndef CLIPS_DLL_WRAPPER
    CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) GetEnvironmentRouterContext(theEnv);
    CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) GetEnvironmentContext(theEnv);
+#else
+   CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) __GetEnvironmentRouterContext(theEnv);
+   CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) __GetEnvironmentContext(theEnv);
+#endif
    
    return(theRouter->Ungetc(theCPPEnv,character,logicalName));
   }
@@ -1205,10 +1231,13 @@ static int CLIPSCPPExit(
   void *theEnv,
   int exitCode)
   { 
+#ifndef CLIPS_DLL_WRAPPER
    CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) GetEnvironmentRouterContext(theEnv);
    CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) GetEnvironmentContext(theEnv);
+#else
+   CLIPSCPPRouter *theRouter = (CLIPSCPPRouter *) __GetEnvironmentRouterContext(theEnv);
+   CLIPSCPPEnv *theCPPEnv = (CLIPSCPPEnv *) __GetEnvironmentContext(theEnv);
+#endif
    
    return(theRouter->Exit(theCPPEnv,exitCode));
   }
-
-#endif

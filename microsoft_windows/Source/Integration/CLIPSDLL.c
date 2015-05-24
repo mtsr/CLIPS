@@ -112,3 +112,43 @@ const char __declspec(dllexport) * __EnvGetInstanceName(
   {
    return EnvGetInstanceName(theEnv,theInstance);  
   } 
+
+int __declspec(dllexport) __EnvWatch(
+  void *theEnv,
+  char *item)
+  {
+   return EnvWatch(theEnv,item);
+  }
+
+int __declspec(dllexport) __EnvUnwatch(
+  void *theEnv,
+  char *item)
+  {
+   return EnvUnwatch(theEnv,item);
+  }
+
+void __declspec(dllexport) * __GetEnvironmentContext(
+  void *theEnv)
+  {
+   return GetEnvironmentContext(theEnv);
+  }
+
+void __declspec(dllexport) * __GetEnvironmentRouterContext(
+  void *theEnv)
+  {
+   return GetEnvironmentRouterContext(theEnv);
+  }
+
+int __declspec(dllexport) __EnvAddRouterWithContext(
+  void *theEnv,
+  const char *routerName,
+  int priority,
+  int (*queryFunction)(void *,const char *),
+  int (*printFunction)(void *,const char *,const char *),
+  int (*getcFunction)(void *,const char *),
+  int (*ungetcFunction)(void *,int,const char *),
+  int (*exitFunction)(void *,int),
+  void *context)
+  {
+   return EnvAddRouterWithContext(theEnv,routerName,priority,queryFunction,printFunction,getcFunction,ungetcFunction,exitFunction,context);
+  }
