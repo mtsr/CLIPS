@@ -250,8 +250,10 @@ globle double gentime()
    return (now.tv_usec / 1000000.0) + now.tv_sec;
 #elif WIN_MVC
     FILETIME ft;
+	unsigned long long tt;
+
     GetSystemTimeAsFileTime(&ft);
-    unsigned long long tt = ft.dwHighDateTime;
+	tt = ft.dwHighDateTime;
     tt <<=32;
     tt |= ft.dwLowDateTime;
     tt /=10;
