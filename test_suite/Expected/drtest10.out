@@ -668,5 +668,41 @@ CLIPS> (assert (SAD T 3 T08 2))
 ==> Activation 0      if: *,*
 <Fact-5>
 CLIPS> (unwatch activations)
+CLIPS> (clear) ; Matches issue
+CLIPS> (defmodule MAIN (export ?ALL))
+CLIPS> (deffacts start (a) (b) (c))
+CLIPS> (defmodule A (import MAIN ?ALL))
+CLIPS> (defrule A::foo (a) =>)
+CLIPS> (defmodule B (import MAIN ?ALL))
+CLIPS> (defrule B::foo (b) =>)
+CLIPS> (defmodule C (import MAIN ?ALL))
+CLIPS> (defrule C::foo (c) =>)
+CLIPS> (reset)
+CLIPS> (matches A::foo)
+Matches for Pattern 1
+f-1
+Activations
+f-1
+(1 0 1)
+CLIPS> (matches B::foo)
+Matches for Pattern 1
+f-2
+Activations
+f-2
+(1 0 1)
+CLIPS> (matches C::foo)
+Matches for Pattern 1
+f-3
+Activations
+f-3
+(1 0 1)
+CLIPS> (set-current-module MAIN)
+MAIN
+CLIPS> (matches A::foo)
+Matches for Pattern 1
+f-1
+Activations
+f-1
+(1 0 1)
 CLIPS> (clear)
 CLIPS> (dribble-off)
