@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  05/18/15            */
+   /*             CLIPS Version 6.31  06/04/15            */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -80,6 +80,8 @@
 /*                                                           */
 /*            Modified gentime to return "comparable" epoch  */
 /*            based values across platforms.                 */
+/*                                                           */
+/*            Updated compilations flags for CatchCtrlC.     */
 /*                                                           */
 /*************************************************************/
 
@@ -163,7 +165,7 @@ struct systemDependentData
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-#if   (VAX_VMS || UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC) && (! WINDOW_INTERFACE)
+#if   (VAX_VMS || UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC) && ((! WINDOW_INTERFACE) && ALLOW_ENVIRONMENT_GLOBALS)
    static void                    CatchCtrlC(int);
 #endif
 
@@ -408,7 +410,7 @@ globle void InitializeNonportableFeatures(
 /*   by the operating system).                               */
 /*************************************************************/
 
-#if ! WINDOW_INTERFACE
+#if (! WINDOW_INTERFACE) && ALLOW_ENVIRONMENT_GLOBALS
 
 #if   VAX_VMS || UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC || DARWIN
 /**********************************************/
