@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.31  06/05/15            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -48,6 +48,8 @@
 /*            Added code to keep track of pointers to        */
 /*            constructs that are contained externally to    */
 /*            to constructs, DanglingConstructs.             */
+/*                                                           */
+/*      6.31: Modified EnvClear to return completion status. */
 /*                                                           */
 /*************************************************************/
 
@@ -153,7 +155,7 @@ struct constructData
 #define LOCALE extern
 #endif
 
-   LOCALE void                           EnvClear(void *);
+   LOCALE int                            EnvClear(void *);
    LOCALE void                           EnvReset(void *);
    LOCALE int                            EnvSave(void *,const char *);
 
@@ -204,7 +206,7 @@ struct constructData
 
    LOCALE intBool                        AddClearFunction(const char *,void (*)(void),int);
    LOCALE intBool                        AddResetFunction(const char *,void (*)(void),int);
-   LOCALE void                           Clear(void);
+   LOCALE int                            Clear(void);
    LOCALE void                           Reset(void);
    LOCALE intBool                        RemoveClearFunction(const char *);
    LOCALE intBool                        RemoveResetFunction(const char *);

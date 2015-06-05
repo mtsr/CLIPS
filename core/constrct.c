@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.31  06/05/15            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -51,6 +51,8 @@
 /*            Added code to keep track of pointers to        */
 /*            constructs that are contained externally to    */
 /*            to constructs, DanglingConstructs.             */
+/*                                                           */
+/*      6.31: Modified EnvClear to return completion status. */
 /*                                                           */
 /*************************************************************/
 
@@ -584,7 +586,7 @@ globle void EnvDecrementClearReadyLocks(
 /*****************************************************/
 /* EnvClear: C access routine for the clear command. */
 /*****************************************************/
-globle void EnvClear(
+globle int EnvClear(
   void *theEnv)
   {
    struct callFunctionItem *theFunction;
@@ -614,7 +616,7 @@ globle void EnvClear(
       EnvDeactivateRouter(theEnv,WTRACE);
 #endif
       ConstructData(theEnv)->ClearReadyInProgress = FALSE;
-      return;
+      return FALSE;
      }
    ConstructData(theEnv)->ClearReadyInProgress = FALSE;
 
@@ -672,6 +674,8 @@ globle void EnvClear(
    /*============================*/
    
    EnvReset(theEnv);
+   
+   return TRUE;
   }
 
 /*********************************************************/
@@ -953,9 +957,9 @@ globle intBool AddResetFunction(
    return(TRUE);
   }
 
-globle void Clear()
+globle int Clear()
   {
-   EnvClear(GetCurrentEnvironment());
+   return EnvClear(GetCurrentEnvironment());
   }  
 
 globle intBool RemoveClearFunction(
