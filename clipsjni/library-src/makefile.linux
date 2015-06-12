@@ -1,4 +1,8 @@
-JAVA_HOME = /jdk1.8.0_40
+# ubuntu 14.04 LTS with Java 1.8.0_45
+# Notes:
+#    -fPIC option needed for 64-bit systems
+
+JAVA_HOME = /usr/lib/jvm/java-8-oracle
 JAVA_INCLUDE = $(JAVA_HOME)/include
 JAVA_INCLUDE_OS = $(JAVA_INCLUDE)/linux
 
@@ -8,9 +12,8 @@ OBJS = agenda.o analysis.o argacces.o bload.o bmathfun.o bsave.o \
  	constrnt.o crstrtgy.o cstrcbin.o cstrccom.o cstrcpsr.o \
  	cstrnbin.o cstrnchk.o cstrncmp.o cstrnops.o cstrnpsr.o \
  	cstrnutl.o default.o defins.o developr.o dffctbin.o dffctbsc.o \
- 	dffctcmp.o dffctdef.o dffctpsr.o dffnxbin.o dffnxcmp.o \
- 	dffnxexe.o dffnxfun.o dffnxpsr.o dfinsbin.o dfinscmp.o drive.o \
- 	emathfun.o \
+ 	dffctcmp.o dffctdef.o dffctpsr.o dffnxbin.o dffnxcmp.o dffnxexe.o \
+ 	dffnxfun.o dffnxpsr.o dfinsbin.o dfinscmp.o drive.o emathfun.o \
  	engine.o envrnmnt.o evaluatn.o expressn.o exprnbin.o exprnops.o \
  	exprnpsr.o extnfunc.o factbin.o factbld.o factcmp.o factcom.o \
  	factfun.o factgen.o facthsh.o factlhs.o factmch.o factmngr.o \
@@ -34,14 +37,15 @@ OBJS = agenda.o analysis.o argacces.o bload.o bmathfun.o bsave.o \
  	utility.o watch.o
 
 .c.o :
-	gcc -c -DLINUX -DALLOW_ENVIRONMENT_GLOBALS=0 -std=c99 \
-	    -Wall -Wundef -Wpointer-arith -Wshadow -Wcast-qual \
+	gcc -c -O3 -fPIC -DLINUX -DALLOW_ENVIRONMENT_GLOBALS=0 \
+	    -Wall -Wundef -Wpointer-arith -Wshadow \
 	    -Winline -Wmissing-declarations -Wredundant-decls \
-	    -Woverloaded-virtual -Wmissing-prototypes -Wnested-externs \
+	    -Wmissing-prototypes -Wnested-externs \
 	    -Wstrict-prototypes -Waggregate-return -Wno-implicit $<
 
-libCLIPSJNI.so : $(OBJS) CLIPSJNI_Environment.c
-	gcc -o libCLIPSJNI.so -shared -Wall -I$(JAVA_INCLUDE) -I($JAVA_INCLUDE_OS) -lm $(OBJS) CLIPSJNI_Environment.c
+libCLIPSJNI.so : $(OBJS) net_sf_clipsrules_jni_Environment.c
+	gcc -o libCLIPSJNI.so -fPIC -shared -Wall -I$(JAVA_INCLUDE) -I$(JAVA_INCLUDE_OS) \
+		-lm $(OBJS) net_sf_clipsrules_jni_Environment.c
 
 agenda.o: agenda.c setup.h envrnmnt.h symbol.h usrsetup.h argacces.h \
   expressn.h exprnops.h exprnpsr.h extnfunc.h userdata.h scanner.h \
