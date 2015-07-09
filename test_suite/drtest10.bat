@@ -351,4 +351,21 @@
 (matches C::foo)
 (set-current-module MAIN)
 (matches A::foo)
+(clear) ; SourceForge Bug
+
+(defrule bug 
+   (A)
+   (B ?cot)     
+   (not (and (X)  
+             (C ?cot)))
+   (not (and (D ?cot) 
+             (not (Z))))
+   =>)
+(watch activations)
+(assert (B R))
+(assert (B C))
+(assert (D C))
+(assert (A)))
+(agenda)
+(unwatch activations)
 (clear)

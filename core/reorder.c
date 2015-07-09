@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  05/12/15            */
+   /*             CLIPS Version 6.31  07/09/15            */
    /*                                                     */
    /*                    REORDER MODULE                   */
    /*******************************************************/
@@ -35,10 +35,13 @@
 /*                                                           */
 /*            Added support for hashed alpha memories.       */
 /*                                                           */
-/*      6.31: Fixed crash bug that occurred from              */
+/*      6.31: Fixed crash bug that occurred from             */
 /*            AssignPatternIndices incorrectly               */
 /*            assigning the wrong join depth to              */
 /*            multiply nested nand  groups.                  */
+/*                                                           */
+/*            Removed the marked flag used for not/and       */
+/*            unification.                                   */
 /*                                                           */
 /*************************************************************/
 
@@ -1116,7 +1119,7 @@ globle void CopyLHSParseNode(
    dest->singleFieldsAfter = src->singleFieldsAfter;
    dest->logical = src->logical;
    dest->userCE = src->userCE;
-   dest->marked = src->marked;
+   //dest->marked = src->marked;
    dest->whichCE = src->whichCE;
    dest->referringNode = src->referringNode;
    dest->patternType = src->patternType;
@@ -1203,7 +1206,7 @@ globle struct lhsParseNode *GetLHSParseNode(
    newNode->logical = FALSE;
    newNode->derivedConstraints = FALSE;
    newNode->userCE = TRUE;
-   newNode->marked = FALSE;
+   //newNode->marked = FALSE;
    newNode->whichCE = 0;
    newNode->constraints = NULL;
    newNode->referringNode = NULL;
@@ -1676,6 +1679,7 @@ static void PropagateIndexSlotPatternValues(
 /* AssignPatternMarkedFlag: Recursively assigns    */
 /*   value to the marked field of a LHSParseNode.  */
 /***************************************************/
+/*
 globle void AssignPatternMarkedFlag(
   struct lhsParseNode *theField,
   short markedValue)
@@ -1692,7 +1696,7 @@ globle void AssignPatternMarkedFlag(
       theField = theField->right;
      }
   }
-
+*/
 /*****************************************************************/
 /* PropagateJoinDepth: Recursively assigns a joinDepth to each   */
 /*   node in a LHS node by following the right and bottom links. */
