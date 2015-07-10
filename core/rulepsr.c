@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.31  07/10/15            */
    /*                                                     */
    /*                 RULE PARSING MODULE                 */
    /*******************************************************/
@@ -35,6 +35,9 @@
 /*            Changed find construct functionality so that   */
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
+/*                                                           */
+/*      6.31: Added displayed of computed join depth for     */
+/*            patterns when rule-analysis is being watched.  */
 /*                                                           */
 /*************************************************************/
 
@@ -970,9 +973,9 @@ globle void DumpRuleAnalysis(
    for (traceNode = tempNode; traceNode != NULL; traceNode = traceNode->bottom)
      {
       if (traceNode->userCE)
-        { gensprintf(buffer,"UCE %2d (%2d %2d): ",traceNode->whichCE,traceNode->beginNandDepth,traceNode->endNandDepth); }
+        { gensprintf(buffer,"UCE %2d J%2d (%2d %2d): ",traceNode->whichCE,traceNode->joinDepth,traceNode->beginNandDepth,traceNode->endNandDepth); }
       else
-        { gensprintf(buffer,"SCE %2d (%2d %2d): ",traceNode->whichCE,traceNode->beginNandDepth,traceNode->endNandDepth); }
+        { gensprintf(buffer,"SCE %2d J%2d (%2d %2d): ",traceNode->whichCE,traceNode->joinDepth,traceNode->beginNandDepth,traceNode->endNandDepth); }
 
       EnvPrintRouter(theEnv,WDISPLAY,buffer);
       

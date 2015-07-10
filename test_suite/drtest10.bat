@@ -368,4 +368,26 @@
 (assert (A)))
 (agenda)
 (unwatch activations)
+(clear) ; SourceForge Bug
+(deftemplate C (slot x))
+(deftemplate D (slot x))
+
+(defrule if ""
+    (not 
+         (and 
+              (not 
+                   (not 
+                        (and (not (and (W) 
+                                       (X)))
+                             (not (and (Y) 
+                                       (Z)))
+                        )
+                   )  
+              )
+              (C (x ?ix_t))
+              (D (x ?ix_t))
+         ) 
+    )
+   =>)
+(assert (C (x 1)))
 (clear)

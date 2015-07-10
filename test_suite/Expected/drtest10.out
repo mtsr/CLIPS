@@ -728,5 +728,28 @@ CLIPS> (agenda)
 0      bug: f-4,f-1,*,*
 For a total of 1 activation.
 CLIPS> (unwatch activations)
+CLIPS> (clear) ; SourceForge Bug
+CLIPS> (deftemplate C (slot x))
+CLIPS> (deftemplate D (slot x))
+CLIPS> 
+(defrule if ""
+    (not 
+         (and 
+              (not 
+                   (not 
+                        (and (not (and (W) 
+                                       (X)))
+                             (not (and (Y) 
+                                       (Z)))
+                        )
+                   )  
+              )
+              (C (x ?ix_t))
+              (D (x ?ix_t))
+         ) 
+    )
+   =>)
+CLIPS> (assert (C (x 1)))
+<Fact-1>
 CLIPS> (clear)
 CLIPS> (dribble-off)
