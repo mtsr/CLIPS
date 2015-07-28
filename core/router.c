@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  07/21/15            */
    /*                                                     */
    /*                  I/O ROUTER MODULE                  */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.31: Added EnvInputBufferCount function.            */
 /*                                                           */
 /*************************************************************/
 
@@ -686,6 +688,15 @@ globle int PrintNRouter(
    genfree(theEnv,tempStr,length+1);
    return(rv);
   }
+
+/************************/
+/* EnvInputBufferCount: */
+/************************/
+size_t EnvInputBufferCount(
+   void *theEnv)
+   {
+    return RouterData(theEnv)->CommandBufferInputCount;
+   }
 
 /*#####################################*/
 /* ALLOW_ENVIRONMENT_GLOBALS Functions */
