@@ -7,8 +7,11 @@ using namespace CLIPS;
 using std::vector;
 using std::string;
 
-#ifndef CLIPS_DLL_WRAPPER
-#if CLIPS_COMPILED_AS_C_PLUS_PLUS
+#ifdef CLIPS_DLL_WRAPPER
+#include <windows.h>
+#endif
+
+#ifdef CLIPS_CLR_WRAPPER
 #include "clips.h"
 #else
 extern "C"
@@ -16,18 +19,12 @@ extern "C"
    #include "clips.h"
   }
 #endif
-#else
-#include <windows.h>
-#if CLIPS_COMPILED_AS_C_PLUS_PLUS
-#include "clips.h"
-#include "CLIPSDLL.h"
-#else
+
+#ifdef CLIPS_DLL_WRAPPER
 extern "C"
   {
-   #include "clips.h"
    #include "CLIPSDLL.h"
   }
-#endif
 #endif
 
 /*##################*/
@@ -73,6 +70,18 @@ CLIPSCPPEnv::~CLIPSCPPEnv()
 #endif
   }
 
+/***************/
+/* CommandLoop */
+/***************/
+void CLIPSCPPEnv::CommandLoop()
+  {
+#ifndef CLIPS_DLL_WRAPPER
+   ::CommandLoop(theEnv);
+#else
+   __CommandLoop(theEnv);
+#endif
+  }
+
 /*********/
 /* Clear */
 /*********/
@@ -97,6 +106,24 @@ int CLIPSCPPEnv::Load(
    return __EnvLoad(theEnv,theFile);
 #endif
   }
+
+/******************/
+/* LoadFromString */
+/******************/
+void CLIPSCPPEnv::LoadFromString(
+  char *loadString)
+  {
+#ifndef CLIPS_DLL_WRAPPER
+   OpenStringSource(theEnv,"clipsnetloadfromstring",loadString,0); 
+   LoadConstructsFromLogicalName(theEnv,"clipsnetloadfromstring");
+   CloseStringSource(theEnv,"clipsnetloadfromstring");
+#else
+   __OpenStringSource(theEnv,"clipsnetloadfromstring",loadString,0); 
+   __LoadConstructsFromLogicalName(theEnv,"clipsnetloadfromstring");
+   __CloseStringSource(theEnv,"clipsnetloadfromstring");
+#endif
+  }
+
 
 /*********/
 /* Reset */
@@ -167,6 +194,24 @@ DataObject CLIPSCPPEnv::Eval(
    return ConvertDataObject(theEnv,&rv);
   }
   
+/****************/
+/* AssertString */
+/****************/
+FactAddressValue *CLIPSCPPEnv::AssertString(
+  char *factString)
+  {
+   void *rv;
+   
+#ifndef CLIPS_DLL_WRAPPER
+   rv = EnvAssertString(theEnv,factString);
+#else
+   rv = __EnvAssertString(theEnv,factString);
+#endif
+     
+   if (rv == NULL) return(NULL);
+   return new FactAddressValue(theEnv,rv);
+  }
+
 /*********************/
 /* ConvertDataObject */
 /*********************/
@@ -285,7 +330,19 @@ int CLIPSCPPEnv::AddRouter(
                                     CLIPSCPPExit,router);
 #endif
   }
-  
+
+/********************/
+/* InputBufferCount */
+/********************/
+size_t CLIPSCPPEnv::InputBufferCount()
+  {
+#ifndef CLIPS_DLL_WRAPPER
+   return EnvInputBufferCount(theEnv);
+#else
+   return __EnvInputBufferCount(theEnv);
+#endif
+  }
+
 /*########################*/
 /* CLIPSCPPRouter Methods */
 /*########################*/
@@ -414,11 +471,24 @@ std::ostream& CLIPS::operator<< (std::ostream& o, const DataObject* s)
 std::ostream& DataObject::print (std::ostream& o) const
   { return std::cout << theValue; }
 
-/***************/
-/* GetFactSlot */
-/***************/
-DataObject DataObject::GetFactSlot (char *slotName) const
-  { return theValue->GetFactSlot(slotName); }
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType DataObject::GetCLIPSType()
+  {
+   if (theValue == NULL)
+     { return UNKNOWN_TYPE; }
+
+   return theValue->GetCLIPSType();
+  }
+
+/*****************/
+/* GetCLIPSValue */
+/*****************/
+Value *DataObject::GetCLIPSValue()
+  {
+   return theValue;
+  }
 
 /*###############*/
 /* Value Methods */
@@ -439,27 +509,11 @@ Value::~Value()
   }
 
 /****************/
-/* GetFactIndex */
+/* GetCLIPSType */
 /****************/
-long long Value::GetFactIndex() const
-  {  
-   throw std::logic_error("GetFactIndex: DataObject is not type FACT ADDRESS");
-  }
-
-/***************/
-/* GetFactSlot */
-/***************/
-DataObject Value::GetFactSlot(char *) const
-  {  
-   throw std::logic_error("GetFactSlot: DataObject is not type FACT ADDRESS");
-  }
-
-/**********************/
-/* GetRawInstanceName */
-/**********************/
-const char *Value::GetRawInstanceName() const
-  {  
-   throw std::logic_error("DataObject is not type INSTANCE ADDRESS");
+CLIPSType Value::GetCLIPSType()
+  {
+   return UNKNOWN_TYPE;
   }
   
 /***********/
@@ -514,6 +568,14 @@ VoidValue::VoidValue(const VoidValue& v)
 /**************/
 VoidValue::~VoidValue()
   { 
+  }
+
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType VoidValue::GetCLIPSType()
+  {
+   return VOID_TYPE;
   }
 
 /***************/
@@ -575,6 +637,22 @@ StringValue::StringValue( const StringValue& v)
 /****************/
 StringValue::~StringValue()
   { 
+  }
+
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType StringValue::GetCLIPSType()
+  {
+   return STRING_TYPE;
+  }
+
+/******************/
+/* GetStringValue */
+/******************/
+std::string *StringValue::GetStringValue()
+  {
+   return &this->theString;
   }
 
 /*****************/
@@ -642,6 +720,22 @@ SymbolValue::~SymbolValue()
    /* delete theString; */
   }
 
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType SymbolValue::GetCLIPSType()
+  {
+   return SYMBOL_TYPE;
+  }
+
+/******************/
+/* GetSymbolValue */
+/******************/
+std::string *SymbolValue::GetSymbolValue()
+  {
+   return &this->theString;
+  }
+
 /*****************/
 /* SymbolValue = */
 /*****************/
@@ -697,6 +791,22 @@ InstanceNameValue::InstanceNameValue( const InstanceNameValue& v)
 InstanceNameValue::~InstanceNameValue()
   { }
 
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType InstanceNameValue::GetCLIPSType()
+  {
+   return INSTANCE_NAME_TYPE;
+  }
+
+/************************/
+/* GetInstanceNameValue */
+/************************/
+std::string *InstanceNameValue::GetInstanceNameValue()
+  {
+   return &this->theString;
+  }
+
 /***********************/
 /* InstanceNameValue = */
 /***********************/
@@ -750,6 +860,30 @@ IntegerValue::IntegerValue( const IntegerValue& v)
 /*****************/
 IntegerValue::~IntegerValue()
   { }
+  
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType IntegerValue::GetCLIPSType()
+  {
+   return INTEGER_TYPE;
+  }
+
+/*******************/
+/* GetIntegerValue */
+/*******************/
+long long IntegerValue::GetIntegerValue()
+  {
+   return this->theInteger;
+  }
+
+/*****************/
+/* GetFloatValue */
+/*****************/
+double IntegerValue::GetFloatValue()
+  {
+   return (double) this->theInteger;
+  }
 
 /******************/
 /* IntegerValue = */
@@ -804,6 +938,30 @@ FloatValue::FloatValue( const FloatValue& v)
 /***************/
 FloatValue::~FloatValue()
   { }
+
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType FloatValue::GetCLIPSType()
+  {
+   return FLOAT_TYPE;
+  }
+
+/*******************/
+/* GetIntegerValue */
+/*******************/
+long long FloatValue::GetIntegerValue()
+  {
+   return (long long) this->theFloat;
+  }
+
+/*****************/
+/* GetFloatValue */
+/*****************/
+double FloatValue::GetFloatValue()
+  {
+   return this->theFloat;
+  }
 
 /****************/
 /* FloatValue = */
@@ -864,6 +1022,14 @@ FactAddressValue::~FactAddressValue()
 #else
    __EnvDecrementFactCount(theEnvironment,theFactAddress);
 #endif
+  }
+
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType FactAddressValue::GetCLIPSType()
+  {
+   return FACT_ADDRESS_TYPE;
   }
 
 /**********************/
@@ -1014,10 +1180,18 @@ InstanceAddressValue& InstanceAddressValue::operator = (
    return *this;
   }
 
-/**********************/
-/* GetRawInstanceName */
-/**********************/
-const char *InstanceAddressValue::GetRawInstanceName() const
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType InstanceAddressValue::GetCLIPSType()
+  {
+   return INSTANCE_ADDRESS_TYPE;
+  }
+
+/*******************/
+/* GetInstanceName */
+/*******************/
+const char *InstanceAddressValue::GetInstanceName() const
   {  
 #ifndef CLIPS_DLL_WRAPPER
    return EnvGetInstanceName(theEnvironment,theInstanceAddress);
@@ -1026,12 +1200,28 @@ const char *InstanceAddressValue::GetRawInstanceName() const
 #endif
   }
 
+/*****************/
+/* DirectGetSlot */
+/*****************/
+DataObject InstanceAddressValue::DirectGetSlot(char *slotName) const
+  {  
+   DATA_OBJECT theDO;
+   
+#ifndef CLIPS_DLL_WRAPPER
+   EnvDirectGetSlot(theEnvironment,theInstanceAddress,slotName,&theDO);
+#else
+   __EnvDirectGetSlot(theEnvironment,theInstanceAddress,slotName,&theDO);
+#endif
+   
+   return ConvertDataObject(theEnvironment,&theDO);
+  }
+
 /*********/
 /* print */
 /*********/
 std::ostream& InstanceAddressValue::print (std::ostream& o) const
   {  
-   return o << "<Instance-" << GetRawInstanceName() << ">";
+   return o << "<Instance-" << GetInstanceName() << ">";
   }
     
 /*********/
@@ -1081,6 +1271,22 @@ MultifieldValue::~MultifieldValue()
      { delete theMultifield[i]; }
   }
 
+/****************/
+/* GetCLIPSType */
+/****************/
+CLIPSType MultifieldValue::GetCLIPSType()
+  {
+   return MULTIFIELD_TYPE;
+  }
+ 
+/**********************/
+/* GetMultifieldValue */
+/**********************/
+std::vector<Value *> *MultifieldValue::GetMultifieldValue()
+  {
+   return &this->theMultifield;
+  }
+ 
 /*******/
 /* add */
 /*******/
@@ -1241,3 +1447,4 @@ static int CLIPSCPPExit(
    
    return(theRouter->Exit(theCPPEnv,exitCode));
   }
+

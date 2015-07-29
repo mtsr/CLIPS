@@ -21,6 +21,12 @@ void __declspec(dllexport) __DestroyEnvironment(
    DestroyEnvironment(theEnv);
   }
 
+void __declspec(dllexport) __CommandLoop(
+  void *theEnv)
+  {
+   CommandLoop(theEnv);
+  }
+
 void __declspec(dllexport) __EnvClear(
   void *theEnv)
   {
@@ -40,6 +46,29 @@ int __declspec(dllexport) __EnvLoad(
    return EnvLoad(theEnv,theFile);
   }
 
+void __declspec(dllexport) __LoadConstructsFromLogicalName(
+  void *theEnv,
+  char *logicalName)
+  {
+   LoadConstructsFromLogicalName(theEnv,logicalName);
+  }
+
+int __declspec(dllexport) __OpenStringSource(
+  void *theEnv,
+  const char *logicalName,
+  const char *stringData,
+  size_t size)
+  {
+   return OpenStringSource(theEnv,logicalName,stringData,size);
+  }
+
+int __declspec(dllexport) __CloseStringSource(
+  void *theEnv,
+  char *logicalName)
+  {
+   return CloseStringSource(theEnv,logicalName);
+  }
+
 long long __declspec(dllexport) __EnvRun(
   void *theEnv,
   long long runLimit)
@@ -57,9 +86,9 @@ int __declspec(dllexport) __EnvBuild(
 int __declspec(dllexport) __EnvEval(
   void *theEnv,
   char *evalString,
-  DATA_OBJECT *rv)
+  void *rv)
   {
-   return EnvEval(theEnv,evalString,rv);
+   return EnvEval(theEnv,evalString,(DATA_OBJECT *) rv);
   }  
 
 void __declspec(dllexport) __EnvIncrementFactCount(
@@ -103,8 +132,15 @@ int __declspec(dllexport) __EnvGetFactSlot(
   char *slotName,
   void *returnValue)
   {
-   return EnvGetFactSlot(theEnv,theFact,slotName,returnValue);  
+   return EnvGetFactSlot(theEnv,theFact,slotName,(DATA_OBJECT *) returnValue);  
   }  
+
+void __declspec(dllexport) * __EnvAssertString(
+  void *theEnv,
+  const char *factString)
+  {
+   return EnvAssertString(theEnv,factString);
+  }
 
 const char __declspec(dllexport) * __EnvGetInstanceName(
   void *theEnv,
@@ -112,7 +148,16 @@ const char __declspec(dllexport) * __EnvGetInstanceName(
   {
    return EnvGetInstanceName(theEnv,theInstance);  
   } 
-
+  
+void __declspec(dllexport) __EnvDirectGetSlot(
+  void *theEnv,
+  void *theInstance,
+  char *slotName,
+  void *returnValue)
+  {
+   EnvDirectGetSlot(theEnv,theInstance,slotName,(DATA_OBJECT *) returnValue);  
+  }  
+  
 int __declspec(dllexport) __EnvWatch(
   void *theEnv,
   char *item)
@@ -151,4 +196,10 @@ int __declspec(dllexport) __EnvAddRouterWithContext(
   void *context)
   {
    return EnvAddRouterWithContext(theEnv,routerName,priority,queryFunction,printFunction,getcFunction,ungetcFunction,exitFunction,context);
+  }
+ 
+ size_t __declspec(dllexport) __EnvInputBufferCount(
+  void *theEnv)
+  {
+   return EnvInputBufferCount(theEnv);
   }

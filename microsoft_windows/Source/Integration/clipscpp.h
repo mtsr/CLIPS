@@ -4,23 +4,24 @@
 
 namespace CLIPS
 {
-#define CLIPS_COMPILED_AS_C_PLUS_PLUS 0
-/*
-typedef enum Type 
-  { FLOAT, 
-    INTEGER, 
-    SYMBOL, 
-    STRING, 
-    MULTIFIELD, 
-    EXTERNAL_ADDRESS, 
-    FACT_ADDRESS, 
-    INSTANCE_ADDRESS, 
-    INSTANCE_NAME, 
-    VOID } Type;
-*/
+
+enum CLIPSType 
+  { UNKNOWN_TYPE,
+    FLOAT_TYPE, 
+    INTEGER_TYPE, 
+    SYMBOL_TYPE, 
+    STRING_TYPE, 
+    MULTIFIELD_TYPE, 
+    EXTERNAL_ADDRESS_TYPE, 
+    FACT_ADDRESS_TYPE, 
+    INSTANCE_ADDRESS_TYPE, 
+    INSTANCE_NAME_TYPE, 
+    VOID_TYPE };
+
 class CLIPSCPPRouter;
 
 class DataObject;
+class FactAddressValue;
 
 class CLIPSCPPEnv
   {
@@ -30,15 +31,19 @@ class CLIPSCPPEnv
    public:
       CLIPSCPPEnv();
       ~CLIPSCPPEnv();
+	  void CommandLoop();
       void Clear();
       int Load(char *);
+      void LoadFromString(char *);
       void Reset();
       long long Run(long long runLimit = -1);
       int Watch(char *);
       int Unwatch(char *);
       DataObject Eval(char *);
       bool Build(char *);
+	  FactAddressValue *AssertString(char *);
       int AddRouter(char *,int,CLIPSCPPRouter *);
+	  size_t InputBufferCount();
   };
 
 class CLIPSCPPRouter
@@ -62,11 +67,7 @@ class Value
      friend std::ostream& operator<< (std::ostream& o, const Value* s);
      virtual std::ostream& print(std::ostream& o) const = 0;
      virtual Value *clone() const = 0; 
-     virtual long long GetFactIndex() const;
-     virtual DataObject GetFactSlot(char *) const;
-
-   private:
-     virtual const char *GetRawInstanceName() const; 
+	 virtual CLIPSType GetCLIPSType();
   };
 
 class VoidValue : public Value
@@ -78,6 +79,7 @@ class VoidValue : public Value
      /* virtual VoidValue& operator= (const VoidValue& s); */
      virtual std::ostream& print(std::ostream& o) const;
      virtual VoidValue *clone() const; 
+	 CLIPSType GetCLIPSType();
   };
 
 class StringValue : public Value
@@ -90,6 +92,8 @@ class StringValue : public Value
      /* virtual StringValue& operator= (const StringValue& v); */
      virtual std::ostream& print(std::ostream& o) const;
      virtual StringValue *clone() const; 
+	 CLIPSType GetCLIPSType();
+	 std::string *GetStringValue();
 
    private:
      std::string theString;
@@ -105,6 +109,8 @@ class SymbolValue : public Value
      /* virtual SymbolValue& operator= (const SymbolValue& v); */
      virtual std::ostream& print(std::ostream& o) const;
      virtual SymbolValue *clone() const; 
+	 CLIPSType GetCLIPSType();
+	 std::string *GetSymbolValue();
   
    private:
      std::string theString;
@@ -120,6 +126,8 @@ class InstanceNameValue : public Value
      /* virtual InstanceNameValue& operator= (const InstanceNameValue& v); */
      virtual std::ostream& print(std::ostream& o) const;
      virtual InstanceNameValue *clone() const; 
+	 CLIPSType GetCLIPSType();
+	 std::string *GetInstanceNameValue();
   
    private:
      std::string theString;
@@ -135,6 +143,9 @@ class IntegerValue : public Value
      /* virtual IntegerValue& operator= (const IntegerValue& v); */
      virtual std::ostream& print(std::ostream& o) const;
      virtual IntegerValue *clone() const; 
+	 CLIPSType GetCLIPSType();
+	 long long GetIntegerValue();
+	 double GetFloatValue();
   
    private:
      long long theInteger;
@@ -150,6 +161,9 @@ class FloatValue : public Value
      /* virtual FloatValue& operator= (const FloatValue& v); */
      virtual std::ostream& print(std::ostream& o) const;
      virtual FloatValue *clone() const; 
+	 CLIPSType GetCLIPSType();
+	 long long GetIntegerValue();
+	 double GetFloatValue();
   
    private:
      double theFloat;
@@ -165,9 +179,10 @@ class FactAddressValue : public Value
      virtual std::ostream& print(std::ostream& o) const;
      virtual FactAddressValue *clone() const; 
      virtual DataObject GetFactSlot(char *) const;
+	 CLIPSType GetCLIPSType();
+     virtual long long GetFactIndex() const;
   
    private:
-     virtual long long GetFactIndex() const;
      void *theEnvironment;
      void *theFactAddress;
   };
@@ -181,9 +196,11 @@ class InstanceAddressValue : public Value
      virtual InstanceAddressValue& operator= (const InstanceAddressValue& v);
      virtual std::ostream& print(std::ostream& o) const;
      virtual InstanceAddressValue *clone() const; 
+	 CLIPSType GetCLIPSType();
+     virtual const char *GetInstanceName() const;
+     virtual DataObject DirectGetSlot(char *) const;
   
    private:
-     virtual const char *GetRawInstanceName() const;
      void *theEnvironment;
      void *theInstanceAddress;
   };
@@ -199,6 +216,8 @@ class MultifieldValue : public Value
      virtual std::ostream& print(std::ostream& o) const;
      virtual MultifieldValue *clone() const; 
      void add(Value *);
+	 CLIPSType GetCLIPSType();
+	 std::vector<Value *> *GetMultifieldValue();
 
    private:
      std::vector<Value *> theMultifield;
@@ -215,7 +234,8 @@ class DataObject
      friend std::ostream& operator<< (std::ostream& o, const DataObject& s);
      friend std::ostream& operator<< (std::ostream& o, const DataObject* s);
      virtual std::ostream& print(std::ostream& o) const;
-     virtual DataObject GetFactSlot(char *) const;
+	 CLIPSType GetCLIPSType();
+	 Value *GetCLIPSValue();
      static DataObject Void();
      static DataObject String();
      static DataObject String(char *);
