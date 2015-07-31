@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*       Microsoft Windows Version 3.0  01/31/02       */
+   /*       Microsoft Windows Version 3.0  07/31/15       */
    /*                                                     */
    /*                   DISPLAY MODULE                    */
    /*******************************************************/
@@ -17,8 +17,11 @@
 /*      Ernst Bokkelkamp                                      */
 /*                                                            */
 /* Revision History:                                          */
+/*                                                            *.
 /*      6.24: Ernst's fix for the caret artifact from text    */
 /*            scrolling.                                      */
+/*                                                            */
+/*      6.31: Fixed 64 bit architecture issues.               */
 /*                                                            */
 /**************************************************************/
 
@@ -46,9 +49,7 @@
 #include "frame.h"
 #include "findwnd.h"
 
-//#define setProc(hwnd, proc) SetWindowLong(hwnd, GWL_USERDATA, (LPARAM)proc)
 #define setProc(hwnd, proc) SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR) proc)
-//#define getProc(hwnd)       (WNDPROC)GetWindowLong(hwnd, GWL_USERDATA)
 #define getProc(hwnd)       (WNDPROC)GetWindowLongPtr(hwnd, GWLP_USERDATA)
 
 #define DEFAULT_COMMAND_MAX 20
@@ -306,7 +307,6 @@ BOOL displayWindow_New(
 
    CreateTerminal(theData);
 
-   //SetWindowLong(DialogWindow,GWL_USERDATA,(long) theData);
    SetWindowLongPtr(DialogWindow,GWLP_USERDATA,(LONG_PTR) theData);
 
    SetScrollRange(DialogWindow,SB_HORZ,0,255,TRUE);

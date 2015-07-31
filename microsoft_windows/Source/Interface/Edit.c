@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*       Microsoft Windows Version 3.0  01/31/02       */
+   /*       Microsoft Windows Version 3.0  07/31/15       */
    /*                                                     */
    /*                     EDIT MODULE                     */
    /*******************************************************/
@@ -17,6 +17,8 @@
 /*      Gary D. Riley                                         */
 /*                                                            */
 /* Revision History:                                          */
+/*                                                            */
+/*      6.31: Fixed 64 bit architecture issues.               */
 /*                                                            */
 /**************************************************************/
 
@@ -34,13 +36,11 @@
 #include "EditUtil.h"
 #include "SearchDialog.h"
 
-//#define setProc(hwnd, proc) SetWindowLong(hwnd, GWL_USERDATA, (LPARAM)proc)
 #define setProc(hwnd, proc) SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR) proc)
-//#define getProc(hwnd)       (WNDPROC)GetWindowLong(hwnd, GWL_USERDATA)
 #define getProc(hwnd)       (WNDPROC)GetWindowLongPtr(hwnd, GWLP_USERDATA)
 
-#define getRGB(hwnd)        (COLORREF)GetProp(hwnd, MAKEINTATOM(ATOM_TEXTCOLOR))
-#define setRGB(hwnd, rgb)   SetProp(hwnd, MAKEINTATOM(ATOM_TEXTCOLOR), (HANDLE)rgb)
+#define getRGB(hwnd)        (COLORREF) HandleToULong(GetProp(hwnd, MAKEINTATOM(ATOM_TEXTCOLOR)))
+#define setRGB(hwnd, rgb)   SetProp(hwnd, MAKEINTATOM(ATOM_TEXTCOLOR),ULongToHandle(rgb))
 
 //=============================================================================
 // These atoms are used to attach properties to the edit window
@@ -86,8 +86,7 @@ static LRESULT editsubclass_OnSetSel(
 
    PostMessage(GetParent(hwnd), UWM_UPDATE_MENU, 0, 0);
    result = CallWindowProc(getProc(hwnd), hwnd, message, wParam, lParam);
-   SetProp(hwnd, MAKEINTATOM(ATOM_LASTSEL), 
-                             (HANDLE)Edit_GetSel(hwnd));
+   SetProp(hwnd, MAKEINTATOM(ATOM_LASTSEL),ULongToHandle(Edit_GetSel(hwnd))); 
    return result;
   }
 
@@ -103,11 +102,11 @@ static void editsubclass_CheckSelChange(
 
    // check to see if we changed the selection
    newsel   = Edit_GetSel(hwnd);
-   lastsel  = (DWORD)GetProp(hwnd, MAKEINTATOM(ATOM_LASTSEL));
+   lastsel  = HandleToULong(GetProp(hwnd, MAKEINTATOM(ATOM_LASTSEL)));
    
    if (lastsel != newsel)
      {
-      SetProp(hwnd, MAKEINTATOM(ATOM_LASTSEL), (HANDLE)newsel);
+      SetProp(hwnd, MAKEINTATOM(ATOM_LASTSEL),ULongToHandle(newsel)); 
       PostMessage(GetParent(hwnd), UWM_UPDATE_MENU, 0, 0);
      }
   }

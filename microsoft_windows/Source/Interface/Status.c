@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*       Microsoft Windows Version 3.0  01/31/02       */
+   /*       Microsoft Windows Version 3.0  07/31/15       */
    /*                                                     */
    /*                   STATUS MODULE                     */
    /*******************************************************/
@@ -16,6 +16,8 @@
 /*      Gary D. Riley                                         */
 /*                                                            */
 /* Revision History:                                          */
+/*                                                            */
+/*      6.31: Fixed 64 bit architecture issues.               */
 /*                                                            */
 /**************************************************************/
 
@@ -428,7 +430,6 @@ static HWND statusWindow_New(
       
    theData->lineSize = tm.tmHeight+ tm.tmExternalLeading;
      
-   //SetWindowLong(hwndChild,GWL_USERDATA,(long) theData);
    SetWindowLongPtr(hwndChild,GWLP_USERDATA, (LONG_PTR) theData);
    
    MoveWindow(hwndChild,xpos,ypos,width,height,TRUE);
