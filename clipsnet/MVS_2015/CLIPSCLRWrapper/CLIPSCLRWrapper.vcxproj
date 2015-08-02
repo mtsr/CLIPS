@@ -499,7 +499,6 @@
     <ClInclude Include="Source\CLIPS\usrsetup.h" />
     <ClInclude Include="Source\CLIPS\utility.h" />
     <ClInclude Include="Source\CLIPS\watch.h" />
-    <ClInclude Include="Source\Integration\clipsnet.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

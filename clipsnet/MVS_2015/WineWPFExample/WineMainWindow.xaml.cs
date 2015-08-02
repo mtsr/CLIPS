@@ -1,20 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Windows.Threading;
 
 using CLIPSNET;
 
-namespace WineExample
+namespace WineWPFExample
   {
-   public partial class WineForm : Form
+   public partial class MainWindow : Window
      {
       private class WineRecommendation 
         {
          public string WineName { get; set; }
          public int Certainty { get; set; }
+         public string CertaintyText { get; set; }
+         public string CertaintyWidthTaken { get; set; }
+         public string CertaintyWidthLeft { get; set; }
         }
-
 
       String [] preferredColorNames = { "Don't Care", "Red", "White" };
       String [] preferredBodyNames = { "Don't Care", "Light", "Medium", "Full" };
@@ -35,28 +48,12 @@ namespace WineExample
       private CLIPSNET.Environment clips;
       private bool formLoaded = false;
 
-      public WineForm()
+      public MainWindow()
         {
+         Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => { OnLoad(); } ));
          InitializeComponent();
-
-         preferredColorChoices = GenerateChoices(preferredColorNames);
-         preferredBodyChoices = GenerateChoices(preferredBodyNames);
-         preferredSweetnessChoices = GenerateChoices(preferredSweetnessNames);
-         
-         mainCourseChoices = GenerateChoices(mainCourseNames);
-         sauceChoices = GenerateChoices(sauceNames);
-         flavorChoices = GenerateChoices(flavorNames);
-
-         colorComboBox.DataSource = preferredColorChoices;
-         bodyComboBox.DataSource = preferredBodyChoices;
-         sweetnessComboBox.DataSource = preferredSweetnessChoices;
-
-         mainCourseComboBox.DataSource = mainCourseChoices;
-         sauceComboBox.DataSource = sauceChoices;
-         flavorComboBox.DataSource = flavorChoices;
-
          clips = new CLIPSNET.Environment();
-         clips.LoadFromResource("WineExample","WineExample.wine.clp");
+         clips.LoadFromResource("WineWPFExample","WineWPFExample.wine.clp");
         }
 
       private String [] GenerateChoices(
@@ -70,16 +67,87 @@ namespace WineExample
          return choices;
         }
 
-      private void OnChange(object sender, EventArgs e)
+      private void OnLoad()
         {
-         if (formLoaded)
-           { RunWine(); }
-        }
-
-      private void OnLoad(object sender, EventArgs e)
-        {
+         Console.WriteLine("On Load");
          RunWine();
-         formLoaded = true;
+         formLoaded = true;       
+        }
+ 
+      private void ColorComboBox_Loaded(object sender, RoutedEventArgs e)
+	     {
+         preferredColorChoices = GenerateChoices(preferredColorNames);
+
+         var colorComboBox = sender as ComboBox;
+
+         colorComboBox.ItemsSource = preferredColorChoices;
+
+	      colorComboBox.SelectedIndex = 0;
+	     }
+
+      private void BodyComboBox_Loaded(object sender, RoutedEventArgs e)
+	     {
+         preferredBodyChoices = GenerateChoices(preferredBodyNames);
+
+         var bodyComboBox = sender as ComboBox;
+
+         bodyComboBox.ItemsSource = preferredBodyChoices;
+
+	      bodyComboBox.SelectedIndex = 0;
+	     }
+
+      private void SweetnessComboBox_Loaded(object sender, RoutedEventArgs e)
+	     {
+         preferredSweetnessChoices = GenerateChoices(preferredSweetnessNames);
+
+         var sweetnessComboBox = sender as ComboBox;
+
+         sweetnessComboBox.ItemsSource = preferredSweetnessChoices;
+
+	      sweetnessComboBox.SelectedIndex = 0;
+	     }
+
+      private void MainCourseComboBox_Loaded(object sender, RoutedEventArgs e)
+	     {
+         mainCourseChoices = GenerateChoices(mainCourseNames);
+
+         var mainCourseComboBox = sender as ComboBox;
+
+         mainCourseComboBox.ItemsSource = mainCourseChoices;
+
+	      mainCourseComboBox.SelectedIndex = 0;
+	     }
+
+      private void SauceComboBox_Loaded(object sender, RoutedEventArgs e)
+	     {
+         sauceChoices = GenerateChoices(sauceNames);
+
+         var sauceComboBox = sender as ComboBox;
+
+         sauceComboBox.ItemsSource = sauceChoices;
+
+	      sauceComboBox.SelectedIndex = 0;
+	     }
+
+      private void FlavorComboBox_Loaded(object sender, RoutedEventArgs e)
+	     {
+         flavorChoices = GenerateChoices(flavorNames);
+
+         var flavorComboBox = sender as ComboBox;
+
+         flavorComboBox.ItemsSource = flavorChoices;
+
+	      flavorComboBox.SelectedIndex = 0;
+	     }
+
+      private void OnChange(object sender, SelectionChangedEventArgs e)
+        {
+         Console.WriteLine("On Change");
+         if (formLoaded)
+           { 
+            Console.WriteLine("Run Wine");
+            RunWine(); 
+           }
         }
 
       private void RunWine()
@@ -204,6 +272,8 @@ namespace WineExample
 
          MultifieldValue pv = (MultifieldValue) clips.Eval(evalStr);
 
+         Console.WriteLine("Wine Count = " + pv.Count);
+         
          List<WineRecommendation> wineList = new List<WineRecommendation>();
 
          for (int i = 0; i < pv.Count; i++) 
@@ -214,11 +284,16 @@ namespace WineExample
 
             String wineName = ((LexemeValue) fv.GetFactSlot("value")).GetLexemeValue();
 
-            wineList.Add(new WineRecommendation() { WineName = wineName, Certainty = certainty });
+            wineList.Add(new WineRecommendation() 
+                                { WineName = wineName, 
+                                  Certainty = certainty, 
+                                  CertaintyText = certainty + "%",
+                                  CertaintyWidthTaken = certainty + "*",
+                                  CertaintyWidthLeft = (100 - certainty) + "*"
+                                });
            }
 
-         resultsDataGridView.DataSource = wineList;
-         resultsDataGridView.ClearSelection();
+         resultsDataGridView.ItemsSource = wineList;
         }
      }
   }

@@ -43,9 +43,9 @@
             this.sauceComboBox = new System.Windows.Forms.ComboBox();
             this.mainCourseComboBox = new System.Windows.Forms.ComboBox();
             this.resultsDataGridView = new System.Windows.Forms.DataGridView();
-            this.dataGridViewProgressColumn1 = new Sample.DataGridViewProgressColumn();
             this.WineColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RecommendationWeightColumn = new Sample.DataGridViewProgressColumn();
+            this.dataGridViewProgressColumn1 = new Sample.DataGridViewProgressColumn();
             this.preferencesGroupBox.SuspendLayout();
             this.mealGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.resultsDataGridView)).BeginInit();
@@ -214,12 +214,6 @@
             this.resultsDataGridView.Size = new System.Drawing.Size(440, 309);
             this.resultsDataGridView.TabIndex = 2;
             // 
-            // dataGridViewProgressColumn1
-            // 
-            this.dataGridViewProgressColumn1.HeaderText = "Recommendation Weight";
-            this.dataGridViewProgressColumn1.Name = "dataGridViewProgressColumn1";
-            this.dataGridViewProgressColumn1.Width = 218;
-            // 
             // WineColumn
             // 
             this.WineColumn.DataPropertyName = "WineName";
@@ -235,6 +229,12 @@
             this.RecommendationWeightColumn.Name = "RecommendationWeightColumn";
             this.RecommendationWeightColumn.ReadOnly = true;
             // 
+            // dataGridViewProgressColumn1
+            // 
+            this.dataGridViewProgressColumn1.HeaderText = "Recommendation Weight";
+            this.dataGridViewProgressColumn1.Name = "dataGridViewProgressColumn1";
+            this.dataGridViewProgressColumn1.Width = 218;
+            // 
             // WineForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -244,6 +244,7 @@
             this.Controls.Add(this.mealGroupBox);
             this.Controls.Add(this.preferencesGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "WineForm";
             this.Text = "Wine Demo";
             this.Load += new System.EventHandler(this.OnLoad);

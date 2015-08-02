@@ -123,6 +123,7 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(334, 162);
             this.Controls.Add(this.autoTableLayoutPanel);
+         this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(350, 200);
             this.MinimumSize = new System.Drawing.Size(350, 200);
             this.Name = "AutoForm";
