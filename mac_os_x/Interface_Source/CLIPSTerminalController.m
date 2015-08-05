@@ -1312,7 +1312,7 @@
    /* Need to abort waitForChar */
    /* Need to abort batch */
    SetHaltCommandLoopBatch([environment environment],TRUE);
-   SetHaltExecution([environment environment],TRUE);
+   EnvSetHaltExecution([environment environment],TRUE);
   }
       
 /*%%%%%%%%%%%%%%%%%%%%%%%%%*/
