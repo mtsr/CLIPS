@@ -182,7 +182,7 @@
     <ClCompile Include="Source\CLIPS\userfunctions.c" />
     <ClCompile Include="Source\CLIPS\utility.c" />
     <ClCompile Include="Source\CLIPS\watch.c" />
-    <ClCompile Include="Source\Integration\CLIPSJNI_Environment.c" />
+    <ClCompile Include="Source\Integration\net_sf_clipsrules_jni_Environment.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\CLIPS\agenda.h" />
@@ -355,7 +355,7 @@
     <ClInclude Include="Source\CLIPS\usrsetup.h" />
     <ClInclude Include="Source\CLIPS\utility.h" />
     <ClInclude Include="Source\CLIPS\watch.h" />
-    <ClInclude Include="Source\Integration\CLIPSJNI_Environment.h" />
+    <ClInclude Include="Source\Integration\net_sf_clipsrules_jni_Environment.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E8474BAA-988C-4D8A-9B37-59C2F6A54E8B}</ProjectGuid>

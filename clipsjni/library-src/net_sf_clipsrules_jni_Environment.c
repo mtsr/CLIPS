@@ -1559,12 +1559,12 @@ static void NewJavaAddress(
   DATA_OBJECT *rv)
   {
    jclass theClass, tempClass;
-   int numberOfArguments;
+   int i, numberOfArguments;
    JNIEnv *env;
    const char *className;
    char *classDescriptor;
    DATA_OBJECT theValue;
-   size_t i, length;
+   size_t length;
    jmethodID mid;
    jobjectArray constructorList, parameterList;
    jsize theSize, c; 
@@ -1635,7 +1635,7 @@ static void NewJavaAddress(
      {
       if ((*env)->ExceptionOccurred(env))
         { (*env)->ExceptionClear(env); }
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       ExpectedTypeError1(theEnv,"new (with type Java)",2,"Java class name");
       return;
      }
@@ -1652,7 +1652,7 @@ static void NewJavaAddress(
       for (i = 0; i < numberOfArguments - 2; i++)
         {
          EnvRtnUnknown(theEnv,i+3,&newArgs[i]);
-         if (GetEvaluationError(theEnv))
+         if (EnvGetEvaluationError(theEnv))
            {   
             (*env)->DeleteLocalRef(env,theClass);
             return;
@@ -1811,7 +1811,7 @@ static void NewJavaAddress(
    
    if ((*env)->ExceptionOccurred(env))
      { 
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       (*env)->ExceptionClear(env); 
      }
 
@@ -1889,7 +1889,7 @@ static intBool CallJavaMethod(
       for (i = 0; i < numberOfArguments - 2; i++)
         {
          EnvRtnUnknown(theEnv,i+3,&newArgs[i]);
-         if (GetEvaluationError(theEnv))
+         if (EnvGetEvaluationError(theEnv))
            { return FALSE; }
         }
      }
