@@ -203,3 +203,42 @@ int __declspec(dllexport) __EnvAddRouterWithContext(
   {
    return EnvInputBufferCount(theEnv);
   }
+ 
+int __declspec(dllexport) __EnvGetHaltExecution(
+     void *theEnv)
+  {
+   return EnvGetHaltExecution(theEnv);
+  }
+
+void __declspec(dllexport) __EnvSetHaltExecution(
+  void *theEnv,
+  int value)
+  {
+   EnvSetHaltExecution(theEnv,value);
+  }
+
+int __declspec(dllexport) __EnvGetHaltRules(
+     void *theEnv)
+  {
+   return EnvGetHaltRules(theEnv);
+  }
+
+void __declspec(dllexport) __EnvSetHaltRules(
+  void *theEnv,
+  int value)
+  {
+   EnvSetHaltRules(theEnv,value);
+  }
+
+int __declspec(dllexport) __EnvGetEvaluationError(
+     void *theEnv)
+  {
+   return EnvGetEvaluationError(theEnv);
+  }
+
+void __declspec(dllexport) __EnvSetEvaluationError(
+  void *theEnv,
+  int value)
+  {
+   EnvSetEvaluationError(theEnv,value);
+  }

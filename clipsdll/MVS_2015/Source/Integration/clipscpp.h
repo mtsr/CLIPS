@@ -31,8 +31,14 @@ class CLIPSCPPEnv
    public:
       CLIPSCPPEnv();
       ~CLIPSCPPEnv();
-	  void CommandLoop();
+      void CommandLoop();
       void Clear();
+      int GetHaltExecution();
+      void SetHaltExecution(int);
+      int GetEvaluationError();
+      void SetEvaluationError(int);
+      int GetHaltRules();
+      void SetHaltRules(int);
       int Load(char *);
       void LoadFromString(char *);
       void Reset();

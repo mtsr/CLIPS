@@ -293,6 +293,12 @@ namespace CLIPSNET
         long long Run(long long);
         void Reset();
         bool Build(String ^);
+        bool GetHaltExecution();
+        void SetHaltExecution(bool);
+        bool GetHaltRules();
+        void SetHaltRules(bool);
+        bool GetEvaluationError();
+        void SetEvaluationError(bool);
         int Load(String ^);
         void LoadFromString(String ^);
         bool LoadFromResource(String ^,String ^);
@@ -982,7 +988,44 @@ namespace CLIPSNET
      { 
       return m_Env->InputBufferCount();
      }   
-     
+
+   bool Environment::GetHaltExecution()
+     { 
+      if (m_Env->GetHaltExecution() == 0)
+        { return false; }
+      else
+        { return true; }
+     }
+
+   void Environment::SetHaltExecution(bool value)
+     { m_Env->SetHaltExecution(value); }
+
+   bool Environment::GetEvaluationError()
+     {
+      if (m_Env->GetEvaluationError() == 0)
+        { return false; }
+      else
+        { return true; }
+     }
+
+   void Environment::SetEvaluationError(bool value)
+     {
+      m_Env->SetEvaluationError(value);
+     }
+
+   bool Environment::GetHaltRules()
+     {
+      if (m_Env->GetHaltRules() == 0)
+        { return false; }
+      else
+       { return true; }
+     }
+
+   void Environment::SetHaltRules(bool value)
+     {
+      m_Env->SetHaltRules(value);
+     }
+
    String ^ Environment::ToString()
      {
       long long envLong = (long long) m_Env;
@@ -991,6 +1034,8 @@ namespace CLIPSNET
      }
 
    Environment::! Environment()
-     { delete m_Env; }
+     {
+      delete m_Env; 
+     }
 
   };

@@ -155,13 +155,13 @@ void DoExecutionChoice(
           { EngineData(GlobalEnv)->HaltRules = TRUE; }
         else
           {
-           SetHaltExecution(theEnv,TRUE);
+           EnvSetHaltExecution(theEnv,TRUE);
            CloseAllBatchSources(theEnv);
           }
         break;
 
       case ID_EXECUTION_HALT_NOW:
-        SetHaltExecution(theEnv,TRUE);
+        EnvSetHaltExecution(theEnv,TRUE);
         CloseAllBatchSources(theEnv);
         break;
      }

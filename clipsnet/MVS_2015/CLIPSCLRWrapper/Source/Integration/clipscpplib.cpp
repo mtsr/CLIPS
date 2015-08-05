@@ -124,7 +124,6 @@ void CLIPSCPPEnv::LoadFromString(
 #endif
   }
 
-
 /*********/
 /* Reset */
 /*********/
@@ -193,7 +192,82 @@ DataObject CLIPSCPPEnv::Eval(
      
    return ConvertDataObject(theEnv,&rv);
   }
-  
+
+/********************/
+/* GetHaltExecution */
+/********************/
+int CLIPSCPPEnv::GetHaltExecution()
+{
+#ifndef CLIPS_DLL_WRAPPER
+    return EnvGetHaltExecution(theEnv);
+#else
+    return __EnvGetHaltExecution(theEnv);
+#endif
+}
+
+/********************/
+/* SetHaltExecution */
+/********************/
+void CLIPSCPPEnv::SetHaltExecution(
+   int value)
+{
+#ifndef CLIPS_DLL_WRAPPER
+    EnvSetHaltExecution(theEnv,value);
+#else
+    __EnvSetHaltExecution(theEnv,value);
+#endif
+}
+
+/**********************/
+/* GetEvaluationError */
+/**********************/
+int CLIPSCPPEnv::GetEvaluationError()
+{
+#ifndef CLIPS_DLL_WRAPPER
+    return EnvGetEvaluationError(theEnv);
+#else
+    return __EnvGetEvaluationError(theEnv);
+#endif
+}
+
+/**********************/
+/* SetEvaluationError */
+/**********************/
+void CLIPSCPPEnv::SetEvaluationError(
+    int value)
+{
+#ifndef CLIPS_DLL_WRAPPER
+    EnvSetEvaluationError(theEnv, value);
+#else
+    __EnvSetEvaluationError(theEnv, value);
+#endif
+}
+
+/****************/
+/* GetHaltRules */
+/****************/
+int CLIPSCPPEnv::GetHaltRules()
+{
+#ifndef CLIPS_DLL_WRAPPER
+    return EnvGetHaltRules(theEnv);
+#else
+    return __EnvGetHaltRules(theEnv);
+#endif
+}
+
+/****************/
+/* SetHaltRules */
+/****************/
+void CLIPSCPPEnv::SetHaltRules(
+    int value)
+{
+#ifndef CLIPS_DLL_WRAPPER
+    EnvSetHaltRules(theEnv, value);
+#else
+    __EnvSetHaltRules(theEnv, value);
+#endif
+}
+
 /****************/
 /* AssertString */
 /****************/

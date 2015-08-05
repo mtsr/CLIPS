@@ -44,5 +44,11 @@ void __declspec(dllexport) * __GetEnvironmentContext(void *);
 void __declspec(dllexport) * __GetEnvironmentRouterContext(void *);
 void __declspec(dllexport) * __EnvAssertString(void *,const char *);
 size_t __declspec(dllexport) __EnvInputBufferCount(void *);
+void __declspec(dllimport) __EnvSetEvaluationError(void *,int);
+int __declspec(dllimport) __EnvGetEvaluationError(void *);
+void __declspec(dllimport) __EnvSetHaltExecution(void *, int);
+int __declspec(dllimport) __EnvGetHaltExecution(void *);
+void __declspec(dllimport) __EnvSetHaltRules(void *, int);
+int __declspec(dllimport) __EnvGetHaltRules(void *);
 
 #endif
