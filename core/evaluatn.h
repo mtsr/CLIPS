@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  02/04/15            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*               EVALUATION HEADER FILE                */
    /*******************************************************/
@@ -40,6 +40,12 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Added Env prefix to GetHaltExecution and       */
+/*            SetHaltExecution functions.                    */
 /*                                                           */
 /*************************************************************/
 
@@ -216,10 +222,10 @@ struct evaluationData
 
    LOCALE void                           InitializeEvaluationData(void *);
    LOCALE int                            EvaluateExpression(void *,struct expr *,struct dataObject *);
-   LOCALE void                           SetEvaluationError(void *,intBool);
-   LOCALE int                            GetEvaluationError(void *);
-   LOCALE void                           SetHaltExecution(void *,int);
-   LOCALE int                            GetHaltExecution(void *);
+   LOCALE void                           EnvSetEvaluationError(void *,intBool);
+   LOCALE int                            EnvGetEvaluationError(void *);
+   LOCALE void                           EnvSetHaltExecution(void *,int);
+   LOCALE int                            EnvGetHaltExecution(void *);
    LOCALE void                           ReturnValues(void *,struct dataObject *,intBool);
    LOCALE void                           PrintDataObject(void *,const char *,struct dataObject *);
    LOCALE void                           EnvSetMultifieldErrorValue(void *,struct dataObject *);

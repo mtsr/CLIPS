@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                    AGENDA MODULE                    */
    /*******************************************************/
@@ -41,6 +41,9 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -1274,7 +1277,7 @@ static int EvaluateSalience(
   /* during evaluation, print an error message.         */
   /*====================================================*/
 
-  SetEvaluationError(theEnv,FALSE);
+  EnvSetEvaluationError(theEnv,FALSE);
   if (EvaluateExpression(theEnv,rPtr->dynamicSalience,&salienceValue))
     {
      SalienceInformationError(theEnv,"defrule",ValueToString(rPtr->header.name));
@@ -1289,7 +1292,7 @@ static int EvaluateSalience(
     {
      SalienceNonIntegerError(theEnv);
      SalienceInformationError(theEnv,"defrule",ValueToString(rPtr->header.name));
-     SetEvaluationError(theEnv,TRUE);
+     EnvSetEvaluationError(theEnv,TRUE);
      return(rPtr->salience);
     }
 
@@ -1303,7 +1306,7 @@ static int EvaluateSalience(
   if ((salience > MAX_DEFRULE_SALIENCE) || (salience < MIN_DEFRULE_SALIENCE))
     {
      SalienceRangeError(theEnv,MIN_DEFRULE_SALIENCE,MAX_DEFRULE_SALIENCE);
-     SetEvaluationError(theEnv,TRUE);
+     EnvSetEvaluationError(theEnv,TRUE);
      SalienceInformationError(theEnv,"defrule",ValueToString(((struct defrule *) rPtr)->header.name));
      return(rPtr->salience);
     }

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*             DEFRULE LHS PARSING MODULE              */
    /*******************************************************/
@@ -19,6 +19,9 @@
 /*                                                           */
 /*      6.30: Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -389,7 +392,7 @@ static void ParseSalience(
    /* Evaluate the expression and determine if it is an integer. */
    /*============================================================*/
 
-   SetEvaluationError(theEnv,FALSE);
+   EnvSetEvaluationError(theEnv,FALSE);
    if (EvaluateExpression(theEnv,PatternData(theEnv)->SalienceExpression,&salienceValue))
      {
       SalienceInformationError(theEnv,"defrule",ruleName);

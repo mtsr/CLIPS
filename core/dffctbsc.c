@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*         DEFFACTS BASIC COMMANDS HEADER FILE         */
    /*******************************************************/
@@ -36,6 +36,9 @@
 /*            Changed find construct functionality so that   */
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -139,7 +142,7 @@ static void ResetDeffactsAction(
 
    if (theDeffacts->assertList == NULL) return;
 
-   SetEvaluationError(theEnv,FALSE);
+   EnvSetEvaluationError(theEnv,FALSE);
 
    EvaluateExpression(theEnv,theDeffacts->assertList,&result);
   }

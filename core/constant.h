@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  07/10/15            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                CONSTANTS HEADER FILE                */
    /*******************************************************/
@@ -83,11 +83,11 @@
 #endif
 
 #ifndef CREATION_DATE_STRING
-#define CREATION_DATE_STRING "5/19/15"
+#define CREATION_DATE_STRING "8/04/15"
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (6.31 7/10/15)\n"
+#define BANNER_STRING "         CLIPS (6.31 8/04/15)\n"
 #endif
 
 /*************************/

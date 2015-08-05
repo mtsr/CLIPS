@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                 CLASS EXAMINATION MODULE            */
    /*******************************************************/
@@ -47,6 +47,9 @@
 /*            deprecation warnings.                           */
 /*                                                            */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /**************************************************************/
 
@@ -441,7 +444,7 @@ globle int SlotExistPCommand(
       if (strcmp(DOToString(dobj),"inherit") != 0)
         {
          ExpectedTypeError1(theEnv,"slot-existp",3,"keyword \"inherit\"");
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
          return(FALSE);
         }
       inheritFlag = TRUE;
@@ -505,7 +508,7 @@ globle int MessageHandlerExistPCommand(
       mtype = HandlerType(theEnv,"message-handler-existp",DOToString(temp));
       if (mtype == MERROR)
         {
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
          return(FALSE);
         }
      }
@@ -896,7 +899,7 @@ static SLOT_DESC *CheckSlotExists(
       if (existsErrorFlag)
         {
          SlotExistError(theEnv,ValueToString(ssym),func);
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
         }
       return(NULL);
      }
@@ -911,7 +914,7 @@ static SLOT_DESC *CheckSlotExists(
    EnvPrintRouter(theEnv,WERROR," is not valid for function ");
    EnvPrintRouter(theEnv,WERROR,func);
    EnvPrintRouter(theEnv,WERROR,"\n");
-   SetEvaluationError(theEnv,TRUE);
+   EnvSetEvaluationError(theEnv,TRUE);
    return(NULL);
   }
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.31  08/04/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -41,6 +41,9 @@
 /*                                                           */
 /*            Fixed typing issue when OBJECT_SYSTEM          */
 /*            compiler flag is set to 0.                     */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -661,7 +664,7 @@ globle DEFGENERIC *CheckGenericExists(
       EnvPrintRouter(theEnv,WERROR," in function ");
       EnvPrintRouter(theEnv,WERROR,fname);
       EnvPrintRouter(theEnv,WERROR,".\n");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
      }
    return(gfunc);
   }
@@ -697,7 +700,7 @@ globle long CheckMethodExists(
       EnvPrintRouter(theEnv,WERROR," in function ");
       EnvPrintRouter(theEnv,WERROR,fname);
       EnvPrintRouter(theEnv,WERROR,".\n");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
      }
    return(fi);
   }
@@ -740,7 +743,7 @@ globle const char *TypeName(
       case INSTANCE_TYPE_CODE  : return(INSTANCE_TYPE_NAME);
       default                  : PrintErrorID(theEnv,"INSCOM",1,FALSE);
                                  EnvPrintRouter(theEnv,WERROR,"Undefined type in function type.\n");
-                                 SetEvaluationError(theEnv,TRUE);
+                                 EnvSetEvaluationError(theEnv,TRUE);
                                  return("<UNKNOWN-TYPE>");
      }
   }

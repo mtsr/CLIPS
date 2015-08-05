@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  05/18/15            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                ENVIRONMENT MODULE                   */
    /*******************************************************/
@@ -46,6 +46,9 @@
 /*                                                           */
 /*      6.31: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
+/*                                                           */
+/*            Added Env prefix to GetHaltExecution and       */
+/*            SetHaltExecution functions.                    */
 /*                                                           */
 /*************************************************************/
 
@@ -989,7 +992,7 @@ static void EnvInitializeEnvironment(
 globle void InterruptCurrentEnvironment()
   {
 #if ALLOW_ENVIRONMENT_GLOBALS
-   SetHaltExecution(GetCurrentEnvironment(),TRUE);
+   EnvSetHaltExecution(GetCurrentEnvironment(),TRUE);
    CloseAllBatchSources(GetCurrentEnvironment());
 #endif
   }

@@ -45,6 +45,9 @@
 /*            Fixed linkage issue when BLOAD_ONLY compiler   */
 /*            flag is set to 1.                              */
 /*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
+/*                                                           */
 /*************************************************************/
 
 #define _PRNTUTIL_SOURCE_
@@ -396,7 +399,7 @@ globle void SyntaxErrorMessage(
      }
 
    EnvPrintRouter(theEnv,WERROR,".\n");
-   SetEvaluationError(theEnv,TRUE);
+   EnvSetEvaluationError(theEnv,TRUE);
   }
 
 /****************************************************/
@@ -669,5 +672,5 @@ globle void SlotExistError(
    EnvPrintRouter(theEnv,WERROR," in function ");
    EnvPrintRouter(theEnv,WERROR,func);
    EnvPrintRouter(theEnv,WERROR,".\n");
-   SetEvaluationError(theEnv,TRUE);
+   EnvSetEvaluationError(theEnv,TRUE);
   }

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  06/05/15            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -53,6 +53,9 @@
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*      6.31: Modified EnvClear to return completion status. */
+/*                                                           */
+/*            Added Env prefix to GetHaltExecution and       */
+/*            SetHaltExecution functions.                    */
 /*                                                           */
 /*************************************************************/
 
@@ -456,7 +459,7 @@ globle void EnvReset(
    /* command prompt, reset the halt execution flag. */
    /*================================================*/
 
-   if (UtilityData(theEnv)->CurrentGarbageFrame->topLevel) SetHaltExecution(theEnv,FALSE);
+   if (UtilityData(theEnv)->CurrentGarbageFrame->topLevel) EnvSetHaltExecution(theEnv,FALSE);
 
    /*=======================================================*/
    /* Call the before reset function to determine if the    */
@@ -480,7 +483,7 @@ globle void EnvReset(
    /*===========================*/
 
    for (resetPtr = ConstructData(theEnv)->ListOfResetFunctions;
-        (resetPtr != NULL) && (GetHaltExecution(theEnv) == FALSE);
+        (resetPtr != NULL) && (EnvGetHaltExecution(theEnv) == FALSE);
         resetPtr = resetPtr->next)
      { 
       if (resetPtr->environmentAware)

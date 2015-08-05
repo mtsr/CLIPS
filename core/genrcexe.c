@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -27,6 +27,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -182,7 +185,7 @@ globle void GenericDispatch(
       else
         {
          PrintErrorID(theEnv,"GENRCEXE",4,FALSE);
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
          DefgenericData(theEnv)->CurrentMethod = NULL;
          EnvPrintRouter(theEnv,WERROR,"Generic function ");
          EnvPrintRouter(theEnv,WERROR,EnvGetDefgenericName(theEnv,(void *) gfunc));
@@ -241,7 +244,7 @@ globle void GenericDispatch(
       EnvPrintRouter(theEnv,WERROR,"No applicable methods for ");
       EnvPrintRouter(theEnv,WERROR,EnvGetDefgenericName(theEnv,(void *) gfunc));
       EnvPrintRouter(theEnv,WERROR,".\n");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
      }
    gfunc->busy--;
    ProcedureFunctionData(theEnv)->ReturnFlag = FALSE;
@@ -422,7 +425,7 @@ globle void CallNextMethod(
       DefgenericData(theEnv)->CurrentMethod = oldMethod;
       PrintErrorID(theEnv,"GENRCEXE",2,FALSE);
       EnvPrintRouter(theEnv,WERROR,"Shadowed methods not applicable in current context.\n");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       return;
      }
 
@@ -525,7 +528,7 @@ globle void OverrideNextMethod(
      {
       PrintErrorID(theEnv,"GENRCEXE",2,FALSE);
       EnvPrintRouter(theEnv,WERROR,"Shadowed methods not applicable in current context.\n");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       return;
      }
    GenericDispatch(theEnv,DefgenericData(theEnv)->CurrentGeneric,DefgenericData(theEnv)->CurrentMethod,NULL,
@@ -692,7 +695,7 @@ static DEFCLASS *DetermineRestrictionClass(
      return(DefclassData(theEnv)->PrimitiveClassMap[dobj->type]);
    if (cls == NULL)
      {
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       PrintErrorID(theEnv,"GENRCEXE",3,FALSE);
       EnvPrintRouter(theEnv,WERROR,"Unable to determine class of ");
       PrintDataObject(theEnv,WERROR,dobj);

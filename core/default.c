@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*               DEFAULT ATTRIBUTE MODULE              */
    /*******************************************************/
@@ -26,6 +26,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -441,7 +444,7 @@ globle struct expr *ParseDefault(
 
    while (newItem != NULL)
      {
-      SetEvaluationError(theEnv,FALSE);
+      EnvSetEvaluationError(theEnv,FALSE);
       if (EvaluateExpression(theEnv,newItem,&theValue)) *error = TRUE;
 
       if ((theValue.type == MULTIFIELD) &&

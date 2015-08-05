@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                CLASS FUNCTIONS MODULE               */
    /*******************************************************/
@@ -38,6 +38,9 @@
 /*                                                           */
 /*            Fixed linkage issue when BLOAD_AND_SAVE        */
 /*            compiler flag is set to 0.                     */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -239,7 +242,7 @@ globle void ClassExistError(
    EnvPrintRouter(theEnv,WERROR," in function ");
    EnvPrintRouter(theEnv,WERROR,func);
    EnvPrintRouter(theEnv,WERROR,".\n");
-   SetEvaluationError(theEnv,TRUE);
+   EnvSetEvaluationError(theEnv,TRUE);
   }
 
 /*********************************************
@@ -1180,7 +1183,7 @@ globle int GetTraversalID(
       EnvPrintRouter(theEnv,WERROR,"Maximum number of simultaneous class hierarchy\n  traversals exceeded ");
       PrintLongInteger(theEnv,WERROR,(long) MAX_TRAVERSALS);
       EnvPrintRouter(theEnv,WERROR,".\n");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       return(-1);
      }
 

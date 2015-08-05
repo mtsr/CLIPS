@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                    WATCH MODULE                     */
    /*******************************************************/
@@ -35,6 +35,9 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -219,7 +222,7 @@ globle int EnvSetWatchItem(
          if ((wPtr->accessFunc == NULL) ? FALSE :
              ((*wPtr->accessFunc)(theEnv,wPtr->code,newState,argExprs) == FALSE))
            {
-            SetEvaluationError(theEnv,TRUE);
+            EnvSetEvaluationError(theEnv,TRUE);
             return(FALSE);
            }
         }
@@ -250,7 +253,7 @@ globle int EnvSetWatchItem(
          if ((wPtr->accessFunc == NULL) ? FALSE :
              ((*wPtr->accessFunc)(theEnv,wPtr->code,newState,argExprs) == FALSE))
            {
-            SetEvaluationError(theEnv,TRUE);
+            EnvSetEvaluationError(theEnv,TRUE);
             return(FALSE);
            }
 
@@ -370,7 +373,7 @@ globle void WatchCommand(
    wPtr = ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == FALSE)
      {
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       ExpectedTypeError1(theEnv,"watch",1,"watchable symbol");
       return;
      }
@@ -383,7 +386,7 @@ globle void WatchCommand(
      {
       if ((wPtr == NULL) ? TRUE : (wPtr->accessFunc == NULL))
         {
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
          ExpectedCountError(theEnv,"watch",EXACTLY,1);
          return;
         }
@@ -417,7 +420,7 @@ globle void UnwatchCommand(
    wPtr = ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == FALSE)
      {
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       ExpectedTypeError1(theEnv,"unwatch",1,"watchable symbol");
       return;
      }
@@ -430,7 +433,7 @@ globle void UnwatchCommand(
      {
       if ((wPtr == NULL) ? TRUE : (wPtr->accessFunc == NULL))
         {
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
          ExpectedCountError(theEnv,"unwatch",EXACTLY,1);
          return;
         }
@@ -477,7 +480,7 @@ globle void ListWatchItemsCommand(
    wPtr = ValidWatchItem(theEnv,DOToString(theValue),&recognized);
    if ((recognized == FALSE) || (wPtr == NULL))
      {
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       ExpectedTypeError1(theEnv,"list-watch-items",1,"watchable symbol");
       return;
      }
@@ -489,7 +492,7 @@ globle void ListWatchItemsCommand(
    if ((wPtr->printFunc == NULL) &&
        (GetNextArgument(GetFirstArgument()) != NULL))
      {
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       ExpectedCountError(theEnv,"list-watch-items",EXACTLY,1);
       return;
      }
@@ -510,7 +513,7 @@ globle void ListWatchItemsCommand(
      {
       if ((*wPtr->printFunc)(theEnv,WDISPLAY,wPtr->code,
                              GetNextArgument(GetFirstArgument())) == FALSE)
-        { SetEvaluationError(theEnv,TRUE); }
+        { EnvSetEvaluationError(theEnv,TRUE); }
      }
   }
 
@@ -543,7 +546,7 @@ globle int GetWatchItemCommand(
    ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == FALSE)
      {
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       ExpectedTypeError1(theEnv,"get-watch-item",1,"watchable symbol");
       return(FALSE);
      }

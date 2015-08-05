@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*              INCREMENTAL RESET MODULE               */
    /*******************************************************/
@@ -35,6 +35,9 @@
 /*            the existance of rules.                        */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -606,7 +609,7 @@ globle int SetIncrementalResetCommand(
          RestoreCurrentModule(theEnv);
          PrintErrorID(theEnv,"INCRRSET",1,FALSE);
          EnvPrintRouter(theEnv,WERROR,"The incremental reset behavior cannot be changed with rules loaded.\n");
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
          return(oldValue);
         }
      }

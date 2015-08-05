@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  08/16/14           */
+   /*              CLIPS Version 6.31  08/04/15           */
    /*                                                     */
    /*           INSTANCE MULTIFIELD SLOT MODULE           */
    /*******************************************************/
@@ -24,6 +24,9 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Changed integer type/precision.                */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -368,7 +371,7 @@ static INSTANCE_TYPE *CheckMultifieldSlotInstance(
 
    if (EnvArgTypeCheck(theEnv,func,1,INSTANCE_OR_INSTANCE_NAME,&temp) == FALSE)
      {
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       return(NULL);
      }
    if (temp.type == INSTANCE_ADDRESS)
@@ -377,7 +380,7 @@ static INSTANCE_TYPE *CheckMultifieldSlotInstance(
       if (ins->garbage == 1)
         {
          StaleInstanceAddress(theEnv,func,0);
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
          return(NULL);
         }
      }
@@ -438,7 +441,7 @@ static INSTANCE_SLOT *CheckMultifieldSlotModify(
    if (temp.type != SYMBOL)
      {
       ExpectedTypeError1(theEnv,func,start,"symbol");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       return(NULL);
      }
    sp = FindInstanceSlot(theEnv,ins,(SYMBOL_HN *) temp.value);
@@ -457,14 +460,14 @@ static INSTANCE_SLOT *CheckMultifieldSlotModify(
       EnvPrintRouter(theEnv,WERROR," in instance ");
       EnvPrintRouter(theEnv,WERROR,ValueToString(ins->name));
       EnvPrintRouter(theEnv,WERROR,".\n");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       return(NULL);
      }
    EvaluateExpression(theEnv,args->nextArg,&temp);
    if (temp.type != INTEGER)
      {
       ExpectedTypeError1(theEnv,func,start+1,"integer");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       return(NULL);
      }
    args = args->nextArg->nextArg;
@@ -475,7 +478,7 @@ static INSTANCE_SLOT *CheckMultifieldSlotModify(
       if (temp.type != INTEGER)
         {
          ExpectedTypeError1(theEnv,func,start+2,"integer");
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
          return(NULL);
         }
       *re = (long) ValueToLong(temp.value);

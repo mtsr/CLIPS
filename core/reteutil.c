@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                 RETE UTILITY MODULE                 */
    /*******************************************************/
@@ -41,6 +41,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.31: Added Env prefix to GetHaltExecution and       */
+/*            SetHaltExecution functions.                    */
 /*                                                           */
 /*************************************************************/
 
@@ -1539,7 +1542,7 @@ globle unsigned long PrintBetaMemory(
    struct partialMatch *listOfMatches;
    unsigned long b, count = 0;
 
-   if (GetHaltExecution(theEnv) == TRUE)
+   if (EnvGetHaltExecution(theEnv) == TRUE)
      { return count; }
 
    for (b = 0; b < theMemory->size; b++)
@@ -1553,7 +1556,7 @@ globle unsigned long PrintBetaMemory(
          /* to stop the display of partial matches. */
          /*=========================================*/
 
-         if (GetHaltExecution(theEnv) == TRUE)
+         if (EnvGetHaltExecution(theEnv) == TRUE)
            { return count; }
 
          /*=========================================================*/

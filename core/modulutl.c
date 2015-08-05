@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*              DEFMODULE UTILITY MODULE               */
    /*******************************************************/
@@ -23,6 +23,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.31: Added Env prefix to GetHaltExecution and       */
+/*            SetHaltExecution functions.                    */
 /*                                                           */
 /*************************************************************/
 
@@ -723,7 +726,7 @@ globle long DoForAllModules(
      {
       EnvSetCurrentModule(theEnv,(void *) theModule);
 
-      if ((interruptable) && GetHaltExecution(theEnv))
+      if ((interruptable) && EnvGetHaltExecution(theEnv))
         {
          RestoreCurrentModule(theEnv);
          return(-1L);

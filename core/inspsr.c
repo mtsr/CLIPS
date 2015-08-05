@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  02/05/15           */
+   /*              CLIPS Version 6.31  08/04/15           */
    /*                                                     */
    /*                INSTANCE PARSER MODULE               */
    /*******************************************************/
@@ -36,6 +36,9 @@
 /*            Added code to keep track of pointers to        */
 /*            constructs that are contained externally to    */
 /*            to constructs, DanglingConstructs.             */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -315,7 +318,7 @@ globle EXPRESSION *ParseInitializeInstance(
    return(top);
 
 ParseInitializeInstanceError:
-   SetEvaluationError(theEnv,TRUE);
+   EnvSetEvaluationError(theEnv,TRUE);
    ReturnExpression(theEnv,top);
    DecrementIndentDepth(theEnv,3);
    return(NULL);
@@ -363,7 +366,7 @@ globle EXPRESSION *ParseSlotOverrides(
          SyntaxErrorMessage(theEnv,"slot-override");
          *error = TRUE;
          ReturnExpression(theEnv,top);
-         SetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,TRUE);
          return(NULL);
         }
       theExpNext = GenConstant(theEnv,SYMBOL,EnvTrueSymbol(theEnv));
@@ -510,13 +513,13 @@ globle EXPRESSION *ParseSimpleInstance(
 
 MakeInstanceError:
    SyntaxErrorMessage(theEnv,"make-instance");
-   SetEvaluationError(theEnv,TRUE);
+   EnvSetEvaluationError(theEnv,TRUE);
    ReturnExpression(theEnv,top);
    return(NULL);
 
 SlotOverrideError:
    SyntaxErrorMessage(theEnv,"slot-override");
-   SetEvaluationError(theEnv,TRUE);
+   EnvSetEvaluationError(theEnv,TRUE);
    ReturnExpression(theEnv,top);
    ReturnExpression(theEnv,vals);
    return(NULL);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*               STRING FUNCTIONS MODULE               */
    /*******************************************************/
@@ -46,6 +46,9 @@
 /*                                                           */
 /*            Fixed str-cat bug that could be invoked by     */
 /*            (funcall str-cat).                             */
+/*                                                           */
+/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -218,7 +221,7 @@ static void StrOrSymCatFunction(
 
          default:
            ExpectedTypeError1(theEnv,functionName,i,"string, instance name, symbol, float, or integer");
-           SetEvaluationError(theEnv,TRUE);
+           EnvSetEvaluationError(theEnv,TRUE);
            break;
         }
 
@@ -826,7 +829,7 @@ globle int EnvEval(
 
    if (top == NULL)
      {
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       CloseStringSource(theEnv,logicalNameBuffer);
       SetpType(returnValue,SYMBOL);
       SetpValue(returnValue,EnvFalseSymbol(theEnv));
@@ -844,7 +847,7 @@ globle int EnvEval(
      {
       PrintErrorID(theEnv,"MISCFUN",1,FALSE);
       EnvPrintRouter(theEnv,WERROR,"expand$ must be used in the argument list of a function call.\n");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       CloseStringSource(theEnv,logicalNameBuffer);
       SetpType(returnValue,SYMBOL);
       SetpValue(returnValue,EnvFalseSymbol(theEnv));
@@ -863,7 +866,7 @@ globle int EnvEval(
      {
       PrintErrorID(theEnv,"STRNGFUN",2,FALSE);
       EnvPrintRouter(theEnv,WERROR,"Some variables could not be accessed by the eval function.\n");
-      SetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,TRUE);
       CloseStringSource(theEnv,logicalNameBuffer);
       SetpType(returnValue,SYMBOL);
       SetpValue(returnValue,EnvFalseSymbol(theEnv));
@@ -906,7 +909,7 @@ globle int EnvEval(
       CallPeriodicTasks(theEnv);
      }
 
-   if (GetEvaluationError(theEnv)) return(FALSE);
+   if (EnvGetEvaluationError(theEnv)) return(FALSE);
    return(TRUE);
   }
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  06/04/15            */
+   /*             CLIPS Version 6.31  08/04/15            */
    /*                                                     */
    /*                RULE COMMANDS MODULE                 */
    /*******************************************************/
@@ -52,6 +52,9 @@
 /*            activations listed were not correct if the     */
 /*            current module was different than the module   */
 /*            for the specified rule.                        */
+/*                                                           */
+/*            Added Env prefix to GetHaltExecution and       */
+/*            SetHaltExecution functions.                    */
 /*                                                           */
 /*************************************************************/
 
@@ -437,7 +440,7 @@ globle void EnvMatches(
         agendaPtr != NULL;
         agendaPtr = (struct activation *) EnvGetNextActivation(theEnv,agendaPtr))
      {
-      if (GetHaltExecution(theEnv) == TRUE) return;
+      if (EnvGetHaltExecution(theEnv) == TRUE) return;
 
       if (((struct activation *) agendaPtr)->theRule->header.name == topDisjunct->header.name)
         {
@@ -701,7 +704,7 @@ static long long ListAlphaMatches(
    struct joinNode *theJoin;
    long long alphaCount = 0;
 
-   if (GetHaltExecution(theEnv) == TRUE)
+   if (EnvGetHaltExecution(theEnv) == TRUE)
      { return(alphaCount); }
 
    theJoin = theInfo->theJoin;
@@ -751,7 +754,7 @@ static long long ListAlphaMatches(
 
       while (listOfMatches != NULL)
         {
-         if (GetHaltExecution(theEnv) == TRUE)
+         if (EnvGetHaltExecution(theEnv) == TRUE)
            { return(alphaCount); }
                  
          count++;
@@ -924,7 +927,7 @@ static long long ListBetaMatches(
    struct joinInformation *theInfo;
    long int count;
 
-   if (GetHaltExecution(theEnv) == TRUE)
+   if (EnvGetHaltExecution(theEnv) == TRUE)
      { return(betaCount); }
 
    theInfo = &infoArray[joinIndex];
@@ -1211,7 +1214,7 @@ static void ListBetaJoinActivity(
    struct joinNode *theJoin, *nextJoin;
    struct joinInformation *theInfo;
 
-   if (GetHaltExecution(theEnv) == TRUE)
+   if (EnvGetHaltExecution(theEnv) == TRUE)
      { return; }
 
    theInfo = &infoArray[joinIndex];
