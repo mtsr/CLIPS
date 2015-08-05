@@ -20,30 +20,32 @@ namespace RouterExample
       private CLIPSNET.Environment animalEnv = new CLIPSNET.Environment();
 
       public void RunExample(
+        BackgroundWorker worker,
+        DoWorkEventArgs e,
         CLIPSNET.Environment theEnv)
         {
          theEnv.Reset();
-         theEnv.Run();
+         while (theEnv.Run(1) > 0)
+           {
+            if (worker.CancellationPending == true)
+              { 
+               e.Cancel = true; 
+               return;
+              }
+           }
         }
 
       private void OnLoad(object sender, EventArgs e)
         {
-         //CLIPSNET.Environment autoEnv = new CLIPSNET.Environment();
          this.autoTextBox.AttachRouter(autoEnv,10);
          autoEnv.LoadFromResource("RouterExample", "RouterExample.auto.clp");
          autoEnv.LoadFromResource("RouterExample", "RouterExample.auto_en.clp");
 
-         //CLIPSNET.Environment animalEnv = new CLIPSNET.Environment();
          this.animalTextBox.AttachRouter(animalEnv, 10);
          animalEnv.LoadFromResource("RouterExample", "RouterExample.bcengine.clp");
          animalEnv.LoadFromResource("RouterExample", "RouterExample.animal.clp");
          animalEnv.LoadFromResource("RouterExample", "RouterExample.animal_en.clp");
 
-         //Thread autoThread = new Thread(() => RunExample(autoEnv));
-         //autoThread.Start();
-         
-         //Thread animalThread = new Thread(() => RunExample(animalEnv));
-         //animalThread.Start();
          autoBackgroundWorker.RunWorkerAsync();
          animalBackgroundWorker.RunWorkerAsync();
         }
@@ -55,22 +57,34 @@ namespace RouterExample
 
       private void AutoDoWork(object sender, DoWorkEventArgs e)
          {
-          RunExample(autoEnv);
+          BackgroundWorker worker = sender as BackgroundWorker;
+          RunExample(worker,e,autoEnv);
          }
 
       private void AnimalDoWork(object sender, DoWorkEventArgs e)
          {
-          RunExample(animalEnv);
+          BackgroundWorker worker = sender as BackgroundWorker;
+          RunExample(worker,e,animalEnv);
          }
 
       private void AutoWorkCompleted(object sender, RunWorkerCompletedEventArgs e)
          {
-          this.RestartAuto.Enabled = true;
+          if (e.Error != null)
+            { MessageBox.Show(e.Error.Message); }
+          else if (e.Cancelled)
+            { /* Do Nothing */ }
+          else
+            { this.RestartAuto.Enabled = true; }
          }
 
       private void AnimalWorkCompleted(object sender, RunWorkerCompletedEventArgs e)
          {
-          this.RestartAnimal.Enabled = true;
+          if (e.Error != null)
+            { MessageBox.Show(e.Error.Message); }
+          else if (e.Cancelled)
+            { /* Do Nothing */ }
+          else
+            { this.RestartAnimal.Enabled = true; }
          }
 
       private void RestartAutoClicked(object sender, EventArgs e)
@@ -87,6 +101,19 @@ namespace RouterExample
           this.animalTextBox.Clear();
           this.animalTextBox.Focus();
           animalBackgroundWorker.RunWorkerAsync();
+         }
+
+      private void OnClosing(object sender, FormClosingEventArgs e)
+        {
+         this.autoTextBox.OnClosing();
+         autoBackgroundWorker.CancelAsync();
+         while (autoBackgroundWorker.IsBusy)
+           { Application.DoEvents(); }
+
+         this.animalTextBox.OnClosing();
+         animalBackgroundWorker.CancelAsync();
+         while (animalBackgroundWorker.IsBusy)
+           { Application.DoEvents(); }
          }
       }
   }

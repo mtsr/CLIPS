@@ -69,7 +69,6 @@ namespace WineWPFExample
 
       private void OnLoad()
         {
-         Console.WriteLine("On Load");
          RunWine();
          formLoaded = true;       
         }
@@ -142,12 +141,8 @@ namespace WineWPFExample
 
       private void OnChange(object sender, SelectionChangedEventArgs e)
         {
-         Console.WriteLine("On Change");
          if (formLoaded)
-           { 
-            Console.WriteLine("Run Wine");
-            RunWine(); 
-           }
+           { RunWine(); }
         }
 
       private void RunWine()
@@ -271,8 +266,6 @@ namespace WineWPFExample
          string evalStr = "(WINES::get-wine-list)";
 
          MultifieldValue pv = (MultifieldValue) clips.Eval(evalStr);
-
-         Console.WriteLine("Wine Count = " + pv.Count);
          
          List<WineRecommendation> wineList = new List<WineRecommendation>();
 

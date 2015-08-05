@@ -30,13 +30,13 @@ namespace RouterExample
         private void InitializeComponent()
         {
          this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+         this.autoTextBox = new RouterExample.RouterTextBox();
+         this.animalTextBox = new RouterExample.RouterTextBox();
          this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
          this.RestartAuto = new System.Windows.Forms.Button();
          this.RestartAnimal = new System.Windows.Forms.Button();
          this.autoBackgroundWorker = new System.ComponentModel.BackgroundWorker();
          this.animalBackgroundWorker = new System.ComponentModel.BackgroundWorker();
-         this.autoTextBox = new RouterExample.RouterTextBox();
-         this.animalTextBox = new RouterExample.RouterTextBox();
          this.tableLayoutPanel1.SuspendLayout();
          this.flowLayoutPanel1.SuspendLayout();
          this.SuspendLayout();
@@ -58,6 +58,38 @@ namespace RouterExample
          this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
          this.tableLayoutPanel1.Size = new System.Drawing.Size(846, 647);
          this.tableLayoutPanel1.TabIndex = 0;
+         // 
+         // autoTextBox
+         // 
+         this.autoTextBox.AcceptsReturn = true;
+         this.autoTextBox.AllowDrop = true;
+         this.autoTextBox.BackColor = System.Drawing.SystemColors.Control;
+         this.autoTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+         this.autoTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.autoTextBox.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+         this.autoTextBox.Location = new System.Drawing.Point(4, 85);
+         this.autoTextBox.Multiline = true;
+         this.autoTextBox.Name = "autoTextBox";
+         this.autoTextBox.ReadOnly = true;
+         this.autoTextBox.Size = new System.Drawing.Size(838, 275);
+         this.autoTextBox.TabIndex = 1;
+         this.autoTextBox.WordWrap = false;
+         // 
+         // animalTextBox
+         // 
+         this.animalTextBox.AcceptsReturn = true;
+         this.animalTextBox.AllowDrop = true;
+         this.animalTextBox.BackColor = System.Drawing.SystemColors.Control;
+         this.animalTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+         this.animalTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.animalTextBox.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+         this.animalTextBox.Location = new System.Drawing.Point(4, 367);
+         this.animalTextBox.Multiline = true;
+         this.animalTextBox.Name = "animalTextBox";
+         this.animalTextBox.ReadOnly = true;
+         this.animalTextBox.Size = new System.Drawing.Size(838, 276);
+         this.animalTextBox.TabIndex = 2;
+         this.animalTextBox.WordWrap = false;
          // 
          // flowLayoutPanel1
          // 
@@ -99,45 +131,15 @@ namespace RouterExample
          // 
          // autoBackgroundWorker
          // 
+         this.autoBackgroundWorker.WorkerSupportsCancellation = true;
          this.autoBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.AutoDoWork);
          this.autoBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.AutoWorkCompleted);
          // 
          // animalBackgroundWorker
          // 
+         this.animalBackgroundWorker.WorkerSupportsCancellation = true;
          this.animalBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.AnimalDoWork);
          this.animalBackgroundWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.AnimalWorkCompleted);
-         // 
-         // autoTextBox
-         // 
-         this.autoTextBox.AcceptsReturn = true;
-         this.autoTextBox.AllowDrop = true;
-         this.autoTextBox.BackColor = System.Drawing.SystemColors.Control;
-         this.autoTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-         this.autoTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.autoTextBox.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-         this.autoTextBox.Location = new System.Drawing.Point(4, 85);
-         this.autoTextBox.Multiline = true;
-         this.autoTextBox.Name = "autoTextBox";
-         this.autoTextBox.ReadOnly = true;
-         this.autoTextBox.Size = new System.Drawing.Size(838, 275);
-         this.autoTextBox.TabIndex = 1;
-         this.autoTextBox.WordWrap = false;
-         // 
-         // animalTextBox
-         // 
-         this.animalTextBox.AcceptsReturn = true;
-         this.animalTextBox.AllowDrop = true;
-         this.animalTextBox.BackColor = System.Drawing.SystemColors.Control;
-         this.animalTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-         this.animalTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.animalTextBox.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-         this.animalTextBox.Location = new System.Drawing.Point(4, 367);
-         this.animalTextBox.Multiline = true;
-         this.animalTextBox.Name = "animalTextBox";
-         this.animalTextBox.ReadOnly = true;
-         this.animalTextBox.Size = new System.Drawing.Size(838, 276);
-         this.animalTextBox.TabIndex = 2;
-         this.animalTextBox.WordWrap = false;
          // 
          // RouterForm
          // 
@@ -147,6 +149,7 @@ namespace RouterExample
          this.Controls.Add(this.tableLayoutPanel1);
          this.Name = "RouterForm";
          this.Text = "Router Demo";
+         this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.OnClosing);
          this.Load += new System.EventHandler(this.OnLoad);
          this.tableLayoutPanel1.ResumeLayout(false);
          this.tableLayoutPanel1.PerformLayout();

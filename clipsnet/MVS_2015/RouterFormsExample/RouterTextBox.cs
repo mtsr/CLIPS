@@ -14,6 +14,7 @@ namespace RouterExample
       private class RouterThreadBridge
         {
          public bool charNeeded = false;
+         public bool closed = false;
          public List<Byte> charList = new List<Byte>();
         }
 
@@ -76,6 +77,12 @@ namespace RouterExample
 
             lock (theBridge)
               {
+               if (theBridge.closed) 
+                 {                   
+                  this.m_RouterTextBox.attachedEnv.SetHaltExecution(true);
+                  return -1; 
+                 }
+
                if (theBridge.charList.Count == 0)
                  {
                   theBridge.charNeeded = true;
@@ -89,6 +96,11 @@ namespace RouterExample
                  }
 
                theBridge.charNeeded = false;
+               if (theBridge.closed) 
+                 {
+                  this.m_RouterTextBox.attachedEnv.SetHaltExecution(true);
+                  return -1; 
+                 }
 
                Byte theByte = theBridge.charList[0];
                theBridge.charList.RemoveAt(0);
@@ -96,6 +108,7 @@ namespace RouterExample
                return theByte;
               }
            }
+
          public override int Ungetc(String logicalName,int theChar)
            {
             lock (this.m_RouterTextBox.m_ThreadBridge)
@@ -136,6 +149,22 @@ namespace RouterExample
       public void DetachRouter()
         {
          this.ReadOnly = true;
+        }
+
+      /*************/
+      /* OnClosing */
+      /*************/
+      public void OnClosing()
+        {
+         lock (m_ThreadBridge)
+           {               
+            m_ThreadBridge.closed = true;
+            if (m_ThreadBridge.charNeeded)
+              {
+               m_ThreadBridge.charNeeded = false;
+               Monitor.Pulse(m_ThreadBridge);
+              }
+           }
         }
 
       /*************/
