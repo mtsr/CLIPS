@@ -1,6 +1,6 @@
-﻿namespace AnimalExample
+﻿namespace AutoFormsExample
 {
-    partial class AnimalForm
+    partial class AutoFormsExample
     {
         /// <summary>
         /// Required designer variable.
@@ -59,11 +59,14 @@
          // 
          // messageLabel
          // 
-         this.messageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+         this.messageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+         this.messageLabel.AutoSize = true;
          this.messageLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-         this.messageLabel.Location = new System.Drawing.Point(55, 0);
+         this.messageLabel.Location = new System.Drawing.Point(3, 0);
          this.messageLabel.Name = "messageLabel";
-         this.messageLabel.Size = new System.Drawing.Size(223, 48);
+         this.messageLabel.Size = new System.Drawing.Size(328, 48);
          this.messageLabel.TabIndex = 0;
          this.messageLabel.Text = "label1";
          this.messageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -113,7 +116,7 @@
          this.choicesPanel.Size = new System.Drawing.Size(0, 0);
          this.choicesPanel.TabIndex = 2;
          // 
-         // AnimalForm
+         // AutoForm
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -123,8 +126,8 @@
          this.MaximizeBox = false;
          this.MaximumSize = new System.Drawing.Size(350, 200);
          this.MinimumSize = new System.Drawing.Size(350, 200);
-         this.Name = "AnimalForm";
-         this.Text = "Animal Demo";
+         this.Name = "AutoForm";
+         this.Text = "Auto Demo";
          this.autoTableLayoutPanel.ResumeLayout(false);
          this.autoTableLayoutPanel.PerformLayout();
          this.buttonsPanel.ResumeLayout(false);

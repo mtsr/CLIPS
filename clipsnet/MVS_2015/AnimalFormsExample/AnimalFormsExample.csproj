@@ -7,8 +7,8 @@
     <ProjectGuid>{2FE0908B-BD3D-4CD9-9A95-F63485F041B0}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AnimalExample</RootNamespace>
-    <AssemblyName>AnimalExample</AssemblyName>
+    <RootNamespace>AnimalFormsExample</RootNamespace>
+    <AssemblyName>AnimalFormsExample</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
@@ -103,16 +103,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AnimalForm.cs">
+    <Compile Include="AnimalFormsExample.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AnimalForm.Designer.cs">
-      <DependentUpon>AnimalForm.cs</DependentUpon>
+    <Compile Include="AnimalFormsExample.Designer.cs">
+      <DependentUpon>AnimalFormsExample.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AnimalForm.resx">
-      <DependentUpon>AnimalForm.cs</DependentUpon>
+    <EmbeddedResource Include="AnimalFormsExample.resx">
+      <DependentUpon>AnimalFormsExample.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 using CLIPSNET;
 
-namespace AutoExample
+namespace AnimalFormsExample
   {
-   public partial class AutoForm : Form
+   public partial class AnimalFormsExample : Form
      {
       private enum InterviewState { GREETING, INTERVIEW, CONCLUSION };
 
@@ -22,12 +22,13 @@ namespace AutoExample
       private List<string> variableAsserts = new List<string>();
       private List<string> priorAnswers = new List<string>();
       private InterviewState interviewState;
-      
-      public AutoForm()
+
+      public AnimalFormsExample()
         {
          InitializeComponent();
-         clips.LoadFromResource("AutoExample","AutoExample.auto.clp");
-         clips.LoadFromResource("AutoExample","AutoExample.auto_en.clp");
+         clips.LoadFromResource("AnimalFormsExample","AnimalFormsExample.bcengine.clp");
+         clips.LoadFromResource("AnimalFormsExample","AnimalFormsExample.animal.clp");
+         clips.LoadFromResource("AnimalFormsExample","AnimalFormsExample.animal_en.clp");
          clips.Reset();  
         }
 
@@ -44,8 +45,8 @@ namespace AutoExample
           /*===========================*/
 
           String evalStr = "(find-fact ((?f UI-state)) TRUE)";
-          FactAddressValue fv =  (FactAddressValue)((MultifieldValue)clips.Eval(evalStr))[0];
-
+          FactAddressValue fv =  (FactAddressValue) ((MultifieldValue) clips.Eval(evalStr))[0];
+          
           /*========================================*/
           /* Determine the Next/Prev button states. */
           /*========================================*/
@@ -115,28 +116,28 @@ namespace AutoExample
                { firstButton = rButton; }
             }
 
-         if ((GetCheckedChoiceButton() == null) && (firstButton != null))
-           { firstButton.Checked = true; }
+          if ((GetCheckedChoiceButton() == null) && (firstButton != null))
+            { firstButton.Checked = true; }
 
-         /*====================================*/
-         /* Set the label to the display text. */
-         /*====================================*/
+          /*====================================*/
+          /* Set the label to the display text. */
+          /*====================================*/
 
-         relationAsserted = ((LexemeValue) fv.GetFactSlot("relation-asserted")).GetLexemeValue();
+          relationAsserted = ((LexemeValue) fv.GetFactSlot("relation-asserted")).GetLexemeValue();
 
-         /*====================================*/
-         /* Set the label to the display text. */
-         /*====================================*/
+          /*====================================*/
+          /* Set the label to the display text. */
+          /*====================================*/
 
-         String messageString = ((StringValue) fv.GetFactSlot("display")).GetStringValue();
-         int preferredWidth = ComputeLabelWidth(messageString);
+          String messageString = ((StringValue) fv.GetFactSlot("display")).GetStringValue();
+          int preferredWidth = ComputeLabelWidth(messageString);
 
-         messageLabel.Text = messageString;
-         messageLabel.Size = new Size(preferredWidth,messageLabel.Height);
-        }
+          messageLabel.Text = messageString;
+          messageLabel.Size = new Size(preferredWidth,messageLabel.Height);
+         }
 
       private void NextButtonAction() 
-        {
+         {
           String theString;
           String theAnswer;
 
@@ -147,7 +148,7 @@ namespace AutoExample
              case InterviewState.GREETING:
              case InterviewState.INTERVIEW:
                theAnswer = (String) GetCheckedChoiceButton().Tag;
-               theString = "(" + relationAsserted + " " + theAnswer + ")";
+               theString = "(variable (name " + relationAsserted + ") (value " +  theAnswer + "))";
                variableAsserts.Add(theString);
                priorAnswers.Add(theAnswer);
                break;
@@ -159,7 +160,7 @@ namespace AutoExample
             }
 
           ProcessRules();
-        }
+         }
 
       private void PrevButtonAction()
         {
@@ -203,7 +204,7 @@ namespace AutoExample
          else if (button.Tag.Equals("Prev"))
            { PrevButtonAction(); }
         }
-
+        
       /*********************/
       /* ComputeLabelWidth */
       /*********************/
@@ -253,6 +254,5 @@ namespace AutoExample
 
          return finalWidth;
         }
-
      }
   }

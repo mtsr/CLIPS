@@ -10,11 +10,11 @@ using System.Windows.Forms;
 using System.Threading;
 
 using CLIPSNET;
-using RouterExample.Properties;
+using RouterFormsExample.Properties;
 
-namespace RouterExample
+namespace RouterFormsExample
   {
-   public partial class RouterForm : Form
+   public partial class RouterFormsExample : Form
      {
       private CLIPSNET.Environment autoEnv = new CLIPSNET.Environment();
       private CLIPSNET.Environment animalEnv = new CLIPSNET.Environment();
@@ -38,19 +38,19 @@ namespace RouterExample
       private void OnLoad(object sender, EventArgs e)
         {
          this.autoTextBox.AttachRouter(autoEnv,10);
-         autoEnv.LoadFromResource("RouterExample", "RouterExample.auto.clp");
-         autoEnv.LoadFromResource("RouterExample", "RouterExample.auto_en.clp");
+         autoEnv.LoadFromResource("RouterFormsExample", "RouterFormsExample.auto.clp");
+         autoEnv.LoadFromResource("RouterFormsExample", "RouterFormsExample.auto_en.clp");
 
          this.animalTextBox.AttachRouter(animalEnv, 10);
-         animalEnv.LoadFromResource("RouterExample", "RouterExample.bcengine.clp");
-         animalEnv.LoadFromResource("RouterExample", "RouterExample.animal.clp");
-         animalEnv.LoadFromResource("RouterExample", "RouterExample.animal_en.clp");
+         animalEnv.LoadFromResource("RouterFormsExample", "RouterFormsExample.bcengine.clp");
+         animalEnv.LoadFromResource("RouterFormsExample", "RouterFormsExample.animal.clp");
+         animalEnv.LoadFromResource("RouterFormsExample", "RouterFormsExample.animal_en.clp");
 
          autoBackgroundWorker.RunWorkerAsync();
          animalBackgroundWorker.RunWorkerAsync();
         }
 
-      public RouterForm()
+      public RouterFormsExample()
         {
          InitializeComponent();
         }
@@ -114,6 +114,6 @@ namespace RouterExample
          animalBackgroundWorker.CancelAsync();
          while (animalBackgroundWorker.IsBusy)
            { Application.DoEvents(); }
-         }
-      }
+        }
+     }
   }

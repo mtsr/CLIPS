@@ -7,8 +7,8 @@
     <ProjectGuid>{B951FF1A-C917-4BF5-AB8A-3E0A7621721A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WineExample</RootNamespace>
-    <AssemblyName>WineExample</AssemblyName>
+    <RootNamespace>WineFormsExample</RootNamespace>
+    <AssemblyName>WineFormsExample</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -79,16 +79,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataGridViewProgressColumn.cs" />
-    <Compile Include="WineForm.cs">
+    <Compile Include="WineFormsExample.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="WineForm.Designer.cs">
-      <DependentUpon>WineForm.cs</DependentUpon>
+    <Compile Include="WineFormsExample.Designer.cs">
+      <DependentUpon>WineFormsExample.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="WineForm.resx">
-      <DependentUpon>WineForm.cs</DependentUpon>
+    <EmbeddedResource Include="WineFormsExample.resx">
+      <DependentUpon>WineFormsExample.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

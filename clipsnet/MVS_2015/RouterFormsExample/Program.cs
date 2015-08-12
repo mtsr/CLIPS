@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace RouterExample
+namespace RouterFormsExample
 {
     static class Program
     {
@@ -16,7 +16,7 @@ namespace RouterExample
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new RouterForm());
+            Application.Run(new RouterFormsExample());
         }
     }
 }

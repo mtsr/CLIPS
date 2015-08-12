@@ -5,9 +5,9 @@ using System.Windows.Forms;
 
 using CLIPSNET;
 
-namespace WineExample
+namespace WineFormsExample
   {
-   public partial class WineForm : Form
+   public partial class WineFormsExample : Form
      {
       private class WineRecommendation 
         {
@@ -35,7 +35,7 @@ namespace WineExample
       private CLIPSNET.Environment clips;
       private bool formLoaded = false;
 
-      public WineForm()
+      public WineFormsExample()
         {
          InitializeComponent();
 
@@ -56,7 +56,7 @@ namespace WineExample
          flavorComboBox.DataSource = flavorChoices;
 
          clips = new CLIPSNET.Environment();
-         clips.LoadFromResource("WineExample","WineExample.wine.clp");
+         clips.LoadFromResource("WineFormsExample","WineFormsExample.wine.clp");
         }
 
       private String [] GenerateChoices(
@@ -201,15 +201,10 @@ namespace WineExample
       private void UpdateWines() 
         {
          string evalStr = "(WINES::get-wine-list)";
-
-         MultifieldValue pv = (MultifieldValue) clips.Eval(evalStr);
-
          List<WineRecommendation> wineList = new List<WineRecommendation>();
 
-         for (int i = 0; i < pv.Count; i++) 
+         foreach (FactAddressValue fv in clips.Eval(evalStr) as MultifieldValue)
            {
-            FactAddressValue fv = (FactAddressValue) pv[i];
-
             int certainty = (int) ((NumberValue) fv.GetFactSlot("certainty")).GetIntegerValue();
 
             String wineName = ((LexemeValue) fv.GetFactSlot("value")).GetLexemeValue();

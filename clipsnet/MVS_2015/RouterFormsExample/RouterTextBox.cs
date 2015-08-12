@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CLIPSNET;
 
-namespace RouterExample
+namespace RouterFormsExample
   {
    class RouterTextBox : System.Windows.Forms.TextBox
      {
@@ -35,8 +35,8 @@ namespace RouterExample
 
          public override bool Query(String logicalName)
             {
-             if (logicalName.Equals("stdout") ||
-                 logicalName.Equals("stdin"))
+             if (logicalName.Equals(CLIPSNET.Router.STANDARD_OUTPUT) ||
+                 logicalName.Equals(CLIPSNET.Router.STANDARD_INPUT))
                return true;
              else
                return false;

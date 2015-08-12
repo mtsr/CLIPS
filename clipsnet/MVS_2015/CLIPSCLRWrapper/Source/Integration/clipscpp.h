@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <iostream>
 #include <vector>
@@ -60,6 +61,15 @@ class CLIPSCPPRouter
       virtual int Getc(CLIPSCPPEnv *,const char *);
       virtual int Ungetc(CLIPSCPPEnv *,int,const char *);
       virtual int Exit(CLIPSCPPEnv *,int);
+
+      const static char *STANDARD_OUTPUT;
+      const static char *STANDARD_INPUT;
+      const static char *WARNING;
+      const static char *ERROR;
+      const static char *TRACE;
+      const static char *DIALOG;
+      const static char *PROMPT;
+      const static char *DISPLAY;
   };
   
 class Value
@@ -164,12 +174,11 @@ class FloatValue : public Value
      FloatValue(double);
      FloatValue(const FloatValue& v);
      virtual ~FloatValue();
-     /* virtual FloatValue& operator= (const FloatValue& v); */
      virtual std::ostream& print(std::ostream& o) const;
      virtual FloatValue *clone() const; 
-	 CLIPSType GetCLIPSType();
-	 long long GetIntegerValue();
-	 double GetFloatValue();
+     CLIPSType GetCLIPSType();
+     long long GetIntegerValue();
+     double GetFloatValue();
   
    private:
      double theFloat;
@@ -185,8 +194,9 @@ class FactAddressValue : public Value
      virtual std::ostream& print(std::ostream& o) const;
      virtual FactAddressValue *clone() const; 
      virtual DataObject GetFactSlot(char *) const;
-	 CLIPSType GetCLIPSType();
+     CLIPSType GetCLIPSType();
      virtual long long GetFactIndex() const;
+     void *GetFactAddressValue();
   
    private:
      void *theEnvironment;
@@ -202,9 +212,10 @@ class InstanceAddressValue : public Value
      virtual InstanceAddressValue& operator= (const InstanceAddressValue& v);
      virtual std::ostream& print(std::ostream& o) const;
      virtual InstanceAddressValue *clone() const; 
-	 CLIPSType GetCLIPSType();
+     CLIPSType GetCLIPSType();
      virtual const char *GetInstanceName() const;
      virtual DataObject DirectGetSlot(char *) const;
+     void *GetInstanceAddressValue();
   
    private:
      void *theEnvironment;

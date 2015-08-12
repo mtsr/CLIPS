@@ -1,7 +1,7 @@
 ﻿
-namespace RouterExample
+namespace RouterFormsExample
 {
-    partial class RouterForm
+    partial class RouterFormsExample
     {
         /// <summary>
         /// Required designer variable.
@@ -30,8 +30,8 @@ namespace RouterExample
         private void InitializeComponent()
         {
          this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-         this.autoTextBox = new RouterExample.RouterTextBox();
-         this.animalTextBox = new RouterExample.RouterTextBox();
+         this.autoTextBox = new global::RouterFormsExample.RouterTextBox();
+         this.animalTextBox = new global::RouterFormsExample.RouterTextBox();
          this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
          this.RestartAuto = new System.Windows.Forms.Button();
          this.RestartAnimal = new System.Windows.Forms.Button();

@@ -45,7 +45,7 @@ namespace AutoWPFExample
           /*===========================*/
 
           String evalStr = "(find-fact ((?f UI-state)) TRUE)";
-          FactAddressValue fv =  (FactAddressValue)((MultifieldValue)clips.Eval(evalStr))[0];
+          FactAddressValue fv =  (FactAddressValue) ((MultifieldValue) clips.Eval(evalStr))[0];
 
           /*========================================*/
           /* Determine the Next/Prev button states. */

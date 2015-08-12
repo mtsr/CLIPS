@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AutoExample
+namespace AutoFormsExample
 {
     static class Program
     {
@@ -16,7 +16,7 @@ namespace AutoExample
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new AutoForm());
+            Application.Run(new AutoFormsExample());
         }
     }
 }

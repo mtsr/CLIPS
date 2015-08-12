@@ -246,7 +246,7 @@ namespace WineWPFExample
             clips.AssertString("(attribute (name sauce) (value unknown))");
            }
 
-         item = (string)flavorComboBox.SelectedValue;
+         item = (string) flavorComboBox.SelectedValue;
          if (item.Equals("Delicate")) 
            { clips.AssertString("(attribute (name tastiness) (value delicate))"); } 
          else if (item.Equals("Average")) 
@@ -264,15 +264,10 @@ namespace WineWPFExample
       private void UpdateWines() 
         {
          string evalStr = "(WINES::get-wine-list)";
-
-         MultifieldValue pv = (MultifieldValue) clips.Eval(evalStr);
-         
          List<WineRecommendation> wineList = new List<WineRecommendation>();
 
-         for (int i = 0; i < pv.Count; i++) 
+         foreach (FactAddressValue fv in clips.Eval(evalStr) as MultifieldValue)
            {
-            FactAddressValue fv = (FactAddressValue) pv[i];
-
             int certainty = (int) ((NumberValue) fv.GetFactSlot("certainty")).GetIntegerValue();
 
             String wineName = ((LexemeValue) fv.GetFactSlot("value")).GetLexemeValue();

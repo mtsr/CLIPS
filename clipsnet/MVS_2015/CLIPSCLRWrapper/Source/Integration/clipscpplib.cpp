@@ -421,6 +421,15 @@ size_t CLIPSCPPEnv::InputBufferCount()
 /* CLIPSCPPRouter Methods */
 /*########################*/
 
+const char *CLIPSCPPRouter::STANDARD_OUTPUT = STDOUT;
+const char *CLIPSCPPRouter::STANDARD_INPUT = STDIN;
+const char *CLIPSCPPRouter::WARNING = WWARNING;
+const char *CLIPSCPPRouter::ERROR = WERROR;
+const char *CLIPSCPPRouter::TRACE = WTRACE;
+const char *CLIPSCPPRouter::DIALOG = WDIALOG;
+const char *CLIPSCPPRouter::PROMPT = WPROMPT;
+const char *CLIPSCPPRouter::DISPLAY = WDISPLAY;
+
 /*********/
 /* Query */
 /*********/
@@ -1187,6 +1196,12 @@ DataObject FactAddressValue::GetFactSlot(char *slotName) const
    return ConvertDataObject(theEnvironment,&theDO);
   }
 
+/***********************/
+/* GetFactAddressValue */
+/***********************/
+void *FactAddressValue::GetFactAddressValue()
+  { return this->theFactAddress; }
+
 /*##############################*/
 /* InstanceAddressValue Methods */
 /*##############################*/
@@ -1303,6 +1318,12 @@ std::ostream& InstanceAddressValue::print (std::ostream& o) const
 /*********/
 InstanceAddressValue *InstanceAddressValue::clone() const
   { return new InstanceAddressValue(*this); }
+
+/***************************/
+/* GetInstanceAddressValue */
+/***************************/
+void *InstanceAddressValue::GetInstanceAddressValue()
+  { return this->theInstanceAddress; }
   
 /*#########################*/
 /* MultifieldValue Methods */
