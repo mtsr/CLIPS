@@ -27,4 +27,9 @@ public class IntegerValue extends NumberValue
      {
       super(value);
      }
+     
+   @Override
+   public boolean isInteger()
+     { return true; }
+
   }

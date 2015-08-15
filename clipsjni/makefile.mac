@@ -9,7 +9,6 @@ JNI_FILES = \
 	$(JNI_SRC)/FloatValue.java \
 	$(JNI_SRC)/InstanceAddressValue.java \
 	$(JNI_SRC)/InstanceNameValue.java \
-	$(JNI_SRC)/InstanceValue.java \
 	$(JNI_SRC)/IntegerValue.java \
 	$(JNI_SRC)/LexemeValue.java \
 	$(JNI_SRC)/MultifieldValue.java \

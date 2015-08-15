@@ -7,6 +7,9 @@ public class VoidValue extends PrimitiveValue
    /***************/
    public VoidValue()
      {
-      super(null);
      }
+     
+   @Override
+   public boolean isVoid()
+     { return true; }
   }

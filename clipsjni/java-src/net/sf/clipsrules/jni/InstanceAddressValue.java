@@ -1,9 +1,10 @@
 package net.sf.clipsrules.jni;
 
-public class InstanceAddressValue extends InstanceValue
+public class InstanceAddressValue extends PrimitiveValue
   {
    private Environment owner;
-
+   private Long value;
+   
    /*************************/
    /* InstanceAddressValue: */
    /*************************/
@@ -11,8 +12,7 @@ public class InstanceAddressValue extends InstanceValue
      long value,
      Environment env)
      {
-      super(new Long(value));
-      
+      this.value = value;      
       owner = env;
      }
 
@@ -26,7 +26,7 @@ public class InstanceAddressValue extends InstanceValue
    /* getInstanceAddress: */
    /***********************/     
    public long getInstanceAddress()
-     { return ((Long) getValue()).longValue(); }
+     { return getValue().longValue(); }
 
    /******************/
    /* directGetSlot: */
@@ -67,4 +67,9 @@ public class InstanceAddressValue extends InstanceValue
      {
       owner.decrementInstanceCount(this);
      }
+   
+   @Override
+   public boolean isInstanceAddress()
+     { return true; }
+
   }

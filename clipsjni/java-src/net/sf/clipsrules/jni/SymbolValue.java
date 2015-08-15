@@ -22,8 +22,13 @@ public class SymbolValue extends LexemeValue
    /****************/
    /* symbolValue: */
    /****************/
-   public String symbolValue() throws Exception
+   public String symbolValue()
      {
-      return (String) getValue();
+      return getValue();
      }
+          
+   @Override
+   public boolean isSymbol()
+     { return true; }
+
   }

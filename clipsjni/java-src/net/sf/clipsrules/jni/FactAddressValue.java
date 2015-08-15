@@ -3,6 +3,7 @@ package net.sf.clipsrules.jni;
 public class FactAddressValue extends PrimitiveValue
   {
    private Environment owner;
+   private Long value;
 
    /*********************/
    /* FactAddressValue: */
@@ -11,9 +12,17 @@ public class FactAddressValue extends PrimitiveValue
      long value,
      Environment env)
      {
-      super(new Long(value));
-      
+      this.value = value;
       owner = env;
+     }
+
+   /*************/
+   /* getValue: */
+   /*************/
+   @Override
+   public Long getValue()
+     {
+      return this.value;
      }
 
    /*******************/
@@ -26,7 +35,7 @@ public class FactAddressValue extends PrimitiveValue
    /* getFactAddress: */
    /*******************/     
    public long getFactAddress()
-     { return ((Long) getValue()).longValue(); }
+     { return getValue().longValue(); }
 
    /****************/
    /* getFactSlot: */
@@ -67,4 +76,8 @@ public class FactAddressValue extends PrimitiveValue
      {        
       return "<Fact-" + getFactIndex() + ">";
      }
+
+   @Override
+   public boolean isFactAddress()
+     { return true; }
   }

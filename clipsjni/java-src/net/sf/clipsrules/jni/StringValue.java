@@ -35,5 +35,9 @@ public class StringValue extends LexemeValue
      {        
       return "\"" + super.toString() + "\"";
      }
+    
+   @Override
+   public boolean isString()
+     { return true; }
 
   }

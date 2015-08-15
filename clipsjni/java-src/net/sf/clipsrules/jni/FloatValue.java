@@ -27,4 +27,8 @@ public class FloatValue extends NumberValue
      {
       super(value);
      }
+     
+   @Override
+   public boolean isFloat()
+     { return true; }
   }
