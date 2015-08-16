@@ -16,6 +16,15 @@ public class InstanceAddressValue extends PrimitiveValue
       owner = env;
      }
 
+   /*************/
+   /* getValue: */
+   /*************/
+   @Override
+   public Long getValue()
+     {
+      return this.value;
+     }
+
    /*******************/
    /* getEnvironment: */
    /*******************/
