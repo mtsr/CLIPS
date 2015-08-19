@@ -10,6 +10,7 @@ JNI_FILES = \
 	$(JNI_SRC)\InstanceAddressValue.java \
 	$(JNI_SRC)\InstanceNameValue.java \
 	$(JNI_SRC)\IntegerValue.java \
+	$(JNI_SRC)\JRouterTextArea.java \
 	$(JNI_SRC)\LexemeValue.java \
 	$(JNI_SRC)\MultifieldValue.java \
 	$(JNI_SRC)\NumberValue.java \
@@ -51,7 +52,15 @@ WINE_DST = $(WINE_BIN)\$(WINE_CP)
 WINE_RSRC_SRC = $(WINE_SRC)\resources
 WINE_RSRC_DST = $(WINE_BIN)\$(WINE_CP)\resources
 
-all: clipsjni animal auto sudoku wine
+ROUTER_CP = net\sf\clipsrules\jni\examples\router
+ROUTER_CLASS = net.sf.clipsrules.jni.examples.wine.RouterDemo
+ROUTER_SRC = java-src\$(ROUTER_CP)
+ROUTER_BIN = bin\router
+ROUTER_DST = $(ROUTER_BIN)\$(ROUTER_CP)
+ROUTER_RSRC_SRC = $(ROUTER_SRC)\resources
+ROUTER_RSRC_DST = $(ROUTER_BIN)\$(ROUTER_CP)\resources
+
+all: clipsjni animal auto sudoku wine router
 
 clipsjni :
 	javac -d $(JNI_BIN) $(JNI_FILES)
@@ -89,6 +98,14 @@ wine :
 	jar -cfe WineDemo.jar $(WINE_CLASS) $(WINE_BIN)\$(WINE_CP)\WineDemo.class -C $(WINE_BIN) net 
 	jar -uf WineDemo.jar -C $(JNI_BIN) net
 
+router :
+	if not exist $(ROUTER_RSRC_DST) mkdir $(ROUTER_RSRC_DST)
+	javac -d $(ROUTER_BIN) -cp CLIPSJNI.jar $(ROUTER_SRC)\RouterDemo.java
+	copy $(ROUTER_RSRC_SRC)\*.properties $(ROUTER_RSRC_DST)
+	copy $(ROUTER_RSRC_SRC)\*.clp $(ROUTER_RSRC_DST)
+	jar -cfe RouterDemo.jar $(ROUTER_CLASS) $(ROUTER_BIN)\$(ROUTER_CP)\RouterDemo.class -C $(ROUTER_BIN) net 
+	jar -uf RouterDemo.jar -C $(JNI_BIN) net
+
 clean :
 	if exist $(JNI_DST) erase /Q $(JNI_DST)\*.class
 	if exist $(JNI_BIN)\net rmdir /Q /S $(JNI_BIN)\net
@@ -104,3 +121,6 @@ clean :
 	if exist $(WINE_DST) erase /Q $(WINE_DST)\*.class
 	if exist $(WINE_RSRC_DST) erase /Q $(WINE_RSRC_DST)\*.*
 	if exist $(WINE_BIN)\net rmdir /Q /S $(WINE_BIN)\net
+	if exist $(ROUTER_DST) erase /Q $(ROUTER_DST)\*.class
+	if exist $(ROUTER_RSRC_DST) erase /Q $(ROUTER_RSRC_DST)\*.*
+	if exist $(ROUTER_BIN)\net rmdir /Q /S $(ROUTER_BIN)\net
