@@ -4,18 +4,19 @@ JNI_BIN = bin\clipsjni
 JNI_SRC = java-src\$(JNI_CP)
 JNI_DST = $(JNI_BIN)\$(JNI_CP)
 JNI_FILES = \
+	$(JNI_SRC)\CommandPromptTextArea.java \
 	$(JNI_SRC)\Environment.java \
 	$(JNI_SRC)\FactAddressValue.java \
 	$(JNI_SRC)\FloatValue.java \
 	$(JNI_SRC)\InstanceAddressValue.java \
 	$(JNI_SRC)\InstanceNameValue.java \
 	$(JNI_SRC)\IntegerValue.java \
-	$(JNI_SRC)\JRouterTextArea.java \
 	$(JNI_SRC)\LexemeValue.java \
 	$(JNI_SRC)\MultifieldValue.java \
 	$(JNI_SRC)\NumberValue.java \
 	$(JNI_SRC)\PrimitiveValue.java \
 	$(JNI_SRC)\Router.java \
+	$(JNI_SRC)\RouterTextArea.java \
 	$(JNI_SRC)\StringValue.java \
 	$(JNI_SRC)\SymbolValue.java \
 	$(JNI_SRC)\VoidValue.java

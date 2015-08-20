@@ -202,10 +202,10 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_setInputBufferCou
 /*
  * Class:     net_sf_clipsrules_jni_Environment
  * Method:    expandInputBuffer
- * Signature: (JC)V
+ * Signature: (JI)V
  */
 JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_expandInputBuffer
-  (JNIEnv *, jobject, jlong, jchar);
+  (JNIEnv *, jobject, jlong, jint);
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment

@@ -63,8 +63,8 @@ class RouterDemo implements ActionListener
      }
 
    JFrame routerDemoFrame;
-   JRouterTextArea autoTextArea;
-   JRouterTextArea animalTextArea;
+   RouterTextArea autoTextArea;
+   RouterTextArea animalTextArea;
    Environment autoEnv;
    Environment animalEnv;
    JButton restartAutoButton;
@@ -120,7 +120,7 @@ class RouterDemo implements ActionListener
       /*=============================*/
  
       try
-        { autoTextArea = new JRouterTextArea(autoEnv); }
+        { autoTextArea = new RouterTextArea(autoEnv); }
       catch (Exception e)
         { 
          e.printStackTrace();
@@ -128,7 +128,7 @@ class RouterDemo implements ActionListener
         }       
 
       try
-        { animalTextArea = new JRouterTextArea(animalEnv); }
+        { animalTextArea = new RouterTextArea(animalEnv); }
       catch (Exception e)
         { 
          e.printStackTrace();

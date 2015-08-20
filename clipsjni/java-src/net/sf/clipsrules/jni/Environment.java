@@ -392,13 +392,13 @@ public class Environment
    /**********************/
    /* expandInputBuffer: */
    /**********************/
-   private native void expandInputBuffer(long env,char theChar);
+   private native void expandInputBuffer(long env,int theChar);
 
    /**********************/
    /* expandInputBuffer: */
    /**********************/
    public void expandInputBuffer(
-     char theChar)
+     int theChar)
      {
       expandInputBuffer(theEnvironment,theChar);
      }

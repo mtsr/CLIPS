@@ -13,10 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.lang.Byte;
 
-public class JRouterTextArea extends JTextArea
-                             implements Router, KeyListener, FocusListener, DropTargetListener
+public class RouterTextArea extends JTextArea
+                            implements Router, KeyListener, FocusListener, DropTargetListener
   {   
-   DropTarget dt;  
    protected Environment clips;
    
    private static int TextAreaRouterNameIndex = 0;
@@ -25,10 +24,10 @@ public class JRouterTextArea extends JTextArea
    private boolean charNeeded = false;
    private List<Byte> charList = new ArrayList<Byte>();
     
-   /*******************/
-   /* JRouterTextArea */
-   /*******************/
-   public JRouterTextArea(
+   /******************/
+   /* RouterTextArea */
+   /******************/
+   public RouterTextArea(
      Environment theEnv) 
      {  
       clips = theEnv;
@@ -47,7 +46,7 @@ public class JRouterTextArea extends JTextArea
       routerName = "JTextAreaRouter" + TextAreaRouterNameIndex++;
       clips.addRouter(this);
       
-      dt = new DropTarget(this, this);
+      new DropTarget(this, this);
      }  
      
    /*########################*/
@@ -230,7 +229,7 @@ public class JRouterTextArea extends JTextArea
          SwingUtilities.invokeAndWait(
            new Runnable() 
              {  
-              public void run() { JRouterTextArea.this.append(printString); }  
+              public void run() { RouterTextArea.this.append(printString); }  
              });   
         }
       catch (Exception e) 

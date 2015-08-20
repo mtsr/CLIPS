@@ -1423,7 +1423,7 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_expandInputBuffer(
   JNIEnv *env,
   jobject obj,
   jlong clipsEnv,
-  jchar theChar)
+  jint theChar)
   {
    void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env);
    
