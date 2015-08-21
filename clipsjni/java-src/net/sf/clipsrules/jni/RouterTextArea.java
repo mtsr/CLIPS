@@ -2,19 +2,23 @@ package net.sf.clipsrules.jni;
 
 import javax.swing.*; 
 import javax.swing.border.*; 
+import javax.swing.event.*;
 import javax.swing.table.*;
 import javax.swing.BorderFactory;
+
 import java.awt.*; 
 import java.awt.event.*; 
 import java.awt.dnd.*;
 import java.awt.datatransfer.*;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.lang.Byte;
 
 public class RouterTextArea extends JTextArea
-                            implements Router, KeyListener, FocusListener, DropTargetListener
+                            implements Router, KeyListener, CaretListener,
+                                       FocusListener, DropTargetListener
   {   
    protected Environment clips;
    
@@ -47,6 +51,9 @@ public class RouterTextArea extends JTextArea
       clips.addRouter(this);
       
       new DropTarget(this, this);
+
+      this.getCaret().setVisible(true);
+      this.addCaretListener(this);
      }  
      
    /*########################*/
@@ -428,4 +435,62 @@ public class RouterTextArea extends JTextArea
          dtde.rejectDrop();
         }
      }
+   
+   /*#######################*/
+   /* CaretListener Methods */
+   /*#######################*/
+
+   /***************/
+   /* caretUpdate */
+   /***************/  
+   public void caretUpdate(
+     CaretEvent ce) 
+     {
+      if (EventQueue.isDispatchThread())
+        { 
+         caretUpdateAction(ce.getDot(), ce.getMark()); 
+         return;
+        }
+      try
+        {
+         SwingUtilities.invokeAndWait(
+           new Runnable() 
+             {  
+              public void run() 
+                 { RouterTextArea.this.caretUpdateAction(ce.getDot(),ce.getMark()); }  
+             });   
+        }
+      catch (Exception e) 
+        { e.printStackTrace(); }
+     }
+
+   /*********************/
+   /* caretUpdateAction */
+   /*********************/  
+   protected void caretUpdateAction(
+     final int dot,
+     final int mark) 
+     {
+      /*==============================================*/
+      /* Attempting to move the caret outside of the  */
+      /* text for the current command is not allowed. */
+      /*==============================================*/
+            
+      if (dot == mark) 
+        { 
+         int tl = this.getText().length();
+               
+         if (dot < tl)
+           { this.getCaret().setDot(tl); }
+
+         this.getCaret().setVisible(true);
+        }
+              
+      /*======================================*/
+      /* If text is selected, hide the caret. */
+      /*======================================*/
+            
+      else
+        { this.getCaret().setVisible(false); }
+     }    
   }

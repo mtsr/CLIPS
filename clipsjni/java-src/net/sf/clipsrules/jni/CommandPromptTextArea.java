@@ -4,10 +4,13 @@ import java.awt.*;
 import java.awt.event.*; 
 import java.lang.Thread;
 
+import javax.swing.*;
+import javax.swing.event.*; 
+
 public class CommandPromptTextArea extends RouterTextArea
-                                   //implements CaretListener
   {   
    private boolean isExecuting = false;
+   private int caretOffset;
 
    /*************************/
    /* CommandPromptTextArea */
@@ -20,6 +23,11 @@ public class CommandPromptTextArea extends RouterTextArea
       theEnv.printBanner();
       theEnv.printPrompt();
       theEnv.setInputBufferCount(0);
+      
+      caretOffset = 0;
+      
+      this.getCaret().setVisible(true);
+      this.addCaretListener(this);
      }  
      
    /**************/
@@ -38,6 +46,7 @@ public class CommandPromptTextArea extends RouterTextArea
    /************/
    /* keyTyped */
    /************/
+   @Override
    public void keyTyped(KeyEvent e) 
      {      
       if (getExecuting())
@@ -49,29 +58,67 @@ public class CommandPromptTextArea extends RouterTextArea
          if (id != KeyEvent.KEY_TYPED) return;
 
          if ((e.getModifiers() & (KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0) return;
- 
-         /* moveSelectionToEnd(); */
-         
+          
          char c = e.getKeyChar();
          
          if ((c == KeyEvent.VK_BACK_SPACE) ||
              (c == KeyEvent.VK_DELETE))
+           { modifyCommand("",true); }
+         else 
            {
-            if (clips.getInputBufferCount() <= 0) return;
-            this.replaceRange("",this.getText().length() - 1,this.getText().length());
-            expandInputBuffer(c);
-            balanceParentheses();
-           }
-         else //if (caretOffset == 0) // TBD
-           {
-            this.append(String.valueOf(c));
-            expandInputBuffer(c);
-            balanceParentheses();
+            modifyCommand(String.valueOf(c),false);
             commandCheck();
            }
                     
          e.consume();
         }
+     }
+     
+   /*****************/
+   /* modifyCommand */
+   /*****************/
+   protected void modifyCommand(
+     String replaceString,
+     boolean isDelete) 
+     {
+      int textLength = this.getText().length();
+      int commandLength = (int) clips.getInputBufferCount();  
+      int lockedLength = textLength - commandLength;
+      
+      /*========================================*/
+      /* Determine the left and right positions */
+      /* of the current selection.              */
+      /*========================================*/
+            
+      int left = Math.min(this.getCaret().getDot(),this.getCaret().getMark());
+      int right = Math.max(this.getCaret().getDot(),this.getCaret().getMark());
+      
+      if (isDelete && (left == right) && (left > lockedLength))
+        { left--; }
+      
+      /*************************************************/
+      /* If the selection falls within text that can't */
+      /* be modified (the output from prior commands), */
+      /* then set the caret to the end of the command  */
+      /* being edited and do nothing else.             */
+      /*************************************************/
+
+      if (left < lockedLength)
+        {
+         this.getCaret().setDot(textLength); 
+         return;
+        }
+                    
+      String newCommand = this.getText().substring(lockedLength,left) + 
+                          replaceString +
+                          this.getText().substring(right);
+      this.replaceRange(replaceString,left,right);
+      
+      clips.setInputBuffer(newCommand);   
+      
+      caretOffset = this.getText().length() - this.getCaret().getDot();
+      
+      balanceParentheses();
      }
      
    /**********************/
@@ -241,7 +288,7 @@ public class CommandPromptTextArea extends RouterTextArea
    /******************/  
    public void executeCommand()
      {
-      //caretOffset = 0;
+      caretOffset = 0;
       
       setExecuting(true);
       
@@ -259,6 +306,50 @@ public class CommandPromptTextArea extends RouterTextArea
       
       executionThread.start();
      }
+     
+   /*#######################*/
+   /* CaretListener Methods */
+   /*#######################*/
 
+   /*********************/
+   /* caretUpdateAction */
+   /*********************/  
+   @Override
+   protected void caretUpdateAction(
+     final int dot,
+     final int mark) 
+     {      
+      if (getExecuting())
+        { 
+         super.caretUpdateAction(dot,mark); 
+         return;
+        }
+              
+      /*==============================================*/
+      /* Attempting to move the caret outside of the  */
+      /* text for the current command is not allowed. */
+      /*==============================================*/
+            
+      if (dot == mark) 
+        { 
+         int tl = this.getText().length();
+         int il = (int) clips.getInputBufferCount();
+               
+         if (dot < (tl -il))
+           { this.getCaret().setDot(tl-caretOffset); }
+         else
+           { caretOffset = tl - dot; }
 
+         this.getCaret().setVisible(true);
+        }
+              
+      /*======================================*/
+      /* If text is selected, hide the caret. */
+      /*======================================*/
+            
+      else
+        { this.getCaret().setVisible(false); }
+      //System.out.println("Dot = " + this.getCaret().getDot());
+      //System.out.println("Mark = " + this.getCaret().getMark());
+     }    
   }
