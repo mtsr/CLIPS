@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.31  08/24/15            */
    /*                                                     */
    /*                 I/O FUNCTIONS MODULE                */
    /*******************************************************/
@@ -68,6 +68,13 @@
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Modified ReadTokenFromStdin to capture         */
+/*            carriage returns in the input buffer so that   */
+/*            input buffer count will accurately reflect     */
+/*            the number of characters typed for GUI         */
+/*            interfaces that support deleting carriage      */
+/*            returns.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -389,6 +396,16 @@ static void ReadTokenFromStdin(
    char *inputString;
    size_t inputStringSize;
    int inchar;
+   
+   /*===========================================*/
+   /* Initialize the variables used for storing */
+   /* the characters retrieved from stdin.      */
+   /*===========================================*/
+
+   inputString = NULL;
+   RouterData(theEnv)->CommandBufferInputCount = 0;
+   RouterData(theEnv)->AwaitingInput = TRUE;
+   inputStringSize = 0;
 
    /*=============================================*/
    /* Continue processing until a token is found. */
@@ -397,17 +414,6 @@ static void ReadTokenFromStdin(
    theToken->type = STOP;
    while (theToken->type == STOP)
      {
-      /*===========================================*/
-      /* Initialize the variables used for storing */
-      /* the characters retrieved from stdin.      */
-      /*===========================================*/
-
-      inputString = NULL;
-      RouterData(theEnv)->CommandBufferInputCount = 0;
-      RouterData(theEnv)->AwaitingInput = TRUE;
-      inputStringSize = 0;
-      inchar = EnvGetcRouter(theEnv,STDIN);
-
       /*========================================================*/
       /* Continue reading characters until a carriage return is */
       /* entered or the user halts execution (usually with      */
@@ -416,6 +422,8 @@ static void ReadTokenFromStdin(
       /* a space is entered after a symbol has been typed).     */
       /*========================================================*/
 
+      inchar = EnvGetcRouter(theEnv,STDIN);
+     
       while ((inchar != '\n') && (inchar != '\r') && (inchar != EOF) &&
              (! EnvGetHaltExecution(theEnv)))
         {
@@ -424,6 +432,16 @@ static void ReadTokenFromStdin(
          inchar = EnvGetcRouter(theEnv,STDIN);
         }
 
+      /*====================================================*/
+      /* Add the final carriage return to the input buffer. */
+      /*====================================================*/
+      
+      if  ((inchar == '\n') || (inchar == '\r'))
+        {
+         inputString = ExpandStringWithChar(theEnv,inchar,inputString,&RouterData(theEnv)->CommandBufferInputCount,
+                                            &inputStringSize,inputStringSize + 80);
+        }
+        
       /*==================================================*/
       /* Open a string input source using the characters  */
       /* retrieved from stdin and extract the first token */
@@ -433,7 +451,6 @@ static void ReadTokenFromStdin(
       OpenStringSource(theEnv,"read",inputString,0);
       GetToken(theEnv,"read",theToken);
       CloseStringSource(theEnv,"read");
-      if (inputStringSize > 0) rm(theEnv,inputString,inputStringSize);
 
       /*===========================================*/
       /* Pressing control-c (or comparable action) */
@@ -459,6 +476,8 @@ static void ReadTokenFromStdin(
          theToken->value = (void *) EnvAddSymbol(theEnv,"EOF");
         }
      }
+     
+   if (inputStringSize > 0) rm(theEnv,inputString,inputStringSize);
   }
 
 /*************************************************************/

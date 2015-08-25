@@ -2,10 +2,13 @@ package net.sf.clipsrules.jni;
 
 import java.awt.*; 
 import java.awt.event.*; 
-import java.lang.Thread;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
 
 import javax.swing.*;
 import javax.swing.event.*; 
+
+import java.lang.Thread;
 
 public class CommandPromptTextArea extends RouterTextArea
   {   
@@ -50,28 +53,27 @@ public class CommandPromptTextArea extends RouterTextArea
    public void keyTyped(KeyEvent e) 
      {      
       if (getExecuting())
-        { super.keyTyped(e); }
-      else
-        {
-         int id = e.getID();
-      
-         if (id != KeyEvent.KEY_TYPED) return;
-
-         if ((e.getModifiers() & (KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0) return;
-          
-         char c = e.getKeyChar();
-         
-         if ((c == KeyEvent.VK_BACK_SPACE) ||
-             (c == KeyEvent.VK_DELETE))
-           { modifyCommand("",true); }
-         else 
-           {
-            modifyCommand(String.valueOf(c),false);
-            commandCheck();
-           }
-                    
-         e.consume();
+        { 
+         super.keyTyped(e); 
+         return;
         }
+
+      if ((e.getModifiers() & 
+          (KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0) 
+        { return; }
+          
+      char c = e.getKeyChar();
+         
+      if ((c == KeyEvent.VK_BACK_SPACE) ||
+          (c == KeyEvent.VK_DELETE))
+        { modifyCommand("",true); }
+      else 
+        {
+         modifyCommand(String.valueOf(c),false);
+         commandCheck();
+        }
+                    
+      e.consume();
      }
      
    /*****************/
@@ -307,6 +309,50 @@ public class CommandPromptTextArea extends RouterTextArea
       executionThread.start();
      }
      
+   /*########################*/
+   /* JTextComponent Methods */
+   /*########################*/
+
+   /*******/
+   /* cut */
+   /*******/
+   @Override
+   public void cut()
+     {
+      if (getExecuting())
+        { 
+         super.cut(); 
+         return;
+        }
+        
+      this.copy();
+      modifyCommand("",true);
+     }
+     
+   /*********/
+   /* paste */
+   /*********/
+   @Override
+   public void paste()
+     {
+      if (getExecuting())
+        { 
+         super.paste(); 
+         return;
+        }
+        
+      try
+        {
+         String clipboardText = (String) 
+                                Toolkit.getDefaultToolkit()
+                                       .getSystemClipboard()
+                                       .getData(DataFlavor.stringFlavor); 
+         modifyCommand(clipboardText,false);
+        }
+      catch (Exception e)
+        { e.printStackTrace(); }
+     }
+     
    /*#######################*/
    /* CaretListener Methods */
    /*#######################*/
@@ -349,7 +395,66 @@ public class CommandPromptTextArea extends RouterTextArea
             
       else
         { this.getCaret().setVisible(false); }
-      //System.out.println("Dot = " + this.getCaret().getDot());
-      //System.out.println("Mark = " + this.getCaret().getMark());
-     }    
+     }  
+       
+   /*############################*/
+   /* DropTargetListener Methods */
+   /*############################*/
+   
+   /************************/
+   /* dragTargetCaretStart */
+   /************************/
+   @Override
+   protected int dragTargetCaretStart()
+     {
+      if (getExecuting())
+        { return super.dragTargetCaretStart(); }
+
+      return this.getText().length() - (int) clips.getInputBufferCount();
+     }
+  
+   /********/
+   /* drop */
+   /********/
+   @Override
+   public void drop(DropTargetDropEvent dtde) 
+     { 
+      if (getExecuting())
+        { 
+         super.drop(dtde); 
+         return;
+        }
+        
+      if ((dtde.getDropAction() & DnDConstants.ACTION_COPY_OR_MOVE) == 0) 
+        {
+         dtde.dropComplete(false);
+         return; 
+        }
+      try 
+        {
+         Transferable tr = dtde.getTransferable();
+         DataFlavor[] flavors = tr.getTransferDataFlavors();
+         for (int i = 0; i < flavors.length; i++) 
+           {
+            if (flavors[i].equals(DataFlavor.stringFlavor)) 
+              {
+               dtde.acceptDrop(dtde.getDropAction());
+               String dropText = (String) tr.getTransferData(flavors[i]);
+               modifyCommand(dropText,false);
+               this.requestFocus();
+               dtde.dropComplete(true);
+               return;
+              }
+           }
+
+         dtde.rejectDrop();
+        } 
+      catch (Exception e) 
+        {
+         e.printStackTrace();
+         dtde.rejectDrop();
+        }
+     }
   }
+  
+  

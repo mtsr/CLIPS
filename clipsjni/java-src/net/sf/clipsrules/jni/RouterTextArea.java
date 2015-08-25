@@ -103,7 +103,7 @@ public class RouterTextArea extends JTextArea
       /* object, then clear this buffer since the remaining */
       /* input was extraneous for the last input request.   */
       /*====================================================*/
-      
+
       if ((clips.getInputBufferCount() == 0) &&
           (charList.size() != 0))
         { charList.clear(); }
@@ -315,7 +315,7 @@ public class RouterTextArea extends JTextArea
         { return; }
 
       char theChar = e.getKeyChar();
-      
+
       if ((theChar == KeyEvent.VK_BACK_SPACE) ||
            (theChar == KeyEvent.VK_DELETE))
         {
@@ -375,6 +375,8 @@ public class RouterTextArea extends JTextArea
    @Override
    public void dragEnter(DropTargetDragEvent dtde) 
      {
+      boolean acceptedDrag = true;
+      dragUnderFeedback(dtde,acceptedDrag);
      }
       
    /*************/
@@ -383,6 +385,8 @@ public class RouterTextArea extends JTextArea
    @Override
    public void dragOver(DropTargetDragEvent dtde) 
      {
+      boolean acceptedDrag = acceptOrRejectDrag(dtde);
+      dragUnderFeedback(dtde,acceptedDrag);
      }
      
    /*************/
@@ -391,6 +395,7 @@ public class RouterTextArea extends JTextArea
    @Override
    public void dragExit(DropTargetEvent dte) 
      {
+      dragUnderFeedback(null, false);
      }
        
    /*********************/
@@ -399,6 +404,8 @@ public class RouterTextArea extends JTextArea
    @Override
    public void dropActionChanged(DropTargetDragEvent dtde)   
      { 
+      boolean acceptedDrag = acceptOrRejectDrag(dtde);
+      dragUnderFeedback(dtde,acceptedDrag);
      }
       
    /********/
@@ -407,21 +414,28 @@ public class RouterTextArea extends JTextArea
    @Override
    public void drop(DropTargetDropEvent dtde) 
      { 
+      if ((dtde.getDropAction() & DnDConstants.ACTION_COPY_OR_MOVE) == 0) 
+        {
+         dtde.dropComplete(false);
+         return; 
+        }
+
       try 
         {
          Transferable tr = dtde.getTransferable();
          DataFlavor[] flavors = tr.getTransferDataFlavors();
          for (int i = 0; i < flavors.length; i++) 
            {
-            if (flavors[i].isFlavorTextType()) 
+            if (flavors[i].equals(DataFlavor.stringFlavor)) 
               {
-               dtde.acceptDrop(DnDConstants.ACTION_COPY);
+               dtde.acceptDrop(dtde.getDropAction());
                String dropText = (String) tr.getTransferData(flavors[i]);
                if (appendChars(dropText))
                  {
                   this.setCaretPosition(this.getText().length()); 
                   this.append(dropText); 
                  }
+               this.requestFocus();
                dtde.dropComplete(true);
                return;
               }
@@ -435,7 +449,111 @@ public class RouterTextArea extends JTextArea
          dtde.rejectDrop();
         }
      }
-   
+     
+   /*********************/
+   /* dragUnderFeedback */
+   /*********************/
+   protected void dragUnderFeedback(
+     DropTargetDragEvent dtde,
+     boolean acceptedDrag) 
+     {
+      if ((dtde != null) && acceptedDrag) 
+        {
+         Point location = dtde.getLocation();
+         this.getCaret().setVisible(true);
+         this.setCaretPosition(this.viewToModel(location));
+        } 
+      else 
+        { this.getCaret().setVisible(false); }
+     }
+
+   /*********************/
+   /* checkTransferType */
+   /*********************/
+   protected boolean checkTransferType(
+     DropTargetDragEvent dtde)
+     {
+      if (dtde.isDataFlavorSupported(DataFlavor.stringFlavor))
+        { return true; }
+        
+      return false;
+     }
+     
+   /************************/
+   /* dragTargetCaretStart */
+   /************************/
+   protected int dragTargetCaretStart()
+     {
+      return this.getText().length();
+     }
+     
+   /**********************/
+   /* dragTargetCaretEnd */
+   /**********************/
+   protected int dragTargetCaretEnd()
+     {
+      return this.getText().length();
+     }
+     
+   /**********************/
+   /* acceptOrRejectDrag */
+   /**********************/
+   protected boolean acceptOrRejectDrag(
+     DropTargetDragEvent dtde) 
+     {
+      int dropAction = dtde.getDropAction();
+      int sourceActions = dtde.getSourceActions();
+      
+      Point location = dtde.getLocation();
+      int caretPosition = this.viewToModel(location);
+            
+      /*===============================================*/
+      /* Drag is only valid in a specific caret range. */
+      /*===============================================*/
+      
+      if ((caretPosition < dragTargetCaretStart()) ||
+          (caretPosition > dragTargetCaretEnd()))
+        {
+         dtde.rejectDrag(); 
+         return false;
+        }
+        
+      /*====================================*/
+      /* Reject anything that's not a valid */
+      /* type (in this case a text string). */
+      /*====================================*/
+      
+      if (! checkTransferType(dtde))
+        { 
+         dtde.rejectDrag(); 
+         return false;
+        }
+      
+      /*===========================*/
+      /* Only copy and move source */
+      /* actions are acceptable.   */
+      /*===========================*/
+      
+      if ((sourceActions & DnDConstants.ACTION_COPY_OR_MOVE) == 0)
+        { 
+         dtde.rejectDrag(); 
+         return false;
+        }
+        
+      if ((dropAction & DnDConstants.ACTION_COPY_OR_MOVE) == 0) 
+        {
+         dtde.rejectDrag();
+         return false;
+        } 
+      
+      /*==================*/
+      /* Accept the drag. */
+      /*==================*/
+      
+      dtde.acceptDrag(dropAction);
+      return true;
+     }
+     
    /*#######################*/
    /* CaretListener Methods */
    /*#######################*/
