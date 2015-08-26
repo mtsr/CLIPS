@@ -9,11 +9,21 @@ import javax.swing.*;
 import javax.swing.event.*; 
 
 import java.lang.Thread;
+import java.util.ArrayList;
 
 public class CommandPromptTextArea extends RouterTextArea
   {   
+   static final int DEFAULT_COMMAND_MAX = 25;
+
    private boolean isExecuting = false;
-   private int caretOffset;
+   
+   int oldDot = 0;
+   
+   int maxCommandCount;
+   int currentCommandCount;
+   int currentCommand;
+   
+   ArrayList<String> commandHistory;
 
    /*************************/
    /* CommandPromptTextArea */
@@ -23,14 +33,20 @@ public class CommandPromptTextArea extends RouterTextArea
      {  
       super(theEnv);
       
+      this.setPlainBorder();
       theEnv.printBanner();
       theEnv.printPrompt();
       theEnv.setInputBufferCount(0);
-      
-      caretOffset = 0;
-      
+            
       this.getCaret().setVisible(true);
       this.addCaretListener(this);
+
+      maxCommandCount = DEFAULT_COMMAND_MAX;
+      currentCommandCount = 1;
+      currentCommand = 0;
+
+      commandHistory = new ArrayList<String>(DEFAULT_COMMAND_MAX); 
+      commandHistory.add(new String(""));
      }  
      
    /**************/
@@ -44,6 +60,43 @@ public class CommandPromptTextArea extends RouterTextArea
          super.keyPressed(e); 
          return;
         }
+        
+      if ((e.getModifiers() & (KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0) return;
+
+      int kc = e.getKeyCode();
+      
+      if ((kc == KeyEvent.VK_UP) || (kc == KeyEvent.VK_KP_UP))
+        { 
+         if ((currentCommand + 1) < commandHistory.size())
+           {
+            if ((e.getModifiers() & KeyEvent.SHIFT_MASK) != 0)
+              { switchCommand(currentCommand,commandHistory.size() - 1); }
+            else
+              { switchCommand(currentCommand,currentCommand + 1); }
+          }
+         e.consume();
+        }
+      else if ((kc == KeyEvent.VK_DOWN) || (kc == KeyEvent.VK_KP_DOWN))
+        { 
+         if (currentCommand != 0)
+          {
+           if ((e.getModifiers() & KeyEvent.SHIFT_MASK) != 0)
+             { switchCommand(currentCommand,0); }
+           else
+             { switchCommand(currentCommand,currentCommand - 1); }
+          }
+         e.consume();
+        } 
+      else if (kc == KeyEvent.VK_ESCAPE)
+        {
+         if ((e.getModifiers() & KeyEvent.SHIFT_MASK) == 0)
+           { this.getCaret().setDot(this.getText().length()); }
+         else
+           { this.getCaret().setDot(this.getText().length() - clips.getInputBuffer().length()); }
+         e.consume();
+        }     
+      else
+        { super.keyPressed(e); }  
      }
 
    /************/
@@ -67,6 +120,8 @@ public class CommandPromptTextArea extends RouterTextArea
       if ((c == KeyEvent.VK_BACK_SPACE) ||
           (c == KeyEvent.VK_DELETE))
         { modifyCommand("",true); }
+      else if (c == KeyEvent.VK_ESCAPE)
+        { /* Do nothing */ }
       else 
         {
          modifyCommand(String.valueOf(c),false);
@@ -117,9 +172,7 @@ public class CommandPromptTextArea extends RouterTextArea
       this.replaceRange(replaceString,left,right);
       
       clips.setInputBuffer(newCommand);   
-      
-      caretOffset = this.getText().length() - this.getCaret().getDot();
-      
+            
       balanceParentheses();
      }
      
@@ -235,7 +288,7 @@ public class CommandPromptTextArea extends RouterTextArea
       /*================================================*/
       /* Beep to indicate a matching ')' was not found. */
       /*================================================*/
-   
+
       Toolkit.getDefaultToolkit().beep();
      }
      
@@ -263,7 +316,7 @@ public class CommandPromptTextArea extends RouterTextArea
      {
       if (clips.inputBufferContainsCommand())
         { 
-         //updateCommandHistory();
+         updateCommandHistory();
          executeCommand(); 
         }
      }
@@ -289,9 +342,7 @@ public class CommandPromptTextArea extends RouterTextArea
    /* executeCommand */
    /******************/  
    public void executeCommand()
-     {
-      caretOffset = 0;
-      
+     {      
       setExecuting(true);
       
       Runnable runThread = 
@@ -308,7 +359,107 @@ public class CommandPromptTextArea extends RouterTextArea
       
       executionThread.start();
      }
+   
+   /************************/
+   /* updateCommandHistory */
+   /************************/  
+   private void updateCommandHistory()
+     {
+      /*=================================================*/
+      /* Replace the first command with the contents of  */
+      /* the command string, up to but not including the */ 
+      /* last carriage return which initiated execution  */
+      /* of the command. Removing the last carriage      */
+      /* will prevent the command from being immediately */
+      /* executed when the command is recalled by the    */
+      /* up/down arrow keys (i.e. the user must hit the  */
+      /* final carriage return again to execute the      */
+      /* recalled command).                              */
+      /*=================================================*/
+
+      String theCommand = clips.getInputBuffer();
+      
+      int length = theCommand.length();
+      int i, lastCR;
+   
+      for (i = 0, lastCR = length; i < length; i++)
+        {
+         if (theCommand.charAt(i) == '\n')
+           { lastCR = i; }
+        }   
+
+      commandHistory.set(0,theCommand.substring(0,lastCR));
+      
+      /*====================================================*/
+      /* If this command is identical to the prior command, */
+      /* don't add it to the command history.               */
+      /*====================================================*/
+    
+      if ((commandHistory.size() > 1) &&
+          (commandHistory.get(0).equals(commandHistory.get(1))))
+        {
+         commandHistory.set(0,new String(""));
+         currentCommand = 0;
+         return;
+        }
+
+      /*=================================================*/
+      /* Add a new empty command to the top of the stack */
+      /* in preparation for the next user command.       */
+      /*=================================================*/
+
+      commandHistory.add(0,new String(""));
+      currentCommand = 0;
+      currentCommandCount++;
+            
+      /*=============================================*/
+      /* Remove commands at the end of the command   */
+      /* history if the maximum number of remembered */
+      /* commands is exceeded.                       */
+      /*=============================================*/
+   
+      while (commandHistory.size() > maxCommandCount)
+        {
+         commandHistory.remove(maxCommandCount);
+         currentCommandCount--;
+        }
+     }
      
+   /*****************/
+   /* switchCommand */
+   /*****************/  
+   private void switchCommand(
+     int oldCommand,
+     int newCommand)
+     {
+      /*=============================================*/
+      /* Remove the current command from the window. */
+      /*=============================================*/
+
+      String theCommand = clips.getInputBuffer();
+      
+      int length = theCommand.length();
+      
+      this.replaceRange("",this.getText().length() - length,this.getText().length());
+
+      /*==============================================*/
+      /* Replace the old command with the contents of */
+      /* the command string, which will now include   */
+      /* any edits the user made.                     */
+      /*==============================================*/
+      
+      commandHistory.set(oldCommand,theCommand);
+         
+      /*======================*/
+      /* Use the new command. */
+      /*======================*/
+   
+      clips.setInputBuffer(commandHistory.get(newCommand));
+      this.append(commandHistory.get(newCommand));
+      
+      currentCommand = newCommand;
+     }
+  
    /*########################*/
    /* JTextComponent Methods */
    /*########################*/
@@ -370,6 +521,8 @@ public class CommandPromptTextArea extends RouterTextArea
          super.caretUpdateAction(dot,mark); 
          return;
         }
+
+      removeCaretListener(this);
               
       /*==============================================*/
       /* Attempting to move the caret outside of the  */
@@ -381,10 +534,13 @@ public class CommandPromptTextArea extends RouterTextArea
          int tl = this.getText().length();
          int il = (int) clips.getInputBufferCount();
                
-         if (dot < (tl -il))
-           { this.getCaret().setDot(tl-caretOffset); }
-         else
-           { caretOffset = tl - dot; }
+         if (dot < (tl - il))
+           { 
+            if (oldDot < (tl - il))
+              { this.getCaret().setDot(tl); }
+            else
+              { this.getCaret().setDot(oldDot); }
+           }
 
          this.getCaret().setVisible(true);
         }
@@ -395,6 +551,10 @@ public class CommandPromptTextArea extends RouterTextArea
             
       else
         { this.getCaret().setVisible(false); }
+              
+      oldDot = this.getCaret().getMark();
+      
+      addCaretListener(this);
      }  
        
    /*############################*/

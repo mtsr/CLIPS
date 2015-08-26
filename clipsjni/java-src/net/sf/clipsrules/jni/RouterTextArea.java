@@ -5,6 +5,7 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 import javax.swing.BorderFactory;
+import javax.swing.text.DefaultCaret;
 
 import java.awt.*; 
 import java.awt.event.*; 
@@ -27,6 +28,13 @@ public class RouterTextArea extends JTextArea
 
    private boolean charNeeded = false;
    private List<Byte> charList = new ArrayList<Byte>();
+   
+   private int maxLines = 1000;
+   
+   private boolean hasFocus = false;
+   
+   Border activeBorder;
+   Border inactiveBorder;
     
    /******************/
    /* RouterTextArea */
@@ -39,12 +47,12 @@ public class RouterTextArea extends JTextArea
       this.setEditable(false);
       this.addKeyListener(this);
       this.addFocusListener(this);
-      this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.white,3),
-                                                        BorderFactory.createEmptyBorder(5,5,5,0)));
-
-      this.setBorder(BorderFactory.createEmptyBorder(5,5,5,0));
-            
-      this.setMargin(new Insets(5,5,5,0));
+      
+      this.setBorders(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.white,3),
+                                                          BorderFactory.createEmptyBorder(5,5,5,0)),
+                      BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.darkGray,3),
+                                                         BorderFactory.createEmptyBorder(5,5,5,0)));
+      
       this.setFont(new Font("monospaced",Font.PLAIN,12));
       
       routerName = "JTextAreaRouter" + TextAreaRouterNameIndex++;
@@ -52,10 +60,34 @@ public class RouterTextArea extends JTextArea
       
       new DropTarget(this, this);
 
-      this.getCaret().setVisible(true);
+      ((DefaultCaret) this.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
       this.addCaretListener(this);
      }  
-     
+
+   /*************/
+   /* setBorder */
+   /*************/
+   public void setBorders(
+     Border theInactiveBorder,
+     Border theActiveBorder)
+     {
+      inactiveBorder = theInactiveBorder;
+      activeBorder = theActiveBorder;
+      if (this.hasFocus)
+        { this.setBorder(activeBorder); }
+      else
+        { this.setBorder(inactiveBorder); }
+     }
+      
+   /******************/
+   /* setPlainBorder */
+   /******************/
+   public void setPlainBorder()
+     {
+      this.setBorders(BorderFactory.createEmptyBorder(5,5,5,0),
+                      BorderFactory.createEmptyBorder(5,5,5,0));
+     }
+         
    /*########################*/
    /* Router Support Methods */
    /*########################*/
@@ -236,11 +268,32 @@ public class RouterTextArea extends JTextArea
          SwingUtilities.invokeAndWait(
            new Runnable() 
              {  
-              public void run() { RouterTextArea.this.append(printString); }  
+              public void run() { 
+                                 RouterTextArea.this.append(printString); 
+                                 RouterTextArea.this.checkLineCount(); 
+                                }  
              });   
         }
       catch (Exception e) 
         { e.printStackTrace(); }
+     }
+
+   /******************/
+   /* checkLineCount */
+   /******************/
+   public void checkLineCount()
+     {
+      if (this.getLineCount() > maxLines)
+        {
+         try
+           {
+            int beginOffset = this.getLineStartOffset(0);
+            int endOffset = this.getLineStartOffset(this.getLineCount() - maxLines);
+            this.replaceRange("",beginOffset,endOffset);
+           }
+         catch (Exception e)
+           { e.printStackTrace(); }
+        }
      }
 
    /************/
@@ -349,8 +402,8 @@ public class RouterTextArea extends JTextArea
    @Override
    public void focusGained(FocusEvent e)
      {
-      this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.darkGray,3),
-                                                        BorderFactory.createEmptyBorder(5,5,5,0)));
+      hasFocus = true;
+      this.setBorder(activeBorder);
       this.getCaret().setVisible(true);
      }
 
@@ -360,8 +413,8 @@ public class RouterTextArea extends JTextArea
    @Override
    public void focusLost(FocusEvent e)
      {
-      this.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(Color.white,3),
-                                                        BorderFactory.createEmptyBorder(5,5,5,0)));
+      hasFocus = false;
+      this.setBorder(inactiveBorder);
       this.getCaret().setVisible(false);
      }
 
@@ -601,7 +654,8 @@ public class RouterTextArea extends JTextArea
          if (dot < tl)
            { this.getCaret().setDot(tl); }
 
-         this.getCaret().setVisible(true);
+         if (hasFocus)
+           { this.getCaret().setVisible(true); }
         }
               
       /*======================================*/
