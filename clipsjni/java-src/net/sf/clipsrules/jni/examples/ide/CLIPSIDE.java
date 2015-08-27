@@ -1,4 +1,4 @@
-package CLIPSJNI;
+package net.sf.clipsrules.jni.examples.ide;
 
 import javax.swing.*; 
 import javax.swing.border.*; 
@@ -6,42 +6,40 @@ import javax.swing.table.*;
 import java.awt.*; 
 import java.awt.event.*; 
  
-import CLIPSJNI.*;
+import net.sf.clipsrules.jni.*;
 
-class CLIPSTerminal implements ActionListener
+class CLIPSIDE implements ActionListener
   {  
-   private JFrame jfrm;
+   private JFrame ideFrame;
          
    private Environment clips;
    
-   private Thread executionThread;
+   private CommandPromptTextArea commandTextArea;
 
-   private JTextAreaCommandPromptRouter jta;
-      
-   /***************/
-   /* CLIPSTerminal */
-   /***************/
-   CLIPSTerminal()
+   /************/
+   /* CLIPSIDE */
+   /************/
+   CLIPSIDE()
      {  
       /*===================================*/
       /* Create a new JFrame container and */
       /* assign a layout manager to it.    */
       /*===================================*/
      
-      jfrm = new JFrame("CLIPSTerminal");          
-      jfrm.getContentPane().setLayout(new BoxLayout(jfrm.getContentPane(),BoxLayout.Y_AXIS));
+      ideFrame = new JFrame("CLIPS IDE");          
+      ideFrame.getContentPane().setLayout(new BoxLayout(ideFrame.getContentPane(),BoxLayout.Y_AXIS));
     
       /*=================================*/
       /* Give the frame an initial size. */
       /*=================================*/
      
-      jfrm.setSize(480,390);  
+      ideFrame.setSize(800,600);  
   
       /*=============================================================*/
       /* Terminate the program when the user closes the application. */
       /*=============================================================*/
      
-      jfrm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+      ideFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
  
       /*=============================*/
       /* Create the text field area. */
@@ -49,30 +47,28 @@ class CLIPSTerminal implements ActionListener
  
       clips = new Environment();
       try
-        { 
-         jta = new JTextAreaCommandPromptRouter(clips); 
-         jta.getJTextArea().setFont(new Font("Monospaced", Font.PLAIN, 12));
-         jta.getJTextArea().setMargin(new Insets(5,5,5,0));
+        {
+         commandTextArea = new CommandPromptTextArea(clips); 
         }
       catch (Exception e)
         { 
          e.printStackTrace();
          return;
         }       
-      clips.addRouter(jta);
       
       /*=======================================*/
       /* Put the text area into a scroll pane. */
       /*=======================================*/
 
-      JScrollPane jscrlp = new JScrollPane(jta.getJTextArea());
-      jscrlp.setPreferredSize(new Dimension(350,200));
+      JScrollPane commandPane = new JScrollPane(commandTextArea);
+      commandPane.setPreferredSize(new Dimension(800,550));
+      commandPane.setViewportBorder(BorderFactory.createEmptyBorder(0,0,2,0));
       
       /*========================================*/
       /* Add the scroll pane to the main frame. */
       /*========================================*/
       
-      jfrm.getContentPane().add(jscrlp); 
+      ideFrame.getContentPane().add(commandPane); 
             
       /*=================================================*/
       /* Get KeyStroke for copy/paste keyboard commands. */
@@ -87,7 +83,7 @@ class CLIPSTerminal implements ActionListener
       /*==========================================================*/
 
       String actionKey = "none";
-      InputMap map = jta.getJTextArea().getInputMap();
+      InputMap map = commandTextArea.getInputMap();
       map.put(copy,actionKey);
       map.put(paste,actionKey);
 
@@ -111,14 +107,14 @@ class CLIPSTerminal implements ActionListener
       jmEdit.add(jmiPaste);
       jmb.add(jmEdit);
       
-      jfrm.setJMenuBar(jmb);
+      ideFrame.setJMenuBar(jmb);
       
       /*====================*/
       /* Display the frame. */
       /*====================*/
 
-      jfrm.pack();
-      jfrm.setVisible(true);  
+      ideFrame.pack();
+      ideFrame.setVisible(true);  
      }  
      
    /*########################*/
@@ -143,16 +139,12 @@ class CLIPSTerminal implements ActionListener
    public void onActionPerformed(
      ActionEvent ae) throws Exception 
      {      
-      /*==========================*/
-      /* Handle the Clear button. */
-      /*==========================*/
-
       if (ae.getActionCommand().equals("Copy"))  
-        { jta.copy(); }
+        { commandTextArea.copy(); }
       else if (ae.getActionCommand().equals("Paste"))  
-        { jta.paste(); }
+        { commandTextArea.paste(); }
      }
-     
+  
    /********/
    /* main */
    /********/  
@@ -165,7 +157,7 @@ class CLIPSTerminal implements ActionListener
       SwingUtilities.invokeLater(
         new Runnable() 
           {  
-           public void run() { new CLIPSTerminal(); }  
+           public void run() { new CLIPSIDE(); }  
           });   
      }  
   }

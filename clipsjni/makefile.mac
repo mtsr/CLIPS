@@ -56,12 +56,18 @@ WINE_RSRC_DST = $(WINE_BIN)/$(WINE_CP)/resources
 ROUTER_CP = net/sf/clipsrules/jni/examples/router
 ROUTER_CLASS = net.sf.clipsrules.jni.examples.router.RouterDemo
 ROUTER_SRC = java-src/$(ROUTER_CP)
-ROUTER_BIN = bin/wine
-ROUTER_DST = $(WINE_BIN)/$(ROUTER_CP)
+ROUTER_BIN = bin/router
+ROUTER_DST = $(ROUTER_BIN)/$(ROUTER_CP)
 ROUTER_RSRC_SRC = $(ROUTER_SRC)/resources
 ROUTER_RSRC_DST = $(ROUTER_BIN)/$(ROUTER_CP)/resources
 
-all: clipsjni animal auto sudoku wine router
+IDE_CP = net/sf/clipsrules/jni/examples/ide
+IDE_CLASS = net.sf.clipsrules.jni.examples.ide.CLIPSIDE
+IDE_SRC = java-src/$(IDE_CP)
+IDE_BIN = bin/ide
+IDE_DST = $(IDE_BIN)/$(IDE_CP)
+
+all: clipsjni animal auto sudoku wine router ide
 
 clipsjni :
 	mkdir -p $(JNI_BIN)
@@ -108,6 +114,12 @@ router :
 	jar -cfe RouterDemo.jar $(ROUTER_CLASS) $(ROUTER_BIN)/$(ROUTER_CP)/RouterDemo.class -C $(ROUTER_BIN) net 
 	jar -uf RouterDemo.jar -C $(JNI_BIN) net
 
+ide :
+	mkdir -p $(IDE_DST)
+	javac -d $(IDE_BIN) -cp CLIPSJNI.jar $(IDE_SRC)/CLIPSIDE.java
+	jar -cfe CLIPSIDE.jar $(IDE_CLASS) $(IDE_BIN)/$(IDE_CP)/CLIPSIDE.class -C $(IDE_BIN) net 
+	jar -uf CLIPSIDE.jar -C $(JNI_BIN) net
+
 clean :
 	rm -f $(JNI_DST)/*.class
 	rm -fr $(JNI_BIN)/net
@@ -132,4 +144,6 @@ clean :
 	rm -f $(ROUTER_RSRC_DST)/*.*
 	rm -fr $(ROUTER_BIN)/net
 	rm -f RouterDemo.jar
-
+	rm -f $(IDE_DST)/*.class
+	rm -fr $(IDE_BIN)/net
+	rm -f CLIPSIDE.jar

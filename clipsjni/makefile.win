@@ -54,14 +54,20 @@ WINE_RSRC_SRC = $(WINE_SRC)\resources
 WINE_RSRC_DST = $(WINE_BIN)\$(WINE_CP)\resources
 
 ROUTER_CP = net\sf\clipsrules\jni\examples\router
-ROUTER_CLASS = net.sf.clipsrules.jni.examples.wine.RouterDemo
+ROUTER_CLASS = net.sf.clipsrules.jni.examples.router.RouterDemo
 ROUTER_SRC = java-src\$(ROUTER_CP)
 ROUTER_BIN = bin\router
 ROUTER_DST = $(ROUTER_BIN)\$(ROUTER_CP)
 ROUTER_RSRC_SRC = $(ROUTER_SRC)\resources
 ROUTER_RSRC_DST = $(ROUTER_BIN)\$(ROUTER_CP)\resources
 
-all: clipsjni animal auto sudoku wine router
+IDE_CP = net\sf\clipsrules\jni\examples\ide
+IDE_CLASS = net.sf.clipsrules.jni.examples.ide.CLIPSIDE
+IDE_SRC = java-src\$(IDE_CP)
+IDE_BIN = bin\ide
+IDE_DST = $(IDE_BIN)\$(IDE_CP)
+
+all: clipsjni animal auto sudoku wine router ide
 
 clipsjni :
 	javac -d $(JNI_BIN) $(JNI_FILES)
@@ -107,21 +113,38 @@ router :
 	jar -cfe RouterDemo.jar $(ROUTER_CLASS) $(ROUTER_BIN)\$(ROUTER_CP)\RouterDemo.class -C $(ROUTER_BIN) net 
 	jar -uf RouterDemo.jar -C $(JNI_BIN) net
 
+ide :
+	if not exist $(IDE_DST) mkdir $(IDE_DST)
+	javac -d $(IDE_BIN) -cp CLIPSJNI.jar $(IDE_SRC)\CLIPSIDE.java
+	jar -cfe CLIPSIDE.jar $(IDE_CLASS) $(IDE_BIN)\$(IDE_CP)\CLIPSIDE.class -C $(IDE_BIN) net 
+	jar -uf CLIPSIDE.jar -C $(JNI_BIN) net
+
 clean :
 	if exist $(JNI_DST) erase /Q $(JNI_DST)\*.class
 	if exist $(JNI_BIN)\net rmdir /Q /S $(JNI_BIN)\net
+	if exist CLIPSJNI.jar erase CLIPSJNI.jar
 	if exist $(ANIMAL_DST) erase /Q $(ANIMAL_DST)\*.class
 	if exist $(ANIMAL_RSRC_DST) erase /Q $(ANIMAL_RSRC_DST)\*.*
 	if exist $(ANIMAL_BIN)\net rmdir /Q /S $(ANIMAL_BIN)\net
+	if exist AnimalDemo.jar erase AnimalDemo.jar
 	if exist $(AUTO_DST) erase /Q $(AUTO_DST)\*.class
 	if exist $(AUTO_RSRC_DST) erase /Q $(AUTO_RSRC_DST)\*.*
 	if exist $(AUTO_BIN)\net rmdir /Q /S $(AUTO_BIN)\net
+	if exist AutoDemo.jar erase AutoDemo.jar
 	if exist $(SUDOKU_DST) erase /Q $(SUDOKU_DST)\*.class
 	if exist $(SUDOKU_RSRC_DST) erase /Q $(SUDOKU_RSRC_DST)\*.*
 	if exist $(SUDOKU_BIN)\net rmdir /Q /S $(SUDOKU_BIN)\net
+	if exist SudokuDemo.jar erase SudokuDemo.jar
 	if exist $(WINE_DST) erase /Q $(WINE_DST)\*.class
 	if exist $(WINE_RSRC_DST) erase /Q $(WINE_RSRC_DST)\*.*
 	if exist $(WINE_BIN)\net rmdir /Q /S $(WINE_BIN)\net
+	if exist WineDemo.jar erase WineDemo.jar
 	if exist $(ROUTER_DST) erase /Q $(ROUTER_DST)\*.class
 	if exist $(ROUTER_RSRC_DST) erase /Q $(ROUTER_RSRC_DST)\*.*
 	if exist $(ROUTER_BIN)\net rmdir /Q /S $(ROUTER_BIN)\net
+	if exist RouterDemo.jar erase RouterDemo.jar
+	if exist $(IDE_DST) erase /Q $(IDE_DST)\*.class
+	if exist $(IDE_BIN)\net rmdir /Q /S $(IDE_BIN)\net
+	if exist CLIPSIDE.jar erase CLIPSIDE.jar
+
+
