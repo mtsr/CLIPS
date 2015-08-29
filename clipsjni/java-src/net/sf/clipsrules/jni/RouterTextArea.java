@@ -45,6 +45,7 @@ public class RouterTextArea extends JTextArea
       clips = theEnv;
       
       this.setEditable(false);
+      this.setDragEnabled(true);
       this.addKeyListener(this);
       this.addFocusListener(this);
       
@@ -337,11 +338,6 @@ public class RouterTextArea extends JTextArea
    @Override
    public void keyPressed(KeyEvent e) 
      {
-      if ((e.getModifiers() & 
-          (KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0) 
-        { return; }
-
-      e.consume();
      }
 
    /***************/
@@ -350,11 +346,6 @@ public class RouterTextArea extends JTextArea
    @Override
    public void keyReleased(KeyEvent e) 
      { 
-      if ((e.getModifiers() & 
-          (KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK | KeyEvent.META_MASK)) != 0) 
-        { return; }
-
-      e.consume();
      }
 
    /************/
