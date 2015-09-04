@@ -4,6 +4,10 @@ JNI_BIN = bin/clipsjni
 JNI_SRC = java-src/$(JNI_CP)
 JNI_DST = $(JNI_BIN)/$(JNI_CP)
 JNI_FILES = \
+	$(JNI_SRC)/CaptureRouter.java \
+	$(JNI_SRC)/CLIPSException.java \
+	$(JNI_SRC)/CLIPSLineError.java \
+	$(JNI_SRC)/CLIPSLoadException.java \
 	$(JNI_SRC)/CommandPromptTextArea.java \
 	$(JNI_SRC)/Environment.java \
 	$(JNI_SRC)/FactAddressValue.java \
@@ -13,6 +17,7 @@ JNI_FILES = \
 	$(JNI_SRC)/IntegerValue.java \
 	$(JNI_SRC)/LexemeValue.java \
 	$(JNI_SRC)/MultifieldValue.java \
+	$(JNI_SRC)/NamedRouter.java \
 	$(JNI_SRC)/NumberValue.java \
 	$(JNI_SRC)/PrimitiveValue.java \
 	$(JNI_SRC)/Router.java \

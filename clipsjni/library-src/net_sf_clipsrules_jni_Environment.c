@@ -9,6 +9,10 @@ struct clipsJNIData
   { 
    int javaExternalAddressID;
 
+   jobject tempLocalEnvironment;
+   
+   jclass environmentClass;
+   
    jclass classClass;
    jmethodID classGetCanonicalNameMethod;
    
@@ -74,7 +78,8 @@ static void DeallocateJNIData(
    JNIEnv *env;
    
    env = (JNIEnv *) GetEnvironmentContext(theEnv);
-  
+
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->environmentClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->classClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->longClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->doubleClass);
@@ -88,6 +93,42 @@ static void DeallocateJNIData(
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->multifieldValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->factAddressValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->instanceAddressValueClass);
+  }
+
+/***************************/
+/* JNIParserErrorCallback: */
+/***************************/
+static void JNIParserErrorCallback(
+  void *theEnv,
+  const char *fileName,
+  const char *warningString,
+  const char *errorString,
+  long lineNumber)
+  {
+   JNIEnv *env;
+   jmethodID mid;
+   jstring str1, str2;
+
+   if (CLIPSJNIData(theEnv)->tempLocalEnvironment == NULL)
+     { return; }
+     
+   if (errorString == NULL) 
+     { return; }
+   
+   env = (JNIEnv *) GetEnvironmentContext(theEnv);
+   
+   mid = (*env)->GetMethodID(env,CLIPSJNIData(theEnv)->environmentClass,"addError","(Ljava/lang/String;JLjava/lang/String;)V");
+
+   if (mid == NULL)
+     { return; }
+
+   str1 = (*env)->NewStringUTF(env,fileName);
+   str2 = (*env)->NewStringUTF(env,errorString);
+
+   (*env)->CallVoidMethod(env,CLIPSJNIData(theEnv)->tempLocalEnvironment,mid,str1,lineNumber,str2);
+
+   (*env)->DeleteLocalRef(env,str1);
+   (*env)->DeleteLocalRef(env,str2);
   }
 
 /*************************************************/
@@ -283,6 +324,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
   jobject obj)
   {
    void *theEnv;
+   jclass theEnvironmentClass; 
    jclass theClassClass; 
    jmethodID theClassGetCanonicalNameMethod;
    jclass theLongClass; 
@@ -309,6 +351,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /* Look up the Java classes. */
    /*===========================*/
 
+   theEnvironmentClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/Environment"); 
    theClassClass = (*env)->FindClass(env,"java/lang/Class"); 
    theLongClass = (*env)->FindClass(env,"java/lang/Long"); 
    theDoubleClass = (*env)->FindClass(env,"java/lang/Double"); 
@@ -328,7 +371,8 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /* abort creation of the environment.      */
    /*=========================================*/
    
-   if ((theClassClass == NULL) ||
+   if ((theEnvironmentClass == NULL) ||
+       (theClassClass == NULL) ||
        (theLongClass == NULL) || (theDoubleClass == NULL) ||
        (theArrayListClass == NULL) ||
        (theVoidValueClass == NULL) ||
@@ -394,7 +438,9 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /* the local class references to global references   */
    /* so they won't be garbage collected.               */
    /*===================================================*/
-
+   
+   CLIPSJNIData(theEnv)->tempLocalEnvironment = NULL;
+   CLIPSJNIData(theEnv)->environmentClass = (*env)->NewGlobalRef(env,theEnvironmentClass);
    CLIPSJNIData(theEnv)->classClass = (*env)->NewGlobalRef(env,theClassClass);
    CLIPSJNIData(theEnv)->classGetCanonicalNameMethod = theClassGetCanonicalNameMethod;
 
@@ -441,6 +487,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /* Deallocate the local Java references. */
    /*=======================================*/
    
+   (*env)->DeleteLocalRef(env,theEnvironmentClass);
    (*env)->DeleteLocalRef(env,theClassClass);
    (*env)->DeleteLocalRef(env,theLongClass);
    (*env)->DeleteLocalRef(env,theDoubleClass);
@@ -460,6 +507,12 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /*=================================*/
    
    CLIPSJNIData(theEnv)->javaExternalAddressID = InstallExternalAddressType(theEnv,&javaPointer);
+   
+   /*===================================*/
+   /* Set up the parser error callback. */
+   /*===================================*/
+   
+   EnvSetParserErrorCallback(theEnv,JNIParserErrorCallback);
    
    /*=========================*/
    /* Return the environment. */
@@ -523,14 +576,22 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_load(
   jstring fileName)
   {
    const char *cFileName = (*env)->GetStringUTFChars(env,fileName,NULL);
-   
+   jobject oldLoadEnv;
    void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env);
-
-   EnvLoad(JLongToPointer(clipsEnv),(char *) cFileName);
+   void *theEnv;
+   
+   theEnv = JLongToPointer(clipsEnv);
+   
+   oldLoadEnv = CLIPSJNIData(theEnv)->tempLocalEnvironment;
+   CLIPSJNIData(theEnv)->tempLocalEnvironment = obj;
+   
+   EnvLoad(theEnv,(char *) cFileName);
+   
+   CLIPSJNIData(theEnv)->tempLocalEnvironment = oldLoadEnv;
    
    (*env)->ReleaseStringUTFChars(env,fileName,cFileName);
    
-   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
+   SetEnvironmentContext(theEnv,oldContext);
   }
 
 /*****************************************************************/
@@ -548,17 +609,82 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_loadFromString(
   jstring loadString)
   {
    const char *cLoadString = (*env)->GetStringUTFChars(env,loadString,NULL);
-   
+   jobject oldLoadEnv;
    void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env);
    void *theEnv;
    
    theEnv = JLongToPointer(clipsEnv);
+
+   oldLoadEnv = CLIPSJNIData(theEnv)->tempLocalEnvironment;
+   CLIPSJNIData(theEnv)->tempLocalEnvironment = obj;
   
    OpenStringSource(theEnv,"clipsjniloadfromstring",cLoadString,0); 
    LoadConstructsFromLogicalName(theEnv,"clipsjniloadfromstring");
    CloseStringSource(theEnv,"clipsjniloadfromstring");
-
+   
+   CLIPSJNIData(theEnv)->tempLocalEnvironment = oldLoadEnv;
+   
    (*env)->ReleaseStringUTFChars(env,loadString,cLoadString);
+   
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
+  }
+
+/*********************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_getParsingFileName: Native */
+/*   function for the CLIPSJNI getParsingFileName method.            */
+/*                                                                   */
+/* Class:     net_sf_clipsrules_jni_Environment                      */
+/* Method:    getParsingFileName                                     */
+/* Signature: (J)Ljava/lang/String;                                  */
+/*********************************************************************/
+JNIEXPORT jstring JNICALL Java_net_sf_clipsrules_jni_Environment_getParsingFileName(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv)
+  {
+   jstring rv;
+   
+   char *fileName;
+   
+   void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env);
+
+   fileName = EnvGetParsingFileName(JLongToPointer(clipsEnv));
+   
+   if (fileName == NULL)
+     { 
+      rv = (*env)->NewStringUTF(env,""); 
+      SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
+      return rv;
+     }
+     
+   rv = (*env)->NewStringUTF(env,fileName);
+   
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
+   
+   return rv;
+  }
+
+/*********************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_setParsingFileName: Native */
+/*   function for the CLIPSJNI setParsingFileName method.            */
+/*                                                                   */
+/* Class:     net_sf_clipsrules_jni_Environment                      */
+/* Method:    setParsingFileName                                     */
+/* Signature: (JLjava/lang/String;)V                                 */
+/*********************************************************************/
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setParsingFileName(
+  JNIEnv *env, 
+  jobject obj,
+  jlong clipsEnv,
+  jstring fileName)
+  {
+   const char *cFileName = (*env)->GetStringUTFChars(env,fileName,NULL);
+
+   void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env);
+
+   EnvSetParsingFileName(JLongToPointer(clipsEnv),(char *) cFileName);
+   
+   (*env)->ReleaseStringUTFChars(env,fileName,cFileName);
    
    SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
   }
@@ -1477,7 +1603,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_addRouter(
 
    void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env);
       
-   nobj = (*env)->NewGlobalRef(env,context); /* TBD Need to deallocate when environment or router destroyed */
+   nobj = (*env)->NewGlobalRef(env,context);
    
    rv = EnvAddRouterWithContext(JLongToPointer(clipsEnv),(char *) cRouterName,(int) priority,
                                 QueryJNIRouter,PrintJNIRouter,GetcJNIRouter,
@@ -1487,6 +1613,126 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_addRouter(
 
    SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
 
+   return rv;
+  }
+
+/***************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_deleteRouter: Native */
+/*   function for the CLIPSJNI deleteRouter method.            */
+/*                                                             */
+/* Class:     net_sf_clipsrules_jni_Environment                */
+/* Method:    deleteRouter                                     */
+/* Signature: (JLjava/lang/String;)Z                           */
+/***************************************************************/
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_deleteRouter(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv, 
+  jstring routerName)
+  {
+   int rv;
+   void *theCLIPSEnv = JLongToPointer(clipsEnv);
+   const char *cRouterName = (*env)->GetStringUTFChars(env,routerName,NULL);
+   struct router *theRouter;
+   
+   theRouter = EnvFindRouter(theCLIPSEnv,cRouterName);
+   if (theRouter == NULL) 
+     { return(0); }
+
+   if (GetEnvironmentRouterContext(theCLIPSEnv) == theRouter->context)
+     { SetEnvironmentRouterContext(theCLIPSEnv,NULL); }
+
+   (*env)->DeleteGlobalRef(env,theRouter->context);
+     
+   rv = EnvDeleteRouter(theCLIPSEnv,cRouterName);
+  
+   (*env)->ReleaseStringUTFChars(env,routerName,cRouterName);
+
+   return rv;
+  }
+
+/*******************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_printRouter  */
+/* Class:     net_sf_clipsrules_jni_Environment        */
+/* Method:    printRouter                              */
+/* Signature: (JLjava/lang/String;Ljava/lang/String;)V */
+/*******************************************************/
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_printRouter(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv, 
+  jstring logName, 
+  jstring printString)
+  {
+   const char *cLogName;
+   const char *cPrintString;
+   void *theCLIPSEnv = JLongToPointer(clipsEnv);
+   void *oldContext = SetEnvironmentContext(theCLIPSEnv,(void *) env);
+   
+   cLogName = (*env)->GetStringUTFChars(env,logName,NULL);
+   cPrintString = (*env)->GetStringUTFChars(env,printString,NULL);
+
+   EnvPrintRouter(theCLIPSEnv,cLogName,cPrintString);
+
+   (*env)->ReleaseStringUTFChars(env,logName,cLogName);
+   (*env)->ReleaseStringUTFChars(env,printString,cPrintString);
+   
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
+  }
+
+/*********************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_activateRouter */
+/* Class:     net_sf_clipsrules_jni_Environment          */
+/* Method:    activateRouter                             */
+/* Signature: (JLjava/lang/String;)Z                     */
+/*********************************************************/
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_activateRouter(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv, 
+  jstring routerName)
+  {
+   jboolean rv;
+   const char *cRouterName;
+   void *theCLIPSEnv = JLongToPointer(clipsEnv);
+   void *oldContext = SetEnvironmentContext(theCLIPSEnv,(void *) env);
+   
+   cRouterName = (*env)->GetStringUTFChars(env,routerName,NULL);
+
+   rv = EnvActivateRouter(theCLIPSEnv,cRouterName);
+
+   (*env)->ReleaseStringUTFChars(env,routerName,cRouterName);
+   
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
+   
+   return rv;
+  }
+
+/***********************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_deactivateRouter */
+/* Class:     net_sf_clipsrules_jni_Environment            */
+/* Method:    deactivateRouter                             */
+/* Signature: (JLjava/lang/String;)Z                       */
+/***********************************************************/
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_deactivateRouter(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv, 
+  jstring routerName)
+  {
+   jboolean rv;
+   const char *cRouterName;
+   void *theCLIPSEnv = JLongToPointer(clipsEnv);
+   void *oldContext = SetEnvironmentContext(theCLIPSEnv,(void *) env);
+   
+   cRouterName = (*env)->GetStringUTFChars(env,routerName,NULL);
+
+   rv = EnvDeactivateRouter(theCLIPSEnv,cRouterName);
+
+   (*env)->ReleaseStringUTFChars(env,routerName,cRouterName);
+   
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
+   
    return rv;
   }
 

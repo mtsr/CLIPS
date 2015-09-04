@@ -57,6 +57,22 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_load
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getParsingFileName
+ * Signature: (J)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_net_sf_clipsrules_jni_Environment_getParsingFileName
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    setParsingFileName
+ * Signature: (JLjava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setParsingFileName
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
  * Method:    loadFacts
  * Signature: (JLjava/lang/String;)Z
  */
@@ -254,6 +270,38 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_printPrompt
  */
 JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_addRouter
   (JNIEnv *, jobject, jlong, jstring, jint, jobject);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    deleteRouter
+ * Signature: (JLjava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_deleteRouter
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    printRouter
+ * Signature: (JLjava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_printRouter
+  (JNIEnv *, jobject, jlong, jstring, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    activateRouter
+ * Signature: (JLjava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_activateRouter
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    deactivateRouter
+ * Signature: (JLjava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_deactivateRouter
+  (JNIEnv *, jobject, jlong, jstring);
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment

@@ -59,7 +59,7 @@ public class RouterTextArea extends JTextArea
       routerName = "JTextAreaRouter" + TextAreaRouterNameIndex++;
       clips.addRouter(this);
       
-      new DropTarget(this, this);
+      this.setDropTarget(new DropTarget(this,this));
 
       ((DefaultCaret) this.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
       this.addCaretListener(this);
@@ -234,16 +234,16 @@ public class RouterTextArea extends JTextArea
    /**********/
    @Override
    public boolean query(
-     String routerName)
+     String logName)
      {      
-      if (routerName.equals("stdout") ||
-          routerName.equals("stdin") ||
-          routerName.equals("wwarning") ||
-          routerName.equals("werror") ||
-          routerName.equals("wtrace") ||
-          routerName.equals("wdialog") ||
-          routerName.equals("wclips") ||
-          routerName.equals("wdisplay"))
+      if (logName.equals("stdout") ||
+          logName.equals("stdin") ||
+          logName.equals("wwarning") ||
+          logName.equals("werror") ||
+          logName.equals("wtrace") ||
+          logName.equals("wdialog") ||
+          logName.equals("wclips") ||
+          logName.equals("wdisplay"))
       
         { return true; }
 
@@ -255,7 +255,7 @@ public class RouterTextArea extends JTextArea
    /**********/
    @Override
    public void print(
-     String routerName,
+     String logName,
      String printString)
      {
       if (EventQueue.isDispatchThread())

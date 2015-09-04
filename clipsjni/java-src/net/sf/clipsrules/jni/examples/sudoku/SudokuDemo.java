@@ -241,8 +241,16 @@ class SudokuDemo implements ActionListener, FocusListener, KeyListener
       
       clips = new Environment();
 
-      clips.loadFromResource("/net/sf/clipsrules/jni/examples/sudoku/resources/sudoku.clp");
-      clips.loadFromResource("/net/sf/clipsrules/jni/examples/sudoku/resources/solve.clp");
+      try
+        {
+         clips.loadFromResource("/net/sf/clipsrules/jni/examples/sudoku/resources/sudoku.clp");
+         clips.loadFromResource("/net/sf/clipsrules/jni/examples/sudoku/resources/solve.clp");
+        }
+      catch (Exception e)
+        {
+         e.printStackTrace();
+         System.exit(1);
+        }
             
       /**********************/
       /* Display the frame. */
@@ -295,7 +303,10 @@ class SudokuDemo implements ActionListener, FocusListener, KeyListener
            {
             public void run()
               {
-               clips.run();
+               try
+                 { clips.run(); }
+               catch (CLIPSException e)
+                 { e.printStackTrace(); }
                
                SwingUtilities.invokeLater(
                   new Runnable()

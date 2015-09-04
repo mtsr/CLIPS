@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.31  09/04/15            */
    /*                                                     */
    /*                  I/O ROUTER MODULE                  */
    /*******************************************************/
@@ -39,6 +39,8 @@
 /*                                                           */
 /*            Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Added check for reuse of existing router name. */
 /*                                                           */
 /*************************************************************/
 
@@ -432,6 +434,18 @@ globle intBool EnvAddRouterWithContext(
    struct router *newPtr, *lastPtr, *currentPtr;
    char  *nameCopy;
 
+   /*==================================================*/
+   /* Reject the router if the name is already in use. */
+   /*==================================================*/
+   
+   for (currentPtr = RouterData(theEnv)->ListOfRouters;
+        currentPtr != NULL;
+        currentPtr = currentPtr->next)
+     {
+      if (strcmp(currentPtr->name,routerName) == 0)
+        { return 0; }
+     }
+     
    newPtr = get_struct(theEnv,router);
 
    nameCopy = (char *) genalloc(theEnv,strlen(routerName) + 1);
@@ -618,6 +632,26 @@ globle int EnvActivateRouter(
      }
 
    return(FALSE);
+  }
+
+/********************************************/
+/* EnvFindRouter: Locates the named router. */
+/********************************************/
+globle struct router *EnvFindRouter(
+  void *theEnv,
+  const char *routerName)
+  {
+   struct router *currentPtr;
+
+   for (currentPtr = RouterData(theEnv)->ListOfRouters;
+        currentPtr != NULL;
+        currentPtr = currentPtr->next)
+     {
+      if (strcmp(currentPtr->name,routerName) == 0)
+        { return(currentPtr); }
+     }
+
+   return(NULL);
   }
 
 /********************************************************/

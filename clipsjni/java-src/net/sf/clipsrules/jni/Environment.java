@@ -1,6 +1,9 @@
 package net.sf.clipsrules.jni;
 
 import java.io.InputStream;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 public class Environment
   {
@@ -20,6 +23,9 @@ public class Environment
    public static final String GLOBALS = "globals";
    public static final String MESSAGES = "messages";
    public static final String MESSAGE_HANDLERS = "message-handlers";
+      
+   private List<Router> routerList = new ArrayList<Router>(); 
+   private List<CLIPSLineError> errorList = new ArrayList<CLIPSLineError>();
 
    static { System.loadLibrary("CLIPSJNI"); }
 
@@ -67,6 +73,53 @@ public class Environment
    /***************************/
    private native long createEnvironment();
 
+   /***********************/
+   /* voidCommandWrapper: */
+   /***********************/
+   private void voidCommandWrapper(Callable<Void> callable) throws CLIPSException
+     {
+      CaptureRouter commandCapture = new CaptureRouter(this,new String [] { Router.ERROR } );
+      
+      try
+        { callable.call(); }
+      catch(Exception e)
+        {
+         this.deleteRouter(commandCapture);
+         throw new CLIPSException(e.getMessage(),e.getCause()); 
+        }
+      
+      String error = commandCapture.getOutput();
+      this.deleteRouter(commandCapture);
+      
+      if (! error.isEmpty())
+        { throw new CLIPSException(error); }
+     }
+     
+   /***********************/
+   /* longCommandWrapper: */
+   /***********************/
+   private long longCommandWrapper(Callable<Long> callable) throws CLIPSException
+     {
+      CaptureRouter commandCapture = new CaptureRouter(this,new String [] { Router.ERROR } );
+      Long rv;
+      
+      try
+        { rv = callable.call(); }
+      catch(Exception e)
+        {
+         this.deleteRouter(commandCapture);
+         throw new CLIPSException(e.getMessage(),e.getCause()); 
+        }
+      
+      String error = commandCapture.getOutput();
+      this.deleteRouter(commandCapture);
+      
+      if (! error.isEmpty())
+        { throw new CLIPSException(error); }
+        
+      return rv;
+     }
+
    /****************************************/
    /* clear: Clears the CLIPS environment. */
    /****************************************/
@@ -75,9 +128,17 @@ public class Environment
    /**********/
    /* clear: */
    /**********/
-   public void clear()
+   public void clear() throws CLIPSException
      {
-      clear(theEnvironment);
+      voidCommandWrapper(
+         new Callable<Void>() 
+               {
+                public Void call() throws Exception 
+                  { 
+                   clear(theEnvironment);  
+                   return null;
+                  }
+               });
      }
 
    /****************************************/
@@ -88,9 +149,17 @@ public class Environment
    /**********/
    /* reset: */
    /**********/
-   public void reset()
+   public void reset() throws CLIPSException
      {
-      reset(theEnvironment);
+      voidCommandWrapper(
+         new Callable<Void>() 
+               {
+                public Void call() throws Exception 
+                  { 
+                   reset(theEnvironment);  
+                   return null;
+                  }
+               });
      }
 
    /**************************/
@@ -105,11 +174,17 @@ public class Environment
    /*********************/
    /* loadFromResource: */
    /*********************/
-   public void loadFromResource(String resourceFile)
+   public void loadFromResource(String resourceFile) throws CLIPSLoadException
      {
       InputStream input = getClass().getResourceAsStream(resourceFile);
       if (input == null) return;
+      String oldName = getParsingFileName();
+      setParsingFileName(resourceFile);
+      CaptureRouter loadCapture = new CaptureRouter(this,new String [] { Router.ERROR } );
       loadFromString(theEnvironment,convertStreamToString(input));
+      this.deleteRouter(loadCapture);
+      setParsingFileName(oldName);
+      checkForErrors("LoadFromResource");
      }
 
    /*******************/
@@ -120,9 +195,15 @@ public class Environment
    /*******************/
    /* loadFromString: */
    /*******************/
-   public void loadFromString(String loadString)
+   public void loadFromString(String loadString) throws CLIPSLoadException
      {
+      String oldName = getParsingFileName();
+      setParsingFileName("<String>");
+      CaptureRouter loadCapture = new CaptureRouter(this,new String [] { Router.ERROR } );
       loadFromString(theEnvironment,loadString);
+      this.deleteRouter(loadCapture);
+      setParsingFileName(oldName);
+      checkForErrors("LoadFromString");
      }
      
    /*********/
@@ -133,9 +214,79 @@ public class Environment
    /*********/
    /* load: */
    /*********/
-   public void load(String filename)
+   public void load(String filename) throws CLIPSLoadException
      {
+      CaptureRouter loadCapture = new CaptureRouter(this,new String [] { Router.ERROR } );
       load(theEnvironment,filename);
+      this.deleteRouter(loadCapture);
+      
+      checkForErrors("Load");
+     }
+     
+   /*******************/
+   /* checkForErrors: */
+   /*******************/
+   public void checkForErrors(String function) throws CLIPSLoadException
+     {
+      if (errorList.isEmpty())
+        { return; }
+        
+      String exceptionString;
+         
+      if (errorList.size() == 1)
+        { exceptionString = "\n" + function + " encountered 1 error:\n"; }
+      else
+        { exceptionString = "\n" + function + " encountered " + errorList.size() + " errors:\n"; }
+           
+      for (CLIPSLineError theError : errorList)
+        {
+         exceptionString = exceptionString.concat("\n" + 
+                                                  theError.getFileName() + " (Line " +
+                                                  theError.getLineNumber() + ") : " +
+                                                  theError.getMessage());
+        }
+           
+      CLIPSLoadException e = new CLIPSLoadException(exceptionString,errorList);
+      errorList.clear();
+      throw e;
+     }
+    
+   /***********************/
+   /* getParsingFileName: */
+   /***********************/
+   private native String getParsingFileName(long env);
+
+   /***********************/
+   /* getParsingFileName: */
+   /***********************/
+   public String getParsingFileName()
+     {
+      return getParsingFileName(theEnvironment);
+     }
+
+   /***********************/
+   /* setParsingFileName: */
+   /***********************/
+   private native void setParsingFileName(long env,String theString);
+
+   /***********************/
+   /* setParsingFileName: */
+   /***********************/
+   public void setParsingFileName(
+     String theString)
+     {
+      setParsingFileName(theEnvironment,theString);
+     }
+
+   /*************/
+   /* addError: */
+   /*************/
+   public void addError(
+     String fileName,
+     long lineNumber,
+     String message)
+     {
+      errorList.add(new CLIPSLineError(fileName,lineNumber,message));
      }
      
    /**************/
@@ -186,17 +337,24 @@ public class Environment
    /* run: */
    /********/
    public long run(
-     long runLimit)
+     long runLimit) throws CLIPSException
      {
-      return run(theEnvironment,runLimit);
+      return longCommandWrapper(
+         new Callable<Long>() 
+               {
+                public Long call() throws Exception 
+                  { 
+                   return run(theEnvironment,runLimit);
+                  }
+               });
      }
 
    /********/
    /* run: */
    /********/
-   public long run()
+   public long run() throws CLIPSException
      {
-      return run(theEnvironment,-1);
+      return run(-1);
      }
 
    /*********/
@@ -207,9 +365,21 @@ public class Environment
    /*********/
    /* eval: */
    /*********/
-   public PrimitiveValue eval(String evalStr)
+   public PrimitiveValue eval(String evalStr) throws CLIPSException
      {
-      return eval(theEnvironment,evalStr);
+      PrimitiveValue pv;
+      CaptureRouter evalCapture = new CaptureRouter(this,new String [] { Router.ERROR } );
+
+      pv = eval(theEnvironment,evalStr);
+      String error = evalCapture.getOutput();
+      this.deleteRouter(evalCapture);
+      
+      if (! error.isEmpty())
+        { 
+         throw new CLIPSException(error);
+        }
+      
+      return pv;
      }
 
    /**********/
@@ -480,7 +650,82 @@ public class Environment
    public boolean addRouter(
      Router theRouter)
      {
-      return addRouter(theEnvironment,theRouter.getName(),theRouter.getPriority(),theRouter);
+      boolean rv = addRouter(theEnvironment,theRouter.getName(),theRouter.getPriority(),theRouter);
+      
+      if (rv)
+        { routerList.add(theRouter); }
+      return rv;
+     }
+
+   /*****************/
+   /* deleteRouter: */
+   /*****************/
+   private native boolean deleteRouter(long env,String routerName);
+    
+   /*****************/
+   /* deleteRouter: */
+   /*****************/
+   public boolean deleteRouter(
+     Router theRouter)
+     {
+      routerList.remove(theRouter);
+      return deleteRouter(theEnvironment,theRouter.getName());
+     }
+
+   /****************/
+   /* printRouter: */
+   /****************/
+   private native void printRouter(long env,String logName,String printString);
+
+   /****************/
+   /* printRouter: */
+   /****************/
+   public void printRouter(
+     String logName,
+     String printString)
+     {
+      printRouter(theEnvironment,logName,printString);
+     }
+
+   /*******************/
+   /* activateRouter: */
+   /*******************/
+   private native boolean activateRouter(long env,String routerName);
+
+   /*******************/
+   /* activateRouter: */
+   /*******************/
+   public boolean activateRouter(
+     Router theRouter)
+     {
+      return activateRouter(theEnvironment,theRouter.getName());
+     }
+
+   /*********************/
+   /* deactivateRouter: */
+   /*********************/
+   private native boolean deactivateRouter(long env,String routerName);
+
+   /*********************/
+   /* deactivateRouter: */
+   /*********************/
+   public boolean deactivateRouter(
+     Router theRouter)
+     {
+      return deactivateRouter(theEnvironment,theRouter.getName());
+     }
+
+   /************************/
+   /* callNextPrintRouter: */
+   /************************/
+   public void callNextPrintRouter(
+     Router theRouter,
+     String logName,
+     String printString)
+     {
+      deactivateRouter(theRouter);
+      printRouter(logName,printString);
+      activateRouter(theRouter);
      }
 
    /***********************/
@@ -552,6 +797,9 @@ public class Environment
    /************/
    public void destroy()
      {
+      for (Router router : routerList)
+        { deleteRouter(router); }
+
       destroyEnvironment(theEnvironment);
      }
      

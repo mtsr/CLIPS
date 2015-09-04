@@ -291,7 +291,15 @@ class WineDemo implements ActionListener
       
       clips = new Environment();
       
-      clips.loadFromResource("/net/sf/clipsrules/jni/examples/wine/resources/wine.clp");
+      try
+        {
+         clips.loadFromResource("/net/sf/clipsrules/jni/examples/wine/resources/wine.clp");
+        }
+      catch (Exception e)
+        {
+         e.printStackTrace();
+         System.exit(1);
+        }
       
       try
         { runWine(); }
@@ -443,7 +451,10 @@ class WineDemo implements ActionListener
            {
             public void run()
               {
-               clips.run();
+               try
+                 { clips.run(); }
+               catch (CLIPSException e)
+                 { e.printStackTrace(); }
                
                SwingUtilities.invokeLater(
                   new Runnable()

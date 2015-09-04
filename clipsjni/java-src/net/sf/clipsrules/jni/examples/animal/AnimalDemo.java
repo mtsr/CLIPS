@@ -157,18 +157,25 @@ class AnimalDemo implements ActionListener
       variableAsserts = new ArrayList<String>();
       priorAnswers = new ArrayList<String>();
 
-      /*==========================*/
-      /* Load the animal program. */
-      /*==========================*/
+      /*==================================*/
+      /* Load and run the animal program. */
+      /*==================================*/
 
       clips = new Environment();
       
-      clips.loadFromResource("/net/sf/clipsrules/jni/examples/animal/resources/bcengine.clp");
-      clips.loadFromResource("/net/sf/clipsrules/jni/examples/animal/resources/animal.clp");
-      clips.loadFromResource("/net/sf/clipsrules/jni/examples/animal/resources/animal_" + 
-                             Locale.getDefault().getLanguage() + ".clp");
-
-      processRules();
+      try
+        {
+         clips.loadFromResource("/net/sf/clipsrules/jni/examples/animal/resources/bcengine.clp");
+         clips.loadFromResource("/net/sf/clipsrules/jni/examples/animal/resources/animal.clp");
+         clips.loadFromResource("/net/sf/clipsrules/jni/examples/animal/resources/animal_" + 
+                                Locale.getDefault().getLanguage() + ".clp");
+         processRules();
+        }
+      catch (Exception e)
+        {
+         e.printStackTrace();
+         System.exit(1);
+        }
 
       /*====================*/
       /* Display the frame. */
@@ -307,7 +314,10 @@ class AnimalDemo implements ActionListener
            {
             public void run()
               {
-               clips.run();
+               try
+                 { clips.run(); }
+               catch (CLIPSException e)
+                 { e.printStackTrace(); }
 
                SwingUtilities.invokeLater(
                   new Runnable()
@@ -333,7 +343,7 @@ class AnimalDemo implements ActionListener
    /****************/
    /* processRules */
    /****************/  
-   private void processRules() 
+   private void processRules() throws CLIPSException
      {
       clips.reset();      
       
@@ -349,7 +359,7 @@ class AnimalDemo implements ActionListener
    /********************/
    /* nextButtonAction */
    /********************/  
-   private void nextButtonAction() 
+   private void nextButtonAction() throws CLIPSException
      { 
       String theString;
       String theAnswer;
@@ -379,7 +389,7 @@ class AnimalDemo implements ActionListener
    /********************/
    /* prevButtonAction */
    /********************/  
-   private void prevButtonAction() 
+   private void prevButtonAction() throws CLIPSException
      { 
       lastAnswer = priorAnswers.get(priorAnswers.size() - 1);
    
