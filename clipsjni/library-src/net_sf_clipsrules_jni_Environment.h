@@ -41,6 +41,14 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_reset
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    changeDirectory
+ * Signature: (JLjava/lang/String;)I
+ */
+JNIEXPORT jint JNICALL Java_net_sf_clipsrules_jni_Environment_changeDirectory
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
  * Method:    loadFromString
  * Signature: (JLjava/lang/String;)V
  */

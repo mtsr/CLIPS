@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  06/04/15            */
+   /*             CLIPS Version 6.31  09/05/15            */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -82,6 +82,9 @@
 /*            based values across platforms.                 */
 /*                                                           */
 /*            Updated compilations flags for CatchCtrlC.     */
+/*                                                           */
+/*            Added genchdir function for changing the       */
+/*            current directory.                             */
 /*                                                           */
 /*************************************************************/
 
@@ -544,6 +547,20 @@ globle char *gengetcwd(
    if (buffer != NULL)
      { buffer[0] = 0; }
    return(buffer);
+  }
+
+/******************************************/
+/* genchdir: Generic function for setting */
+/*   the current directory.               */
+/******************************************/
+globle int genchdir(
+  const char *directory)
+  {
+#if MAC_XCD || DARWIN
+   return(chdir(directory));
+#endif
+
+   return -1;
   }
 
 /****************************************************/

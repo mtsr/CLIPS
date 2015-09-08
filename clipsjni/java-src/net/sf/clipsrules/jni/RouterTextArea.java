@@ -181,6 +181,41 @@ public class RouterTextArea extends JTextArea
       return true;
      }
      
+   /****************/
+   /* hasSelection */
+   /****************/
+   public boolean hasSelection()
+     {
+      int left = Math.min(this.getCaret().getDot(),this.getCaret().getMark());
+      int right = Math.max(this.getCaret().getDot(),this.getCaret().getMark());
+      if (left == right) return false;
+      return true;
+     }
+     
+   /************************/
+   /* hasCuttableSelection */
+   /************************/
+   public synchronized boolean hasCuttableSelection()
+     {
+      return false;
+     }
+     
+   /*************************/
+   /* hasPasteableSelection */
+   /*************************/
+   public synchronized boolean hasPasteableSelection()
+     {
+      if (! charNeeded) return false;
+      
+      int left = Math.min(getCaret().getDot(),getCaret().getMark());
+      int right = Math.max(getCaret().getDot(),getCaret().getMark());
+      
+      if (left != right) return false;
+      if (left != getText().length()) return false;
+      
+      return true;
+     }
+     
    /*########################*/
    /* JTextComponent Methods */
    /*########################*/
@@ -191,6 +226,9 @@ public class RouterTextArea extends JTextArea
    @Override
    public void paste()
      {
+      if (! hasPasteableSelection())
+        { return;}
+        
       try
         {
          String clipboardText = (String) 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  05/18/15            */
+   /*             CLIPS Version 6.30  09/05/15            */
    /*                                                     */
    /*            SYSTEM DEPENDENT HEADER FILE             */
    /*******************************************************/
@@ -77,6 +77,9 @@
 /*      6.31: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
+/*            Added genchdir function for changing the       */
+/*            current directory.                             */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_sysdep
@@ -133,6 +136,7 @@
    LOCALE char                       *genstrncpy(char *,const char *,size_t);
    LOCALE char                       *genstrcat(char *,const char *);
    LOCALE char                       *genstrncat(char *,const char *,size_t);
+   LOCALE int                         genchdir(const char *);
    LOCALE void                        SetJmpBuffer(void *,jmp_buf *);
    LOCALE void                        genprintfile(void *,FILE *,const char *);
    LOCALE int                         gengetchar(void *);

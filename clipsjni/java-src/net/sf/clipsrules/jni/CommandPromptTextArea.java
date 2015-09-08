@@ -130,7 +130,50 @@ public class CommandPromptTextArea extends RouterTextArea
                     
       e.consume();
      }
-     
+    
+   /************************/
+   /* hasCuttableSelection */
+   /************************/
+   public synchronized boolean hasCuttableSelection()
+     {
+      if (getExecuting())
+        { return super.hasCuttableSelection(); }
+
+      int textLength = this.getText().length();
+      int commandLength = (int) clips.getInputBufferCount();  
+      int lockedLength = textLength - commandLength;
+      
+      int left = Math.min(this.getCaret().getDot(),this.getCaret().getMark());
+      int right = Math.max(this.getCaret().getDot(),this.getCaret().getMark());
+      
+      if (left == right) return false;
+      
+      if (left < lockedLength)
+        { return false; }
+      
+      return true;
+     }
+
+   /*************************/
+   /* hasPasteableSelection */
+   /*************************/
+   public synchronized boolean hasPasteableSelection()
+     {
+      if (getExecuting())
+        { return super.hasPasteableSelection(); }
+
+      int textLength = this.getText().length();
+      int commandLength = (int) clips.getInputBufferCount();  
+      int lockedLength = textLength - commandLength;
+      
+      int left = Math.min(this.getCaret().getDot(),this.getCaret().getMark());
+            
+      if (left < lockedLength)
+        { return false; }
+      
+      return true;
+     }
+      
    /*****************/
    /* modifyCommand */
    /*****************/
@@ -459,6 +502,36 @@ public class CommandPromptTextArea extends RouterTextArea
       
       currentCommand = newCommand;
      }
+
+   /******************/
+   /* replaceCommand */
+   /******************/  
+   public void replaceCommand(
+     String newCommand)
+     {
+      /*=============================================*/
+      /* Remove the current command from the window. */
+      /*=============================================*/
+
+      String theCommand = clips.getInputBuffer();
+      
+      int length = theCommand.length();
+      
+      this.replaceRange("",this.getText().length() - length,this.getText().length());
+
+      /*======================*/
+      /* Use the new command. */
+      /*======================*/
+   
+      clips.setInputBuffer(newCommand);
+      this.append(newCommand);
+      
+      /*==========================*/
+      /* Process the new command. */
+      /*==========================*/
+      
+      commandCheck();
+     }
   
    /*########################*/
    /* JTextComponent Methods */
@@ -475,6 +548,9 @@ public class CommandPromptTextArea extends RouterTextArea
          super.cut(); 
          return;
         }
+
+      if (! this.hasCuttableSelection())
+        { return; }
         
       this.copy();
       modifyCommand("",true);
@@ -491,6 +567,9 @@ public class CommandPromptTextArea extends RouterTextArea
          super.paste(); 
          return;
         }
+        
+      if (! this.hasPasteableSelection())
+        { return; }
         
       try
         {
@@ -590,6 +669,7 @@ public class CommandPromptTextArea extends RouterTextArea
          dtde.dropComplete(false);
          return; 
         }
+        
       try 
         {
          Transferable tr = dtde.getTransferable();

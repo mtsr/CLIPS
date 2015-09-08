@@ -187,6 +187,19 @@ public class Environment
       checkForErrors("LoadFromResource");
      }
 
+   /********************/
+   /* changeDirectory: */
+   /********************/
+   private native int changeDirectory(long env,String directory);
+   
+   /********************/
+   /* changeDirectory: */
+   /********************/
+   public int changeDirectory(String directory)
+     {
+      return changeDirectory(theEnvironment,directory);
+     }
+
    /*******************/
    /* loadFromString: */
    /*******************/

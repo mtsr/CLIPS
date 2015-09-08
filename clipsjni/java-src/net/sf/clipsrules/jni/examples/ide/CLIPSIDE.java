@@ -3,18 +3,43 @@ package net.sf.clipsrules.jni.examples.ide;
 import javax.swing.*; 
 import javax.swing.border.*; 
 import javax.swing.table.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.event.*;
+
 import java.awt.*; 
 import java.awt.event.*; 
- 
+import java.io.File;
+
 import net.sf.clipsrules.jni.*;
 
-class CLIPSIDE implements ActionListener
+// TBD
+// Improve output speed
+// Disable menu commands when executing
+// Pause
+// Halt
+// Prompt to close
+
+class CLIPSIDE implements ActionListener, MenuListener
   {  
    private JFrame ideFrame;
          
    private Environment clips;
    
    private CommandPromptTextArea commandTextArea;
+   
+   static final String loadConstructsAction = "LoadConstructs";
+   static final String loadBatchAction = "LoadBatch";
+   static final String setDirectoryAction = "SetDirectory";
+   
+   private File currentDirectory = null;
+
+   private JMenuItem jmiLoadConstructs = null;
+   private JMenuItem jmiLoadBatch = null;
+   private JMenuItem jmiSetDirectory = null;
+
+   private JMenuItem jmiCut = null;
+   private JMenuItem jmiCopy = null;
+   private JMenuItem jmiPaste = null;
 
    /************/
    /* CLIPSIDE */
@@ -74,37 +99,74 @@ class CLIPSIDE implements ActionListener
       /* Get KeyStroke for copy/paste keyboard commands. */
       /*=================================================*/
 
+      KeyStroke cut = KeyStroke.getKeyStroke(KeyEvent.VK_X,KeyEvent.CTRL_MASK);
       KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_MASK);
       KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V,KeyEvent.CTRL_MASK);
+      KeyStroke loadConstructs = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK);
 
-      /*==========================================================*/
-      /* Override copy/paste for the JTextAreaCommandPromptRouter */
-      /* so that we can later define our own menu accelerators.   */
-      /*==========================================================*/
+      /*======================================================*/
+      /* Override copy/paste for the CommandPromptTextArea so */
+      /* that we can later define our own menu accelerators.  */
+      /*======================================================*/
 
-      String actionKey = "none";
       InputMap map = commandTextArea.getInputMap();
-      map.put(copy,actionKey);
-      map.put(paste,actionKey);
+      map.put(cut,"none");
+      map.put(copy,"none");
+      map.put(paste,"none");
 
       /*======================*/
       /* Create the menu bar. */
       /*======================*/
       
       JMenuBar jmb = new JMenuBar();
+
+      /*===========*/
+      /* File menu */
+      /*===========*/
       
+      JMenu jmFile = new JMenu("File");
+      jmFile.addMenuListener(this);
+
+      jmiLoadConstructs = new JMenuItem("Load Constructs...",KeyEvent.VK_L);
+      jmiLoadConstructs.setActionCommand(loadConstructsAction);
+      jmiLoadConstructs.setAccelerator(loadConstructs);
+      jmiLoadConstructs.addActionListener(this);
+      jmFile.add(jmiLoadConstructs);
+
+      jmiLoadBatch = new JMenuItem("Load Batch...");
+      jmiLoadBatch.setActionCommand(loadBatchAction);
+      jmiLoadBatch.addActionListener(this);
+      jmFile.add(jmiLoadBatch);
+
+      jmiSetDirectory = new JMenuItem("Set Directory...");
+      jmiSetDirectory.setActionCommand(setDirectoryAction);
+      jmiSetDirectory.addActionListener(this);
+      jmFile.add(jmiSetDirectory);
+
+      jmb.add(jmFile);
+
+      /*===========*/
+      /* Edit menu */
+      /*===========*/
+         
       JMenu jmEdit = new JMenu("Edit");
-      JMenuItem jmiCopy = new JMenuItem("Copy",KeyEvent.VK_C);
-      JMenuItem jmiPaste = new JMenuItem("Paste",KeyEvent.VK_V);
+      jmEdit.addMenuListener(this);
       
-      jmiCopy.setAccelerator(copy);
-      jmiPaste.setAccelerator(paste);
-      
+      jmiCut = new JMenuItem("Cut",KeyEvent.VK_X);
+      jmiCut.addActionListener(this);
+      jmiCut.setAccelerator(cut);
+      jmEdit.add(jmiCut);
+
+      jmiCopy = new JMenuItem("Copy",KeyEvent.VK_C);
       jmiCopy.addActionListener(this);
-      jmiPaste.addActionListener(this);
-      
+      jmiCopy.setAccelerator(copy);
       jmEdit.add(jmiCopy);
+
+      jmiPaste = new JMenuItem("Paste",KeyEvent.VK_V);
+      jmiPaste.addActionListener(this);      
+      jmiPaste.setAccelerator(paste);      
       jmEdit.add(jmiPaste);
+      
       jmb.add(jmEdit);
       
       ideFrame.setJMenuBar(jmb);
@@ -116,6 +178,156 @@ class CLIPSIDE implements ActionListener
       ideFrame.pack();
       ideFrame.setVisible(true);  
      }  
+          
+   /********/
+   /* main */
+   /********/  
+   public static void main(String args[])
+     {  
+      /*===================================================*/
+      /* Create the frame on the event dispatching thread. */
+      /*===================================================*/
+      
+      SwingUtilities.invokeLater(
+        new Runnable() 
+          {  
+           public void run() { new CLIPSIDE(); }  
+          });   
+     } 
+
+   /*################*/
+   /* Action Methods */
+   /*################*/
+
+   /*********************/
+   /* onActionPerformed */
+   /*********************/  
+   public void onActionPerformed(
+     ActionEvent ae) throws Exception 
+     {      
+      if (ae.getActionCommand().equals("Cut"))  
+        { commandTextArea.cut(); }
+      else if (ae.getActionCommand().equals("Copy"))  
+        { commandTextArea.copy(); }
+      else if (ae.getActionCommand().equals("Paste"))  
+        { commandTextArea.paste(); }
+      else if (ae.getActionCommand().equals(loadConstructsAction))  
+        { loadConstructs(); }
+      else if (ae.getActionCommand().equals(loadBatchAction))  
+        { loadBatch(); }
+      else if (ae.getActionCommand().equals(setDirectoryAction))  
+        { setDirectory(); }
+     }
+  
+   /******************/
+   /* loadConstructs */
+   /******************/  
+   public void loadConstructs()
+     {
+      final JFileChooser fc = new JFileChooser();
+      
+      FileNameExtensionFilter filter 
+         = new FileNameExtensionFilter("Constructs File","clp");
+      fc.setFileFilter(filter);
+
+      if (currentDirectory != null)
+        { fc.setCurrentDirectory(currentDirectory); }
+
+      fc.setApproveButtonText("Load");
+      fc.setDialogTitle("Load Constructs");
+      
+      int returnVal = fc.showOpenDialog(ideFrame);
+      
+      if (returnVal != JFileChooser.APPROVE_OPTION) return;
+      
+      File file = fc.getSelectedFile();
+            
+      currentDirectory = fc.getCurrentDirectory();
+
+      int dirChanged = clips.changeDirectory(currentDirectory.getAbsolutePath());
+
+      if (dirChanged == 0)
+        { 
+         commandTextArea.replaceCommand("(load \"" + 
+                                        file.getName() + 
+                                        "\")\n");
+        }
+      else
+        {
+         commandTextArea.replaceCommand("(load \"" + 
+                                          file.getAbsolutePath() + 
+                                        "\")\n");
+        }
+     }
+     
+   /*************/
+   /* loadBatch */
+   /*************/  
+   public void loadBatch()
+     {
+      final JFileChooser fc = new JFileChooser();
+
+      FileNameExtensionFilter filter 
+         = new FileNameExtensionFilter("Batch File","bat","tst");
+      fc.setFileFilter(filter);
+
+      if (currentDirectory != null)
+        { fc.setCurrentDirectory(currentDirectory); }
+
+      fc.setApproveButtonText("Load");
+      fc.setDialogTitle("Load Batch");
+      
+      int returnVal = fc.showOpenDialog(ideFrame);
+      
+      if (returnVal != JFileChooser.APPROVE_OPTION) return;
+      
+      File file = fc.getSelectedFile();
+            
+      currentDirectory = fc.getCurrentDirectory();
+
+      int dirChanged = clips.changeDirectory(currentDirectory.getAbsolutePath());
+
+      if (dirChanged == 0)
+        { 
+         commandTextArea.replaceCommand("(batch \"" + 
+                                        file.getName() + 
+                                        "\")\n");
+        }
+      else
+        {
+         commandTextArea.replaceCommand("(batch \"" + 
+                                          file.getAbsolutePath() + 
+                                        "\")\n");
+        }
+     }
+
+   /****************/
+   /* setDirectory */
+   /****************/  
+   public void setDirectory()
+     {
+      final JFileChooser fc = new JFileChooser();
+
+      if (currentDirectory != null)
+        { fc.setCurrentDirectory(currentDirectory); }
+        
+      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+      fc.setApproveButtonText("Set");
+      fc.setDialogTitle("Set Directory");
+      
+      int returnVal = fc.showOpenDialog(ideFrame);
+      
+      if (returnVal != JFileChooser.APPROVE_OPTION) return;
+      
+      File file = fc.getSelectedFile();
+            
+      currentDirectory = file.getAbsoluteFile();
+      
+      int dirChanged = clips.changeDirectory(currentDirectory.getAbsolutePath());
+      
+      if (dirChanged == 0)
+        { /* TBD Update Status Bar */ }
+     }
      
    /*########################*/
    /* ActionListener Methods */
@@ -132,32 +344,56 @@ class CLIPSIDE implements ActionListener
       catch (Exception e)
         { e.printStackTrace(); }
      }
-
-   /*********************/
-   /* onActionPerformed */
-   /*********************/  
-   public void onActionPerformed(
-     ActionEvent ae) throws Exception 
-     {      
-      if (ae.getActionCommand().equals("Copy"))  
-        { commandTextArea.copy(); }
-      else if (ae.getActionCommand().equals("Paste"))  
-        { commandTextArea.paste(); }
+     
+   /*######################*/
+   /* MenuListener Methods */
+   /*######################*/
+   
+   /****************/
+   /* menuCanceled */
+   /****************/  
+   public void menuCanceled(MenuEvent e)
+     {
      }
-  
-   /********/
-   /* main */
-   /********/  
-   public static void main(String args[])
-     {  
-      /*===================================================*/
-      /* Create the frame on the event dispatching thread. */
-      /*===================================================*/
-      
-      SwingUtilities.invokeLater(
-        new Runnable() 
-          {  
-           public void run() { new CLIPSIDE(); }  
-          });   
-     }  
+   
+   /****************/
+   /* menuSelected */
+   /****************/  
+   public void menuSelected(MenuEvent e)
+     {
+      if (commandTextArea.hasCuttableSelection())
+        { jmiCut.setEnabled(true); }
+      else
+        { jmiCut.setEnabled(false); }
+
+      if (commandTextArea.hasSelection())
+        { jmiCopy.setEnabled(true); }
+      else
+        { jmiCopy.setEnabled(false); }
+
+      if (commandTextArea.hasPasteableSelection())
+        { jmiPaste.setEnabled(true); }
+      else
+        { jmiPaste.setEnabled(false); }
+        
+      if (commandTextArea.getExecuting())
+        {
+         jmiLoadConstructs.setEnabled(false);
+         jmiLoadBatch.setEnabled(false);
+         jmiSetDirectory.setEnabled(false);
+        }
+      else
+        {
+         jmiLoadConstructs.setEnabled(true);
+         jmiLoadBatch.setEnabled(true);
+         jmiSetDirectory.setEnabled(true);
+        }
+     }
+   
+   /******************/
+   /* menuDeselected */
+   /******************/  
+   public void menuDeselected(MenuEvent e)
+     {
+     }
   }

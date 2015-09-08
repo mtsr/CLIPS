@@ -594,6 +594,30 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_load(
    SetEnvironmentContext(theEnv,oldContext);
   }
 
+/******************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_changeDirectory: Native */ 
+/*   function for the CLIPSJNI loadFromString method.             */
+/*                                                                */
+/* Class:     net_sf_clipsrules_jni_Environment                   */
+/* Method:    changeDirectory                                     */
+/* Signature: (JLjava/lang/String;)I                              */
+/******************************************************************/
+JNIEXPORT jint JNICALL Java_net_sf_clipsrules_jni_Environment_changeDirectory(
+  JNIEnv *env,
+  jobject obj,
+  jlong clipsEnv,
+  jstring directory)
+  {
+   int rv;
+   const char *cDirectory = (*env)->GetStringUTFChars(env,directory,NULL);
+   
+   rv = genchdir(cDirectory);
+   
+   (*env)->ReleaseStringUTFChars(env,directory,cDirectory);
+   
+   return rv;
+  }
+
 /*****************************************************************/
 /* Java_net_sf_clipsrules_jni_Environment_loadFromString: Native */ 
 /*   function for the CLIPSJNI loadFromString method.            */
