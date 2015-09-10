@@ -130,6 +130,7 @@ extern int LIB$SPAWN();
 #if   UNIX_V || LINUX || DARWIN
 #include <sys/time.h>
 #include <signal.h>
+#include <unistd.h>
 #endif
 
 #include "envrnmnt.h"
@@ -556,8 +557,11 @@ globle char *gengetcwd(
 globle int genchdir(
   const char *directory)
   {
-#if MAC_XCD || DARWIN
+#if MAC_XCD || DARWIN || LINUX
    return(chdir(directory));
+#endif
+#if WIN_MVC
+   return(_chdir(directory));
 #endif
 
    return -1;
