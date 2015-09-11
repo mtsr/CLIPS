@@ -19,22 +19,29 @@ import java.lang.Byte;
 
 public class RouterTextArea extends JTextArea
                             implements Router, KeyListener, CaretListener,
-                                       FocusListener, DropTargetListener
+                                       FocusListener, DropTargetListener,
+                                       ActionListener
   {   
    protected Environment clips;
    
+   static final int bufferSize = 32768; 
    private static int TextAreaRouterNameIndex = 0;
    private String routerName;
 
    private boolean charNeeded = false;
    private List<Byte> charList = new ArrayList<Byte>();
    
+   private StringBuffer outputBuffer = new StringBuffer(bufferSize);
    private int maxLines = 1000;
    
    private boolean hasFocus = false;
    
+   private Timer dumpTimer = null;
+   
    Border activeBorder;
    Border inactiveBorder;
+   
+   static final String dumpOutputAction = "dumpOutput";
     
    /******************/
    /* RouterTextArea */
@@ -92,7 +99,7 @@ public class RouterTextArea extends JTextArea
    /*########################*/
    /* Router Support Methods */
    /*########################*/
-     
+  
    /***************/
    /* appendChars */
    /***************/
@@ -228,7 +235,7 @@ public class RouterTextArea extends JTextArea
      {
       if (! hasPasteableSelection())
         { return;}
-        
+      
       try
         {
          String clipboardText = (String) 
@@ -237,6 +244,8 @@ public class RouterTextArea extends JTextArea
                                        .getData(DataFlavor.stringFlavor); 
          if (appendChars(clipboardText))
             {
+             dumpOutput();
+        
              this.setCaretPosition(this.getText().length()); 
              this.append(clipboardText); 
             }
@@ -288,6 +297,55 @@ public class RouterTextArea extends JTextArea
       return false;
      }
 
+   /****************/
+   /* createTimer: */
+   /****************/
+   private synchronized boolean createTimer(
+     String printString)
+     {
+      outputBuffer.append(printString);
+      
+      if (dumpTimer == null)
+        {
+         //System.out.println("--> creating timer");
+         dumpTimer = new Timer(100,this);
+         dumpTimer.setRepeats(false);
+         dumpTimer.setActionCommand(dumpOutputAction);
+         dumpTimer.start();
+         return true;
+        }
+        
+      return false;
+     }
+
+   /***************/
+   /* dumpOutput: */
+   /***************/
+   protected void dumpOutput()
+     {
+      if (outputBuffer.length() == 0)
+        { return; }
+        
+      if (EventQueue.isDispatchThread())
+        { 
+         checkTimer();
+         return; 
+        }
+        
+      try
+        {
+         SwingUtilities.invokeAndWait(
+           new Runnable() 
+             {  
+              public void run() { 
+                                 checkTimer();
+                                }  
+             });   
+        }
+      catch (Exception e) 
+        { e.printStackTrace(); }
+     }
+     
    /**********/
    /* print: */
    /**********/
@@ -296,6 +354,8 @@ public class RouterTextArea extends JTextArea
      String logName,
      String printString)
      {
+      createTimer(printString);
+/*              
       if (EventQueue.isDispatchThread())
         { 
          this.append(printString);
@@ -315,6 +375,7 @@ public class RouterTextArea extends JTextArea
         }
       catch (Exception e) 
         { e.printStackTrace(); }
+*/
      }
 
    /******************/
@@ -399,7 +460,7 @@ public class RouterTextArea extends JTextArea
       char theChar = e.getKeyChar();
 
       if ((theChar == KeyEvent.VK_BACK_SPACE) ||
-           (theChar == KeyEvent.VK_DELETE))
+          (theChar == KeyEvent.VK_DELETE))
         {
          if (clips.getInputBufferCount() == 0)
            {
@@ -410,6 +471,7 @@ public class RouterTextArea extends JTextArea
        
       if (supplyChar(theChar))
         {
+         dumpOutput();
          if ((theChar == KeyEvent.VK_BACK_SPACE) ||
              (theChar == KeyEvent.VK_DELETE))
            {
@@ -420,7 +482,38 @@ public class RouterTextArea extends JTextArea
          e.consume();
         } 
      }
-     
+ 
+   /*########################*/
+   /* ActionListener Methods */
+   /*########################*/
+
+   /***************/
+   /* checkTimer: */
+   /***************/
+   private synchronized boolean checkTimer()
+     {
+      if (dumpTimer != null)
+        { dumpTimer.stop(); }
+
+      this.append(outputBuffer.toString());
+      checkLineCount();
+      outputBuffer.setLength(0);
+      outputBuffer.ensureCapacity(bufferSize);
+      
+      dumpTimer = null;
+              
+      return true;
+     }
+
+   /*******************/
+   /* actionPerformed */
+   /*******************/
+   public void actionPerformed(ActionEvent e) 
+     {
+      if (e.getActionCommand().equals(dumpOutputAction))
+        { checkTimer(); }
+     }
+      
    /*#######################*/
    /* FocusListener Methods */
    /*#######################*/
@@ -514,6 +607,7 @@ public class RouterTextArea extends JTextArea
                String dropText = (String) tr.getTransferData(flavors[i]);
                if (appendChars(dropText))
                  {
+                  dumpOutput();
                   this.setCaretPosition(this.getText().length()); 
                   this.append(dropText); 
                  }

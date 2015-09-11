@@ -394,6 +394,7 @@ public class CommandPromptTextArea extends RouterTextArea
             public void run()
               { 
                clips.commandLoopOnceThenBatch(); 
+               dumpOutput();
                setExecuting(false);
               }
            };

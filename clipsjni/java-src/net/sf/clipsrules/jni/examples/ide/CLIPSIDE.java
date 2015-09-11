@@ -13,7 +13,8 @@ import java.io.File;
 import net.sf.clipsrules.jni.*;
 
 // TBD
-// Improve output speed
+// Remove backspace beep
+// Current directory banner
 // Disable menu commands when executing
 // Pause
 // Halt
