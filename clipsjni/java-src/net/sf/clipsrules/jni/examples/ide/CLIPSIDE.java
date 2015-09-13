@@ -14,7 +14,6 @@ import net.sf.clipsrules.jni.*;
 
 // TBD
 // Remove backspace beep
-// Current directory banner
 // Disable menu commands when executing
 // Pause
 // Halt
@@ -27,6 +26,8 @@ class CLIPSIDE implements ActionListener, MenuListener
    private Environment clips;
    
    private CommandPromptTextArea commandTextArea;
+   
+   private JLabel currentDirectoryLabel;
    
    static final String loadConstructsAction = "LoadConstructs";
    static final String loadBatchAction = "LoadBatch";
@@ -67,15 +68,62 @@ class CLIPSIDE implements ActionListener, MenuListener
      
       ideFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
  
+      /*===============================*/
+      /* Create the clips environment. */
+      /*===============================*/
+      
+      clips = new Environment();
+
+      /*==================================*/
+      /* Determine the working directory. */
+      /*==================================*/
+      
+      File workingDirectory = new File(System.getProperty("user.dir")); 
+      currentDirectory = workingDirectory.getAbsoluteFile();
+      
+      int dirChanged = clips.changeDirectory(currentDirectory.getAbsolutePath());
+
+      /*==========================*/
+      /* Create the status panel. */
+      /*==========================*/
+      
+      JPanel statusPanel = new JPanel(); 
+      statusPanel.setPreferredSize(new Dimension(800,40));
+      
+      currentDirectoryLabel = new JLabel("Dir: ");
+      if (dirChanged == 0)
+        { currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath()); }
+      else
+        { currentDirectoryLabel.setText("Dir: "); }
+ 
+      statusPanel.add(currentDirectoryLabel);
+      
+      JButton pauseButton = new JButton("Pause");
+      pauseButton.setEnabled(false);
+      statusPanel.add(pauseButton);
+      
+      GroupLayout layout = new GroupLayout(statusPanel);
+      statusPanel.setLayout(layout);
+      layout.setAutoCreateGaps(true);
+      layout.setAutoCreateContainerGaps(true);
+      
+      layout.setHorizontalGroup(layout.createSequentialGroup()
+                                      .addComponent(currentDirectoryLabel)
+                                      .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                      .addComponent(pauseButton));
+                                      
+      layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(currentDirectoryLabel)
+                                    .addComponent(pauseButton));
+
+      ideFrame.getContentPane().add(statusPanel); 
+
       /*=============================*/
       /* Create the text field area. */
       /*=============================*/
  
-      clips = new Environment();
       try
-        {
-         commandTextArea = new CommandPromptTextArea(clips); 
-        }
+        { commandTextArea = new CommandPromptTextArea(clips); }
       catch (Exception e)
         { 
          e.printStackTrace();
@@ -87,7 +135,7 @@ class CLIPSIDE implements ActionListener, MenuListener
       /*=======================================*/
 
       JScrollPane commandPane = new JScrollPane(commandTextArea);
-      commandPane.setPreferredSize(new Dimension(800,550));
+      commandPane.setPreferredSize(new Dimension(800,510));
       commandPane.setViewportBorder(BorderFactory.createEmptyBorder(0,0,2,0));
       
       /*========================================*/
@@ -252,6 +300,7 @@ class CLIPSIDE implements ActionListener, MenuListener
          commandTextArea.replaceCommand("(load \"" + 
                                         file.getName() + 
                                         "\")\n");
+         currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath());
         }
       else
         {
@@ -293,6 +342,7 @@ class CLIPSIDE implements ActionListener, MenuListener
          commandTextArea.replaceCommand("(batch \"" + 
                                         file.getName() + 
                                         "\")\n");
+         currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath());
         }
       else
         {
@@ -327,7 +377,7 @@ class CLIPSIDE implements ActionListener, MenuListener
       int dirChanged = clips.changeDirectory(currentDirectory.getAbsolutePath());
       
       if (dirChanged == 0)
-        { /* TBD Update Status Bar */ }
+        { currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath()); }
      }
      
    /*########################*/
