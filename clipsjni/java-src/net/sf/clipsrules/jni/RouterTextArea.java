@@ -355,27 +355,6 @@ public class RouterTextArea extends JTextArea
      String printString)
      {
       createTimer(printString);
-/*              
-      if (EventQueue.isDispatchThread())
-        { 
-         this.append(printString);
-         return; 
-        }
-        
-      try
-        {
-         SwingUtilities.invokeAndWait(
-           new Runnable() 
-             {  
-              public void run() { 
-                                 RouterTextArea.this.append(printString); 
-                                 RouterTextArea.this.checkLineCount(); 
-                                }  
-             });   
-        }
-      catch (Exception e) 
-        { e.printStackTrace(); }
-*/
      }
 
    /******************/
@@ -437,6 +416,10 @@ public class RouterTextArea extends JTextArea
    @Override
    public void keyPressed(KeyEvent e) 
      {
+      char theChar = e.getKeyChar();
+      if ((theChar == KeyEvent.VK_BACK_SPACE) ||
+          (theChar == KeyEvent.VK_DELETE))
+        { e.consume(); }
      }
 
    /***************/
@@ -445,6 +428,10 @@ public class RouterTextArea extends JTextArea
    @Override
    public void keyReleased(KeyEvent e) 
      { 
+      char theChar = e.getKeyChar();
+      if ((theChar == KeyEvent.VK_BACK_SPACE) ||
+          (theChar == KeyEvent.VK_DELETE))
+        { e.consume(); }
      }
 
    /************/

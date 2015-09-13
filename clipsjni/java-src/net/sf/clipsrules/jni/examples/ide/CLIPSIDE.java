@@ -13,10 +13,9 @@ import java.io.File;
 import net.sf.clipsrules.jni.*;
 
 // TBD
-// Remove backspace beep
 // Disable menu commands when executing
 // Pause
-// Halt
+// Halt Execution
 // Prompt to close
 
 class CLIPSIDE implements ActionListener, MenuListener
