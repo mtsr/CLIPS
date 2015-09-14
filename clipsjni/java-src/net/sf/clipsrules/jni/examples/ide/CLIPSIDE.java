@@ -14,7 +14,6 @@ import net.sf.clipsrules.jni.*;
 
 // TBD
 // Pause
-// Prompt to close
 
 class CLIPSIDE implements ActionListener, MenuListener
   {  
@@ -29,6 +28,7 @@ class CLIPSIDE implements ActionListener, MenuListener
    static final String loadConstructsAction = "LoadConstructs";
    static final String loadBatchAction = "LoadBatch";
    static final String setDirectoryAction = "SetDirectory";
+   static final String quitIDEAction = "QuitIDE";
    static final String resetAction = "Reset";
    static final String runAction = "Run";
    static final String haltRulesAction = "HaltRules";
@@ -39,6 +39,7 @@ class CLIPSIDE implements ActionListener, MenuListener
    private JMenuItem jmiLoadConstructs = null;
    private JMenuItem jmiLoadBatch = null;
    private JMenuItem jmiSetDirectory = null;
+   private JMenuItem jmiQuitIDE = null;
 
    private JMenuItem jmiCut = null;
    private JMenuItem jmiCopy = null;
@@ -67,6 +68,7 @@ class CLIPSIDE implements ActionListener, MenuListener
       /*=================================*/
      
       ideFrame.setSize(800,600);  
+      ideFrame.setMinimumSize(new Dimension(550,250));
   
       /*=============================================================*/
       /* Terminate the program when the user closes the application. */
@@ -141,7 +143,7 @@ class CLIPSIDE implements ActionListener, MenuListener
       /*=======================================*/
 
       JScrollPane commandPane = new JScrollPane(commandTextArea);
-      commandPane.setPreferredSize(new Dimension(800,510));
+      commandPane.setPreferredSize(new Dimension(800,560));
       commandPane.setViewportBorder(BorderFactory.createEmptyBorder(0,0,2,0));
       
       /*========================================*/
@@ -156,6 +158,7 @@ class CLIPSIDE implements ActionListener, MenuListener
 
       KeyStroke loadConstructs = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK);
       KeyStroke loadBatch = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
+      KeyStroke quitIDE = KeyStroke.getKeyStroke(KeyEvent.VK_Q,KeyEvent.CTRL_MASK);
       
       KeyStroke cut = KeyStroke.getKeyStroke(KeyEvent.VK_X,KeyEvent.CTRL_MASK);
       KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_MASK);
@@ -206,6 +209,12 @@ class CLIPSIDE implements ActionListener, MenuListener
       jmiSetDirectory.setActionCommand(setDirectoryAction);
       jmiSetDirectory.addActionListener(this);
       jmFile.add(jmiSetDirectory);
+
+      jmiQuitIDE = new JMenuItem("Quit CLIPS IDE");
+      jmiQuitIDE.setActionCommand(quitIDEAction);
+      jmiQuitIDE.setAccelerator(quitIDE);
+      jmiQuitIDE.addActionListener(this);
+      jmFile.add(jmiQuitIDE);
 
       jmb.add(jmFile);
 
@@ -318,6 +327,8 @@ class CLIPSIDE implements ActionListener, MenuListener
         { loadBatch(); }
       else if (ae.getActionCommand().equals(setDirectoryAction))  
         { setDirectory(); }
+      else if (ae.getActionCommand().equals(quitIDEAction))  
+        { quitIDE(); }
       else if (ae.getActionCommand().equals(resetAction))  
         { reset(); }
       else if (ae.getActionCommand().equals(runAction))  
@@ -438,6 +449,14 @@ class CLIPSIDE implements ActionListener, MenuListener
       
       if (dirChanged == 0)
         { currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath()); }
+     }
+
+   /***********/
+   /* quitIDE */
+   /***********/  
+   public void quitIDE()
+     {
+      System.exit(0);
      }
      
    /*********/
