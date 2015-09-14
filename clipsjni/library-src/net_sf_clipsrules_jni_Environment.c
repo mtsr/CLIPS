@@ -797,6 +797,40 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_unwatch(
    return rv;
   }
 
+/*******************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_setHaltExecution: Native */ 
+/*   function for the CLIPSJNI setHaltExecution method.            */
+/*                                                                 */
+/* Class:     net_sf_clipsrules_jni_Environment                    */
+/* Method:    setHaltExecution                                     */
+/* Signature: (JZ)V                                                */
+/*******************************************************************/
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setHaltExecution(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv,
+  jboolean value)
+  {
+   EnvSetHaltExecution(JLongToPointer(clipsEnv),1);
+  }
+
+/***************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_setHaltRules: Native */ 
+/*   function for the CLIPSJNI setHaltRules method.            */
+/*                                                             */
+/* Class:     net_sf_clipsrules_jni_Environment                */
+/* Method:    setHaltRules                                     */
+/* Signature: (JZ)V                                            */
+/***************************************************************/
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setHaltRules(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv,
+  jboolean value)
+  {
+   EnvSetHaltRules(JLongToPointer(clipsEnv),1);
+  }
+
 /******************************************************/
 /* Java_net_sf_clipsrules_jni_Environment_run: Native */ 
 /*   function for the CLIPSJNI run method.            */

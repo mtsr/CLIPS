@@ -105,6 +105,22 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_unwatch
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    setHaltExecution
+ * Signature: (JZ)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setHaltExecution
+  (JNIEnv *, jobject, jlong, jboolean);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    setHaltRules
+ * Signature: (JZ)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setHaltRules
+  (JNIEnv *, jobject, jlong, jboolean);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
  * Method:    run
  * Signature: (JJ)J
  */

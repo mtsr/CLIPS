@@ -13,9 +13,7 @@ import java.io.File;
 import net.sf.clipsrules.jni.*;
 
 // TBD
-// Disable menu commands when executing
 // Pause
-// Halt Execution
 // Prompt to close
 
 class CLIPSIDE implements ActionListener, MenuListener
@@ -31,6 +29,10 @@ class CLIPSIDE implements ActionListener, MenuListener
    static final String loadConstructsAction = "LoadConstructs";
    static final String loadBatchAction = "LoadBatch";
    static final String setDirectoryAction = "SetDirectory";
+   static final String resetAction = "Reset";
+   static final String runAction = "Run";
+   static final String haltRulesAction = "HaltRules";
+   static final String haltExecutionAction = "HaltExecution";
    
    private File currentDirectory = null;
 
@@ -41,6 +43,11 @@ class CLIPSIDE implements ActionListener, MenuListener
    private JMenuItem jmiCut = null;
    private JMenuItem jmiCopy = null;
    private JMenuItem jmiPaste = null;
+   
+   private JMenuItem jmiReset = null;
+   private JMenuItem jmiRun = null;
+   private JMenuItem jmiHaltRules = null;
+   private JMenuItem jmiHaltExecution = null;
 
    /************/
    /* CLIPSIDE */
@@ -147,10 +154,17 @@ class CLIPSIDE implements ActionListener, MenuListener
       /* Get KeyStroke for copy/paste keyboard commands. */
       /*=================================================*/
 
+      KeyStroke loadConstructs = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK);
+      KeyStroke loadBatch = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
+      
       KeyStroke cut = KeyStroke.getKeyStroke(KeyEvent.VK_X,KeyEvent.CTRL_MASK);
       KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_MASK);
       KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V,KeyEvent.CTRL_MASK);
-      KeyStroke loadConstructs = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK);
+
+      KeyStroke reset = KeyStroke.getKeyStroke(KeyEvent.VK_E,KeyEvent.CTRL_MASK);
+      KeyStroke run = KeyStroke.getKeyStroke(KeyEvent.VK_R,KeyEvent.CTRL_MASK);
+      KeyStroke haltRules = KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD,KeyEvent.CTRL_MASK);
+      KeyStroke haltExecution = KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD,KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
 
       /*======================================================*/
       /* Override copy/paste for the CommandPromptTextArea so */
@@ -161,6 +175,7 @@ class CLIPSIDE implements ActionListener, MenuListener
       map.put(cut,"none");
       map.put(copy,"none");
       map.put(paste,"none");
+      map.put(reset,"none");
 
       /*======================*/
       /* Create the menu bar. */
@@ -175,7 +190,7 @@ class CLIPSIDE implements ActionListener, MenuListener
       JMenu jmFile = new JMenu("File");
       jmFile.addMenuListener(this);
 
-      jmiLoadConstructs = new JMenuItem("Load Constructs...",KeyEvent.VK_L);
+      jmiLoadConstructs = new JMenuItem("Load Constructs...");
       jmiLoadConstructs.setActionCommand(loadConstructsAction);
       jmiLoadConstructs.setAccelerator(loadConstructs);
       jmiLoadConstructs.addActionListener(this);
@@ -183,6 +198,7 @@ class CLIPSIDE implements ActionListener, MenuListener
 
       jmiLoadBatch = new JMenuItem("Load Batch...");
       jmiLoadBatch.setActionCommand(loadBatchAction);
+      jmiLoadBatch.setAccelerator(loadBatch);
       jmiLoadBatch.addActionListener(this);
       jmFile.add(jmiLoadBatch);
 
@@ -200,23 +216,60 @@ class CLIPSIDE implements ActionListener, MenuListener
       JMenu jmEdit = new JMenu("Edit");
       jmEdit.addMenuListener(this);
       
-      jmiCut = new JMenuItem("Cut",KeyEvent.VK_X);
+      jmiCut = new JMenuItem("Cut");
       jmiCut.addActionListener(this);
       jmiCut.setAccelerator(cut);
       jmEdit.add(jmiCut);
 
-      jmiCopy = new JMenuItem("Copy",KeyEvent.VK_C);
+      jmiCopy = new JMenuItem("Copy");
       jmiCopy.addActionListener(this);
       jmiCopy.setAccelerator(copy);
       jmEdit.add(jmiCopy);
 
-      jmiPaste = new JMenuItem("Paste",KeyEvent.VK_V);
+      jmiPaste = new JMenuItem("Paste");
       jmiPaste.addActionListener(this);      
       jmiPaste.setAccelerator(paste);      
       jmEdit.add(jmiPaste);
       
       jmb.add(jmEdit);
+
+      /*================*/
+      /* Execution menu */
+      /*================*/
+         
+      JMenu jmExecution = new JMenu("Execution");
+      jmExecution.addMenuListener(this);
       
+      jmiReset = new JMenuItem("Reset");
+      jmiReset.setActionCommand(resetAction);
+      jmiReset.setAccelerator(reset);
+      jmiReset.addActionListener(this);
+      jmExecution.add(jmiReset);
+
+      jmiRun = new JMenuItem("Run"); 
+      jmiRun.setActionCommand(runAction);
+      jmiRun.setAccelerator(run);
+      jmiRun.addActionListener(this);
+      jmExecution.add(jmiRun);
+
+      jmiHaltRules = new JMenuItem("Halt Rules"); 
+      jmiHaltRules.setActionCommand(haltRulesAction);
+      jmiHaltRules.setAccelerator(haltRules);
+      jmiHaltRules.addActionListener(this);
+      jmExecution.add(jmiHaltRules);
+
+      jmiHaltExecution = new JMenuItem("Halt Execution"); 
+      jmiHaltExecution.setActionCommand(haltExecutionAction);
+      jmiHaltExecution.setAccelerator(haltExecution);
+      jmiHaltExecution.addActionListener(this);
+      jmExecution.add(jmiHaltExecution);
+      
+      jmb.add(jmExecution);
+
+      /*===================*/
+      /* Add the menu bar. */
+      /*===================*/
+             
       ideFrame.setJMenuBar(jmb);
       
       /*====================*/
@@ -252,7 +305,7 @@ class CLIPSIDE implements ActionListener, MenuListener
    /*********************/  
    public void onActionPerformed(
      ActionEvent ae) throws Exception 
-     {      
+     {     
       if (ae.getActionCommand().equals("Cut"))  
         { commandTextArea.cut(); }
       else if (ae.getActionCommand().equals("Copy"))  
@@ -265,6 +318,14 @@ class CLIPSIDE implements ActionListener, MenuListener
         { loadBatch(); }
       else if (ae.getActionCommand().equals(setDirectoryAction))  
         { setDirectory(); }
+      else if (ae.getActionCommand().equals(resetAction))  
+        { reset(); }
+      else if (ae.getActionCommand().equals(runAction))  
+        { run(); }
+      else if (ae.getActionCommand().equals(haltRulesAction))  
+        { haltRules(); }
+      else if (ae.getActionCommand().equals(haltExecutionAction))  
+        { haltExecution(); }
      }
   
    /******************/
@@ -379,6 +440,38 @@ class CLIPSIDE implements ActionListener, MenuListener
         { currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath()); }
      }
      
+   /*********/
+   /* reset */
+   /*********/  
+   public void reset()
+     {
+      commandTextArea.replaceCommand("(reset)\n");
+     }
+
+   /*******/
+   /* run */
+   /*******/  
+   public void run()
+     {
+      commandTextArea.replaceCommand("(run)\n");
+     }
+
+   /*************/
+   /* haltRules */
+   /*************/  
+   public void haltRules()
+     {
+      clips.setHaltRules(true);
+     }
+
+   /*****************/
+   /* haltExecution */
+   /*****************/  
+   public void haltExecution()
+     {
+      clips.setHaltExecution(true);
+     }
+
    /*########################*/
    /* ActionListener Methods */
    /*########################*/
@@ -431,12 +524,20 @@ class CLIPSIDE implements ActionListener, MenuListener
          jmiLoadConstructs.setEnabled(false);
          jmiLoadBatch.setEnabled(false);
          jmiSetDirectory.setEnabled(false);
+         jmiReset.setEnabled(false);
+         jmiRun.setEnabled(false);
+         jmiHaltRules.setEnabled(true);
+         jmiHaltExecution.setEnabled(true);
         }
       else
         {
          jmiLoadConstructs.setEnabled(true);
          jmiLoadBatch.setEnabled(true);
          jmiSetDirectory.setEnabled(true);
+         jmiReset.setEnabled(true);
+         jmiRun.setEnabled(true);
+         jmiHaltRules.setEnabled(false);
+         jmiHaltExecution.setEnabled(false);
         }
      }
    

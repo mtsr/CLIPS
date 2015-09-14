@@ -340,7 +340,35 @@ public class Environment
      {
       return unwatch(theEnvironment,watchItem);
      }
-     
+
+   /*********************/
+   /* setHaltExecution: */
+   /*********************/
+   private native void setHaltExecution(long env,boolean value);
+
+   /*********************/
+   /* setHaltExecution: */
+   /*********************/
+   public void setHaltExecution(
+     boolean value)
+     {
+      setHaltExecution(theEnvironment,value);
+     }
+
+   /*****************/
+   /* setHaltRules: */
+   /*****************/
+   private native void setHaltRules(long env,boolean value);
+
+   /*****************/
+   /* setHaltRules: */
+   /*****************/
+   public void setHaltRules(
+     boolean value)
+     {
+      setHaltRules(theEnvironment,value);
+     }
+          
    /********/
    /* run: */
    /********/
