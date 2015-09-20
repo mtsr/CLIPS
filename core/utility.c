@@ -1131,9 +1131,9 @@ globle void EnvDecrementGCLocks(
      }
   }
  
-/********************************************/
-/* EnablePeriodicFunctions:         */
-/********************************************/
+/****************************/
+/* EnablePeriodicFunctions: */
+/****************************/
 globle short EnablePeriodicFunctions(
   void *theEnv,
   short value)

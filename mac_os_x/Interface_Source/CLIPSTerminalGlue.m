@@ -109,9 +109,9 @@ int ExitInterfaceRouter(
    return(TRUE);
   }  
     
-/**************************************/
-/* MacPeriodicFunction:               */
-/**************************************/
+/************************/
+/* MacPeriodicFunction: */
+/************************/
 void MacPeriodicFunction(
   void *theEnv)
   {
@@ -171,16 +171,16 @@ void MacPeriodicFunction(
         }
      }
      
+   /*==================================*/
+   /* Disable periodic functions.      */
+   /* They'll be reenabled by a timer. */
+   /*==================================*/
+   
+   EnablePeriodicFunctions(theEnv,FALSE);
+
    [pool release];
   }
     
-/**************************************/
-/* MacYieldTimeFunction:              */
-/**************************************/
-void MacYieldTimeFunction()
-  {
-  }
-  
 /**************************************/
 /* MacBeforeOpenFunction:             */
 /**************************************/

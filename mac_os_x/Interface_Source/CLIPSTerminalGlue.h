@@ -13,7 +13,6 @@
    int                     PrintInterfaceRouter(void *,const char *,const char *);
    int                     GetcInterfaceRouter(void *,const char *);
    int                     ExitInterfaceRouter(void *,int);
-   void                    MacYieldTimeFunction(void);
    void                    MacPeriodicFunction(void *);
    void                    ClearEnvironmentWindowCommand(void *);
    int                     MacBeforeOpenFunction(void *);   

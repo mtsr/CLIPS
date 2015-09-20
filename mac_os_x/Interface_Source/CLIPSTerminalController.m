@@ -228,9 +228,7 @@
                       "ClearEnvironmentWindowCommand", "00");
 
    EnvAddPeriodicFunction(theEnvironment,"mac-pf",MacPeriodicFunction,0);
-/*   
-   UtilityData(theEnvironment)->YieldTimeFunction = MacYieldTimeFunction;
-*/      
+
    commandTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.2 // TBD Need to lock input once command found.
                      target: self
                      selector: @selector(lookForCommand:)
@@ -555,6 +553,7 @@
            break;
         }
         
+      EnablePeriodicFunctions([environment environment],TRUE);
       return;
      }
 
