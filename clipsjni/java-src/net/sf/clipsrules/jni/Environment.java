@@ -654,6 +654,50 @@ public class Environment
       commandLoopOnceThenBatch(theEnvironment);
      }
 
+   /*******************************/
+   /* setPeriodicCallbackEnabled: */
+   /*******************************/
+   private native void setPeriodicCallbackEnabled(long env,boolean value);    
+
+   /*******************************/
+   /* setPeriodicCallbackEnabled: */
+   /*******************************/
+   public void setPeriodicCallbackEnabled(
+     boolean value)
+     {
+      setPeriodicCallbackEnabled(theEnvironment,value);
+     }
+
+   /************************/
+   /* addPeriodicCallback: */
+   /************************/
+   private native void addPeriodicCallback(long env,String name,int priority,PeriodicCallback thePC);    
+
+   /************************/
+   /* addPeriodicCallback: */
+   /************************/
+   public void addPeriodicCallback(
+     String name,
+     int priority,
+     PeriodicCallback thePC)
+     {
+      addPeriodicCallback(theEnvironment,name,priority,thePC);
+     }
+
+   /***************************/
+   /* removePeriodicCallback: */
+   /***************************/
+   private native boolean removePeriodicCallback(long env,String name);    
+
+   /***************************/
+   /* removePeriodicCallback: */
+   /***************************/
+   public boolean removePeriodicCallback(
+     String name)
+     {
+      return removePeriodicCallback(theEnvironment,name);
+     }
+     
    /****************/
    /* printBanner: */
    /****************/

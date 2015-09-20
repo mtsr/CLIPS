@@ -273,6 +273,30 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_commandLoopOnceThe
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    setPeriodicCallbackEnabled
+ * Signature: (JZ)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setPeriodicCallbackEnabled
+  (JNIEnv *, jobject, jlong, jboolean);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    addPeriodicCallback
+ * Signature: (JLjava/lang/String;ILnet/sf/clipsrules/jni/PeriodicCallback;)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_addPeriodicCallback
+  (JNIEnv *, jobject, jlong, jstring, jint, jobject);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    removePeriodicCallback
+ * Signature: (JLjava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_removePeriodicCallback
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
  * Method:    printBanner
  * Signature: (J)V
  */

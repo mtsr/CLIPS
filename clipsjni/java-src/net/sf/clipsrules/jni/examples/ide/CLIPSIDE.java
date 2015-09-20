@@ -13,9 +13,11 @@ import java.io.File;
 import net.sf.clipsrules.jni.*;
 
 // TBD
-// Pause
+// clear-window
+// Use lock for I/O
 
-class CLIPSIDE implements ActionListener, MenuListener
+public class CLIPSIDE implements ActionListener, MenuListener, 
+                                 CommandExecutionListener
   {  
    private JFrame ideFrame;
          
@@ -33,6 +35,7 @@ class CLIPSIDE implements ActionListener, MenuListener
    static final String runAction = "Run";
    static final String haltRulesAction = "HaltRules";
    static final String haltExecutionAction = "HaltExecution";
+   static final String pauseAction = "Pause";
    
    private File currentDirectory = null;
 
@@ -49,6 +52,8 @@ class CLIPSIDE implements ActionListener, MenuListener
    private JMenuItem jmiRun = null;
    private JMenuItem jmiHaltRules = null;
    private JMenuItem jmiHaltExecution = null;
+   
+   private JToggleButton pauseButton = null;
 
    /************/
    /* CLIPSIDE */
@@ -106,8 +111,10 @@ class CLIPSIDE implements ActionListener, MenuListener
  
       statusPanel.add(currentDirectoryLabel);
       
-      JButton pauseButton = new JButton("Pause");
+      pauseButton = new JToggleButton("Pause");
       pauseButton.setEnabled(false);
+      pauseButton.setActionCommand(pauseAction);
+      pauseButton.addActionListener(this);
       statusPanel.add(pauseButton);
       
       GroupLayout layout = new GroupLayout(statusPanel);
@@ -131,7 +138,10 @@ class CLIPSIDE implements ActionListener, MenuListener
       /*=============================*/
  
       try
-        { commandTextArea = new CommandPromptTextArea(clips); }
+        { 
+         commandTextArea = new CommandPromptTextArea(clips); 
+         commandTextArea.addCommandExecutionListener(this);
+        }
       catch (Exception e)
         { 
          e.printStackTrace();
@@ -337,6 +347,8 @@ class CLIPSIDE implements ActionListener, MenuListener
         { haltRules(); }
       else if (ae.getActionCommand().equals(haltExecutionAction))  
         { haltExecution(); }
+      else if (ae.getActionCommand().equals(pauseAction))  
+        { pause(); }
      }
   
    /******************/
@@ -566,4 +578,56 @@ class CLIPSIDE implements ActionListener, MenuListener
    public void menuDeselected(MenuEvent e)
      {
      }
+     
+   /*##################################*/
+   /* CommandExecutionListener Methods */
+   /*##################################*/
+   
+   /*********/
+   /* pause */
+   /*********/  
+   public void pause()
+     {
+      if (commandTextArea.isPaused())
+        { commandTextArea.setPaused(false); }
+      else
+        { commandTextArea.setPaused(true); }
+     }
+
+   /*********************/
+   /* updatePauseButton */
+   /*********************/  
+   public void updatePauseButton(boolean value)
+     {
+      if (EventQueue.isDispatchThread())
+        { 
+         pauseButton.setEnabled(value);
+         return;
+        }
+      try
+        {
+         SwingUtilities.invokeAndWait(
+           new Runnable() 
+             {  
+              public void run() 
+                 { pauseButton.setEnabled(value);  }  
+             });   
+        }
+      catch (Exception e) 
+        { e.printStackTrace(); }
+     }
+     
+   /*********************************/
+   /* commandExecutionEventOccurred */
+   /*********************************/  
+   public void commandExecutionEventOccurred(
+     CommandExecutionEvent theEvent)
+     {    
+      if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.START_EVENT))
+        { updatePauseButton(true); }
+      else if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.FINISH_EVENT))
+        { updatePauseButton(false);  }
+      //else if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.PERIODIC_EVENT))
+      //  { clips.setPeriodicCallbackEnabled(false); }
+     }  
   }

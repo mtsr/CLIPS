@@ -8,6 +8,8 @@ JNI_FILES = \
 	$(JNI_SRC)/CLIPSException.java \
 	$(JNI_SRC)/CLIPSLineError.java \
 	$(JNI_SRC)/CLIPSLoadException.java \
+	$(JNI_SRC)/CommandExecutionEvent.java \
+	$(JNI_SRC)/CommandExecutionListener.java \
 	$(JNI_SRC)/CommandPromptTextArea.java \
 	$(JNI_SRC)/Environment.java \
 	$(JNI_SRC)/FactAddressValue.java \
@@ -19,6 +21,7 @@ JNI_FILES = \
 	$(JNI_SRC)/MultifieldValue.java \
 	$(JNI_SRC)/NamedRouter.java \
 	$(JNI_SRC)/NumberValue.java \
+	$(JNI_SRC)/PeriodicCallback.java \
 	$(JNI_SRC)/PrimitiveValue.java \
 	$(JNI_SRC)/Router.java \
 	$(JNI_SRC)/RouterTextArea.java \

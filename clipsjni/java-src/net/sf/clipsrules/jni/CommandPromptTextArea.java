@@ -10,9 +10,24 @@ import javax.swing.event.*;
 
 import java.lang.Thread;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class CommandPromptTextArea extends RouterTextArea
+                                   implements PeriodicCallback
   {   
+   private class PeriodicTask extends TimerTask 
+     {
+      public void run()
+        {
+         clips.setPeriodicCallbackEnabled(true);
+        }
+     }
+
+   static final int periodicTaskFrequency = 200;
+   
    static final int DEFAULT_COMMAND_MAX = 25;
 
    private boolean isExecuting = false;
@@ -25,6 +40,16 @@ public class CommandPromptTextArea extends RouterTextArea
    
    ArrayList<String> commandHistory;
 
+   EventListenerList listenerList = new EventListenerList();
+    
+   private static int CommandPromptTextAreaIndex = 0;
+   private String periodicName;
+   
+   private String executingCommand = "";
+   private boolean paused = false;
+          
+   private ReentrantReadWriteLock pauseLock = new ReentrantReadWriteLock();
+   
    /*************************/
    /* CommandPromptTextArea */
    /*************************/
@@ -47,7 +72,72 @@ public class CommandPromptTextArea extends RouterTextArea
 
       commandHistory = new ArrayList<String>(DEFAULT_COMMAND_MAX); 
       commandHistory.add(new String(""));
+      
+      periodicName = "CPTAP" + CommandPromptTextAreaIndex++;    
      }  
+
+   /*************/
+   /* setPaused */
+   /*************/
+   public void setPaused(
+      boolean value)
+      {
+       if (paused == value) return;
+       
+       paused = value;
+       
+       if (paused)
+         { pauseLock.writeLock().lock(); }
+       else
+         { pauseLock.writeLock().unlock(); }       
+      }
+
+   /************/
+   /* isPaused */
+   /************/
+   public boolean isPaused()
+      {
+       return paused;
+      }
+      
+   /*******************************/
+   /* addCommandExecutionListener */
+   /*******************************/
+   public void addCommandExecutionListener(
+     CommandExecutionListener theListener) 
+     {
+      listenerList.add(CommandExecutionListener.class,theListener);
+     }     
+
+   /**********************************/
+   /* removeCommandExecutionListener */
+   /**********************************/
+   public void removeCommandExecutionListener(
+     CommandExecutionListener theListener) 
+     {
+      listenerList.remove(CommandExecutionListener.class,theListener);
+     }     
+
+   /*********************************/
+   /* callExecutionCommandListeners */
+   /*********************************/
+   public void callExecutionCommandListeners(
+     String command,
+     String event)
+     {
+      Object[] listeners = listenerList.getListenerList();
+      CommandExecutionEvent theEvent = null;
+      
+      for (int i = listeners.length-2; i>=0; i-=2) 
+        {
+         if (listeners[i] == CommandExecutionListener.class) 
+           {
+            if (theEvent == null)
+              { theEvent = new CommandExecutionEvent(this,command,event); }
+            ((CommandExecutionListener) listeners[i+1]).commandExecutionEventOccurred(theEvent);
+           }
+        }
+     }
      
    /**************/
    /* keyPressed */
@@ -355,7 +445,7 @@ public class CommandPromptTextArea extends RouterTextArea
    /****************/
    /* commandCheck */
    /****************/
-   public void commandCheck() 
+   private void commandCheck() 
      {
       if (clips.inputBufferContainsCommand())
         { 
@@ -381,22 +471,38 @@ public class CommandPromptTextArea extends RouterTextArea
       isExecuting = value;
      }
    
+   /********************/
+   /* doExecuteCommand */
+   /********************/  
+   private void doExecuteCommand(
+     String executingCommand)
+     {
+      Timer periodicTimer = new Timer();
+
+      callExecutionCommandListeners(executingCommand,CommandExecutionEvent.START_EVENT);
+      clips.addPeriodicCallback(periodicName,0,this);      
+      periodicTimer.schedule(new PeriodicTask(),0,periodicTaskFrequency);
+      clips.commandLoopOnceThenBatch(); 
+      dumpOutput();
+      setExecuting(false);
+      periodicTimer.cancel();
+      clips.removePeriodicCallback(periodicName);      
+      callExecutionCommandListeners(executingCommand,CommandExecutionEvent.FINISH_EVENT);
+     }
+         
    /******************/
    /* executeCommand */
    /******************/  
-   public void executeCommand()
-     {      
+   private void executeCommand()
+     {
+      executingCommand = clips.getInputBuffer();      
       setExecuting(true);
       
       Runnable runThread = 
          new Runnable()
            {
-            public void run()
-              { 
-               clips.commandLoopOnceThenBatch(); 
-               dumpOutput();
-               setExecuting(false);
-              }
+            public void run() 
+              { doExecuteCommand(executingCommand); }
            };
       
       Thread executionThread = new Thread(runThread);
@@ -695,6 +801,45 @@ public class CommandPromptTextArea extends RouterTextArea
          e.printStackTrace();
          dtde.rejectDrop();
         }
+     }
+     
+   /*##########################*/
+   /* PeriodicListener Methods */
+   /*##########################*/
+   
+   /********************/
+   /* periodicCallback */
+   /********************/  
+   public void periodicCallback()
+     {
+      /*=========================================================*/
+      /* When the environment is paused, the writeLock is locked */
+      /* so we won't be able to lock the readLock until the      */
+      /* environment is not paused.                              */
+      /*=========================================================*/
+      
+      pauseLock.readLock().lock(); 
+      
+      /*=============================================*/
+      /* Once we've determined the environment is no */
+      /* longer paused we can release the readLock.  */
+      /*=============================================*/
+      
+      pauseLock.readLock().unlock(); 
+
+      /*===========================================================*/
+      /* Notify and CommandExecutionListeners of a periodic event. */
+      /*===========================================================*/
+      
+      callExecutionCommandListeners(executingCommand,CommandExecutionEvent.PERIODIC_EVENT);
+      
+      /*==========================================================*/
+      /* Disable periodic callbacks until the timer enables them  */
+      /* again. This improves performance since the callback from */
+      /* the native code is relatively expensive.                 */
+      /*==========================================================*/
+      
+      clips.setPeriodicCallbackEnabled(false);
      }
   }
   

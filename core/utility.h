@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.31  09/15/15            */
    /*                                                     */
    /*                 UTILITY HEADER FILE                 */
    /*******************************************************/
@@ -42,6 +42,9 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.31: Added EnvAddPeriodicFunctionWithContext        */
+/*            function.                                      */
 /*                                                           */
 /*************************************************************/
 
@@ -129,6 +132,7 @@ struct utilityData
    LOCALE void                           InitializeUtilityData(void *);
    LOCALE intBool                        AddCleanupFunction(void *,const char *,void (*)(void *),int);
    LOCALE intBool                        EnvAddPeriodicFunction(void *,const char *,void (*)(void *),int);
+   LOCALE intBool                        EnvAddPeriodicFunctionWithContext(void *,const char *,void (*)(void *),int,void *);
    LOCALE intBool                        AddPeriodicFunction(const char *,void (*)(void),int);
    LOCALE intBool                        RemoveCleanupFunction(void *,const char *);
    LOCALE intBool                        EnvRemovePeriodicFunction(void *,const char *);
@@ -157,6 +161,9 @@ struct utilityData
                                                                             struct callFunctionItemWithArg *,
                                                                             int *);
    LOCALE void                           DeallocateCallListWithArg(void *,struct callFunctionItemWithArg *);
+
+   LOCALE struct callFunctionItem       *GetFunctionFromCallList(void *,const char *,struct callFunctionItem *);
+   LOCALE void                          *EnvGetPeriodicFunctionContext(void *,const char *);
    LOCALE unsigned long                  ItemHashValue(void *,unsigned short,void *,unsigned long);
    LOCALE void                           YieldTime(void *);
    LOCALE void                           EnvIncrementGCLocks(void *);

@@ -95,6 +95,33 @@ static void DeallocateJNIData(
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->instanceAddressValueClass);
   }
 
+/************************/
+/* JNIPeriodicCallback: */
+/************************/
+static void JNIPeriodicCallback(
+  void *theEnv)
+  {
+   jobject context;
+   jclass cls;
+   JNIEnv *env;
+   jmethodID mid;
+  
+   env = (JNIEnv *) GetEnvironmentContext(theEnv);
+
+   context = GetEnvironmentCallbackContext(theEnv);
+  
+   cls = (*env)->GetObjectClass(env,context);
+
+   mid = (*env)->GetMethodID(env,cls,"periodicCallback","()V");
+
+   (*env)->DeleteLocalRef(env,cls);
+
+   if (mid == NULL)
+     { return; }
+
+   (*env)->CallVoidMethod(env,context,mid);      
+  }
+
 /***************************/
 /* JNIParserErrorCallback: */
 /***************************/
@@ -811,7 +838,7 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setHaltExecution(
   jlong clipsEnv,
   jboolean value)
   {
-   EnvSetHaltExecution(JLongToPointer(clipsEnv),1);
+   EnvSetHaltExecution(JLongToPointer(clipsEnv),value);
   }
 
 /***************************************************************/
@@ -828,7 +855,7 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setHaltRules(
   jlong clipsEnv,
   jboolean value)
   {
-   EnvSetHaltRules(JLongToPointer(clipsEnv),1);
+   EnvSetHaltRules(JLongToPointer(clipsEnv),value);
   }
 
 /******************************************************/
@@ -1639,6 +1666,89 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_inputBufferCon
    return rv;
   }
 
+/*****************************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_addPeriodicCallbackEnabled: Native */
+/*   function for the CLIPSJNI setPeriodicCallbackEnabled method.            */
+/*                                                                           */
+/* Class:     net_sf_clipsrules_jni_Environment                              */
+/* Method:    setPeriodicCallbackEnabled                                     */
+/* Signature: (JZ)V                                                          */
+/*****************************************************************************/
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setPeriodicCallbackEnabled(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv,
+  jboolean value)
+  {
+   EnablePeriodicFunctions(JLongToPointer(clipsEnv),value);
+  }
+
+/******************************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_addPeriodicCallback: Native         */
+/*   function for the CLIPSJNI addPeriodicCallback method.                    */
+/*                                                                            */
+/* Class:     net_sf_clipsrules_jni_Environment                               */
+/* Method:    addPeriodicCallback                                             */
+/* Signature: (JLjava/lang/String;ILnet/sf/clipsrules/jni/PeriodicCallback;)V */
+/******************************************************************************/
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_addPeriodicCallback(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv, 
+  jstring listenerName, 
+  jint priority, 
+  jobject context)
+  {
+   jobject nobj;   
+   const char *cListenerName = (*env)->GetStringUTFChars(env,listenerName,NULL);
+
+   void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env); 
+      
+   nobj = (*env)->NewGlobalRef(env,context);
+   
+   EnvAddPeriodicFunctionWithContext(JLongToPointer(clipsEnv),(char *) cListenerName,
+                                     JNIPeriodicCallback,
+                                     (int) priority,(void *) nobj);
+   
+   (*env)->ReleaseStringUTFChars(env,listenerName,cListenerName);
+   
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext); 
+  }
+  
+/*************************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_removePeriodicCallback: Native */
+/*   function for the CLIPSJNI removePeriodicCallback method.            */
+/*                                                                       */
+/* Class:     net_sf_clipsrules_jni_Environment                          */
+/* Method:    removePeriodicCallback                                     */
+/* Signature: (JLjava/lang/String;)Z                                     */
+/*************************************************************************/
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_removePeriodicCallback(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv, 
+  jstring listenerName) 
+  {
+   int rv;
+   void *periodicContext;
+   const char *cListenerName = (*env)->GetStringUTFChars(env,listenerName,NULL);
+
+   void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env); 
+
+   periodicContext = EnvGetPeriodicFunctionContext(JLongToPointer(clipsEnv),cListenerName);
+   
+   rv = EnvRemovePeriodicFunction(JLongToPointer(clipsEnv),cListenerName);
+   
+   if (periodicContext != NULL)
+     { (*env)->DeleteGlobalRef(env,periodicContext); }
+       
+   (*env)->ReleaseStringUTFChars(env,listenerName,cListenerName);
+   
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext); 
+
+   return rv;
+  }
+
 /********************************************************************/
 /* Java_net_sf_clipsrules_jni_Environment_addRouter: Native         */
 /*   function for the CLIPSJNI addRouter method.                    */
@@ -1659,7 +1769,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_addRouter(
    jobject nobj;   
    const char *cRouterName = (*env)->GetStringUTFChars(env,routerName,NULL);
 
-   void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env);
+   void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env); 
       
    nobj = (*env)->NewGlobalRef(env,context);
    
@@ -1669,7 +1779,7 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_addRouter(
    
    (*env)->ReleaseStringUTFChars(env,routerName,cRouterName);
 
-   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext); 
 
    return rv;
   }
