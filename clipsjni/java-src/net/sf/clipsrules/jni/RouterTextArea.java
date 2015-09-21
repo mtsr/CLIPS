@@ -307,7 +307,6 @@ public class RouterTextArea extends JTextArea
       
       if (dumpTimer == null)
         {
-         //System.out.println("--> creating timer");
          dumpTimer = new Timer(100,this);
          dumpTimer.setRepeats(false);
          dumpTimer.setActionCommand(dumpOutputAction);
@@ -325,7 +324,7 @@ public class RouterTextArea extends JTextArea
      {
       if (outputBuffer.length() == 0)
         { return; }
-        
+
       if (EventQueue.isDispatchThread())
         { 
          checkTimer();
@@ -455,10 +454,10 @@ public class RouterTextArea extends JTextArea
             return;
            }
         }
-       
+      
+      dumpOutput();      
       if (supplyChar(theChar))
         {
-         dumpOutput();
          if ((theChar == KeyEvent.VK_BACK_SPACE) ||
              (theChar == KeyEvent.VK_DELETE))
            {
