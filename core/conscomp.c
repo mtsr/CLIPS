@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.31  09/25/15            */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -53,6 +53,11 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.31: Changed restrictions from char * to            */
+/*            symbolHashNode * to support strings            */
+/*            originating from sources that are not          */
+/*            statically allocated.                          */
 /*                                                           */
 /*************************************************************/
 
@@ -699,9 +704,12 @@ static int FunctionsToCode(
       fprintf(fp,"'%c',",fctnPtr->returnValueType);
       fprintf(fp,"PTIF %s,",fctnPtr->actualFunctionName);
       fprintf(fp,"NULL,");
-      if (fctnPtr->restrictions != NULL) fprintf(fp,"\"%s\",",fctnPtr->restrictions);
-      else fprintf(fp,"NULL,");
-      fprintf(fp,"0,0,%d,0,",(fctnPtr->environmentAware ? 1 : 0));
+      
+      PrintSymbolReference(theEnv,fp,fctnPtr->restrictions);
+      //if (fctnPtr->restrictions != NULL) fprintf(fp,"\"%s\",",fctnPtr->restrictions);
+      //else fprintf(fp,"NULL,");
+      
+      fprintf(fp,",0,0,%d,0,",(fctnPtr->environmentAware ? 1 : 0));
       PrintFunctionReference(theEnv,fp,fctnPtr->next);
 
       i++;
