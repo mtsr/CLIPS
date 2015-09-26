@@ -296,6 +296,47 @@ public class RouterTextArea extends JTextArea
 
       return false;
      }
+     
+   /****************/
+   /* clearOutput: */
+   /****************/
+   private synchronized void clearOutput()
+     {
+      if (dumpTimer != null)
+        { dumpTimer.stop(); }
+
+      outputBuffer.setLength(0);
+      outputBuffer.ensureCapacity(bufferSize);
+
+      this.replaceRange("",0,this.getText().length());
+      
+      dumpTimer = null;
+     }
+     
+   /**********/
+   /* clear: */
+   /**********/
+   public void clear()
+     {
+      if (EventQueue.isDispatchThread())
+        { 
+         clearOutput();
+         return; 
+        }
+        
+      try
+        {
+         SwingUtilities.invokeAndWait(
+           new Runnable() 
+             {  
+              public void run() { 
+                                 clearOutput();
+                                }  
+             });   
+        }
+      catch (Exception e) 
+        { e.printStackTrace(); }
+     }
 
    /****************/
    /* createTimer: */

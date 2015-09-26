@@ -230,7 +230,7 @@ public class CommandPromptTextArea extends RouterTextArea
         { return super.hasCuttableSelection(); }
 
       int textLength = this.getText().length();
-      int commandLength = (int) clips.getInputBufferCount();  
+      int commandLength = (int) clips.getInputBuffer().length();  
       int lockedLength = textLength - commandLength;
       
       int left = Math.min(this.getCaret().getDot(),this.getCaret().getMark());
@@ -253,7 +253,7 @@ public class CommandPromptTextArea extends RouterTextArea
         { return super.hasPasteableSelection(); }
 
       int textLength = this.getText().length();
-      int commandLength = (int) clips.getInputBufferCount();  
+      int commandLength = (int) clips.getInputBuffer().length();  
       int lockedLength = textLength - commandLength;
       
       int left = Math.min(this.getCaret().getDot(),this.getCaret().getMark());
@@ -272,9 +272,9 @@ public class CommandPromptTextArea extends RouterTextArea
      boolean isDelete) 
      {
       int textLength = this.getText().length();
-      int commandLength = (int) clips.getInputBufferCount();  
+      int commandLength = (int) clips.getInputBuffer().length();  
       int lockedLength = textLength - commandLength;
-      
+
       /*========================================*/
       /* Determine the left and right positions */
       /* of the current selection.              */
@@ -320,7 +320,7 @@ public class CommandPromptTextArea extends RouterTextArea
       /* Don't balance the parentheses if there is no command. */
       /*=======================================================*/
    
-      commandLength = clips.getInputBufferCount();
+      commandLength = clips.getInputBuffer().length();
       if (commandLength <= 0) 
         { return; }
 
@@ -497,7 +497,7 @@ public class CommandPromptTextArea extends RouterTextArea
      {
       executingCommand = clips.getInputBuffer();      
       setExecuting(true);
-      
+
       Runnable runThread = 
          new Runnable()
            {
@@ -684,6 +684,7 @@ public class CommandPromptTextArea extends RouterTextArea
                                 Toolkit.getDefaultToolkit()
                                        .getSystemClipboard()
                                        .getData(DataFlavor.stringFlavor); 
+
          modifyCommand(clipboardText,false);
         }
       catch (Exception e)
@@ -718,7 +719,7 @@ public class CommandPromptTextArea extends RouterTextArea
       if (dot == mark) 
         { 
          int tl = this.getText().length();
-         int il = (int) clips.getInputBufferCount();
+         int il = (int) clips.getInputBuffer().length();
                
          if (dot < (tl - il))
            { 
@@ -756,7 +757,7 @@ public class CommandPromptTextArea extends RouterTextArea
       if (getExecuting())
         { return super.dragTargetCaretStart(); }
 
-      return this.getText().length() - (int) clips.getInputBufferCount();
+      return this.getText().length() - (int) clips.getInputBuffer().length();
      }
   
    /********/

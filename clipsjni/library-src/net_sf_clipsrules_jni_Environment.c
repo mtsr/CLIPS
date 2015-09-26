@@ -9,10 +9,14 @@ struct clipsJNIData
   { 
    int javaExternalAddressID;
 
-   jobject tempLocalEnvironment;
+   jobject tempLocalEnvironment; // TBD replace with environmentObject
    
    jclass environmentClass;
-   
+   jobject environmentObject;
+
+   jclass userFunctionClass;
+   jmethodID userFunctionEvaluateMethod;
+  
    jclass classClass;
    jmethodID classGetCanonicalNameMethod;
    
@@ -40,6 +44,9 @@ struct clipsJNIData
    jmethodID stringValueInitMethod;
    jclass instanceNameValueClass;
    jmethodID instanceNameValueInitMethod;
+   
+   jclass lexemeValueClass;
+   jmethodID lexemeValueGetValueMethod;
 
    jclass multifieldValueClass;
    jmethodID multifieldValueInitMethod;
@@ -80,6 +87,8 @@ static void DeallocateJNIData(
    env = (JNIEnv *) GetEnvironmentContext(theEnv);
 
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->environmentClass);
+   (*env)->DeleteWeakGlobalRef(env,CLIPSJNIData(theEnv)->environmentObject);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->userFunctionClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->classClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->longClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->doubleClass);
@@ -90,9 +99,87 @@ static void DeallocateJNIData(
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->symbolValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->stringValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->instanceNameValueClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->lexemeValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->multifieldValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->factAddressValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->instanceAddressValueClass);
+  }
+
+/********************/
+/* JNIUserFunction: */
+/********************/
+globle void JNIUserFunction(
+  void *theEnv,
+  DATA_OBJECT_PTR result)
+  {
+   JNIEnv *env;
+   jobject context;
+   jobject arguments, targ, rv;
+   int i, argCount;
+   DATA_OBJECT theArg;
+   
+   result->type = RVOID;
+
+   env = (JNIEnv *) GetEnvironmentContext(theEnv);
+   
+   context = GetEnvironmentFunctionContext(theEnv);
+
+   argCount = EnvRtnArgCount(theEnv);
+   arguments = (*env)->NewObject(env,
+                                 CLIPSJNIData(theEnv)->arrayListClass,
+                                 CLIPSJNIData(theEnv)->arrayListInitMethod,
+                                 (jint) argCount);
+                                 
+   for (i = 1; i <= argCount; i++)
+     {
+      EnvRtnUnknown(theEnv,i,&theArg);
+      targ = ConvertDataObject(env,CLIPSJNIData(theEnv)->environmentObject,theEnv,&theArg); 
+      
+      if (targ != NULL)
+        { 
+         (*env)->CallBooleanMethod(env,arguments,CLIPSJNIData(theEnv)->arrayListAddMethod,targ); 
+         (*env)->DeleteLocalRef(env,targ);
+        }
+     }
+
+   rv = (*env)->CallObjectMethod(env,context,CLIPSJNIData(theEnv)->userFunctionEvaluateMethod,arguments);  
+   if (rv != NULL)
+     {
+      if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->symbolValueClass))
+        {
+         result->type = SYMBOL; 
+         jstring theString = (*env)->CallObjectMethod(env,rv,CLIPSJNIData(theEnv)->lexemeValueGetValueMethod);
+         const char *cString = (*env)->GetStringUTFChars(env,theString,NULL);
+         result->value = EnvAddSymbol(theEnv,cString);
+         (*env)->ReleaseStringUTFChars(env,theString,cString);
+        }
+      else if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->stringValueClass))
+        { 
+         result->type = STRING; 
+         jstring theString = (*env)->CallObjectMethod(env,rv,CLIPSJNIData(theEnv)->lexemeValueGetValueMethod);
+         const char *cString = (*env)->GetStringUTFChars(env,theString,NULL);
+         result->value = EnvAddSymbol(theEnv,cString);
+         (*env)->ReleaseStringUTFChars(env,theString,cString);
+        }
+      else if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->instanceNameValueClass))
+        { 
+         result->type = INSTANCE_NAME; 
+         jstring theString = (*env)->CallObjectMethod(env,rv,CLIPSJNIData(theEnv)->lexemeValueGetValueMethod);
+         const char *cString = (*env)->GetStringUTFChars(env,theString,NULL);
+         result->value = EnvAddSymbol(theEnv,cString);
+         (*env)->ReleaseStringUTFChars(env,theString,cString);
+        }
+      else if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->integerValueClass))
+        { 
+         result->type = INTEGER; 
+        }
+      else if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->floatValueClass))
+        { 
+         result->type = FLOAT; 
+        }
+     }
+
+   (*env)->DeleteLocalRef(env,arguments);
   }
 
 /************************/
@@ -352,6 +439,8 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
   {
    void *theEnv;
    jclass theEnvironmentClass; 
+   jclass theUserFunctionClass; 
+   jmethodID theUserFunctionEvaluateMethod;
    jclass theClassClass; 
    jmethodID theClassGetCanonicalNameMethod;
    jclass theLongClass; 
@@ -366,6 +455,8 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    jmethodID theIntegerValueInitMethod, theFloatValueInitMethod;
    jclass theSymbolValueClass, theStringValueClass, theInstanceNameValueClass;
    jmethodID theSymbolValueInitMethod, theStringValueInitMethod, theInstanceNameValueInitMethod;
+   jclass theLexemeValueClass;
+   jmethodID theLexemeValueGetValueMethod;
    jclass theMultifieldValueClass;
    jmethodID theMultifieldValueInitMethod;
    jclass theFactAddressValueClass;
@@ -379,6 +470,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /*===========================*/
 
    theEnvironmentClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/Environment"); 
+   theUserFunctionClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/UserFunction"); 
    theClassClass = (*env)->FindClass(env,"java/lang/Class"); 
    theLongClass = (*env)->FindClass(env,"java/lang/Long"); 
    theDoubleClass = (*env)->FindClass(env,"java/lang/Double"); 
@@ -389,6 +481,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    theSymbolValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/SymbolValue");
    theStringValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/StringValue");
    theInstanceNameValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/InstanceNameValue");
+   theLexemeValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/LexemeValue");
    theMultifieldValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/MultifieldValue");
    theFactAddressValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/FactAddressValue");
    theInstanceAddressValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/InstanceAddressValue");
@@ -399,6 +492,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /*=========================================*/
    
    if ((theEnvironmentClass == NULL) ||
+       (theUserFunctionClass == NULL) ||
        (theClassClass == NULL) ||
        (theLongClass == NULL) || (theDoubleClass == NULL) ||
        (theArrayListClass == NULL) ||
@@ -406,6 +500,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
        (theIntegerValueClass == NULL) || (theFloatValueClass == NULL) ||
        (theSymbolValueClass == NULL) || (theStringValueClass == NULL) || 
        (theInstanceNameValueClass == NULL) ||
+       (theLexemeValueClass == NULL) ||
        (theMultifieldValueClass == NULL) ||
        (theFactAddressValueClass == NULL) ||
        (theInstanceAddressValueClass == NULL))
@@ -414,6 +509,10 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /*================================*/
    /* Look up the Java init methods. */
    /*================================*/
+
+   theUserFunctionEvaluateMethod = 
+      (*env)->GetMethodID(env,theUserFunctionClass,"evaluate",
+                          "(Ljava/util/List;)Lnet/sf/clipsrules/jni/PrimitiveValue;");
    
    theClassGetCanonicalNameMethod = (*env)->GetMethodID(env,theClassClass,"getCanonicalName","()Ljava/lang/String;");
    theLongInitMethod = (*env)->GetMethodID(env,theLongClass,"<init>","(J)V");
@@ -425,6 +524,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    theFloatValueInitMethod = (*env)->GetMethodID(env,theFloatValueClass,"<init>","(Ljava/lang/Double;)V");
    theSymbolValueInitMethod = (*env)->GetMethodID(env,theSymbolValueClass,"<init>","(Ljava/lang/String;)V");
    theStringValueInitMethod = (*env)->GetMethodID(env,theStringValueClass,"<init>","(Ljava/lang/String;)V");
+   theLexemeValueGetValueMethod = (*env)->GetMethodID(env,theLexemeValueClass,"getValue","()Ljava/lang/String;");
    theInstanceNameValueInitMethod = (*env)->GetMethodID(env,theInstanceNameValueClass,"<init>","(Ljava/lang/String;)V");
    theMultifieldValueInitMethod = (*env)->GetMethodID(env,theMultifieldValueClass,"<init>","(Ljava/util/List;)V");
    theFactAddressValueInitMethod = (*env)->GetMethodID(env,theFactAddressValueClass,"<init>","(JLnet/sf/clipsrules/jni/Environment;)V");
@@ -435,13 +535,15 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /* abort creation of the enviroment.            */
    /*==============================================*/
 
-   if ((theClassGetCanonicalNameMethod == NULL) ||
+   if ((theUserFunctionEvaluateMethod == NULL) ||
+       (theClassGetCanonicalNameMethod == NULL) ||
        (theLongInitMethod == NULL) || (theDoubleInitMethod == NULL) || 
        (theArrayListInitMethod == NULL) || (theArrayListAddMethod == NULL) ||
        (theVoidValueInitMethod == NULL) ||
        (theIntegerValueInitMethod == NULL) || (theFloatValueInitMethod == NULL) ||
        (theSymbolValueInitMethod == NULL) || (theStringValueInitMethod == NULL) ||
        (theInstanceNameValueInitMethod == NULL) ||
+       (theLexemeValueGetValueMethod == NULL) ||
        (theMultifieldValueInitMethod == NULL) ||
        (theFactAddressValueInitMethod == NULL) ||
        (theInstanceAddressValueInitMethod == NULL))
@@ -468,6 +570,11 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    
    CLIPSJNIData(theEnv)->tempLocalEnvironment = NULL;
    CLIPSJNIData(theEnv)->environmentClass = (*env)->NewGlobalRef(env,theEnvironmentClass);
+   CLIPSJNIData(theEnv)->environmentObject = (*env)->NewWeakGlobalRef(env,obj);
+   
+   CLIPSJNIData(theEnv)->userFunctionClass = (*env)->NewGlobalRef(env,theUserFunctionClass);
+   CLIPSJNIData(theEnv)->userFunctionEvaluateMethod = theUserFunctionEvaluateMethod;
+   
    CLIPSJNIData(theEnv)->classClass = (*env)->NewGlobalRef(env,theClassClass);
    CLIPSJNIData(theEnv)->classGetCanonicalNameMethod = theClassGetCanonicalNameMethod;
 
@@ -493,6 +600,9 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    CLIPSJNIData(theEnv)->stringValueInitMethod = theStringValueInitMethod;
    CLIPSJNIData(theEnv)->instanceNameValueClass = (*env)->NewGlobalRef(env,theInstanceNameValueClass);
    CLIPSJNIData(theEnv)->instanceNameValueInitMethod = theInstanceNameValueInitMethod;
+   
+   CLIPSJNIData(theEnv)->lexemeValueClass = (*env)->NewGlobalRef(env,theLexemeValueClass);
+   CLIPSJNIData(theEnv)->lexemeValueGetValueMethod = theLexemeValueGetValueMethod;
 
    CLIPSJNIData(theEnv)->multifieldValueClass = (*env)->NewGlobalRef(env,theMultifieldValueClass);
    CLIPSJNIData(theEnv)->multifieldValueInitMethod = theMultifieldValueInitMethod;
@@ -515,6 +625,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    /*=======================================*/
    
    (*env)->DeleteLocalRef(env,theEnvironmentClass);
+   (*env)->DeleteLocalRef(env,theUserFunctionClass);
    (*env)->DeleteLocalRef(env,theClassClass);
    (*env)->DeleteLocalRef(env,theLongClass);
    (*env)->DeleteLocalRef(env,theDoubleClass);
@@ -525,6 +636,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    (*env)->DeleteLocalRef(env,theSymbolValueClass);
    (*env)->DeleteLocalRef(env,theStringValueClass);
    (*env)->DeleteLocalRef(env,theInstanceNameValueClass);
+   (*env)->DeleteLocalRef(env,theLexemeValueClass);
    (*env)->DeleteLocalRef(env,theMultifieldValueClass);
    (*env)->DeleteLocalRef(env,theFactAddressValueClass);
    (*env)->DeleteLocalRef(env,theInstanceAddressValueClass);
@@ -1744,6 +1856,52 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_removePeriodic
        
    (*env)->ReleaseStringUTFChars(env,listenerName,cListenerName);
    
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext); 
+
+   return rv;
+  }
+  
+/******************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_addUserFunction: Native */
+/*   function for the CLIPSJNI addUserFunction method.            */
+/*                                                                */
+/* Class:     net_sf_clipsrules_jni_Environment                   */
+/* Method:    addUserFunction                                     */
+/* Signature: (J                                                  */
+/*             Ljava/lang/String;Ljava/lang/String;               */
+/*             Lnet/sf/clipsrules/jni/UserFunction;)Z             */
+/******************************************************************/
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_addUserFunction(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv, 
+  jstring functionName, 
+  jstring restrictions, 
+  jobject context)
+  {
+   int rv;
+   jobject nobj;   
+
+   const char *cFunctionName = (*env)->GetStringUTFChars(env,functionName,NULL);
+   const char *cRestrictions;
+   
+   if (restrictions != NULL)
+     { cRestrictions = (*env)->GetStringUTFChars(env,restrictions,NULL); }
+   else 
+     { cRestrictions = NULL; }
+
+   void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env); 
+
+   nobj = (*env)->NewGlobalRef(env,context);
+ 
+   rv = EnvDefineFunction2WithContext(JLongToPointer(clipsEnv),
+                                     cFunctionName,'u',PTIEF JNIUserFunction,
+                                     "JNIUserFunction",cRestrictions,nobj);
+
+   (*env)->ReleaseStringUTFChars(env,functionName,cFunctionName);
+   if (restrictions != NULL)
+     { (*env)->ReleaseStringUTFChars(env,restrictions,cRestrictions); }
+                                     
    SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext); 
 
    return rv;

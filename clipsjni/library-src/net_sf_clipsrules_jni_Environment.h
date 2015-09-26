@@ -41,6 +41,14 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_reset
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    addUserFunction
+ * Signature: (JLjava/lang/String;Ljava/lang/String;Lnet/sf/clipsrules/jni/UserFunction;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_addUserFunction
+  (JNIEnv *, jobject, jlong, jstring, jstring, jobject);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
  * Method:    changeDirectory
  * Signature: (JLjava/lang/String;)I
  */

@@ -1,9 +1,11 @@
 package net.sf.clipsrules.jni;
 
 import java.io.InputStream;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Environment
   {
@@ -161,6 +163,35 @@ public class Environment
                   }
                });
      }
+     
+   /******************************************/
+   /* addUserFunction: Adds a user function. */
+   /******************************************/
+   private native boolean addUserFunction(long env,
+                                          String functionName,
+                                          String restrictions,
+                                          UserFunction callback);
+     
+   /*******************/
+   /* addUserFunction */
+   /*******************/
+   public boolean addUserFunction(
+     String functionName,
+     UserFunction callback)
+     {
+      return addUserFunction(theEnvironment,functionName,null,callback);
+     } 
+
+   /*******************/
+   /* addUserFunction */
+   /*******************/
+   public boolean addUserFunction(
+     String functionName,
+     String restrictions,
+     UserFunction callback)
+     {
+      return addUserFunction(theEnvironment,functionName,restrictions,callback);
+     } 
 
    /**************************/
    /* convertStreamToString: */
@@ -770,6 +801,24 @@ public class Environment
      String printString)
      {
       printRouter(theEnvironment,logName,printString);
+     }
+     
+   /**********/
+   /* print: */
+   /**********/
+   public void print(
+     String printString)
+     {
+      printRouter(theEnvironment,Router.STANDARD_OUTPUT,printString);
+     }
+
+   /************/
+   /* println: */
+   /************/
+   public void println(
+     String printString)
+     {
+      printRouter(theEnvironment,Router.STANDARD_OUTPUT,printString + "\n");
      }
 
    /*******************/

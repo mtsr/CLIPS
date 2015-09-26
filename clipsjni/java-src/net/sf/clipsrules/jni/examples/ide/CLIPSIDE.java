@@ -10,11 +10,15 @@ import java.awt.*;
 import java.awt.event.*; 
 import java.io.File;
 
+import java.util.List;
+
 import net.sf.clipsrules.jni.*;
 
 // TBD
-// clear-window
 // Use lock for I/O
+// primitiveValue integer type for JNI
+// Test use of undefinefunction
+// argument error functions 
 
 public class CLIPSIDE implements ActionListener, MenuListener, 
                                  CommandExecutionListener
@@ -64,7 +68,7 @@ public class CLIPSIDE implements ActionListener, MenuListener,
       /* Create a new JFrame container and */
       /* assign a layout manager to it.    */
       /*===================================*/
-     
+
       ideFrame = new JFrame("CLIPS IDE");          
       ideFrame.getContentPane().setLayout(new BoxLayout(ideFrame.getContentPane(),BoxLayout.Y_AXIS));
     
@@ -87,6 +91,68 @@ public class CLIPSIDE implements ActionListener, MenuListener,
       
       clips = new Environment();
 
+      /*==========================*/
+      /* Add some user functions. */
+      /*==========================*/
+
+      clips.addUserFunction("jupcase","11j",
+                             new UserFunction()
+                               {
+                                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                                  {
+                                   LexemeValue rv = (LexemeValue) arguments.get(0);
+                                   
+                                   String urv = rv.getValue().toUpperCase();
+                                   if (rv.isString())
+                                     { return new StringValue(urv); }
+                                   else if (rv.isSymbol())
+                                     { return new SymbolValue(urv); }
+                                   else if (rv.isInstanceName())
+                                     { return new InstanceNameValue(urv); }
+                                                             
+                                   return null;
+                                  }
+                               });
+                               
+      clips.addUserFunction("jlowcase","11j",
+                             new UserFunction()
+                               {
+                                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                                  {
+                                   LexemeValue rv = (LexemeValue) arguments.get(0);
+                                   
+                                   String lrv = rv.getValue().toLowerCase();
+                                   if (rv.isString())
+                                     { return new StringValue(lrv); }
+                                   else if (rv.isSymbol())
+                                     { return new SymbolValue(lrv); }
+                                   else if (rv.isInstanceName())
+                                     { return new InstanceNameValue(lrv); }
+                                                             
+                                   return null;
+                                  }
+                               });
+
+      clips.addUserFunction("hello","00",
+                             new UserFunction()
+                               {
+                                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                                  {
+                                   clips.println("Hello World!");
+                                   return null;
+                                  }
+                               });
+
+      clips.addUserFunction("clear-window","00",
+                             new UserFunction()
+                               {
+                                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                                  {
+                                   commandTextArea.clear();
+                                   return null;
+                                  }
+                               });
+                                     
       /*==================================*/
       /* Determine the working directory. */
       /*==================================*/
@@ -627,7 +693,5 @@ public class CLIPSIDE implements ActionListener, MenuListener,
         { updatePauseButton(true); }
       else if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.FINISH_EVENT))
         { updatePauseButton(false);  }
-      //else if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.PERIODIC_EVENT))
-      //  { clips.setPeriodicCallbackEnabled(false); }
      }  
   }

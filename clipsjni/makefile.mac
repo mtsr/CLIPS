@@ -27,6 +27,7 @@ JNI_FILES = \
 	$(JNI_SRC)/RouterTextArea.java \
 	$(JNI_SRC)/StringValue.java \
 	$(JNI_SRC)/SymbolValue.java \
+	$(JNI_SRC)/UserFunction.java \
 	$(JNI_SRC)/VoidValue.java
 
 ANIMAL_CP = net/sf/clipsrules/jni/examples/animal

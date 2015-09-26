@@ -34,7 +34,7 @@ OBJS = agenda.o analysis.o argacces.o bload.o bmathfun.o bsave.o \
 
 .c.o :
 	gcc -c -DDARWIN -DALLOW_ENVIRONMENT_GLOBALS=0 -std=c99 -arch i386 -arch x86_64 \
-	    -Wall -Wundef -Wpointer-arith -Wshadow -Wcast-qual \
+	    -Wall -Wundef -Wpointer-arith -Wshadow \
 	    -Winline -Wmissing-declarations -Wredundant-decls \
 	    -Wmissing-prototypes -Wnested-externs \
 	    -Wstrict-prototypes -Waggregate-return -Wno-implicit $<
