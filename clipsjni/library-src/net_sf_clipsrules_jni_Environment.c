@@ -1907,6 +1907,43 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_addUserFunctio
    return rv;
   }
 
+/**********************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_renmoveUserFunction: Native */
+/*   function for the CLIPSJNI removeUserFunction method.             */
+/*                                                                    */
+/* Class:     net_sf_clipsrules_jni_Environment                       */
+/* Method:    removeUserFunction                                      */
+/* Signature: (JLjava/lang/String;)Z                                  */
+/**********************************************************************/
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_removeUserFunction(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv, 
+  jstring functionName)
+  {
+   int rv;
+   jobject context;
+   void *theEnv;
+   
+   theEnv = JLongToPointer(clipsEnv);
+
+   const char *cFunctionName = (*env)->GetStringUTFChars(env,functionName,NULL);
+
+   void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env); 
+
+   context = GetEnvironmentFunctionContext(theEnv);
+   if (context != NULL)
+     {  (*env)->DeleteGlobalRef(env,context); }
+     
+   rv = UndefineFunction(JLongToPointer(clipsEnv),cFunctionName);
+
+   (*env)->ReleaseStringUTFChars(env,functionName,cFunctionName);
+                                     
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext); 
+
+   return rv;
+  }
+
 /********************************************************************/
 /* Java_net_sf_clipsrules_jni_Environment_addRouter: Native         */
 /*   function for the CLIPSJNI addRouter method.                    */

@@ -17,8 +17,9 @@ import net.sf.clipsrules.jni.*;
 // TBD
 // Use lock for I/O
 // primitiveValue integer type for JNI
-// Test use of undefinefunction
 // argument error functions 
+// int/float/fact address/instance address/external user function
+// When environment destroyed, delete global context references
 
 public class CLIPSIDE implements ActionListener, MenuListener, 
                                  CommandExecutionListener
@@ -95,7 +96,8 @@ public class CLIPSIDE implements ActionListener, MenuListener,
       /* Add some user functions. */
       /*==========================*/
 
-      clips.addUserFunction("jupcase","11j",
+      clips.removeUserFunction("upcase");
+      clips.addUserFunction("upcase","11j",
                              new UserFunction()
                                {
                                 public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
@@ -114,7 +116,8 @@ public class CLIPSIDE implements ActionListener, MenuListener,
                                   }
                                });
                                
-      clips.addUserFunction("jlowcase","11j",
+      clips.removeUserFunction("lowcase");
+      clips.addUserFunction("lowcase","11j",
                              new UserFunction()
                                {
                                 public PrimitiveValue evaluate(List<PrimitiveValue> arguments)

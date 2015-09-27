@@ -163,7 +163,22 @@ public class Environment
                   }
                });
      }
-     
+        
+   /************************************************/
+   /* removeUserFunction: Removes a user function. */
+   /************************************************/
+   private native boolean removeUserFunction(long env,
+                                             String functionName);
+                                             
+   /**********************/
+   /* removeUserFunction */
+   /**********************/
+   public boolean removeUserFunction(
+     String functionName)
+     {
+      return removeUserFunction(theEnvironment,functionName);
+     } 
+
    /******************************************/
    /* addUserFunction: Adds a user function. */
    /******************************************/
