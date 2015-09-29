@@ -35,6 +35,10 @@ public class InstanceNameValue extends LexemeValue
      {        
       return "[" + super.toString() + "]";
      }
+
+   @Override
+   public CLIPSType getCLIPSType()
+     { return CLIPSType.INSTANCE_NAME; }
      
    @Override
    public boolean isInstanceName()

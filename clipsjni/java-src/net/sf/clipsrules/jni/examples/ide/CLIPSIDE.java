@@ -11,15 +11,21 @@ import java.awt.event.*;
 import java.io.File;
 
 import java.util.List;
+import java.util.Properties;
+import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import net.sf.clipsrules.jni.*;
 
 // TBD
 // Use lock for I/O
-// primitiveValue integer type for JNI
 // argument error functions 
-// int/float/fact address/instance address/external user function
+// external address user function
+// call java method
 // When environment destroyed, delete global context references
+// Refactor JNI code
 
 public class CLIPSIDE implements ActionListener, MenuListener, 
                                  CommandExecutionListener
@@ -96,65 +102,129 @@ public class CLIPSIDE implements ActionListener, MenuListener,
       /* Add some user functions. */
       /*==========================*/
 
+      // (upcase "ßuzäöü")
       clips.removeUserFunction("upcase");
       clips.addUserFunction("upcase","11j",
-                             new UserFunction()
-                               {
-                                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                                  {
-                                   LexemeValue rv = (LexemeValue) arguments.get(0);
+            new UserFunction()
+              {
+               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                 {
+                  LexemeValue rv = (LexemeValue) arguments.get(0);
                                    
-                                   String urv = rv.getValue().toUpperCase();
-                                   if (rv.isString())
-                                     { return new StringValue(urv); }
-                                   else if (rv.isSymbol())
-                                     { return new SymbolValue(urv); }
-                                   else if (rv.isInstanceName())
-                                     { return new InstanceNameValue(urv); }
+                  String urv = rv.getValue().toUpperCase();
+                  if (rv.isString())
+                    { return new StringValue(urv); }
+                  else if (rv.isSymbol())
+                    { return new SymbolValue(urv); }
+                  else if (rv.isInstanceName())
+                    { return new InstanceNameValue(urv); }
                                                              
-                                   return null;
-                                  }
-                               });
+                  return null;
+                 }
+              });
                                
       clips.removeUserFunction("lowcase");
       clips.addUserFunction("lowcase","11j",
-                             new UserFunction()
-                               {
-                                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                                  {
-                                   LexemeValue rv = (LexemeValue) arguments.get(0);
+            new UserFunction()
+              {
+               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                 {
+                  LexemeValue rv = (LexemeValue) arguments.get(0);
                                    
-                                   String lrv = rv.getValue().toLowerCase();
-                                   if (rv.isString())
-                                     { return new StringValue(lrv); }
-                                   else if (rv.isSymbol())
-                                     { return new SymbolValue(lrv); }
-                                   else if (rv.isInstanceName())
-                                     { return new InstanceNameValue(lrv); }
+                  String lrv = rv.getValue().toLowerCase();
+                  if (rv.isString())
+                    { return new StringValue(lrv); }
+                  else if (rv.isSymbol())
+                    { return new SymbolValue(lrv); }
+                  else if (rv.isInstanceName())
+                    { return new InstanceNameValue(lrv); }
                                                              
-                                   return null;
-                                  }
-                               });
+                  return null;
+                 }
+              });
 
+      clips.addUserFunction("cbrt","11n",
+            new UserFunction()
+              {
+               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                 {
+                  NumberValue rv = (NumberValue) arguments.get(0);
+                  return new FloatValue(Math.cbrt(rv.doubleValue()));
+                 }
+              });
+
+       clips.addUserFunction("get-year","00",
+             new UserFunction()
+               {
+                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                  { 
+                   Calendar theCalendar = new GregorianCalendar();
+                   return new IntegerValue(theCalendar.get(theCalendar.YEAR));
+                  }
+               });
+      
+      clips.addUserFunction("get-properties","00",
+            new UserFunction()
+              {
+               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                 {
+                  List<PrimitiveValue> values = new ArrayList<PrimitiveValue>();
+
+                  Properties props = System.getProperties();
+                  for (String key : props .stringPropertyNames())
+                    { values.add(new SymbolValue(key)); }
+
+                  return new MultifieldValue(values);
+                 }
+              });
+      
       clips.addUserFunction("hello","00",
-                             new UserFunction()
-                               {
-                                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                                  {
-                                   clips.println("Hello World!");
-                                   return null;
-                                  }
-                               });
+            new UserFunction()
+              {
+               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                 {
+                  clips.println("Hello World!");
+                  return null;
+                 }
+              });
 
       clips.addUserFunction("clear-window","00",
-                             new UserFunction()
-                               {
-                                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                                  {
-                                   commandTextArea.clear();
-                                   return null;
-                                  }
-                               });
+            new UserFunction()
+              {
+               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                 {
+                  commandTextArea.clear();
+                  return null;
+                 }
+              });
+
+      clips.addUserFunction("make-instoid","00",
+            new UserFunction()
+              {
+               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                 {
+                  try
+                    {
+                     return clips.eval("(instance-address (make-instance [hello] of INITIAL-OBJECT))");
+                    }
+                  catch (Exception e)
+                    { return new SymbolValue("FALSE"); }
+                 }
+              });
+
+      clips.addUserFunction("make-factoid","00",
+            new UserFunction()
+              {
+               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                 {
+                  try
+                    {
+                     return clips.eval("(assert (hello world))");
+                    }
+                  catch (Exception e)
+                    { return new SymbolValue("FALSE"); }
+                 }
+              });
                                      
       /*==================================*/
       /* Determine the working directory. */

@@ -25,6 +25,10 @@ public class InstanceAddressValue extends PrimitiveValue
       return this.value;
      }
 
+   @Override
+   public CLIPSType getCLIPSType()
+     { return CLIPSType.INSTANCE_ADDRESS; }
+
    /*******************/
    /* getEnvironment: */
    /*******************/

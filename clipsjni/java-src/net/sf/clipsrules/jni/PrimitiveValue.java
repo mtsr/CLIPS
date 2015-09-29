@@ -3,7 +3,7 @@ package net.sf.clipsrules.jni;
 import java.util.List;
 
 public abstract class PrimitiveValue
-  {   
+  { 
    /*******************/
    /* PrimitiveValue: */
    /*******************/
@@ -49,6 +49,12 @@ public abstract class PrimitiveValue
 	   return true;
       }
    
+   public CLIPSType getCLIPSType()
+     { return CLIPSType.VOID; }
+
+   public int getCLIPSTypeValue()
+     { return getCLIPSType().getType(); }
+     
    public boolean isVoid()
      { return false; }
    

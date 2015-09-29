@@ -10,7 +10,7 @@ struct clipsJNIData
    int javaExternalAddressID;
 
    jobject tempLocalEnvironment; // TBD replace with environmentObject
-   
+      
    jclass environmentClass;
    jobject environmentObject;
 
@@ -30,13 +30,18 @@ struct clipsJNIData
    jmethodID arrayListInitMethod;
    jmethodID arrayListAddMethod;
 
+   jclass primitiveValueClass;
+   jmethodID getCLIPSTypeValueMethod;
+
    jclass voidValueClass;
    jmethodID voidValueInitMethod;
 
    jclass integerValueClass;
    jmethodID integerValueInitMethod;
+   jmethodID integerValueLongValueMethod;
    jclass floatValueClass;
    jmethodID floatValueInitMethod;
+   jmethodID floatValueDoubleValueMethod;
 
    jclass symbolValueClass;
    jmethodID symbolValueInitMethod;
@@ -50,12 +55,16 @@ struct clipsJNIData
 
    jclass multifieldValueClass;
    jmethodID multifieldValueInitMethod;
-
+   jmethodID multifieldValueGetMethod;
+   jmethodID multifieldValueSizeMethod;
+   
    jclass factAddressValueClass;
    jmethodID factAddressValueInitMethod;
+   jmethodID factAddressValueGetFactAddressMethod;
 
    jclass instanceAddressValueClass;
    jmethodID instanceAddressValueInitMethod;
+   jmethodID instanceAddressValueGetInstanceAddressMethod;
   };
 
 #define CLIPSJNIData(theEnv) ((struct clipsJNIData *) GetEnvironmentData(theEnv,CLIPSJNI_DATA))
@@ -74,6 +83,7 @@ static void       PrintJavaAddress(void *,const char *,void *);
 static void       NewJavaAddress(void *,DATA_OBJECT *);
 static intBool    CallJavaMethod(void *,DATA_OBJECT *,DATA_OBJECT *);
 static intBool    DiscardJavaAddress(void *,void *);
+static void      *ConvertSingleFieldPrimitiveValue(void *,int,jobject);
 
 /**********************************************/
 /* DeallocateJNIData: Deallocates environment */
@@ -93,6 +103,7 @@ static void DeallocateJNIData(
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->longClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->doubleClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->arrayListClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->primitiveValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->voidValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->integerValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->floatValueClass);
@@ -103,6 +114,122 @@ static void DeallocateJNIData(
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->multifieldValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->factAddressValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->instanceAddressValueClass);
+  }
+
+/*************************************/
+/* ConvertSingleFieldPrimitiveValue: */
+/*************************************/
+static void *ConvertSingleFieldPrimitiveValue(
+  void *theEnv,
+  int theType,
+  jobject theValue)
+  {
+   void *rv = NULL;
+   JNIEnv *env;
+   
+   env = (JNIEnv *) GetEnvironmentContext(theEnv);
+   
+   switch (theType)
+     {
+      case SYMBOL:
+      case STRING:
+      case INSTANCE_NAME:
+        {
+         jstring theString = (*env)->CallObjectMethod(env,theValue,CLIPSJNIData(theEnv)->lexemeValueGetValueMethod);
+         const char *cString = (*env)->GetStringUTFChars(env,theString,NULL);
+         rv = EnvAddSymbol(theEnv,cString);
+         (*env)->ReleaseStringUTFChars(env,theString,cString);
+         break;
+        }
+        
+      case FLOAT:
+        {
+         jdouble theDouble = (*env)->CallDoubleMethod(env,theValue,CLIPSJNIData(theEnv)->floatValueDoubleValueMethod);
+         rv = EnvAddDouble(theEnv,theDouble);
+         break;
+        }
+
+      case INTEGER:
+        {
+         jlong theLong = (*env)->CallLongMethod(env,theValue,CLIPSJNIData(theEnv)->integerValueLongValueMethod);
+         rv = EnvAddLong(theEnv,theLong);
+         break;
+        }
+
+      case FACT_ADDRESS:
+        {
+         jlong theLong = (*env)->CallLongMethod(env,theValue,CLIPSJNIData(theEnv)->factAddressValueGetFactAddressMethod);
+         rv = JLongToPointer(theLong);
+         break;
+        }
+
+      case INSTANCE_ADDRESS:
+        {
+         jlong theLong = (*env)->CallLongMethod(env,theValue,CLIPSJNIData(theEnv)->instanceAddressValueGetInstanceAddressMethod);
+         rv = JLongToPointer(theLong);
+         break;
+        }
+     }
+
+   return rv;
+  }
+
+/**************************************/
+/* ConvertPrimitiveValueToDataObject: */
+/**************************************/
+static void ConvertPrimitiveValueToDataObject(
+  void *theEnv,
+  jobject theValue,
+  DATA_OBJECT_PTR theDO)
+  {
+   void *result = NULL;
+   JNIEnv *env = (JNIEnv *) GetEnvironmentContext(theEnv);
+  
+   if (theValue == NULL)
+     {
+      theDO->type = RVOID;
+      return;
+     }
+   
+   theDO->type = (*env)->CallIntMethod(env,theValue,CLIPSJNIData(theEnv)->getCLIPSTypeValueMethod);
+
+   switch(theDO->type)
+     {
+      case MULTIFIELD:
+        {
+         jint theSize = (*env)->CallIntMethod(env,theValue,CLIPSJNIData(theEnv)->multifieldValueSizeMethod);
+         result = EnvCreateMultifield(theEnv,theSize);
+         for (jint i = 0; i < theSize; i++)
+           {         
+            jobject mfo = (*env)->CallObjectMethod(env,theValue,CLIPSJNIData(theEnv)->multifieldValueGetMethod,i);
+            int mft = (*env)->CallIntMethod(env,mfo,CLIPSJNIData(theEnv)->getCLIPSTypeValueMethod);
+            void *mfv = ConvertSingleFieldPrimitiveValue(theEnv,mft,mfo); 
+            SetMFType(result,i+1,mft);
+            SetMFValue(result,i+1,mfv);
+           }
+           
+         SetpDOBegin(theDO,1);
+         SetpDOEnd(theDO,GetMFLength(result));
+         break;
+        }
+        
+      case RVOID:
+      case SYMBOL:
+      case STRING:
+      case INSTANCE_NAME:
+      case INTEGER:
+      case FLOAT:
+      case FACT_ADDRESS:
+      case INSTANCE_ADDRESS:
+        result = ConvertSingleFieldPrimitiveValue(theEnv,theDO->type,theValue);
+        break;
+
+      default: 
+        theDO->type = RVOID;
+        break;
+     }
+
+   theDO->value = result;
   }
 
 /********************/
@@ -142,42 +269,9 @@ globle void JNIUserFunction(
         }
      }
 
-   rv = (*env)->CallObjectMethod(env,context,CLIPSJNIData(theEnv)->userFunctionEvaluateMethod,arguments);  
-   if (rv != NULL)
-     {
-      if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->symbolValueClass))
-        {
-         result->type = SYMBOL; 
-         jstring theString = (*env)->CallObjectMethod(env,rv,CLIPSJNIData(theEnv)->lexemeValueGetValueMethod);
-         const char *cString = (*env)->GetStringUTFChars(env,theString,NULL);
-         result->value = EnvAddSymbol(theEnv,cString);
-         (*env)->ReleaseStringUTFChars(env,theString,cString);
-        }
-      else if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->stringValueClass))
-        { 
-         result->type = STRING; 
-         jstring theString = (*env)->CallObjectMethod(env,rv,CLIPSJNIData(theEnv)->lexemeValueGetValueMethod);
-         const char *cString = (*env)->GetStringUTFChars(env,theString,NULL);
-         result->value = EnvAddSymbol(theEnv,cString);
-         (*env)->ReleaseStringUTFChars(env,theString,cString);
-        }
-      else if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->instanceNameValueClass))
-        { 
-         result->type = INSTANCE_NAME; 
-         jstring theString = (*env)->CallObjectMethod(env,rv,CLIPSJNIData(theEnv)->lexemeValueGetValueMethod);
-         const char *cString = (*env)->GetStringUTFChars(env,theString,NULL);
-         result->value = EnvAddSymbol(theEnv,cString);
-         (*env)->ReleaseStringUTFChars(env,theString,cString);
-        }
-      else if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->integerValueClass))
-        { 
-         result->type = INTEGER; 
-        }
-      else if ((*env)->IsInstanceOf(env,rv,CLIPSJNIData(theEnv)->floatValueClass))
-        { 
-         result->type = FLOAT; 
-        }
-     }
+   rv = (*env)->CallObjectMethod(env,context,CLIPSJNIData(theEnv)->userFunctionEvaluateMethod,arguments); 
+   
+   ConvertPrimitiveValueToDataObject(theEnv,rv,result);
 
    (*env)->DeleteLocalRef(env,arguments);
   }
@@ -451,18 +545,24 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    jmethodID theArrayListInitMethod, theArrayListAddMethod;
    jclass theVoidValueClass;
    jmethodID theVoidValueInitMethod;
+   jclass thePrimitiveValueClass;
+   jmethodID theGetCLIPSTypeValueMethod;
    jclass theIntegerValueClass, theFloatValueClass;
-   jmethodID theIntegerValueInitMethod, theFloatValueInitMethod;
+   jmethodID theIntegerValueInitMethod, theIntegerValueLongValueMethod;
+   jmethodID theFloatValueInitMethod, theFloatValueDoubleValueMethod;
    jclass theSymbolValueClass, theStringValueClass, theInstanceNameValueClass;
    jmethodID theSymbolValueInitMethod, theStringValueInitMethod, theInstanceNameValueInitMethod;
    jclass theLexemeValueClass;
    jmethodID theLexemeValueGetValueMethod;
    jclass theMultifieldValueClass;
    jmethodID theMultifieldValueInitMethod;
+   jmethodID theMultifieldValueGetMethod, theMultifieldValueSizeMethod;
    jclass theFactAddressValueClass;
    jmethodID theFactAddressValueInitMethod;
+   jmethodID theFactAddressValueGetFactAddressMethod;
    jclass theInstanceAddressValueClass;
    jmethodID theInstanceAddressValueInitMethod;
+   jmethodID theInstanceAddressValueGetInstanceAddressMethod;
    struct externalAddressType javaPointer = { "java", PrintJavaAddress, PrintJavaAddress, DiscardJavaAddress, NewJavaAddress, CallJavaMethod };
 
    /*===========================*/
@@ -475,6 +575,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    theLongClass = (*env)->FindClass(env,"java/lang/Long"); 
    theDoubleClass = (*env)->FindClass(env,"java/lang/Double"); 
    theArrayListClass = (*env)->FindClass(env,"java/util/ArrayList"); 
+   thePrimitiveValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/PrimitiveValue");
    theVoidValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/VoidValue");
    theIntegerValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/IntegerValue");
    theFloatValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/FloatValue");
@@ -496,6 +597,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
        (theClassClass == NULL) ||
        (theLongClass == NULL) || (theDoubleClass == NULL) ||
        (theArrayListClass == NULL) ||
+       (thePrimitiveValueClass == NULL) ||
        (theVoidValueClass == NULL) ||
        (theIntegerValueClass == NULL) || (theFloatValueClass == NULL) ||
        (theSymbolValueClass == NULL) || (theStringValueClass == NULL) || 
@@ -519,16 +621,23 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    theDoubleInitMethod = (*env)->GetMethodID(env,theDoubleClass,"<init>","(D)V");
    theArrayListInitMethod = (*env)->GetMethodID(env,theArrayListClass,"<init>","(I)V");
    theArrayListAddMethod = (*env)->GetMethodID(env,theArrayListClass,"add","(Ljava/lang/Object;)Z");
+   theGetCLIPSTypeValueMethod = (*env)->GetMethodID(env,thePrimitiveValueClass,"getCLIPSTypeValue","()I");
    theVoidValueInitMethod = (*env)->GetMethodID(env,theVoidValueClass,"<init>","()V");
    theIntegerValueInitMethod = (*env)->GetMethodID(env,theIntegerValueClass,"<init>","(Ljava/lang/Long;)V");
+   theIntegerValueLongValueMethod = (*env)->GetMethodID(env,theIntegerValueClass,"longValue","()J");
    theFloatValueInitMethod = (*env)->GetMethodID(env,theFloatValueClass,"<init>","(Ljava/lang/Double;)V");
+   theFloatValueDoubleValueMethod = (*env)->GetMethodID(env,theFloatValueClass,"doubleValue","()D");
    theSymbolValueInitMethod = (*env)->GetMethodID(env,theSymbolValueClass,"<init>","(Ljava/lang/String;)V");
    theStringValueInitMethod = (*env)->GetMethodID(env,theStringValueClass,"<init>","(Ljava/lang/String;)V");
    theLexemeValueGetValueMethod = (*env)->GetMethodID(env,theLexemeValueClass,"getValue","()Ljava/lang/String;");
    theInstanceNameValueInitMethod = (*env)->GetMethodID(env,theInstanceNameValueClass,"<init>","(Ljava/lang/String;)V");
    theMultifieldValueInitMethod = (*env)->GetMethodID(env,theMultifieldValueClass,"<init>","(Ljava/util/List;)V");
+   theMultifieldValueGetMethod = (*env)->GetMethodID(env,theMultifieldValueClass,"get","(I)Lnet/sf/clipsrules/jni/PrimitiveValue;");
+   theMultifieldValueSizeMethod = (*env)->GetMethodID(env,theMultifieldValueClass,"size","()I");
    theFactAddressValueInitMethod = (*env)->GetMethodID(env,theFactAddressValueClass,"<init>","(JLnet/sf/clipsrules/jni/Environment;)V");
+   theFactAddressValueGetFactAddressMethod = (*env)->GetMethodID(env,theFactAddressValueClass,"getFactAddress","()J");
    theInstanceAddressValueInitMethod = (*env)->GetMethodID(env,theInstanceAddressValueClass,"<init>","(JLnet/sf/clipsrules/jni/Environment;)V");
+   theInstanceAddressValueGetInstanceAddressMethod = (*env)->GetMethodID(env,theInstanceAddressValueClass,"getInstanceAddress","()J");
 
    /*==============================================*/
    /* If the Java init methods could not be found, */
@@ -539,14 +648,20 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
        (theClassGetCanonicalNameMethod == NULL) ||
        (theLongInitMethod == NULL) || (theDoubleInitMethod == NULL) || 
        (theArrayListInitMethod == NULL) || (theArrayListAddMethod == NULL) ||
+       (theGetCLIPSTypeValueMethod == NULL) ||
        (theVoidValueInitMethod == NULL) ||
-       (theIntegerValueInitMethod == NULL) || (theFloatValueInitMethod == NULL) ||
+       (theIntegerValueInitMethod == NULL) || (theIntegerValueLongValueMethod == NULL) || 
+       (theFloatValueInitMethod == NULL) || (theFloatValueDoubleValueMethod == NULL) ||
        (theSymbolValueInitMethod == NULL) || (theStringValueInitMethod == NULL) ||
        (theInstanceNameValueInitMethod == NULL) ||
        (theLexemeValueGetValueMethod == NULL) ||
        (theMultifieldValueInitMethod == NULL) ||
+       (theMultifieldValueGetMethod == NULL) ||
+       (theMultifieldValueSizeMethod == NULL) ||
        (theFactAddressValueInitMethod == NULL) ||
-       (theInstanceAddressValueInitMethod == NULL))
+       (theFactAddressValueGetFactAddressMethod == NULL) ||
+       (theInstanceAddressValueInitMethod == NULL) ||
+       (theInstanceAddressValueGetInstanceAddressMethod == NULL))
      { return((jlong) NULL); }
      
    /*=========================*/
@@ -586,13 +701,18 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    CLIPSJNIData(theEnv)->arrayListInitMethod = theArrayListInitMethod;
    CLIPSJNIData(theEnv)->arrayListAddMethod = theArrayListAddMethod;
 
+   CLIPSJNIData(theEnv)->primitiveValueClass = (*env)->NewGlobalRef(env,thePrimitiveValueClass);
+   CLIPSJNIData(theEnv)->getCLIPSTypeValueMethod = theGetCLIPSTypeValueMethod;
+
    CLIPSJNIData(theEnv)->voidValueClass = (*env)->NewGlobalRef(env,theVoidValueClass);
    CLIPSJNIData(theEnv)->voidValueInitMethod = theVoidValueInitMethod;
    
    CLIPSJNIData(theEnv)->integerValueClass = (*env)->NewGlobalRef(env,theIntegerValueClass);
    CLIPSJNIData(theEnv)->integerValueInitMethod = theIntegerValueInitMethod;
+   CLIPSJNIData(theEnv)->integerValueLongValueMethod = theIntegerValueLongValueMethod;
    CLIPSJNIData(theEnv)->floatValueClass = (*env)->NewGlobalRef(env,theFloatValueClass);
    CLIPSJNIData(theEnv)->floatValueInitMethod = theFloatValueInitMethod;
+   CLIPSJNIData(theEnv)->floatValueDoubleValueMethod = theFloatValueDoubleValueMethod;
       
    CLIPSJNIData(theEnv)->symbolValueClass = (*env)->NewGlobalRef(env,theSymbolValueClass);
    CLIPSJNIData(theEnv)->symbolValueInitMethod = theSymbolValueInitMethod;
@@ -606,12 +726,16 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
 
    CLIPSJNIData(theEnv)->multifieldValueClass = (*env)->NewGlobalRef(env,theMultifieldValueClass);
    CLIPSJNIData(theEnv)->multifieldValueInitMethod = theMultifieldValueInitMethod;
+   CLIPSJNIData(theEnv)->multifieldValueGetMethod = theMultifieldValueGetMethod;
+   CLIPSJNIData(theEnv)->multifieldValueSizeMethod = theMultifieldValueSizeMethod;
 
    CLIPSJNIData(theEnv)->factAddressValueClass = (*env)->NewGlobalRef(env,theFactAddressValueClass);
    CLIPSJNIData(theEnv)->factAddressValueInitMethod = theFactAddressValueInitMethod;
+   CLIPSJNIData(theEnv)->factAddressValueGetFactAddressMethod = theFactAddressValueGetFactAddressMethod;
 
    CLIPSJNIData(theEnv)->instanceAddressValueClass = (*env)->NewGlobalRef(env,theInstanceAddressValueClass);
    CLIPSJNIData(theEnv)->instanceAddressValueInitMethod = theInstanceAddressValueInitMethod;
+   CLIPSJNIData(theEnv)->instanceAddressValueGetInstanceAddressMethod = theInstanceAddressValueGetInstanceAddressMethod;
    
    /*======================================*/
    /* Store the java environment for later */
@@ -630,6 +754,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_createEnvironment
    (*env)->DeleteLocalRef(env,theLongClass);
    (*env)->DeleteLocalRef(env,theDoubleClass);
    (*env)->DeleteLocalRef(env,theArrayListClass);
+   (*env)->DeleteLocalRef(env,thePrimitiveValueClass);
    (*env)->DeleteLocalRef(env,theVoidValueClass);
    (*env)->DeleteLocalRef(env,theIntegerValueClass);
    (*env)->DeleteLocalRef(env,theFloatValueClass);
@@ -988,7 +1113,7 @@ JNIEXPORT jlong JNICALL Java_net_sf_clipsrules_jni_Environment_run(
    void *oldContext = SetEnvironmentContext(JLongToPointer(clipsEnv),(void *) env);
 
    rv = EnvRun(JLongToPointer(clipsEnv),runLimit);
-
+   
    SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
 
    return rv;
@@ -2107,7 +2232,6 @@ static void *JLongToPointer(
   {
    return (void *) value;
   }
-
 
 /******************/
 /* PointerToJLong */

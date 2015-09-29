@@ -33,6 +33,10 @@ public class MultifieldValue extends PrimitiveValue implements Iterable<Primitiv
      {
       return this.value;
      }
+
+   @Override
+   public CLIPSType getCLIPSType()
+     { return CLIPSType.MULTIFIELD; }
      
    /*************/
    /* hashCode: */

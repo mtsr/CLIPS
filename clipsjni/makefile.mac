@@ -8,6 +8,7 @@ JNI_FILES = \
 	$(JNI_SRC)/CLIPSException.java \
 	$(JNI_SRC)/CLIPSLineError.java \
 	$(JNI_SRC)/CLIPSLoadException.java \
+	$(JNI_SRC)/CLIPSType.java \
 	$(JNI_SRC)/CommandExecutionEvent.java \
 	$(JNI_SRC)/CommandExecutionListener.java \
 	$(JNI_SRC)/CommandPromptTextArea.java \

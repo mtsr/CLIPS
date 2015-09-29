@@ -35,6 +35,10 @@ public class StringValue extends LexemeValue
      {        
       return "\"" + super.toString() + "\"";
      }
+
+   @Override
+   public CLIPSType getCLIPSType()
+     { return CLIPSType.STRING; }
     
    @Override
    public boolean isString()

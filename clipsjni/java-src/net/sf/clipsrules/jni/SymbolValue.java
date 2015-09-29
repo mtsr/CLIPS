@@ -26,7 +26,11 @@ public class SymbolValue extends LexemeValue
      {
       return getValue();
      }
-          
+
+   @Override
+   public CLIPSType getCLIPSType()
+     { return CLIPSType.SYMBOL; }
+  
    @Override
    public boolean isSymbol()
      { return true; }

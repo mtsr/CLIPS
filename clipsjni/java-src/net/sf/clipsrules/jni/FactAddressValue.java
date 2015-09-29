@@ -25,6 +25,10 @@ public class FactAddressValue extends PrimitiveValue
       return this.value;
      }
 
+   @Override
+   public CLIPSType getCLIPSType()
+     { return CLIPSType.FACT_ADDRESS; }
+
    /*******************/
    /* getEnvironment: */
    /*******************/

@@ -8,7 +8,11 @@ public class VoidValue extends PrimitiveValue
    public VoidValue()
      {
      }
-     
+  
+   @Override
+   public CLIPSType getCLIPSType()
+     { return CLIPSType.VOID; }
+
    @Override
    public boolean isVoid()
      { return true; }
