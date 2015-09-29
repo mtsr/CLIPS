@@ -941,6 +941,46 @@ public class Environment
                              theInstance.getInstanceAddress());
      }
 
+   /**************************/
+   /* incrementAddressCount: */
+   /**************************/
+   private native void incrementAddressCount(Environment javaEnv,long env,long externalAddress);
+
+   /**************************/
+   /* decrementAddressCount: */
+   /**************************/
+   private native void decrementAddressCount(Environment javaEnv,long env,long externalAddress);
+
+   /**************************/
+   /* incrementAddressCount: */
+   /**************************/
+   public void incrementAddressCount(
+     ExternalAddressValue theAddress)
+     {
+      incrementAddressCount(theAddress.getEnvironment(),
+                            theAddress.getEnvironment().getEnvironmentAddress(),
+                            theAddress.getExternalAddress());
+     }
+
+   /**************************/
+   /* decrementAddressCount: */
+   /**************************/
+   public void decrementAddressCount(
+     ExternalAddressValue theAddress)
+     {
+      decrementAddressCount(theAddress.getEnvironment(),
+                            theAddress.getEnvironment().getEnvironmentAddress(),
+                            theAddress.getExternalAddress());
+     }
+
+   /*******************************/
+   /* createExternalAddressValue: */
+   /*******************************/
+   public ExternalAddressValue createExternalAddressValue(Object externalAddress)
+     {
+      return new ExternalAddressValue(externalAddress,this);
+     }
+
    /************/
    /* destroy: */
    /************/

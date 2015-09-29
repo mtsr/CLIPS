@@ -91,6 +91,9 @@ public abstract class PrimitiveValue
    public boolean isMultifield()
      { return false; }
          
+   public boolean isExternalAddress()
+     { return false; }
+   
    /************/
    /* retain: */
    /************/

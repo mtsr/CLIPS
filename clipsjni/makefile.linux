@@ -15,6 +15,7 @@ JNI_FILES = \
 	$(JNI_SRC)/CommandExecutionListener.java \
 	$(JNI_SRC)/CommandPromptTextArea.java \
 	$(JNI_SRC)/Environment.java \
+	$(JNI_SRC)/ExternalAddressValue.java \
 	$(JNI_SRC)/FactAddressValue.java \
 	$(JNI_SRC)/FloatValue.java \
 	$(JNI_SRC)/InstanceAddressValue.java \

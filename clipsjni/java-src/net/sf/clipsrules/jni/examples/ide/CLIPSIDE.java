@@ -25,7 +25,6 @@ import net.sf.clipsrules.jni.*;
 // external address user function
 // call java method
 // When environment destroyed, delete global context references
-// Refactor JNI code
 
 public class CLIPSIDE implements ActionListener, MenuListener, 
                                  CommandExecutionListener

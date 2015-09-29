@@ -399,6 +399,22 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_incrementInstanceC
 JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_decrementInstanceCount
   (JNIEnv *, jobject, jobject, jlong, jlong);
 
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    incrementAddressCount
+ * Signature: (Lnet/sf/clipsrules/jni/Environment;JJ)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_incrementAddressCount
+  (JNIEnv *, jobject, jobject, jlong, jlong);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    decrementAddressCount
+ * Signature: (Lnet/sf/clipsrules/jni/Environment;JJ)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_decrementAddressCount
+  (JNIEnv *, jobject, jobject, jlong, jlong);
+
 #ifdef __cplusplus
 }
 #endif
