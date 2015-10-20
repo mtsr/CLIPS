@@ -379,6 +379,9 @@ JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_eval(
    
    cEvalStr = (*env)->GetStringUTFChars(env,evalStr,NULL);
    
+   EnvSetEvaluationError(theCLIPSEnv,FALSE);
+   EnvSetHaltExecution(theCLIPSEnv,FALSE);
+
    EnvEval(theCLIPSEnv,(char *) cEvalStr,&theDO);
 
    (*env)->ReleaseStringUTFChars(env,evalStr,cEvalStr);
@@ -409,6 +412,9 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_build(
    const char *cBuildStr = (*env)->GetStringUTFChars(env,buildStr,NULL);
 
    void *oldContext = SetEnvironmentContext(theCLIPSEnv,(void *) env);
+
+   EnvSetEvaluationError(theCLIPSEnv,FALSE);
+   EnvSetHaltExecution(theCLIPSEnv,FALSE);
    
    rv = (jboolean) EnvBuild(theCLIPSEnv,(char *) cBuildStr);
 
