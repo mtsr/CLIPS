@@ -5,8 +5,8 @@
 ;;; The father can not be in the presence of the daughters without the mother.
 ;;; The mother can not be in the presence of the sons without the father.
 ;;; The thief can not be alone with any of the family without the officer.
-;;; The cat must be with either the father or the daughters
-;;; The dog must be with either the mother or the sons
+;;; While onshore, the cat must be with either the father or the daughters
+;;; While onshore, The dog must be with either the mother or the sons
 ;;; The officer can not move the cat or the dog
 
 ;;; 18515 rules shoud be fired
