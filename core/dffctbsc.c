@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.40  10/25/15            */
    /*                                                     */
    /*         DEFFACTS BASIC COMMANDS HEADER FILE         */
    /*******************************************************/
@@ -37,8 +37,10 @@
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Removed initial-fact support.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -79,7 +81,6 @@
 /***************************************/
 
    static void                    ResetDeffacts(void *);
-   static void                    ClearDeffacts(void *);
    static void                    SaveDeffacts(void *,void *,const char *);
    static void                    ResetDeffactsAction(void *,struct constructHeader *,void *);
 
@@ -90,7 +91,6 @@ globle void DeffactsBasicCommands(
   void *theEnv)
   {   
    EnvAddResetFunction(theEnv,"deffacts",ResetDeffacts,0);
-   EnvAddClearFunction(theEnv,"deffacts",ClearDeffacts,0);
    AddSaveFunction(theEnv,"deffacts",SaveDeffacts,10);
 
 #if ! RUN_TIME
@@ -145,54 +145,6 @@ static void ResetDeffactsAction(
    EnvSetEvaluationError(theEnv,FALSE);
 
    EvaluateExpression(theEnv,theDeffacts->assertList,&result);
-  }
-
-/**********************************************************/
-/* ClearDeffacts: Deffacts clear routine for use with the */
-/*   clear command. Creates the initial-facts deffacts.   */
-/**********************************************************/
-static void ClearDeffacts(
-  void *theEnv)
-  {
-#if (! RUN_TIME) && (! BLOAD_ONLY)
-   struct expr *stub;
-   struct deffacts *newDeffacts;
-
-   /*=====================================*/
-   /* Create the data structures for the  */
-   /* expression (assert (initial-fact)). */
-   /*=====================================*/
-
-   stub = GenConstant(theEnv,FCALL,FindFunction(theEnv,"assert"));
-   stub->argList = GenConstant(theEnv,DEFTEMPLATE_PTR,EnvFindDeftemplateInModule(theEnv,"initial-fact"));
-   ExpressionInstall(theEnv,stub);
-
-   /*=============================================*/
-   /* Create a deffacts data structure to contain */
-   /* the expression and initialize it.           */
-   /*=============================================*/
-
-   newDeffacts = get_struct(theEnv,deffacts);
-   newDeffacts->header.whichModule =
-      (struct defmoduleItemHeader *) GetDeffactsModuleItem(theEnv,NULL);
-   newDeffacts->header.name = (SYMBOL_HN *) EnvAddSymbol(theEnv,"initial-fact");
-   IncrementSymbolCount(newDeffacts->header.name);
-   newDeffacts->assertList = PackExpression(theEnv,stub);
-   newDeffacts->header.next = NULL;
-   newDeffacts->header.ppForm = NULL;
-   newDeffacts->header.usrData = NULL;
-   ReturnExpression(theEnv,stub);
-
-   /*===========================================*/
-   /* Store the deffacts in the current module. */
-   /*===========================================*/
-
-   AddConstructToModule(&newDeffacts->header);
-#else
-#if MAC_XCD
-#pragma unused(theEnv)
-#endif
-#endif
   }
 
 /***************************************/

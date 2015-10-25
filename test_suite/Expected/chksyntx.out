@@ -96,9 +96,8 @@ CLIPS> (check-syntax "(defmessage-handler a9 a11 (?u) (* ?self:q 10))")
 FALSE
 CLIPS> (reset)
 CLIPS> (facts)
-f-0     (initial-fact)
 f-1     (x y z)
-For a total of 2 facts.
+For a total of 1 fact.
 CLIPS> (agenda)
 0      a3: f-1
 For a total of 1 activation.
@@ -232,14 +231,12 @@ ERROR:
 (defmessage-handler MAIN::a9 c11 ?u 
 " FALSE)
 CLIPS> (list-deffacts)
-initial-fact
 a1
-For a total of 2 deffacts.
+For a total of 1 deffacts.
 CLIPS> (list-deftemplates)
-initial-fact
 x
 a2
-For a total of 3 deftemplates.
+For a total of 2 deftemplates.
 CLIPS> (list-defrules)
 a3
 For a total of 1 defrule.
@@ -327,9 +324,8 @@ CLIPS> (check-syntax "(defmessage-handler a9 a11 (?u) (* ?self:q 10))")
 FALSE
 CLIPS> (reset)
 CLIPS> (facts)
-f-0     (initial-fact)
 f-1     (x y z)
-For a total of 2 facts.
+For a total of 1 fact.
 CLIPS> (agenda)
 0      a3: f-1
 For a total of 1 activation.
@@ -463,14 +459,12 @@ ERROR:
 (defmessage-handler MAIN::a9 c11 ?u 
 " FALSE)
 CLIPS> (list-deffacts)
-initial-fact
 a1
-For a total of 2 deffacts.
+For a total of 1 deffacts.
 CLIPS> (list-deftemplates)
-initial-fact
 x
 a2
-For a total of 3 deftemplates.
+For a total of 2 deftemplates.
 CLIPS> (list-defrules)
 a3
 For a total of 1 defrule.

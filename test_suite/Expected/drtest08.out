@@ -310,7 +310,6 @@ HND >> delete primary in class USER
 HND << delete primary in class USER
        ED:1 (<Stale Instance-initial-object>)
 MSG << delete ED:1 (<Stale Instance-initial-object>)
-<== f-0     (initial-fact)
 <== Focus MAIN
 :== ?*x* ==> 3 <== 
 TRUE
@@ -445,9 +444,8 @@ CLIPS>
            ?*y* = (make-instance [a] of A))
 CLIPS> (reset)
 CLIPS> (facts)
-f-0     (foo)
-f-1     (initial-fact)
-For a total of 2 facts.
+f-1     (foo)
+For a total of 1 fact.
 CLIPS> (instances)
 [a] of A
 [initial-object] of INITIAL-OBJECT

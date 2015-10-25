@@ -209,7 +209,6 @@ E:
 For a total of 3 defrules.
 CLIPS> (list-deffacts *)
 MAIN:
-   initial-fact
 A:
    foo
 B:
@@ -218,10 +217,9 @@ C:
    foo
 D:
 E:
-For a total of 4 deffacts.
+For a total of 3 deffacts.
 CLIPS> (list-deftemplates *)
 MAIN:
-   initial-fact
 A:
    a
    foo
@@ -230,7 +228,7 @@ B:
 C:
 D:
 E:
-For a total of 4 deftemplates.
+For a total of 3 deftemplates.
 CLIPS> (list-defglobals *)
 MAIN:
 A:
@@ -345,15 +343,12 @@ f-3     (b)
 f-4     (c)
 For a total of 2 facts.
 CLIPS> (facts MAIN)
-f-0     (initial-fact)
-For a total of 1 fact.
 CLIPS> (facts *)
-f-0     (initial-fact)
 f-1     (a)
 f-2     (b)
 f-3     (b)
 f-4     (c)
-For a total of 5 facts.
+For a total of 4 facts.
 CLIPS> (clear) ; Test redefinition of MAIN module
 CLIPS> (defmodule MAIN (export ?ALL))
 CLIPS> (defmodule MAIN (export deftemplate ?ALL))
@@ -496,10 +491,9 @@ ERROR:
    (b
 CLIPS> (list-deftemplates *)
 MAIN:
-   initial-fact
 BAR:
    b
-For a total of 2 deftemplates.
+For a total of 1 deftemplate.
 CLIPS> (clear)
 CLIPS> (defmodule MAIN (export ?ALL))
 CLIPS> (deftemplate a (slot x))

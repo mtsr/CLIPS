@@ -273,7 +273,6 @@
    (printout t "2nd output line: iii = " (send [a] get-iii) crlf))
 
 (defrule test
-   (initial-fact)
    =>
    (make-instance [a] of A)
    (make-instance [b] of B))

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  07/10/15            */
+   /*             CLIPS Version 6.40  10/25/15            */
    /*                                                     */
    /*                    REORDER MODULE                   */
    /*******************************************************/
@@ -35,7 +35,7 @@
 /*                                                           */
 /*            Added support for hashed alpha memories.       */
 /*                                                           */
-/*      6.31: Fixed crash bug that occurred from             */
+/*      6.40: Fixed crash bug that occurred from             */
 /*            AssignPatternIndices incorrectly               */
 /*            assigning the wrong join depth to              */
 /*            multiply nested nand  groups.                  */
@@ -45,6 +45,8 @@
 /*                                                           */
 /*            Fix for incorrect join depth computed by       */
 /*            AssignPatternIndices for not/and groups.       */
+/*                                                           */
+/*            Removed initial-fact support.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -210,8 +212,7 @@ globle struct lhsParseNode *ReorderPatterns(
 
    /*===========================================================*/
    /* Number the user specified patterns. Patterns added while  */
-   /* analyzing the rule (such as placing initial-fact patterns */
-   /* before not CEs) are not numbered so that there is no      */
+   /* analyzing the rule are not numbered so that there is no   */
    /* confusion when an error message refers to a CE. Also      */
    /* propagate field and slot values throughout each pattern.  */
    /*===========================================================*/

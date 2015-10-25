@@ -79,15 +79,15 @@
 #endif
 
 #ifndef VERSION_STRING
-#define VERSION_STRING "6.31"
+#define VERSION_STRING "6.40"
 #endif
 
 #ifndef CREATION_DATE_STRING
-#define CREATION_DATE_STRING "9/25/15"
+#define CREATION_DATE_STRING "10/25/15"
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (6.31 9/25/15)\n"
+#define BANNER_STRING "         CLIPS (6.40 10/25/15)\n"
 #endif
 
 /*************************/

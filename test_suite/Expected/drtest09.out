@@ -348,7 +348,6 @@ CLIPS>
    (printout t "2nd output line: iii = " (send [a] get-iii) crlf))
 CLIPS> 
 (defrule test
-   (initial-fact)
    =>
    (make-instance [a] of A)
    (make-instance [b] of B))
@@ -760,7 +759,7 @@ CLIPS> (clear)                   ; DR0879
 CLIPS> (assert (a) (b) (c))
 <Fact-3>
 CLIPS> (implode$ (get-fact-list))
-"<Fact-0> <Fact-1> <Fact-2> <Fact-3>"
+"<Fact-1> <Fact-2> <Fact-3>"
 CLIPS> (clear)                   ; DR0880
 CLIPS> (deftemplate matrix (slot ID) (slot JD))
 CLIPS> (deffacts blah (matrix (ID 5) (JD 5)))
@@ -791,16 +790,14 @@ CLIPS>
    (as_score (segment_id 12)(score 9))) 
 CLIPS> (reset)
 CLIPS> (facts)
-f-0     (initial-fact)
 f-1     (as_score (segment_id 11) (score 5))
 f-2     (as_score (segment_id 12) (score 9))
-For a total of 3 facts.
+For a total of 2 facts.
 CLIPS> (reset)
 CLIPS> (facts)
-f-0     (initial-fact)
 f-1     (as_score (segment_id 11) (score 5))
 f-2     (as_score (segment_id 12) (score 9))
-For a total of 3 facts.
+For a total of 2 facts.
 CLIPS> (clear)
 CLIPS> (clear)                   ; SourceForge 1881324: CLIPS 6.3 Beta Release 3
 CLIPS> 

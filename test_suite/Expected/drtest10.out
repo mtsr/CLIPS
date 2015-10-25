@@ -283,16 +283,14 @@ CLIPS> (assert (foo (x (clear) 1)))
 [CONSTRCT1] Some constructs are still in use. Clear cannot continue.
 <Fact-1>
 CLIPS> (facts)
-f-0     (initial-fact)
 f-1     (foo (x 1))
-For a total of 2 facts.
+For a total of 1 fact.
 CLIPS> (modify 1 (x (clear) 2))
 [CONSTRCT1] Some constructs are still in use. Clear cannot continue.
 <Fact-2>
 CLIPS> (facts)
-f-0     (initial-fact)
 f-2     (foo (x 2))
-For a total of 2 facts.
+For a total of 1 fact.
 CLIPS> (clear) ; SourceForge Bug
 CLIPS> 
 (defmodule FOO

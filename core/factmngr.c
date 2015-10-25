@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.40  10/25/15            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -61,8 +61,10 @@
 /*            constructs that are contained externally to    */
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Removed initial-fact support.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -1596,7 +1598,7 @@ static void ResetFacts(
    /* Initialize the fact index to zero. */
    /*====================================*/
 
-   FactData(theEnv)->NextFactIndex = 0L;
+   FactData(theEnv)->NextFactIndex = 1L;
 
    /*======================================*/
    /* Remove all facts from the fact list. */
@@ -1624,7 +1626,7 @@ static int ClearFactsReady(
    /* Initialize the fact index to zero. */
    /*====================================*/
 
-   FactData(theEnv)->NextFactIndex = 0L;
+   FactData(theEnv)->NextFactIndex = 1L;
 
    /*======================================*/
    /* Remove all facts from the fact list. */

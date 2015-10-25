@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  10/25/15            */
    /*                                                     */
    /*            DEFTEMPLATE BSAVE/BLOAD MODULE           */
    /*******************************************************/
@@ -24,6 +24,8 @@
 /*      6.30: Changed integer type/precision.                */
 /*                                                           */
 /*            Support for deftemplate slot facets.           */
+/*                                                           */
+/*      6.40: Removed initial-fact support.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -583,15 +585,7 @@ static void ClearBload(
 
    space =  DeftemplateBinaryData(theEnv)->NumberOfTemplateSlots * sizeof(struct templateSlot);
    if (space != 0) genfree(theEnv,(void *) DeftemplateBinaryData(theEnv)->SlotArray,space);
-   DeftemplateBinaryData(theEnv)->NumberOfTemplateSlots = 0;
-   
-   /*======================================*/
-   /* Create the initial-fact deftemplate. */
-   /*======================================*/
-
-#if (! BLOAD_ONLY)
-   CreateImpliedDeftemplate(theEnv,(SYMBOL_HN *) EnvAddSymbol(theEnv,"initial-fact"),FALSE);
-#endif
+   DeftemplateBinaryData(theEnv)->NumberOfTemplateSlots = 0;   
   }
 
 /************************************************************/

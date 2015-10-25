@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  10/25/15            */
    /*                                                     */
    /*          DEFTEMPLATE BASIC COMMANDS MODULE          */
    /*******************************************************/
@@ -41,6 +41,8 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*      6.40: Removed initial-fact support.                  */
+/*                                                           */
 /*************************************************************/
 
 #define _TMPLTBSC_SOURCE_
@@ -79,10 +81,6 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-#if ! DEFFACTS_CONSTRUCT
-   static void                    ResetDeftemplates(void *);
-#endif
-   static void                    ClearDeftemplates(void *);
    static void                    SaveDeftemplates(void *,void *,const char *);
 
 /*********************************************************************/
@@ -91,10 +89,6 @@
 globle void DeftemplateBasicCommands(
   void *theEnv)
   {
-#if ! DEFFACTS_CONSTRUCT
-   EnvAddResetFunction(theEnv,"deftemplate",ResetDeftemplates,0);
-#endif
-   EnvAddClearFunction(theEnv,"deftemplate",ClearDeftemplates,0);
    AddSaveFunction(theEnv,"deftemplate",SaveDeftemplates,10);
 
 #if ! RUN_TIME
@@ -115,42 +109,6 @@ globle void DeftemplateBasicCommands(
    DeftemplateCompilerSetup(theEnv);
 #endif
 
-#endif
-  }
-
-/*************************************************************/
-/* ResetDeftemplates: Deftemplate reset routine for use with */
-/*   the reset command. Asserts the initial-fact fact when   */
-/*   the deffacts construct has been disabled.               */
-/*************************************************************/
-#if ! DEFFACTS_CONSTRUCT
-static void ResetDeftemplates(
-  void *theEnv)
-  {
-   struct fact *factPtr;
-
-   factPtr = StringToFact(theEnv,"(initial-fact)");
-
-   if (factPtr == NULL) return;
-
-   EnvAssert(theEnv,(void *) factPtr);
- }
-#endif
-
-/*****************************************************************/
-/* ClearDeftemplates: Deftemplate clear routine for use with the */
-/*   clear command. Creates the initial-facts deftemplate.       */
-/*****************************************************************/
-static void ClearDeftemplates(
-  void *theEnv)
-  {
-#if (! RUN_TIME) && (! BLOAD_ONLY)
-
-   CreateImpliedDeftemplate(theEnv,(SYMBOL_HN *) EnvAddSymbol(theEnv,"initial-fact"),FALSE);
-#else
-#if MAC_XCD
-#pragma unused(theEnv)
-#endif
 #endif
   }
 

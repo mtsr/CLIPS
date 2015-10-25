@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.40  10/25/15            */
    /*                                                     */
    /*                   FACT BUILD MODULE                 */
    /*******************************************************/
@@ -25,6 +25,8 @@
 /*                                                           */
 /*            Added support for hashed comparisons to        */
 /*            constants.                                     */
+/*                                                           */
+/*      6.40: Removed initial-fact support.                  */
 /*                                                           */
 /*************************************************************/
 
@@ -125,15 +127,15 @@ globle void InitializeFactPatterns(
    newPtr->markIRPatternFunction = MarkFactPatternForIncrementalReset;
    newPtr->incrementalResetFunction = FactsIncrementalReset;
 
+   newPtr->initialPatternFunction = NULL;
+
 #if (! RUN_TIME) && (! BLOAD_ONLY)
-   newPtr->initialPatternFunction = CreateInitialFactPattern;
 #if CONSTRUCT_COMPILER
    newPtr->codeReferenceFunction = FactPatternNodeReference;
 #else
    newPtr->codeReferenceFunction = NULL;
 #endif
 #else
-   newPtr->initialPatternFunction = NULL;
    newPtr->codeReferenceFunction = NULL;
 #endif   
 

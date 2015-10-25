@@ -9,21 +9,19 @@ For a total of 3 defrules.
 CLIPS> (get-defrule-list)
 (foo bar woz)
 CLIPS> (list-deffacts)
-initial-fact
 foo
 bar
 woz
-For a total of 4 deffacts.
+For a total of 3 deffacts.
 CLIPS> (get-deffacts-list)
-(initial-fact foo bar woz)
+(foo bar woz)
 CLIPS> (list-deftemplates)
-initial-fact
 foo
 bar
 woz
-For a total of 4 deftemplates.
+For a total of 3 deftemplates.
 CLIPS> (get-deftemplate-list)
-(initial-fact foo bar woz)
+(foo bar woz)
 CLIPS> (list-defglobals)
 foo
 bar
