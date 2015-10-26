@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.40  10/26/15            */
    /*                                                     */
    /*               STRING FUNCTIONS MODULE               */
    /*******************************************************/
@@ -47,8 +47,11 @@
 /*            Fixed str-cat bug that could be invoked by     */
 /*            (funcall str-cat).                             */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Prior error flags are cleared before EnvEval   */
+/*            and EnvBuild are processed.                    */
 /*                                                           */
 /*************************************************************/
 
@@ -783,6 +786,17 @@ globle int EnvEval(
    struct BindInfo *oldBinds;
    int danglingConstructs;
 
+   /*=====================================*/
+   /* If embedded, clear the error flags. */
+   /*=====================================*/
+   
+   if ((! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+       (EvaluationData(theEnv)->CurrentExpression == NULL))
+     {
+      EnvSetEvaluationError(theEnv,FALSE);
+      EnvSetHaltExecution(theEnv,FALSE);
+     }
+
    /*======================================================*/
    /* Evaluate the string. Create a different logical name */
    /* for use each time the eval function is called.       */
@@ -1000,6 +1014,17 @@ globle int EnvBuild(
    const char *constructType;
    struct token theToken;
    int errorFlag;
+   
+   /*=====================================*/
+   /* If embedded, clear the error flags. */
+   /*=====================================*/
+   
+   if ((! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
+       (EvaluationData(theEnv)->CurrentExpression == NULL))
+     {
+      EnvSetEvaluationError(theEnv,FALSE);
+      EnvSetHaltExecution(theEnv,FALSE);
+     }
 
    /*====================================================*/
    /* No additions during defrule join network activity. */
