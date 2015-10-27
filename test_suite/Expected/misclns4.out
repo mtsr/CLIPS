@@ -462,10 +462,10 @@ CLIPS> (defclass A (is-a USER) (slot x))
 CLIPS> (make-instance a of A (x 1))
 [a]
 CLIPS> (bsave-instances "Temp//bug.bin")
-2
+1
 CLIPS> (reset)
 CLIPS> (bload-instances "Temp//bug.bin")
-2
+1
 CLIPS> (clear) ;; incremental reset issue
 CLIPS> (assert (B NP14 NP))
 <Fact-1>

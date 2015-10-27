@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  10/26/15            */
    /*                                                     */
    /*                PATTERN HEADER FILE                  */
    /*******************************************************/
@@ -28,6 +28,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.40: Removed initial-fact and initial-object        */
+/*            support.                                       */
 /*                                                           */
 /*************************************************************/
 
@@ -113,7 +116,6 @@ struct patternParser
    void *(*copyUserDataFunction)(void *,void *);
    void (*markIRPatternFunction)(void *,struct patternNodeHeader *,int);
    void (*incrementalResetFunction)(void *);
-   struct lhsParseNode *(*initialPatternFunction)(void *);
    void (*codeReferenceFunction)(void *,void *,FILE *,int,int);
    int priority;
    struct patternParser *next;

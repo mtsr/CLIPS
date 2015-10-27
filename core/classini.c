@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  01/25/15          */
+   /*               CLIPS Version 6.40  10/26/15          */
    /*                                                     */
    /*               CLASS INITIALIZATION MODULE           */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*            Changed find construct functionality so that    */
 /*            imported modules are search when locating a     */
 /*            named construct.                                */
+/*                                                            */
+/*      6.40: Removed initial-object support.                 */
 /*                                                            */
 /**************************************************************/
 
@@ -110,7 +112,6 @@
    ***************************************** */
 #define SUPERCLASS_RLN       "is-a"
 #define NAME_RLN             "name"
-#define INITIAL_OBJECT_NAME  "initial-object"
 
 /* =========================================
    *****************************************
@@ -169,10 +170,6 @@ globle void SetupObjectSystem(
    IncrementSymbolCount(DefclassData(theEnv)->ISA_SYMBOL);
    DefclassData(theEnv)->NAME_SYMBOL = (SYMBOL_HN *) EnvAddSymbol(theEnv,NAME_RLN);
    IncrementSymbolCount(DefclassData(theEnv)->NAME_SYMBOL);
-#if DEFRULE_CONSTRUCT
-   DefclassData(theEnv)->INITIAL_OBJECT_SYMBOL = (SYMBOL_HN *) EnvAddSymbol(theEnv,INITIAL_OBJECT_NAME);
-   IncrementSymbolCount(DefclassData(theEnv)->INITIAL_OBJECT_SYMBOL);
-#endif
 #endif
 
    SetupDefclasses(theEnv);
@@ -469,9 +466,6 @@ globle void CreateSystemClasses(
   void *theEnv)
   {
    DEFCLASS *user,*any,*primitive,*number,*lexeme,*address,*instance;
-#if DEFRULE_CONSTRUCT
-   DEFCLASS *initialObject;
-#endif
    
    /* ===================================
       Add canonical slot name entries for
@@ -507,11 +501,6 @@ globle void CreateSystemClasses(
    instance = AddSystemClass(theEnv,INSTANCE_TYPE_NAME,primitive);
    DefclassData(theEnv)->PrimitiveClassMap[INSTANCE_ADDRESS] = AddSystemClass(theEnv,INSTANCE_ADDRESS_TYPE_NAME,instance);
    DefclassData(theEnv)->PrimitiveClassMap[INSTANCE_NAME] = AddSystemClass(theEnv,INSTANCE_NAME_TYPE_NAME,instance);
-#if DEFRULE_CONSTRUCT
-   initialObject = AddSystemClass(theEnv,INITIAL_OBJECT_CLASS_NAME,user);
-   initialObject->abstract = 0;
-   initialObject->reactive = 1;
-#endif
 
    /* ================================================================================
        INSTANCE-ADDRESS is-a INSTANCE and ADDRESS.  The links between INSTANCE-ADDRESS
@@ -541,9 +530,7 @@ globle void CreateSystemClasses(
    AddConstructToModule((struct constructHeader *) address);
    AddConstructToModule((struct constructHeader *) instance);
    AddConstructToModule((struct constructHeader *) user);
-#if DEFRULE_CONSTRUCT
-   AddConstructToModule((struct constructHeader *) initialObject);
-#endif
+
    for (any = (DEFCLASS *) EnvGetNextDefclass(theEnv,NULL) ;
         any != NULL ;
         any = (DEFCLASS *) EnvGetNextDefclass(theEnv,(void *) any))

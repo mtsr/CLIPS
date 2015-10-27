@@ -261,7 +261,8 @@ CLIPS> (assert (a 1))
 [CONSTRCT1] Some constructs are still in use. Clear cannot continue.
 <Fact-1>
 CLIPS> (send [initial-object] delete)
-TRUE
+[MSGPASS2] No such instance initial-object in function send.
+FALSE
 CLIPS> (assert (a 2))
 [CONSTRCT1] Some constructs are still in use. Clear cannot continue.
 <Fact-2>

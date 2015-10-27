@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  01/13/15          */
+   /*               CLIPS Version 6.40  10/26/15          */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.40: Removed initial-object support.                */
 /*                                                           */
 /*************************************************************/
 /* =========================================
@@ -151,7 +153,6 @@ static struct lhsParseNode *FilterObjectPattern(void *,struct patternParser *,
                                               struct lhsParseNode **,struct lhsParseNode **);
 static BITMAP_HN *FormSlotBitMap(void *,struct lhsParseNode *);
 static struct lhsParseNode *RemoveSlotExistenceTests(void *,struct lhsParseNode *,BITMAP_HN **);
-static struct lhsParseNode *CreateInitialObjectPattern(void *);
 static EXPRESSION *ObjectMatchDelayParse(void *,EXPRESSION *,const char *);
 static void MarkObjectPtnIncrementalReset(void *,struct patternNodeHeader *,int);
 static void ObjectIncrementalReset(void *);
@@ -222,8 +223,6 @@ globle void SetupObjectPatternStuff(
    newPtr->markIRPatternFunction = MarkObjectPtnIncrementalReset;
    newPtr->incrementalResetFunction = ObjectIncrementalReset;
 
-   newPtr->initialPatternFunction = CreateInitialObjectPattern;
-
 #if CONSTRUCT_COMPILER && (! RUN_TIME)
    newPtr->codeReferenceFunction = ObjectPatternNodeReference;
 #else
@@ -246,11 +245,6 @@ globle void SetupObjectPatternStuff(
    ObjectPatternsCompilerSetup(theEnv);
 #endif
 
-#if ! DEFINSTANCES_CONSTRUCT
-   EnvAddResetFunction(theEnv,"reset-initial-object",ResetInitialObject,0);
-#endif
-
-
 #if BLOAD_AND_BSAVE || BLOAD || BLOAD_ONLY
    SetupObjectPatternsBload(theEnv);
 #endif
@@ -261,24 +255,6 @@ globle void SetupObjectPatternStuff(
           INTERNALLY VISIBLE FUNCTIONS
    =========================================
    ***************************************** */
-
-#if ! DEFINSTANCES_CONSTRUCT
-
-static void ResetInitialObject(
-  void *theEnv)
-  {
-   EXPRESSION *tmp;
-   DATA_OBJECT rtn;
-
-   tmp = GenConstant(theEnv,FCALL,(void *) FindFunction(theEnv,"make-instance"));
-   tmp->argList = GenConstant(theEnv,INSTANCE_NAME,(void *) DefclassData(theEnv)->INITIAL_OBJECT_SYMBOL);
-   tmp->argList->nextArg =
-       GenConstant(theEnv,DEFCLASS_PTR,(void *) LookupDefclassInScope(theEnv,INITIAL_OBJECT_CLASS_NAME));
-   EvaluateExpression(theEnv,tmp,&rtn);
-   ReturnExpression(theEnv,tmp);
-  }
-
-#endif
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
 
@@ -2233,45 +2209,6 @@ static struct lhsParseNode *RemoveSlotExistenceTests(
       and slot restrictions removed.
       ==================================== */
    return(head);
-  }
-
-/***************************************************
-  NAME         : CreateInitialObjectPattern
-  DESCRIPTION  : Creates a default object pattern
-                 for use in defrules
-  INPUTS       : None
-  RETURNS      : The default initial pattern
-  SIDE EFFECTS : Pattern created
-  NOTES        : The pattern created is:
-                 (object (is-a INITIAL-OBJECT)
-                         (name [initial-object]))
- ***************************************************/
-static struct lhsParseNode *CreateInitialObjectPattern(
-  void *theEnv)
-  {
-   struct lhsParseNode *topNode;
-   CLASS_BITMAP *clsset;
-   int initialObjectClassID;
-
-   initialObjectClassID = LookupDefclassInScope(theEnv,INITIAL_OBJECT_CLASS_NAME)->id;
-   clsset = NewClassBitMap(theEnv,initialObjectClassID,0);
-   SetBitMap(clsset->map,initialObjectClassID);
-   clsset = PackClassBitMap(theEnv,clsset);
-
-   topNode = GetLHSParseNode(theEnv);
-   topNode->userData = EnvAddBitMap(theEnv,(void *) clsset,ClassBitMapSize(clsset));
-   IncrementBitMapCount(topNode->userData);
-   DeleteIntermediateClassBitMap(theEnv,clsset);
-   topNode->type = SF_WILDCARD;
-   topNode->index = 1;
-   topNode->slot = DefclassData(theEnv)->NAME_SYMBOL;
-   topNode->slotNumber = NAME_ID;
-
-   topNode->bottom = GetLHSParseNode(theEnv);
-   topNode->bottom->type = INSTANCE_NAME;
-   topNode->bottom->value = (void *) DefclassData(theEnv)->INITIAL_OBJECT_SYMBOL;
-
-   return(topNode);
   }
 
 /**************************************************************

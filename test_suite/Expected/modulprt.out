@@ -274,14 +274,13 @@ MAIN:
    ADDRESS
    INSTANCE
    USER
-   INITIAL-OBJECT
 A:
    FOO
 B:
 C:
 D:
 E:
-For a total of 18 defclasses.
+For a total of 17 defclasses.
 CLIPS> (list-defmessage-handlers A::FOO)
 bar primary in class A::FOO
 For a total of 1 message-handler.
@@ -293,7 +292,6 @@ CLIPS> (list-defmessage-handlers D::FOO)
 [CLASSFUN1] Unable to find class D::FOO in function list-defmessage-handlers.
 CLIPS> (list-definstances *)
 MAIN:
-   initial-object
 A:
    foo
 B:
@@ -302,7 +300,7 @@ C:
    foo
 D:
 E:
-For a total of 4 definstances.
+For a total of 3 definstances.
 CLIPS> (clear) ; Test for scope
 CLIPS> (setgen 1)
 1
@@ -318,9 +316,8 @@ CLIPS> (defrule B::bar (foo (x 3)) => (printout t ?*foo* " " (foo)))
 CLIPS> (make-instance of FOO)
 [gen1]
 CLIPS> (instances)
-[initial-object] of INITIAL-OBJECT
 [gen1] of A::FOO
-For a total of 2 instances.
+For a total of 1 instance.
 CLIPS> (clear) ; Test fact scoping
 CLIPS> (defmodule A)
 CLIPS> (assert (a))

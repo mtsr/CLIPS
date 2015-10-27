@@ -449,7 +449,7 @@ CLIPS> (defclass A (is-a USER) (role concrete) (multislot x (create-accessor rea
 CLIPS> (make-instance a of A (x (instance-address a) 34))
 [a]
 CLIPS> (save-instances "Temp//ins.sav")   ; DR0656
-2
+1
 CLIPS> (clear)                            ; DR0657
 CLIPS> (defclass A (is-a USER) (role concrete) (slot x (create-accessor read-write)))
 CLIPS> (defmessage-handler A foo (?a) 
@@ -500,8 +500,7 @@ LEXEME
 ADDRESS
 INSTANCE
 USER
-INITIAL-OBJECT
-For a total of 17 defclasses.
+For a total of 16 defclasses.
 CLIPS> (clear)                            ; DR0660
 CLIPS> (definstances bad (a of))          ; DR0660
 
@@ -875,10 +874,10 @@ CLIPS> (send (send [quoxnar] get-foo) print)
 [INSFUN4] Invalid instance-address in function send.
 FALSE
 CLIPS> (save-instances "Temp//badfile.tmp")
-2
+1
 CLIPS> (reset)
 CLIPS> (restore-instances "Temp//badfile.tmp")
-2
+1
 CLIPS> (send [quoxnar] print)
 [quoxnar] of A
 (foo [fribban])
@@ -918,11 +917,11 @@ CLIPS> (send [a] print)
 [a] of A
 (foo)
 CLIPS> (save-instances "Temp//ins.tmp")
-2
+1
 CLIPS> (unmake-instance [a])
 TRUE
 CLIPS> (load-instances "Temp//ins.tmp")
-2
+1
 CLIPS> (send [a] print)
 [a] of A
 (foo)

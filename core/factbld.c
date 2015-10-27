@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/25/15            */
+   /*             CLIPS Version 6.40  10/26/15            */
    /*                                                     */
    /*                   FACT BUILD MODULE                 */
    /*******************************************************/
@@ -126,8 +126,6 @@ globle void InitializeFactPatterns(
 
    newPtr->markIRPatternFunction = MarkFactPatternForIncrementalReset;
    newPtr->incrementalResetFunction = FactsIncrementalReset;
-
-   newPtr->initialPatternFunction = NULL;
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
 #if CONSTRUCT_COMPILER

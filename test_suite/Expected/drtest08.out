@@ -14,13 +14,11 @@ CLIPS> (send [a] print)
 [a] of A
 (foo ""This is a string"")
 CLIPS> (save-instances "Temp//bogus.tmp")
-2
+1
 CLIPS> (reset)
 CLIPS> (instances)
-[initial-object] of INITIAL-OBJECT
-For a total of 1 instance.
 CLIPS> (load-instances "Temp//bogus.tmp")
-2
+1
 CLIPS> (send [a] print)
 [a] of A
 (foo ""This is a string"")
@@ -303,13 +301,6 @@ TRUE
 CLIPS> (clear)
 CLIPS> (watch all)
 CLIPS> (bload "Temp//mytest.bin")
-MSG >> delete ED:1 (<Instance-initial-object>)
-HND >> delete primary in class USER
-       ED:1 (<Instance-initial-object>)
-<== instance [initial-object] of INITIAL-OBJECT
-HND << delete primary in class USER
-       ED:1 (<Stale Instance-initial-object>)
-MSG << delete ED:1 (<Stale Instance-initial-object>)
 <== Focus MAIN
 :== ?*x* ==> 3 <== 
 TRUE
@@ -448,8 +439,7 @@ f-1     (foo)
 For a total of 1 fact.
 CLIPS> (instances)
 [a] of A
-[initial-object] of INITIAL-OBJECT
-For a total of 2 instances.
+For a total of 1 instance.
 CLIPS> (clear)                ; DR0759
 CLIPS> 
 (deftemplate A

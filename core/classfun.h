@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.40  10/26/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*      6.40: Removed initial-object support.                */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_classfun
@@ -49,8 +51,6 @@
 
 #define CLASS_TABLE_HASH_SIZE     167
 #define SLOT_NAME_TABLE_HASH_SIZE 167
-
-#define INITIAL_OBJECT_CLASS_NAME "INITIAL-OBJECT"
 
 #define ISA_ID  0
 #define NAME_ID 1
@@ -138,9 +138,6 @@ struct defclassData
    SLOT_NAME **SlotNameTable;
    SYMBOL_HN *ISA_SYMBOL;
    SYMBOL_HN *NAME_SYMBOL;
-#if DEFRULE_CONSTRUCT
-   SYMBOL_HN *INITIAL_OBJECT_SYMBOL;
-#endif
 #if DEBUGGING_FUNCTIONS
    unsigned WatchInstances;
    unsigned WatchSlots;

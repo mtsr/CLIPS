@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  02/04/15            */
+   /*             CLIPS Version 6.40  10/26/15            */
    /*                                                     */
    /*                  DEFINSTANCES MODULE                */
    /*******************************************************/
@@ -46,6 +46,8 @@
 /*            Changed find construct functionality so that   */
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
+/*                                                           */
+/*      6.40: Removed initial-object support.                */
 /*                                                           */
 /*************************************************************/
 
@@ -109,10 +111,6 @@ static void RemoveDefinstances(void *,void *);
 static void SaveDefinstances(void *,void *,const char *);
 static intBool RemoveAllDefinstances(void *);
 static void DefinstancesDeleteError(void *,const char *);
-
-#if DEFRULE_CONSTRUCT
-static void CreateInitialDefinstances(void *);
-#endif
 #endif
 
 #if ! RUN_TIME
@@ -190,10 +188,6 @@ globle void SetupDefinstances(
 #if ! BLOAD_ONLY
    EnvDefineFunction2(theEnv,"undefinstances",'v',PTIEF UndefinstancesCommand,"UndefinstancesCommand","11w");
    AddSaveFunction(theEnv,"definstances",SaveDefinstances,0);
-
-#if DEFRULE_CONSTRUCT
-   EnvAddClearFunction(theEnv,"definstances",CreateInitialDefinstances,-1000);
-#endif
 
 #endif
 
@@ -778,42 +772,6 @@ static void DefinstancesDeleteError(
   {
    CantDeleteItemErrorMessage(theEnv,"definstances",dname);
   }
-
-#if DEFRULE_CONSTRUCT
-
-/********************************************************
-  NAME         : CreateInitialDefinstances
-  DESCRIPTION  : Makes the initial-object definstances
-                 structure for creating an initial-object
-                 which will match default object patterns
-                 in defrules
-  INPUTS       : None
-  RETURNS      : Nothing useful
-  SIDE EFFECTS : initial-object definstances created
-  NOTES        : None
- ********************************************************/
-static void CreateInitialDefinstances(
-  void *theEnv)
-  {
-   EXPRESSION *tmp;
-   DEFINSTANCES *theDefinstances;
-
-   theDefinstances = get_struct(theEnv,definstances);
-   InitializeConstructHeader(theEnv,"definstances",(struct constructHeader *) theDefinstances,
-                             DefclassData(theEnv)->INITIAL_OBJECT_SYMBOL);
-   theDefinstances->busy = 0;
-   tmp = GenConstant(theEnv,FCALL,(void *) FindFunction(theEnv,"make-instance"));
-   tmp->argList = GenConstant(theEnv,INSTANCE_NAME,(void *) DefclassData(theEnv)->INITIAL_OBJECT_SYMBOL);
-   tmp->argList->nextArg =
-       GenConstant(theEnv,DEFCLASS_PTR,(void *) LookupDefclassInScope(theEnv,INITIAL_OBJECT_CLASS_NAME));
-   theDefinstances->mkinstance = PackExpression(theEnv,tmp);
-   ReturnExpression(theEnv,tmp);
-   IncrementSymbolCount(EnvGetDefinstancesNamePointer(theEnv,(void *) theDefinstances));
-   ExpressionInstall(theEnv,theDefinstances->mkinstance);
-   AddConstructToModule((struct constructHeader *) theDefinstances);
-  }
-
-#endif
 
 #endif
 
