@@ -193,8 +193,15 @@
    
    [theLock lock];
 
-   [self setCurrentDirectory: 
-         [[NSFileManager defaultManager] currentDirectoryPath]];
+   NSUserDefaults *theValues;
+   theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
+   
+   NSString *theDirectory = [theValues valueForKey: @"currentDirectory"];
+
+   if (theDirectory == nil)
+     { theDirectory = [[NSFileManager defaultManager] currentDirectoryPath]; }
+   
+   [self setCurrentDirectory: theDirectory];
    
    [self setValue: [[self currentDirectory] stringByAbbreviatingWithTildeInPath]
          forKey: @"displayDirectory"];
@@ -1507,6 +1514,11 @@
 /************************/
 - (void) setCurrentDirectory: (NSString *) theValue
   {
+   NSUserDefaults *theValues;
+   theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
+   
+   [theValues setValue: theValue forKey: @"currentDirectory"];
+
    [theValue retain];
    [currentDirectory release];
    currentDirectory = theValue;
