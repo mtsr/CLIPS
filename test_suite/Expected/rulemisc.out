@@ -458,10 +458,10 @@ CLIPS> (assert (something))
 <Fact-2>
 CLIPS> (run) 
 <== f-1     (foo (bar 1))
-==> f-3     (foo (bar TRUE))
+==> f-1     (foo (bar TRUE))
 CLIPS> (facts)
+f-1     (foo (bar TRUE))
 f-2     (something)
-f-3     (foo (bar TRUE))
 For a total of 2 facts.
 CLIPS> (unwatch all)
 CLIPS> (clear)

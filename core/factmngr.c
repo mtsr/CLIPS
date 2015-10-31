@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/25/15            */
+   /*             CLIPS Version 6.40  10/31/15            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -65,6 +65,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Removed initial-fact support.                  */
+/*                                                           */
+/*            Modify command preserves fact-id.              */
 /*                                                           */
 /*************************************************************/
 
@@ -460,10 +462,10 @@ globle void MatchFactFunction(
    FactPatternMatch(theEnv,theFact,theFact->whichDeftemplate->patternNetwork,0,NULL,NULL);
   }
 
-/*********************************************************/
-/* EnvRetract: C access routine for the retract command. */
-/*********************************************************/
-globle intBool EnvRetract(
+/*************************************************/
+/* RetractDriver: Driver routine for EnvRetract. */
+/*************************************************/
+globle intBool RetractDriver(
   void *theEnv,
   void *vTheFact)
   {
@@ -554,7 +556,7 @@ globle intBool EnvRetract(
    /*=========================================*/
    /* Remove the fact from its template list. */
    /*=========================================*/
-   
+
    if (theFact == theTemplate->lastFact)
      { theTemplate->lastFact = theFact->previousTemplateFact; }
 
@@ -570,7 +572,7 @@ globle intBool EnvRetract(
       if (theFact->nextTemplateFact != NULL)
         { theFact->nextTemplateFact->previousTemplateFact = theFact->previousTemplateFact; }
      }
-  
+
    /*=====================================*/
    /* Remove the fact from the fact list. */
    /*=====================================*/
@@ -656,6 +658,16 @@ globle intBool EnvRetract(
    return(TRUE);
   }
 
+/*********************************************************/
+/* EnvRetract: C access routine for the retract command. */
+/*********************************************************/
+globle intBool EnvRetract(
+  void *theEnv,
+  void *vTheFact)
+  {
+   return RetractDriver(theEnv,vTheFact);
+  }
+
 /*******************************************************************/
 /* RemoveGarbageFacts: Returns facts that have been retracted to   */
 /*   the pool of available memory. It is necessary to postpone     */
@@ -687,11 +699,14 @@ static void RemoveGarbageFacts(
   }
 
 /********************************************************/
-/* EnvAssert: C access routine for the assert function. */
+/* AssertDriver: Driver routine for the assert command. */
 /********************************************************/
-globle void *EnvAssert(
+globle void *AssertDriver(
   void *theEnv,
-  void *vTheFact)
+  void *vTheFact,
+  long long reuseIndex,
+  struct fact *factListPosition,
+  struct fact *templatePosition)
   {
    unsigned long hashValue;
    unsigned long length, i;
@@ -758,34 +773,65 @@ globle void *EnvAssert(
    /* Add the fact to the fact list. */
    /*================================*/
 
-   theFact->nextFact = NULL;
-   theFact->list = NULL;
-   theFact->previousFact = FactData(theEnv)->LastFact;
-   if (FactData(theEnv)->LastFact == NULL)
-     { FactData(theEnv)->FactList = theFact; }
+   if (reuseIndex == 0)
+     { factListPosition = FactData(theEnv)->LastFact; }
+     
+   if (factListPosition == NULL)
+     {
+      theFact->nextFact = FactData(theEnv)->FactList;
+      FactData(theEnv)->FactList = theFact;
+      theFact->previousFact = NULL;
+      if (theFact->nextFact != NULL)
+        { theFact->nextFact->previousFact = theFact; }
+     }
    else
-     { FactData(theEnv)->LastFact->nextFact = theFact; }
-   FactData(theEnv)->LastFact = theFact;
+     {
+      theFact->nextFact = factListPosition->nextFact;
+      theFact->previousFact = factListPosition;
+      factListPosition->nextFact = theFact;
+      if (theFact->nextFact != NULL)
+        { theFact->nextFact->previousFact = theFact; }
+     }
+
+   if ((FactData(theEnv)->LastFact == NULL) || (theFact->nextFact == NULL))
+     { FactData(theEnv)->LastFact = theFact; }
 
    /*====================================*/
    /* Add the fact to its template list. */
    /*====================================*/
-   
-   theFact->previousTemplateFact = theFact->whichDeftemplate->lastFact;
-   theFact->nextTemplateFact = NULL;
-   
-   if (theFact->whichDeftemplate->lastFact == NULL)
-     { theFact->whichDeftemplate->factList = theFact; }
-   else
-     { theFact->whichDeftemplate->lastFact->nextTemplateFact = theFact; }
+
+   if (reuseIndex == 0)
+     { templatePosition = theFact->whichDeftemplate->lastFact; }
      
-   theFact->whichDeftemplate->lastFact = theFact;
-   
+   if (templatePosition == NULL)
+     {
+      theFact->nextTemplateFact = theFact->whichDeftemplate->factList;
+      theFact->whichDeftemplate->factList = theFact;
+      theFact->previousTemplateFact = NULL;
+      if (theFact->nextTemplateFact != NULL)
+        { theFact->nextTemplateFact->previousTemplateFact = theFact; }
+     }
+   else
+     {
+      theFact->nextTemplateFact = templatePosition->nextTemplateFact;
+      theFact->previousTemplateFact = templatePosition;
+      templatePosition->nextTemplateFact = theFact;
+      if (theFact->nextTemplateFact != NULL)
+        { theFact->nextTemplateFact->previousTemplateFact = theFact; }
+     }
+
+   if ((theFact->whichDeftemplate->lastFact == NULL) || (theFact->nextTemplateFact == NULL))
+     { theFact->whichDeftemplate->lastFact = theFact; }
+
    /*==================================*/
    /* Set the fact index and time tag. */
    /*==================================*/
-
-   theFact->factIndex = FactData(theEnv)->NextFactIndex++;
+   
+   if (reuseIndex > 0)
+     { theFact->factIndex = reuseIndex; }
+   else
+     { theFact->factIndex = FactData(theEnv)->NextFactIndex++; }
+     
    theFact->factHeader.timeTag = DefruleData(theEnv)->CurrentEntityTimeTag++;
 
    /*=====================*/
@@ -884,6 +930,16 @@ globle void *EnvAssert(
    /*===============================*/
 
    return((void *) theFact);
+  }
+
+/********************************************************/
+/* EnvAssert: C access routine for the assert function. */
+/********************************************************/
+globle void *EnvAssert(
+  void *theEnv,
+  void *vTheFact)
+  {
+   return AssertDriver(theEnv,vTheFact,0,NULL,NULL);
   }
 
 /**************************************/

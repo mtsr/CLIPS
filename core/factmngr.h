@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  02/04/15            */
+   /*             CLIPS Version 6.40  10/31/15            */
    /*                                                     */
    /*              FACTS MANAGER HEADER FILE              */
    /*******************************************************/
@@ -52,6 +52,8 @@
 /*            Added code to prevent a clear command from     */
 /*            being executed during fact assertions via      */
 /*            JoinOperationInProgress mechanism.             */
+/*                                                           */
+/*      6.40: Modify command preserves fact-id.              */
 /*                                                           */
 /*************************************************************/
 
@@ -139,6 +141,7 @@ struct factsData
 #endif
 
    LOCALE void                          *EnvAssert(void *,void *);
+   LOCALE void                          *AssertDriver(void *,void *,long long,struct fact *,struct fact *);
    LOCALE void                          *EnvAssertString(void *,const char *);
    LOCALE struct fact                   *EnvCreateFact(void *,void *);
    LOCALE void                           EnvDecrementFactCount(void *,void *);
@@ -148,6 +151,7 @@ struct factsData
    LOCALE void                           PrintFact(void *,const char *,struct fact *,int,int);
    LOCALE void                           PrintFactIdentifierInLongForm(void *,const char *,void *);
    LOCALE intBool                        EnvRetract(void *,void *);
+   LOCALE intBool                        RetractDriver(void *,void *);
    LOCALE void                           RemoveAllFacts(void *);
    LOCALE struct fact                   *CreateFactBySize(void *,unsigned);
    LOCALE void                           FactInstall(void *,struct fact *);
@@ -187,7 +191,6 @@ struct factsData
    LOCALE intBool                        EnvAddModifyFunctionWithContext(void *,const char *,
                                                                          void (*)(void *,void *,void *),int,void *);
    LOCALE intBool                        EnvRemoveModifyFunction(void *,const char *);
-
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 

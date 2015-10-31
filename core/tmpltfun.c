@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.40  10/31/15            */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -59,8 +59,10 @@
 /*            being executed during fact assertions via      */
 /*            Increment/DecrementClearReadyLocks API.        */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Modify command preserves fact-id.              */
 /*                                                           */
 /*************************************************************/
 
@@ -195,7 +197,7 @@ static void DuplicateModifyCommand(
   int retractIt,
   DATA_OBJECT_PTR returnValue)
   {
-   long long factNum;
+   long long factNum, factIndex;
    struct fact *oldFact, *newFact, *theFact;
    struct expr *testPtr;
    DATA_OBJECT computeResult;
@@ -286,6 +288,7 @@ static void DuplicateModifyCommand(
    /* Duplicate the values from the old fact (skipping multifields). */
    /*================================================================*/
 
+   factIndex = oldFact->factIndex;
    newFact = (struct fact *) CreateFactBySize(theEnv,oldFact->theProposition.multifieldLength);
    newFact->whichDeftemplate = templatePtr;
    for (i = 0; i < (int) oldFact->theProposition.multifieldLength; i++)
@@ -493,8 +496,18 @@ static void DuplicateModifyCommand(
    /* Perform the duplicate/modify action. */
    /*======================================*/
 
-   if (retractIt) EnvRetract(theEnv,oldFact);
-   theFact = (struct fact *) EnvAssert(theEnv,newFact);
+   if (retractIt)
+     {
+      struct fact *factListPosition, *templatePosition;
+      
+      factListPosition = oldFact->previousFact;
+      templatePosition = oldFact->previousTemplateFact;
+      
+      RetractDriver(theEnv,oldFact);
+      theFact = (struct fact *) AssertDriver(theEnv,newFact,factIndex,factListPosition,templatePosition);
+     }
+   else
+     { theFact = (struct fact *) AssertDriver(theEnv,newFact,0,NULL,NULL); }
 
    /*========================================*/
    /* The asserted fact is the return value. */
