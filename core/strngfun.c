@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/26/15            */
+   /*             CLIPS Version 6.40  10/31/15            */
    /*                                                     */
    /*               STRING FUNCTIONS MODULE               */
    /*******************************************************/
@@ -52,6 +52,9 @@
 /*                                                           */
 /*            Prior error flags are cleared before EnvEval   */
 /*            and EnvBuild are processed.                    */
+/*                                                           */
+/*            The eval function can now access any local     */
+/*            variables that have been defined.              */
 /*                                                           */
 /*************************************************************/
 
@@ -875,7 +878,7 @@ globle int EnvEval(
    /* The expression to be evaluated cannot */
    /* contain any local variables.          */
    /*=======================================*/
-
+/*
    if (ExpressionContainsVariables(top,FALSE))
      {
       PrintErrorID(theEnv,"STRNGFUN",2,FALSE);
@@ -889,7 +892,7 @@ globle int EnvEval(
       ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
       return(FALSE);
      }
-
+*/
    /*====================================*/
    /* Evaluate the expression and return */
    /* the memory used to parse it.       */
