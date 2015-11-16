@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/31/15            */
+   /*             CLIPS Version 6.40  11/16/15            */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -62,7 +62,7 @@
 /*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
-/*            Modify command preserves fact-id.              */
+/*            Modify command preserves fact id and address.  */
 /*                                                           */
 /*************************************************************/
 
@@ -103,7 +103,6 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    DuplicateModifyCommand(void *,int,DATA_OBJECT_PTR);
    static SYMBOL_HN              *CheckDeftemplateAndSlotArguments(void *,const char *,struct deftemplate **,int);
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
@@ -170,7 +169,351 @@ globle void ModifyCommand(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
-   DuplicateModifyCommand(theEnv,TRUE,returnValue);
+   long long factNum, factIndex;
+   struct fact *oldFact, *theFact;
+   struct expr *testPtr;
+   DATA_OBJECT computeResult;
+   struct deftemplate *templatePtr;
+   struct templateSlot *slotPtr;
+   int i, position, found, replacementCount = 0;
+   DATA_OBJECT_PTR theDOArray;
+
+   /*===================================================*/
+   /* Set the default return value to the symbol FALSE. */
+   /*===================================================*/
+
+   SetpType(returnValue,SYMBOL);
+   SetpValue(returnValue,EnvFalseSymbol(theEnv));
+
+   /*==================================================*/
+   /* Evaluate the first argument which is used to get */
+   /* a pointer to the fact to be modified/duplicated. */
+   /*==================================================*/
+
+   testPtr = GetFirstArgument();
+   EnvIncrementClearReadyLocks(theEnv);
+   EvaluateExpression(theEnv,testPtr,&computeResult);
+   EnvDecrementClearReadyLocks(theEnv);
+
+   /*==============================================================*/
+   /* If an integer is supplied, then treat it as a fact-index and */
+   /* search the fact-list for the fact with that fact-index.      */
+   /*==============================================================*/
+
+   if (computeResult.type == INTEGER)
+     {
+      factNum = ValueToLong(computeResult.value);
+      if (factNum < 0)
+        {
+         ExpectedTypeError2(theEnv,"modify",1);
+         EnvSetEvaluationError(theEnv,TRUE);
+         return;
+        }
+
+      oldFact = (struct fact *) EnvGetNextFact(theEnv,NULL);
+      while (oldFact != NULL)
+        {
+         if (oldFact->factIndex == factNum)
+           { break; }
+         else
+           { oldFact = oldFact->nextFact; }
+        }
+
+      if (oldFact == NULL)
+        {
+         char tempBuffer[20];
+         gensprintf(tempBuffer,"f-%lld",factNum);
+         CantFindItemErrorMessage(theEnv,"fact",tempBuffer);
+         return;
+        }
+     }
+
+   /*==========================================*/
+   /* Otherwise, if a pointer is supplied then */
+   /* no lookup is required.                   */
+   /*==========================================*/
+
+   else if (computeResult.type == FACT_ADDRESS)
+     { oldFact = (struct fact *) computeResult.value; }
+
+   /*===========================================*/
+   /* Otherwise, the first argument is invalid. */
+   /*===========================================*/
+
+   else
+     {
+      ExpectedTypeError2(theEnv,"modify",1);
+      EnvSetEvaluationError(theEnv,TRUE);
+      return;
+     }
+
+   /*==================================*/
+   /* See if it is a deftemplate fact. */
+   /*==================================*/
+
+   templatePtr = oldFact->whichDeftemplate;
+
+   if (templatePtr->implied) return;
+   
+   /*========================================================*/
+   /* Create a data object array to hold the updated values. */
+   /*========================================================*/
+   
+   if (templatePtr->numberOfSlots == 0)
+     { theDOArray = NULL; }
+   else
+     { theDOArray = (DATA_OBJECT_PTR) gm3(theEnv,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+
+   /*================================================================*/
+   /* Duplicate the values from the old fact (skipping multifields). */
+   /*================================================================*/
+
+   factIndex = oldFact->factIndex;
+   
+   for (i = 0; i < (int) oldFact->theProposition.multifieldLength; i++)
+     { theDOArray[i].type = RVOID; }
+
+   /*========================*/
+   /* Start replacing slots. */
+   /*========================*/
+
+   testPtr = testPtr->nextArg;
+   while (testPtr != NULL)
+     {
+      /*============================================================*/
+      /* If the slot identifier is an integer, then the slot was    */
+      /* previously identified and its position within the template */
+      /* was stored. Otherwise, the position of the slot within the */
+      /* deftemplate has to be determined by comparing the name of  */
+      /* the slot against the list of slots for the deftemplate.    */
+      /*============================================================*/
+
+      if (testPtr->type == INTEGER)
+        { position = (int) ValueToLong(testPtr->value); }
+      else
+        {
+         found = FALSE;
+         position = 0;
+         slotPtr = templatePtr->slotList;
+         while (slotPtr != NULL)
+           {
+            if (slotPtr->slotName == (SYMBOL_HN *) testPtr->value)
+              {
+               found = TRUE;
+               slotPtr = NULL;
+              }
+            else
+              {
+               slotPtr = slotPtr->next;
+               position++;
+              }
+           }
+
+         if (! found)
+           {
+            InvalidDeftemplateSlotMessage(theEnv,ValueToString(testPtr->value),
+                                          ValueToString(templatePtr->header.name),TRUE);
+            EnvSetEvaluationError(theEnv,TRUE);
+            if (theDOArray != NULL)
+              { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+            return;
+           }
+        }
+
+      /*===================================================*/
+      /* If a single field slot is being replaced, then... */
+      /*===================================================*/
+
+      if (oldFact->theProposition.theFields[position].type != MULTIFIELD)
+        {
+         /*======================================================*/
+         /* If the list of values to store in the slot is empty  */
+         /* or contains more than one member than an error has   */
+         /* occured because a single field slot can only contain */
+         /* a single value.                                      */
+         /*======================================================*/
+
+         if ((testPtr->argList == NULL) ? TRUE : (testPtr->argList->nextArg != NULL))
+           {
+            MultiIntoSingleFieldSlotError(theEnv,GetNthSlot(templatePtr,position),templatePtr);
+            if (theDOArray != NULL)
+              { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+            return;
+           }
+
+         /*===================================================*/
+         /* Evaluate the expression to be stored in the slot. */
+         /*===================================================*/
+         
+         EnvIncrementClearReadyLocks(theEnv);
+         EvaluateExpression(theEnv,testPtr->argList,&computeResult);
+         EnvSetEvaluationError(theEnv,FALSE);
+         EnvDecrementClearReadyLocks(theEnv);
+
+         /*====================================================*/
+         /* If the expression evaluated to a multifield value, */
+         /* then an error occured since a multifield value can */
+         /* not be stored in a single field slot.              */
+         /*====================================================*/
+
+         if (computeResult.type == MULTIFIELD)
+           {
+            MultiIntoSingleFieldSlotError(theEnv,GetNthSlot(templatePtr,position),templatePtr);
+            if (theDOArray != NULL)
+              { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+            return;
+           }
+
+         /*=============================*/
+         /* Store the value in the slot */
+         /*=============================*/
+
+         if ((oldFact->theProposition.theFields[position].type != computeResult.type) ||
+             (oldFact->theProposition.theFields[position].value != computeResult.value))
+           { replacementCount++; }
+           
+         theDOArray[position].type = computeResult.type;
+         theDOArray[position].value = computeResult.value;
+        }
+
+      /*=================================*/
+      /* Else replace a multifield slot. */
+      /*=================================*/
+
+      else
+        {
+         /*======================================*/
+         /* Determine the new value of the slot. */
+         /*======================================*/
+
+         EnvIncrementClearReadyLocks(theEnv);
+         StoreInMultifield(theEnv,&computeResult,testPtr->argList,FALSE);
+         EnvSetEvaluationError(theEnv,FALSE);
+         EnvDecrementClearReadyLocks(theEnv);
+
+         /*=============================*/
+         /* Store the value in the slot */
+         /*=============================*/
+
+         if ((oldFact->theProposition.theFields[position].type != computeResult.type) ||
+             (oldFact->theProposition.theFields[position].value != computeResult.value))
+           { replacementCount++; }
+           
+         theDOArray[position].type = computeResult.type;
+         theDOArray[position].value = computeResult.value;
+        }
+
+      testPtr = testPtr->nextArg;
+     }
+
+   /*===============================================*/
+   /* Call registered modify notification functions */
+   /* for the existing version of the fact.         */
+   /*===============================================*/
+
+   if (FactData(theEnv)->ListOfModifyFunctions != NULL)
+     {
+      struct callFunctionItemWithArg *theModifyFunction;
+
+      for (theModifyFunction = FactData(theEnv)->ListOfModifyFunctions;
+           theModifyFunction != NULL;
+           theModifyFunction = theModifyFunction->next)
+        {
+         SetEnvironmentCallbackContext(theEnv,theModifyFunction->context);
+         if (theModifyFunction->environmentAware)
+           { ((void (*)(void *,void *,void *))(*theModifyFunction->func))(theEnv,oldFact,NULL); }
+         else
+           { ((void (*)(void *,void *))(*theModifyFunction->func))(oldFact,NULL); }
+        }
+     }
+     
+   /*==========================================*/
+   /* Remember the position of the fact before */
+   /* it is retracted so this can be restored  */
+   /* when the modified fact is asserted.      */
+   /*==========================================*/
+
+   struct fact *factListPosition, *templatePosition;
+      
+   factListPosition = oldFact->previousFact;
+   templatePosition = oldFact->previousTemplateFact;
+      
+   /*===================*/
+   /* Retract the fact. */
+   /*===================*/
+   
+   RetractDriver(theEnv,oldFact,TRUE);
+   oldFact->garbage = FALSE;
+
+   /*======================================*/
+   /* Copy the new values to the old fact. */
+   /*======================================*/
+   
+   for (i = 0; i < (int) oldFact->theProposition.multifieldLength; i++)
+     {
+      if (theDOArray[i].type != RVOID)
+        {
+         if (oldFact->theProposition.theFields[i].type == MULTIFIELD)
+           {
+            struct multifield *theSegment = oldFact->theProposition.theFields[i].value;
+            if (theSegment->busyCount == 0)
+              { ReturnMultifield(theEnv,theSegment); }
+            else
+              { AddToMultifieldList(theEnv,theSegment); }
+           }
+           
+         oldFact->theProposition.theFields[i].type = theDOArray[i].type;
+         oldFact->theProposition.theFields[i].value = theDOArray[i].value;
+        }
+     }
+   
+   /*======================*/
+   /* Assert the new fact. */
+   /*======================*/
+   
+   theFact = (struct fact *) AssertDriver(theEnv,oldFact,factIndex,factListPosition,templatePosition);
+
+   /*========================================*/
+   /* The asserted fact is the return value. */
+   /*========================================*/
+
+   if (theFact != NULL)
+     {
+      SetpDOBegin(returnValue,1);
+      SetpDOEnd(returnValue,theFact->theProposition.multifieldLength);
+      SetpType(returnValue,FACT_ADDRESS);
+      SetpValue(returnValue,(void *) theFact);
+     }
+
+   /*===============================================*/
+   /* Call registered modify notification functions */
+   /* for the new version of the fact.              */
+   /*===============================================*/
+
+   if (FactData(theEnv)->ListOfModifyFunctions != NULL)
+     {
+      struct callFunctionItemWithArg *theModifyFunction;
+      
+      for (theModifyFunction = FactData(theEnv)->ListOfModifyFunctions;
+           theModifyFunction != NULL;
+           theModifyFunction = theModifyFunction->next)
+        {
+         SetEnvironmentCallbackContext(theEnv,theModifyFunction->context);
+         if (theModifyFunction->environmentAware)
+           { ((void (*)(void *,void *,void *))(*theModifyFunction->func))(theEnv,NULL,theFact); }
+         else
+           { ((void (*)(void *,void *))(*theModifyFunction->func))(NULL,theFact); }
+        }
+     }
+     
+   /*=============================*/
+   /* Free the data object array. */
+   /*=============================*/
+   
+   if (theDOArray != NULL)
+     { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+
+   return;
   }
 
 /***************************************************************************/
@@ -179,22 +522,6 @@ globle void ModifyCommand(
 /***************************************************************************/
 globle void DuplicateCommand(
   void *theEnv,
-  DATA_OBJECT_PTR returnValue)
-  {
-   DuplicateModifyCommand(theEnv,FALSE,returnValue);
-  }
-
-/***************************************************************/
-/* DuplicateModifyCommand: Implements the duplicate and modify */
-/*   commands. The fact being duplicated or modified is first  */
-/*   copied to a new fact. Replacements to the fields of the   */
-/*   new fact are then made. If a modify command is being      */
-/*   performed, the original fact is retracted. Lastly, the    */
-/*   new fact is asserted.                                     */
-/***************************************************************/
-static void DuplicateModifyCommand(
-  void *theEnv,
-  int retractIt,
   DATA_OBJECT_PTR returnValue)
   {
    long long factNum, factIndex;
@@ -232,8 +559,7 @@ static void DuplicateModifyCommand(
       factNum = ValueToLong(computeResult.value);
       if (factNum < 0)
         {
-         if (retractIt) ExpectedTypeError2(theEnv,"modify",1);
-         else ExpectedTypeError2(theEnv,"duplicate",1);
+         ExpectedTypeError2(theEnv,"duplicate",1);
          EnvSetEvaluationError(theEnv,TRUE);
          return;
         }
@@ -270,8 +596,7 @@ static void DuplicateModifyCommand(
 
    else
      {
-      if (retractIt) ExpectedTypeError2(theEnv,"modify",1);
-      else ExpectedTypeError2(theEnv,"duplicate",1);
+      ExpectedTypeError2(theEnv,"duplicate",1);
       EnvSetEvaluationError(theEnv,TRUE);
       return;
      }
@@ -441,73 +766,12 @@ static void DuplicateModifyCommand(
             CopyMultifield(theEnv,(struct multifield *) oldFact->theProposition.theFields[i].value);
         }
      }
-     
-   /*================================================*/
-   /* Call registered modify notification functions. */
-   /*================================================*/
+      
+   /*===============================*/
+   /* Perform the duplicate action. */
+   /*===============================*/
 
-   if (retractIt &&
-       (FactData(theEnv)->ListOfModifyFunctions != NULL))
-     {
-      struct callFunctionItemWithArg *theModifyFunction;
-      struct fact *replacement = newFact;
-      
-      /*==================================================================*/
-      /* If the fact already exists, determine if it's the fact we're     */
-      /* modifying. If so it will be retracted and reasserted. If not,    */
-      /* it will just be retracted, so pass NULL as the replacement fact. */
-      /*==================================================================*/
-      
-      if (! FactWillBeAsserted(theEnv,newFact))
-        {
-         if (! MultifieldsEqual(&oldFact->theProposition,
-                              &newFact->theProposition))
-           { replacement = NULL; }
-        }
-
-      /*=========================================================*/
-      /* Preassign the factIndex and timeTag so the notification */
-      /* function will see the correct values.                   */
-      /*=========================================================*/
-      
-      if (replacement != NULL)
-        {
-         replacement->factIndex = FactData(theEnv)->NextFactIndex;
-         replacement->factHeader.timeTag = DefruleData(theEnv)->CurrentEntityTimeTag;
-        }
-     
-      /*=========================================*/
-      /* Call each modify notification function. */
-      /*=========================================*/
-      
-      for (theModifyFunction = FactData(theEnv)->ListOfModifyFunctions;
-           theModifyFunction != NULL;
-           theModifyFunction = theModifyFunction->next)
-        {
-         SetEnvironmentCallbackContext(theEnv,theModifyFunction->context);
-         if (theModifyFunction->environmentAware)
-           { ((void (*)(void *,void *,void *))(*theModifyFunction->func))(theEnv,oldFact,replacement); }
-         else
-           { ((void (*)(void *,void *))(*theModifyFunction->func))(oldFact,replacement); }
-        }
-     }
-     
-   /*======================================*/
-   /* Perform the duplicate/modify action. */
-   /*======================================*/
-
-   if (retractIt)
-     {
-      struct fact *factListPosition, *templatePosition;
-      
-      factListPosition = oldFact->previousFact;
-      templatePosition = oldFact->previousTemplateFact;
-      
-      RetractDriver(theEnv,oldFact);
-      theFact = (struct fact *) AssertDriver(theEnv,newFact,factIndex,factListPosition,templatePosition);
-     }
-   else
-     { theFact = (struct fact *) AssertDriver(theEnv,newFact,0,NULL,NULL); }
+   theFact = (struct fact *) AssertDriver(theEnv,newFact,0,NULL,NULL);
 
    /*========================================*/
    /* The asserted fact is the return value. */
@@ -523,7 +787,7 @@ static void DuplicateModifyCommand(
 
    return;
   }
-  
+
 /****************************************************/
 /* DeftemplateSlotNamesFunction: H/L access routine */
 /*   for the deftemplate-slot-names function.       */

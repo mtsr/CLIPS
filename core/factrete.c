@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  11/16/15            */
    /*                                                     */
    /*          FACT RETE ACCESS FUNCTIONS MODULE          */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*            MAC_MCW, and IBM_TBC).                         */
 /*                                                           */
 /*            Support for hashing optimizations.             */
+/*                                                           */
+/*      6.40: Modify command preserves fact address.         */
 /*                                                           */
 /*************************************************************/
 
@@ -375,6 +377,7 @@ globle intBool FactJNGetVar1(
    struct multifield *segmentPtr;
    int extent;
    struct factGetVarJN1Call *hack;
+   struct multifield *theSlots = NULL;
 
    /*==========================================*/
    /* Retrieve the arguments for the function. */
@@ -424,6 +427,12 @@ globle intBool FactJNGetVar1(
       return(TRUE);
      }
 
+   if ((factPtr->basisSlots != NULL) &&
+       (! EngineData(theEnv)->JoinOperationInProgress))
+     { theSlots = factPtr->basisSlots; }
+   else
+     { theSlots = &factPtr->theProposition; }
+     
    /*=========================================================*/
    /* Determine if we want to retrieve the entire slot value. */
    /*=========================================================*/
@@ -431,7 +440,7 @@ globle intBool FactJNGetVar1(
    if (hack->allFields)
      {
       theSlot = hack->whichSlot;
-      fieldPtr = &factPtr->theProposition.theFields[theSlot];
+      fieldPtr = &theSlots->theFields[theSlot];
       returnValue->type = fieldPtr->type;
       returnValue->value = fieldPtr->value;
       if (returnValue->type == MULTIFIELD)
@@ -454,7 +463,7 @@ globle intBool FactJNGetVar1(
 
    theField = hack->whichField;
    theSlot = hack->whichSlot;
-   fieldPtr = &factPtr->theProposition.theFields[theSlot];
+   fieldPtr = &theSlots->theFields[theSlot];
 
    if (fieldPtr->type != MULTIFIELD)
      {
@@ -490,7 +499,7 @@ globle intBool FactJNGetVar1(
    /* a multifield slot. Just return the type and value.     */
    /*========================================================*/
 
-   segmentPtr = (struct multifield *) factPtr->theProposition.theFields[theSlot].value;
+   segmentPtr = (struct multifield *) theSlots->theFields[theSlot].value;
    fieldPtr = &segmentPtr->theFields[theField];
 
    returnValue->type = fieldPtr->type;
@@ -538,7 +547,11 @@ globle intBool FactJNGetVar2(
    /* Extract the value from the specified slot. */
    /*============================================*/
 
-   fieldPtr = &factPtr->theProposition.theFields[hack->whichSlot];
+   if ((factPtr->basisSlots != NULL) &&
+       (! EngineData(theEnv)->JoinOperationInProgress))
+     { fieldPtr = &factPtr->basisSlots->theFields[hack->whichSlot]; }
+   else
+     { fieldPtr = &factPtr->theProposition.theFields[hack->whichSlot]; }
 
    returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
@@ -586,7 +599,11 @@ globle intBool FactJNGetVar3(
    /* Get the multifield value from which the data is retrieved. */
    /*============================================================*/
 
-   segmentPtr = (struct multifield *) factPtr->theProposition.theFields[hack->whichSlot].value;
+   if ((factPtr->basisSlots != NULL) &&
+       (! EngineData(theEnv)->JoinOperationInProgress))
+     { segmentPtr = (struct multifield *) factPtr->basisSlots->theFields[hack->whichSlot].value; }
+   else
+     { segmentPtr = (struct multifield *) factPtr->theProposition.theFields[hack->whichSlot].value; }
 
    /*=========================================*/
    /* If the beginning and end flags are set, */

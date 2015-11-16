@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/31/15            */
+   /*             CLIPS Version 6.40  11/16/15            */
    /*                                                     */
    /*              FACTS MANAGER HEADER FILE              */
    /*******************************************************/
@@ -53,7 +53,7 @@
 /*            being executed during fact assertions via      */
 /*            JoinOperationInProgress mechanism.             */
 /*                                                           */
-/*      6.40: Modify command preserves fact-id.              */
+/*      6.40: Modify command preserves fact id and address.  */
 /*                                                           */
 /*************************************************************/
 
@@ -92,6 +92,7 @@ struct fact
    struct fact *nextFact;
    struct fact *previousTemplateFact;
    struct fact *nextTemplateFact;
+   struct multifield *basisSlots;
    struct multifield theProposition;
   };
   
@@ -151,7 +152,7 @@ struct factsData
    LOCALE void                           PrintFact(void *,const char *,struct fact *,int,int);
    LOCALE void                           PrintFactIdentifierInLongForm(void *,const char *,void *);
    LOCALE intBool                        EnvRetract(void *,void *);
-   LOCALE intBool                        RetractDriver(void *,void *);
+   LOCALE intBool                        RetractDriver(void *,void *,intBool);
    LOCALE void                           RemoveAllFacts(void *);
    LOCALE struct fact                   *CreateFactBySize(void *,unsigned);
    LOCALE void                           FactInstall(void *,struct fact *);

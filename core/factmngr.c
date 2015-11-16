@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/31/15            */
+   /*             CLIPS Version 6.40  11/16/15            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -66,7 +66,7 @@
 /*                                                           */
 /*            Removed initial-fact support.                  */
 /*                                                           */
-/*            Modify command preserves fact-id.              */
+/*            Modify command preserves fact id and address.  */
 /*                                                           */
 /*************************************************************/
 
@@ -154,7 +154,7 @@ globle void InitializeFacts(
                                                  };
                                                  
    struct fact dummyFact = { { NULL, NULL, 0, 0L }, NULL, NULL, -1L, 0, 1,
-                                  NULL, NULL, NULL, NULL, { 1, 0UL, NULL, { { 0, NULL } } } };
+                                  NULL, NULL, NULL, NULL, NULL, { 1, 0UL, NULL, { { 0, NULL } } } };
 
    AllocateEnvironmentData(theEnv,FACTS_DATA,sizeof(struct factsData),DeallocateFactData);
 
@@ -266,7 +266,7 @@ static void DeallocateFactData(
      {
       nextFactPtr = tmpFactPtr->nextFact;
 
-      theMatch = (struct patternMatch *) tmpFactPtr->list;        
+      theMatch = (struct patternMatch *) tmpFactPtr->list;
       while (theMatch != NULL)
         {
          tmpMatch = theMatch->next;
@@ -360,11 +360,23 @@ globle void DecrementFactBasisCount(
 
    EnvDecrementFactCount(theEnv,factPtr);
 
-   theSegment = &factPtr->theProposition;
+   if (factPtr->basisSlots != NULL)
+     {
+      theSegment = factPtr->basisSlots;
+      factPtr->basisSlots->busyCount--;
+     }
+   else
+     { theSegment = &factPtr->theProposition; }
 
    for (i = 0 ; i < (int) theSegment->multifieldLength ; i++)
      {
       AtomDeinstall(theEnv,theSegment->theFields[i].type,theSegment->theFields[i].value);
+     }
+
+   if ((factPtr->basisSlots != NULL) && (factPtr->basisSlots->busyCount == 0))
+     {
+      ReturnMultifield(theEnv,factPtr->basisSlots);
+      factPtr->basisSlots = NULL;
      }
   }
 
@@ -383,6 +395,20 @@ globle void IncrementFactBasisCount(
    EnvIncrementFactCount(theEnv,factPtr);
 
    theSegment = &factPtr->theProposition;
+
+   if (theSegment->multifieldLength != 0)
+     {
+      if (factPtr->basisSlots != NULL)
+        {
+         factPtr->basisSlots->busyCount++;
+        }
+      else
+        {
+         factPtr->basisSlots = CopyMultifield(theEnv,theSegment);
+         factPtr->basisSlots->busyCount = 1;
+        }
+      theSegment = factPtr->basisSlots;
+     }
 
    for (i = 0 ; i < (int) theSegment->multifieldLength ; i++)
      {
@@ -467,7 +493,8 @@ globle void MatchFactFunction(
 /*************************************************/
 globle intBool RetractDriver(
   void *theEnv,
-  void *vTheFact)
+  void *vTheFact,
+  intBool modifyOperation)
   {
    struct fact *theFact = (struct fact *) vTheFact;
    struct deftemplate *theTemplate = theFact->whichDeftemplate;
@@ -502,10 +529,10 @@ globle intBool RetractDriver(
 
    if (theFact->garbage) return(FALSE);
    
-   /*==========================================*/
-   /* Execute the list of functions that are   */
-   /* to be called before each fact assertion. */
-   /*==========================================*/
+   /*===========================================*/
+   /* Execute the list of functions that are    */
+   /* to be called before each fact retraction. */
+   /*===========================================*/
 
    for (theRetractFunction = FactData(theEnv)->ListOfRetractFunctions;
         theRetractFunction != NULL;
@@ -593,14 +620,22 @@ globle intBool RetractDriver(
         { theFact->nextFact->previousFact = theFact->previousFact; }
      }
 
-   /*========================================*/
-   /* Add the fact to the fact garbage list. */
-   /*========================================*/
+   /*===================================================*/
+   /* Add the fact to the fact garbage list unless this */
+   /* fact is being retract as part of a modify action. */
+   /*===================================================*/
 
-   theFact->nextFact = FactData(theEnv)->GarbageFacts;
-   FactData(theEnv)->GarbageFacts = theFact;
+   if (! modifyOperation)
+     {
+      theFact->nextFact = FactData(theEnv)->GarbageFacts;
+      FactData(theEnv)->GarbageFacts = theFact;
+      UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+     }
+   else
+     {
+      theFact->nextFact = NULL;
+     }
    theFact->garbage = TRUE;
-   UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
 
    /*===================================================*/
    /* Reset the evaluation error flag since expressions */
@@ -617,6 +652,7 @@ globle intBool RetractDriver(
 
    EngineData(theEnv)->JoinOperationInProgress = TRUE;
    NetworkRetract(theEnv,(struct patternMatch *) theFact->list);
+   theFact->list = NULL;
    EngineData(theEnv)->JoinOperationInProgress = FALSE;
 
    /*=========================================*/
@@ -665,7 +701,7 @@ globle intBool EnvRetract(
   void *theEnv,
   void *vTheFact)
   {
-   return RetractDriver(theEnv,vTheFact);
+   return RetractDriver(theEnv,vTheFact,FALSE);
   }
 
 /*******************************************************************/
@@ -759,7 +795,15 @@ globle void *AssertDriver(
 
    if (AddLogicalDependencies(theEnv,(struct patternEntity *) theFact,FALSE) == FALSE)
      {
-      ReturnFact(theEnv,theFact);
+      if (reuseIndex == 0)
+        { ReturnFact(theEnv,theFact); }
+      else
+        {
+         theFact->nextFact = FactData(theEnv)->GarbageFacts;
+         FactData(theEnv)->GarbageFacts = theFact;
+         UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+         theFact->garbage = TRUE;
+        }
       return(NULL);
      }
 
@@ -1365,6 +1409,7 @@ globle struct fact *CreateFactBySize(
    theFact->previousTemplateFact = NULL;
    theFact->nextTemplateFact = NULL;
    theFact->list = NULL;
+   theFact->basisSlots = NULL;
 
    theFact->theProposition.multifieldLength = size;
    theFact->theProposition.busyCount = 0;
