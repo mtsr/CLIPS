@@ -1775,7 +1775,7 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0700;
 			};
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "CLIPS" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2393,6 +2393,7 @@
 		1E6F78CF0D502A6500B9DCFB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2402,6 +2403,7 @@
 				INFOPLIST_FILE = Interface_Source/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SSoP.CLIPSIDE;
 				PRODUCT_NAME = "CLIPS IDE";
 				SDKROOT = macosx;
 				VALID_ARCHS = "i386 x86_64";
@@ -2429,6 +2431,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.SSoP;
 				PRODUCT_NAME = CLIPS;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -2484,6 +2487,7 @@
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.SSoP;
 				PRODUCT_NAME = CLIPS;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -2495,6 +2499,7 @@
 		C05733C808A9546B00998B17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2504,6 +2509,7 @@
 				INFOPLIST_FILE = Interface_Source/Info.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.SSoP.CLIPSIDE;
 				PRODUCT_NAME = "CLIPS IDE";
 				SDKROOT = macosx;
 				VALID_ARCHS = "i386 x86_64";
@@ -2515,6 +2521,7 @@
 		C05733CC08A9546B00998B17 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ENABLE_TESTABILITY = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"WINDOW_INTERFACE=1",

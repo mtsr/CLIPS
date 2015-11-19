@@ -98,8 +98,6 @@
 
 - (void) setSearchString: (NSString *) string
   {
-   [searchString release];
-
    if ([string length] == 0)
      { searchString = nil; } 
    else

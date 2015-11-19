@@ -27,15 +27,6 @@
    return self;
   }
 
-/************/    
-/* dealloc: */
-/************/    
-- (void) dealloc
-  {
-   [moduleName release];
-   [super dealloc];
-  }
-
 /****************/
 /* description: */
 /****************/
@@ -53,8 +44,6 @@
 /******************/
 - (void) setModuleName: (NSString *) theModuleName
   {
-   [theModuleName retain];
-   [moduleName release];
    moduleName = theModuleName;
   }
 

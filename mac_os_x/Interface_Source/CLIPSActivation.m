@@ -28,17 +28,6 @@
    return self;
   }
 
-/************/    
-/* dealloc: */
-/************/    
-- (void) dealloc
-  {
-   [salience release];
-   [ruleName release];
-   [bindings release];
-   [super dealloc];
-  }
-
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Key-Value Coding Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
@@ -48,8 +37,6 @@
 /****************/
 - (void) setSalience: (NSNumber *) theSalience
   {
-   [theSalience retain];
-   [salience release];
    salience = theSalience;
   }
 
@@ -66,8 +53,6 @@
 /****************/
 - (void) setRuleName: (NSString *) theRuleName
   {
-   [theRuleName retain];
-   [ruleName release];
    ruleName = theRuleName;
   }
 
@@ -84,8 +69,6 @@
 /****************/
 - (void) setBindings: (NSString *) theBindings
   {
-   [theBindings retain];
-   [bindings release];
    bindings = theBindings;
   }
 

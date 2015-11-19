@@ -10,8 +10,8 @@
 @interface AppController : NSObject
   {
    PreferenceController *preferenceController;
-   EnvController *envController;
-   CLIPSTextMenu *textMenu;
+   IBOutlet EnvController *envController;
+   IBOutlet CLIPSTextMenu *textMenu;
   }
 
 /*%%%%%%%%%%%%%%%%*/
@@ -37,7 +37,7 @@
 /* Key-Value Coding Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
-- (void)               setEnvController: (EnvController *) theController;
-- (EnvController *)    envController;
+@property (NS_NONATOMIC_IOSONLY, strong) EnvController *envController;
+@property (NS_NONATOMIC_IOSONLY, strong) CLIPSTextMenu *textMenu;
 
 @end

@@ -23,20 +23,6 @@
    return self;
   }
   
-/************/    
-/* dealloc: */
-/************/    
-- (void) dealloc
-  {
-   [fileOpenLock release];
-
-   /*=====================================*/
-   /* Call the superclass dealloc method. */
-   /*=====================================*/
-   
-   [super dealloc];
-  }
-
 /*****************/
 /* awakeFromNib: */
 /*****************/
@@ -216,8 +202,6 @@
 /*******************************/
 - (void) setTerminalArrayController: (NSArrayController *) theArrayController
   {
-   [theArrayController retain];
-   [terminalArrayController release];
    terminalArrayController = theArrayController;
   }
 
@@ -234,8 +218,6 @@
 /**********************************/
 - (void) setEnvironmentArrayController: (NSArrayController *) theArrayController
   {
-   [theArrayController retain];
-   [environmentArrayController release];
    environmentArrayController = theArrayController;
   }
 
@@ -291,8 +273,6 @@
 /*******************************/
 - (void) setConstructInspectorText: (NSString *) theConstructInspectorText
   {
-   [theConstructInspectorText retain];
-   [constructInspectorText release];
    constructInspectorText = theConstructInspectorText;
   }
 

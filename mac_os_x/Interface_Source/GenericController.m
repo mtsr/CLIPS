@@ -31,14 +31,6 @@
    return self;
   }
 
-/************/    
-/* dealloc: */
-/************/    
-- (void) dealloc
-  {
-   [super dealloc];
-  }
-
 /*****************/
 /* awakeFromNib: */
 /*****************/
@@ -97,8 +89,6 @@
 - (void) windowWillClose: (NSNotification *) aNotification
   {
    [self setValue: nil forKey: @"environmentController"];
-
-   [self autorelease];
   }
   
 /*%%%%%%%%%%%%%%%%%%%%%%*/
@@ -122,8 +112,6 @@
 /*****************************/
 - (void) setEnvironmentController: (EnvController *) theController
   {
-   [theController retain];
-   [environmentController release];
    environmentController = theController;
   }
 
@@ -140,12 +128,6 @@
 /*******************/
 - (void) setEnvironment: (CLIPSEnvironment *) theEnvironment
   {
-   /*=============================*/
-   /* Retain the new environment. */
-   /*=============================*/
-   
-   [theEnvironment retain];
-
    /*=====================================*/
    /* Stop observing the old environment. */
    /*=====================================*/
@@ -177,7 +159,6 @@
    /* and assign the new value.   */
    /*=============================*/
    
-   [environment release];
    environment = theEnvironment;
   }
 

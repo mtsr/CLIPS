@@ -26,16 +26,6 @@
    return self;
   }
 
-/************/    
-/* dealloc: */
-/************/    
-- (void) dealloc
-  {
-   [moduleName release];
-   [agenda release];
-   [super dealloc];
-  }
-
 /****************/
 /* description: */
 /****************/
@@ -53,8 +43,6 @@
 /******************/
 - (void) setModuleName: (NSString *) theModuleName
   {
-   [theModuleName retain];
-   [moduleName release];
    moduleName = theModuleName;
   }
 
@@ -71,8 +59,6 @@
 /************************/
 - (void) setAgenda: (NSArray *) theAgenda
   {
-   [theAgenda retain];
-   [agenda release];
    agenda = theAgenda;
   }
 

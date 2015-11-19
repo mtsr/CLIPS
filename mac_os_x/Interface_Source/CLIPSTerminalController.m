@@ -47,7 +47,6 @@
      {
       outputBuffer = [NSMutableString stringWithCapacity: BUFFER_SIZE];
       [outputBuffer setString: @""];
-      [outputBuffer retain];
       
       outputBufferLock = [[NSConditionLock alloc] initWithCondition: BUFFER_IS_EMPTY];
       
@@ -96,16 +95,6 @@
 
    EnvSetBeforeOpenFunction(theEnvironment,NULL);
    EnvSetAfterOpenFunction(theEnvironment,NULL);
-     
-   [outputBuffer release];
-
-   [outputBufferLock release];
-   [pauseLock release];
-
-   [currentDirectory release];
-   [displayDirectory release];
-   
-   [super dealloc];
   }
     
 /*****************/
@@ -212,10 +201,10 @@
    /* CLIPS Glue Code */
    /*=================*/
    
-   SetEnvironmentContext(theEnvironment,self);
+   SetEnvironmentContext(theEnvironment,(__bridge void *)(self));
    
    EnvAddRouterWithContext(theEnvironment,"CLIPSTerminalController",10,QueryInterfaceRouter,PrintInterfaceRouter,
-                           GetcInterfaceRouter,NULL,ExitInterfaceRouter,self);
+                           GetcInterfaceRouter,NULL,ExitInterfaceRouter,(__bridge void *)(self));
         
    EnvSetBeforeOpenFunction(theEnvironment,MacBeforeOpenFunction);
    EnvSetAfterOpenFunction(theEnvironment,MacAfterOpenFunction);
@@ -236,23 +225,23 @@
 
    EnvAddPeriodicFunction(theEnvironment,"mac-pf",MacPeriodicFunction,0);
 
-   commandTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.2 // TBD Need to lock input once command found.
+   commandTimer = [NSTimer scheduledTimerWithTimeInterval: 0.2 // TBD Need to lock input once command found.
                      target: self
                      selector: @selector(lookForCommand:)
                      userInfo: nil
-                     repeats: YES] retain];
+                     repeats: YES];
 
-   scrollTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.1 // TBD Need to lock input once command found. was 0.1
+   scrollTimer = [NSTimer scheduledTimerWithTimeInterval: 0.1 // TBD Need to lock input once command found. was 0.1
                      target: self
                      selector: @selector(scrollToEndCheck:)
                      userInfo: nil
-                     repeats: YES] retain];
+                     repeats: YES];
 
-   updateTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.1 
+   updateTimer = [NSTimer scheduledTimerWithTimeInterval: 0.1
                      target: self
                      selector: @selector(lookForUpdates:)
                      userInfo: nil
-                     repeats: YES] retain];
+                     repeats: YES];
                          
    /*===========================================*/
    /* Retrieve the watch flags settings for new */
@@ -925,9 +914,7 @@
    if (theCString != NULL)
      {
       theStr = [NSString stringWithCString: theCString encoding: NSUTF8StringEncoding];
-      [theStr retain];
       [self print: theStr];
-      [theStr release];
      }
   }
 
@@ -996,9 +983,7 @@
    NSString *theStr;
    
    theStr = [NSString stringWithCString: theString encoding: NSUTF8StringEncoding];
-   [theStr retain];
    [textView print: theStr];
-   [theStr release];
   }
 
 /***********/    
@@ -1346,7 +1331,7 @@
                      @"Wait", @"Halt Immediately", @"Halt",
                      [self window],self,                  
                      @selector(sheetDidEndShouldClose:returnCode:contextInfo:),
-                     NULL,sender,@" ",nil);
+                     NULL,nil,@" ",nil);
                          
    return NO;
   }
@@ -1392,19 +1377,15 @@
    /*=====================*/
    
    [commandTimer invalidate];
-   [commandTimer release];
    commandTimer = nil;
 
    [scrollTimer invalidate];
-   [scrollTimer release];
    scrollTimer = nil;
 
    [haltTimer invalidate];
-   [haltTimer release];
    haltTimer = nil;
 
    [updateTimer invalidate];
-   [updateTimer release];
    updateTimer = nil;
    
    /*======================================*/
@@ -1425,8 +1406,6 @@
    [[envController terminalArrayController] removeObject: self];
 
    [self setEnvController: nil];
-
-   [self autorelease];
   }
 
 /************************************************/
@@ -1496,8 +1475,6 @@
 /*********************/
 - (void) setEnvController: (EnvController *) theController
   {
-   [theController retain];
-   [envController release];
    envController = theController;
   }
 
@@ -1519,8 +1496,6 @@
    
    [theValues setValue: theValue forKey: @"currentDirectory"];
 
-   [theValue retain];
-   [currentDirectory release];
    currentDirectory = theValue;
   }
 
@@ -1537,8 +1512,6 @@
 /************************/
 - (void) setDisplayDirectory: (NSString *) theValue
   {
-   [theValue retain];
-   [displayDirectory release];
    displayDirectory = theValue;
   }
 

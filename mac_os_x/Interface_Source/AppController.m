@@ -8,6 +8,8 @@
 
 @implementation AppController
 
+@synthesize textMenu, envController;
+
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Initialization/Deallocation Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
@@ -72,15 +74,6 @@
   {
   }
 
-/************/    
-/* dealloc: */
-/************/    
-- (void) dealloc
-  {
-   [envController release];
-   [super dealloc];
-  }
-    
 /*%%%%%%%%%%%%%%%%*/
 /* Action Methods */
 /*%%%%%%%%%%%%%%%%*/
@@ -164,19 +157,19 @@
   {
    if (! textMenu)
      { 
-      textMenu = [[CLIPSTextMenu alloc] init]; 
-      [NSBundle loadNibNamed: @"TextMenu" owner: textMenu]; // TBD don't forget to deallocate
+      textMenu = [[CLIPSTextMenu alloc] init];
+      [[NSBundle mainBundle] loadNibNamed: @"TextMenu" owner: textMenu topLevelObjects: nil];
      }
 
    if (! envController)
      { 
-      envController = [[EnvController alloc] init]; 
-      [NSBundle loadNibNamed: @"EnvController" owner: envController]; // TBD don't forget to deallocate
+      envController = [[EnvController alloc] init];
+      [[NSBundle mainBundle] loadNibNamed: @"EnvController" owner: envController topLevelObjects: nil];
      }
-       
-   [envController newEnvironment: self]; 
+
+   [envController newEnvironment: self];
   }
-    
+
 /***********************************************************/
 /* applicationShouldOpenUntitledFile: This delegate method */
 /*   is used to indicate that an untitled file should not  */
@@ -204,8 +197,6 @@
  
 - (void) setEnvController: (EnvController *) theController
   {
-   [theController retain];
-   [envController release];
    envController = theController;
   }
 

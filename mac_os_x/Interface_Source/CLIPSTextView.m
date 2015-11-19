@@ -72,12 +72,6 @@
    if ([previousLineScanner scanCharactersFromSet: [NSCharacterSet whitespaceCharacterSet] 
                             intoString: &previousLineWhitespaceString])
      { [self insertText: previousLineWhitespaceString]; }
-
-   /*======================*/
-   /* Release the scanner. */
-   /*======================*/
-   
-   [previousLineScanner release];
   }
   
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/

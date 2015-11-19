@@ -37,14 +37,6 @@
    return self;
   }
 
-/************/    
-/* dealloc: */
-/************/    
-- (void) dealloc
-  {
-   [super dealloc];
-  }
-
 /*****************/
 /* awakeFromNib: */
 /*****************/
@@ -269,8 +261,6 @@
   {
    [self setValue: nil forKey: @"environment"]; 
    [self setValue: nil forKey: @"environmentController"]; 
-
-   [self autorelease];
   }
 
 /****************************************************/
@@ -344,8 +334,6 @@
 /*****************************/
 - (void) setEnvironmentController: (EnvController *) theController
   {
-   [theController retain];
-   [environmentController release];
    environmentController = theController;
   }
 
@@ -362,12 +350,6 @@
 /*******************/
 - (void) setEnvironment: (CLIPSEnvironment *) theEnvironment
   {
-   /*=============================*/
-   /* Retain the new environment. */
-   /*=============================*/
-   
-   [theEnvironment retain];
-
    /*=====================================*/
    /* Stop observing the old environment. */
    /*=====================================*/
@@ -475,7 +457,6 @@
    /* and assign the new value.   */
    /*=============================*/
    
-   [environment release];
    environment = theEnvironment;
   }
 
@@ -492,8 +473,6 @@
 /*****************************/
 - (void) setSlotFilter: (NSPredicate *) theSlotFilter
   {
-   [theSlotFilter retain];
-   [slotFilter release];
    slotFilter = theSlotFilter;
   }
 

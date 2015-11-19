@@ -251,7 +251,7 @@
                       @"Save", @"Don't Save", @"Cancel",
                       [self window],self,                  
                       @selector(sheetDidEndShouldClose:returnCode:contextInfo:),
-                      NULL,sender,@" ",nil);
+                      NULL,nil,@" ",nil);
                          
    return NO;
   }
@@ -329,7 +329,7 @@
                       @"Save", @"Don't Save", @"Cancel",
                       [self window],self,                  
                       @selector(sheetDidEndShouldQuit:returnCode:contextInfo:),
-                      NULL,self,@" ",nil);
+                      NULL,(__bridge void *)(self),@" ",nil);
                          
    return NSTerminateLater;  
   }

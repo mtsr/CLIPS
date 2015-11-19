@@ -190,11 +190,6 @@
 /************/    
 - (void) dealloc
   {
-   [relationName release];
-   [name release];
-   [attributeValues release];
-   [index release];
-   
    if (scopeMap != NULL)
      { free(scopeMap); }
 /*
@@ -203,7 +198,6 @@
    else
      { EnvDecrementFactCount(environment,theCPointer); }
 */  
-   [super dealloc];
   }
 
 /********************/
@@ -266,8 +260,6 @@
 /***********************/
 - (void) setAttributeValues: (NSArray *) theAttributeValues
   {
-   [theAttributeValues retain];
-   [attributeValues release];
    attributeValues = theAttributeValues;
   }
   
@@ -284,8 +276,6 @@
 /***********************/
 - (void) setRelationName: (NSString *) theRelationName
   {
-   [theRelationName retain];
-   [relationName release];
    relationName = theRelationName;
   }
   
@@ -302,8 +292,6 @@
 /************/
 - (void) setName: (NSString *) theName
   {
-   [theName retain];
-   [name release];
    name = theName;
   }
   
@@ -320,8 +308,6 @@
 /*************/
 - (void) setIndex: (NSNumber *) theIndex
   {
-   [theIndex retain];
-   [index release];
    index = theIndex;
   }
   

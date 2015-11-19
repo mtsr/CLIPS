@@ -89,8 +89,6 @@
 /*****************************/
 - (void) setEnvironmentController: (EnvController *) theController
   {
-   [theController retain];
-   [environmentController release];
    environmentController = theController;
   }
 

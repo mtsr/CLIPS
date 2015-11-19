@@ -44,12 +44,6 @@
           name:@"CLIPSTerminalClosed"
           object: terminalController];
      }
-     
-   [hiliteColor release];
-
-   [string release];
-   [terminalController release];
-   [super dealloc];
   }
 
 /*****************/
@@ -294,8 +288,6 @@
 /**************/
 - (void) setString: (NSString *) value
   {
-   [value retain];
-   [string release];
    string = value;
   }
 
@@ -375,7 +367,6 @@
      { return NO; }
      
    [self setString: aString];
-   [aString release];
    [self updateView];
    
    return YES;
@@ -1051,8 +1042,6 @@
   {
    NSNotificationCenter  *nc;
    nc = [NSNotificationCenter defaultCenter];
-   
-   [theController retain];
 
    if (terminalController != nil)
      {
@@ -1074,7 +1063,6 @@
           object: theController];
      }
      
-   [terminalController release];
    terminalController = theController;
   }
 
@@ -1085,8 +1073,6 @@
 
 - (void) setEnvironmentController: (EnvController *) theController
   {
-   [theController retain];
-   [environmentController release];
    environmentController = theController;
   }
 

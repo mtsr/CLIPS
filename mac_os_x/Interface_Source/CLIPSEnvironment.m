@@ -27,7 +27,6 @@
       environment = CreateEnvironment();
       if (environment == NULL)
         {
-         [self release];
          return nil;
         }
       
@@ -78,27 +77,17 @@
    
    if ([executionLock tryLock])
      {
-      [focusStack release];
       focusStack = nil;
-      [runningFocusStack release];
       runningFocusStack = nil;
 
-      [factModule release];
       factModule = nil;
-      [runningFactModule release];
       runningFactModule = nil;
-      [factList release];
       factList = nil;
-      [runningFactList release];
       runningFactList = nil;
 
-      [instanceModule release];
       instanceModule = nil;
-      [runningInstanceModule release];
       runningInstanceModule = nil;
-      [instanceList release];
       instanceList = nil;
-      [runningInstanceList release];
       runningInstanceList = nil;
 
       DestroyEnvironment(environment);
@@ -111,7 +100,6 @@
    /* Release the objects associated with this instance. */
    /*====================================================*/
    
-   [name release];
    /* TBD restore
    [focusStack release];
    [runningFocusStack release];
@@ -120,17 +108,6 @@
    [factList release];
    [runningFactList release];
    */
-   [executionLock release];
-   [accessLock release];
-   [agendaLock release];
-   [factsLock release];
-   [instancesLock release];
-
-   /*=====================================*/
-   /* Call the superclass dealloc method. */
-   /*=====================================*/
-   
-   [super dealloc];
   }
 
 /****************/
@@ -231,50 +208,48 @@
 
    [executionLock lock];
       
-   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init]; 
+   @autoreleasepool { 
 
-   [self setValue: [NSNumber numberWithBool:YES] forKey: @"executing"];
-      
-   /*===============================================*/
-   /* Set up the long jump so if the user issues an */
-   /* exit command it will return to this location. */
-   /*===============================================*/
+    [self setValue: [NSNumber numberWithBool:YES] forKey: @"executing"];
+       
+    /*===============================================*/
+    /* Set up the long jump so if the user issues an */
+    /* exit command it will return to this location. */
+    /*===============================================*/
 
-   SetJmpBuffer(environment,&theJmpBuffer);
-   
-   status = setjmp(theJmpBuffer);
-   
-   if (status != 0)
-     {
-      [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
+    SetJmpBuffer(environment,&theJmpBuffer);
+    
+    status = setjmp(theJmpBuffer);
+    
+    if (status != 0)
+      {
+       [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
 
-      [pool release]; 
-   
-      [executionLock unlock]; 
+       [executionLock unlock]; 
 
-      [accessLock lock];
-      executionThread = nil;
-      [accessLock unlock];
-      
-      exited = TRUE;
-      return;
-     }
-   
-   /*======================*/
-   /* Execute the command. */
-   /*======================*/
-   
-   CommandLoopOnceThenBatch(environment);
+       [accessLock lock];
+       executionThread = nil;
+       [accessLock unlock];
+       
+       exited = TRUE;
+       return;
+      }
+    
+    /*======================*/
+    /* Execute the command. */
+    /*======================*/
+    
+    CommandLoopOnceThenBatch(environment);
 
-   /*=========================================*/
-   /* Cleanup after the command has executed. */
-   /*=========================================*/
-   
-   SetJmpBuffer(environment,NULL);
-   
-   [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
+    /*=========================================*/
+    /* Cleanup after the command has executed. */
+    /*=========================================*/
+    
+    SetJmpBuffer(environment,NULL);
+    
+    [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
 
-   [pool release]; 
+   } 
    
    [executionLock unlock]; 
 
@@ -386,7 +361,6 @@
    /* empty and use it. Otherwise create a new controller.       */
    /*============================================================*/
    
-   [runningFocusStack release];
    runningFocusStack = [[NSMutableArray alloc] initWithCapacity: focusCount];
 
    agendaDictionary = [[NSMutableDictionary alloc] init];
@@ -421,7 +395,6 @@
          newAgenda = [agendaDictionary objectForKey: [newFocus moduleName]];
          [newFocus setValue: newAgenda forKey: @"agenda"];
          [runningFocusStack addObject: newFocus];
-         [newFocus release];
          continue; 
         }
         
@@ -457,8 +430,6 @@
          [newActivation setBindings: [NSString stringWithFormat:@"%s", bindingsBuffer]];
 
          [newAgenda addObject: newActivation];
-         
-         [newActivation release];
         }
               
       /*=====================*/
@@ -468,19 +439,14 @@
       [newFocus setValue: newAgenda forKey: @"agenda"];
       
       [agendaDictionary setValue: newAgenda forKey: [newFocus moduleName]];
-      
-      [newAgenda release];
-      
+
       /*==============================================*/
       /* Add the focus to the focus stack controller. */
       /*==============================================*/
       
       [runningFocusStack addObject: newFocus];
-      [newFocus release];
      }
    
-   [agendaDictionary release];
-
    if (lockAgenda)
      { [agendaLock unlock]; }
   }
@@ -520,7 +486,6 @@
         theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
      { moduleCount++; }
 
-   [runningFactModule release];
    runningFactModule = [[NSMutableArray alloc] initWithCapacity: moduleCount];
 
    /*===================================*/
@@ -534,7 +499,6 @@
         theFact = (struct fact *) EnvGetNextFact(environment,theFact))
      { factCount++; }
      
-   [runningFactList release];
    runningFactList = [[NSMutableArray alloc] initWithCapacity: factCount];
 
    /*================================*/
@@ -554,7 +518,6 @@
       [newModule setModuleName: theStr];
 
       [runningFactModule addObject: newModule];
-      [newModule release];
      }
    
    /*================================*/
@@ -568,8 +531,6 @@
       newFact = [[CLIPSFactInstance alloc] initWithFact: theFact fromEnvironment: environment];
 
       [runningFactList addObject: newFact];
-
-      [newFact release];
      }
 
    if (lockFacts)
@@ -612,7 +573,6 @@
         theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
      { moduleCount++; }
 
-   [runningInstanceModule release];
    runningInstanceModule = [[NSMutableArray alloc] initWithCapacity: moduleCount];
 
    /*=======================================*/
@@ -626,7 +586,6 @@
         theInstance = (struct instance *) EnvGetNextInstance(environment,theInstance))
      { instanceCount++; }
      
-   [runningInstanceList release];
    runningInstanceList = [[NSMutableArray alloc] initWithCapacity: instanceCount];
 
    /*================================*/
@@ -646,7 +605,6 @@
       [newModule setModuleName: theStr];
 
       [runningInstanceModule addObject: newModule];
-      [newModule release];
      }
    
    /*====================================*/
@@ -660,8 +618,6 @@
       newInstance = [[CLIPSFactInstance alloc] initWithInstance: theInstance fromEnvironment: environment];
 
       [runningInstanceList addObject: newInstance];
-
-      [newInstance release];
      }
 
    if (lockInstances)
@@ -685,7 +641,6 @@
       
    [self setValue: runningFocusStack forKey: @"focusStack"];
 
-   [runningFocusStack release];
    runningFocusStack = NULL;
 
    [self setValue: [NSNumber numberWithLong: (agendaChanged + 1)] forKey: @"agendaChanged"];
@@ -712,12 +667,10 @@
 
    [self setValue: runningFactModule forKey: @"factModule"];
 
-   [runningFactModule release];
    runningFactModule = NULL;
 
    [self setValue: runningFactList forKey: @"factList"];
 
-   [runningFactList release];
    runningFactList = NULL;
 
    [self setValue: [NSNumber numberWithLong: (factsChanged + 1)] forKey: @"factsChanged"];
@@ -744,12 +697,10 @@
 
    [self setValue: runningInstanceModule forKey: @"instanceModule"];
 
-   [runningInstanceModule release];
    runningInstanceModule = NULL;
 
    [self setValue: runningInstanceList forKey: @"instanceList"];
 
-   [runningInstanceList release];
    runningInstanceList = NULL;
 
    [self setValue: [NSNumber numberWithLong: (instancesChanged + 1)] forKey: @"instancesChanged"];
@@ -852,8 +803,6 @@
 /************/
 - (void) setName: (NSString *) theName
   {
-   [theName retain];
-   [name release];
    name = theName;
   }
 
@@ -918,8 +867,6 @@
 /****************************/
 - (void) setFocusStack: (NSArray *) theFocusStack
   {
-   [theFocusStack retain];
-   [focusStack release];
    focusStack = theFocusStack;
   }
 
@@ -936,8 +883,6 @@
 /****************************/
 - (void) setFactModule: (NSArray *) theFactModule
   {
-   [theFactModule retain];
-   [factModule release];
    factModule = theFactModule;
   }
 
@@ -954,8 +899,6 @@
 /****************************/
 - (void) setFactList: (NSArray *) theFactList
   {
-   [theFactList retain];
-   [factList release];
    factList = theFactList;
   }
 
@@ -972,8 +915,6 @@
 /***********************/
 - (void) setInstanceModule: (NSArray *) theInstanceModule
   {
-   [theInstanceModule retain];
-   [instanceModule release];
    instanceModule = theInstanceModule;
   }
 
@@ -990,8 +931,6 @@
 /********************/
 - (void) setInstanceList: (NSArray *) theInstanceList
   {
-   [theInstanceList retain];
-   [instanceList release];
    instanceList = theInstanceList;
   }
 

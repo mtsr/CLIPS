@@ -62,11 +62,6 @@
   {
    if (inputBuffer != NULL)
      { free(inputBuffer); }
-     
-   [inputCharLock release];
-   [hiliteColor release];
-   
-   [super dealloc];
   }
    
 /*****************/
