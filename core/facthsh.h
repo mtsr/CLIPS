@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  11/21/15            */
    /*                                                     */
    /*                 FACT HASHING MODULE                 */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*            Added FactWillBeAsserted.                      */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.40: Modify command preserves fact id and address.  */
 /*                                                           */
 /*************************************************************/
 
@@ -59,7 +61,7 @@ struct factHashEntry
 
    LOCALE void                           AddHashedFact(void *,struct fact *,unsigned long);
    LOCALE intBool                        RemoveHashedFact(void *,struct fact *);
-   LOCALE unsigned long                  HandleFactDuplication(void *,void *,intBool *);
+   LOCALE unsigned long                  HandleFactDuplication(void *,void *,intBool *,long long);
    LOCALE intBool                        EnvGetFactDuplication(void *);
    LOCALE intBool                        EnvSetFactDuplication(void *,int);
    LOCALE void                           InitializeFactHashTable(void *);

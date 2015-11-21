@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/16/15            */
+   /*             CLIPS Version 6.40  11/21/15            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -785,7 +785,7 @@ globle void *AssertDriver(
    /* then search the fact list for a duplicate fact.        */
    /*========================================================*/
 
-   hashValue = HandleFactDuplication(theEnv,theFact,&duplicate);
+   hashValue = HandleFactDuplication(theEnv,theFact,&duplicate,reuseIndex);
    if (duplicate) return(NULL);
 
    /*==========================================================*/

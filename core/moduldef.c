@@ -75,9 +75,10 @@
 #endif
    static void                       DeallocateDefmoduleData(void *);
 
-/**************************************************************/
-/* InitializeDefmodules: Initializes the defmodule construct. */
-/**************************************************************/
+/************************************************/
+/* AllocateDefmoduleGlobals: Initializes global */
+/*   variables used by the defmodule construct. */
+/************************************************/
 globle void AllocateDefmoduleGlobals(
   void *theEnv)
   {

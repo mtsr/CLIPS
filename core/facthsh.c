@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  11/21/15            */
    /*                                                     */
    /*                 FACT HASHING MODULE                 */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*            Added FactWillBeAsserted.                      */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.40: Modify command preserves fact id and address.  */
 /*                                                           */
 /*************************************************************/
 
@@ -221,9 +223,11 @@ globle intBool FactWillBeAsserted(
 /*****************************************************/
 globle unsigned long HandleFactDuplication(
   void *theEnv,
-  void *theFact,
-  intBool *duplicate)
+  void *vTheFact,
+  intBool *duplicate,
+  long long reuseIndex)
   {
+   struct fact *theFact = (struct fact *) vTheFact;
    struct fact *tempPtr;
    unsigned long hashValue;
    *duplicate = FALSE;
@@ -235,11 +239,21 @@ globle unsigned long HandleFactDuplication(
    tempPtr = FactExists(theEnv,(struct fact *) theFact,hashValue);
    if (tempPtr == NULL) return(hashValue);
 
-   ReturnFact(theEnv,(struct fact *) theFact);
+   if (reuseIndex == 0)
+     { ReturnFact(theEnv,theFact); }
+   else
+     {
+      theFact->nextFact = FactData(theEnv)->GarbageFacts;
+      FactData(theEnv)->GarbageFacts = theFact;
+      UtilityData(theEnv)->CurrentGarbageFrame->dirty = TRUE;
+      theFact->garbage = TRUE;
+     }
+
 #if DEFRULE_CONSTRUCT
    AddLogicalDependencies(theEnv,(struct patternEntity *) tempPtr,TRUE);
 #endif
    *duplicate = TRUE;
+
    return(0);
   }
 
