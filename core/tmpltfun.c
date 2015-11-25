@@ -104,6 +104,7 @@
 /***************************************/
 
    static SYMBOL_HN              *CheckDeftemplateAndSlotArguments(void *,const char *,struct deftemplate **,int);
+   static void                    FreeTemplateDataObjectArray(void *,DATA_OBJECT_PTR,struct deftemplate *);
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    static struct expr            *ModAndDupParse(void *,struct expr *,const char *,const char *);
@@ -159,6 +160,27 @@ globle void DeftemplateFunctions(
 #pragma unused(theEnv)
 #endif
 #endif
+  }
+
+/********************************/
+/* FreeTemplateDataObjectArray: */
+/********************************/
+static void FreeTemplateDataObjectArray(
+  void *theEnv,
+  DATA_OBJECT_PTR theDOArray,
+  struct deftemplate *templatePtr)
+  {
+   int i;
+   
+   if (theDOArray == NULL) return;
+   
+   for (i = 0; i < (int) templatePtr->numberOfSlots; i++)
+     {
+      if (theDOArray[i].type == MULTIFIELD)
+        { ReturnMultifield(theEnv,theDOArray[i].value); }
+     }
+
+   rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots);
   }
 
 /*********************************************************************/
@@ -314,8 +336,7 @@ globle void ModifyCommand(
             InvalidDeftemplateSlotMessage(theEnv,ValueToString(testPtr->value),
                                           ValueToString(templatePtr->header.name),TRUE);
             EnvSetEvaluationError(theEnv,TRUE);
-            if (theDOArray != NULL)
-              { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+            FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
             return;
            }
         }
@@ -336,8 +357,7 @@ globle void ModifyCommand(
          if ((testPtr->argList == NULL) ? TRUE : (testPtr->argList->nextArg != NULL))
            {
             MultiIntoSingleFieldSlotError(theEnv,GetNthSlot(templatePtr,position),templatePtr);
-            if (theDOArray != NULL)
-              { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+            FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
             return;
            }
 
@@ -359,8 +379,7 @@ globle void ModifyCommand(
          if (computeResult.type == MULTIFIELD)
            {
             MultiIntoSingleFieldSlotError(theEnv,GetNthSlot(templatePtr,position),templatePtr);
-            if (theDOArray != NULL)
-              { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+            FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
             return;
            }
 
@@ -370,10 +389,11 @@ globle void ModifyCommand(
 
          if ((oldFact->theProposition.theFields[position].type != computeResult.type) ||
              (oldFact->theProposition.theFields[position].value != computeResult.value))
-           { replacementCount++; }
-           
-         theDOArray[position].type = computeResult.type;
-         theDOArray[position].value = computeResult.value;
+           {
+            replacementCount++;
+            theDOArray[position].type = computeResult.type;
+            theDOArray[position].value = computeResult.value;
+           }
         }
 
       /*=================================*/
@@ -396,16 +416,33 @@ globle void ModifyCommand(
          /*=============================*/
 
          if ((oldFact->theProposition.theFields[position].type != computeResult.type) ||
-             (oldFact->theProposition.theFields[position].value != computeResult.value))
-           { replacementCount++; }
-           
-         theDOArray[position].type = computeResult.type;
-         theDOArray[position].value = computeResult.value;
+             (! MultifieldsEqual(oldFact->theProposition.theFields[position].value,computeResult.value)))
+           {
+            theDOArray[position].type = computeResult.type;
+            theDOArray[position].value = computeResult.value;
+            replacementCount++;
+           }
+         else
+           { ReturnMultifield(theEnv,computeResult.value); }
         }
 
       testPtr = testPtr->nextArg;
      }
 
+   /*==================================*/
+   /* If no slots have changed, then a */
+   /* retract/assert is not performed. */
+   /*==================================*/
+
+   if (replacementCount == 0)
+     {
+      if (theDOArray != NULL)
+        { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+      SetpType(returnValue,FACT_ADDRESS);
+      SetpValue(returnValue,(void *) oldFact);
+      return;
+     }
+     
    /*===============================================*/
    /* Call registered modify notification functions */
    /* for the existing version of the fact.         */
@@ -479,8 +516,8 @@ globle void ModifyCommand(
 
    if (theFact != NULL)
      {
-      SetpDOBegin(returnValue,1);
-      SetpDOEnd(returnValue,theFact->theProposition.multifieldLength);
+      SetpDOBegin(returnValue,1); // TBD Necessary?
+      SetpDOEnd(returnValue,theFact->theProposition.multifieldLength); // TBD Necessary?
       SetpType(returnValue,FACT_ADDRESS);
       SetpValue(returnValue,(void *) theFact);
      }

@@ -750,5 +750,11 @@ CLIPS>
    =>)
 CLIPS> (assert (C (x 1)))
 <Fact-1>
+CLIPS> (clear) ; Memory leak
+CLIPS> (deftemplate TAG (multislot attributes)))
+CLIPS> (assert (TAG))
+<Fact-1>
+CLIPS> (modify 1 (attributes (create$)))
+<Fact-1>
 CLIPS> (clear)
 CLIPS> (dribble-off)
