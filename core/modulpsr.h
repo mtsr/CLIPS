@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*             DEFMODULE PARSER HEADER FILE            */
    /*******************************************************/
@@ -58,7 +58,6 @@ struct portConstructItem
 #define LOCALE extern
 #endif
 
-   LOCALE long                           GetNumberOfDefmodules(void *);
    LOCALE void                           SetNumberOfDefmodules(void *,long);
    LOCALE void                           AddAfterModuleDefinedFunction(void *,const char *,void (*)(void *),int);
    LOCALE int                            ParseDefmodule(void *,const char *);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*                  DEFMODULE MODULE                   */
    /*******************************************************/
@@ -784,6 +784,20 @@ globle void IllegalModuleSpecifierMessage(
   {
    PrintErrorID(theEnv,"MODULDEF",1,TRUE);
    EnvPrintRouter(theEnv,WERROR,"Illegal use of the module specifier.\n");
+  }
+
+/*********************************************/
+/* GetNumberOfDefmodules: Returns the number */
+/*   of defmodules currently defined.        */
+/*********************************************/
+globle long GetNumberOfDefmodules(
+  void *theEnv)
+  {
+#if DEFMODULE_CONSTRUCT && (! RUN_TIME) && (! BLOAD_ONLY)
+   return(DefmoduleData(theEnv)->NumberOfDefmodules);
+#else
+   return 1L;
+#endif
   }
 
 /*#####################################*/

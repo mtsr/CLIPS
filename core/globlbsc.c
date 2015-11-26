@@ -273,10 +273,10 @@ globle unsigned EnvGetDefglobalWatch(
    return(((struct defglobal *) theGlobal)->watch); 
   }
 
-/********************************************************/
-/* EnvSetDeftemplateWatch: C access routine for setting */
-/*   the current watch value of a deftemplate.          */
-/********************************************************/
+/******************************************************/
+/* EnvSetDefglobalWatch: C access routine for setting */
+/*   the current watch value of a defglobal.          */
+/******************************************************/
 globle void EnvSetDefglobalWatch(
   void *theEnv,
   unsigned newState,

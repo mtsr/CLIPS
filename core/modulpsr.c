@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*              DEFMODULE PARSER MODULE                */
    /*******************************************************/
@@ -1128,19 +1128,5 @@ globle int FindImportExportConflict(
   }
 
 #endif /* DEFMODULE_CONSTRUCT && (! RUN_TIME) && (! BLOAD_ONLY) */
-
-/*********************************************/
-/* GetNumberOfDefmodules: Returns the number */
-/*   of defmodules currently defined.        */
-/*********************************************/
-globle long GetNumberOfDefmodules(
-  void *theEnv)
-  {
-#if DEFMODULE_CONSTRUCT && (! RUN_TIME) && (! BLOAD_ONLY)
-   return(DefmoduleData(theEnv)->NumberOfDefmodules);
-#else
-   return 1L;
-#endif
-  }
 
 

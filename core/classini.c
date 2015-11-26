@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.40  10/26/15          */
+   /*               CLIPS Version 6.40  11/26/15          */
    /*                                                     */
    /*               CLASS INITIALIZATION MODULE           */
    /*******************************************************/
@@ -378,9 +378,6 @@ globle void ObjectsRunTimeInitialize(
    MessageHandlerData(theEnv)->CREATE_SYMBOL = FindSymbolHN(theEnv,CREATE_STRING);
    DefclassData(theEnv)->ISA_SYMBOL = FindSymbolHN(theEnv,SUPERCLASS_RLN);
    DefclassData(theEnv)->NAME_SYMBOL = FindSymbolHN(theEnv,NAME_RLN);
-#if DEFRULE_CONSTRUCT
-   DefclassData(theEnv)->INITIAL_OBJECT_SYMBOL = FindSymbolHN(theEnv,INITIAL_OBJECT_NAME);
-#endif
 
    DefclassData(theEnv)->ClassTable = (DEFCLASS **) ctable;
    DefclassData(theEnv)->SlotNameTable = (SLOT_NAME **) sntable;

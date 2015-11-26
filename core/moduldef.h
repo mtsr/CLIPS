@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*                DEFMODULE HEADER FILE                */
    /*******************************************************/
@@ -242,6 +242,7 @@ struct defmoduleData
    LOCALE void                           AddAfterModuleChangeFunction(void *,const char *,void (*)(void *),int);
    LOCALE void                           IllegalModuleSpecifierMessage(void *);
    LOCALE void                           AllocateDefmoduleGlobals(void *);
+   LOCALE long                           GetNumberOfDefmodules(void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
