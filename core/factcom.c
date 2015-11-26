@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*                FACT COMMANDS MODULE                 */
    /*******************************************************/
@@ -45,11 +45,14 @@
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Watch facts for modify command only prints     */
+/*            changed slots.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -690,7 +693,7 @@ globle void EnvFacts(
 
       if (factPtr->factIndex >= start)
         {
-         PrintFactWithIdentifier(theEnv,logicalName,factPtr);
+         PrintFactWithIdentifier(theEnv,logicalName,factPtr,NULL);
          EnvPrintRouter(theEnv,logicalName,"\n");
          count++;
          if (max > 0) max--;
@@ -1010,7 +1013,7 @@ globle intBool EnvSaveFactsDriver(
 
       if (printFact)
         {
-         PrintFact(theEnv,(char *) filePtr,theFact,FALSE,FALSE);
+         PrintFact(theEnv,(char *) filePtr,theFact,FALSE,FALSE,NULL);
          EnvPrintRouter(theEnv,(char *) filePtr,"\n");
         }
      }

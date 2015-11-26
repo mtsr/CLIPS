@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/16/15            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -63,6 +63,9 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Modify command preserves fact id and address.  */
+/*                                                           */
+/*            Watch facts for modify command only prints     */
+/*            changed slots.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -199,6 +202,7 @@ globle void ModifyCommand(
    struct templateSlot *slotPtr;
    int i, position, found, replacementCount = 0;
    DATA_OBJECT_PTR theDOArray;
+   char *changeMap;
 
    /*===================================================*/
    /* Set the default return value to the symbol FALSE. */
@@ -282,9 +286,16 @@ globle void ModifyCommand(
    /*========================================================*/
    
    if (templatePtr->numberOfSlots == 0)
-     { theDOArray = NULL; }
+     {
+      theDOArray = NULL;
+      changeMap = NULL;
+     }
    else
-     { theDOArray = (DATA_OBJECT_PTR) gm3(theEnv,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+     {
+      theDOArray = (DATA_OBJECT_PTR) gm3(theEnv,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots);
+      changeMap = (char *) gm2(theEnv,templatePtr->numberOfSlots);
+      ClearBitString((void *) changeMap,templatePtr->numberOfSlots);
+     }
 
    /*================================================================*/
    /* Duplicate the values from the old fact (skipping multifields). */
@@ -337,6 +348,8 @@ globle void ModifyCommand(
                                           ValueToString(templatePtr->header.name),TRUE);
             EnvSetEvaluationError(theEnv,TRUE);
             FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
+            if (changeMap != NULL)
+              { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
             return;
            }
         }
@@ -358,6 +371,8 @@ globle void ModifyCommand(
            {
             MultiIntoSingleFieldSlotError(theEnv,GetNthSlot(templatePtr,position),templatePtr);
             FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
+            if (changeMap != NULL)
+              { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
             return;
            }
 
@@ -380,6 +395,8 @@ globle void ModifyCommand(
            {
             MultiIntoSingleFieldSlotError(theEnv,GetNthSlot(templatePtr,position),templatePtr);
             FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
+            if (changeMap != NULL)
+              { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
             return;
            }
 
@@ -393,6 +410,8 @@ globle void ModifyCommand(
             replacementCount++;
             theDOArray[position].type = computeResult.type;
             theDOArray[position].value = computeResult.value;
+            if (changeMap != NULL)
+              { SetBitMap(changeMap,position); }
            }
         }
 
@@ -421,6 +440,8 @@ globle void ModifyCommand(
             theDOArray[position].type = computeResult.type;
             theDOArray[position].value = computeResult.value;
             replacementCount++;
+            if (changeMap != NULL)
+              { SetBitMap(changeMap,position); }
            }
          else
            { ReturnMultifield(theEnv,computeResult.value); }
@@ -438,6 +459,8 @@ globle void ModifyCommand(
      {
       if (theDOArray != NULL)
         { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+      if (changeMap != NULL)
+        { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
       SetpType(returnValue,FACT_ADDRESS);
       SetpValue(returnValue,(void *) oldFact);
       return;
@@ -479,7 +502,7 @@ globle void ModifyCommand(
    /* Retract the fact. */
    /*===================*/
    
-   RetractDriver(theEnv,oldFact,TRUE);
+   RetractDriver(theEnv,oldFact,TRUE,changeMap);
    oldFact->garbage = FALSE;
 
    /*======================================*/
@@ -508,7 +531,7 @@ globle void ModifyCommand(
    /* Assert the new fact. */
    /*======================*/
    
-   theFact = (struct fact *) AssertDriver(theEnv,oldFact,factIndex,factListPosition,templatePosition);
+   theFact = (struct fact *) AssertDriver(theEnv,oldFact,factIndex,factListPosition,templatePosition,changeMap);
 
    /*========================================*/
    /* The asserted fact is the return value. */
@@ -549,6 +572,8 @@ globle void ModifyCommand(
    
    if (theDOArray != NULL)
      { rm3(theEnv,theDOArray,sizeof(DATA_OBJECT) * templatePtr->numberOfSlots); }
+   if (changeMap != NULL)
+     { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
 
    return;
   }
@@ -808,7 +833,7 @@ globle void DuplicateCommand(
    /* Perform the duplicate action. */
    /*===============================*/
 
-   theFact = (struct fact *) AssertDriver(theEnv,newFact,0,NULL,NULL);
+   theFact = (struct fact *) AssertDriver(theEnv,newFact,0,NULL,NULL,NULL);
 
    /*========================================*/
    /* The asserted fact is the return value. */

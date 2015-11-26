@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/16/15            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*              FACTS MANAGER HEADER FILE              */
    /*******************************************************/
@@ -54,6 +54,9 @@
 /*            JoinOperationInProgress mechanism.             */
 /*                                                           */
 /*      6.40: Modify command preserves fact id and address.  */
+/*                                                           */
+/*            Watch facts for modify command only prints     */
+/*            changed slots.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -142,17 +145,17 @@ struct factsData
 #endif
 
    LOCALE void                          *EnvAssert(void *,void *);
-   LOCALE void                          *AssertDriver(void *,void *,long long,struct fact *,struct fact *);
+   LOCALE void                          *AssertDriver(void *,void *,long long,struct fact *,struct fact *,char *);
    LOCALE void                          *EnvAssertString(void *,const char *);
    LOCALE struct fact                   *EnvCreateFact(void *,void *);
    LOCALE void                           EnvDecrementFactCount(void *,void *);
    LOCALE long long                      EnvFactIndex(void *,void *);
    LOCALE intBool                        EnvGetFactSlot(void *,void *,const char *,DATA_OBJECT *);
-   LOCALE void                           PrintFactWithIdentifier(void *,const char *,struct fact *);
-   LOCALE void                           PrintFact(void *,const char *,struct fact *,int,int);
+   LOCALE void                           PrintFactWithIdentifier(void *,const char *,struct fact *,const char *);
+   LOCALE void                           PrintFact(void *,const char *,struct fact *,int,int,const char *);
    LOCALE void                           PrintFactIdentifierInLongForm(void *,const char *,void *);
    LOCALE intBool                        EnvRetract(void *,void *);
-   LOCALE intBool                        RetractDriver(void *,void *,intBool);
+   LOCALE intBool                        RetractDriver(void *,void *,intBool,char *);
    LOCALE void                           RemoveAllFacts(void *);
    LOCALE struct fact                   *CreateFactBySize(void *,unsigned);
    LOCALE void                           FactInstall(void *,struct fact *);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*               FACT FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -62,11 +62,15 @@
 /*            Added STDOUT and STDIN logical name            */
 /*            definitions.                                   */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Watch facts for modify command only prints     */
+/*            changed slots.                                 */
+/*                                                           */
 /*                                                           */
 /*************************************************************/
 
@@ -609,7 +613,7 @@ globle void EnvPPFact(
 
    if (theFact->garbage) return;
 
-   PrintFact(theEnv,logicalName,theFact,TRUE,ignoreDefaults);
+   PrintFact(theEnv,logicalName,theFact,TRUE,ignoreDefaults,NULL);
    
    EnvPrintRouter(theEnv,logicalName,"\n");
   }

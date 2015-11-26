@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*          DEFTEMPLATE UTILITIES HEADER FILE          */
    /*******************************************************/
@@ -33,6 +33,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.40: Watch facts for modify command only prints     */
+/*            changed slots.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -73,7 +76,7 @@
    LOCALE intBool                        CheckRHSSlotTypes(void *,struct expr *,struct templateSlot *,const char *);
    LOCALE struct templateSlot           *GetNthSlot(struct deftemplate *,int);
    LOCALE int                            FindSlotPosition(struct deftemplate *,struct symbolHashNode *);
-   LOCALE void                           PrintTemplateFact(void *,const char *,struct fact *,int,int);
+   LOCALE void                           PrintTemplateFact(void *,const char *,struct fact *,int,int,const char *);
    LOCALE void                           UpdateDeftemplateScope(void *);
    LOCALE struct templateSlot           *FindSlot(struct deftemplate *,struct symbolHashNode *,short *);
    LOCALE struct deftemplate            *CreateImpliedDeftemplate(void *,SYMBOL_HN *,int);

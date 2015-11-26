@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*                 FACT MATCH MODULE                   */
    /*******************************************************/
@@ -33,6 +33,9 @@
 /*            Removed conditional code for unsupported       */
 /*            compilers/operating systems (IBM_MCW,          */
 /*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*      6.40: Watch facts for modify command only prints     */
+/*            changed slots.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -715,7 +718,7 @@ static void PatternNetErrorMessage(
    PrintErrorID(theEnv,"FACTMCH",1,TRUE);
    EnvPrintRouter(theEnv,WERROR,"This error occurred in the fact pattern network\n");
    EnvPrintRouter(theEnv,WERROR,"   Currently active fact: ");
-   PrintFact(theEnv,WERROR,FactData(theEnv)->CurrentPatternFact,FALSE,FALSE);
+   PrintFact(theEnv,WERROR,FactData(theEnv)->CurrentPatternFact,FALSE,FALSE,NULL);
    EnvPrintRouter(theEnv,WERROR,"\n");
 
    /*==============================================*/

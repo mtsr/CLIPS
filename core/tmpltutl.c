@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*            DEFTEMPLATE UTILITIES MODULE             */
    /*******************************************************/
@@ -35,11 +35,14 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Watch facts for modify command only prints     */
+/*            changed slots.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -71,6 +74,13 @@
 #include "tmpltdef.h"
 
 #include "tmpltutl.h"
+
+/***************************************/
+/* LOCAL INTERNAL FUNCTION DEFINITIONS */
+/***************************************/
+
+   static void                     PrintTemplateSlot(void *,const char *,struct templateSlot *,struct field *);
+   static struct templateSlot     *GetNextTemplateSlotToPrint(void *,struct fact *,struct templateSlot *,int *,int,const char *);
 
 /********************************************************/
 /* InvalidDeftemplateSlotMessage: Generic error message */
@@ -283,23 +293,130 @@ globle int FindSlotPosition(
    return(0);
   }
 
-/*******************************************************************/
-/* PrintTemplateFact: Prints a fact using the deftemplate format.  */
-/*   Returns TRUE if the fact was printed using this format, */
-/*   otherwise FALSE.                                        */
-/*******************************************************************/
+/**********************/
+/* PrintTemplateSlot: */
+/**********************/
+static void PrintTemplateSlot(
+  void *theEnv,
+  const char *logicalName,
+  struct templateSlot *slotPtr,
+  struct field *slotValue)
+  {
+   EnvPrintRouter(theEnv,logicalName,"(");
+   EnvPrintRouter(theEnv,logicalName,slotPtr->slotName->contents);
+
+   /*======================================================*/
+   /* Print the value of the slot for a single field slot. */
+   /*======================================================*/
+
+   if (slotPtr->multislot == FALSE)
+     {
+      EnvPrintRouter(theEnv,logicalName," ");
+      PrintAtom(theEnv,logicalName,slotValue->type,slotValue->value);
+     }
+
+   /*==========================================================*/
+   /* Else print the value of the slot for a multi field slot. */
+   /*==========================================================*/
+
+   else
+     {
+      struct multifield *theSegment;
+
+      theSegment = (struct multifield *) slotValue->value;
+      if (theSegment->multifieldLength > 0)
+        {
+         EnvPrintRouter(theEnv,logicalName," ");
+         PrintMultifield(theEnv,logicalName,theSegment,
+                         0,(long) theSegment->multifieldLength-1,FALSE);
+        }
+     }
+
+   /*============================================*/
+   /* Print the closing parenthesis of the slot. */
+   /*============================================*/
+
+   EnvPrintRouter(theEnv,logicalName,")");
+  }
+
+/********************************/
+/* GetNextTemplateSloteToPrint: */
+/********************************/
+static struct templateSlot *GetNextTemplateSlotToPrint(
+  void *theEnv,
+  struct fact *theFact,
+  struct templateSlot *slotPtr,
+  int *position,
+  int ignoreDefaults,
+  const char *changeMap)
+  {
+   DATA_OBJECT tempDO;
+   struct field *sublist;
+
+   sublist = theFact->theProposition.theFields;
+   if (slotPtr == NULL)
+     { slotPtr = theFact->whichDeftemplate->slotList; }
+   else
+     {
+      slotPtr = slotPtr->next;
+      (*position)++;
+     }
+     
+   while (slotPtr != NULL)
+     {
+      if ((changeMap != NULL) && (TestBitMap(changeMap,*position) == 0))
+        {
+         (*position)++;
+         slotPtr = slotPtr->next;
+         continue;
+        }
+
+      if (ignoreDefaults && (slotPtr->defaultDynamic == FALSE))
+        {
+         DeftemplateSlotDefault(theEnv,theFact->whichDeftemplate,slotPtr,&tempDO,TRUE);
+         
+         if (slotPtr->multislot == FALSE)
+           {
+            if ((GetType(tempDO) == sublist[*position].type) &&
+                (GetValue(tempDO) == sublist[*position].value))
+              {     
+               (*position)++;
+               slotPtr = slotPtr->next;
+               continue;
+              }
+           }
+         else if (MultifieldsEqual((struct multifield*) GetValue(tempDO),
+                                   (struct multifield *) sublist[*position].value))
+           {
+            (*position)++;
+            slotPtr = slotPtr->next;
+            continue;
+           }
+        }
+        
+      return slotPtr;
+     }
+     
+   return NULL;
+  }
+
+/**********************************************************/
+/* PrintTemplateFact: Prints a fact using the deftemplate */
+/*   format. Returns TRUE if the fact was printed using   */
+/*   this format, otherwise FALSE.                        */
+/**********************************************************/
 globle void PrintTemplateFact(
   void *theEnv,
   const char *logicalName,
   struct fact *theFact,
   int seperateLines,
-  int ignoreDefaults)
+  int ignoreDefaults,
+  const char *changeMap)
   {
    struct field *sublist;
    int i;
    struct deftemplate *theDeftemplate;
-   struct templateSlot *slotPtr;
-   DATA_OBJECT tempDO;
+   struct templateSlot *slotPtr, *lastPtr = NULL;
    int slotPrinted = FALSE;
    
    /*==============================*/
@@ -320,40 +437,16 @@ globle void PrintTemplateFact(
    /* Print each of the field slots of the deftemplate. */
    /*===================================================*/
 
-   slotPtr = theDeftemplate->slotList;
-
    i = 0;
+   slotPtr = GetNextTemplateSlotToPrint(theEnv,theFact,lastPtr,&i,
+                                        ignoreDefaults,changeMap);
+     
+   if ((changeMap != NULL) &&
+       (theFact->whichDeftemplate->slotList != slotPtr))
+     { EnvPrintRouter(theEnv,logicalName," ..."); }
+   
    while (slotPtr != NULL)
-     {         
-      /*=================================================*/
-      /* If we're ignoring slots with their original     */
-      /* default value, check to see if the fact's slot  */
-      /* value differs from the deftemplate default.     */
-      /*=================================================*/
-      
-      if (ignoreDefaults && (slotPtr->defaultDynamic == FALSE))
-        {
-         DeftemplateSlotDefault(theEnv,theDeftemplate,slotPtr,&tempDO,TRUE);
-         
-         if (slotPtr->multislot == FALSE)
-           {
-            if ((GetType(tempDO) == sublist[i].type) &&
-                (GetValue(tempDO) == sublist[i].value))
-              {     
-               i++;
-               slotPtr = slotPtr->next;
-               continue;
-              }
-           }
-         else if (MultifieldsEqual((struct multifield*) GetValue(tempDO),
-                                   (struct multifield *) sublist[i].value))
-           {
-            i++;
-            slotPtr = slotPtr->next;
-            continue;
-           }
-        }
-        
+     {
       /*===========================================*/
       /* Print the opening parenthesis of the slot */
       /* and the slot name.                        */
@@ -368,43 +461,23 @@ globle void PrintTemplateFact(
       if (seperateLines)
         { EnvPrintRouter(theEnv,logicalName,"\n   "); }
 
-      EnvPrintRouter(theEnv,logicalName,"(");
-      EnvPrintRouter(theEnv,logicalName,slotPtr->slotName->contents);
+      /*===================================*/
+      /* Print the slot name and it value. */
+      /*===================================*/
+      
+      PrintTemplateSlot(theEnv,logicalName,slotPtr,&sublist[i]);
 
-      /*======================================================*/
-      /* Print the value of the slot for a single field slot. */
-      /*======================================================*/
+      /*===========================*/
+      /* Move on to the next slot. */
+      /*===========================*/
+      
+      lastPtr = slotPtr;
+      slotPtr = GetNextTemplateSlotToPrint(theEnv,theFact,lastPtr,&i,
+                                           ignoreDefaults,changeMap);
 
-      if (slotPtr->multislot == FALSE)
-        {
-         EnvPrintRouter(theEnv,logicalName," ");
-         PrintAtom(theEnv,logicalName,sublist[i].type,sublist[i].value);
-        }
-
-      /*==========================================================*/
-      /* Else print the value of the slot for a multi field slot. */
-      /*==========================================================*/
-
-      else
-        {
-         struct multifield *theSegment;
-
-         theSegment = (struct multifield *) sublist[i].value;
-         if (theSegment->multifieldLength > 0)
-           {
-            EnvPrintRouter(theEnv,logicalName," ");
-            PrintMultifield(theEnv,logicalName,(struct multifield *) sublist[i].value,
-                            0,(long) theSegment->multifieldLength-1,FALSE);
-           }
-        }
-
-      /*============================================*/
-      /* Print the closing parenthesis of the slot. */
-      /*============================================*/
-
-      i++;
-      EnvPrintRouter(theEnv,logicalName,")");
-      slotPtr = slotPtr->next;
+      if ((changeMap != NULL) && (lastPtr->next != slotPtr))
+        { EnvPrintRouter(theEnv,logicalName," ..."); }
+      
       if (slotPtr != NULL) EnvPrintRouter(theEnv,logicalName," ");
      }
 

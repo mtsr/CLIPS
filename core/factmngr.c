@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/21/15            */
+   /*             CLIPS Version 6.40  11/26/15            */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -67,6 +67,9 @@
 /*            Removed initial-fact support.                  */
 /*                                                           */
 /*            Modify command preserves fact id and address.  */
+/*                                                           */
+/*            Watch facts for modify command only prints     */
+/*            changed slots.                                 */
 /*                                                           */
 /*************************************************************/
 
@@ -301,13 +304,14 @@ static void DeallocateFactData(
 globle void PrintFactWithIdentifier(
   void *theEnv,
   const char *logicalName,
-  struct fact *factPtr)
+  struct fact *factPtr,
+  const char *changeMap)
   {
    char printSpace[20];
 
    gensprintf(printSpace,"f-%-5lld ",factPtr->factIndex);
    EnvPrintRouter(theEnv,logicalName,printSpace);
-   PrintFact(theEnv,logicalName,factPtr,FALSE,FALSE);
+   PrintFact(theEnv,logicalName,factPtr,FALSE,FALSE,changeMap);
   }
 
 /****************************************************/
@@ -440,7 +444,8 @@ globle void PrintFact(
   const char *logicalName,
   struct fact *factPtr,
   int seperateLines,
-  int ignoreDefaults)
+  int ignoreDefaults,
+  const char *changeMap)
   {
    struct multifield *theMultifield;
 
@@ -450,7 +455,7 @@ globle void PrintFact(
 
    if (factPtr->whichDeftemplate->implied == FALSE)
      {
-      PrintTemplateFact(theEnv,logicalName,factPtr,seperateLines,ignoreDefaults);
+      PrintTemplateFact(theEnv,logicalName,factPtr,seperateLines,ignoreDefaults,changeMap);
       return;
      }
 
@@ -494,7 +499,8 @@ globle void MatchFactFunction(
 globle intBool RetractDriver(
   void *theEnv,
   void *vTheFact,
-  intBool modifyOperation)
+  intBool modifyOperation,
+  char *changeMap)
   {
    struct fact *theFact = (struct fact *) vTheFact;
    struct deftemplate *theTemplate = theFact->whichDeftemplate;
@@ -554,7 +560,7 @@ globle intBool RetractDriver(
    if (theFact->whichDeftemplate->watch)
      {
       EnvPrintRouter(theEnv,WTRACE,"<== ");
-      PrintFactWithIdentifier(theEnv,WTRACE,theFact);
+      PrintFactWithIdentifier(theEnv,WTRACE,theFact,changeMap);
       EnvPrintRouter(theEnv,WTRACE,"\n");
      }
 #endif
@@ -701,7 +707,7 @@ globle intBool EnvRetract(
   void *theEnv,
   void *vTheFact)
   {
-   return RetractDriver(theEnv,vTheFact,FALSE);
+   return RetractDriver(theEnv,vTheFact,FALSE,NULL);
   }
 
 /*******************************************************************/
@@ -742,7 +748,8 @@ globle void *AssertDriver(
   void *vTheFact,
   long long reuseIndex,
   struct fact *factListPosition,
-  struct fact *templatePosition)
+  struct fact *templatePosition,
+  char *changeMap)
   {
    unsigned long hashValue;
    unsigned long length, i;
@@ -909,7 +916,7 @@ globle void *AssertDriver(
    if (theFact->whichDeftemplate->watch)
      {
       EnvPrintRouter(theEnv,WTRACE,"==> ");
-      PrintFactWithIdentifier(theEnv,WTRACE,theFact);
+      PrintFactWithIdentifier(theEnv,WTRACE,theFact,changeMap);
       EnvPrintRouter(theEnv,WTRACE,"\n");
      }
 #endif
@@ -983,7 +990,7 @@ globle void *EnvAssert(
   void *theEnv,
   void *vTheFact)
   {
-   return AssertDriver(theEnv,vTheFact,0,NULL,NULL);
+   return AssertDriver(theEnv,vTheFact,0,NULL,NULL,NULL);
   }
 
 /**************************************/
@@ -1617,7 +1624,7 @@ globle void EnvGetFactPPForm(
   void *theFact)
   {
    OpenStringDestination(theEnv,"FactPPForm",buffer,bufferLength);
-   PrintFactWithIdentifier(theEnv,"FactPPForm",(struct fact *) theFact);
+   PrintFactWithIdentifier(theEnv,"FactPPForm",(struct fact *) theFact,NULL);
    CloseStringDestination(theEnv,"FactPPForm");
   }
 
