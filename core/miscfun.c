@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  09/25/15            */
+   /*             CLIPS Version 6.40  12/02/15            */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -63,7 +63,7 @@
 /*                                                           */
 /*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
-/*      6.31: Refactored code to reduce header dependencies  */
+/*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Added Env prefix to GetEvaluationError and     */
@@ -76,6 +76,8 @@
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
+/*                                                           */
+/*            Fact ?var:slot reference support.              */
 /*                                                           */
 /*************************************************************/
 
@@ -98,6 +100,11 @@
 
 #if DEFFUNCTION_CONSTRUCT
 #include "dffnxfun.h"
+#endif
+
+#if DEFTEMPLATE_CONSTRUCT
+#include "factfun.h"
+#include "tmpltutl.h"
 #endif
 
 #include "miscfun.h"
@@ -166,6 +173,9 @@ globle void MiscFunctionDefinitions(
    EnvDefineFunction2(theEnv,"new",'u', PTIEF NewFunction,"NewFunction","1*uw");
    EnvDefineFunction2(theEnv,"call",'u', PTIEF CallFunction,"CallFunction","1*u");
    EnvDefineFunction2(theEnv,"timer",'d', PTIEF TimerFunction,"TimerFunction","**");
+#if DEFTEMPLATE_CONSTRUCT 
+   EnvDefineFunction2(theEnv,"(slot-value)",'u', PTIEF SlotValueFunction,"SlotValueFunction", "22*zw");
+#endif
 #endif
   }
 
@@ -1556,3 +1566,114 @@ globle void SystemCommand(
    return;
   }
 
+/*****************************************/
+/* SlotValueFunction: H/L access routine */
+/*   for the slot-value function.        */
+/*****************************************/
+globle void SlotValueFunction(
+  void *theEnv,
+  DATA_OBJECT *returnValue)
+  {
+#if DEFTEMPLATE_CONSTRUCT
+   struct fact *theFact;
+#endif
+   DATA_OBJECT slotNameReference, factReference, variableSlotReference;
+   short position;
+
+   /*=============================================*/
+   /* Set up the default return value for errors. */
+   /*=============================================*/
+
+   returnValue->type = SYMBOL;
+   returnValue->value = EnvFalseSymbol(theEnv);
+
+#if DEFTEMPLATE_CONSTRUCT
+   /*============================================*/
+   /* Check for the correct number of arguments. */
+   /*============================================*/
+
+   if (EnvArgCountCheck(theEnv,"(slot-value)",EXACTLY,3) == -1)
+     { return; }
+
+   /*===========================*/
+   /* Get the name of the slot. */
+   /*===========================*/
+
+   if (EnvArgTypeCheck(theEnv,"slot-value",3,SYMBOL,&variableSlotReference) == FALSE)
+     { return; }
+
+   /*================================*/
+   /* Get the reference to the fact. */
+   /*================================*/
+
+   EnvRtnUnknown(theEnv,1,&factReference);
+   if (GetType(factReference) == FACT_ADDRESS)
+     {
+      if (((struct fact *) GetValue(factReference))->garbage)
+        {
+         PrintErrorID(theEnv,"MISCFUN",5,FALSE);
+         EnvPrintRouter(theEnv,WERROR,"The variable/slot reference ?");
+         EnvPrintRouter(theEnv,WERROR,DOToString(variableSlotReference));
+         EnvPrintRouter(theEnv,WERROR," can not be resolved because the referenced fact has been retracted\n");
+         EnvSetEvaluationError(theEnv,TRUE);
+         return;
+        }
+      else
+        { theFact = ((struct fact *) GetValue(factReference)); }
+     }
+   else
+     {
+      PrintErrorID(theEnv,"MISCFUN",6,FALSE);
+      EnvPrintRouter(theEnv,WERROR,"The variable/slot reference ?");
+      EnvPrintRouter(theEnv,WERROR,DOToString(variableSlotReference));
+      EnvPrintRouter(theEnv,WERROR," can not be resolved because the variable value is not a fact address\n");
+      EnvSetEvaluationError(theEnv,TRUE);
+      return;
+     }
+   
+   /*===========================*/
+   /* Get the name of the slot. */
+   /*===========================*/
+
+   if (EnvArgTypeCheck(theEnv,"slot-value",2,SYMBOL,&slotNameReference) == FALSE)
+     { return; }
+
+   /*=================================================*/
+   /* If the specified slot exists, return the value. */
+   /*=================================================*/
+   
+   if (theFact->whichDeftemplate->implied)
+     {
+      if (strcmp(DOToString(slotNameReference),"implied") == 0)
+        {
+         returnValue->type = theFact->theProposition.theFields[0].type;
+         returnValue->value = theFact->theProposition.theFields[0].value;
+         SetpDOBegin(returnValue,1);
+         SetpDOEnd(returnValue,((struct multifield *) returnValue->value)->multifieldLength);
+         return;
+        }
+     }
+   else if (FindSlot(theFact->whichDeftemplate,
+                     (SYMBOL_HN *) slotNameReference.value,&position) != NULL)
+     {
+      returnValue->type = theFact->theProposition.theFields[position-1].type;
+      returnValue->value = theFact->theProposition.theFields[position-1].value;
+      if (returnValue->type == MULTIFIELD)
+        {
+         SetpDOBegin(returnValue,1);
+         SetpDOEnd(returnValue,((struct multifield *) returnValue->value)->multifieldLength);
+        }
+      return;
+     }
+     
+   /*==========================================*/
+   /* Otherwise the specified slot is invalid. */
+   /*==========================================*/
+   
+   PrintErrorID(theEnv,"MISCFUN",7,FALSE);
+   EnvPrintRouter(theEnv,WERROR,"The variable/slot reference ?");
+   EnvPrintRouter(theEnv,WERROR,DOToString(variableSlotReference));
+   EnvPrintRouter(theEnv,WERROR," can not be resolved because referenced fact does not contain the specified slot\n");
+   EnvSetEvaluationError(theEnv,TRUE);
+#endif
+  }

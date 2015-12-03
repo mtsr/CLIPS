@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  05/18/15            */
+   /*             CLIPS Version 6.40  12/02/15            */
    /*                                                     */
    /*          MISCELLANEOUS FUNCTIONS HEADER FILE        */
    /*******************************************************/
@@ -57,8 +57,10 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.31: Refactored code to reduce header dependencies  */
+/*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
+/*                                                           */
+/*            Fact ?var:slot reference support.              */
 /*                                                           */
 /*************************************************************/
 
@@ -104,6 +106,7 @@
    LOCALE double                         TimerFunction(void *);
    LOCALE double                         TimeFunction(void *);
    LOCALE void                           SystemCommand(void *);
+   LOCALE void                           SlotValueFunction(void *,DATA_OBJECT *);
 
 #endif /* _H_miscfun */
 

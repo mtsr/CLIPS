@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.31  08/04/15          */
+   /*               CLIPS Version 6.40  12/02/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -42,7 +42,7 @@
 /*            Added const qualifiers to remove C++            */
 /*            deprecation warnings.                           */
 /*                                                            */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /**************************************************************/
@@ -334,13 +334,14 @@ globle EXPRESSION *ParseProcParameters(
                  methods and message-handlers.  Replaces parameter
                  and local variable references with appropriate
                  runtime access functions
-  INPUTS       : 1) The type of procedure body being parsed
-                 2) The logical name of the input
-                 3) A buffer for scanned tokens
-                 4) A list of expressions containing the names
+  INPUTS       : 1) The environment
+                 2) The type of procedure body being parsed
+                 3) The logical name of the input
+                 4) A buffer for scanned tokens
+                 5) A list of expressions containing the names
                     of the parameters
-                 5) The wilcard parameter symbol (NULL if none)
-                 6) A pointer to a function to parse variables not
+                 6) The wilcard parameter symbol (NULL if none)
+                 7) A pointer to a function to parse variables not
                     recognized by the standard parser
                     The function should accept the variable
                     expression and a generic pointer for special
@@ -349,7 +350,7 @@ globle EXPRESSION *ParseProcParameters(
                     expression to access this variable.  Return 1
                     if recognized, 0 if not, -1 on errors
                     This argument can be NULL.
-                 7) A pointer to a function to handle binds in a
+                 8) A pointer to a function to handle binds in a
                     special way. The function should accept the
                     bind function call expression as an argument.
                     If the variable is recognized and treated specially,
@@ -358,9 +359,9 @@ globle EXPRESSION *ParseProcParameters(
                     any necessary argument expressions).  Return 1
                     if recognized, 0 if not, -1 on errors.
                     This argument can be NULL.
-                 8) A buffer for holding the number of local vars
+                 9) A buffer for holding the number of local vars
                     used by this procedure body.
-                 9) Special user data buffer to pass to variable
+                10) Special user data buffer to pass to variable
                     reference and bind replacement functions
 RETURNS      : A packed expression containing the body, NULL on
                    errors.

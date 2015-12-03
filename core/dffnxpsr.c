@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  01/25/15          */
+   /*               CLIPS Version 6.40  12/02/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -13,6 +13,7 @@
 /*      Brian L. Dantes                                      */
 /*                                                           */
 /* Contributing Programmer(s):                               */
+/*      Gary D. Riley                                        */
 /*                                                           */
 /* Revision History:                                         */
 /*                                                           */
@@ -42,6 +43,8 @@
 /*            Changed find construct functionality so that   */
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
+/*                                                           */
+/*      6.40: Fact ?var:slot references in deffunctions.     */
 /*                                                           */
 /*************************************************************/
 
@@ -83,20 +86,17 @@
 #define _DFFNXPSR_SOURCE_
 #include "dffnxpsr.h"
 
-/* =========================================
-   *****************************************
-      INTERNALLY VISIBLE FUNCTION HEADERS
-   =========================================
-   ***************************************** */
+#define SLOT_REF ':'
 
-static intBool ValidDeffunctionName(void *,const char *);
-static DEFFUNCTION *AddDeffunction(void *,SYMBOL_HN *,EXPRESSION *,int,int,int,int);
+/***************************************/
+/* LOCAL INTERNAL FUNCTION DEFINITIONS */
+/***************************************/
 
-/* =========================================
-   *****************************************
-          EXTERNALLY VISIBLE FUNCTIONS
-   =========================================
-   ***************************************** */
+   static intBool                 ValidDeffunctionName(void *,const char *);
+   static DEFFUNCTION            *AddDeffunction(void *,SYMBOL_HN *,EXPRESSION *,int,int,int,int);
+   static int                     SlotReferenceVar(void *,EXPRESSION *,void *);
+   static SYMBOL_HN              *ExtractSlotName(void *,unsigned,const char *);
+   static SYMBOL_HN              *ExtractVariableName(void *,unsigned,const char *);
 
 /***************************************************************************
   NAME         : ParseDeffunction
@@ -135,25 +135,29 @@ globle intBool ParseDeffunction(
      }
 #endif
 
-   /* =====================================================
-      Parse the name and comment fields of the deffunction.
-      ===================================================== */
-   deffunctionName = GetConstructNameAndComment(theEnv,readSource,&DeffunctionData(theEnv)->DFInputToken,"deffunction",
-                                                EnvFindDeffunctionInModule,NULL,
-                                                "!",TRUE,TRUE,TRUE,FALSE);
+   /*=======================================================*/
+   /* Parse the name and comment fields of the deffunction. */
+   /*=======================================================*/
+   
+   deffunctionName =
+      GetConstructNameAndComment(theEnv,readSource,&DeffunctionData(theEnv)->DFInputToken,
+                                 "deffunction",EnvFindDeffunctionInModule,NULL,
+                                 "!",TRUE,TRUE,TRUE,FALSE);
+
    if (deffunctionName == NULL)
-     return(TRUE);
+     { return(TRUE); }
 
    if (ValidDeffunctionName(theEnv,ValueToString(deffunctionName)) == FALSE)
-     return(TRUE);
+     { return(TRUE); }
 
    /*==========================*/
    /* Parse the argument list. */
    /*==========================*/
-   parameterList = ParseProcParameters(theEnv,readSource,&DeffunctionData(theEnv)->DFInputToken,NULL,&wildcard,
-                                       &min,&max,&DeffunctionError,NULL);
+   
+   parameterList = ParseProcParameters(theEnv,readSource,&DeffunctionData(theEnv)->DFInputToken,
+                                       NULL,&wildcard,&min,&max,&DeffunctionError,NULL);
    if (DeffunctionError)
-     return(TRUE);
+     { return(TRUE); }
 
    /*===================================================================*/
    /* Go ahead and add the deffunction so it can be recursively called. */
@@ -191,7 +195,10 @@ globle intBool ParseDeffunction(
    ExpressionData(theEnv)->ReturnContext = TRUE;
    actions = ParseProcActions(theEnv,"deffunction",readSource,
                               &DeffunctionData(theEnv)->DFInputToken,parameterList,wildcard,
-                              NULL,NULL,&lvars,NULL);
+                              SlotReferenceVar, // variable parse function
+                              NULL,             // bind handler function
+                              &lvars,           // local var count
+                              NULL);            // special user data buffer
 
    /*=============================================================*/
    /* Check for the closing right parenthesis of the deffunction. */
@@ -307,10 +314,11 @@ static intBool ValidDeffunctionName(
    struct constructHeader *theDefgeneric;
 #endif
 
-   /* ============================================
-      A deffunction cannot be named the same as a
-      construct type, e.g, defclass, defrule, etc.
-      ============================================ */
+   /*==============================================*/
+   /* A deffunction cannot be named the same as a  */
+   /* construct type, e.g, defclass, defrule, etc. */
+   /*==============================================*/
+   
    if (FindConstruct(theEnv,theDeffunctionName) != NULL)
      {
       PrintErrorID(theEnv,"DFFNXPSR",1,FALSE);
@@ -318,11 +326,12 @@ static intBool ValidDeffunctionName(
       return(FALSE);
      }
 
-   /* ============================================
-      A deffunction cannot be named the same as a
-      pre-defined system function, e.g, watch,
-      list-defrules, etc.
-      ============================================ */
+   /*========================================*/
+   /* A deffunction cannot be named the same */
+   /* as a pre-defined system function, e.g, */
+   /* watch, list-defrules, etc.             */
+   /*========================================*/
+   
    if (FindFunction(theEnv,theDeffunctionName) != NULL)
      {
       PrintErrorID(theEnv,"DFFNXPSR",2,FALSE);
@@ -331,13 +340,16 @@ static intBool ValidDeffunctionName(
      }
 
 #if DEFGENERIC_CONSTRUCT
-   /* ============================================
-      A deffunction cannot be named the same as a
-      generic function (either in this module or
-      imported from another)
-      ============================================ */
+
+   /*===========================================*/
+   /* A deffunction cannot be named the same as */
+   /* a generic function (either in this module */
+   /* or imported from another).                */
+   /*===========================================*/
+   
    theDefgeneric =
      (struct constructHeader *) LookupDefgenericInScope(theEnv,theDeffunctionName);
+     
    if (theDefgeneric != NULL)
      {
       theModule = GetConstructModuleItem(theDefgeneric)->theModule;
@@ -363,10 +375,11 @@ static intBool ValidDeffunctionName(
    theDeffunction = (struct constructHeader *) EnvFindDeffunctionInModule(theEnv,theDeffunctionName);
    if (theDeffunction != NULL)
      {
-      /* ===========================================
-         And a deffunction in the current module can
-         only be redefined if it is not executing.
-         =========================================== */
+      /*=============================================*/
+      /* And a deffunction in the current module can */
+      /* only be redefined if it is not executing.   */
+      /*=============================================*/
+      
       if (((DEFFUNCTION *) theDeffunction)->executing)
         {
          PrintErrorID(theEnv,"DFNXPSR",4,FALSE);
@@ -378,7 +391,6 @@ static intBool ValidDeffunctionName(
      }
    return(TRUE);
   }
-
 
 /****************************************************
   NAME         : AddDeffunction
@@ -423,6 +435,7 @@ static DEFFUNCTION *AddDeffunction(
    /* use the existing structure and remove the pretty print form   */
    /* and interpretive code.                                        */
    /*===============================================================*/
+
    dfuncPtr = (DEFFUNCTION *) EnvFindDeffunctionInModule(theEnv,ValueToString(name));
    if (dfuncPtr == NULL)
      {
@@ -451,42 +464,217 @@ static DEFFUNCTION *AddDeffunction(
       dfuncPtr->code = NULL;
       EnvSetDeffunctionPPForm(theEnv,(void *) dfuncPtr,NULL);
 
-      /* =======================================
-         Remove the deffunction from the list so
-         that it can be added at the end
-         ======================================= */
+      /*======================================*/
+      /* Remove the deffunction from the list */
+      /* so that it can be added at the end.  */
+      /*======================================*/
+      
       RemoveConstructFromModule(theEnv,(struct constructHeader *) dfuncPtr);
      }
 
    AddConstructToModule((struct constructHeader *) dfuncPtr);
 
-   /* ==================================
-      Install the new interpretive code.
-      ================================== */
+   /*====================================*/
+   /* Install the new interpretive code. */
+   /*====================================*/
 
    if (actions != NULL)
      {
-      /* ===============================
-         If a deffunction is recursive,
-         do not increment its busy count
-         based on self-references
-         =============================== */
+      /*=================================================*/
+      /* If a deffunction is recursive, do not increment */
+      /* its busy count based on self-references.        */
+      /*=================================================*/
+      
       oldbusy = dfuncPtr->busy;
       ExpressionInstall(theEnv,actions);
       dfuncPtr->busy = oldbusy;
       dfuncPtr->code = actions;
      }
 
-   /* ===============================================================
-      Install the pretty print form if memory is not being conserved.
-      =============================================================== */
+   /*==================================*/
+   /* Install the pretty print form if */
+   /* memory is not being conserved.   */
+   /*==================================*/
 
 #if DEBUGGING_FUNCTIONS
-   EnvSetDeffunctionWatch(theEnv,DFHadWatch ? TRUE : DeffunctionData(theEnv)->WatchDeffunctions,(void *) dfuncPtr);
+   EnvSetDeffunctionWatch(theEnv,
+                          DFHadWatch ? TRUE : DeffunctionData(theEnv)->WatchDeffunctions,
+                          (void *) dfuncPtr);
+      
    if ((EnvGetConserveMemory(theEnv) == FALSE) && (headerp == FALSE))
-     EnvSetDeffunctionPPForm(theEnv,(void *) dfuncPtr,CopyPPBuffer(theEnv));
+     { EnvSetDeffunctionPPForm(theEnv,(void *) dfuncPtr,CopyPPBuffer(theEnv)); }
 #endif
+
    return(dfuncPtr);
+  }
+
+/**************************************************************/
+/* ExtractSlotName: Given the position of the : separator and */
+/*   a variable/slot name joined using the separator, returns */
+/*   a symbol reference to the slot name (or NULL if a slot   */
+/*   name cannot be extracted).                               */
+/**************************************************************/
+static SYMBOL_HN *ExtractSlotName(
+  void *theEnv,
+  unsigned thePosition,
+  const char *theString)
+  {
+   size_t theLength;
+   char *newString;
+   SYMBOL_HN *returnValue;
+
+   /*=====================================*/
+   /* Determine the length of the string. */
+   /*=====================================*/
+
+   theLength = strlen(theString);
+
+   /*================================================*/
+   /* Return NULL if the : is at the very end of the */
+   /* string (and thus there is no slot name).       */
+   /*================================================*/
+
+   if (theLength == (thePosition + 1)) return(NULL);
+
+   /*===================================*/
+   /* Allocate a temporary string large */
+   /* enough to hold the slot name.     */
+   /*===================================*/
+
+   newString = (char *) gm2(theEnv,theLength - thePosition);
+
+   /*=============================================*/
+   /* Copy the slot name portion of the           */
+   /* variable/slot name to the temporary string. */
+   /*=============================================*/
+
+   genstrncpy(newString,&theString[thePosition+1],
+           (STD_SIZE) theLength - thePosition);
+
+   /*========================================*/
+   /* Add the slot name to the symbol table. */
+   /*========================================*/
+
+   returnValue = (SYMBOL_HN *) EnvAddSymbol(theEnv,newString);
+
+   /*=============================================*/
+   /* Return the storage of the temporary string. */
+   /*=============================================*/
+
+   rm(theEnv,newString,theLength - thePosition);
+
+   /*===========================================*/
+   /* Return a pointer to the slot name symbol. */
+   /*===========================================*/
+
+   return(returnValue);
+  }
+
+/******************************************************************/
+/* ExtractVariableName: Given the position of the : separator and */
+/*   a variable/slot name joined using the separator, returns a   */
+/*   symbol reference to the variable name (or NULL if a variable */
+/*   name cannot be extracted).                                   */
+/******************************************************************/
+static SYMBOL_HN *ExtractVariableName(
+  void *theEnv,
+  unsigned thePosition,
+  const char *theString)
+  {
+   char *newString;
+   SYMBOL_HN *returnValue;
+
+   /*============================================*/
+   /* Return NULL if the : is in a position such */
+   /* that a variable name can't be extracted.   */
+   /*============================================*/
+
+   if (thePosition == 0) return(NULL);
+
+   /*==========================================*/
+   /* Allocate storage for a temporary string. */
+   /*==========================================*/
+
+   newString = (char *) gm2(theEnv,thePosition+1);
+
+   /*======================================================*/
+   /* Copy the entire module/construct name to the string. */
+   /*======================================================*/
+
+   genstrncpy(newString,theString,(STD_SIZE) thePosition);
+
+   /*=======================================================*/
+   /* Place an end of string marker where the : is located. */
+   /*=======================================================*/
+
+   newString[thePosition] = EOS;
+
+   /*====================================================*/
+   /* Add the variable name (the truncated variable/slot */
+   /* name) to the symbol table.                         */
+   /*====================================================*/
+
+   returnValue = (SYMBOL_HN *) EnvAddSymbol(theEnv,newString);
+
+   /*=============================================*/
+   /* Return the storage of the temporary string. */
+   /*=============================================*/
+
+   rm(theEnv,newString,thePosition);
+
+   /*===============================================*/
+   /* Return a pointer to the variable name symbol. */
+   /*===============================================*/
+
+   return(returnValue);
+  }
+
+/*********************/
+/* SlotReferenceVar: */
+/*********************/
+static int SlotReferenceVar(
+  void *theEnv,
+  EXPRESSION *varexp,
+  void *userBuffer)
+  {
+   const char *fullVar;
+   char *result;
+   size_t position;
+   SYMBOL_HN *slotName, *variableName;
+   
+   /*==============================================*/
+   /* Reference should be a single field variable. */
+   /*==============================================*/
+   
+   if (varexp->type != SF_VARIABLE)
+     { return(0); }
+
+   fullVar = ValueToString(varexp->value);
+   
+   result = strchr(fullVar,SLOT_REF);
+   if (result == NULL)
+     { return(0); }
+   
+   position = result - fullVar;
+     
+   slotName = ExtractSlotName(theEnv,position,fullVar);
+
+   if (slotName == NULL)
+     { return(-1); }
+
+   variableName = ExtractVariableName(theEnv,position,fullVar);
+
+   if (variableName == NULL)
+     { return(-1);}
+    
+   varexp->argList = GenConstant(theEnv,SF_VARIABLE,variableName);
+   varexp->argList->nextArg = GenConstant(theEnv,SYMBOL,slotName);
+   varexp->argList->nextArg->nextArg = GenConstant(theEnv,SYMBOL,varexp->value);
+
+   varexp->type = FCALL;
+   varexp->value = FindFunction(theEnv,"(slot-value)");
+
+   return(1);
   }
 
 #endif /* DEFFUNCTION_CONSTRUCT && (! BLOAD_ONLY) && (! RUN_TIME) */
