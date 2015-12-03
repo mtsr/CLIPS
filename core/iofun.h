@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  11/29/15            */
    /*                                                     */
    /*               I/O FUNCTIONS HEADER FILE             */
    /*******************************************************/
@@ -56,6 +56,8 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*      6.40: Added print and println functions.             */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_iofun
@@ -76,6 +78,8 @@
 #if IO_FUNCTIONS
    LOCALE intBool                        SetFullCRLF(void *,intBool);
    LOCALE void                           PrintoutFunction(void *);
+   LOCALE void                           PrintFunction(void *);
+   LOCALE void                           PrintlnFunction(void *);
    LOCALE void                           ReadFunction(void *,DATA_OBJECT_PTR);
    LOCALE int                            OpenFunction(void *);
    LOCALE int                            CloseFunction(void *);

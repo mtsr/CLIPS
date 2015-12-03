@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/24/15            */
+   /*             CLIPS Version 6.40  11/29/15            */
    /*                                                     */
    /*                 I/O FUNCTIONS MODULE                */
    /*******************************************************/
@@ -63,7 +63,7 @@
 /*            Added STDOUT and STDIN logical name            */
 /*            definitions.                                   */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
@@ -75,6 +75,8 @@
 /*            the number of characters typed for GUI         */
 /*            interfaces that support deleting carriage      */
 /*            returns.                                       */
+/*                                                           */
+/*            Added print and println functions.             */
 /*                                                           */
 /*************************************************************/
 
@@ -139,6 +141,7 @@ struct IOFunctionData
    static const char      *PrintFormatFlag(void *,const char *,int,int);
    static char            *FillBuffer(void *,const char *,size_t *,size_t *);
    static void             ReadNumber(void *,const char *,struct token *,int);
+   static void             PrintDriver(void *,const char *,int,int,int);
 #endif
 
 /**************************************/
@@ -158,18 +161,20 @@ globle void IOFunctionDefinitions(
 
 #if ! RUN_TIME
 #if IO_FUNCTIONS
-   EnvDefineFunction2(theEnv,"printout",   'v', PTIEF PrintoutFunction, "PrintoutFunction", "1*");
-   EnvDefineFunction2(theEnv,"read",       'u', PTIEF ReadFunction,  "ReadFunction", "*1");
-   EnvDefineFunction2(theEnv,"open",       'b', OpenFunction,  "OpenFunction", "23*k");
-   EnvDefineFunction2(theEnv,"close",      'b', CloseFunction, "CloseFunction", "*1");
-   EnvDefineFunction2(theEnv,"get-char",   'i', GetCharFunction, "GetCharFunction", "*1");
-   EnvDefineFunction2(theEnv,"put-char",   'v', PTIEF PutCharFunction, "PutCharFunction", "12");
-   EnvDefineFunction2(theEnv,"remove",   'b', RemoveFunction,  "RemoveFunction", "11k");
-   EnvDefineFunction2(theEnv,"rename",   'b', RenameFunction, "RenameFunction", "22k");
-   EnvDefineFunction2(theEnv,"format",   's', PTIEF FormatFunction, "FormatFunction", "2**us");
-   EnvDefineFunction2(theEnv,"readline", 'k', PTIEF ReadlineFunction, "ReadlineFunction", "*1");
-   EnvDefineFunction2(theEnv,"set-locale", 'u', PTIEF SetLocaleFunction,  "SetLocaleFunction", "*1");
-   EnvDefineFunction2(theEnv,"read-number",       'u', PTIEF ReadNumberFunction,  "ReadNumberFunction", "*1");
+   EnvDefineFunction2(theEnv,"printout",    'v', PTIEF PrintoutFunction,   "PrintoutFunction",   "1*");
+   EnvDefineFunction2(theEnv,"print",       'v', PTIEF PrintFunction,      "PrintFunction",      "0*");
+   EnvDefineFunction2(theEnv,"println",     'v', PTIEF PrintlnFunction,    "PrintlnFunction",    "0*");
+   EnvDefineFunction2(theEnv,"read",        'u', PTIEF ReadFunction,       "ReadFunction",       "*1");
+   EnvDefineFunction2(theEnv,"open",        'b', OpenFunction,             "OpenFunction",       "23*k");
+   EnvDefineFunction2(theEnv,"close",       'b', CloseFunction,            "CloseFunction",      "*1");
+   EnvDefineFunction2(theEnv,"get-char",    'i', GetCharFunction,          "GetCharFunction",    "*1");
+   EnvDefineFunction2(theEnv,"put-char",    'v', PTIEF PutCharFunction,    "PutCharFunction",    "12");
+   EnvDefineFunction2(theEnv,"remove",      'b', RemoveFunction,           "RemoveFunction",     "11k");
+   EnvDefineFunction2(theEnv,"rename",      'b', RenameFunction,           "RenameFunction",     "22k");
+   EnvDefineFunction2(theEnv,"format",      's', PTIEF FormatFunction,     "FormatFunction",     "2**us");
+   EnvDefineFunction2(theEnv,"readline",    'k', PTIEF ReadlineFunction,   "ReadlineFunction",   "*1");
+   EnvDefineFunction2(theEnv,"set-locale",  'u', PTIEF SetLocaleFunction,  "SetLocaleFunction",  "*1");
+   EnvDefineFunction2(theEnv,"read-number", 'u', PTIEF ReadNumberFunction, "ReadNumberFunction", "*1");
 #endif
 #else
 #if MAC_XCD
@@ -187,9 +192,8 @@ globle void IOFunctionDefinitions(
 globle void PrintoutFunction(
   void *theEnv)
   {
-   const char *dummyid;
-   int i, argCount;
-   DATA_OBJECT theArgument;
+   const char *logicalName;
+   int argCount;
 
    /*=======================================================*/
    /* The printout function requires at least one argument. */
@@ -201,8 +205,8 @@ globle void PrintoutFunction(
    /* Get the logical name to which output is to be sent. */
    /*=====================================================*/
 
-   dummyid = GetLogicalName(theEnv,1,STDOUT);
-   if (dummyid == NULL)
+   logicalName = GetLogicalName(theEnv,1,STDOUT);
+   if (logicalName == NULL)
      {
       IllegalLogicalNameMessage(theEnv,"printout");
       EnvSetHaltExecution(theEnv,TRUE);
@@ -214,19 +218,60 @@ globle void PrintoutFunction(
    /* Determine if any router recognizes the output destination. */
    /*============================================================*/
 
-   if (strcmp(dummyid,"nil") == 0)
+   if (strcmp(logicalName,"nil") == 0)
      { return; }
-   else if (QueryRouters(theEnv,dummyid) == FALSE)
+   else if (QueryRouters(theEnv,logicalName) == FALSE)
      {
-      UnrecognizedRouterMessage(theEnv,dummyid);
+      UnrecognizedRouterMessage(theEnv,logicalName);
       return;
      }
 
-   /*===============================================*/
-   /* Print each of the arguments sent to printout. */
-   /*===============================================*/
+   /*========================*/
+   /* Call the print driver. */
+   /*========================*/
+   
+   PrintDriver(theEnv,logicalName,2,argCount,FALSE);
+  }
 
-   for (i = 2; i <= argCount; i++)
+/*************************************/
+/* PrintFunction: H/L access routine */
+/*   for the print function.         */
+/*************************************/
+globle void PrintFunction(
+  void *theEnv)
+  {
+   PrintDriver(theEnv,STDOUT,1,EnvRtnArgCount(theEnv),FALSE);
+  }
+
+/*************************************/
+/* PrintlnFunction: H/L access routine */
+/*   for the println function.         */
+/*************************************/
+globle void PrintlnFunction(
+  void *theEnv)
+  {
+   PrintDriver(theEnv,STDOUT,1,EnvRtnArgCount(theEnv),TRUE);
+  }
+
+/*************************************************/
+/* PrintDriver: Driver routine for the printout, */
+/*   print, and println functions.               */
+/*************************************************/
+static void PrintDriver(
+  void *theEnv,
+  const char *logicalName,
+  int startArg,
+  int argCount,
+  int endCRLF)
+  {
+   int i;
+   DATA_OBJECT theArgument;
+
+   /*==============================*/
+   /* Print each of the arguments. */
+   /*==============================*/
+
+   for (i = startArg; i <= argCount; i++)
      {
       EnvRtnUnknown(theEnv,i,&theArgument);
       if (EvaluationData(theEnv)->HaltExecution) break;
@@ -237,37 +282,36 @@ globle void PrintoutFunction(
            if (strcmp(DOToString(theArgument),"crlf") == 0)
              {    
               if (IOFunctionData(theEnv)->useFullCRLF)
-                { EnvPrintRouter(theEnv,dummyid,"\r\n"); }
+                { EnvPrintRouter(theEnv,logicalName,"\r\n"); }
               else
-                { EnvPrintRouter(theEnv,dummyid,"\n"); }
+                { EnvPrintRouter(theEnv,logicalName,"\n"); }
              }
            else if (strcmp(DOToString(theArgument),"tab") == 0)
-             { EnvPrintRouter(theEnv,dummyid,"\t"); }
+             { EnvPrintRouter(theEnv,logicalName,"\t"); }
            else if (strcmp(DOToString(theArgument),"vtab") == 0)
-             { EnvPrintRouter(theEnv,dummyid,"\v"); }
+             { EnvPrintRouter(theEnv,logicalName,"\v"); }
            else if (strcmp(DOToString(theArgument),"ff") == 0)
-             { EnvPrintRouter(theEnv,dummyid,"\f"); }
-             /*
-           else if (strcmp(DOToString(theArgument),"t") == 0)
-             { 
-              if (IOFunctionData(theEnv)->useFullCRLF)
-                { EnvPrintRouter(theEnv,dummyid,"\r\n"); }
-              else
-                { EnvPrintRouter(theEnv,dummyid,"\n"); }
-             }
-             */
+             { EnvPrintRouter(theEnv,logicalName,"\f"); }
            else
-             { EnvPrintRouter(theEnv,dummyid,DOToString(theArgument)); }
+             { EnvPrintRouter(theEnv,logicalName,DOToString(theArgument)); }
            break;
 
          case STRING:
-           EnvPrintRouter(theEnv,dummyid,DOToString(theArgument));
+           EnvPrintRouter(theEnv,logicalName,DOToString(theArgument));
            break;
 
          default:
-           PrintDataObject(theEnv,dummyid,&theArgument);
+           PrintDataObject(theEnv,logicalName,&theArgument);
            break;
         }
+     }
+     
+   if (endCRLF)
+     {
+      if (IOFunctionData(theEnv)->useFullCRLF)
+        { EnvPrintRouter(theEnv,logicalName,"\r\n"); }
+      else
+        { EnvPrintRouter(theEnv,logicalName,"\n"); }
      }
   }
 
