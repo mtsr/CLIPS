@@ -495,12 +495,14 @@ globle int ReplaceProcVars(
          /*===============================================*/
          /* See if the variable is in the parameter list. */
          /*===============================================*/
+         
          bindName = (SYMBOL_HN *) actions->value;
          position = FindProcParameter(bindName,parameterList,wildcard);
 
          /*=============================================================*/
          /* Check to see if the variable is bound within the procedure. */
          /*=============================================================*/
+         
          boundPosn = SearchParsedBindNames(theEnv,bindName);
 
          /*=============================================*/
@@ -514,6 +516,7 @@ globle int ReplaceProcVars(
             /* Check to see if the variable has a special access function,    */
             /* such as direct slot reference or a rule RHS pattern reference. */
             /*================================================================*/
+            
             if ((altvarfunc != NULL) ? ((*altvarfunc)(theEnv,actions,specdata) != 1) : TRUE)
               {
                PrintErrorID(theEnv,"PRCCODE",3,TRUE);

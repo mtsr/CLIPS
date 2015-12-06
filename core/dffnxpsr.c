@@ -69,6 +69,10 @@
 #include "genrccom.h"
 #endif
 
+#if DEFTEMPLATE_CONSTRUCT
+#include "factgen.h"
+#endif
+
 #include "constant.h"
 #include "cstrcpsr.h"
 #include "constrct.h"
@@ -86,17 +90,12 @@
 #define _DFFNXPSR_SOURCE_
 #include "dffnxpsr.h"
 
-#define SLOT_REF ':'
-
 /***************************************/
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
    static intBool                 ValidDeffunctionName(void *,const char *);
    static DEFFUNCTION            *AddDeffunction(void *,SYMBOL_HN *,EXPRESSION *,int,int,int,int);
-   static int                     SlotReferenceVar(void *,EXPRESSION *,void *);
-   static SYMBOL_HN              *ExtractSlotName(void *,unsigned,const char *);
-   static SYMBOL_HN              *ExtractVariableName(void *,unsigned,const char *);
 
 /***************************************************************************
   NAME         : ParseDeffunction
@@ -195,10 +194,14 @@ globle intBool ParseDeffunction(
    ExpressionData(theEnv)->ReturnContext = TRUE;
    actions = ParseProcActions(theEnv,"deffunction",readSource,
                               &DeffunctionData(theEnv)->DFInputToken,parameterList,wildcard,
-                              SlotReferenceVar, // variable parse function
-                              NULL,             // bind handler function
-                              &lvars,           // local var count
-                              NULL);            // special user data buffer
+#if DEFTEMPLATE_CONSTRUCT
+                              FactSlotReferenceVar, // variable parse function
+#else
+                              NULL,                 // variable parse function
+#endif
+                              NULL,                 // bind handler function
+                              &lvars,               // local var count
+                              NULL);                // special user data buffer
 
    /*=============================================================*/
    /* Check for the closing right parenthesis of the deffunction. */
@@ -506,175 +509,6 @@ static DEFFUNCTION *AddDeffunction(
 #endif
 
    return(dfuncPtr);
-  }
-
-/**************************************************************/
-/* ExtractSlotName: Given the position of the : separator and */
-/*   a variable/slot name joined using the separator, returns */
-/*   a symbol reference to the slot name (or NULL if a slot   */
-/*   name cannot be extracted).                               */
-/**************************************************************/
-static SYMBOL_HN *ExtractSlotName(
-  void *theEnv,
-  unsigned thePosition,
-  const char *theString)
-  {
-   size_t theLength;
-   char *newString;
-   SYMBOL_HN *returnValue;
-
-   /*=====================================*/
-   /* Determine the length of the string. */
-   /*=====================================*/
-
-   theLength = strlen(theString);
-
-   /*================================================*/
-   /* Return NULL if the : is at the very end of the */
-   /* string (and thus there is no slot name).       */
-   /*================================================*/
-
-   if (theLength == (thePosition + 1)) return(NULL);
-
-   /*===================================*/
-   /* Allocate a temporary string large */
-   /* enough to hold the slot name.     */
-   /*===================================*/
-
-   newString = (char *) gm2(theEnv,theLength - thePosition);
-
-   /*=============================================*/
-   /* Copy the slot name portion of the           */
-   /* variable/slot name to the temporary string. */
-   /*=============================================*/
-
-   genstrncpy(newString,&theString[thePosition+1],
-           (STD_SIZE) theLength - thePosition);
-
-   /*========================================*/
-   /* Add the slot name to the symbol table. */
-   /*========================================*/
-
-   returnValue = (SYMBOL_HN *) EnvAddSymbol(theEnv,newString);
-
-   /*=============================================*/
-   /* Return the storage of the temporary string. */
-   /*=============================================*/
-
-   rm(theEnv,newString,theLength - thePosition);
-
-   /*===========================================*/
-   /* Return a pointer to the slot name symbol. */
-   /*===========================================*/
-
-   return(returnValue);
-  }
-
-/******************************************************************/
-/* ExtractVariableName: Given the position of the : separator and */
-/*   a variable/slot name joined using the separator, returns a   */
-/*   symbol reference to the variable name (or NULL if a variable */
-/*   name cannot be extracted).                                   */
-/******************************************************************/
-static SYMBOL_HN *ExtractVariableName(
-  void *theEnv,
-  unsigned thePosition,
-  const char *theString)
-  {
-   char *newString;
-   SYMBOL_HN *returnValue;
-
-   /*============================================*/
-   /* Return NULL if the : is in a position such */
-   /* that a variable name can't be extracted.   */
-   /*============================================*/
-
-   if (thePosition == 0) return(NULL);
-
-   /*==========================================*/
-   /* Allocate storage for a temporary string. */
-   /*==========================================*/
-
-   newString = (char *) gm2(theEnv,thePosition+1);
-
-   /*======================================================*/
-   /* Copy the entire module/construct name to the string. */
-   /*======================================================*/
-
-   genstrncpy(newString,theString,(STD_SIZE) thePosition);
-
-   /*=======================================================*/
-   /* Place an end of string marker where the : is located. */
-   /*=======================================================*/
-
-   newString[thePosition] = EOS;
-
-   /*====================================================*/
-   /* Add the variable name (the truncated variable/slot */
-   /* name) to the symbol table.                         */
-   /*====================================================*/
-
-   returnValue = (SYMBOL_HN *) EnvAddSymbol(theEnv,newString);
-
-   /*=============================================*/
-   /* Return the storage of the temporary string. */
-   /*=============================================*/
-
-   rm(theEnv,newString,thePosition);
-
-   /*===============================================*/
-   /* Return a pointer to the variable name symbol. */
-   /*===============================================*/
-
-   return(returnValue);
-  }
-
-/*********************/
-/* SlotReferenceVar: */
-/*********************/
-static int SlotReferenceVar(
-  void *theEnv,
-  EXPRESSION *varexp,
-  void *userBuffer)
-  {
-   const char *fullVar;
-   char *result;
-   size_t position;
-   SYMBOL_HN *slotName, *variableName;
-   
-   /*==============================================*/
-   /* Reference should be a single field variable. */
-   /*==============================================*/
-   
-   if (varexp->type != SF_VARIABLE)
-     { return(0); }
-
-   fullVar = ValueToString(varexp->value);
-   
-   result = strchr(fullVar,SLOT_REF);
-   if (result == NULL)
-     { return(0); }
-   
-   position = result - fullVar;
-     
-   slotName = ExtractSlotName(theEnv,position,fullVar);
-
-   if (slotName == NULL)
-     { return(-1); }
-
-   variableName = ExtractVariableName(theEnv,position,fullVar);
-
-   if (variableName == NULL)
-     { return(-1);}
-    
-   varexp->argList = GenConstant(theEnv,SF_VARIABLE,variableName);
-   varexp->argList->nextArg = GenConstant(theEnv,SYMBOL,slotName);
-   varexp->argList->nextArg->nextArg = GenConstant(theEnv,SYMBOL,varexp->value);
-
-   varexp->type = FCALL;
-   varexp->value = FindFunction(theEnv,"(slot-value)");
-
-   return(1);
   }
 
 #endif /* DEFFUNCTION_CONSTRUCT && (! BLOAD_ONLY) && (! RUN_TIME) */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  07/10/15            */
+   /*             CLIPS Version 6.40  12/06/15            */
    /*                                                     */
    /*                 RULE PARSING MODULE                 */
    /*******************************************************/
@@ -36,8 +36,10 @@
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
 /*                                                           */
-/*      6.31: Added displayed of computed join depth for     */
+/*      6.40: Added displayed of computed join depth for     */
 /*            patterns when rule-analysis is being watched.  */
+/*                                                           */
+/*            Fact ?var:slot references in defrules.         */
 /*                                                           */
 /*************************************************************/
 
@@ -79,6 +81,7 @@
 #include "lgcldpnd.h"
 
 #if DEFTEMPLATE_CONSTRUCT
+#include "factgen.h"
 #include "tmpltfun.h"
 #endif
 
@@ -563,7 +566,8 @@ static int ReplaceRHSVariable(
   void *VtheLHS)
   {
    struct lhsParseNode *theVariable;
-
+   int factSlotReference;
+   
    /*=======================================*/
    /* Handle modify and duplicate commands. */
    /*=======================================*/
@@ -590,6 +594,19 @@ static int ReplaceRHSVariable(
    if ((list->type != SF_VARIABLE) && (list->type != MF_VARIABLE))
      { return(FALSE); }
 
+   /*==================================*/
+   /* Check for a ?var:slot reference. */
+   /*==================================*/
+   
+#if DEFTEMPLATE_CONSTRUCT
+   factSlotReference = FactSlotReferenceVar(theEnv,list,NULL);
+      
+   if (factSlotReference == 1)
+     { return TRUE; }
+   else if (factSlotReference == -1)
+     { return FALSE; }
+#endif
+   
    /*===============================================================*/
    /* Check to see if the variable is bound on the LHS of the rule. */
    /*===============================================================*/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*             CLIPS Version 6.40  12/06/15            */
    /*                                                     */
    /*          FACT RETE FUNCTION GENERATION MODULE       */
    /*******************************************************/
@@ -25,6 +25,8 @@
 /*                                                           */
 /*            Increased maximum values for pattern/slot      */
 /*            indices.                                       */
+/*                                                           */
+/*      6.40: Fact ?var:slot references in deffunctions.     */
 /*                                                           */
 /*************************************************************/
 
@@ -51,6 +53,7 @@
 #include "pattern.h"
 #include "factprt.h"
 #include "envrnmnt.h"
+#include "sysdep.h"
 
 #include "tmpltdef.h"
 #include "tmpltlhs.h"
@@ -78,6 +81,8 @@ struct factgenData
   
 #define FactgenData(theEnv) ((struct factgenData *) GetEnvironmentData(theEnv,FACTGEN_DATA))
 
+#define SLOT_REF ':'
+
 /***************************************/
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
@@ -89,6 +94,8 @@ struct factgenData
    static void                      *FactGetVarPN1(void *,struct lhsParseNode *);
    static void                      *FactGetVarPN2(void *,struct lhsParseNode *);
    static void                      *FactGetVarPN3(void *,struct lhsParseNode *);
+   static SYMBOL_HN                 *ExtractSlotName(void *,unsigned,const char *);
+   static SYMBOL_HN                 *ExtractVariableName(void *,unsigned,const char *);
 #endif
 
 /*******************************************************************/
@@ -1257,6 +1264,175 @@ globle struct expr *FactJNVariableComparison(
    /*======================================*/
 
    return(top);
+  }
+
+/**************************************************************/
+/* ExtractSlotName: Given the position of the : separator and */
+/*   a variable/slot name joined using the separator, returns */
+/*   a symbol reference to the slot name (or NULL if a slot   */
+/*   name cannot be extracted).                               */
+/**************************************************************/
+static SYMBOL_HN *ExtractSlotName(
+  void *theEnv,
+  unsigned thePosition,
+  const char *theString)
+  {
+   size_t theLength;
+   char *newString;
+   SYMBOL_HN *returnValue;
+
+   /*=====================================*/
+   /* Determine the length of the string. */
+   /*=====================================*/
+
+   theLength = strlen(theString);
+
+   /*================================================*/
+   /* Return NULL if the : is at the very end of the */
+   /* string (and thus there is no slot name).       */
+   /*================================================*/
+
+   if (theLength == (thePosition + 1)) return(NULL);
+
+   /*===================================*/
+   /* Allocate a temporary string large */
+   /* enough to hold the slot name.     */
+   /*===================================*/
+
+   newString = (char *) gm2(theEnv,theLength - thePosition);
+
+   /*=============================================*/
+   /* Copy the slot name portion of the           */
+   /* variable/slot name to the temporary string. */
+   /*=============================================*/
+
+   genstrncpy(newString,&theString[thePosition+1],
+           (STD_SIZE) theLength - thePosition);
+
+   /*========================================*/
+   /* Add the slot name to the symbol table. */
+   /*========================================*/
+
+   returnValue = (SYMBOL_HN *) EnvAddSymbol(theEnv,newString);
+
+   /*=============================================*/
+   /* Return the storage of the temporary string. */
+   /*=============================================*/
+
+   rm(theEnv,newString,theLength - thePosition);
+
+   /*===========================================*/
+   /* Return a pointer to the slot name symbol. */
+   /*===========================================*/
+
+   return(returnValue);
+  }
+
+/******************************************************************/
+/* ExtractVariableName: Given the position of the : separator and */
+/*   a variable/slot name joined using the separator, returns a   */
+/*   symbol reference to the variable name (or NULL if a variable */
+/*   name cannot be extracted).                                   */
+/******************************************************************/
+static SYMBOL_HN *ExtractVariableName(
+  void *theEnv,
+  unsigned thePosition,
+  const char *theString)
+  {
+   char *newString;
+   SYMBOL_HN *returnValue;
+
+   /*============================================*/
+   /* Return NULL if the : is in a position such */
+   /* that a variable name can't be extracted.   */
+   /*============================================*/
+
+   if (thePosition == 0) return(NULL);
+
+   /*==========================================*/
+   /* Allocate storage for a temporary string. */
+   /*==========================================*/
+
+   newString = (char *) gm2(theEnv,thePosition+1);
+
+   /*======================================================*/
+   /* Copy the entire module/construct name to the string. */
+   /*======================================================*/
+
+   genstrncpy(newString,theString,(STD_SIZE) thePosition);
+
+   /*=======================================================*/
+   /* Place an end of string marker where the : is located. */
+   /*=======================================================*/
+
+   newString[thePosition] = EOS;
+
+   /*====================================================*/
+   /* Add the variable name (the truncated variable/slot */
+   /* name) to the symbol table.                         */
+   /*====================================================*/
+
+   returnValue = (SYMBOL_HN *) EnvAddSymbol(theEnv,newString);
+
+   /*=============================================*/
+   /* Return the storage of the temporary string. */
+   /*=============================================*/
+
+   rm(theEnv,newString,thePosition);
+
+   /*===============================================*/
+   /* Return a pointer to the variable name symbol. */
+   /*===============================================*/
+
+   return(returnValue);
+  }
+
+/*************************/
+/* FactSlotReferenceVar: */
+/*************************/
+globle int FactSlotReferenceVar(
+  void *theEnv,
+  EXPRESSION *varexp,
+  void *userBuffer)
+  {
+   const char *fullVar;
+   char *result;
+   size_t position;
+   SYMBOL_HN *slotName, *variableName;
+   
+   /*==============================================*/
+   /* Reference should be a single field variable. */
+   /*==============================================*/
+   
+   if (varexp->type != SF_VARIABLE)
+     { return(0); }
+
+   fullVar = ValueToString(varexp->value);
+   
+   result = strchr(fullVar,SLOT_REF);
+   if (result == NULL)
+     { return(0); }
+   
+   position = result - fullVar;
+     
+   slotName = ExtractSlotName(theEnv,position,fullVar);
+
+   if (slotName == NULL)
+     { return(-1); }
+
+   variableName = ExtractVariableName(theEnv,position,fullVar);
+
+   if (variableName == NULL)
+     { return(-1);}
+    
+   varexp->argList = GenConstant(theEnv,SF_VARIABLE,variableName);
+   varexp->argList->nextArg = GenConstant(theEnv,SYMBOL,slotName);
+   varexp->argList->nextArg->nextArg = GenConstant(theEnv,SYMBOL,varexp->value);
+
+   varexp->type = FCALL;
+   varexp->value = FindFunction(theEnv,"(slot-value)");
+
+   return(1);
   }
 
 #endif /* (! RUN_TIME) && (! BLOAD_ONLY) */
