@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  12/02/15            */
+   /*             CLIPS Version 6.40  12/06/15            */
    /*                                                     */
    /*          MISCELLANEOUS FUNCTIONS HEADER FILE        */
    /*******************************************************/
@@ -62,6 +62,8 @@
 /*                                                           */
 /*            Fact ?var:slot reference support.              */
 /*                                                           */
+/*            Added local-time and gm-time functions.        */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_miscfun
@@ -107,6 +109,8 @@
    LOCALE double                         TimeFunction(void *);
    LOCALE void                           SystemCommand(void *);
    LOCALE void                           SlotValueFunction(void *,DATA_OBJECT *);
+   LOCALE void                           LocalTimeFunction(void *,DATA_OBJECT *);
+   LOCALE void                           GMTimeFunction(void *,DATA_OBJECT *);
 
 #endif /* _H_miscfun */
 

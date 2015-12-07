@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  12/02/15            */
+   /*             CLIPS Version 6.40  12/06/15            */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -79,6 +79,8 @@
 /*                                                           */
 /*            Fact ?var:slot reference support.              */
 /*                                                           */
+/*            Added local-time and gm-time functions.        */
+/*                                                           */
 /*************************************************************/
 
 #define _MISCFUN_SOURCE_
@@ -86,6 +88,7 @@
 #include <stdio.h>
 #define _STDIO_INCLUDED_
 #include <string.h>
+#include <time.h>
 
 #include "setup.h"
 
@@ -125,7 +128,8 @@ struct miscFunctionData
    static void                    ExpandFuncMultifield(void *,DATA_OBJECT *,EXPRESSION *,
                                                        EXPRESSION **,void *);
    static int                     FindLanguageType(void *,const char *);
-   
+   static void                    ConvertTime(void *,DATA_OBJECT_PTR,struct tm *);
+
 /*****************************************************************/
 /* MiscFunctionDefinitions: Initializes miscellaneous functions. */
 /*****************************************************************/
@@ -143,6 +147,9 @@ globle void MiscFunctionDefinitions(
    EnvDefineFunction2(theEnv,"length",           'g', PTIEF LengthFunction,      "LengthFunction", "11q");
    EnvDefineFunction2(theEnv,"length$",          'g', PTIEF LengthFunction,      "LengthFunction", "11q");
    EnvDefineFunction2(theEnv,"time",             'd', PTIEF TimeFunction,        "TimeFunction", "00");
+   EnvDefineFunction2(theEnv,"local-time",       'm', PTIEF LocalTimeFunction,   "LocalTimeFunction", "00");
+   EnvDefineFunction2(theEnv,"gm-time",          'm', PTIEF GMTimeFunction,      "GMTimeFunction", "00");
+
    EnvDefineFunction2(theEnv,"random",           'g', PTIEF RandomFunction,      "RandomFunction", "02i");
    EnvDefineFunction2(theEnv,"seed",             'v', PTIEF SeedFunction,        "SeedFunction", "11i");
    EnvDefineFunction2(theEnv,"conserve-mem",     'v', PTIEF ConserveMemCommand,  "ConserveMemCommand", "11w");
@@ -1480,6 +1487,130 @@ globle double TimeFunction(
    /*==================*/
 
    return(gentime());
+  }
+
+/****************************************/
+/* ConvertTime: Function for converting */
+/*   time for local-time and gm-time.   */
+/****************************************/
+static void ConvertTime(
+  void *theEnv,
+  DATA_OBJECT_PTR returnValue,
+  struct tm *info)
+  {
+   returnValue->type = MULTIFIELD;
+   returnValue->begin = 0;
+   returnValue->end = 8;
+   returnValue->value = EnvCreateMultifield(theEnv,9L);
+   SetMFType(returnValue->value,1,INTEGER);
+   SetMFValue(returnValue->value,1,EnvAddLong(theEnv,info->tm_year + 1900));
+   SetMFType(returnValue->value,2,INTEGER);
+   SetMFValue(returnValue->value,2,EnvAddLong(theEnv,info->tm_mon));
+   SetMFType(returnValue->value,3,INTEGER);
+   SetMFValue(returnValue->value,3,EnvAddLong(theEnv,info->tm_mday));
+   SetMFType(returnValue->value,4,INTEGER);
+   SetMFValue(returnValue->value,4,EnvAddLong(theEnv,info->tm_hour));
+   SetMFType(returnValue->value,5,INTEGER);
+   SetMFValue(returnValue->value,5,EnvAddLong(theEnv,info->tm_min));
+   SetMFType(returnValue->value,6,INTEGER);
+   SetMFValue(returnValue->value,6,EnvAddLong(theEnv,info->tm_sec));
+
+   SetMFType(returnValue->value,7,SYMBOL);
+   switch (info->tm_wday)
+     {
+      case 0:
+        SetMFValue(returnValue->value,7,EnvAddSymbol(theEnv,"Sunday"));
+        break;
+        
+      case 1:
+        SetMFValue(returnValue->value,7,EnvAddSymbol(theEnv,"Monday"));
+        break;
+        
+      case 2:
+        SetMFValue(returnValue->value,7,EnvAddSymbol(theEnv,"Tuesday"));
+        break;
+        
+      case 3:
+        SetMFValue(returnValue->value,7,EnvAddSymbol(theEnv,"Wednesday"));
+        break;
+        
+      case 4:
+        SetMFValue(returnValue->value,7,EnvAddSymbol(theEnv,"Thursday"));
+        break;
+        
+      case 5:
+        SetMFValue(returnValue->value,7,EnvAddSymbol(theEnv,"Friday"));
+        break;
+        
+      case 6:
+        SetMFValue(returnValue->value,7,EnvAddSymbol(theEnv,"Saturday"));
+        break;
+     }
+
+   SetMFType(returnValue->value,8,INTEGER);
+   SetMFValue(returnValue->value,8,EnvAddLong(theEnv,info->tm_yday));
+
+   SetMFType(returnValue->value,9,SYMBOL);
+   if (info->tm_isdst > 0)
+     { SetMFValue(returnValue->value,9,SymbolData(theEnv)->TrueSymbolHN); }
+   else if (info->tm_isdst == 0)
+     { SetMFValue(returnValue->value,9,SymbolData(theEnv)->FalseSymbolHN); }
+   else
+     { SetMFValue(returnValue->value,9,EnvAddSymbol(theEnv,"UNKNOWN")); }
+  }
+
+/*****************************************/
+/* LocalTimeFunction: H/L access routine */
+/*   for the local-time function.        */
+/*****************************************/
+globle void LocalTimeFunction(
+  void *theEnv,
+  DATA_OBJECT_PTR returnValue)
+  {
+   time_t rawtime;
+   struct tm *info;
+
+   /*=========================================*/
+   /* The time function accepts no arguments. */
+   /*=========================================*/
+
+   EnvArgCountCheck(theEnv,"local-time",EXACTLY,0);
+
+   /*=====================*/
+   /* Get the local time. */
+   /*=====================*/
+   
+   time(&rawtime);
+   info = localtime(&rawtime);
+   
+   ConvertTime(theEnv,returnValue,info);
+  }
+
+/**************************************/
+/* GMTimeFunction: H/L access routine */
+/*   for the gm-time function.        */
+/**************************************/
+globle void GMTimeFunction(
+  void *theEnv,
+  DATA_OBJECT_PTR returnValue)
+  {
+   time_t rawtime;
+   struct tm *info;
+
+   /*=========================================*/
+   /* The time function accepts no arguments. */
+   /*=========================================*/
+
+   EnvArgCountCheck(theEnv,"gm-time",EXACTLY,0);
+
+   /*=====================*/
+   /* Get the local time. */
+   /*=====================*/
+   
+   time(&rawtime);
+   info = gmtime(&rawtime);
+   
+   ConvertTime(theEnv,returnValue,info);
   }
 
 /***************************************/
