@@ -1505,7 +1505,7 @@ static void ConvertTime(
    SetMFType(returnValue->value,1,INTEGER);
    SetMFValue(returnValue->value,1,EnvAddLong(theEnv,info->tm_year + 1900));
    SetMFType(returnValue->value,2,INTEGER);
-   SetMFValue(returnValue->value,2,EnvAddLong(theEnv,info->tm_mon));
+   SetMFValue(returnValue->value,2,EnvAddLong(theEnv,info->tm_mon + 1));
    SetMFType(returnValue->value,3,INTEGER);
    SetMFValue(returnValue->value,3,EnvAddLong(theEnv,info->tm_mday));
    SetMFType(returnValue->value,4,INTEGER);
