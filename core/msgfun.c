@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.31  08/04/15          */
+   /*               CLIPS Version 6.40  12/10/15          */
    /*                                                     */
    /*                  OBJECT MESSAGE FUNCTIONS           */
    /*******************************************************/
@@ -32,8 +32,11 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Option printing of carriage return for the     */
+/*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*************************************************************/
 
@@ -197,9 +200,10 @@ globle void SlotAccessViolationError(
 globle void SlotVisibilityViolationError(
   void *theEnv,
   SLOT_DESC *sd,
-  DEFCLASS *theDefclass)
+  DEFCLASS *theDefclass,
+  int printCR)
   {
-   PrintErrorID(theEnv,"MSGFUN",6,FALSE);
+   PrintErrorID(theEnv,"MSGFUN",6,printCR);
    EnvPrintRouter(theEnv,WERROR,"Private slot ");
    EnvPrintRouter(theEnv,WERROR,ValueToString(sd->slotName->name));
    EnvPrintRouter(theEnv,WERROR," of class ");

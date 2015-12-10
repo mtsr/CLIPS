@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*             CLIPS Version 6.30  12/10/14            */
    /*                                                     */
    /*          DEFTEMPLATE FUNCTION HEADER FILE           */
    /*******************************************************/
@@ -54,6 +54,8 @@
 /*            Added code to prevent a clear command from     */
 /*            being executed during fact assertions via      */
 /*            Increment/DecrementClearReadyLocks API.        */
+/*                                                           */
+/*      6.40: Fact ?var:slot references in defrule actions.  */
 /*                                                           */
 /*************************************************************/
 
@@ -117,6 +119,7 @@
    LOCALE int                            EnvDeftemplateSlotFacetExistP(void *,void *,const char *,const char *);
    LOCALE void                           DeftemplateSlotFacetValueFunction(void *,DATA_OBJECT *);
    LOCALE int                            EnvDeftemplateSlotFacetValue(void *,void *,const char *,const char *,DATA_OBJECT *);
+   LOCALE SYMBOL_HN                     *FindTemplateForFactAddress(SYMBOL_HN *,struct lhsParseNode *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 

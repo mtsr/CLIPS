@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  12/06/15            */
+   /*             CLIPS Version 6.30  12/10/15            */
    /*                                                     */
    /*        FACT RETE FUNCTION GENERATION HEADER FILE    */
    /*******************************************************/
@@ -21,7 +21,8 @@
 /*            Increased maximum values for pattern/slot      */
 /*            indices.                                       */
 /*                                                           */
-/*      6.40: Fact ?var:slot references in deffunctions.     */
+/*      6.40: Fact ?var:slot references in deffunctions and  */
+/*            defrule actions.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -229,5 +230,6 @@ struct factCheckLengthPNCall
    LOCALE struct expr               *FactGenCheckLength(void *,struct lhsParseNode *);
    LOCALE struct expr               *FactGenCheckZeroLength(void *,unsigned);
    LOCALE int                        FactSlotReferenceVar(void *,EXPRESSION *,void *);
+   LOCALE int                        RuleFactSlotReferenceVar(void *,EXPRESSION *,struct lhsParseNode *);
 
 #endif /* _H_factgen */

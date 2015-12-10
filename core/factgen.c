@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  12/06/15            */
+   /*             CLIPS Version 6.40  12/10/15            */
    /*                                                     */
    /*          FACT RETE FUNCTION GENERATION MODULE       */
    /*******************************************************/
@@ -26,7 +26,8 @@
 /*            Increased maximum values for pattern/slot      */
 /*            indices.                                       */
 /*                                                           */
-/*      6.40: Fact ?var:slot references in deffunctions.     */
+/*      6.40: Fact ?var:slot references in deffunctions and  */
+/*            defrule actions.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -51,12 +52,15 @@
 #include "factrete.h"
 #include "factmngr.h"
 #include "pattern.h"
+#include "prcdrpsr.h"
 #include "factprt.h"
 #include "envrnmnt.h"
 #include "sysdep.h"
 
 #include "tmpltdef.h"
+#include "tmpltfun.h"
 #include "tmpltlhs.h"
+#include "tmpltutl.h"
 
 #include "factgen.h"
 
@@ -96,6 +100,7 @@ struct factgenData
    static void                      *FactGetVarPN3(void *,struct lhsParseNode *);
    static SYMBOL_HN                 *ExtractSlotName(void *,unsigned,const char *);
    static SYMBOL_HN                 *ExtractVariableName(void *,unsigned,const char *);
+   static void                       ReplaceVarSlotReference(void *,EXPRESSION *,SYMBOL_HN *,SYMBOL_HN *,SYMBOL_HN *);
 #endif
 
 /*******************************************************************/
@@ -1387,6 +1392,25 @@ static SYMBOL_HN *ExtractVariableName(
    return(returnValue);
   }
 
+/****************************/
+/* ReplaceVarSlotReference: */
+/****************************/
+static void ReplaceVarSlotReference(
+  void *theEnv,
+  EXPRESSION *theExpr,
+  SYMBOL_HN *variableName,
+  SYMBOL_HN *slotName,
+  SYMBOL_HN *varSlotName)
+  {
+   theExpr->argList = GenConstant(theEnv,SF_VARIABLE,variableName);
+   theExpr->argList->nextArg = GenConstant(theEnv,SYMBOL,slotName);
+   theExpr->argList->nextArg->nextArg = GenConstant(theEnv,SYMBOL,varSlotName);
+
+   theExpr->type = FCALL;
+   theExpr->value = FindFunction(theEnv,"(slot-value)");
+  }
+
+
 /*************************/
 /* FactSlotReferenceVar: */
 /*************************/
@@ -1425,12 +1449,107 @@ globle int FactSlotReferenceVar(
    if (variableName == NULL)
      { return(-1);}
     
-   varexp->argList = GenConstant(theEnv,SF_VARIABLE,variableName);
-   varexp->argList->nextArg = GenConstant(theEnv,SYMBOL,slotName);
-   varexp->argList->nextArg->nextArg = GenConstant(theEnv,SYMBOL,varexp->value);
+   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
+   
+   return(1);
+  }
 
-   varexp->type = FCALL;
-   varexp->value = FindFunction(theEnv,"(slot-value)");
+/*****************************/
+/* RuleFactSlotReferenceVar: */
+/*****************************/
+globle int RuleFactSlotReferenceVar(
+  void *theEnv,
+  EXPRESSION *varexp,
+  struct lhsParseNode *theLHS)
+  {
+   const char *fullVar;
+   char *result;
+   size_t position;
+   SYMBOL_HN *slotName, *variableName;
+   intBool boundPosn;
+   SYMBOL_HN *templateName;
+   struct deftemplate *theDeftemplate;
+   short slotPosition;
+
+   /*==============================================*/
+   /* Reference should be a single field variable. */
+   /*==============================================*/
+   
+   if (varexp->type != SF_VARIABLE)
+     { return(0); }
+
+   fullVar = ValueToString(varexp->value);
+   
+   result = strchr(fullVar,SLOT_REF);
+   if (result == NULL)
+     { return(0); }
+   
+   position = result - fullVar;
+     
+   slotName = ExtractSlotName(theEnv,position,fullVar);
+
+   if (slotName == NULL)
+     { return(-1); }
+
+   variableName = ExtractVariableName(theEnv,position,fullVar);
+
+   if (variableName == NULL)
+     { return(-1);}
+
+   /*============================================*/
+   /* If the variable has been bound on the RHS, */
+   /* then the slot name can not be validated.   */
+   /*============================================*/
+   
+   boundPosn = SearchParsedBindNames(theEnv,variableName);
+
+   if (boundPosn != 0)
+     {
+      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
+      return (1);
+     }
+
+   /*======================================================*/
+   /* Find the deftemplate type bound to the fact address. */
+   /*======================================================*/
+   
+   templateName = FindTemplateForFactAddress(variableName,theLHS);
+   if (templateName == NULL)
+     {
+      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
+      return (1);
+     }
+     
+   theDeftemplate = (struct deftemplate *)
+                    LookupConstruct(theEnv,DeftemplateData(theEnv)->DeftemplateConstruct,
+                                    ValueToString(templateName),
+                                    FALSE);
+
+   if ((theDeftemplate == NULL) || (theDeftemplate->implied))
+     {
+      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
+      return (1);
+     }
+
+   /*====================================================*/
+   /* Verify the slot name is valid for the deftemplate. */
+   /*====================================================*/
+   
+   if (FindSlot(theDeftemplate,slotName,&slotPosition) == NULL)
+     {
+      PrintErrorID(theEnv,"FACTGEN",1,TRUE);
+      EnvPrintRouter(theEnv,WERROR,"The variable/slot reference ?");
+      EnvPrintRouter(theEnv,WERROR,ValueToString(varexp->value));
+      EnvPrintRouter(theEnv,WERROR," is invalid because the referenced deftemplate does not contain the specified slot\n");
+      EnvSetEvaluationError(theEnv,TRUE);
+      return(-1);
+     }
+     
+   /*==================================================================*/
+   /* Replace the ?var:slot reference with a slot-value function call. */
+   /*==================================================================*/
+   
+   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
 
    return(1);
   }

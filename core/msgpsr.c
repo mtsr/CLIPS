@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/22/14          */
+   /*               CLIPS Version 6.40  12/10/15          */
    /*                                                     */
    /*              MESSAGE-HANDLER PARSER FUNCTIONS       */
    /*******************************************************/
@@ -36,6 +36,9 @@
 /*                                                           */
 /*            Fixed linkage issue when BLOAD_AND_SAVE        */
 /*            compiler flag is set to 0.                     */
+/*                                                           */
+/*      6.40: Option printing of carriage return for the     */
+/*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*************************************************************/
 
@@ -619,7 +622,7 @@ static SLOT_DESC *CheckSlotReference(
    sd = theDefclass->instanceTemplate[slotIndex];
    if ((sd->publicVisibility == 0) && (sd->cls != theDefclass))
      {
-      SlotVisibilityViolationError(theEnv,sd,theDefclass);
+      SlotVisibilityViolationError(theEnv,sd,theDefclass,TRUE);
       return(NULL);
      }
    if (! writeFlag)

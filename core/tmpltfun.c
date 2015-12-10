@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/26/15            */
+   /*             CLIPS Version 6.40  12/10/15            */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -67,6 +67,8 @@
 /*            Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
+/*            Fact ?var:slot references in defrule actions.  */
+/*                                                           */
 /*************************************************************/
 
 #define _TMPLTFUN_SOURCE_
@@ -93,6 +95,7 @@
 #include "commline.h"
 #include "factrhs.h"
 #include "modulutl.h"
+#include "prcdrpsr.h"
 #include "reorder.h"
 #include "sysdep.h"
 #include "tmpltdef.h"
@@ -111,7 +114,6 @@
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    static struct expr            *ModAndDupParse(void *,struct expr *,const char *,const char *);
-   static SYMBOL_HN              *FindTemplateForFactAddress(SYMBOL_HN *,struct lhsParseNode *);
 #endif
 
 /****************************************************************/
@@ -2154,6 +2156,8 @@ globle intBool UpdateModifyDuplicate(
    functionArgs = top->argList;
    if (functionArgs->type == SF_VARIABLE)
      {
+      if (SearchParsedBindNames(theEnv,functionArgs->value) != 0)
+        { return(TRUE); }
       templateName = FindTemplateForFactAddress((SYMBOL_HN *) functionArgs->value,
                                                 (struct lhsParseNode *) vTheLHS);
       if (templateName == NULL) return(TRUE);
@@ -2244,7 +2248,7 @@ globle intBool UpdateModifyDuplicate(
 /*   deftemplate name associated with the pattern */
 /*   to which a fact address has been bound.      */
 /**************************************************/
-static SYMBOL_HN *FindTemplateForFactAddress(
+globle SYMBOL_HN *FindTemplateForFactAddress(
   SYMBOL_HN *factAddress,
   struct lhsParseNode *theLHS)
   {

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.40  12/02/15          */
+   /*               CLIPS Version 6.40  12/10/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -42,9 +42,13 @@
 /*            Added const qualifiers to remove C++            */
 /*            deprecation warnings.                           */
 /*                                                            */
-/*      6.40: Added Env prefix to GetEvaluationError and     */
-/*            SetEvaluationError functions.                  */
-/*                                                           */
+/*      6.40: Added Env prefix to GetEvaluationError and      */
+/*            SetEvaluationError functions.                   */
+/*                                                            */
+/*            Generic error message no longer printed when    */
+/*            an alternate variable handling function         */
+/*            generates an error.                             */
+/*                                                            */
 /**************************************************************/
 
 /* =========================================
@@ -487,6 +491,7 @@ globle int ReplaceProcVars(
    EXPRESSION *arg_lvl,*altvarexp;
    SYMBOL_HN *bindName;
    PACKED_PROC_VAR pvar;
+   int errorCode;
 
    while (actions != NULL)
      {
@@ -517,14 +522,22 @@ globle int ReplaceProcVars(
             /* such as direct slot reference or a rule RHS pattern reference. */
             /*================================================================*/
             
-            if ((altvarfunc != NULL) ? ((*altvarfunc)(theEnv,actions,specdata) != 1) : TRUE)
+            if (altvarfunc == NULL)
+              { errorCode = 0; }
+            else
+              { errorCode = (*altvarfunc)(theEnv,actions,specdata); }
+              
+            if (errorCode != 1)
               {
-               PrintErrorID(theEnv,"PRCCODE",3,TRUE);
-               EnvPrintRouter(theEnv,WERROR,"Undefined variable ");
-               EnvPrintRouter(theEnv,WERROR,ValueToString(bindName));
-               EnvPrintRouter(theEnv,WERROR," referenced in ");
-               EnvPrintRouter(theEnv,WERROR,bodytype);
-               EnvPrintRouter(theEnv,WERROR,".\n");
+               if (errorCode == 0)
+                 {
+                  PrintErrorID(theEnv,"PRCCODE",3,TRUE);
+                  EnvPrintRouter(theEnv,WERROR,"Undefined variable ");
+                  EnvPrintRouter(theEnv,WERROR,ValueToString(bindName));
+                  EnvPrintRouter(theEnv,WERROR," referenced in ");
+                  EnvPrintRouter(theEnv,WERROR,bodytype);
+                  EnvPrintRouter(theEnv,WERROR,".\n");
+                 }
                return(TRUE);
               }
            }

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  12/06/15            */
+   /*             CLIPS Version 6.40  12/10/15            */
    /*                                                     */
    /*                 RULE PARSING MODULE                 */
    /*******************************************************/
@@ -592,19 +592,19 @@ static int ReplaceRHSVariable(
 #endif
 
    if ((list->type != SF_VARIABLE) && (list->type != MF_VARIABLE))
-     { return(FALSE); }
+     { return(0); }
 
    /*==================================*/
    /* Check for a ?var:slot reference. */
    /*==================================*/
    
 #if DEFTEMPLATE_CONSTRUCT
-   factSlotReference = FactSlotReferenceVar(theEnv,list,NULL);
+   factSlotReference = RuleFactSlotReferenceVar(theEnv,list,VtheLHS);
       
    if (factSlotReference == 1)
-     { return TRUE; }
+     { return 1; }
    else if (factSlotReference == -1)
-     { return FALSE; }
+     { return -1; }
 #endif
    
    /*===============================================================*/
@@ -612,7 +612,7 @@ static int ReplaceRHSVariable(
    /*===============================================================*/
 
    theVariable = FindVariable((SYMBOL_HN *) list->value,(struct lhsParseNode *) VtheLHS);
-   if (theVariable == NULL) return(FALSE);
+   if (theVariable == NULL) return(0);
 
    /*================================================*/
    /* Replace the variable reference with a function */
@@ -622,13 +622,13 @@ static int ReplaceRHSVariable(
    if (theVariable->patternType != NULL)
      { (*theVariable->patternType->replaceGetJNValueFunction)(theEnv,list,theVariable,LHS); }
    else
-     { return(FALSE); }
+     { return(0); }
 
    /*=================================================================*/
    /* Return TRUE to indicate the variable was successfully replaced. */
    /*=================================================================*/
 
-   return(TRUE);
+   return(1);
   }
 
 /*******************************************************/

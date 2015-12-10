@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.31  08/04/15          */
+   /*               CLIPS Version 6.40  12/10/15          */
    /*                                                     */
    /*              OBJECT MESSAGE DISPATCH CODE           */
    /*******************************************************/
@@ -41,8 +41,11 @@
 /*            in scope in order to sent a message to an      */
 /*            instance of that class.                        */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Option printing of carriage return for the     */
+/*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*************************************************************/
 
@@ -856,7 +859,7 @@ globle void DynamicHandlerGetSlot(
    if ((sp->desc->publicVisibility == 0) &&
        (MessageHandlerData(theEnv)->CurrentCore->hnd->cls != sp->desc->cls))
      {
-      SlotVisibilityViolationError(theEnv,sp->desc,MessageHandlerData(theEnv)->CurrentCore->hnd->cls);
+      SlotVisibilityViolationError(theEnv,sp->desc,MessageHandlerData(theEnv)->CurrentCore->hnd->cls,FALSE);
       EnvSetEvaluationError(theEnv,TRUE);
       return;
      }
@@ -916,7 +919,7 @@ globle void DynamicHandlerPutSlot(
    if ((sp->desc->publicVisibility == 0) &&
        (MessageHandlerData(theEnv)->CurrentCore->hnd->cls != sp->desc->cls))
      {
-      SlotVisibilityViolationError(theEnv,sp->desc,MessageHandlerData(theEnv)->CurrentCore->hnd->cls);
+      SlotVisibilityViolationError(theEnv,sp->desc,MessageHandlerData(theEnv)->CurrentCore->hnd->cls,FALSE);
       EnvSetEvaluationError(theEnv,TRUE);
       return;
      }

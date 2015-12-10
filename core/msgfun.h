@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*               CLIPS Version 6.40  12/10/15          */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -31,6 +31,9 @@
 /*                                                           */
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
+/*                                                           */
+/*      6.40: Option printing of carriage return for the     */
+/*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*************************************************************/
 
@@ -77,7 +80,7 @@ typedef struct handlerSlotReference
    LOCALE void             PrintNoHandlerError(void *,const char *);
    LOCALE int              CheckHandlerArgCount(void *);
    LOCALE void             SlotAccessViolationError(void *,const char *,intBool,void *);
-   LOCALE void             SlotVisibilityViolationError(void *,SLOT_DESC *,DEFCLASS *);
+   LOCALE void             SlotVisibilityViolationError(void *,SLOT_DESC *,DEFCLASS *,int);
 
 #if ! RUN_TIME
    LOCALE void             NewSystemHandler(void *,const char *,const char *,const char *,int);
