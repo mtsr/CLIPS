@@ -263,9 +263,10 @@ globle void ConvertPrimitiveValueToDataObject(
      {
       case MULTIFIELD:
         {
+         jint i;
          jint theSize = (*env)->CallIntMethod(env,theValue,CLIPSJNIData(theEnv)->multifieldValueSizeMethod);
          result = EnvCreateMultifield(theEnv,theSize);
-         for (jint i = 0; i < theSize; i++)
+         for (i = 0; i < theSize; i++)
            {         
             jobject mfo = (*env)->CallObjectMethod(env,theValue,CLIPSJNIData(theEnv)->multifieldValueGetMethod,i);
             int mft = (*env)->CallIntMethod(env,mfo,CLIPSJNIData(theEnv)->getCLIPSTypeValueMethod);

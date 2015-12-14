@@ -39,13 +39,14 @@ OBJS = agenda.o analysis.o argacces.o bload.o bmathfun.o bsave.o \
 
 .c.o :
 	gcc -c -O3 -fPIC -DLINUX -DALLOW_ENVIRONMENT_GLOBALS=0 \
+	    -I$(JAVA_INCLUDE) -I$(JAVA_INCLUDE_OS) \
 	    -Wall -Wundef -Wpointer-arith -Wshadow \
 	    -Winline -Wmissing-declarations -Wredundant-decls \
 	    -Wmissing-prototypes -Wnested-externs \
 	    -Wstrict-prototypes -Waggregate-return -Wno-implicit $<
 
 libCLIPSJNI.so : $(OBJS) 
-	gcc -o libCLIPSJNI.so -fPIC -shared -Wall -I$(JAVA_INCLUDE) -I$(JAVA_INCLUDE_OS) \
+	gcc -o libCLIPSJNI.so -fPIC -shared -Wall \
 		-lm $(OBJS) 
 		
 clipsjni_glue.o: clipsjni_glue.c \

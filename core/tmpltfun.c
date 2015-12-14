@@ -588,7 +588,7 @@ globle void DuplicateCommand(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
-   long long factNum, factIndex;
+   long long factNum;
    struct fact *oldFact, *newFact, *theFact;
    struct expr *testPtr;
    DATA_OBJECT computeResult;
@@ -677,7 +677,6 @@ globle void DuplicateCommand(
    /* Duplicate the values from the old fact (skipping multifields). */
    /*================================================================*/
 
-   factIndex = oldFact->factIndex;
    newFact = (struct fact *) CreateFactBySize(theEnv,oldFact->theProposition.multifieldLength);
    newFact->whichDeftemplate = templatePtr;
    for (i = 0; i < (int) oldFact->theProposition.multifieldLength; i++)
