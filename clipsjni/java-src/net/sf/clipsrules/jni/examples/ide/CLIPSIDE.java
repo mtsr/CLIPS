@@ -11,6 +11,7 @@ import java.awt.event.*;
 import java.io.File;
 
 import java.util.List;
+import java.util.prefs.Preferences;
 import java.util.Properties;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -46,6 +47,8 @@ public class CLIPSIDE implements ActionListener, MenuListener,
    static final String haltRulesAction = "HaltRules";
    static final String haltExecutionAction = "HaltExecution";
    static final String pauseAction = "Pause";
+
+   static final String currentDirectoryPref = "currentDirectory";
    
    private File currentDirectory = null;
 
@@ -64,6 +67,8 @@ public class CLIPSIDE implements ActionListener, MenuListener,
    private JMenuItem jmiHaltExecution = null;
    
    private JToggleButton pauseButton = null;
+   
+   private Preferences prefs = null;
 
    /************/
    /* CLIPSIDE */
@@ -224,14 +229,29 @@ public class CLIPSIDE implements ActionListener, MenuListener,
                     { return new SymbolValue("FALSE"); }
                  }
               });
-                                     
+    
+      /************************/
+      /* Get the preferences. */
+      /************************/
+      
+      prefs = Preferences.userNodeForPackage(net.sf.clipsrules.jni.examples.ide.CLIPSIDE.class);       
+      String directoryPref = prefs.get(currentDirectoryPref,null);         
+            
       /*==================================*/
       /* Determine the working directory. */
       /*==================================*/
       
-      File workingDirectory = new File(System.getProperty("user.dir")); 
-      currentDirectory = workingDirectory.getAbsoluteFile();
+      File workingDirectory;
+      if (directoryPref == null)
+        { workingDirectory = new File(System.getProperty("user.dir")); }
+      else
+        { 
+         workingDirectory = new File(directoryPref); 
+         if (! workingDirectory.exists())
+           { workingDirectory = new File(System.getProperty("user.dir")); }
+        }
       
+      currentDirectory = workingDirectory.getAbsoluteFile();
       int dirChanged = clips.changeDirectory(currentDirectory.getAbsolutePath());
 
       /*==========================*/
@@ -522,6 +542,7 @@ public class CLIPSIDE implements ActionListener, MenuListener,
                                         file.getName() + 
                                         "\")\n");
          currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath());
+         prefs.put(currentDirectoryPref,currentDirectory.getAbsolutePath());
         }
       else
         {
@@ -564,6 +585,7 @@ public class CLIPSIDE implements ActionListener, MenuListener,
                                         file.getName() + 
                                         "\")\n");
          currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath());
+         prefs.put(currentDirectoryPref,currentDirectory.getAbsolutePath());
         }
       else
         {
@@ -598,7 +620,10 @@ public class CLIPSIDE implements ActionListener, MenuListener,
       int dirChanged = clips.changeDirectory(currentDirectory.getAbsolutePath());
       
       if (dirChanged == 0)
-        { currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath()); }
+        { 
+         currentDirectoryLabel.setText("Dir: " + currentDirectory.getAbsolutePath()); 
+         prefs.put(currentDirectoryPref,currentDirectory.getAbsolutePath());
+        }
      }
 
    /***********/
