@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  12/10/15            */
+   /*             CLIPS Version 6.40  12/10/15            */
    /*                                                     */
    /*        FACT RETE FUNCTION GENERATION HEADER FILE    */
    /*******************************************************/

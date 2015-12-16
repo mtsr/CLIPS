@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  09/15/15            */
+   /*             CLIPS Version 6.40  12/15/15            */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -46,7 +46,7 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
-/*      6.31: Added EnvAddPeriodicFunctionWithContext        */
+/*      6.40: Added EnvAddPeriodicFunctionWithContext        */
 /*            function.                                      */
 /*                                                           */
 /*************************************************************/
@@ -796,10 +796,14 @@ globle struct callFunctionItem *AddFunctionToCallListWithContext(
   void *context)
   {
    struct callFunctionItem *newPtr, *currentPtr, *lastPtr = NULL;
-
+   char  *nameCopy;
+  
    newPtr = get_struct(theEnv,callFunctionItem);
 
-   newPtr->name = name;
+   nameCopy = (char *) genalloc(theEnv,strlen(name) + 1);
+   genstrcpy(nameCopy,name);     
+   newPtr->name = nameCopy;
+
    newPtr->func = func;
    newPtr->priority = priority;
    newPtr->environmentAware = (short) environmentAware;
@@ -880,6 +884,7 @@ globle struct callFunctionItem *RemoveFunctionFromCallList(
          else
            { lastPtr->next = currentPtr->next; }
 
+         genfree(theEnv,(void *) currentPtr->name,strlen(currentPtr->name) + 1);
          rtn_struct(theEnv,callFunctionItem,currentPtr);
          return(head);
         }
