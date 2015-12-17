@@ -538,8 +538,8 @@ static int FindError(
 #pragma unused(theEnv)
 #endif
 
-   if ( (strcmp(logicalName,WERROR) == 0) ||
-        (strcmp(logicalName,WWARNING) == 0) )
+   if ((strcmp(logicalName,WERROR) == 0) ||
+       (strcmp(logicalName,WWARNING) == 0))
      { return(TRUE); }
 
     return(FALSE);

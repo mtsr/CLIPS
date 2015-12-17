@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*             CLIPS Version 6.40  12/16/15            */
    /*                                                     */
    /*                COMMAND LINE MODULE                  */
    /*******************************************************/
@@ -57,7 +57,7 @@
 /*            Added STDOUT and STDIN logical name            */
 /*            definitions.                                   */
 /*                                                           */
-/*      6.31: Refactored code to reduce header dependencies  */
+/*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Added Env prefix to GetEvaluationError and     */
@@ -65,6 +65,9 @@
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Added call to FlushParsingMessages to clear    */
+/*            message buffer after each command.             */
 /*                                                           */
 /*************************************************************/
 
@@ -796,6 +799,7 @@ globle intBool ExecuteIfCommandComplete(
    RouterData(theEnv)->AwaitingInput = FALSE;
    RouteCommand(theEnv,CommandLineData(theEnv)->CommandString,TRUE);
    FlushPPBuffer(theEnv);
+   FlushParsingMessages(theEnv);
    EnvSetHaltExecution(theEnv,FALSE);
    EnvSetEvaluationError(theEnv,FALSE);
    FlushCommandString(theEnv);
