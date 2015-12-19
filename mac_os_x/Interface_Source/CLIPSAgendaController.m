@@ -324,7 +324,8 @@
 /********************/
 - (void) windowWillClose: (NSNotification *) aNotification
   {
-   [self setValue: nil forKey: @"environment"]; 
+   [environmentController removeAgendaController: self];
+   [self setValue: nil forKey: @"environment"];
    [self setValue: nil forKey: @"environmentController"]; 
   }
 

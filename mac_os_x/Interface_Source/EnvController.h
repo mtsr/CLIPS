@@ -3,6 +3,9 @@
 #import <Cocoa/Cocoa.h>
 @class CLIPSTerminalController;
 @class CLIPSConstructInspectorController;
+@class CLIPSFactController;
+@class CLIPSInstanceController;
+@class CLIPSAgendaController;
 
 @interface EnvController : NSObject
   {
@@ -13,6 +16,9 @@
    CLIPSConstructInspectorController *constructInspectorController;
    NSString *constructInspectorText;
    NSLock *fileOpenLock;
+   NSMutableArray *factControllers;
+   NSMutableArray *instanceControllers;
+   NSMutableArray *agendaControllers;
   }
   
 - (IBAction) newEnvironment: (id) sender;
@@ -24,6 +30,15 @@
 - (IBAction) showConstructInspectorPanel: (id) sender;
 
 - (void) setTerminal: (CLIPSTerminalController *) theController;
+
+- (void) addFactController: (CLIPSFactController *) theController;
+- (void) removeFactController: (CLIPSFactController *) theController;
+
+- (void) addInstanceController: (CLIPSInstanceController *) theController;
+- (void) removeInstanceController: (CLIPSInstanceController *) theController;
+
+- (void) addAgendaController: (CLIPSAgendaController *) theController;
+- (void) removeAgendaController: (CLIPSAgendaController *) theController;
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Key-Value Coding Methods */

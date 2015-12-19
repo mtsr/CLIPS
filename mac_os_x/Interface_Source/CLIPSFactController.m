@@ -258,6 +258,7 @@
 /********************/
 - (void) windowWillClose: (NSNotification *) aNotification
   {
+   [environmentController removeFactController: self];
    [self setValue: nil forKey: @"environment"]; 
    [self setValue: nil forKey: @"environmentController"]; 
   }

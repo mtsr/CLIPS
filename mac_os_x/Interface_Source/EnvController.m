@@ -75,6 +75,10 @@
        [mainMenu insertItem: environmentItem atIndex: i];
        [environmentItem setTitle: @"Environment"];
       }
+      
+   factControllers = [[NSMutableArray alloc] init];
+   instanceControllers = [[NSMutableArray alloc] init];
+   agendaControllers = [[NSMutableArray alloc] init];
   }
 
 /*****************/
@@ -144,8 +148,10 @@
   {
    CLIPSAgendaController *theController;
       
-   theController = [[CLIPSAgendaController alloc] init]; 
-        
+   theController = [[CLIPSAgendaController alloc] init];
+   
+   [self addAgendaController: theController];
+      
    [theController showWindow: self];
   }
 
@@ -156,8 +162,10 @@
   {
    CLIPSFactController *theController;
  
-   theController = [[CLIPSFactController alloc] init]; 
+   theController = [[CLIPSFactController alloc] init];
 
+   [self addFactController: theController];
+   
    [theController showWindow: self];
   }
 
@@ -169,7 +177,9 @@
    CLIPSInstanceController *theController;
       
    theController = [[CLIPSInstanceController alloc] init]; 
-        
+
+   [self addInstanceController: theController];
+      
    [theController showWindow: self];
   }
 
@@ -282,6 +292,54 @@
 - (NSString *) constructInspectorText
   {
    return constructInspectorText;
+  }
+
+/**********************/
+/* addFactController: */
+/**********************/
+- (void) addFactController: (CLIPSFactController *) theController
+  {
+   [factControllers addObject: theController];
+  }
+
+/*************************/
+/* removeFactController: */
+/*************************/
+- (void) removeFactController: (CLIPSFactController *) theController
+  {
+   [factControllers removeObject: theController];
+  }
+
+/**************************/
+/* addInstanceController: */
+/**************************/
+- (void) addInstanceController: (CLIPSInstanceController *) theController
+  {
+   [instanceControllers addObject: theController];
+  }
+
+/*****************************/
+/* removeInstanceController: */
+/*****************************/
+- (void) removeInstanceController: (CLIPSInstanceController *) theController
+  {
+   [instanceControllers removeObject: theController];
+  }
+
+/************************/
+/* addAgendaController: */
+/************************/
+- (void) addAgendaController: (CLIPSAgendaController *) theController
+  {
+   [agendaControllers addObject: theController];
+  }
+
+/***************************/
+/* removeAgendaController: */
+/***************************/
+- (void) removeAgendaController: (CLIPSAgendaController *) theController
+  {
+   [agendaControllers removeObject: theController];
   }
 
 /*%%%%%%%%%%%%%%%%*/
