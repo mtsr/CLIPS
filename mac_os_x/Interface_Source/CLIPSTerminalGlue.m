@@ -104,6 +104,8 @@ int ExitInterfaceRouter(
   int num)
   {   
    CLIPSTerminalController *theController = (__bridge CLIPSTerminalController *) GetEnvironmentRouterContext(theEnv);
+
+   [[NSApplication sharedApplication] terminate: NULL];
    [theController exit];
    /* AbortExit(theEnv); */
    return(TRUE);

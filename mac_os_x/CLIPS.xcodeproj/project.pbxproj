@@ -557,7 +557,6 @@
 		B5C0243309C28C6C00221A69 /* CLIPSAgendaBrowser.nib in Resources */ = {isa = PBXBuildFile; fileRef = B5C0243109C28C6C00221A69 /* CLIPSAgendaBrowser.nib */; };
 		B5CE5D870D7DB62B002166A8 /* CLIPSInstanceController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CE5D860D7DB62B002166A8 /* CLIPSInstanceController.m */; };
 		B5CE5DCD0D7DDF12002166A8 /* CLIPSInstanceBrowser.nib in Resources */ = {isa = PBXBuildFile; fileRef = B5CE5DCB0D7DDF12002166A8 /* CLIPSInstanceBrowser.nib */; };
-		B5D2C29D09CCD63F00D4B00E /* CLIPSFactInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = B5D2C29B09CCD63F00D4B00E /* CLIPSFactInspector.nib */; };
 		B5FA491E09A28A1C00FF7799 /* Preferences.nib in Resources */ = {isa = PBXBuildFile; fileRef = B5FA491C09A28A1C00FF7799 /* Preferences.nib */; };
 		B5FB532109AD41E2001AE877 /* CLIPSEnvironment.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = B5FB531709AD41E2001AE877 /* CLIPSEnvironment.h */; };
 		B5FB532209AD41E2001AE877 /* CLIPSEnvironment.m in Sources */ = {isa = PBXBuildFile; fileRef = B5FB531809AD41E2001AE877 /* CLIPSEnvironment.m */; };
@@ -1000,7 +999,6 @@
 		B5CE5D850D7DB62B002166A8 /* CLIPSInstanceController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CLIPSInstanceController.h; path = Interface_Source/CLIPSInstanceController.h; sourceTree = "<group>"; };
 		B5CE5D860D7DB62B002166A8 /* CLIPSInstanceController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CLIPSInstanceController.m; path = Interface_Source/CLIPSInstanceController.m; sourceTree = "<group>"; };
 		B5CE5DCC0D7DDF12002166A8 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/CLIPSInstanceBrowser.nib; sourceTree = "<group>"; };
-		B5D2C29C09CCD63F00D4B00E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/CLIPSFactInspector.nib; sourceTree = "<group>"; };
 		B5FA491D09A28A1C00FF7799 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/Preferences.nib; sourceTree = "<group>"; };
 		B5FB52F109AD3E90001AE877 /* CLIPS IDE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CLIPS IDE.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5FB531709AD41E2001AE877 /* CLIPSEnvironment.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CLIPSEnvironment.h; path = Interface_Source/CLIPSEnvironment.h; sourceTree = "<group>"; };
@@ -1140,27 +1138,26 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B5C0243109C28C6C00221A69 /* CLIPSAgendaBrowser.nib */,
+				B533575209D72F6B00893C2F /* CLIPSConstructInspector.nib */,
+				B5AF77050BA89AAC0090AC5E /* CLIPSFactBrowser.nib */,
 				B5CE5DCB0D7DDF12002166A8 /* CLIPSInstanceBrowser.nib */,
-				B501CB3E09F4815400D8F101 /* HaltAfterRule.tiff */,
-				B501CB3F09F4815400D8F101 /* HaltImmediately.tiff */,
+				B5FB533209AD4276001AE877 /* CLIPSTerminal.nib */,
+				B569B68009AB75FC00BD6DE0 /* CLIPSTextDocument.nib */,
+				B5AC0A4609B21E1200297B9E /* EnvController.nib */,
+				B565436409D22215002856FE /* GenericInspector.nib */,
+				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
+				B5FA491C09A28A1C00FF7799 /* Preferences.nib */,
+				B53DE9A10A0AE97800CA1063 /* TextMenu.nib */,
 				B549628F09BA9D6100697F33 /* CogDown.tiff */,
 				B549629009BA9D6100697F33 /* CogGreyed.tiff */,
 				B549629109BA9D6100697F33 /* CogUp.tiff */,
 				B5FB533B09AD42E6001AE877 /* CLIPS-Info.plist */,
-				B5FB533209AD4276001AE877 /* CLIPSTerminal.nib */,
 				B5FB533009AD425F001AE877 /* CLIPS.icns */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
-				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
+				B501CB3E09F4815400D8F101 /* HaltAfterRule.tiff */,
+				B501CB3F09F4815400D8F101 /* HaltImmediately.tiff */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				B5FA491C09A28A1C00FF7799 /* Preferences.nib */,
-				B569B68009AB75FC00BD6DE0 /* CLIPSTextDocument.nib */,
-				B5AC0A4609B21E1200297B9E /* EnvController.nib */,
-				B5C0243109C28C6C00221A69 /* CLIPSAgendaBrowser.nib */,
-				B5D2C29B09CCD63F00D4B00E /* CLIPSFactInspector.nib */,
-				B565436409D22215002856FE /* GenericInspector.nib */,
-				B533575209D72F6B00893C2F /* CLIPSConstructInspector.nib */,
-				B53DE9A10A0AE97800CA1063 /* TextMenu.nib */,
-				B5AF77050BA89AAC0090AC5E /* CLIPSFactBrowser.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1815,7 +1812,6 @@
 				B549629309BA9D6100697F33 /* CogGreyed.tiff in Resources */,
 				B549629409BA9D6100697F33 /* CogUp.tiff in Resources */,
 				B5C0243309C28C6C00221A69 /* CLIPSAgendaBrowser.nib in Resources */,
-				B5D2C29D09CCD63F00D4B00E /* CLIPSFactInspector.nib in Resources */,
 				B565436609D22215002856FE /* GenericInspector.nib in Resources */,
 				B533575409D72F6B00893C2F /* CLIPSConstructInspector.nib in Resources */,
 				B501CB4009F4815400D8F101 /* HaltAfterRule.tiff in Resources */,
@@ -2312,14 +2308,6 @@
 				B5CE5DCC0D7DDF12002166A8 /* English */,
 			);
 			name = CLIPSInstanceBrowser.nib;
-			sourceTree = "<group>";
-		};
-		B5D2C29B09CCD63F00D4B00E /* CLIPSFactInspector.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B5D2C29C09CCD63F00D4B00E /* English */,
-			);
-			name = CLIPSFactInspector.nib;
 			sourceTree = "<group>";
 		};
 		B5FA491C09A28A1C00FF7799 /* Preferences.nib */ = {
