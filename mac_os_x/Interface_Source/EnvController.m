@@ -5,6 +5,7 @@
 #import "CLIPSInstanceController.h"
 #import "CLIPSConstructInspectorController.h"
 #import "GenericController.h"
+#import "CLIPSEnvironment.h"
 
 @implementation EnvController
   
@@ -183,9 +184,9 @@
    [theController showWindow: self];
   }
 
-/**************************/
+/*****************************/
 /* newDebugGenericInspector: */
-/**************************/
+/*****************************/
 - (IBAction) newDebugGenericInspector: (id) sender
   {
    GenericController *theController;
@@ -193,6 +194,33 @@
    theController = [[GenericController alloc] init]; 
         
    [theController showWindow: self];
+  }
+
+/************************************************************/
+/* loadConstructs: Initiates the Load Constructs... command */
+/*   for a CLIPS environment window (terminal).             */
+/************************************************************/
+- (IBAction) loadConstructs: (id) sender
+  {
+   [[self topTerminalController] loadConstructs: self];
+  }
+
+/**************************************************/
+/* loadBatch: Initiates the Load Batch... command */
+/*   for a CLIPS environment window (terminal).   */
+/**************************************************/
+- (IBAction) loadBatch: (id) sender
+  {
+   [[self topTerminalController] loadBatch: self];
+  }
+
+/********************************************************/
+/* setDirectory: Initiates the Set Directory... command */
+/*   for a CLIPS environment window (terminal).         */
+/********************************************************/
+- (IBAction) setDirectory: (id) sender
+  {
+   [[self topTerminalController] setDirectory: self];
   }
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
@@ -257,6 +285,17 @@
 /**********************/
 - (void) setTerminalExists: (BOOL) value
   {
+  }
+
+/*************************/
+/* topTerminalController */
+/*************************/
+- (CLIPSTerminalController *) topTerminalController
+  {
+   if ([self terminalExists])
+     { return [[terminalArrayController arrangedObjects] firstObject]; }
+   else
+     { return nil; }
   }
 
 /**********************************************************/
@@ -340,6 +379,30 @@
 - (void) removeAgendaController: (CLIPSAgendaController *) theController
   {
    [agendaControllers removeObject: theController];
+  }
+
+/********************/
+/* validateMenuItem: */
+/********************/
+- (BOOL) validateMenuItem: (NSMenuItem *) menuItem
+  {
+   if (([menuItem action] == @selector(loadConstructs:)) ||
+       ([menuItem action] == @selector(loadBatch:)) ||
+       ([menuItem action] == @selector(setDirectory:)))
+     {
+      CLIPSTerminalController *theController = [self topTerminalController];
+      CLIPSEnvironment *environment = [theController environment];
+      
+      if ([[environment executionLock] tryLock])
+        {
+         [[environment executionLock] unlock];
+         return YES;
+        }
+      else
+        { return NO; }
+     }
+
+   return YES;
   }
 
 /*%%%%%%%%%%%%%%%%*/

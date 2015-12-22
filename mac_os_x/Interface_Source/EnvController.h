@@ -26,6 +26,9 @@
 - (IBAction) newDebugFactBrowser: (id) sender;
 - (IBAction) newDebugInstanceBrowser: (id) sender;
 - (IBAction) newDebugGenericInspector: (id) sender;
+- (IBAction) loadConstructs: (id) sender;
+- (IBAction) loadBatch: (id) sender;
+- (IBAction) setDirectory: (id) sender;
 
 - (IBAction) showConstructInspectorPanel: (id) sender;
 
@@ -39,6 +42,8 @@
 
 - (void) addAgendaController: (CLIPSAgendaController *) theController;
 - (void) removeAgendaController: (CLIPSAgendaController *) theController;
+
+- (CLIPSTerminalController *) topTerminalController;
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Key-Value Coding Methods */

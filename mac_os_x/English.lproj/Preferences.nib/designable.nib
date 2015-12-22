@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment version="1030" identifier="macosx"/>
+        <deployment version="1090" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
     </dependencies>
     <objects>
@@ -11,7 +11,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Preferences" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -297,7 +297,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <popUpButtonCell key="cell" type="push" title="When Defined" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="37" id="181">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="36">
                                                     <items>
                                                         <menuItem title="When Defined" state="on" id="37"/>
@@ -315,7 +315,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <popUpButtonCell key="cell" type="push" title="Depth" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="42" id="182">
                                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
+                                                <font key="font" metaFont="menu"/>
                                                 <menu key="menu" title="OtherViews" id="41">
                                                     <items>
                                                         <menuItem title="Depth" state="on" id="42"/>
@@ -387,19 +387,19 @@
                                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                             </textFieldCell>
                                             <connections>
+                                                <binding destination="101" name="fontName" keyPath="values.editorTextFontName" id="158"/>
                                                 <binding destination="101" name="displayPatternValue1" keyPath="values.editorTextFontName" id="166">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ - %{value2}@pt</string>
                                                         <string key="NSValueTransformerName">FontNameToDisplayNameTransformer</string>
                                                     </dictionary>
                                                 </binding>
+                                                <binding destination="101" name="fontSize" keyPath="values.editorTextFontSize" previousBinding="158" id="159"/>
                                                 <binding destination="101" name="displayPatternValue2" keyPath="values.editorTextFontSize" previousBinding="166" id="167">
                                                     <dictionary key="options">
                                                         <string key="NSDisplayPattern">%{value1}@ - %{value2}@pt</string>
                                                     </dictionary>
                                                 </binding>
-                                                <binding destination="101" name="fontName" keyPath="values.editorTextFontName" id="158"/>
-                                                <binding destination="101" name="fontSize" keyPath="values.editorTextFontSize" previousBinding="158" id="159"/>
                                             </connections>
                                         </textField>
                                         <button id="169">

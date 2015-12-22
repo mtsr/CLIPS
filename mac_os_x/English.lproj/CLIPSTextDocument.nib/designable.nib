@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
-        <deployment version="101000" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9060"/>
+        <deployment version="1090" identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CLIPSTextDocument">
@@ -14,7 +14,7 @@
             </connections>
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
-        <customObject id="-3" userLabel="Application"/>
+        <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="default" id="5" userLabel="Window">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -34,13 +34,12 @@
                                 <textView importsGraphics="NO" richText="NO" findStyle="panel" allowsUndo="YES" usesRuler="YES" usesFontPanel="YES" verticallyResizable="YES" spellingCorrection="YES" smartInsertDelete="YES" id="22" customClass="CLIPSTextView">
                                     <rect key="frame" x="0.0" y="31" width="516" height="385"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <animations/>
                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <size key="minSize" width="516" height="385"/>
-                                    <size key="maxSize" width="518" height="10000000"/>
+                                    <size key="maxSize" width="533" height="10000000"/>
                                     <color key="insertionPointColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <size key="minSize" width="516" height="385"/>
-                                    <size key="maxSize" width="518" height="10000000"/>
+                                    <size key="maxSize" width="533" height="10000000"/>
                                     <connections>
                                         <binding destination="23" name="fontName" keyPath="values.editorTextFontName" id="25"/>
                                         <binding destination="23" name="fontSize" keyPath="values.editorTextFontSize" previousBinding="25" id="27"/>
@@ -48,28 +47,23 @@
                                     </connections>
                                 </textView>
                             </subviews>
-                            <animations/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </clipView>
-                        <animations/>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="YES" id="156">
                             <rect key="frame" x="-100" y="-100" width="87" height="18"/>
                             <autoresizingMask key="autoresizingMask"/>
-                            <animations/>
                         </scroller>
                         <scroller key="verticalScroller" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="157">
                             <rect key="frame" x="517" y="1" width="15" height="385"/>
                             <autoresizingMask key="autoresizingMask"/>
-                            <animations/>
                         </scroller>
                         <connections>
                             <outlet property="nextKeyView" destination="29" id="41"/>
                         </connections>
                     </scrollView>
-                    <popUpButton verticalHuggingPriority="750" id="29">
-                        <rect key="frame" x="17" y="390" width="101" height="22"/>
+                    <popUpButton hidden="YES" verticalHuggingPriority="750" id="29">
+                        <rect key="frame" x="124" y="390" width="101" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <animations/>
                         <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="31" id="153">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
@@ -88,9 +82,8 @@
                         </connections>
                     </popUpButton>
                     <button id="132">
-                        <rect key="frame" x="126" y="388" width="44" height="23"/>
+                        <rect key="frame" x="8" y="388" width="44" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <animations/>
                         <buttonCell key="cell" type="bevel" bezelStyle="regularSquare" image="CogUp" imagePosition="above" alignment="center" alternateImage="CogDown" id="154">
                             <behavior key="behavior" lightByContents="YES"/>
                             <font key="font" metaFont="system" size="10"/>
@@ -99,11 +92,10 @@
                             <action selector="performClick:" target="133" id="138"/>
                         </connections>
                     </button>
-                    <popUpButton hidden="YES" verticalHuggingPriority="750" id="133">
-                        <rect key="frame" x="124" y="390" width="31" height="22"/>
+                    <popUpButton hidden="YES" verticalHuggingPriority="750" id="133" userLabel="Popup Menu">
+                        <rect key="frame" x="6" y="390" width="31" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <animations/>
-                        <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="137" id="155">
+                        <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="137" id="155" userLabel="PopupButtonCell">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                             <menu key="menu" title="OtherViews" id="134">
@@ -146,7 +138,6 @@
                         </connections>
                     </popUpButton>
                 </subviews>
-                <animations/>
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="17"/>

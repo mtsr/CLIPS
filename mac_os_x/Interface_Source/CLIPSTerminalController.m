@@ -890,9 +890,10 @@
    /* Delete the prior contents of the dialog window. */
    /*=================================================*/
    
-   [textView setSelectedRange: theRange];   
-   [textView delete: sender]; 
-   
+   clearWindow = YES;
+   [textView replaceCharactersInRange: theRange withString:@""];
+   clearWindow = NO;
+  
    lineCount = 1;
    lastDumpPosition = 0;
    
@@ -909,8 +910,10 @@
    
    if (theCString != NULL)
      {
+      clearWindow = YES;
       theStr = [NSString stringWithCString: theCString encoding: NSUTF8StringEncoding];
       [self print: theStr];
+      clearWindow = NO;
      }
   }
 
@@ -921,18 +924,11 @@
 /*********************************************************/
 - (void) clearScrollbackFunction
   {
-
    [outputBufferLock lock];
-
-   //[textView clearTerminal];
-   
-   //lineCount = 1;
-   //lastDumpPosition = 0;
-   
    clearWindow = YES;
    [outputBuffer setString: @""];
    bufferCount = 0;
-   [outputBufferLock unlockWithCondition: BUFFER_IS_EMPTY]; 
+   [outputBufferLock unlockWithCondition: BUFFER_IS_EMPTY];
   }
 
 /*****************************************************************/
@@ -1553,6 +1549,9 @@
     NSValue *theValue, *inputCaret = NULL, *extraSelection = NULL;
     NSUInteger textLength;
     NSArray *returnArray;
+
+    if (clearWindow)
+      { return newSelectedCharRanges; }
 
     /*=======================================================*/
     /* If the output buffer hasn't been dumped, don't try to */
