@@ -60,17 +60,14 @@ int PrintInterfaceRouter(
   const char *str)
   {
    FILE *fptr;
-   @autoreleasepool {
-    CLIPSTerminalController *theObject = (__bridge CLIPSTerminalController *) GetEnvironmentRouterContext(theEnv);
+   CLIPSTerminalController *theObject = (__bridge CLIPSTerminalController *) GetEnvironmentRouterContext(theEnv);
 
-    fptr = FindFptr(theEnv,logicalName);
-    if (fptr == stdout)
-      { [theObject printC: str]; }
-    else
-      { fprintf(fptr,"%s",str); } // TBD Is this necessary?
+   fptr = FindFptr(theEnv,logicalName);
+   if (fptr == stdout)
+     { [theObject printC: str]; }
+   else
+     { fprintf(fptr,"%s",str); } // TBD Is this necessary?
  
-   }
-
    return(TRUE);
   }
 
@@ -83,15 +80,12 @@ int GetcInterfaceRouter(
   void *theEnv,
   const char *logicalName)
   {
-   @autoreleasepool {
-    int theChar;
-    CLIPSTerminalController *theObject = (__bridge CLIPSTerminalController *) GetEnvironmentRouterContext(theEnv);
+   int theChar;
+   CLIPSTerminalController *theObject = (__bridge CLIPSTerminalController *) GetEnvironmentRouterContext(theEnv);
 
-    theChar = [theObject waitForChar];
-
-    
-    return(theChar);
-   }
+   theChar = [theObject waitForChar];
+   
+   return(theChar);
   }
   
 /*************************************************/
@@ -119,68 +113,65 @@ void MacPeriodicFunction(
   {
    CLIPSTerminalController *theController = (__bridge CLIPSTerminalController *) GetEnvironmentContext(theEnv);
    NSConditionLock *theAgendaLock, *theFactsLock;
-   @autoreleasepool {
    
    /* TBD See if there are other ways to check the locks */
    
-    if ([[theController pauseLock] condition] == EXECUTION_IS_PAUSED)
-      {
-       [[theController pauseLock] lockWhenCondition: EXECUTION_IS_NOT_PAUSED];
-       [[theController pauseLock] unlock];
-      }
+   if ([[theController pauseLock] condition] == EXECUTION_IS_PAUSED)
+     {
+      [[theController pauseLock] lockWhenCondition: EXECUTION_IS_NOT_PAUSED];
+      [[theController pauseLock] unlock];
+     }
 
-    /*============================================================*/ 
-    /* If there are debugging windows displaying the state of the */
-    /* agenda, then update the agenda if necessary. Acquiring the */
-    /* lock as frequently as this function is called can kill     */
-    /* performance so we first check to see if there are windows  */
-    /* that need the agenda and an agenda fetch has been issued.  */
-    /*============================================================*/ 
+   /*============================================================*/
+   /* If there are debugging windows displaying the state of the */
+   /* agenda, then update the agenda if necessary. Acquiring the */
+   /* lock as frequently as this function is called can kill     */
+   /* performance so we first check to see if there are windows  */
+   /* that need the agenda and an agenda fetch has been issued.  */
+   /*============================================================*/
 
-    theAgendaLock = [[theController environment] agendaLock];
-    if (([[theController environment] agendaListenerCount] != 0) &&
-        ([theAgendaLock condition] == FETCH_AGENDA))
-      {
-       [theAgendaLock lock];
-       switch ([theAgendaLock condition])
-         {
-          case FETCH_AGENDA:
-            [[theController environment] fetchAgenda: NO];
-            [theAgendaLock unlockWithCondition: AGENDA_FETCHED];
-            break;
+   theAgendaLock = [[theController environment] agendaLock];
+   if (([[theController environment] agendaListenerCount] != 0) &&
+       ([theAgendaLock condition] == FETCH_AGENDA))
+     {
+      [theAgendaLock lock];
+      switch ([theAgendaLock condition])
+        {
+         case FETCH_AGENDA:
+           [[theController environment] fetchAgenda: NO];
+           [theAgendaLock unlockWithCondition: AGENDA_FETCHED];
+           break;
          
-          default:
-            [theAgendaLock unlock];
-            break;
-         }
-      }
+         default:
+           [theAgendaLock unlock];
+           break;
+        }
+     }
 
-    theFactsLock = [[theController environment] factsLock];
-    if (([[theController environment] factsListenerCount] != 0) &&
-        ([theFactsLock condition] == FETCH_FACTS))
-      {
-       [theFactsLock lock];
-       switch ([theFactsLock condition])
-         {
-          case FETCH_FACTS:
-            [[theController environment] fetchFacts: NO];
-            [theFactsLock unlockWithCondition: FACTS_FETCHED];
-            break;
+   theFactsLock = [[theController environment] factsLock];
+   if (([[theController environment] factsListenerCount] != 0) &&
+       ([theFactsLock condition] == FETCH_FACTS))
+     {
+      [theFactsLock lock];
+      switch ([theFactsLock condition])
+        {
+         case FETCH_FACTS:
+           [[theController environment] fetchFacts: NO];
+           [theFactsLock unlockWithCondition: FACTS_FETCHED];
+           break;
          
-          default:
-            [theFactsLock unlock];
-            break;
-         }
-      }
+         default:
+           [theFactsLock unlock];
+           break;
+        }
+     }
       
-    /*==================================*/
-    /* Disable periodic functions.      */
-    /* They'll be reenabled by a timer. */
-    /*==================================*/
+   /*==================================*/
+   /* Disable periodic functions.      */
+   /* They'll be reenabled by a timer. */
+   /*==================================*/
     
-    EnablePeriodicFunctions(theEnv,FALSE);
-
-   }
+   EnablePeriodicFunctions(theEnv,FALSE);
   }
     
 /**************************************/

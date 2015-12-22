@@ -208,48 +208,44 @@
 
    [executionLock lock];
       
-   @autoreleasepool { 
-
-    [self setValue: [NSNumber numberWithBool:YES] forKey: @"executing"];
+   [self setValue: [NSNumber numberWithBool:YES] forKey: @"executing"];
        
-    /*===============================================*/
-    /* Set up the long jump so if the user issues an */
-    /* exit command it will return to this location. */
-    /*===============================================*/
+   /*===============================================*/
+   /* Set up the long jump so if the user issues an */
+   /* exit command it will return to this location. */
+   /*===============================================*/
 
-    SetJmpBuffer(environment,&theJmpBuffer);
+   SetJmpBuffer(environment,&theJmpBuffer);
     
-    status = setjmp(theJmpBuffer);
+   status = setjmp(theJmpBuffer);
     
-    if (status != 0)
-      {
-       [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
+   if (status != 0)
+     {
+      [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
 
-       [executionLock unlock]; 
+      [executionLock unlock];
 
-       [accessLock lock];
-       executionThread = nil;
-       [accessLock unlock];
+      [accessLock lock];
+      executionThread = nil;
+      [accessLock unlock];
        
-       exited = TRUE;
-       return;
-      }
+      exited = TRUE;
+      return;
+     }
     
-    /*======================*/
-    /* Execute the command. */
-    /*======================*/
+   /*======================*/
+   /* Execute the command. */
+   /*======================*/
     
-    CommandLoopOnceThenBatch(environment);
+   CommandLoopOnceThenBatch(environment);
 
-    /*=========================================*/
-    /* Cleanup after the command has executed. */
-    /*=========================================*/
+   /*=========================================*/
+   /* Cleanup after the command has executed. */
+   /*=========================================*/
     
-    SetJmpBuffer(environment,NULL);
+   SetJmpBuffer(environment,NULL);
     
-    [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
-
-   } 
+   [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
    
    [executionLock unlock]; 
 
