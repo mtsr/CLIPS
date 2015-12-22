@@ -651,7 +651,7 @@
 - (void) loadConstructPanelDidEnd: (NSOpenPanel *) sheet 
          returnCode: (int) returnCode 
   {
-   if (returnCode != NSOKButton) return;
+   if (returnCode != NSModalResponseOK) return;
 
    NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
@@ -681,12 +681,10 @@
    [theLock unlock];
       
    FlushCommandString(theEnv);
-      
-   [textView insertText: @"(load \""];
-            
-   [textView insertText: [theFileName lastPathComponent]];
 
-   [textView insertText: @"\")\n"];
+   [textView insertText: @"(load \"" replacementRange: [textView selectedRange]];
+   [textView insertText: [theFileName lastPathComponent] replacementRange: [textView selectedRange]];
+   [textView insertText: @"\")\n" replacementRange: [textView selectedRange]];
   }
 
 /**************************************************/
@@ -747,7 +745,7 @@
 - (void) loadBatchPanelDidEnd: (NSOpenPanel *) sheet 
          returnCode: (int) returnCode 
   {
-   if (returnCode != NSOKButton) return;
+   if (returnCode != NSModalResponseOK) return;
 
    NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
@@ -772,12 +770,10 @@
    //[theLock unlock];
       
    FlushCommandString(theEnv);
-      
-   [textView insertText: @"(batch \""];
-            
-   [textView insertText: [theFileName lastPathComponent]];
 
-   [textView insertText: @"\")\n"];
+   [textView insertText: @"(batch \"" replacementRange: [textView selectedRange]];
+   [textView insertText: [theFileName lastPathComponent] replacementRange: [textView selectedRange]];
+   [textView insertText: @"\")\n" replacementRange: [textView selectedRange]];
   }
 
 /********************************************************/
@@ -830,7 +826,7 @@
 - (void) setDirectoryPanelDidEnd: (NSOpenPanel *) sheet 
          returnCode: (int) returnCode 
   {
-   if (returnCode != NSOKButton) return;
+   if (returnCode != NSModalResponseOK) return;
    
    NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
@@ -1325,46 +1321,34 @@
       [[environment executionLock] unlock];
       return YES;
      }
-           
-   NSBeginAlertSheet(@"This window may not be closed while a command is executing. "
-                     @"You must wait for the command to complete or attempt to halt execution of the command.",
-                     @"Wait", @"Halt Immediately", @"Halt",
-                     [self window],self,                  
-                     @selector(sheetDidEndShouldClose:returnCode:contextInfo:),
-                     NULL,nil,@" ",nil);
-                         
+
+   NSAlert *alert = [[NSAlert alloc] init];
+   alert.messageText =  @"This window may not be closed while a command is executing. "
+                        @"You must wait for the command to complete or attempt to halt execution of the command.";
+   [alert addButtonWithTitle: @"Wait"];
+   [alert addButtonWithTitle: @"Halt Immediately"];
+   [alert addButtonWithTitle: @"Halt"];
+   
+   [alert beginSheetModalForWindow: [self window]
+                 completionHandler: ^(NSInteger returnCode)
+                 {
+                  NSWindow *theWindow = [self window];
+                  if (returnCode == NSAlertFirstButtonReturn) // Wait
+                    {
+                     [theWindow makeKeyAndOrderFront: nil];
+                    }
+                  else if (returnCode == NSAlertSecondButtonReturn) // Halt Immediately
+                    {
+                     [self haltImmediately: self];
+                     [theWindow makeKeyAndOrderFront: nil];
+                    }
+                  else if (returnCode == NSAlertThirdButtonReturn) // Halt
+                    {
+                     [self halt: self];
+                     [theWindow makeKeyAndOrderFront: nil];
+                    }
+                 }];
    return NO;
-  }
-  
-/**************************************************/
-/* sheetDidEndShouldClose:returnCode:contextInfo: */
-/**************************************************/
-- (void) sheetDidEndShouldClose: (NSWindow *) sheet
-         returnCode: (int) returnCode
-         contextInfo: (void *) contextInfo
-  {
-   NSUserDefaultsController *theDefaultsController;
-   NSWindow *theWindow = [self window];
-
-   theDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-
-   if (returnCode == NSAlertDefaultReturn)    // Continue
-     { 
-      [sheet orderOut: nil];
-      [theWindow makeKeyAndOrderFront: nil]; 
-     }
-   else if (returnCode == NSAlertOtherReturn) // Halt
-     { 
-      [self halt: self];
-      [sheet orderOut: nil];
-      [theWindow makeKeyAndOrderFront: nil]; 
-      }
-   else if (returnCode == NSAlertAlternateReturn) // Halt Immediately
-     { 
-      [self haltImmediately: self];
-      [sheet orderOut: nil];
-      [theWindow makeKeyAndOrderFront: nil]; 
-     }
   }
   
 /********************/

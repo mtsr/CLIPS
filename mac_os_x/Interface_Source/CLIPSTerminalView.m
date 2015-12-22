@@ -189,9 +189,8 @@
       // Read the string from the pasteboard
       theText = [pb stringForType: NSStringPboardType];
       
-      [self insertText: theText];
+      [self insertText: theText replacementRange: [self selectedRange]];
       
-      //[[dialogWindow windowController] setScrollToEnd: YES];
       [self scrollRangeToVisible: [self selectedRange]];
       
       return YES;
@@ -221,7 +220,7 @@
    /*==================================================================*/  
           
    if ([terminalStorage isEqualToAttributedString: [[NSAttributedString new] initWithString: @""]])
-     { [super insertText: theString];  }
+     { [super insertText: theString replacementRange: [self selectedRange]]; }
    else
      {
       [terminalStorage replaceCharactersInRange: theRange withString: theString];
@@ -353,7 +352,7 @@
 /***************/
 /* insertText: */
 /***************/
-- (void) insertText: (NSString *) theText
+- (void) insertText: (NSString *) theText replacementRange: (NSRange) replacementRange
   {
    void *theEnvironment = [environment environment];
    
@@ -394,7 +393,7 @@
       NSRange theRange = { [[super string] length], 0 };
       [super setSelectedRange: theRange];
 
-      [super insertText: theText];
+      [super insertText: theText replacementRange: replacementRange];
       
       if ((len = strlen(str)) >  1)
         {
@@ -466,7 +465,7 @@
    /* current insertion point or selection. */
    /*=======================================*/
    
-   [super insertText: theText];
+   [super insertText: theText replacementRange: replacementRange];
    
    if (! routerPrint)
      {

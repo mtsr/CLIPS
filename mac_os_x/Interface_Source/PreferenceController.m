@@ -246,43 +246,37 @@
 
    if (! [theDefaultsController hasUnappliedChanges])
      { return YES; }
-           
-   NSBeginAlertSheet(@"Do you want to save changes to your Preferences?",
-                      @"Save", @"Don't Save", @"Cancel",
-                      [self window],self,                  
-                      @selector(sheetDidEndShouldClose:returnCode:contextInfo:),
-                      NULL,nil,@" ",nil);
-                         
+
+   NSAlert *alert = [[NSAlert alloc] init];
+   alert.messageText =  @"Do you want to save changes to your Preferences?";
+   [alert addButtonWithTitle: @"Save"];
+   [alert addButtonWithTitle: @"Cancel"];
+   [alert addButtonWithTitle: @"Don't Save"];
+   
+   [alert beginSheetModalForWindow: [self window]
+                 completionHandler: ^(NSInteger returnCode)
+                 {
+                  NSUserDefaultsController *theDefaultsController;
+                  NSWindow *panel = [self window];
+                  theDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
+                  if (returnCode == NSAlertFirstButtonReturn) // Save
+                    {
+                     [theDefaultsController save: self];
+                     [panel close];
+                    }
+                  else if (returnCode == NSAlertSecondButtonReturn) // Cancel
+                    {
+                     //[sheet orderOut: nil];
+                     [panel makeKeyAndOrderFront: nil];
+                    }
+                  else if (returnCode == NSAlertThirdButtonReturn)
+                    {
+                     [theDefaultsController revert: self];
+                     [panel close];
+                    }
+                 }];
+ 
    return NO;
-  }
-  
-/***************************************************/
-/* sheetDidEndShouldClose:returnCode:contextInfo: */
-/***************************************************/
-- (void) sheetDidEndShouldClose: (NSWindow *) sheet
-         returnCode: (int) returnCode
-         contextInfo: (void *) contextInfo
-  {
-   NSUserDefaultsController *theDefaultsController;
-   NSWindow *panel = [self window];
-
-   theDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-
-   if (returnCode == NSAlertDefaultReturn) // Save
-     { 
-      [theDefaultsController save: self];
-      [panel close];
-     }
-   else if (returnCode == NSAlertOtherReturn) // Cancel
-     { 
-      [sheet orderOut: nil];
-      [panel makeKeyAndOrderFront: nil]; 
-      }
-   else if (returnCode == NSAlertAlternateReturn)
-     { 
-      [theDefaultsController revert: self];
-      [panel close];
-     }
   }
   
 /************/
@@ -324,48 +318,41 @@
 
    if (! [theDefaultsController hasUnappliedChanges])
      { return NSTerminateNow; }
-           
-   NSBeginAlertSheet(@"Do you want to save changes to your Preferences?",
-                      @"Save", @"Don't Save", @"Cancel",
-                      [self window],self,                  
-                      @selector(sheetDidEndShouldQuit:returnCode:contextInfo:),
-                      NULL,(__bridge void *)(self),@" ",nil);
-                         
+
+   NSAlert *alert = [[NSAlert alloc] init];
+   alert.messageText =  @"Do you want to save changes to your Preferences?";
+   [alert addButtonWithTitle: @"Save"];
+   [alert addButtonWithTitle: @"Cancel"];
+   [alert addButtonWithTitle: @"Don't Save"];
+   
+   [alert beginSheetModalForWindow: [self window]
+                 completionHandler: ^(NSInteger returnCode)
+                 {
+                  NSUserDefaultsController *theDefaultsController;
+                  NSWindow *panel = [self window];
+                  theDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
+                  if (returnCode == NSAlertFirstButtonReturn) // Save
+                    {
+                     [panel close];
+                     [theDefaultsController save: self];
+                     [theDefaultsController setAppliesImmediately: YES]; // Saving does not appear to work reliably
+                     [theDefaultsController setAppliesImmediately: NO];  // Hence the need to force the save
+                     [NSApp replyToApplicationShouldTerminate: YES];
+                    }
+                  else if (returnCode == NSAlertSecondButtonReturn) // Cancel
+                    {
+                      [panel makeKeyAndOrderFront: nil];
+                      [NSApp replyToApplicationShouldTerminate: NO];
+                     }
+                  else if (returnCode == NSAlertThirdButtonReturn)
+                    {
+                     [theDefaultsController revert: self];
+                     [panel close];
+                     [NSApp replyToApplicationShouldTerminate: YES];
+                    }
+                 }];
+
    return NSTerminateLater;  
-  }
-
-/*************************************************/
-/* sheetDidEndShouldQuit:returnCode:contextInfo: */
-/*************************************************/
-- (void) sheetDidEndShouldQuit: (NSWindow *) sheet
-         returnCode: (int) returnCode
-         contextInfo: (void *) contextInfo
-  {
-   NSUserDefaultsController *theDefaultsController;
-   NSWindow *panel = [self window];
-      
-   theDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-
-   if (returnCode == NSAlertDefaultReturn) // Save
-     { 
-      [panel close];
-      [theDefaultsController save: self];
-      [theDefaultsController setAppliesImmediately: YES]; // Saving does not appear to work reliably
-      [theDefaultsController setAppliesImmediately: NO];  // Hence the need to force the save
-      [NSApp replyToApplicationShouldTerminate: YES];
-     }
-   else if (returnCode == NSAlertOtherReturn) // Cancel
-     { 
-      [sheet orderOut: nil];
-      [panel makeKeyAndOrderFront: nil]; 
-      [NSApp replyToApplicationShouldTerminate: NO];
-     }
-   else if (returnCode == NSAlertAlternateReturn)
-     { 
-      [theDefaultsController revert: self];
-      [panel close];
-      [NSApp replyToApplicationShouldTerminate: YES];
-     }
   }
 
 @end

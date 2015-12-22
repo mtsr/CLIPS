@@ -108,10 +108,11 @@ struct priorCommand
 /*%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
 - (BOOL) windowShouldClose: (id) sender;
+/*
 - (void) sheetDidEndShouldClose: (NSWindow *) sheet
          returnCode: (int) returnCode
          contextInfo: (void *) contextInfo;
-
+*/
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Key-Value Coding Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/

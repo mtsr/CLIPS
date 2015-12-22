@@ -34,7 +34,7 @@
    /* First call the superclass. */
    /*============================*/
    
-   [super insertNewline:sender];
+   [super insertNewline: sender];
 
    /*=============================================*/
    /* Should new lines be automatically indented? */
@@ -71,7 +71,7 @@
    
    if ([previousLineScanner scanCharactersFromSet: [NSCharacterSet whitespaceCharacterSet] 
                             intoString: &previousLineWhitespaceString])
-     { [self insertText: previousLineWhitespaceString]; }
+     { [self insertText: previousLineWhitespaceString replacementRange: [self selectedRange]]; }
   }
   
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
