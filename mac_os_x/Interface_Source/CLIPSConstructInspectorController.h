@@ -2,12 +2,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class EnvController;
+@class AppController;
 
 @interface CLIPSConstructInspectorController : NSWindowController
   {
    IBOutlet NSTextView *textView;
-   EnvController *environmentController;
+   AppController *appController;
   }
 
 - (void) showPanel;
@@ -16,7 +16,7 @@
 /* Key-Value Coding Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
-- (void)                         setEnvironmentController: (EnvController *) theController;
-- (EnvController *)              environmentController;
+- (void)                         setAppController: (AppController *) theController;
+- (AppController *)              appController;
 
 @end

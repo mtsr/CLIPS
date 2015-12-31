@@ -8,7 +8,6 @@
 #import "CLIPSFactController.h"
 
 #import "AppController.h"
-#import "EnvController.h"
 #import "CLIPSEnvironment.h"
 #import "CLIPSFactInstance.h"
 #import "ModuleArrayController.h"
@@ -42,48 +41,14 @@
 /*****************/
 - (void) awakeFromNib
   {
-   NSArrayController *theArrayController;
-   NSMutableDictionary *bindingOptions = [NSMutableDictionary dictionary];
    AppController *theDelegate = [NSApp delegate];
 
-   /*=====================================================================*/
-   /* Create the binding for the environment displayed in the popup menu. */
-   /*=====================================================================*/
-   
-   [bindingOptions setObject:@"Unattached" forKey:@"NSNullPlaceholder"];
-   [bindingOptions setObject: [NSNumber numberWithBool:YES] forKey:@"NSInsertsNullPlaceholder"];
-
-   [environmentList bind: @"content" 
-                    toObject: [[theDelegate envController] environmentArrayController]
-                    withKeyPath: @"arrangedObjects"
-                    options: bindingOptions];
-
-   /*=============================================================*/
-   /* Locate and assign the application's environment controller. */
-   /*=============================================================*/
-  
-   [self setEnvironmentController: [theDelegate envController]];
-  
    /*====================================================================*/
    /* Determine the environment to which this window should be attached. */
    /*====================================================================*/
-    
-   theArrayController 
-      = [[theDelegate envController] environmentArrayController];
-      
-   NSArray *theArray;
-   NSUInteger theIndex;
 
-   theArray = [theArrayController arrangedObjects];
-   theIndex = [theArrayController selectionIndex]; 
-   
-   if (theIndex != NSNotFound)
-     { [self setValue: [theArray objectAtIndex: theIndex] forKey: @"environment"]; }
-   else if ([theArray count] != 0)
-     { [self setValue: [theArray objectAtIndex: 0] forKey: @"environment"]; }
-   else
-     { [self setValue: nil forKey: @"environment"]; }
-     
+   [self setValue: [theDelegate mainEnvironment] forKey: @"environment"];
+
    [self setValue: [NSNumber numberWithInt: 10] forKey: @"fontSize"]; 
    [self setValue: [NSNumber numberWithInt: 13] forKey: @"rowHeight"]; 
    
@@ -128,7 +93,35 @@
      }
    else
      {
-      [executionIndicator startAnimation: nil];
+      [self startExecutionIndicator];
+     }
+  }
+
+/***************************/
+/* startExecutionIndicator */
+/***************************/
+- (void) startExecutionIndicator
+  {
+   if ([NSThread isMainThread])
+     { [executionIndicator startAnimation: nil]; }
+   else
+     {
+      dispatch_sync(dispatch_get_main_queue(),
+                    ^{ [executionIndicator startAnimation: nil]; });
+     }
+  }
+
+/**************************/
+/* stopExecutionIndicator */
+/**************************/
+- (void) stopExecutionIndicator
+  {
+   if ([NSThread isMainThread])
+     { [executionIndicator stopAnimation: nil]; }
+   else
+     {
+      dispatch_sync(dispatch_get_main_queue(),
+                    ^{ [executionIndicator stopAnimation: nil]; });
      }
   }
 
@@ -150,9 +143,9 @@
       if ([[change valueForKey: NSKeyValueChangeKindKey] intValue] == NSKeyValueChangeSetting)
         {
          if ([[change valueForKey: NSKeyValueChangeNewKey] intValue])
-           { [executionIndicator startAnimation: nil]; }
+           { [self startExecutionIndicator]; }
          else
-           { [executionIndicator stopAnimation: nil]; }
+           { [self stopExecutionIndicator]; }
         }
      }
   }
@@ -223,9 +216,9 @@
    [theDefaultsController save: self];
   }
 
-/****************/  
+/***********/  
 /* search: */
-/****************/  
+/***********/  
 - (IBAction) search: (id) sender
  {
   [factListController search: sender];
@@ -258,9 +251,10 @@
 /********************/
 - (void) windowWillClose: (NSNotification *) aNotification
   {
-   [environmentController removeFactController: self];
-   [self setValue: nil forKey: @"environment"]; 
-   [self setValue: nil forKey: @"environmentController"]; 
+   AppController *theDelegate = [NSApp delegate];
+
+   [theDelegate removeFactController: self];
+   [self setValue: nil forKey: @"environment"];
   }
 
 /************************************************/
@@ -271,6 +265,7 @@
   {
    int theRow;
    NSString *thePPForm = nil;
+   AppController *theDelegate = [NSApp delegate];
    
    if ([aNotification object] == moduleList)
      {
@@ -309,7 +304,7 @@
         { thePPForm = [NSString stringWithUTF8String: EnvGetDeftemplatePPForm(theEnvironment,EnvFactDeftemplate(theEnvironment,clipsFact))]; }
      }
      
-   [environmentController setValue: thePPForm forKey: @"constructInspectorText"];
+   [theDelegate setValue: thePPForm forKey: @"constructInspectorText"];
   }
 
 /*%%%%%%%%%%%%%%%%%%%%%%*/
@@ -327,22 +322,6 @@
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Key-Value Coding Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-  
-/*****************************/
-/* setEnvironmentController: */
-/*****************************/
-- (void) setEnvironmentController: (EnvController *) theController
-  {
-   environmentController = theController;
-  }
-
-/**************************/
-/* environmentController: */
-/**************************/
-- (EnvController *) environmentController
-  {
-   return environmentController;
-  }
 
 /*******************/
 /* setEnvironment: */
@@ -423,12 +402,12 @@
       
       if ([[theEnvironment executionLock] tryLock]) 
         {
-         [executionIndicator stopAnimation: nil];  
+         [self stopExecutionIndicator];
          [[theEnvironment executionLock] unlock];
         }
       else
         {
-         [executionIndicator startAnimation: nil];
+         [self startExecutionIndicator];
         }
       
       /*======================================================*/
@@ -447,9 +426,7 @@
    /*===============================================================*/
    
    else
-     {
-      [executionIndicator stopAnimation: nil];  
-     }
+     { [self stopExecutionIndicator]; }
 
    /*=============================*/
    /* Release the old environment */

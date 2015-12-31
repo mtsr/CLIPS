@@ -15,7 +15,6 @@
 
 @class CLIPSEnvironment;
 @class CLIPSTerminalView;
-@class EnvController;
 
 struct priorCommand
   {
@@ -30,7 +29,6 @@ struct priorCommand
    IBOutlet CLIPSTerminalView *textView;
    IBOutlet NSProgressIndicator *executionIndicator;
    IBOutlet NSButton* pauseButton;
-   EnvController *envController;
    NSTimer *commandTimer;
    NSTimer *scrollTimer;
    NSTimer *haltTimer; /* TBD Needed */
@@ -56,9 +54,14 @@ struct priorCommand
    int currentCommandCount;
   }
 
+- (id) initWithEnvironment: (CLIPSEnvironment *) theEnvironment;
+
+- (IBAction)           clear: (id) sender;
 - (IBAction)           loadConstructs: (id) sender;
 - (IBAction)           loadBatch: (id) sender;
 - (IBAction)           setDirectory: (id) sender;
+- (IBAction)           reset: (id) sender;
+- (IBAction)           run: (id) sender;
 
 - (IBAction)           clearScrollback: (id) sender;
 - (IBAction)           pauseContinue: (id) sender;
@@ -122,9 +125,6 @@ struct priorCommand
 
 //- (void)                 setEnvironment: (CLIPSEnvironment *) theEnvironment;
 - (CLIPSEnvironment *)   environment;
-
-- (void)                 setEnvController: (EnvController *) theController;
-- (EnvController *)      envController;
 
 - (void)                 setCurrentDirectory: (NSString *) theValue;
 - (NSString *)           currentDirectory;

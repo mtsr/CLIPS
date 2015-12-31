@@ -1,14 +1,16 @@
-//#import "Preferences.h"
 #import "AppController.h"
-#import "EnvController.h"
 #import "PreferenceController.h"
 #import "CLIPSTerminalController.h"
-#import "CLIPSTextMenu.h"
+#import "CLIPSAgendaController.h"
+#import "CLIPSFactController.h"
+#import "CLIPSInstanceController.h"
+#import "CLIPSConstructInspectorController.h"
+#import "CLIPSEnvironment.h"
 #import <CLIPS/clips.h>
 
 @implementation AppController
 
-@synthesize textMenu, envController;
+@synthesize mainEnvironment, mainTerminal, constructInspectorText;
 
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Initialization/Deallocation Methods */
@@ -22,7 +24,7 @@
    NSDictionary *appDefaults; 
    NSUserDefaults *defaults; 
    NSFont *theFont;
-   
+     
    theFont = [NSFont userFixedPitchFontOfSize:0.0];
 
    appDefaults = 
@@ -72,11 +74,190 @@
 /*****************/
 - (void) awakeFromNib
   {
+   factControllers = [[NSMutableArray alloc] init];
+   instanceControllers = [[NSMutableArray alloc] init];
+   agendaControllers = [[NSMutableArray alloc] init];
+   fileOpenLock = [[NSLock alloc] init];
+  }
+
+/*********************/
+/* validateMenuItem: */
+/*********************/
+- (BOOL) validateMenuItem: (NSMenuItem *) menuItem
+  {
+   /*===================================================*/
+   /* The Halt and Halt Immediately menu items are only */
+   /* available if the CLIPS environment is executing.  */
+   /*===================================================*/
+   
+   if (([menuItem action] == @selector(haltRules:)) ||
+       ([menuItem action] == @selector(haltExecution:)))
+     {
+      if ([[mainEnvironment executionLock] tryLock])
+        {
+         [[mainEnvironment executionLock] unlock];
+         return NO;
+        }
+      else
+        { return YES; }
+     }
+     
+   /*=====================================================*/
+   /* The Load Constructs, Load Batch, Set Directory, and */
+   /* Clear Scrollback menu items are only available if   */
+   /* the CLIPS environment is not executing.             */
+   /*=====================================================*/
+
+   else if (([menuItem action] == @selector(clear:)) ||
+            ([menuItem action] == @selector(loadConstructs:)) ||
+            ([menuItem action] == @selector(loadBatch:)) ||
+            ([menuItem action] == @selector(setDirectory:)) ||
+            ([menuItem action] == @selector(reset:)) ||
+            ([menuItem action] == @selector(run:)) ||
+            ([menuItem action] == @selector(clearScrollback:)))
+     {
+      if ([[mainEnvironment executionLock] tryLock])
+        {
+         [[mainEnvironment executionLock] unlock];
+         return YES;
+        }
+      else
+        { return NO; }
+     }
+
+   /*===================================*/
+   /* Otherwise the menu item is valid. */
+   /*===================================*/
+   
+   return YES;
+  }
+  
+/**********************/
+/* addFactController: */
+/**********************/
+- (void) addFactController: (CLIPSFactController *) theController
+  {
+   [factControllers addObject: theController];
+  }
+
+/*************************/
+/* removeFactController: */
+/*************************/
+- (void) removeFactController: (CLIPSFactController *) theController
+  {
+   [factControllers removeObject: theController];
+  }
+
+/**************************/
+/* addInstanceController: */
+/**************************/
+- (void) addInstanceController: (CLIPSInstanceController *) theController
+  {
+   [instanceControllers addObject: theController];
+  }
+
+/*****************************/
+/* removeInstanceController: */
+/*****************************/
+- (void) removeInstanceController: (CLIPSInstanceController *) theController
+  {
+   [instanceControllers removeObject: theController];
+  }
+
+/************************/
+/* addAgendaController: */
+/************************/
+- (void) addAgendaController: (CLIPSAgendaController *) theController
+  {
+   [agendaControllers addObject: theController];
+  }
+
+/***************************/
+/* removeAgendaController: */
+/***************************/
+- (void) removeAgendaController: (CLIPSAgendaController *) theController
+  {
+   [agendaControllers removeObject: theController];
   }
 
 /*%%%%%%%%%%%%%%%%*/
 /* Action Methods */
 /*%%%%%%%%%%%%%%%%*/
+
+/*********/
+/* clear */
+/*********/
+- (IBAction) clear: (id) sender
+  {
+   [mainEnvironment doCommand: @"(clear)\n"];
+  }
+
+/*******************/
+/* loadConstructs: */
+/*******************/
+- (IBAction) loadConstructs: (id) sender
+  {
+   [mainTerminal loadConstructs: self];
+  }
+
+/**************/
+/* loadBatch: */
+/**************/
+- (IBAction) loadBatch: (id) sender
+  {
+   [mainTerminal loadBatch: self];
+  }
+
+/*****************/
+/* setDirectory: */
+/*****************/
+- (IBAction) setDirectory: (id) sender
+  {
+   [mainTerminal setDirectory: self];
+  }
+
+/*********/
+/* reset */
+/*********/
+- (IBAction) reset: (id) sender
+  {
+   [mainEnvironment doCommand: @"(reset)\n"];
+  }
+
+/*******/
+/* run */
+/*******/
+- (IBAction) run: (id) sender
+  {
+   [mainEnvironment doCommand: @"(run)\n"];
+  }
+
+/**************/
+/* haltRules: */
+/**************/
+- (IBAction) haltRules: (id) sender
+  {
+   EnvSetHaltRules([mainEnvironment environment],TRUE);
+  }
+
+/******************/
+/* haltExecution: */
+/******************/
+- (IBAction) haltExecution: (id) sender
+  {
+   /* Need to abort waitForChar */
+   /* Need to abort batch */
+   SetHaltCommandLoopBatch([mainEnvironment environment],TRUE);
+   EnvSetHaltExecution([mainEnvironment environment],TRUE);
+  }
+
+/********************/
+/* clearScrollback: */
+/********************/
+- (IBAction) clearScrollback: (id) sender
+  {
+   [mainTerminal clearScrollback: self];
+  }
 
 /************************/
 /* showPreferencePanel: */
@@ -87,6 +268,59 @@
      { preferenceController = [[PreferenceController alloc] init]; }
     
    [preferenceController showPanel];
+  }
+
+/*******************/
+/* agendaBrowser: */
+/*******************/
+- (IBAction) agendaBrowser: (id) sender
+  {
+   CLIPSAgendaController *theController;
+      
+   theController = [[CLIPSAgendaController alloc] init];
+   
+   [self addAgendaController: theController];
+      
+   [theController showWindow: self];
+  }
+
+/************************/
+/* factBrowser: */
+/************************/
+- (IBAction) factBrowser: (id) sender
+  {
+   CLIPSFactController *theController;
+ 
+   theController = [[CLIPSFactController alloc] init];
+
+   [self addFactController: theController];
+   
+   [theController showWindow: self];
+  }
+
+/****************************/
+/* instanceBrowser: */
+/****************************/
+- (IBAction) instanceBrowser: (id) sender
+  {
+   CLIPSInstanceController *theController;
+      
+   theController = [[CLIPSInstanceController alloc] init]; 
+
+   [self addInstanceController: theController];
+      
+   [theController showWindow: self];
+  }
+
+/***********************/
+/* constructInspector: */
+/***********************/
+- (IBAction) constructInspector: (id) sender
+  {
+   if (! constructInspectorController)
+     { constructInspectorController = [[CLIPSConstructInspectorController alloc] init]; }
+    
+   [constructInspectorController showPanel];
   }
 
 /***************************************************************/
@@ -155,19 +389,11 @@
 /**********************************/
 - (void) applicationDidFinishLaunching: (NSNotification *) aNotification
   {
-   if (! textMenu)
-     { 
-      textMenu = [[CLIPSTextMenu alloc] init];
-      [[NSBundle mainBundle] loadNibNamed: @"TextMenu" owner: textMenu topLevelObjects: nil];
-     }
-
-   if (! envController)
-     { 
-      envController = [[EnvController alloc] init];
-      [[NSBundle mainBundle] loadNibNamed: @"EnvController" owner: envController topLevelObjects: nil];
-     }
-
-   [envController newEnvironment: self];
+   mainEnvironment = [[CLIPSEnvironment alloc] init];
+   mainTerminal = [[CLIPSTerminalController alloc] initWithEnvironment: mainEnvironment];
+   
+   [mainTerminal showWindow: self];
+   [[mainTerminal window] makeKeyAndOrderFront: self];
   }
 
 /***********************************************************/
@@ -190,19 +416,17 @@
      
    return NSTerminateNow;
   }
-
+  
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Key-Value Coding Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
  
-- (void) setEnvController: (EnvController *) theController
+/****************************/
+/* fileOpenLock: */
+/****************************/
+- (NSLock *) fileOpenLock
   {
-   envController = theController;
-  }
-
-- (EnvController *) envController
-  {
-   return envController;
+   return fileOpenLock;
   }
 
 @end

@@ -8,7 +8,6 @@
 #import "CLIPSTerminalView.h"
 #import "CLIPSTerminalController.h"
 #import "AppController.h"
-#import "EnvController.h"
 #import "CLIPSEnvironment.h"
 #import "CLIPSTerminalGlue.h"
 
@@ -39,12 +38,13 @@
 /*********/
 /* init: */
 /*********/
-- (id) init
+- (id) initWithEnvironment: (CLIPSEnvironment *) theEnvironment
   {
    self = [super initWithWindowNibName:@"CLIPSTerminal"];
    
    if (self)
      {
+      environment = theEnvironment;
       outputBuffer = [NSMutableString stringWithCapacity: BUFFER_SIZE];
       [outputBuffer setString: @""];
       
@@ -103,7 +103,10 @@
 - (void) awakeFromNib
   {
    void *theEnvironment = [environment environment];
+   AppController *theDelegate = [NSApp delegate];
 
+   [textView setEnvironment: environment];
+   
    /*=====================================*/
    /* Set the delegate for the text view. */
    /*=====================================*/
@@ -178,7 +181,7 @@
    /* Set the current directory. */
    /*============================*/
 
-   NSLock *theLock = [[self envController] fileOpenLock];
+   NSLock *theLock = [theDelegate fileOpenLock];
    
    [theLock lock];
 
@@ -593,7 +596,15 @@
       [[textScrollView horizontalScroller] setFloatValue: 0.0];
      }
   }
-          
+
+/*********/
+/* clear */
+/*********/
+- (IBAction) clear: (id) sender
+  {
+   [environment doCommand: @"(reset)\n"];
+  }
+
 /************************************************************/
 /* loadConstructs: Initiates the Load Constructs... command */
 /*   for a CLIPS environment window (terminal).             */
@@ -656,6 +667,7 @@
    NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
    void *theEnv = [environment environment];
+   AppController *theDelegate = [NSApp delegate];
       
    if ([filesToOpen count] != 1) return;
       
@@ -672,7 +684,7 @@
    [self setValue: [[self currentDirectory] stringByAbbreviatingWithTildeInPath]
          forKey: @"displayDirectory"];
 
-   NSLock *theLock = [[self envController] fileOpenLock];
+   NSLock *theLock = [theDelegate fileOpenLock];
    
    [theLock lock];
    // This is probably unnecessary because of the change directory CLIPS glue function
@@ -761,7 +773,7 @@
    [self setValue: [[self currentDirectory] stringByAbbreviatingWithTildeInPath]
          forKey: @"displayDirectory"];
 
-   //NSLock *theLock = [[self envController] fileOpenLock];
+   //NSLock *theLock = [theDelegate fileOpenLock];
    
    //[theLock lock];
    // This is probably unnecessary because of the change directory CLIPS glue function   
@@ -839,10 +851,26 @@
    [self setValue: [[self currentDirectory] stringByAbbreviatingWithTildeInPath]
          forKey: @"displayDirectory"];
   }
-  
-/*************************************************/
-/* pauseContinue:                */
-/*************************************************/
+
+/*********/
+/* reset */
+/*********/
+- (IBAction) reset: (id) sender
+  {
+   [environment doCommand: @"(reset)\n"];
+  }
+
+/*******/
+/* run */
+/*******/
+- (IBAction) run: (id) sender
+  {
+   [environment doCommand: @"(run)\n"];
+  }
+
+/******************/
+/* pauseContinue: */
+/******************/
 - (IBAction) pauseContinue: (id) sender
   {
    if ([sender state] == NSOnState)
@@ -1249,16 +1277,6 @@
    [textView didChangeText];   
   }
       
-/**************************************************************/    
-/* windowDidBecomeMain: Keeps track of whether an environment */
-/*   window is the main window so that the appropriate menu   */
-/*   items in the Environment menu can be enabled.            */
-/**************************************************************/    
-- (void) windowDidBecomeMain: (NSNotification *) aNotification
-  {
-   [envController setTerminal: self];
-  }
-
 /*********/
 /* exit: */
 /*********/
@@ -1374,18 +1392,6 @@
       
    NSNotificationCenter *nc;
    nc = [NSNotificationCenter defaultCenter];
-   
-   /*====================================*/
-   /* Notify any interested windows that */
-   /* the Terminal Window will close.    */
-   /*====================================*/
-   
-   [nc postNotificationName: @"CLIPSTerminalClosed" object: self];
-
-   [[envController environmentArrayController] removeObject: environment];
-   [[envController terminalArrayController] removeObject: self];
-
-   [self setEnvController: nil];
   }
 
 /************************************************/
@@ -1417,9 +1423,12 @@
    /* the CLIPS environment is not executing.             */
    /*=====================================================*/
 
-   else if (([menuItem action] == @selector(loadConstructs:)) ||
+   else if (([menuItem action] == @selector(clear:)) ||
+            ([menuItem action] == @selector(loadConstructs:)) ||
             ([menuItem action] == @selector(loadBatch:)) ||
             ([menuItem action] == @selector(setDirectory:)) ||
+            ([menuItem action] == @selector(reset:)) ||
+            ([menuItem action] == @selector(run:)) ||
             ([menuItem action] == @selector(clearScrollback:)))
      {
       if ([[environment executionLock] tryLock])
@@ -1448,22 +1457,6 @@
 - (CLIPSEnvironment *) environment
   {
    return environment;
-  }
-
-/*********************/
-/* setEnvController: */
-/*********************/
-- (void) setEnvController: (EnvController *) theController
-  {
-   envController = theController;
-  }
-
-/******************/
-/* envController: */
-/******************/  
-- (EnvController *) envController
-  {
-   return envController;
   }
 
 /************************/
@@ -1636,6 +1629,17 @@
 /* Unused Methods */
 /*%%%%%%%%%%%%%%%%*/
 
+/**************************************************************/    
+/* windowDidBecomeMain: Keeps track of whether an environment */
+/*   window is the main window so that the appropriate menu   */
+/*   items in the Environment menu can be enabled.            */
+/**************************************************************/
+/*
+- (void) windowDidBecomeMain: (NSNotification *) aNotification
+  {
+  }
+*/
+
 /***************************************************************/    
 /* windowDidResignMain:  Keeps track of whether an environment */
 /*   window is the main window so that the appropriate menu    */
@@ -1644,7 +1648,6 @@
 /*
 - (void) windowDidResignMain: (NSNotification *) aNotification
   {   
-   [envController setTerminal: nil];
   }
 */
 

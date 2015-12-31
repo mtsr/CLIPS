@@ -8,7 +8,6 @@
 #import <Cocoa/Cocoa.h>
 
 @class CLIPSEnvironment;
-@class EnvController;
 @class ModuleArrayController;
 
 @interface CLIPSFactController : NSWindowController 
@@ -26,7 +25,6 @@
    IBOutlet NSSearchField *searchField;
    NSPredicate *slotFilter;
    CLIPSEnvironment *environment;
-   EnvController *environmentController;
    int fontSize;
    int rowHeight;
   }
@@ -50,9 +48,6 @@
 
 - (void)                         setEnvironment: (CLIPSEnvironment *) theEnvironment;
 - (CLIPSEnvironment *)           environment;
-
-- (void)                         setEnvironmentController: (EnvController *) theController;
-- (EnvController *)              environmentController;
 
 - (void)                         setSlotFilter: (NSPredicate *) theSlotFilter;
 - (NSPredicate *)                slotFilter;

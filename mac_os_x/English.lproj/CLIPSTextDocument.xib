@@ -7,7 +7,6 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="CLIPSTextDocument">
             <connections>
-                <outlet property="environmentList" destination="29" id="40"/>
                 <outlet property="popupActivator" destination="132" id="143"/>
                 <outlet property="textView" destination="22" id="28"/>
                 <outlet property="window" destination="5" id="18"/>
@@ -57,30 +56,7 @@
                             <rect key="frame" x="517" y="1" width="15" height="385"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
-                        <connections>
-                            <outlet property="nextKeyView" destination="29" id="41"/>
-                        </connections>
                     </scrollView>
-                    <popUpButton hidden="YES" verticalHuggingPriority="750" id="29">
-                        <rect key="frame" x="124" y="390" width="101" height="22"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="31" id="153">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="smallSystem"/>
-                            <menu key="menu" title="OtherViews" id="30">
-                                <items>
-                                    <menuItem title="Item1" state="on" id="31"/>
-                                    <menuItem title="Item2" id="33"/>
-                                    <menuItem title="Item3" id="32"/>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                        <connections>
-                            <binding destination="44" name="enabled" keyPath="selection.environmentController.terminalExists" id="107"/>
-                            <binding destination="44" name="selectedObject" keyPath="selection.terminalController" id="99"/>
-                            <outlet property="nextKeyView" destination="22" id="42"/>
-                        </connections>
-                    </popUpButton>
                     <button id="132">
                         <rect key="frame" x="8" y="388" width="44" height="23"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -95,7 +71,7 @@
                     <popUpButton hidden="YES" verticalHuggingPriority="750" id="133" userLabel="Popup Menu">
                         <rect key="frame" x="6" y="390" width="31" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="137" id="155" userLabel="PopupButtonCell">
+                        <popUpButtonCell key="cell" type="push" title="Item1" bezelStyle="rounded" alignment="left" controlSize="small" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxY" id="155" userLabel="PopupButtonCell">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="smallSystem"/>
                             <menu key="menu" title="OtherViews" id="134">
@@ -147,25 +123,8 @@
         <userDefaultsController representsSharedInstance="YES" id="23" userLabel="Shared Defaults"/>
         <objectController id="44">
             <declaredKeys>
-                <string>terminalController</string>
                 <string>arrangeObjects</string>
                 <string>contents</string>
-                <string>terminalController.envController.</string>
-                <string>terminalController.envController.environmentArrayController.</string>
-                <string>terminalController.envController.environmentArrayController.arrangedObjects</string>
-                <string>terminalController.envController.terminalExists</string>
-                <string>terminalController.envController.environmentController.terminalExists</string>
-                <string>terminalController.envController.environmentController.terminalIsMain</string>
-                <string>terminalxController.envController.environmentController.terminalIsMain</string>
-                <string>terminalController.envController.environmentxController.terminalIsMain</string>
-                <string>terminalController.envController.environmentController</string>
-                <string>terminalController.envController.environmentController.selection.terminalExists</string>
-                <string>terminalController.envController.selection.</string>
-                <string>terminalController.envController.selection.environmentArrayController</string>
-                <string>terminalController.envController.selection.environmentArrayController.arrangedObjects</string>
-                <string>terminalController.envController.environmentArrayController.selection</string>
-                <string>environmentController.environmentArrayController.selection</string>
-                <string>environmentController.terminalExists</string>
             </declaredKeys>
             <connections>
                 <outlet property="content" destination="-2" id="47"/>

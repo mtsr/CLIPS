@@ -39,7 +39,7 @@
                                     <size key="minSize" width="340" height="310"/>
                                     <size key="maxSize" width="362" height="10000000"/>
                                     <connections>
-                                        <binding destination="-2" name="value" keyPath="environmentController.constructInspectorText" id="15">
+                                        <binding destination="-2" name="value" keyPath="appController.constructInspectorText" id="Dsj-DR-1DK">
                                             <dictionary key="options">
                                                 <bool key="NSConditionallySetsEditable" value="NO"/>
                                             </dictionary>

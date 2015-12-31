@@ -4,21 +4,55 @@
 
 @class Preferences;
 @class PreferenceController;
-@class EnvController;
-@class CLIPSTextMenu;
+@class CLIPSEnvironment;
+@class CLIPSTerminalController;
+@class CLIPSFactController;
+@class CLIPSInstanceController;
+@class CLIPSAgendaController;
+@class CLIPSConstructInspectorController;
 
 @interface AppController : NSObject
   {
    PreferenceController *preferenceController;
-   IBOutlet EnvController *envController;
-   IBOutlet CLIPSTextMenu *textMenu;
+   CLIPSEnvironment *mainEnvironment;
+   CLIPSTerminalController *mainTerminal;
+   CLIPSConstructInspectorController *constructInspectorController;
+   NSString *constructInspectorText;
+   NSMutableArray *factControllers;
+   NSMutableArray *instanceControllers;
+   NSMutableArray *agendaControllers;
+   NSLock *fileOpenLock;
   }
+
+- (void) addFactController: (CLIPSFactController *) theController;
+- (void) removeFactController: (CLIPSFactController *) theController;
+
+- (void) addInstanceController: (CLIPSInstanceController *) theController;
+- (void) removeInstanceController: (CLIPSInstanceController *) theController;
+
+- (void) addAgendaController: (CLIPSAgendaController *) theController;
+- (void) removeAgendaController: (CLIPSAgendaController *) theController;
 
 /*%%%%%%%%%%%%%%%%*/
 /* Action Methods */
 /*%%%%%%%%%%%%%%%%*/
 
 - (IBAction) showPreferencePanel: (id) sender;
+
+- (IBAction) clear: (id) sender;
+- (IBAction) loadBatch: (id) sender;
+- (IBAction) loadConstructs: (id) sender;
+- (IBAction) setDirectory: (id) sender;
+
+- (IBAction) reset: (id) sender;
+- (IBAction) run: (id) sender;
+- (IBAction) haltRules: (id) sender;
+- (IBAction) haltExecution: (id) sender;
+
+- (IBAction) agendaBrowser: (id) sender;
+- (IBAction) factBrowser: (id) sender;
+- (IBAction) instanceBrowser: (id) sender;
+- (IBAction) constructInspector: (id) sender;
 
 - (IBAction) showCLIPSHomePage: (id) sender;
 - (IBAction) showCLIPSDocumentation: (id) sender;
@@ -37,7 +71,10 @@
 /* Key-Value Coding Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 
-@property (NS_NONATOMIC_IOSONLY, strong) EnvController *envController;
-@property (NS_NONATOMIC_IOSONLY, strong) CLIPSTextMenu *textMenu;
+- (NSLock *)               fileOpenLock;
+
+@property (NS_NONATOMIC_IOSONLY, strong) CLIPSEnvironment *mainEnvironment;
+@property (NS_NONATOMIC_IOSONLY, strong) CLIPSTerminalController *mainTerminal;
+@property (NS_NONATOMIC_IOSONLY, strong) NSString *constructInspectorText;
 
 @end

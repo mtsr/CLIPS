@@ -1,7 +1,7 @@
 #import "CLIPSConstructInspectorController.h"
 
 #import "AppController.h"
-#import "EnvController.h"
+#import "AppController.h"
 
 @implementation CLIPSConstructInspectorController
 
@@ -35,7 +35,7 @@
    /* Locate and assign the application's environment controller. */
    /*=============================================================*/
   
-   [self setEnvironmentController: [theDelegate envController]];
+   [self setAppController: theDelegate];
 
    /*==================================*/   
    /* Set up the horizontal scrollbar. */
@@ -84,20 +84,20 @@
 /* Key-Value Coding Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
   
-/*****************************/
-/* setEnvironmentController: */
-/*****************************/
-- (void) setEnvironmentController: (EnvController *) theController
+/*********************/
+/* setAppController: */
+/*********************/
+- (void) setAppController: (AppController *) theController
   {
-   environmentController = theController;
+   appController = theController;
   }
 
-/**************************/
-/* environmentController: */
-/**************************/
-- (EnvController *) environmentController
+/******************/
+/* appController: */
+/******************/
+- (AppController *) appController
   {
-   return environmentController;
+   return appController;
   }
 
 @end

@@ -16,6 +16,8 @@
 
 @implementation CLIPSTerminalView
 
+@synthesize environment;
+
 /********************************/
 /* initWithFrame:textContainer: */
 /********************************/

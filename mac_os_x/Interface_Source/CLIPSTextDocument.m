@@ -8,7 +8,6 @@
 #import "CLIPSTextDocument.h"
 #import "CLIPSTerminalController.h"
 #import "AppController.h"
-#import "EnvController.h"
 #import "CLIPSEnvironment.h"
 #import "CLIPSTextView.h"
 
@@ -35,15 +34,6 @@
 /************/    
 - (void) dealloc
   {
-   if (terminalController != nil)
-     {
-      NSNotificationCenter  *nc;
-      nc = [NSNotificationCenter defaultCenter];
-      
-      [nc removeObserver: self
-          name:@"CLIPSTerminalClosed"
-          object: terminalController];
-     }
   }
 
 /*****************/
@@ -51,10 +41,6 @@
 /*****************/
 - (void) awakeFromNib
   {
-   NSArrayController *theArrayController;
-   NSMutableDictionary *bindingOptions = [NSMutableDictionary dictionary];
-   AppController *theDelegate = [NSApp delegate];
-	
    /*=====================================================================*/
    /* The action "cog" menu is implemented by using a button with the cog */
    /* icon (which can't display a menu) that sends an action message to a */
@@ -81,45 +67,7 @@
    
    [textView setEnabledTextCheckingTypes: 0];
 
-   /*=====================================================================*/
-   /* Create the binding for the environment displayed in the popup menu. */
-   /*=====================================================================*/
-   
-   [bindingOptions setObject:@"Unattached" forKey:@"NSNullPlaceholder"];
-   [bindingOptions setObject: [NSNumber numberWithBool:YES] forKey:@"NSInsertsNullPlaceholder"];
-
-   [environmentList bind: @"content" 
-                    toObject: [[theDelegate envController] terminalArrayController]
-                    withKeyPath: @"arrangedObjects"
-                    options: bindingOptions];
-                    
-   /*=============================================================*/
-   /* Locate and assign the application's environment controller. */
-   /*=============================================================*/
-  
-   [self setEnvironmentController: [theDelegate envController]];
-  
-   /*====================================================================*/
-   /* Determine the environment to which this window should be attached. */
-   /*====================================================================*/
-    
-   theArrayController 
-      = [[theDelegate envController] terminalArrayController];
-      
-   NSArray *theArray;
-   NSUInteger theIndex;
-
-   theArray = [theArrayController arrangedObjects];
-   theIndex = [theArrayController selectionIndex]; 
-   
-   if (theIndex != NSNotFound)
-     { [self setTerminalController: [theArray objectAtIndex: theIndex]]; }
-   else if ([theArray count] != 0)
-     { [self setTerminalController: [theArray objectAtIndex: 0]]; }
-   else
-     { [self setTerminalController: nil]; }
-     
-   /*==================================*/   
+   /*==================================*/
    /* Set up the horizontal scrollbar. */
    /*==================================*/   
      
@@ -267,14 +215,6 @@
    NSBeep();
   }
   
-/*************************/
-/* targetTerminalClosed: */
-/*************************/
-- (void) targetTerminalClosed: (NSNotification *) note
-  {
-   [self setTerminalController: nil];
-  }
-  
 /***********/
 /* string: */
 /***********/
@@ -386,8 +326,6 @@
    if (([menuItem action] == @selector(loadSelection:)) ||
        ([menuItem action] == @selector(batchSelection:)))
      {
-      if (terminalController == nil) return NO;
-      
       NSRange selectedRange = [textView selectedRange];
       
       if (selectedRange.length < 1) return NO;
@@ -402,8 +340,6 @@
 
    else if ([menuItem action] == @selector(loadBuffer:))
      {
-      if (terminalController == nil) return NO;
-      
       return YES;
      }
 
@@ -419,6 +355,7 @@
 /*****************************************************/
 - (IBAction) loadSelection: (id) sender
   {
+   AppController *theDelegate = [NSApp delegate];
    char *theString, *convString;
    NSUInteger length;
    NSString *entireString = [textView string];
@@ -430,12 +367,6 @@
    NSRange selectedRange = [textView selectedRange];
    if (selectedRange.length < 1) return;
    
-   /*=======================================================*/
-   /* The window must also be attached to a CLIPS terminal. */
-   /*=======================================================*/
-
-   if (terminalController == nil) return;
-
    /*=============================*/
    /* Retrieve the selected text. */
    /*=============================*/
@@ -446,7 +377,7 @@
    /* Move the text to a C string. */
    /*==============================*/
    
-   void *theEnvironment = [[terminalController environment] environment];
+   void *theEnvironment = [[theDelegate mainEnvironment] environment];
 
    length = [theSelection lengthOfBytesUsingEncoding: NSUTF8StringEncoding];
    
@@ -459,7 +390,7 @@
    /* Bring the attached CLIPS terminal to the front. */
    /*=================================================*/
       
-   [[terminalController window] makeKeyAndOrderFront: self];
+   [[[theDelegate mainTerminal] window] makeKeyAndOrderFront: self];
    
    /*=====================*/
    /* Load the selection. */
@@ -483,6 +414,7 @@
 /*******************************************************/
 - (IBAction) batchSelection: (id) sender
   {
+   AppController *theDelegate = [NSApp delegate];
    char *theString, *convString;
    NSUInteger length;
    NSString *entireString = [textView string];
@@ -494,12 +426,6 @@
    NSRange selectedRange = [textView selectedRange];
    if (selectedRange.length < 1) return;
    
-   /*=======================================================*/
-   /* The window must also be attached to a CLIPS terminal. */
-   /*=======================================================*/
-
-   if (terminalController == nil) return;
-
    /*=============================*/
    /* Retrieve the selected text. */
    /*=============================*/
@@ -510,7 +436,7 @@
    /* Move the text to a C string. */
    /*==============================*/
    
-   void *theEnvironment = [[terminalController environment] environment];
+   void *theEnvironment = [[theDelegate mainEnvironment] environment];
 
    length = [theSelection lengthOfBytesUsingEncoding: NSUTF8StringEncoding];
    
@@ -523,7 +449,7 @@
    /* Bring the attached CLIPS terminal to the front. */
    /*=================================================*/
       
-   [[terminalController window] makeKeyAndOrderFront: self];
+   [[[theDelegate mainTerminal] window] makeKeyAndOrderFront: self];
 
    /*==========================*/
    /* Batch the selected text. */
@@ -537,21 +463,16 @@
 /************************************************/
 - (IBAction) loadBuffer: (id) sender
   {
+   AppController *theDelegate = [NSApp delegate];
    char *theString, *convString;
    NSUInteger length;
    NSString *entireString = [textView string];
       
-   /*=======================================================*/
-   /* The window must also be attached to a CLIPS terminal. */
-   /*=======================================================*/
-
-   if (terminalController == nil) return;
-   
    /*==============================*/
    /* Move the text to a C string. */
    /*==============================*/
    
-   void *theEnvironment = [[terminalController environment] environment];
+   void *theEnvironment = [[theDelegate mainEnvironment] environment];
 
    length = [entireString lengthOfBytesUsingEncoding: NSUTF8StringEncoding];
 
@@ -564,8 +485,8 @@
    /* Bring the attached CLIPS terminal to the front. */
    /*=================================================*/
       
-   [[terminalController window] makeKeyAndOrderFront: self];
-   
+   [[[theDelegate mainTerminal] window] makeKeyAndOrderFront: self];
+  
    /*==================*/
    /* Load the buffer. */
    /*==================*/
@@ -1032,53 +953,6 @@
       tempRange.length = (locationOfLastLine - locationOfFirstLine) - numberOfCharactersDeleted;
       [textView setSelectedRange: tempRange];
      }
-  }
-              
-/*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-/* Key-Value Coding Methods */
-/*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-
-- (void) setTerminalController: (CLIPSTerminalController *) theController
-  {
-   NSNotificationCenter  *nc;
-   nc = [NSNotificationCenter defaultCenter];
-
-   if (terminalController != nil)
-     {
-      [nc removeObserver: self
-          name:@"CLIPSTerminalClosed"
-          object: terminalController];
-     }
-
-   /*===========================================================*/
-   /* If the editor window is associated with a CLIPS terminal, */
-   /* we want to be notified if the terminal window closes.     */
-   /*===========================================================*/
-
-   if (theController != nil)
-     {
-      [nc addObserver: self 
-          selector: @selector(targetTerminalClosed:)
-          name: @"CLIPSTerminalClosed"
-          object: theController];
-     }
-     
-   terminalController = theController;
-  }
-
-- (CLIPSTerminalController *) terminalController
-  {
-   return terminalController;
-  }
-
-- (void) setEnvironmentController: (EnvController *) theController
-  {
-   environmentController = theController;
-  }
-
-- (EnvController *) environmentController
-  {
-   return environmentController;
   }
 
 @end

@@ -11,7 +11,7 @@
 
 @interface CLIPSTerminalView : NSTextView
   {
-   IBOutlet CLIPSEnvironment *environment;
+   CLIPSEnvironment *__weak environment;
    IBOutlet id dialogWindow;
    BOOL routerPrint;
    //BOOL waitingForChar;
@@ -29,5 +29,7 @@
 - (int) waitForChar;
 - (BOOL) readStringFromPasteboard: (NSPasteboard *) pb;
 - (NSUInteger) inputStringOffset;
+
+@property (NS_NONATOMIC_IOSONLY, weak) CLIPSEnvironment *environment;
 
 @end

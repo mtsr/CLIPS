@@ -8,18 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class CLIPSTerminalController;
-@class EnvController;
 @class CLIPSTextView;
 
 @interface CLIPSTextDocument : NSDocument
   {
    NSString *string;
    IBOutlet CLIPSTextView *textView;
-   IBOutlet NSPopUpButton *environmentList;
    IBOutlet NSButton *popupActivator;
-   CLIPSTerminalController *terminalController;
-   EnvController *environmentController;
    NSDictionary *hiliteColor;
   }
 
@@ -41,20 +36,8 @@
 - (IBAction)           comment: (id) sender;
 - (IBAction)           uncomment: (id) sender;
 
-/*%%%%%%%%%%%%%%%%%%%%%%*/
-/* Notification Methods */
-/*%%%%%%%%%%%%%%%%%%%%%%*/
-
-- (void) targetTerminalClosed: (NSNotification *) note;
-
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
 /* Key-Value Coding Methods */
 /*%%%%%%%%%%%%%%%%%%%%%%%%%%*/
-
-- (void)                         setTerminalController: (CLIPSTerminalController *) theController;
-- (CLIPSTerminalController *)    terminalController;
-
-- (void)                         setEnvironmentController: (EnvController *) theController;
-- (EnvController *)              environmentController;
 
 @end

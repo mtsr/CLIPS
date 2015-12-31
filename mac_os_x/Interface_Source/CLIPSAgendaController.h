@@ -8,7 +8,6 @@
 #import <Cocoa/Cocoa.h>
 
 @class CLIPSEnvironment;
-@class EnvController;
 
 @interface CLIPSAgendaController : NSWindowController 
   {
@@ -23,7 +22,6 @@
    IBOutlet NSProgressIndicator *executionIndicator;
    IBOutlet NSArrayController *focusStackController;
    CLIPSEnvironment *environment;
-   EnvController *environmentController;
    int fontSize;
    int rowHeight;
   }
@@ -57,8 +55,5 @@
 
 - (void)                         setEnvironment: (CLIPSEnvironment *) theEnvironment;
 - (CLIPSEnvironment *)           environment;
-
-- (void)                         setEnvironmentController: (EnvController *) theController;
-- (EnvController *)              environmentController;
 
 @end

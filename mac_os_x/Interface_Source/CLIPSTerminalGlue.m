@@ -8,9 +8,9 @@
 
 #import "CLIPSTerminalGlue.h"
 
+#import "AppController.h"
 #import "CLIPSTerminalController.h"
 #import "CLIPSEnvironment.h"
-#import "EnvController.h"
 
 /*********************************************/
 /* ClearEnvironmentWindowCommand: H/L access */
@@ -180,8 +180,10 @@ void MacPeriodicFunction(
 int MacBeforeOpenFunction(
   void *theEnv)
   {
-   CLIPSTerminalController *theController = (__bridge CLIPSTerminalController *) GetEnvironmentContext(theEnv);
-   NSLock *theLock = [[theController envController] fileOpenLock];
+   AppController *theDelegate = [NSApp delegate];
+   CLIPSTerminalController *theController = [theDelegate mainTerminal];
+   
+   NSLock *theLock = [theDelegate fileOpenLock];
    
    [theLock lock];
    
@@ -190,14 +192,14 @@ int MacBeforeOpenFunction(
    return TRUE;
   }  
   
-/**************************************/
-/* MacAfterOpenFunction:             */
-/**************************************/
+/*************************/
+/* MacAfterOpenFunction: */
+/*************************/
 int MacAfterOpenFunction(
   void *theEnv)
   {
-   CLIPSTerminalController *theController = (__bridge CLIPSTerminalController *) GetEnvironmentContext(theEnv);
-   NSLock *theLock = [[theController envController] fileOpenLock];
+   AppController *theDelegate = [NSApp delegate];
+   NSLock *theLock = [theDelegate fileOpenLock];
    
    [theLock unlock];
 

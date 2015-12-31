@@ -230,6 +230,136 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="Text" id="jAd-NN-n5n" userLabel="Text">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Text" id="XLS-aj-pzD">
+                        <items>
+                            <menuItem title="Load Selection" keyEquivalent="k" id="bep-sb-o8g" userLabel="Load Selection">
+                                <connections>
+                                    <action selector="loadSelection:" target="-1" id="fH4-6v-GBN"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Batch Selection" keyEquivalent="K" id="abG-ig-W6V" userLabel="Batch Selection">
+                                <connections>
+                                    <action selector="batchSelection:" target="-1" id="nib-SK-lNy"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Load Buffer" id="S29-4Z-Zyg" userLabel="Load Buffer">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="loadBuffer:" target="-1" id="Nad-aD-QE0"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="Tcg-8W-I1O"/>
+                            <menuItem title="Balance" keyEquivalent="b" id="1DX-qR-gFH" userLabel="Balance">
+                                <connections>
+                                    <action selector="balance:" target="-1" id="Wh7-A2-zL0"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Comment" id="Ke2-k3-7a8" userLabel="Comment">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="comment:" target="-1" id="F7w-ap-k8D"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Uncomment" id="xvl-RH-JsP" userLabel="Uncomment">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="uncomment:" target="-1" id="e3m-tn-Chd"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Environment" id="eMa-rj-j3v" userLabel="Environment">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Environment" id="Z4f-zj-Sr8">
+                        <items>
+                            <menuItem title="Clear" id="any-91-3Fk">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="clear:" target="281" id="blH-A4-PME"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Load Constructs..." keyEquivalent="l" id="obt-6T-dwj">
+                                <connections>
+                                    <action selector="loadConstructs:" target="281" id="fi7-Mg-MZU"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Load Batch..." keyEquivalent="L" id="81o-4L-Tfz">
+                                <connections>
+                                    <action selector="loadBatch:" target="281" id="UWI-oU-GKY"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Set Directory..." id="JOA-h7-PDM">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="setDirectory:" target="281" id="qai-Ay-VbO"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="0IF-9l-9Ju"/>
+                            <menuItem title="Reset" keyEquivalent="r" id="aLr-mg-z7b">
+                                <connections>
+                                    <action selector="reset:" target="281" id="31V-rc-fXa"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Run" keyEquivalent="R" id="o4q-KS-JC3">
+                                <connections>
+                                    <action selector="run:" target="281" id="sCI-pp-oFG"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Halt Rules" keyEquivalent="." id="QfF-WZ-t9f">
+                                <connections>
+                                    <action selector="haltRules:" target="281" id="u7L-6A-NCl"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Halt Execution" keyEquivalent="." id="Imu-kN-HLr">
+                                <modifierMask key="keyEquivalentModifierMask" shift="YES" command="YES"/>
+                                <connections>
+                                    <action selector="haltExecution:" target="281" id="jze-uF-sWk"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="9sM-Tz-DNr"/>
+                            <menuItem title="Clear Scrollback" id="puN-SW-guY">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="clearScrollback:" target="281" id="tgr-bf-iFm"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
+                <menuItem title="Debug" id="Wrz-ZB-dK7">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="Debug" id="I88-XV-uM4">
+                        <items>
+                            <menuItem title="Agenda Browser" id="XhK-sl-vkC">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="agendaBrowser:" target="281" id="JHw-cm-uH9"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Fact Browser" id="zgI-eg-Br2">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="factBrowser:" target="281" id="nvb-ga-Dsx"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Instance Browser" id="gKl-4b-7C9">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="instanceBrowser:" target="281" id="UxJ-pa-EDw"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Construct Inspector" id="l7J-Bo-uJj">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="constructInspector:" target="281" id="7cO-UI-N0b"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="Window" id="19">
                     <menu key="submenu" title="Window" systemMenu="window" id="24">
                         <items>
