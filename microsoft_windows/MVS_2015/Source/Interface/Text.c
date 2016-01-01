@@ -86,7 +86,7 @@ char szTemp[128];      /* Temp Buffer */
 /* GLOBAL INTERNAL VARIABLE DEFINITIONS */
 /****************************************/
 
-   globle ATOM                 EditAtomClass;
+   ATOM                 EditAtomClass;
 
 /***************************************/
 /* LOCAL INTERNAL VARIABLE DEFINITIONS */

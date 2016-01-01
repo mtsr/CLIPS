@@ -68,10 +68,10 @@ HICON hHourGlass;
 /* GLOBAL INTERNAL VARIABLE DEFINITIONS */
 /****************************************/
 
-   globle OPENFILENAME               ofn;
-   globle HCURSOR                    ARROW;
-   globle HCURSOR                    QUERY;
-   globle HCURSOR                    WAIT[10];
+   OPENFILENAME               ofn;
+   HCURSOR                    ARROW;
+   HCURSOR                    QUERY;
+   HCURSOR                    WAIT[10];
 
 /******************************************************************/
 /* initInstance: Initialize the application. Activate a previous  */

@@ -103,8 +103,8 @@
 /* GLOBAL INTERNAL VARIABLE DEFINITIONS */
 /****************************************/
 
-   globle HWND                 DialogWindow = NULL;
-   globle ATOM                 DisplayAtomClass;
+   HWND                 DialogWindow = NULL;
+   ATOM                 DisplayAtomClass;
 
 /***************************************/
 /* LOCAL INTERNAL VARIABLE DEFINITIONS */
@@ -2582,7 +2582,7 @@ void StopWaitCursor()
 /*   history that can be invoked using the up/down arrow   */
 /*   keys.                                                 */
 /***********************************************************/
-globle int DisplayBeforeCommandExecution(
+int DisplayBeforeCommandExecution(
   void *theEnv)
   {
    struct displayWindowData *theData;

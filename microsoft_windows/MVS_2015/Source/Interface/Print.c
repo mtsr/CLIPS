@@ -47,9 +47,9 @@
 /* GLOBAL INTERNAL VARIABLE DEFINITIONS */
 /****************************************/
 
-   globle PRINTDLG             PrintDialog;
-   globle BOOL                 bUserAbort;
-   globle HWND                 hDlgPrint;
+   PRINTDLG             PrintDialog;
+   BOOL                 bUserAbort;
+   HWND                 hDlgPrint;
    
    static DOCINFO  di = { sizeof (DOCINFO), "", NULL } ;
 

@@ -89,12 +89,12 @@
 /* GLOBAL INTERNAL VARIABLE DEFINITIONS */
 /****************************************/
 
-   globle HWND                       FactsWindow = NULL;
-   globle HWND                       AgendaWindow = NULL;
-   globle HWND                       InstancesWindow = NULL;
-   globle HWND                       GlobalsWindow = NULL;
-   globle HWND                       FocusWindow = NULL;
-   globle ATOM                       StatusAtomClass;
+   HWND                       FactsWindow = NULL;
+   HWND                       AgendaWindow = NULL;
+   HWND                       InstancesWindow = NULL;
+   HWND                       GlobalsWindow = NULL;
+   HWND                       FocusWindow = NULL;
+   ATOM                       StatusAtomClass;
 
 /***************************************/
 /* LOCAL INTERNAL VARIABLE DEFINITIONS */
