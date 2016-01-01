@@ -39,24 +39,14 @@
 #include "constrnt.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _CSTRNCMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 #ifndef _STDIO_INCLUDED_
 #define _STDIO_INCLUDED_
 #include <stdio.h>
 #endif
 
-   LOCALE void                           PrintConstraintReference(void *,FILE *,CONSTRAINT_RECORD *,int,int);
-   LOCALE void                           ConstraintRecordToCode(FILE *,CONSTRAINT_RECORD *);
-   LOCALE int                            ConstraintsToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
+   void                           PrintConstraintReference(void *,FILE *,CONSTRAINT_RECORD *,int,int);
+   void                           ConstraintRecordToCode(FILE *,CONSTRAINT_RECORD *);
+   int                            ConstraintsToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
 
 #endif /* _H_cstrncmp */
 

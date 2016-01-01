@@ -77,7 +77,7 @@
 /*   creating a fact with the assert command and creating an instance  */
 /*   with the make-instance command.                                   */
 /***********************************************************************/
-globle intBool AddLogicalDependencies(
+intBool AddLogicalDependencies(
   void *theEnv,
   struct patternEntity *theEntity,
   int existingEntity)
@@ -147,7 +147,7 @@ globle intBool AddLogicalDependencies(
 /*   creating logical support links between the data entity and         */
 /*   supporting partial matches.                                        */
 /************************************************************************/
-globle struct partialMatch *FindLogicalBind(
+struct partialMatch *FindLogicalBind(
   struct joinNode *theJoin,
   struct partialMatch *theBinds)
   {
@@ -178,7 +178,7 @@ globle struct partialMatch *FindLogicalBind(
 /*   matches or pattern entities which point back to the pattern     */
 /*   entities.                                                       */
 /*********************************************************************/
-globle void RemoveEntityDependencies(
+void RemoveEntityDependencies(
   void *theEnv,
   struct patternEntity *theEntity)
   {
@@ -237,7 +237,7 @@ globle void RemoveEntityDependencies(
 /*   a pattern entity. This is unidirectional. The links from the   */
 /*   the partial match to the entity are not removed.               */
 /********************************************************************/
-globle void ReturnEntityDependencies(
+void ReturnEntityDependencies(
   void *theEnv,
   struct patternEntity *theEntity)
   {
@@ -296,7 +296,7 @@ static struct dependency *DetachAssociatedDependencies(
 /*   match that point to any data entities. Also removes the associated   */
 /*   links from the data entities which point back to the partial match.  */
 /**************************************************************************/
-globle void RemovePMDependencies(
+void RemovePMDependencies(
   void *theEnv,
   struct partialMatch *theBinds)
   {
@@ -326,7 +326,7 @@ globle void RemovePMDependencies(
 /* DestroyPMDependencies: Removes all logical support links */
 /*   from a partial match that point to any data entities.  */
 /************************************************************/
-globle void DestroyPMDependencies(
+void DestroyPMDependencies(
   void *theEnv,
   struct partialMatch *theBinds)
   {
@@ -355,7 +355,7 @@ globle void DestroyPMDependencies(
 /*   added to the list of unsupported data entities so that the entity  */
 /*   will be deleted as a result of losing its logical support.         */
 /************************************************************************/
-globle void RemoveLogicalSupport(
+void RemoveLogicalSupport(
   void *theEnv,
   struct partialMatch *theBinds)
   {
@@ -435,7 +435,7 @@ globle void RemoveLogicalSupport(
 /*   add more data entities to the list of data entities which have */
 /*   lost their logical support.                                    */
 /********************************************************************/
-globle void ForceLogicalRetractions(
+void ForceLogicalRetractions(
   void *theEnv)
   {
    struct dependency *tempPtr;
@@ -492,7 +492,7 @@ globle void ForceLogicalRetractions(
 /****************************************************************/
 /* Dependencies: C access routine for the dependencies command. */
 /****************************************************************/
-globle void Dependencies(
+void Dependencies(
   void *theEnv,
   struct patternEntity *theEntity)
   {
@@ -527,7 +527,7 @@ globle void Dependencies(
 /************************************************************/
 /* Dependents: C access routine for the dependents command. */
 /************************************************************/
-globle void Dependents(
+void Dependents(
   void *theEnv,
   struct patternEntity *theEntity)
   {
@@ -594,7 +594,7 @@ globle void Dependents(
 /* DependenciesCommand: H/L access routine   */
 /*   for the dependencies command.           */
 /*********************************************/
-globle void DependenciesCommand(
+void DependenciesCommand(
   void *theEnv)
   {
    DATA_OBJECT item;
@@ -617,7 +617,7 @@ globle void DependenciesCommand(
 /* DependentsCommand: H/L access routine   */
 /*   for the dependents command.           */
 /*******************************************/
-globle void DependentsCommand(
+void DependentsCommand(
   void *theEnv)
   {
    DATA_OBJECT item;

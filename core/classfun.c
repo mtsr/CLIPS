@@ -121,7 +121,7 @@ static void DeassignClassID(void *,unsigned);
   SIDE EFFECTS : Busy count incremented
   NOTES        : None
  ***************************************************/
-globle void IncrementDefclassBusyCount(
+void IncrementDefclassBusyCount(
   void *theEnv,
   void *theDefclass)
   {
@@ -143,7 +143,7 @@ globle void IncrementDefclassBusyCount(
                  deleted already anyway, this is
                  a no-op on a clear
  ***************************************************/
-globle void DecrementDefclassBusyCount(
+void DecrementDefclassBusyCount(
   void *theEnv,
   void *theDefclass)
   {   
@@ -160,7 +160,7 @@ globle void DecrementDefclassBusyCount(
   SIDE EFFECTS : The instance hash table is cleared
   NOTES        : None
  ****************************************************/
-globle intBool InstancesPurge(
+intBool InstancesPurge(
   void *theEnv)
   {
    DestroyAllInstances(theEnv);
@@ -181,7 +181,7 @@ globle intBool InstancesPurge(
   SIDE EFFECTS : Hash table initialized
   NOTES        : None
  ***************************************************/
-globle void InitializeClasses(
+void InitializeClasses(
   void *theEnv)
   {
    register int i;
@@ -208,7 +208,7 @@ globle void InitializeClasses(
   NOTES        : Only looks in class defn, does not
                    examine inheritance paths
  ********************************************************/
-globle SLOT_DESC *FindClassSlot(
+SLOT_DESC *FindClassSlot(
   DEFCLASS *cls,
   SYMBOL_HN *sname)
   {
@@ -231,7 +231,7 @@ globle SLOT_DESC *FindClassSlot(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************************/
-globle void ClassExistError(
+void ClassExistError(
   void *theEnv,
   const char *func,
   const char *cname)
@@ -253,7 +253,7 @@ globle void ClassExistError(
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************/
-globle void DeleteClassLinks(
+void DeleteClassLinks(
   void *theEnv,
   CLASS_LINK *clink)
   {
@@ -278,7 +278,7 @@ globle void DeleteClassLinks(
                  too if class is not in current module)
   NOTES        : None
  ******************************************************/
-globle void PrintClassName(
+void PrintClassName(
   void *theEnv,
   const char *logicalName,
   DEFCLASS *theDefclass,
@@ -309,7 +309,7 @@ globle void PrintClassName(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle void PrintPackedClassLinks(
+void PrintPackedClassLinks(
   void *theEnv,
   const char *logicalName,
   const char *title,
@@ -338,7 +338,7 @@ globle void PrintPackedClassLinks(
   SIDE EFFECTS : Class inserted
   NOTES        : None
  *******************************************************/
-globle void PutClassInTable(
+void PutClassInTable(
   void *theEnv,
   DEFCLASS *cls)
   {
@@ -355,7 +355,7 @@ globle void PutClassInTable(
   SIDE EFFECTS : Class removed
   NOTES        : None
  *********************************************************/
-globle void RemoveClassFromTable(
+void RemoveClassFromTable(
   void *theEnv,
   DEFCLASS *cls)
   {
@@ -389,7 +389,7 @@ globle void RemoveClassFromTable(
                  to a class and does not need to
                  be deallocated
  ***************************************************/
-globle void AddClassLink(
+void AddClassLink(
   void *theEnv,
   PACKED_CLASS_LINKS *src,
   DEFCLASS *cls,
@@ -429,7 +429,7 @@ globle void AddClassLink(
   SIDE EFFECTS : The subclass list is changed
   NOTES        : None
  ***************************************************/
-globle void DeleteSubclassLink(
+void DeleteSubclassLink(
   void *theEnv,
   DEFCLASS *sclass,
   DEFCLASS *cls)
@@ -472,7 +472,7 @@ globle void DeleteSubclassLink(
   SIDE EFFECTS : The subclass list is changed
   NOTES        : None
  ***************************************************/
-globle void DeleteSuperclassLink(
+void DeleteSuperclassLink(
   void *theEnv,
   DEFCLASS *sclass,
   DEFCLASS *cls)
@@ -511,7 +511,7 @@ globle void DeleteSuperclassLink(
   SIDE EFFECTS : None
   NOTES        : None
  **************************************************************/
-globle DEFCLASS *NewClass(
+DEFCLASS *NewClass(
   void *theEnv,
   SYMBOL_HN *className)
   {
@@ -566,7 +566,7 @@ globle DEFCLASS *NewClass(
   SIDE EFFECTS : Class links deallocated
   NOTES        : None
  ***************************************************/
-globle void DeletePackedClassLinks(
+void DeletePackedClassLinks(
   void *theEnv,
   PACKED_CLASS_LINKS *plp,
   int deleteTop)
@@ -591,7 +591,7 @@ globle void DeletePackedClassLinks(
   SIDE EFFECTS : Class id assigned and map set
   NOTES        : None
  ***************************************************/
-globle void AssignClassID(
+void AssignClassID(
   void *theEnv,
   DEFCLASS *cls)
   {
@@ -624,7 +624,7 @@ globle void AssignClassID(
                  incremented
   NOTES        : None
  *********************************************************/
-globle SLOT_NAME *AddSlotName(
+SLOT_NAME *AddSlotName(
   void *theEnv,
   SYMBOL_HN *slotName,
   int newid,
@@ -682,7 +682,7 @@ globle SLOT_NAME *AddSlotName(
                  count decremented
   NOTES        : None
  ***************************************************/
-globle void DeleteSlotName(
+void DeleteSlotName(
   void *theEnv,
   SLOT_NAME *slotName)
   {
@@ -723,7 +723,7 @@ globle void DeleteSlotName(
                    busy count and all instances' busy
                    counts are 0 and all handlers' busy counts are 0!
  *******************************************************************/
-LOCALE void RemoveDefclass(
+void RemoveDefclass(
   void *theEnv,
   void *vcls)
   {
@@ -806,7 +806,7 @@ LOCALE void RemoveDefclass(
   SIDE EFFECTS : None
   NOTES        : 
  *******************************************************************/
-LOCALE void DestroyDefclass(
+void DestroyDefclass(
   void *theEnv,
   void *vcls)
   {
@@ -889,7 +889,7 @@ LOCALE void DestroyDefclass(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle void InstallClass(
+void InstallClass(
   void *theEnv,
   DEFCLASS *cls,
   int set)
@@ -962,7 +962,7 @@ globle void InstallClass(
   SIDE EFFECTS : None
   NOTES        : Recursively examines all subclasses
  ***************************************************/
-globle int IsClassBeingUsed(
+int IsClassBeingUsed(
   DEFCLASS *cls)
   {
    long i;
@@ -983,7 +983,7 @@ globle int IsClassBeingUsed(
   SIDE EFFECTS : The class hash table is cleared
   NOTES        : None
  ***************************************************/
-globle int RemoveAllUserClasses(
+int RemoveAllUserClasses(
   void *theEnv)
   {
    void *userClasses,*ctmp;
@@ -1031,7 +1031,7 @@ globle int RemoveAllUserClasses(
                  its superclasses' subclass lists
   NOTES        : None
  ****************************************************/
-globle int DeleteClassUAG(
+int DeleteClassUAG(
   void *theEnv,
   DEFCLASS *cls)
   {
@@ -1067,7 +1067,7 @@ globle int DeleteClassUAG(
   NOTES        : IMPORTANT!!!!  Assumes the bitmap is
                  large enough to hold all ids encountered!
  *********************************************************/
-globle void MarkBitMapSubclasses(
+void MarkBitMapSubclasses(
   char *map,
   DEFCLASS *cls,
   int set)
@@ -1101,7 +1101,7 @@ globle void MarkBitMapSubclasses(
                  given the index (object pattern
                  matching uses this).
  ***************************************************/
-globle short FindSlotNameID(
+short FindSlotNameID(
   void *theEnv,
   SYMBOL_HN *slotName)
   {
@@ -1121,7 +1121,7 @@ globle short FindSlotNameID(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle SYMBOL_HN *FindIDSlotName(
+SYMBOL_HN *FindIDSlotName(
   void *theEnv,
   int id)
   {
@@ -1139,7 +1139,7 @@ globle SYMBOL_HN *FindIDSlotName(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle SLOT_NAME *FindIDSlotNameHash(
+SLOT_NAME *FindIDSlotNameHash(
   void *theEnv,
   int id)
   {
@@ -1171,7 +1171,7 @@ globle SLOT_NAME *FindIDSlotNameHash(
                   class hierarchy to assure that a
                   class is only visited once
  ***************************************************/
-globle int GetTraversalID(
+int GetTraversalID(
   void *theEnv)
   {
    register unsigned i;
@@ -1203,7 +1203,7 @@ globle int GetTraversalID(
   NOTES        : Releases ID returned by most recent
                    call to GetTraversalID()
  ***************************************************/
-globle void ReleaseTraversalID(
+void ReleaseTraversalID(
   void *theEnv)
   {
    DefclassData(theEnv)->CTID--;
@@ -1221,7 +1221,7 @@ globle void ReleaseTraversalID(
                  symbol table - uses that hash value
                  multiplied by a prime for a new hash
  *******************************************************/
-globle unsigned HashClass(
+unsigned HashClass(
   SYMBOL_HN *cname)
   {
    unsigned long tally;

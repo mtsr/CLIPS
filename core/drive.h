@@ -43,16 +43,6 @@
 #include "network.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DRIVE_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
    void                           NetworkAssert(void *,struct partialMatch *,struct joinNode *);
    intBool                        EvaluateJoinExpression(void *,struct expr *,struct joinNode *);
    void                           NetworkAssertLeft(void *,struct partialMatch *,struct joinNode *,int);

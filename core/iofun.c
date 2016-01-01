@@ -148,7 +148,7 @@ struct IOFunctionData
 /* IOFunctionDefinitions: Initializes */
 /*   the I/O functions.               */
 /**************************************/
-globle void IOFunctionDefinitions(
+void IOFunctionDefinitions(
   void *theEnv)
   {
    AllocateEnvironmentData(theEnv,IO_FUNCTION_DATA,sizeof(struct IOFunctionData),NULL);
@@ -189,7 +189,7 @@ globle void IOFunctionDefinitions(
 /* PrintoutFunction: H/L access routine   */
 /*   for the printout function.           */
 /******************************************/
-globle void PrintoutFunction(
+void PrintoutFunction(
   void *theEnv)
   {
    const char *logicalName;
@@ -237,7 +237,7 @@ globle void PrintoutFunction(
 /* PrintFunction: H/L access routine */
 /*   for the print function.         */
 /*************************************/
-globle void PrintFunction(
+void PrintFunction(
   void *theEnv)
   {
    PrintDriver(theEnv,STDOUT,1,EnvRtnArgCount(theEnv),FALSE);
@@ -247,7 +247,7 @@ globle void PrintFunction(
 /* PrintlnFunction: H/L access routine */
 /*   for the println function.         */
 /*************************************/
-globle void PrintlnFunction(
+void PrintlnFunction(
   void *theEnv)
   {
    PrintDriver(theEnv,STDOUT,1,EnvRtnArgCount(theEnv),TRUE);
@@ -319,7 +319,7 @@ static void PrintDriver(
 /* SetFullCRLF: Set the flag which indicates whether */
 /*   crlf is treated just as '\n' or '\r\n'.         */
 /*****************************************************/
-globle intBool SetFullCRLF(
+intBool SetFullCRLF(
   void *theEnv,
   intBool value)
   {
@@ -333,7 +333,7 @@ globle intBool SetFullCRLF(
 /*************************************************************/
 /* ReadFunction: H/L access routine for the read function.   */
 /*************************************************************/
-globle void ReadFunction(
+void ReadFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -527,7 +527,7 @@ static void ReadTokenFromStdin(
 /*************************************************************/
 /* OpenFunction: H/L access routine for the open function.   */
 /*************************************************************/
-globle int OpenFunction(
+int OpenFunction(
   void *theEnv)
   {
    int numberOfArguments;
@@ -617,7 +617,7 @@ globle int OpenFunction(
 /***************************************************************/
 /* CloseFunction: H/L access routine for the close function.   */
 /***************************************************************/
-globle int CloseFunction(
+int CloseFunction(
   void *theEnv)
   {
    int numberOfArguments;
@@ -663,7 +663,7 @@ globle int CloseFunction(
 /* GetCharFunction: H/L access routine */
 /*   for the get-char function.        */
 /***************************************/
-globle int GetCharFunction(
+int GetCharFunction(
   void *theEnv)
   {
    int numberOfArguments;
@@ -701,7 +701,7 @@ globle int GetCharFunction(
 /* PutCharFunction: H/L access routine */
 /*   for the put-char function.        */
 /***************************************/
-globle void PutCharFunction(
+void PutCharFunction(
   void *theEnv)
   {
    int numberOfArguments;
@@ -766,7 +766,7 @@ globle void PutCharFunction(
 /* RemoveFunction: H/L access routine   */
 /*   for the remove function.           */
 /****************************************/
-globle int RemoveFunction(
+int RemoveFunction(
   void *theEnv)
   {
    const char *theFileName;
@@ -795,7 +795,7 @@ globle int RemoveFunction(
 /* RenameFunction: H/L access routine   */
 /*   for the rename function.           */
 /****************************************/
-globle int RenameFunction(
+int RenameFunction(
   void *theEnv)
   {
    const char *oldFileName, *newFileName;
@@ -825,7 +825,7 @@ globle int RenameFunction(
 /* FormatFunction: H/L access routine   */
 /*   for the format function.           */
 /****************************************/
-globle void *FormatFunction(
+void *FormatFunction(
   void *theEnv)
   {
    int argCount;
@@ -1208,7 +1208,7 @@ static const char *PrintFormatFlag(
 /* ReadlineFunction: H/L access routine   */
 /*   for the readline function.           */
 /******************************************/
-globle void ReadlineFunction(
+void ReadlineFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -1320,7 +1320,7 @@ static char *FillBuffer(
 /* SetLocaleFunction: H/L access routine */
 /*   for the set-locale function.        */
 /*****************************************/
-globle void SetLocaleFunction(
+void SetLocaleFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -1381,7 +1381,7 @@ globle void SetLocaleFunction(
 /* ReadNumberFunction: H/L access routine */
 /*   for the read-number function.        */
 /******************************************/
-globle void ReadNumberFunction(
+void ReadNumberFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {

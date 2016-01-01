@@ -31,20 +31,10 @@
 
 #define _H_sortfun
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _SORTFUN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           SortFunctionDefinitions(void *);
-   LOCALE void                           MergeSort(void *,unsigned long,DATA_OBJECT *,
+   void                           SortFunctionDefinitions(void *);
+   void                           MergeSort(void *,unsigned long,DATA_OBJECT *,
                                                    int (*)(void *,DATA_OBJECT *,DATA_OBJECT *));
-   LOCALE void                           SortFunction(void *,DATA_OBJECT *);
+   void                           SortFunction(void *,DATA_OBJECT *);
 
 #endif /* _H_sortfun */
 

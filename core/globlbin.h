@@ -56,18 +56,8 @@ struct defglobalBinaryData
 
 #define DefglobalPointer(i) ((struct defglobal *) (&DefglobalBinaryData(theEnv)->DefglobalArray[i]))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _GLOBLBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           DefglobalBinarySetup(void *);
-   LOCALE void                          *BloadDefglobalModuleReference(void *,int);
+   void                           DefglobalBinarySetup(void *);
+   void                          *BloadDefglobalModuleReference(void *,int);
 
 #endif /* _H_globlbin */
 

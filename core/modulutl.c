@@ -56,7 +56,7 @@
 /*   zero is returned if the separator is not found, otherwise the  */
 /*   position of the second colon within the string is returned.    */
 /********************************************************************/
-globle unsigned FindModuleSeparator(
+unsigned FindModuleSeparator(
   const char *theString)
   {
    unsigned i, foundColon;
@@ -81,7 +81,7 @@ globle unsigned FindModuleSeparator(
 /*   symbol reference to the module name (or NULL if a module name */
 /*   cannot be extracted).                                         */
 /*******************************************************************/
-globle SYMBOL_HN *ExtractModuleName(
+SYMBOL_HN *ExtractModuleName(
   void *theEnv,
   unsigned thePosition,
   const char *theString)
@@ -141,7 +141,7 @@ globle SYMBOL_HN *ExtractModuleName(
 /*   symbol reference to the construct name (or NULL if a construct */
 /*   name cannot be extracted).                                     */
 /********************************************************************/
-globle SYMBOL_HN *ExtractConstructName(
+SYMBOL_HN *ExtractConstructName(
   void *theEnv,
   unsigned thePosition,
   const char *theString)
@@ -209,7 +209,7 @@ globle SYMBOL_HN *ExtractConstructName(
 /*   module and construct name from a string. Sets  */
 /*   the current module to the specified module.    */
 /****************************************************/
-globle const char *ExtractModuleAndConstructName(
+const char *ExtractModuleAndConstructName(
   void *theEnv,
   const char *theName)
   {
@@ -258,7 +258,7 @@ globle const char *ExtractModuleAndConstructName(
 /*   a module and other modules from which it imports       */
 /*   constructs for a specified construct.                  */
 /************************************************************/
-globle void *FindImportedConstruct(
+void *FindImportedConstruct(
   void *theEnv,
   const char *constructName,
   struct defmodule *matchModule,
@@ -347,7 +347,7 @@ globle void *FindImportedConstruct(
 /*   when a reference to a specific construct can be     */
 /*   imported from more than one module.                 */
 /*********************************************************/
-globle void AmbiguousReferenceErrorMessage(
+void AmbiguousReferenceErrorMessage(
   void *theEnv,
   const char *constructName,
   const char *findName)
@@ -364,7 +364,7 @@ globle void AmbiguousReferenceErrorMessage(
 /*   search through the module heirarchies. Sets    */
 /*   the visited flag of each module to FALSE.      */
 /****************************************************/
-globle void MarkModulesAsUnvisited(
+void MarkModulesAsUnvisited(
   void *theEnv)
   {
    struct defmodule *theModule;
@@ -552,7 +552,7 @@ static void *SearchImportedConstructModules(
 /* ConstructExported: Returns TRUE if the specified construct */
 /*   is exported from the specified module.                   */
 /**************************************************************/
-globle intBool ConstructExported(
+intBool ConstructExported(
   void *theEnv,
   const char *constructTypeStr,
   struct symbolHashNode *moduleName,
@@ -589,7 +589,7 @@ globle intBool ConstructExported(
 /* AllImportedModulesVisited: Returns TRUE if all of the */
 /*   imported modules for a module have been visited.    */
 /*********************************************************/
-globle intBool AllImportedModulesVisited(
+intBool AllImportedModulesVisited(
   void *theEnv,
   struct defmodule *theModule)
   {
@@ -613,7 +613,7 @@ globle intBool AllImportedModulesVisited(
 /* ListItemsDriver: Driver routine for */
 /*   listing items in a module.        */
 /***************************************/
-globle void ListItemsDriver(
+void ListItemsDriver(
   void *theEnv,
   const char *logicalName,
   struct defmodule *theModule,
@@ -701,7 +701,7 @@ globle void ListItemsDriver(
 /********************************************************/
 /* DoForAllModules: Executes an action for all modules. */
 /********************************************************/
-globle long DoForAllModules(
+long DoForAllModules(
   void *theEnv,
   void (*actionFunction)(struct defmodule *,void *),
   int interruptable,

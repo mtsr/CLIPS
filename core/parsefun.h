@@ -44,19 +44,9 @@
 #include "evaluatn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _PARSEFUN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           ParseFunctionDefinitions(void *);
-   LOCALE void                           CheckSyntaxFunction(void *,DATA_OBJECT *);
-   LOCALE int                            CheckSyntax(void *,const char *,DATA_OBJECT_PTR);
+   void                           ParseFunctionDefinitions(void *);
+   void                           CheckSyntaxFunction(void *,DATA_OBJECT *);
+   int                            CheckSyntax(void *,const char *,DATA_OBJECT_PTR);
 
 #endif /* _H_parsefun */
 

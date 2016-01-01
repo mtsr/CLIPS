@@ -58,26 +58,16 @@
 
 #define DEFAULT_STRATEGY DEPTH_STRATEGY
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _CRSTRTGY_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           PlaceActivation(void *,ACTIVATION **,ACTIVATION *,struct salienceGroup *);
-   LOCALE int                            EnvSetStrategy(void *,int);
-   LOCALE int                            EnvGetStrategy(void *);
-   LOCALE void                          *SetStrategyCommand(void *);
-   LOCALE void                          *GetStrategyCommand(void *);
+   void                           PlaceActivation(void *,ACTIVATION **,ACTIVATION *,struct salienceGroup *);
+   int                            EnvSetStrategy(void *,int);
+   int                            EnvGetStrategy(void *);
+   void                          *SetStrategyCommand(void *);
+   void                          *GetStrategyCommand(void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE int                            SetStrategy(int);
-   LOCALE int                            GetStrategy(void);
+   int                            SetStrategy(int);
+   int                            GetStrategy(void);
 
 #endif
 

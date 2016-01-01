@@ -128,22 +128,12 @@ struct defruleBinaryData
 #define BsaveJoinLinkIndex(linkPtr) ((linkPtr == NULL) ? -1L :  ((struct joinLink *) linkPtr)->bsaveID)
 #define BloadJoinLinkPointer(i) ((struct joinLink *) ((i == -1L) ? NULL : &DefruleBinaryData(theEnv)->LinkArray[i]))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _RULEBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           DefruleBinarySetup(void *);
-   LOCALE void                           UpdatePatternNodeHeader(void *,struct patternNodeHeader *,
+   void                           DefruleBinarySetup(void *);
+   void                           UpdatePatternNodeHeader(void *,struct patternNodeHeader *,
                                                                  struct bsavePatternNodeHeader *);
-   LOCALE void                           AssignBsavePatternHeaderValues(void *,struct bsavePatternNodeHeader *,
+   void                           AssignBsavePatternHeaderValues(void *,struct bsavePatternNodeHeader *,
                                                                         struct patternNodeHeader *);
-   LOCALE void                          *BloadDefruleModuleReference(void *,int);
+   void                          *BloadDefruleModuleReference(void *,int);
 
 #endif /* _H_rulebin */ 
 

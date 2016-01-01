@@ -134,7 +134,7 @@ static void NetworkModifyForSharedSlot(void *,int,DEFCLASS *,SLOT_DESC *);
   SIDE EFFECTS : Count set
   NOTES        : None
  ***************************************************/
-globle void EnvIncrementInstanceCount(
+void EnvIncrementInstanceCount(
   void *theEnv,
   void *vptr)
   {
@@ -154,7 +154,7 @@ globle void EnvIncrementInstanceCount(
   SIDE EFFECTS : Count set
   NOTES        : None
  ***************************************************/
-globle void EnvDecrementInstanceCount(
+void EnvDecrementInstanceCount(
   void *theEnv,
   void *vptr)
   {
@@ -174,7 +174,7 @@ globle void EnvDecrementInstanceCount(
   SIDE EFFECTS : Hash table initialized
   NOTES        : None
  ***************************************************/
-globle void InitializeInstanceTable(
+void InitializeInstanceTable(
   void *theEnv)
   {
    register int i;
@@ -196,7 +196,7 @@ globle void InitializeInstanceTable(
   SIDE EFFECTS : Non-busy instance garbage nodes deleted
   NOTES        : None
  *******************************************************/
-globle void CleanupInstances(
+void CleanupInstances(
   void *theEnv)
   {
    IGARBAGE *gprv,*gtmp,*dump;
@@ -244,7 +244,7 @@ globle void CleanupInstances(
                  symbol table - uses that hash value
                  multiplied by a prime for a new hash
  *******************************************************/
-globle unsigned HashInstance(
+unsigned HashInstance(
   SYMBOL_HN *cname)
   {
    unsigned long tally;
@@ -263,7 +263,7 @@ globle unsigned HashInstance(
   SIDE EFFECTS : All instances deallocated
   NOTES        : None
  ***************************************************/
-globle void DestroyAllInstances(
+void DestroyAllInstances(
   void *theEnv)
   {
    INSTANCE_TYPE *iptr;
@@ -299,7 +299,7 @@ globle void DestroyAllInstances(
                  "real" instances.
                  Instance class busy count decremented
  ******************************************************/
-globle void RemoveInstanceData(
+void RemoveInstanceData(
   void *theEnv,
   INSTANCE_TYPE *ins)
   {
@@ -347,7 +347,7 @@ globle void RemoveInstanceData(
                  Instances of the form [<name>] are now searched for in
                  all modules.
  ***************************************************************************/
-globle INSTANCE_TYPE *FindInstanceBySymbol(
+INSTANCE_TYPE *FindInstanceBySymbol(
   void *theEnv,
   SYMBOL_HN *moduleAndInstanceName)
   {
@@ -428,7 +428,7 @@ globle INSTANCE_TYPE *FindInstanceBySymbol(
                  scope of the current module if the
                  instance's module name has been specified.
  ***************************************************/
-globle INSTANCE_TYPE *FindInstanceInModule(
+INSTANCE_TYPE *FindInstanceInModule(
   void *theEnv,
   SYMBOL_HN *instanceName,
   struct defmodule *theModule,
@@ -485,7 +485,7 @@ globle INSTANCE_TYPE *FindInstanceInModule(
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************************/
-globle INSTANCE_SLOT *FindInstanceSlot(
+INSTANCE_SLOT *FindInstanceSlot(
   void *theEnv,
   INSTANCE_TYPE *ins,
   SYMBOL_HN *sname)
@@ -507,7 +507,7 @@ globle INSTANCE_SLOT *FindInstanceSlot(
   NOTES        : The slot's unique id is used as index into
                  the slot map array.
  ********************************************************************/
-globle int FindInstanceTemplateSlot(
+int FindInstanceTemplateSlot(
   void *theEnv,
   DEFCLASS *cls,
   SYMBOL_HN *sname)
@@ -540,7 +540,7 @@ globle int FindInstanceTemplateSlot(
                  New value symbols installed
   NOTES        : None
  *******************************************************/
-globle int PutSlotValue(
+int PutSlotValue(
   void *theEnv,
   INSTANCE_TYPE *ins,
   INSTANCE_SLOT *sp,
@@ -574,7 +574,7 @@ globle int PutSlotValue(
                  New value symbols installed
   NOTES        : None
  *******************************************************/
-globle int DirectPutSlotValue(
+int DirectPutSlotValue(
   void *theEnv,
   INSTANCE_TYPE *ins,
   INSTANCE_SLOT *sp,
@@ -777,7 +777,7 @@ globle int DirectPutSlotValue(
   SIDE EFFECTS : Sets EvaluationError if slot is not OK
   NOTES        : Examines all fields of a multi-field
  *******************************************************************/
-globle int ValidSlotValue(
+int ValidSlotValue(
   void *theEnv,
   DATA_OBJECT *val,
   SLOT_DESC *sd,
@@ -844,7 +844,7 @@ globle int ValidSlotValue(
                  on errors
   NOTES        : Used by Initialize and ModifyInstance
  ********************************************************/
-globle INSTANCE_TYPE *CheckInstance(
+INSTANCE_TYPE *CheckInstance(
   void *theEnv,
   const char *func)
   {
@@ -895,7 +895,7 @@ globle INSTANCE_TYPE *CheckInstance(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle void NoInstanceError(
+void NoInstanceError(
   void *theEnv,
   const char *iname,
   const char *func)
@@ -919,7 +919,7 @@ globle void NoInstanceError(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle void StaleInstanceAddress(
+void StaleInstanceAddress(
   void *theEnv,
   const char *func,
   int whichArg)
@@ -945,7 +945,7 @@ globle void StaleInstanceAddress(
   SIDE EFFECTS : None
   NOTES        : Used by interfaces to update instance windows
  **********************************************************************/
-globle int EnvGetInstancesChanged(
+int EnvGetInstancesChanged(
   void *theEnv)
   {
    return(InstanceData(theEnv)->ChangesToInstances);
@@ -959,7 +959,7 @@ globle int EnvGetInstancesChanged(
   SIDE EFFECTS : The flag is set
   NOTES        : None
  *******************************************************/
-globle void EnvSetInstancesChanged(
+void EnvSetInstancesChanged(
   void *theEnv,
   int changed)
   {
@@ -979,7 +979,7 @@ globle void EnvSetInstancesChanged(
   SIDE EFFECTS : Message printed
   NOTES        : None
  *******************************************************************/
-globle void PrintSlot(
+void PrintSlot(
   void *theEnv,
   const char *logName,
   SLOT_DESC *sd,
@@ -1017,7 +1017,7 @@ globle void PrintSlot(
   SIDE EFFECTS : Instnace name and class printed
   NOTES        : None
  *****************************************************/
-globle void PrintInstanceNameAndClass(
+void PrintInstanceNameAndClass(
   void *theEnv,
   const char *logicalName,
   INSTANCE_TYPE *theInstance,
@@ -1040,7 +1040,7 @@ globle void PrintInstanceNameAndClass(
   SIDE EFFECTS : Name of instance printed
   NOTES        : None
  ***************************************************/
-globle void PrintInstanceName(
+void PrintInstanceName(
   void *theEnv,
   const char *logName,
   void *vins)
@@ -1072,7 +1072,7 @@ globle void PrintInstanceName(
   SIDE EFFECTS : Address of instance printed
   NOTES        : None
  ***************************************************/
-globle void PrintInstanceLongForm(
+void PrintInstanceLongForm(
   void *theEnv,
   const char *logName,
   void *vins)
@@ -1129,7 +1129,7 @@ globle void PrintInstanceLongForm(
                  basis copy of the object (if any)
                  is deleted.
  ***************************************************/
-globle void DecrementObjectBasisCount(
+void DecrementObjectBasisCount(
   void *theEnv,
   void *vins)
   {
@@ -1176,7 +1176,7 @@ globle void DecrementObjectBasisCount(
   SIDE EFFECTS : Basis count incremented
   NOTES        : None
  ***************************************************/
-globle void IncrementObjectBasisCount(
+void IncrementObjectBasisCount(
   void *theEnv,
   void *vins)
   {
@@ -1211,7 +1211,7 @@ globle void IncrementObjectBasisCount(
   SIDE EFFECTS : Instance pattern-matched
   NOTES        : None
  ***************************************************/
-globle void MatchObjectFunction(
+void MatchObjectFunction(
   void *theEnv,
   void *vins)
   {
@@ -1230,7 +1230,7 @@ globle void MatchObjectFunction(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle intBool NetworkSynchronized(
+intBool NetworkSynchronized(
   void *theEnv,
   void *vins)
   {
@@ -1251,7 +1251,7 @@ globle intBool NetworkSynchronized(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle intBool InstanceIsDeleted(
+intBool InstanceIsDeleted(
   void *theEnv,
   void *vins)
   {
@@ -1391,24 +1391,24 @@ static void NetworkModifyForSharedSlot(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle void DecrementInstanceCount(
+void DecrementInstanceCount(
   void *vptr)
   {
    EnvDecrementInstanceCount(GetCurrentEnvironment(),vptr);
   }
 
-globle int GetInstancesChanged()
+int GetInstancesChanged()
   {
    return EnvGetInstancesChanged(GetCurrentEnvironment());
   }
 
-globle void IncrementInstanceCount(
+void IncrementInstanceCount(
   void *vptr)
   {
    EnvIncrementInstanceCount(GetCurrentEnvironment(),vptr);
   }
 
-globle void SetInstancesChanged(
+void SetInstancesChanged(
   int changed)
   {
    EnvSetInstancesChanged(GetCurrentEnvironment(),changed);

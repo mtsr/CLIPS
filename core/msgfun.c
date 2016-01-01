@@ -89,7 +89,7 @@ static void PrintPreviewHandler(void *,const char *,HANDLER_LINK *,int,const cha
   SIDE EFFECTS : Error synopsis printed to WERROR
   NOTES        : None
  ********************************************************/
-globle void UnboundHandlerErr(
+void UnboundHandlerErr(
   void *theEnv)
   {
    EnvPrintRouter(theEnv,WERROR,"message-handler ");
@@ -104,7 +104,7 @@ globle void UnboundHandlerErr(
   SIDE EFFECTS : None
   NOTES        : None
  *****************************************************************/
-globle void PrintNoHandlerError(
+void PrintNoHandlerError(
   void *theEnv,
   const char *msg)
   {
@@ -124,7 +124,7 @@ globle void PrintNoHandlerError(
   SIDE EFFECTS : EvaluationError set on errors
   NOTES        : Uses ProcParamArraySize and CurrentCore globals
  ***************************************************************/
-globle int CheckHandlerArgCount(
+int CheckHandlerArgCount(
   void *theEnv)
   {
    HANDLER *hnd;
@@ -167,7 +167,7 @@ globle int CheckHandlerArgCount(
   SIDE EFFECTS : Error message printed
   NOTES        : None
  ***************************************************/
-globle void SlotAccessViolationError(
+void SlotAccessViolationError(
   void *theEnv,
   const char *slotName,
   intBool instanceFlag,
@@ -197,7 +197,7 @@ globle void SlotAccessViolationError(
   SIDE EFFECTS : Error message printed
   NOTES        : None
  ***************************************************/
-globle void SlotVisibilityViolationError(
+void SlotVisibilityViolationError(
   void *theEnv,
   SLOT_DESC *sd,
   DEFCLASS *theDefclass,
@@ -235,7 +235,7 @@ globle void SlotVisibilityViolationError(
                  On errors, generate a system error and exits.
   NOTES        : Does not check to see if handler already exists
  *******************************************************************************/
-globle void NewSystemHandler(
+void NewSystemHandler(
   void *theEnv,
   const char *cname,
   const char *mname,
@@ -272,7 +272,7 @@ globle void NewSystemHandler(
                    and resorted
   NOTES        : Assumes handler does not exist
  ***************************************************/
-globle HANDLER *InsertHandlerHeader(
+HANDLER *InsertHandlerHeader(
   void *theEnv,
   DEFCLASS *cls,
   SYMBOL_HN *mname,
@@ -344,7 +344,7 @@ globle HANDLER *InsertHandlerHeader(
   SIDE EFFECTS : None
   NOTES        : None
  *****************************************************/
-globle int HandlersExecuting(
+int HandlersExecuting(
   DEFCLASS *cls)
   {
    long i;
@@ -375,7 +375,7 @@ globle int HandlersExecuting(
                    currently executing, this routine
                    will fail
  **********************************************************************/
-globle int DeleteHandler(
+int DeleteHandler(
    void *theEnv,
    DEFCLASS *cls,
    SYMBOL_HN *mname,
@@ -473,7 +473,7 @@ globle int DeleteHandler(
                    currently executing or have a
                    busy count != 0 for any reason
  ***************************************************/
-globle void DeallocateMarkedHandlers(
+void DeallocateMarkedHandlers(
   void *theEnv,
   DEFCLASS *cls)
   {
@@ -565,7 +565,7 @@ globle void DeallocateMarkedHandlers(
   SIDE EFFECTS : None
   NOTES        : None
  *****************************************************/
-globle unsigned HandlerType(
+unsigned HandlerType(
   void *theEnv,
   const char *func,
   const char *str)
@@ -597,7 +597,7 @@ globle unsigned HandlerType(
   SIDE EFFECTS : EvaluationError set on errors
   NOTES        : None
  *****************************************************************/
-globle int CheckCurrentMessage(
+int CheckCurrentMessage(
   void *theEnv,
   const char *func,
   int ins_reqd)
@@ -642,7 +642,7 @@ globle int CheckCurrentMessage(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle void PrintHandler(
+void PrintHandler(
   void *theEnv,
   const char *logName,
   HANDLER *theHandler,
@@ -669,7 +669,7 @@ globle void PrintHandler(
                    1st key: symbolic name of handler
                    2nd key: type of handler
  ***********************************************************/
-globle HANDLER *FindHandlerByAddress(
+HANDLER *FindHandlerByAddress(
   DEFCLASS *cls,
   SYMBOL_HN *name,
   unsigned type)
@@ -707,7 +707,7 @@ globle HANDLER *FindHandlerByAddress(
                    1st key: symbolic name of handler
                    2nd key: type of handler
  ***********************************************************/
-globle int FindHandlerByIndex(
+int FindHandlerByIndex(
   DEFCLASS *cls,
   SYMBOL_HN *name,
   unsigned type)
@@ -743,7 +743,7 @@ globle int FindHandlerByIndex(
   NOTES        : Assumes array is in ascending order
                    1st key: handler name symbol bucket
  *****************************************************/
-globle int FindHandlerNameGroup(
+int FindHandlerNameGroup(
   DEFCLASS *cls,
   SYMBOL_HN *name)
   {
@@ -800,7 +800,7 @@ globle int FindHandlerNameGroup(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
-globle void HandlerDeleteError(
+void HandlerDeleteError(
   void *theEnv,
   const char *cname)
   {
@@ -831,7 +831,7 @@ globle void HandlerDeleteError(
                    (in PERFORM mode they are INSTANCE_SLOT addresses)
                  Assumes (partial) core is not empty
  ********************************************************************/
-globle void DisplayCore(
+void DisplayCore(
   void *theEnv,
   const char *logicalName,
   HANDLER_LINK *core,
@@ -877,7 +877,7 @@ globle void DisplayCore(
   SIDE EFFECTS : Links are allocated for the list
   NOTES        : None
  ******************************************************************/
-globle HANDLER_LINK *FindPreviewApplicableHandlers(
+HANDLER_LINK *FindPreviewApplicableHandlers(
   void *theEnv,
   DEFCLASS *cls,
   SYMBOL_HN *mname)
@@ -904,7 +904,7 @@ globle HANDLER_LINK *FindPreviewApplicableHandlers(
   NOTES        : Uses the global variables ProcParamArray
                    and CurrentMessageName
  ***********************************************************/
-globle void WatchMessage(
+void WatchMessage(
   void *theEnv,
   const char *logName,
   const char *tstring)
@@ -930,7 +930,7 @@ globle void WatchMessage(
   NOTES        : Uses the global variables ProcParamArray
                    and CurrentMessageName
  ***********************************************************/
-globle void WatchHandler(
+void WatchHandler(
   void *theEnv,
   const char *logName,
   HANDLER_LINK *hndl,

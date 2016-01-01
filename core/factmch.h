@@ -49,22 +49,12 @@
 #include "factbld.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _FACTMCH_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           FactPatternMatch(void *,struct fact *,
+   void                           FactPatternMatch(void *,struct fact *,
                                                struct factPatternNode *,int,
                                                struct multifieldMarker *,
                                                struct multifieldMarker *);
-   LOCALE void                           MarkFactPatternForIncrementalReset(void *,struct patternNodeHeader *,int);
-   LOCALE void                           FactsIncrementalReset(void *);
+   void                           MarkFactPatternForIncrementalReset(void *,struct patternNodeHeader *,int);
+   void                           FactsIncrementalReset(void *);
 
 #endif /* _H_factmch */
 

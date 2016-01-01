@@ -36,19 +36,9 @@
 
 #include "dffnxfun.h"
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DFFNXCMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           SetupDeffunctionCompiler(void *);
-   LOCALE void                           PrintDeffunctionReference(void *,FILE *,DEFFUNCTION *,int,int);
-   LOCALE void                           DeffunctionCModuleReference(void *,FILE *,int,int,int);
+   void                           SetupDeffunctionCompiler(void *);
+   void                           PrintDeffunctionReference(void *,FILE *,DEFFUNCTION *,int,int);
+   void                           DeffunctionCModuleReference(void *,FILE *,int,int,int);
 
 #endif /* DEFFUNCTION_CONSTRUCT && CONSTRUCT_COMPILER && (! RUN_TIME) */
 

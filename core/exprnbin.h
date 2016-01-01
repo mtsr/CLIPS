@@ -33,25 +33,16 @@
 #include <stdio.h>
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-#ifdef _EXPRNBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 #define ExpressionPointer(i) ((struct expr *) (((i) == -1L) ? NULL : &ExpressionData(theEnv)->ExpressionArray[i]))
 #define HashedExpressionPointer(i) ExpressionPointer(i)
 
-   LOCALE void                        AllocateExpressions(void *);
-   LOCALE void                        RefreshExpressions(void *);
-   LOCALE void                        ClearBloadedExpressions(void *);
-   LOCALE void                        FindHashedExpressions(void *);
-   LOCALE void                        BsaveHashedExpressions(void *,FILE *);
-   LOCALE void                        BsaveConstructExpressions(void *,FILE *);
-   LOCALE void                        BsaveExpression(void *,struct expr *,FILE *);
+   void                        AllocateExpressions(void *);
+   void                        RefreshExpressions(void *);
+   void                        ClearBloadedExpressions(void *);
+   void                        FindHashedExpressions(void *);
+   void                        BsaveHashedExpressions(void *,FILE *);
+   void                        BsaveConstructExpressions(void *,FILE *);
+   void                        BsaveExpression(void *,struct expr *,FILE *);
 
 #endif /* _H_exprnbin */
 

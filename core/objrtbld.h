@@ -46,17 +46,7 @@
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _OBJRTBLD_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                    SetupObjectPatternStuff(void *);
+   void                    SetupObjectPatternStuff(void *);
 
 #endif /* DEFRULE_CONSTRUCT && OBJECT_SYSTEM */
 

@@ -40,17 +40,7 @@
 #include "evaluatn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DFFNXEXE_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           CallDeffunction(void *,DEFFUNCTION *,EXPRESSION *,DATA_OBJECT *);
+   void                           CallDeffunction(void *,DEFFUNCTION *,EXPRESSION *,DATA_OBJECT *);
 
 #endif /* DEFFUNCTION_CONSTRUCT */
 

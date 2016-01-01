@@ -31,17 +31,7 @@
 #ifndef _H_dffctpsr
 #define _H_dffctpsr
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DFFCTPSR_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE int                            ParseDeffacts(void *,const char *);
+   int                            ParseDeffacts(void *,const char *);
 
 #endif /* _H_dffctpsr */
 

@@ -112,7 +112,7 @@
 /*   for the parsing and creation of a defrule into */
 /*   the current environment.                       */
 /****************************************************/
-globle int ParseDefrule(
+int ParseDefrule(
   void *theEnv,
   const char *readSource)
   {
@@ -862,7 +862,7 @@ static int LogicalAnalysis(
 /*  constraints are useful for performing type checking on the   */
 /*  RHS of the rule.                                             */
 /*****************************************************************/
-globle struct lhsParseNode *FindVariable(
+struct lhsParseNode *FindVariable(
   SYMBOL_HN *name,
   struct lhsParseNode *theLHS)
   {
@@ -979,7 +979,7 @@ static void AddToDefruleList(
 /* DumpRuleAnalysis: Displays the information about network */
 /*   expressions generated from the analysis of the rule.   */
 /************************************************************/
-globle void DumpRuleAnalysis(
+void DumpRuleAnalysis(
   void *theEnv,
   struct lhsParseNode *tempNode)
   {

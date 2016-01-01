@@ -44,17 +44,7 @@
 #include "moduldef.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _MODULCMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           DefmoduleCompilerSetup(void *);
-   LOCALE void                           PrintDefmoduleReference(void *,FILE *,struct defmodule *);
+   void                           DefmoduleCompilerSetup(void *);
+   void                           PrintDefmoduleReference(void *,FILE *,struct defmodule *);
 
 #endif /* _H_modulcmp */

@@ -87,7 +87,7 @@ static void PopQuerySoln(void *);
   SIDE EFFECTS : Sets up kernel functions and parsers
   NOTES        : None
  ****************************************************/
-globle void SetupFactQuery(
+void SetupFactQuery(
   void *theEnv)
   {
    AllocateEnvironmentData(theEnv,FACT_QUERY_DATA,sizeof(struct factQueryData),NULL);
@@ -141,7 +141,7 @@ globle void SetupFactQuery(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : ((query-fact) <index>)
  *************************************************************/
-globle void GetQueryFact(
+void GetQueryFact(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -162,7 +162,7 @@ globle void GetQueryFact(
   SIDE EFFECTS : Caller's result buffer set appropriately
   NOTES        : H/L Syntax : ((query-fact-slot) <index> <slot-name>)
  **************************************************************************/
-globle void GetQueryFactSlot(
+void GetQueryFactSlot(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -274,7 +274,7 @@ globle void GetQueryFactSlot(
                    and how early the expression evaluates to TRUE - if at all).
   NOTES        : H/L Syntax : See FactParseQueryNoAction()
  ******************************************************************************/
-globle intBool AnyFacts(
+intBool AnyFacts(
   void *theEnv)
   {
    QUERY_TEMPLATE *qtemplates;
@@ -310,7 +310,7 @@ globle intBool AnyFacts(
                    and how early the expression evaulates to TRUE - if at all).
   NOTES        : H/L Syntax : See ParseQueryNoAction()
  ******************************************************************************/
-globle void QueryFindFact(
+void QueryFindFact(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -369,7 +369,7 @@ globle void QueryFindFact(
                    once for every fact set.
   NOTES        : H/L Syntax : See ParseQueryNoAction()
  ******************************************************************************/
-globle void QueryFindAllFacts(
+void QueryFindAllFacts(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -428,7 +428,7 @@ globle void QueryFindAllFacts(
                  Caller's result buffer holds result of user-action
   NOTES        : H/L Syntax : See ParseQueryAction()
  ******************************************************************************/
-globle void QueryDoForFact(
+void QueryDoForFact(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -469,7 +469,7 @@ globle void QueryDoForFact(
                  Caller's result buffer holds result of last action executed.
   NOTES        : H/L Syntax : See FactParseQueryAction()
  ******************************************************************************/
-globle void QueryDoForAllFacts(
+void QueryDoForAllFacts(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -519,7 +519,7 @@ globle void QueryDoForAllFacts(
                  Caller's result buffer holds result of last action executed.
   NOTES        : H/L Syntax : See FactParseQueryNoAction()
  ******************************************************************************/
-globle void DelayedQueryDoForAllFacts(
+void DelayedQueryDoForAllFacts(
   void *theEnv,
   DATA_OBJECT *result)
   {

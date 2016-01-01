@@ -60,19 +60,9 @@ struct objectCompilerData
 
 #define ObjectCompilerData(theEnv) ((struct objectCompilerData *) GetEnvironmentData(theEnv,OBJECT_COMPILER_DATA))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _OBJCMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                    SetupObjectsCompiler(void *);
-   LOCALE void                    PrintClassReference(void *,FILE *,DEFCLASS *,int,int);
-   LOCALE void                    DefclassCModuleReference(void *,FILE *,int,int,int);
+   void                    SetupObjectsCompiler(void *);
+   void                    PrintClassReference(void *,FILE *,DEFCLASS *,int,int);
+   void                    DefclassCModuleReference(void *,FILE *,int,int,int);
 
 #endif /* _H_objcmp */
 

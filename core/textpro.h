@@ -49,24 +49,14 @@
 
 #define _H_textpro
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _TEXTPRO_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 #if TEXTPRO_FUNCTIONS
-   LOCALE void                           FetchCommand(void *,DATA_OBJECT *);
-   LOCALE int                            PrintRegionCommand(void *);
-   LOCALE void                          *GetRegionCommand(void *);
+   void                           FetchCommand(void *,DATA_OBJECT *);
+   int                            PrintRegionCommand(void *);
+   void                          *GetRegionCommand(void *);
    int                                   TossCommand(void *);
 #endif
 
-   LOCALE void                           HelpFunctionDefinitions(void *);
+   void                           HelpFunctionDefinitions(void *);
 
 #endif /* _H_textpro */
 

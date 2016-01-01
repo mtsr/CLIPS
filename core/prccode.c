@@ -140,7 +140,7 @@ static intBool EvaluateBadCall(void *,void *,DATA_OBJECT *);
   SIDE EFFECTS : Primitive entities installed
   NOTES        : None
  ****************************************************/
-globle void InstallProcedurePrimitives(
+void InstallProcedurePrimitives(
   void *theEnv)
   {
    ENTITY_RECORD procParameterInfo = { "PROC_PARAM", PROC_PARAM,0,1,0,NULL,NULL,NULL,
@@ -246,7 +246,7 @@ static void DeallocateProceduralPrimitiveData(
   SIDE EFFECTS : Parameters parsed and expressions formed
   NOTES        : None
  ************************************************************/
-globle EXPRESSION *ParseProcParameters(
+EXPRESSION *ParseProcParameters(
   void *theEnv,
   const char *readSource,
   struct token *tkn,
@@ -373,7 +373,7 @@ SIDE EFFECTS : Variable references replaced with runtime calls
                   to access the paramter and local variable array
 NOTES        : None
 *************************************************************************/
-globle EXPRESSION *ParseProcActions(
+EXPRESSION *ParseProcActions(
   void *theEnv,
   const char *bodytype,
   const char *readSource,
@@ -477,7 +477,7 @@ globle EXPRESSION *ParseProcActions(
                     ClearParsedBindNames(theEnv) before the parse of the body
                     in which variables are being replaced.
  *************************************************************************/
-globle int ReplaceProcVars(
+int ReplaceProcVars(
   void *theEnv,
   const char *bodytype,
   EXPRESSION *actions,
@@ -637,7 +637,7 @@ globle int ReplaceProcVars(
   SIDE EFFECTS : Expression allocated
   NOTES        : None
  *****************************************************/
-globle EXPRESSION *GenProcWildcardReference(
+EXPRESSION *GenProcWildcardReference(
   void *theEnv,
   int theIndex)
   {
@@ -676,7 +676,7 @@ globle EXPRESSION *GenProcWildcardReference(
                  ProcParamArray set
   NOTES        : EvaluationError set on errors
  *******************************************************************/
-globle void PushProcParameters(
+void PushProcParameters(
   void *theEnv,
   EXPRESSION *parameterList,
   int numberOfParameters,
@@ -724,7 +724,7 @@ globle void PushProcParameters(
   SIDE EFFECTS : Stack popped and globals restored
   NOTES        : Assumes pstack != NULL
  ******************************************************************/
-globle void PopProcParameters(
+void PopProcParameters(
   void *theEnv)
   {
    register PROC_PARAM_STACK *ptmp;
@@ -829,7 +829,7 @@ static void ReleaseProcParameters(
   SIDE EFFECTS : Expression array created
   NOTES        : None
  ***********************************************************/
-globle EXPRESSION *GetProcParamExpressions(
+EXPRESSION *GetProcParamExpressions(
   void *theEnv)
   {
    register int i;
@@ -873,7 +873,7 @@ globle EXPRESSION *GetProcParamExpressions(
                  local variable array.
   NOTES        : None
  ***********************************************************/
-globle void EvaluateProcActions(
+void EvaluateProcActions(
   void *theEnv,
   struct defmodule *theModule,
   EXPRESSION *actions,
@@ -950,7 +950,7 @@ globle void EvaluateProcActions(
   SIDE EFFECTS : None
   NOTES        : None
  ****************************************************/
-globle void PrintProcParamArray(
+void PrintProcParamArray(
   void *theEnv,
   const char *logName)
   {
@@ -979,7 +979,7 @@ globle void PrintProcParamArray(
                    with corresponding values of ProcParamArray
   NOTES        : Multi-field is NOT on list of ephemeral segments
  ****************************************************************/
-globle void GrabProcWildargs(
+void GrabProcWildargs(
   void *theEnv,
   DATA_OBJECT *result,
   int theIndex)

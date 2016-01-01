@@ -101,7 +101,7 @@
 /**************************************************************/
 /* InitializeDefglobals: Initializes the defglobal construct. */
 /**************************************************************/
-globle void InitializeDefglobals(
+void InitializeDefglobals(
   void *theEnv)
   {  
    struct entityRecord globalInfo = { "GBL_VARIABLE", GBL_VARIABLE,0,0,0,
@@ -250,7 +250,7 @@ static void ReturnModule(
 /* GetDefglobalModuleItem: Returns a pointer to the defmodule */
 /*  item for the specified defglobal or defmodule.            */
 /**************************************************************/
-globle struct defglobalModule *GetDefglobalModuleItem(
+struct defglobalModule *GetDefglobalModuleItem(
   void *theEnv,
   struct defmodule *theModule)
   {
@@ -262,7 +262,7 @@ globle struct defglobalModule *GetDefglobalModuleItem(
 /*   list of defglobals. Returns a pointer to the    */
 /*   defglobal if found, otherwise NULL.             */
 /*****************************************************/
-globle void *EnvFindDefglobal(
+void *EnvFindDefglobal(
   void *theEnv,
   const char *defglobalName)
   { 
@@ -274,7 +274,7 @@ globle void *EnvFindDefglobal(
 /*   list of defglobals. Returns a pointer to the    */
 /*   defglobal if found, otherwise NULL.             */
 /*****************************************************/
-globle void *EnvFindDefglobalInModule(
+void *EnvFindDefglobalInModule(
   void *theEnv,
   const char *defglobalName)
   { 
@@ -286,7 +286,7 @@ globle void *EnvFindDefglobalInModule(
 /*   defglobal in the defglobal list. Otherwise returns the next    */
 /*   defglobal following the defglobal passed as an argument.       */
 /********************************************************************/
-globle void *EnvGetNextDefglobal(
+void *EnvGetNextDefglobal(
   void *theEnv,
   void *defglobalPtr)
   { 
@@ -297,7 +297,7 @@ globle void *EnvGetNextDefglobal(
 /* EnvIsDefglobalDeletable: Returns TRUE if a particular */
 /*   defglobal can be deleted, otherwise returns FALSE.  */
 /*********************************************************/
-globle intBool EnvIsDefglobalDeletable(
+intBool EnvIsDefglobalDeletable(
   void *theEnv,
   void *ptr)
   {
@@ -401,7 +401,7 @@ static void DestroyDefglobal(
 /* QSetDefglobalValue: Lowest level routine for */
 /*   setting a defglobal's value.               */
 /************************************************/
-globle void QSetDefglobalValue(
+void QSetDefglobalValue(
   void *theEnv,
   struct defglobal *theGlobal,
   DATA_OBJECT_PTR vPtr,
@@ -478,7 +478,7 @@ globle void QSetDefglobalValue(
 /*   defglobals. Returns a pointer to the defglobal if found, */
 /*   otherwise NULL.                                          */
 /**************************************************************/
-globle struct defglobal *QFindDefglobal(
+struct defglobal *QFindDefglobal(
   void *theEnv,
   SYMBOL_HN *defglobalName)
   {
@@ -498,7 +498,7 @@ globle struct defglobal *QFindDefglobal(
 /*   if the current value of ?*x* is 5, the string "?*x* = 5" would  */
 /*   be returned.                                                    */
 /*********************************************************************/
-globle void EnvGetDefglobalValueForm(
+void EnvGetDefglobalValueForm(
   void *theEnv,
   char *buffer,
   size_t bufferLength,
@@ -517,7 +517,7 @@ globle void EnvGetDefglobalValueForm(
 /************************************************************/
 /* EnvGetGlobalsChanged: Returns the defglobal change flag. */
 /************************************************************/
-globle int EnvGetGlobalsChanged(
+int EnvGetGlobalsChanged(
   void *theEnv)
   {    
    return(DefglobalData(theEnv)->ChangeToGlobals); 
@@ -526,7 +526,7 @@ globle int EnvGetGlobalsChanged(
 /*********************************************************/
 /* EnvSetGlobalsChanged: Sets the defglobal change flag. */
 /*********************************************************/
-globle void EnvSetGlobalsChanged(
+void EnvSetGlobalsChanged(
   void *theEnv,
   int value)
   {
@@ -597,7 +597,7 @@ static intBool GetDefglobalValue2(
 /***************************************************************/
 /* QGetDefglobalValue: Returns the value of a global variable. */
 /***************************************************************/
-globle int QGetDefglobalValue(
+int QGetDefglobalValue(
   void *theEnv,
   void *vTheGlobal,
   DATA_OBJECT_PTR vPtr)
@@ -634,7 +634,7 @@ globle int QGetDefglobalValue(
 /* EnvGetDefglobalValue: Returns the value of the specified */
 /*   global variable in the supplied DATA_OBJECT.           */
 /************************************************************/
-globle intBool EnvGetDefglobalValue(
+intBool EnvGetDefglobalValue(
   void *theEnv,
   const char *variableName,
   DATA_OBJECT_PTR vPtr)
@@ -653,7 +653,7 @@ globle intBool EnvGetDefglobalValue(
 /* EnvSetDefglobalValue: Sets the value of the specified global */
 /*   variable to the value stored in the supplied DATA_OBJECT.  */
 /****************************************************************/
-globle intBool EnvSetDefglobalValue(
+intBool EnvSetDefglobalValue(
   void *theEnv,
   const char *variableName,
   DATA_OBJECT_PTR vPtr)
@@ -700,7 +700,7 @@ static void IncrementDefglobalBusyCount(
 /***********************************************************************/
 /* UpdateDefglobalScope: Updates the scope flag of all the defglobals. */
 /***********************************************************************/
-globle void UpdateDefglobalScope(
+void UpdateDefglobalScope(
   void *theEnv)
   {
    struct defglobal *theDefglobal;
@@ -749,7 +749,7 @@ globle void UpdateDefglobalScope(
 /*   similar fashion to GetNextDefglobal, but skips    */
 /*   defglobals that are out of scope.                 */
 /*******************************************************/
-globle void *GetNextDefglobalInScope(
+void *GetNextDefglobalInScope(
   void *theEnv,
   void *vTheGlobal)
   {
@@ -834,21 +834,21 @@ globle void *GetNextDefglobalInScope(
 /* Additional Environment Functions */
 /*##################################*/
 
-globle const char *EnvDefglobalModule(
+const char *EnvDefglobalModule(
   void *theEnv,
   void *theDefglobal)
   {
    return GetConstructModuleName((struct constructHeader *) theDefglobal);
   }
 
-globle const char *EnvGetDefglobalName(
+const char *EnvGetDefglobalName(
   void *theEnv,
   void *theDefglobal)
   {
    return GetConstructNameString((struct constructHeader *) theDefglobal);
   }
 
-globle const char *EnvGetDefglobalPPForm(
+const char *EnvGetDefglobalPPForm(
   void *theEnv,
   void *theDefglobal)
   {
@@ -861,38 +861,38 @@ globle const char *EnvGetDefglobalPPForm(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle const char *DefglobalModule(
+const char *DefglobalModule(
   void *theDefglobal)
   {
    return EnvDefglobalModule(GetCurrentEnvironment(),theDefglobal);
   }
 
-globle void *FindDefglobal(
+void *FindDefglobal(
   const char *defglobalName)
   {
    return EnvFindDefglobal(GetCurrentEnvironment(),defglobalName);
   }
 
-globle const char *GetDefglobalName(
+const char *GetDefglobalName(
   void *theDefglobal)
   {
    return EnvGetDefglobalName(GetCurrentEnvironment(),theDefglobal);
   }
 
-globle const char *GetDefglobalPPForm(
+const char *GetDefglobalPPForm(
   void *theDefglobal)
   {
    return EnvGetDefglobalPPForm(GetCurrentEnvironment(),theDefglobal);
   }
 
-globle intBool GetDefglobalValue(
+intBool GetDefglobalValue(
   const char *variableName,
   DATA_OBJECT_PTR vPtr)
   {
    return EnvGetDefglobalValue(GetCurrentEnvironment(),variableName,vPtr);
   }
 
-globle void GetDefglobalValueForm(
+void GetDefglobalValueForm(
   char *buffer,
   unsigned bufferLength,
   void *vTheGlobal)
@@ -900,31 +900,31 @@ globle void GetDefglobalValueForm(
    EnvGetDefglobalValueForm(GetCurrentEnvironment(),buffer,bufferLength,vTheGlobal);
   }
 
-globle int GetGlobalsChanged()
+int GetGlobalsChanged()
   {
    return EnvGetGlobalsChanged(GetCurrentEnvironment());
   }
 
-globle void *GetNextDefglobal(
+void *GetNextDefglobal(
   void *defglobalPtr)
   {
    return EnvGetNextDefglobal(GetCurrentEnvironment(),defglobalPtr);
   }
 
-globle intBool IsDefglobalDeletable(
+intBool IsDefglobalDeletable(
   void *ptr)
   {
    return EnvIsDefglobalDeletable(GetCurrentEnvironment(),ptr);
   }
 
-globle intBool SetDefglobalValue(
+intBool SetDefglobalValue(
   const char *variableName,
   DATA_OBJECT_PTR vPtr)
   {
    return EnvSetDefglobalValue(GetCurrentEnvironment(),variableName,vPtr);
   }
 
-globle void SetGlobalsChanged(
+void SetGlobalsChanged(
   int value)
   {
    EnvSetGlobalsChanged(GetCurrentEnvironment(),value);

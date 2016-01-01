@@ -34,17 +34,7 @@
 
 #include "genrcfun.h"
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _IMMTHPSR_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           AddImplicitMethods(void *,DEFGENERIC *);
+   void                           AddImplicitMethods(void *,DEFGENERIC *);
 
 #endif /* DEFGENERIC_CONSTRUCT && (! BLOAD_ONLY) && (! RUN_TIME) */
 

@@ -38,18 +38,8 @@
 #include "evaluatn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DEFAULT_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           DeriveDefaultFromConstraints(void *,CONSTRAINT_RECORD *,DATA_OBJECT *,int,int);
-   LOCALE struct expr                   *ParseDefault(void *,const char *,int,int,int,int *,int *,int *);
+   void                           DeriveDefaultFromConstraints(void *,CONSTRAINT_RECORD *,DATA_OBJECT *,int,int);
+   struct expr                   *ParseDefault(void *,const char *,int,int,int,int *,int *,int *);
 
 #endif /* _H_default */
 

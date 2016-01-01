@@ -42,18 +42,8 @@
 #define _STDIO_INCLUDED_
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _OBJRTCMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                    ObjectPatternsCompilerSetup(void *);
-   LOCALE void                    ObjectPatternNodeReference(void *,void *,FILE *,int,int);
+   void                    ObjectPatternsCompilerSetup(void *);
+   void                    ObjectPatternNodeReference(void *,void *,FILE *,int,int);
 
 #endif /* DEFRULE_CONSTRUCT && OBJECT_SYSTEM && (! RUN_TIME) && CONSTRUCT_COMPILER */
 

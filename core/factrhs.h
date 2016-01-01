@@ -41,21 +41,11 @@
 #include "symbol.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _FACTRHS_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE struct expr                   *BuildRHSAssert(void *,const char *,struct token *,int *,int,int,const char *);
-   LOCALE struct expr                   *GetAssertArgument(void *,const char *,struct token *,int *,int,int,int *);
-   LOCALE struct expr                   *GetRHSPattern(void *,const char *,struct token *,int *,int,
+   struct expr                   *BuildRHSAssert(void *,const char *,struct token *,int *,int,int,const char *);
+   struct expr                   *GetAssertArgument(void *,const char *,struct token *,int *,int,int,int *);
+   struct expr                   *GetRHSPattern(void *,const char *,struct token *,int *,int,
                                                        int,int,int);
-   LOCALE struct fact                   *StringToFact(void *,const char *);
+   struct fact                   *StringToFact(void *,const char *);
 
 #endif /* _H_factrhs */
 

@@ -133,7 +133,7 @@ struct miscFunctionData
 /*****************************************************************/
 /* MiscFunctionDefinitions: Initializes miscellaneous functions. */
 /*****************************************************************/
-globle void MiscFunctionDefinitions(
+void MiscFunctionDefinitions(
   void *theEnv)
   {
    AllocateEnvironmentData(theEnv,MISCFUN_DATA,sizeof(struct miscFunctionData),NULL);
@@ -189,7 +189,7 @@ globle void MiscFunctionDefinitions(
 /******************************************************************/
 /* CreateFunction: H/L access routine for the create$ function.   */
 /******************************************************************/
-globle void CreateFunction(
+void CreateFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -199,7 +199,7 @@ globle void CreateFunction(
 /*****************************************************************/
 /* SetgenFunction: H/L access routine for the setgen function.   */
 /*****************************************************************/
-globle long long SetgenFunction(
+long long SetgenFunction(
   void *theEnv)
   {
    long long theLong;
@@ -237,7 +237,7 @@ globle long long SetgenFunction(
 /* GensymFunction: H/L access routine   */
 /*   for the gensym function.           */
 /****************************************/
-globle void *GensymFunction(
+void *GensymFunction(
   void *theEnv)
   {
    char genstring[128];
@@ -267,7 +267,7 @@ globle void *GensymFunction(
 /* GensymStarFunction: H/L access routine for   */
 /*   the gensym* function.                      */
 /************************************************/
-globle void *GensymStarFunction(
+void *GensymStarFunction(
   void *theEnv)
   {
    /*============================================*/
@@ -287,7 +287,7 @@ globle void *GensymStarFunction(
 /* GensymStar: C access routine for */
 /*   the gensym* function.          */
 /************************************/
-globle void *GensymStar(
+void *GensymStar(
   void *theEnv)
   {
    char genstring[128];
@@ -317,7 +317,7 @@ globle void *GensymStar(
 /* RandomFunction: H/L access routine for   */
 /*   the random function.                   */
 /********************************************/
-globle long long RandomFunction(
+long long RandomFunction(
   void *theEnv)
   {
    int argCount;
@@ -368,7 +368,7 @@ globle long long RandomFunction(
 /* SeedFunction: H/L access routine for   */
 /*   the seed function.                   */
 /******************************************/
-globle void SeedFunction(
+void SeedFunction(
   void *theEnv)
   {
    DATA_OBJECT theValue;
@@ -391,7 +391,7 @@ globle void SeedFunction(
 /* LengthFunction: H/L access routine for   */
 /*   the length$ function.                  */
 /********************************************/
-globle long long LengthFunction(
+long long LengthFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
@@ -433,7 +433,7 @@ globle long long LengthFunction(
 /* ReleaseMemCommand: H/L access routine   */
 /*   for the release-mem function.         */
 /*******************************************/
-globle long long ReleaseMemCommand(
+long long ReleaseMemCommand(
   void *theEnv)
   {
    /*================================================*/
@@ -454,7 +454,7 @@ globle long long ReleaseMemCommand(
 /* ConserveMemCommand: H/L access routine */
 /*   for the conserve-mem command.        */
 /******************************************/
-globle void ConserveMemCommand(
+void ConserveMemCommand(
   void *theEnv)
   {
    const char *argument;
@@ -508,7 +508,7 @@ globle void ConserveMemCommand(
 /* MemUsedCommand: H/L access routine   */
 /*   for the mem-used command.          */
 /****************************************/
-globle long long MemUsedCommand(
+long long MemUsedCommand(
   void *theEnv)
   {
    /*=============================================*/
@@ -529,7 +529,7 @@ globle long long MemUsedCommand(
 /* MemRequestsCommand: H/L access routine   */
 /*   for the mem-requests command.          */
 /********************************************/
-globle long long MemRequestsCommand(
+long long MemRequestsCommand(
   void *theEnv)
   {
    /*=================================================*/
@@ -552,7 +552,7 @@ globle long long MemRequestsCommand(
 /* AproposCommand: H/L access routine   */
 /*   for the apropos command.           */
 /****************************************/
-globle void AproposCommand(
+void AproposCommand(
   void *theEnv)
   {
    const char *argument;
@@ -592,7 +592,7 @@ globle void AproposCommand(
 /* OptionsCommand: H/L access routine   */
 /*   for the options command.           */
 /****************************************/
-globle void OptionsCommand(
+void OptionsCommand(
   void *theEnv)
   {
    /*===========================================*/
@@ -826,7 +826,7 @@ EnvPrintRouter(theEnv,WDISPLAY,"Run time module is ");
 /* OperatingSystemFunction: H/L access routine */
 /*   for the operating system function.        */
 /***********************************************/
-globle void *OperatingSystemFunction(
+void *OperatingSystemFunction(
   void *theEnv)
   {
    EnvArgCountCheck(theEnv,"operating-system",EXACTLY,0);
@@ -885,7 +885,7 @@ globle void *OperatingSystemFunction(
                  EvaluationError set on errors
   NOTES        : None
  *******************************************************************/
-globle void ExpandFuncCall(
+void ExpandFuncCall(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -956,7 +956,7 @@ globle void ExpandFuncCall(
   SIDE EFFECTS : EvaluationError set
   NOTES        : None
  **********************************************************************/
-globle void DummyExpandFuncMultifield(
+void DummyExpandFuncMultifield(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -1060,7 +1060,7 @@ static void ExpandFuncMultifield(
   SIDE EFFECTS : EvaluationError set
   NOTES        : None
  ****************************************************************/
-globle void *CauseEvaluationError(
+void *CauseEvaluationError(
   void *theEnv)
   {
    EnvSetEvaluationError(theEnv,TRUE);
@@ -1077,7 +1077,7 @@ globle void *CauseEvaluationError(
   SIDE EFFECTS : SequenceOpMode toggled
   NOTES        : None
  ****************************************************************/
-globle intBool SetSORCommand(
+intBool SetSORCommand(
   void *theEnv)
   {
 #if (! RUN_TIME) && (! BLOAD_ONLY)
@@ -1100,7 +1100,7 @@ globle intBool SetSORCommand(
   SIDE EFFECTS : EvaluationError set on errors
   NOTES        : None
  ********************************************************************/
-globle void *GetFunctionRestrictions(
+void *GetFunctionRestrictions(
   void *theEnv)
   {
    DATA_OBJECT temp;
@@ -1124,7 +1124,7 @@ globle void *GetFunctionRestrictions(
 /* GetFunctionListFunction: H/L access routine   */
 /*   for the get-function-list function.         */
 /*************************************************/
-globle void GetFunctionListFunction(
+void GetFunctionListFunction(
   void *theEnv,
   DATA_OBJECT *returnValue)
   {
@@ -1162,7 +1162,7 @@ globle void GetFunctionListFunction(
 /* FuncallFunction: H/L access routine */
 /*   for the funcall function.         */
 /***************************************/
-globle void FuncallFunction(
+void FuncallFunction(
   void *theEnv,
   DATA_OBJECT *returnValue)
   {
@@ -1312,7 +1312,7 @@ globle void FuncallFunction(
 /* NewFunction: H/L access routine */
 /*   for the new function.         */
 /***********************************/
-globle void NewFunction(
+void NewFunction(
   void *theEnv,
   DATA_OBJECT *returnValue)
   {
@@ -1368,7 +1368,7 @@ globle void NewFunction(
 /* CallFunction: H/L access routine */
 /*   for the new function.          */
 /************************************/
-globle void CallFunction(
+void CallFunction(
   void *theEnv,
   DATA_OBJECT *returnValue)
   {
@@ -1473,7 +1473,7 @@ static int FindLanguageType(
 /* TimeFunction: H/L access routine */
 /*   for the time function.         */
 /************************************/
-globle double TimeFunction(
+double TimeFunction(
   void *theEnv)
   {
    /*=========================================*/
@@ -1563,7 +1563,7 @@ static void ConvertTime(
 /* LocalTimeFunction: H/L access routine */
 /*   for the local-time function.        */
 /*****************************************/
-globle void LocalTimeFunction(
+void LocalTimeFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -1590,7 +1590,7 @@ globle void LocalTimeFunction(
 /* GMTimeFunction: H/L access routine */
 /*   for the gm-time function.        */
 /**************************************/
-globle void GMTimeFunction(
+void GMTimeFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -1617,7 +1617,7 @@ globle void GMTimeFunction(
 /* TimerFunction: H/L access routine   */
 /*   for the timer function.           */
 /***************************************/
-globle double TimerFunction(
+double TimerFunction(
   void *theEnv)
   {
    int numa, i;
@@ -1642,7 +1642,7 @@ globle double TimerFunction(
 /* SystemCommand: H/L access routine   */
 /*   for the system function.          */
 /***************************************/
-globle void SystemCommand(
+void SystemCommand(
   void *theEnv)
   {
    char *commandBuffer = NULL;
@@ -1701,7 +1701,7 @@ globle void SystemCommand(
 /* SlotValueFunction: H/L access routine */
 /*   for the slot-value function.        */
 /*****************************************/
-globle void SlotValueFunction(
+void SlotValueFunction(
   void *theEnv,
   DATA_OBJECT *returnValue)
   {

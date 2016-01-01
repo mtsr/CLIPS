@@ -42,26 +42,16 @@
 #include "evaluatn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
+   void                           GenericDispatch(void *,DEFGENERIC *,DEFMETHOD *,DEFMETHOD *,EXPRESSION *,DATA_OBJECT *);
+   void                           UnboundMethodErr(void *);
+   intBool                        IsMethodApplicable(void *,DEFMETHOD *);
 
-#ifdef _GENRCEXE_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
+   int                            NextMethodP(void *);
+   void                           CallNextMethod(void *,DATA_OBJECT *);
+   void                           CallSpecificMethod(void *,DATA_OBJECT *);
+   void                           OverrideNextMethod(void *,DATA_OBJECT *);
 
-   LOCALE void                           GenericDispatch(void *,DEFGENERIC *,DEFMETHOD *,DEFMETHOD *,EXPRESSION *,DATA_OBJECT *);
-   LOCALE void                           UnboundMethodErr(void *);
-   LOCALE intBool                        IsMethodApplicable(void *,DEFMETHOD *);
-
-   LOCALE int                            NextMethodP(void *);
-   LOCALE void                           CallNextMethod(void *,DATA_OBJECT *);
-   LOCALE void                           CallSpecificMethod(void *,DATA_OBJECT *);
-   LOCALE void                           OverrideNextMethod(void *,DATA_OBJECT *);
-
-   LOCALE void                           GetGenericCurrentArgument(void *,DATA_OBJECT *);
+   void                           GetGenericCurrentArgument(void *,DATA_OBJECT *);
 
 #endif /* DEFGENERIC_CONSTRUCT */
 

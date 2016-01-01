@@ -36,15 +36,6 @@
 #include "reorder.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-#ifdef _ANALYSIS_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 /*****************************************************/
 /* nandFrame structure: Stores information about the */
 /*   current position in the nesting of not/and CEs  */
@@ -57,7 +48,7 @@ struct nandFrame
    struct nandFrame *next;
   };
 
-   LOCALE intBool                        VariableAnalysis(void *,struct lhsParseNode *);
+   intBool                        VariableAnalysis(void *,struct lhsParseNode *);
 
 #endif
 

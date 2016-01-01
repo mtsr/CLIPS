@@ -118,7 +118,7 @@ struct groupReference
 /* ReorderPatterns: Reorders a group of CEs */     
 /*   to accommodate KB Rete topology.       */
 /********************************************/
-globle struct lhsParseNode *ReorderPatterns(
+struct lhsParseNode *ReorderPatterns(
   void *theEnv,
   struct lhsParseNode *theLHS,
   int *anyChange)
@@ -387,7 +387,7 @@ static void MarkExistsNands(
 /*   (such as before a "test" CE or "not" CE which is the first */
 /*   CE within an "and" CE).                                    */
 /****************************************************************/
-globle void AddInitialPatterns(
+void AddInitialPatterns(
   void *theEnv,
   struct lhsParseNode *theLHS)
   {
@@ -1082,7 +1082,7 @@ static struct lhsParseNode *CompressCEs(
 /*********************************************************************/
 /* CopyLHSParseNodes: Copies a linked group of conditional elements. */
 /*********************************************************************/
-globle struct lhsParseNode *CopyLHSParseNodes(
+struct lhsParseNode *CopyLHSParseNodes(
   void *theEnv,
   struct lhsParseNode *listOfCEs)
   {
@@ -1103,7 +1103,7 @@ globle struct lhsParseNode *CopyLHSParseNodes(
 /**********************************************************/
 /* CopyLHSParseNode: Copies a single conditional element. */
 /**********************************************************/
-globle void CopyLHSParseNode(
+void CopyLHSParseNode(
   void *theEnv,
   struct lhsParseNode *dest,
   struct lhsParseNode *src,
@@ -1189,7 +1189,7 @@ globle void CopyLHSParseNode(
 /* GetLHSParseNode: Creates an empty node structure */
 /*   used for building conditional elements.        */
 /****************************************************/
-globle struct lhsParseNode *GetLHSParseNode(
+struct lhsParseNode *GetLHSParseNode(
   void *theEnv)
   {
    struct lhsParseNode *newNode;
@@ -1245,7 +1245,7 @@ globle struct lhsParseNode *GetLHSParseNode(
 /* ReturnLHSParseNodes:  Returns a multiply linked list */
 /*   of lhsParseNode structures to the memory manager.  */
 /********************************************************/
-globle void ReturnLHSParseNodes(
+void ReturnLHSParseNodes(
   void *theEnv,
   struct lhsParseNode *waste)
   {
@@ -1277,7 +1277,7 @@ globle void ReturnLHSParseNodes(
 /* ExpressionToLHSParseNodes: Copies an expression into */
 /*   the equivalent lhsParseNode data structures.       */
 /********************************************************/
-globle struct lhsParseNode *ExpressionToLHSParseNodes(
+struct lhsParseNode *ExpressionToLHSParseNodes(
   void *theEnv,
   struct expr *expressionList)
   {
@@ -1334,7 +1334,7 @@ globle struct lhsParseNode *ExpressionToLHSParseNodes(
 /* LHSParseNodesToExpression: Copies lhsParseNode data structures */
 /*   into the equivalent expression data structures.              */
 /******************************************************************/
-globle struct expr *LHSParseNodesToExpression(
+struct expr *LHSParseNodesToExpression(
   void *theEnv,
   struct lhsParseNode *nodeList)
   {
@@ -1674,7 +1674,7 @@ static void PropagateIndexSlotPatternValues(
 /*   value to the marked field of a LHSParseNode.  */
 /***************************************************/
 /*
-globle void AssignPatternMarkedFlag(
+void AssignPatternMarkedFlag(
   struct lhsParseNode *theField,
   short markedValue)
   {
@@ -1761,7 +1761,7 @@ static int PropagateWhichCE(
 /********************/
 /* IsExistsSubjoin: */
 /********************/
-globle int IsExistsSubjoin(
+int IsExistsSubjoin(
   struct lhsParseNode *theLHS,
   int parentDepth)
   {
@@ -1788,7 +1788,7 @@ globle int IsExistsSubjoin(
 /*   is more efficient to add the arguments of one of the "and"            */
 /*   expressions to the list of arguments for the other and expression).   */
 /***************************************************************************/
-globle struct lhsParseNode *CombineLHSParseNodes(
+struct lhsParseNode *CombineLHSParseNodes(
   void *theEnv,
   struct lhsParseNode *expr1,
   struct lhsParseNode *expr2)

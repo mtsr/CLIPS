@@ -36,17 +36,7 @@
 #include "tmpltdef.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _TMPLTLHS_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE struct lhsParseNode           *DeftemplateLHSParse(void *,const char *,struct deftemplate *);
+   struct lhsParseNode           *DeftemplateLHSParse(void *,const char *,struct deftemplate *);
 
 #endif /* _H_tmpltlhs */
 

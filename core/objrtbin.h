@@ -49,17 +49,7 @@ struct objectReteBinaryData
 #define ObjectReteBinaryData(theEnv) ((struct objectReteBinaryData *) GetEnvironmentData(theEnv,OBJECTRETEBIN_DATA))
 
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _OBJRTBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                    SetupObjectPatternsBload(void *);
+   void                    SetupObjectPatternsBload(void *);
 
 #endif /* DEFRULE_CONSTRUCT && OBJECT_SYSTEM */
 

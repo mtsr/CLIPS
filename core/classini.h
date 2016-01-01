@@ -51,21 +51,11 @@
 
 #if OBJECT_SYSTEM
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _CLASSINI_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-LOCALE void SetupObjectSystem(void *);
+void SetupObjectSystem(void *);
 #if RUN_TIME
-LOCALE void ObjectsRunTimeInitialize(void *,DEFCLASS *[],SLOT_NAME *[],DEFCLASS *[],unsigned);
+void ObjectsRunTimeInitialize(void *,DEFCLASS *[],SLOT_NAME *[],DEFCLASS *[],unsigned);
 #else
-LOCALE void CreateSystemClasses(void *);
+void CreateSystemClasses(void *);
 #endif
 
 #endif

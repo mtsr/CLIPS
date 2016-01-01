@@ -50,42 +50,32 @@
 #include "evaluatn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _TMPLTBSC_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           DeftemplateBasicCommands(void *);
-   LOCALE void                           UndeftemplateCommand(void *);
-   LOCALE intBool                        EnvUndeftemplate(void *,void *);
-   LOCALE void                           GetDeftemplateListFunction(void *,DATA_OBJECT_PTR);
-   LOCALE void                           EnvGetDeftemplateList(void *,DATA_OBJECT_PTR,void *);
-   LOCALE void                          *DeftemplateModuleFunction(void *);
+   void                           DeftemplateBasicCommands(void *);
+   void                           UndeftemplateCommand(void *);
+   intBool                        EnvUndeftemplate(void *,void *);
+   void                           GetDeftemplateListFunction(void *,DATA_OBJECT_PTR);
+   void                           EnvGetDeftemplateList(void *,DATA_OBJECT_PTR,void *);
+   void                          *DeftemplateModuleFunction(void *);
 #if DEBUGGING_FUNCTIONS
-   LOCALE void                           PPDeftemplateCommand(void *);
-   LOCALE int                            PPDeftemplate(void *,const char *,const char *);
-   LOCALE void                           ListDeftemplatesCommand(void *);
-   LOCALE void                           EnvListDeftemplates(void *,const char *,void *);
-   LOCALE unsigned                       EnvGetDeftemplateWatch(void *,void *);
-   LOCALE void                           EnvSetDeftemplateWatch(void *,unsigned,void *);
-   LOCALE unsigned                       DeftemplateWatchAccess(void *,int,unsigned,struct expr *);
-   LOCALE unsigned                       DeftemplateWatchPrint(void *,const char *,int,struct expr *);
+   void                           PPDeftemplateCommand(void *);
+   int                            PPDeftemplate(void *,const char *,const char *);
+   void                           ListDeftemplatesCommand(void *);
+   void                           EnvListDeftemplates(void *,const char *,void *);
+   unsigned                       EnvGetDeftemplateWatch(void *,void *);
+   void                           EnvSetDeftemplateWatch(void *,unsigned,void *);
+   unsigned                       DeftemplateWatchAccess(void *,int,unsigned,struct expr *);
+   unsigned                       DeftemplateWatchPrint(void *,const char *,int,struct expr *);
 #endif
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE void                           GetDeftemplateList(DATA_OBJECT_PTR,void *);
+   void                           GetDeftemplateList(DATA_OBJECT_PTR,void *);
 #if DEBUGGING_FUNCTIONS
-   LOCALE unsigned                       GetDeftemplateWatch(void *);
-   LOCALE void                           ListDeftemplates(const char *,void *);
-   LOCALE void                           SetDeftemplateWatch(unsigned,void *);
+   unsigned                       GetDeftemplateWatch(void *);
+   void                           ListDeftemplates(const char *,void *);
+   void                           SetDeftemplateWatch(unsigned,void *);
 #endif
-   LOCALE intBool                        Undeftemplate(void *);
+   intBool                        Undeftemplate(void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

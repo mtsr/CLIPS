@@ -41,17 +41,7 @@
 #include "tmpltdef.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _TMPLTRHS_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE struct expr                   *ParseAssertTemplate(void *,const char *,struct token *,int *,
+   struct expr                   *ParseAssertTemplate(void *,const char *,struct token *,int *,
                                                              int,int,struct deftemplate *);
 
 #endif /* _H_tmpltrhs */

@@ -35,17 +35,7 @@
 #include "network.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _FACTCMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           FactPatternsCompilerSetup(void *);
-   LOCALE void                           FactPatternNodeReference(void *,void *,FILE *,int,int);
+   void                           FactPatternsCompilerSetup(void *);
+   void                           FactPatternNodeReference(void *,void *,FILE *,int,int);
 
 #endif /* _H_factcmp */

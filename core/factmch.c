@@ -81,7 +81,7 @@
 /*************************************************************************/
 /* FactPatternMatch: Implements the core loop for fact pattern matching. */
 /*************************************************************************/
-globle void FactPatternMatch(
+void FactPatternMatch(
   void *theEnv,
   struct fact *theFact,
   struct factPatternNode *patternPtr,
@@ -808,7 +808,7 @@ static int SkipFactPatternNode(
 /*  that the nodes were traversed ("initialized") by the       */
 /*  incremental reset.                                         */
 /***************************************************************/
-globle void MarkFactPatternForIncrementalReset(
+void MarkFactPatternForIncrementalReset(
   void *theEnv,
   struct patternNodeHeader *thePattern,
   int value)
@@ -863,7 +863,7 @@ globle void MarkFactPatternForIncrementalReset(
 /*   an incremental reset, newly added patterns should be the */
 /*   only active patterns in the fact pattern network.        */
 /**************************************************************/
-globle void FactsIncrementalReset(
+void FactsIncrementalReset(
   void *theEnv)
   {
    struct fact *factPtr;

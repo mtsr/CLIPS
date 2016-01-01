@@ -117,7 +117,7 @@
 /****************************************************************/
 /* DefruleCommands: Initializes defrule commands and functions. */
 /****************************************************************/
-globle void DefruleCommands(
+void DefruleCommands(
   void *theEnv)
   {
 #if ! RUN_TIME
@@ -186,7 +186,7 @@ globle void DefruleCommands(
 /* EnvGetBetaMemoryResizing: C access routine  */
 /*   for the get-beta-memory-resizing command. */
 /***********************************************/
-globle intBool EnvGetBetaMemoryResizing(
+intBool EnvGetBetaMemoryResizing(
   void *theEnv)
   {   
    return(DefruleData(theEnv)->BetaMemoryResizingFlag);
@@ -196,7 +196,7 @@ globle intBool EnvGetBetaMemoryResizing(
 /* EnvSetBetaMemoryResizing: C access routine  */
 /*   for the set-beta-memory-resizing command. */
 /***********************************************/
-globle intBool EnvSetBetaMemoryResizing(
+intBool EnvSetBetaMemoryResizing(
   void *theEnv,
   int value)
   {
@@ -213,7 +213,7 @@ globle intBool EnvSetBetaMemoryResizing(
 /* SetBetaMemoryResizingCommand: H/L access routine */
 /*   for the set-beta-memory-resizing command.      */
 /****************************************************/
-globle int SetBetaMemoryResizingCommand(
+int SetBetaMemoryResizingCommand(
   void *theEnv)
   {
    int oldValue;
@@ -251,7 +251,7 @@ globle int SetBetaMemoryResizingCommand(
 /* GetBetaMemoryResizingCommand: H/L access routine */
 /*   for the get-beta-memory-resizing command.      */
 /****************************************************/
-globle int GetBetaMemoryResizingCommand(
+int GetBetaMemoryResizingCommand(
   void *theEnv)
   {
    int oldValue;
@@ -270,7 +270,7 @@ globle int GetBetaMemoryResizingCommand(
 /* MatchesCommand: H/L access routine   */
 /*   for the matches command.           */
 /****************************************/
-globle void MatchesCommand(
+void MatchesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -330,7 +330,7 @@ globle void MatchesCommand(
 /* EnvMatches: C access routine */
 /*   for the matches command.   */
 /********************************/
-globle void EnvMatches(
+void EnvMatches(
   void *theEnv,
   void *theRule,
   int output,
@@ -495,7 +495,7 @@ static long AlphaJoinCountDriver(
 /* EnvAlphaJoinCount: Returns the number of alpha */
 /*   joins associated with the specified rule.    */
 /**************************************************/
-globle long EnvAlphaJoinCount(
+long EnvAlphaJoinCount(
   void *theEnv,
   void *vTheDefrule)
   {
@@ -535,7 +535,7 @@ static void AlphaJoinsDriver(
 /* EnvAlphaJoins: Retrieves the alpha joins */
 /*   associated with the specified rule.    */
 /********************************************/
-globle void EnvAlphaJoins(
+void EnvAlphaJoins(
   void *theEnv,
   void *vTheDefrule,
   long alphaCount,
@@ -574,7 +574,7 @@ static long BetaJoinCountDriver(
 /* EnvBetaJoinCount: Returns the number of beta */
 /*   joins associated with the specified rule.  */
 /************************************************/
-globle long EnvBetaJoinCount(
+long EnvBetaJoinCount(
   void *theEnv,
   void *vTheDefrule)
   {
@@ -652,7 +652,7 @@ static void BetaJoinsDriver(
 /* EnvBetaJoins: Retrieves the beta joins */
 /*   associated with the specified rule.  */
 /******************************************/
-globle void EnvBetaJoins(
+void EnvBetaJoins(
   void *theEnv,
   void *vTheDefrule,
   long betaArraySize,
@@ -667,7 +667,7 @@ globle void EnvBetaJoins(
 /* EnvCreateJoinArray: Creates a join information */
 /*    array of the specified size.                */
 /**************************************************/
-globle struct joinInformation *EnvCreateJoinArray(
+struct joinInformation *EnvCreateJoinArray(
    void *theEnv,
    long size)
    {
@@ -680,7 +680,7 @@ globle struct joinInformation *EnvCreateJoinArray(
 /* EnvFreeJoinArray: Frees a join information */
 /*    array of the specified size.            */
 /**********************************************/
-globle void EnvFreeJoinArray(
+void EnvFreeJoinArray(
    void *theEnv,
    struct joinInformation *theArray,
    long size)
@@ -999,7 +999,7 @@ static int CountPatterns(
 /* JoinActivityCommand: H/L access routine */
 /*   for the join-activity command.        */
 /*******************************************/
-globle void JoinActivityCommand(
+void JoinActivityCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -1059,7 +1059,7 @@ globle void JoinActivityCommand(
 /* EnvJoinActivity: C access routine */
 /*   for the join-activity command.  */
 /*************************************/
-globle void EnvJoinActivity(
+void EnvJoinActivity(
   void *theEnv,
   void *theRule,
   int output,
@@ -1308,7 +1308,7 @@ static void JoinActivityReset(
 /* JoinActivityResetCommand: H/L access routine */
 /*   for the reset-join-activity command.       */
 /************************************************/
-globle void JoinActivityResetCommand(
+void JoinActivityResetCommand(
   void *theEnv)
   { 
    DoForAllConstructs(theEnv,JoinActivityReset,DefruleData(theEnv)->DefruleModuleIndex,TRUE,NULL);
@@ -1318,7 +1318,7 @@ globle void JoinActivityResetCommand(
 /* TimetagFunction: H/L access routine */
 /*   for the timetag function.         */
 /***************************************/
-globle long long TimetagFunction(
+long long TimetagFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
@@ -1340,7 +1340,7 @@ globle long long TimetagFunction(
 /* RuleComplexityCommand: H/L access routine   */
 /*   for the rule-complexity function.         */
 /***********************************************/
-globle long RuleComplexityCommand(
+long RuleComplexityCommand(
   void *theEnv)
   {
    const char *ruleName;
@@ -1363,7 +1363,7 @@ globle long RuleComplexityCommand(
 /* ShowJoinsCommand: H/L access routine   */
 /*   for the show-joins command.          */
 /******************************************/
-globle void ShowJoinsCommand(
+void ShowJoinsCommand(
   void *theEnv)
   {
    const char *ruleName;
@@ -1534,7 +1534,7 @@ static void ShowJoins(
 /* ShowAlphaHashTable: Displays the number of entries */
 /*   in each slot of the alpha hash table.            */
 /******************************************************/
-globle void ShowAlphaHashTable(
+void ShowAlphaHashTable(
    void *theEnv)
    {
     int i, count;
@@ -1588,7 +1588,7 @@ globle void ShowAlphaHashTable(
 
 #if DEBUGGING_FUNCTIONS
 
-globle void Matches(
+void Matches(
   void *theRule,
   int output,
   DATA_OBJECT *result)
@@ -1596,7 +1596,7 @@ globle void Matches(
    EnvMatches(GetCurrentEnvironment(),theRule,output,result);
   }
 
-globle void JoinActivity(
+void JoinActivity(
   void *theRule,
   int output,
   DATA_OBJECT *result)
@@ -1606,12 +1606,12 @@ globle void JoinActivity(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-globle intBool GetBetaMemoryResizing()
+intBool GetBetaMemoryResizing()
   {   
    return EnvGetBetaMemoryResizing(GetCurrentEnvironment());
   }
 
-globle intBool SetBetaMemoryResizing(
+intBool SetBetaMemoryResizing(
   int value)
   {
    return EnvSetBetaMemoryResizing(GetCurrentEnvironment(),value);

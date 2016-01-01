@@ -56,18 +56,8 @@ struct deffactsBinaryData
   
 #define DeffactsBinaryData(theEnv) ((struct deffactsBinaryData *) GetEnvironmentData(theEnv,DFFCTBIN_DATA))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DFFCTBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           DeffactsBinarySetup(void *);
-   LOCALE void                          *BloadDeffactsModuleReference(void *,int);
+   void                           DeffactsBinarySetup(void *);
+   void                          *BloadDeffactsModuleReference(void *,int);
 
 #endif /* _H_dffctbin */
 

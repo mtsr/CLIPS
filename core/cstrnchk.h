@@ -46,16 +46,6 @@
 #include "evaluatn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _CSTRNCHK_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 #define NO_VIOLATION                    0
 #define TYPE_VIOLATION                  1
 #define RANGE_VIOLATION                 2
@@ -64,23 +54,23 @@
 #define CARDINALITY_VIOLATION           5
 #define ALLOWED_CLASSES_VIOLATION       6
 
-   LOCALE intBool                        CheckCardinalityConstraint(void *,long,CONSTRAINT_RECORD *);
-   LOCALE intBool                        CheckAllowedValuesConstraint(int,void *,CONSTRAINT_RECORD *);
-   LOCALE intBool                        CheckAllowedClassesConstraint(void *,int,void *,CONSTRAINT_RECORD *);
-   LOCALE int                            ConstraintCheckExpressionChain(void *,struct expr *,
+   intBool                        CheckCardinalityConstraint(void *,long,CONSTRAINT_RECORD *);
+   intBool                        CheckAllowedValuesConstraint(int,void *,CONSTRAINT_RECORD *);
+   intBool                        CheckAllowedClassesConstraint(void *,int,void *,CONSTRAINT_RECORD *);
+   int                            ConstraintCheckExpressionChain(void *,struct expr *,
                                                                      CONSTRAINT_RECORD *);
-   LOCALE void                           ConstraintViolationErrorMessage(void *,const char *,const char *,int,int,
+   void                           ConstraintViolationErrorMessage(void *,const char *,const char *,int,int,
                                                                       struct symbolHashNode *,
                                                                       int,int,CONSTRAINT_RECORD *,
                                                                       int);
-   LOCALE int                            ConstraintCheckValue(void *,int,void *,CONSTRAINT_RECORD *);
-   LOCALE int                            ConstraintCheckDataObject(void *,DATA_OBJECT *,CONSTRAINT_RECORD *);
+   int                            ConstraintCheckValue(void *,int,void *,CONSTRAINT_RECORD *);
+   int                            ConstraintCheckDataObject(void *,DATA_OBJECT *,CONSTRAINT_RECORD *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
-   LOCALE int                            ConstraintCheckExpression(void *,struct expr *,
+   int                            ConstraintCheckExpression(void *,struct expr *,
                                                                 CONSTRAINT_RECORD *);
 #endif
 #if (! RUN_TIME)
-   LOCALE intBool                        UnmatchableConstraint(struct constraintRecord *);
+   intBool                        UnmatchableConstraint(struct constraintRecord *);
 #endif
 
 #endif /* _H_cstrnchk */

@@ -43,18 +43,8 @@
 #include "tmpltdef.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _TMPLTPSR_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE int                            ParseDeftemplate(void *,const char *);
-   LOCALE void                           InstallDeftemplate(void *,struct deftemplate *);
+   int                            ParseDeftemplate(void *,const char *);
+   void                           InstallDeftemplate(void *,struct deftemplate *);
 
 #endif /* _H_tmpltpsr */
 

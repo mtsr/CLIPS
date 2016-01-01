@@ -55,23 +55,13 @@ struct bsavePortItem
 
 #define ModulePointer(i) ((struct defmodule *) (&DefmoduleData(theEnv)->DefmoduleArray[i]))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _MODULBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           DefmoduleBinarySetup(void *);
-   LOCALE void                           UpdateDefmoduleItemHeader
+   void                           DefmoduleBinarySetup(void *);
+   void                           UpdateDefmoduleItemHeader
                                                  (void *,struct bsaveDefmoduleItemHeader *,
                                                   struct defmoduleItemHeader *,int,void *);
 
 #if BLOAD_AND_BSAVE
-   LOCALE void                           AssignBsaveDefmdlItemHdrVals
+   void                           AssignBsaveDefmdlItemHdrVals
                                                  (struct bsaveDefmoduleItemHeader *,
                                                   struct defmoduleItemHeader *);
 #endif

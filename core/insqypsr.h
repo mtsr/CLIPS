@@ -42,18 +42,8 @@
 #include "expressn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _INSQYPSR_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE EXPRESSION                    *ParseQueryNoAction(void *,EXPRESSION *,const char *);
-   LOCALE EXPRESSION                    *ParseQueryAction(void *,EXPRESSION *,const char *);
+   EXPRESSION                    *ParseQueryNoAction(void *,EXPRESSION *,const char *);
+   EXPRESSION                    *ParseQueryAction(void *,EXPRESSION *,const char *);
 
 #endif /* INSTANCE_SET_QUERIES && (! RUN_TIME) */
 

@@ -87,7 +87,7 @@
 /*   for use when a specified slot name isn't defined   */
 /*   in its corresponding deftemplate.                  */
 /********************************************************/
-globle void InvalidDeftemplateSlotMessage(
+void InvalidDeftemplateSlotMessage(
   void *theEnv,
   const char *slotName,
   const char *deftemplateName,
@@ -106,7 +106,7 @@ globle void InvalidDeftemplateSlotMessage(
 /*   used when an attempt is made to placed a multifield  */
 /*   value into a single field slot.                      */
 /**********************************************************/
-globle void SingleFieldSlotCardinalityError(
+void SingleFieldSlotCardinalityError(
   void *theEnv,
   const char *slotName)
   {
@@ -120,7 +120,7 @@ globle void SingleFieldSlotCardinalityError(
 /* MultiIntoSingleFieldSlotError: Determines if a multifield value is */
 /*   being placed into a single field slot of a deftemplate fact.     */
 /**********************************************************************/
-globle void MultiIntoSingleFieldSlotError(
+void MultiIntoSingleFieldSlotError(
   void *theEnv,
   struct templateSlot *theSlot,
   struct deftemplate *theDeftemplate)
@@ -142,7 +142,7 @@ globle void MultiIntoSingleFieldSlotError(
 /* CheckTemplateFact: Checks a fact to see if it violates any */
 /*   deftemplate type, allowed-..., or range specifications.  */
 /**************************************************************/
-globle void CheckTemplateFact(
+void CheckTemplateFact(
   void *theEnv,
   struct fact *theFact)
   {
@@ -226,7 +226,7 @@ globle void CheckTemplateFact(
 /*   result of an assert, modify, or duplicate command. This checking  */
 /*   is performed statically (i.e. when the command is being parsed).  */
 /***********************************************************************/
-globle intBool CheckRHSSlotTypes(
+intBool CheckRHSSlotTypes(
   void *theEnv,
   struct expr *rhsSlots,
   struct templateSlot *slotPtr,
@@ -253,7 +253,7 @@ globle intBool CheckRHSSlotTypes(
 /* GetNthSlot: Given a deftemplate and an integer index, */
 /*   returns the nth slot of a deftemplate.              */
 /*********************************************************/
-globle struct templateSlot *GetNthSlot(
+struct templateSlot *GetNthSlot(
   struct deftemplate *theDeftemplate,
   int position)
   {
@@ -275,7 +275,7 @@ globle struct templateSlot *GetNthSlot(
 /* FindSlotPosition: Finds the position of a specified */
 /*   slot in a deftemplate structure.                  */
 /*******************************************************/
-globle int FindSlotPosition(
+int FindSlotPosition(
   struct deftemplate *theDeftemplate,
   SYMBOL_HN *name)
   {
@@ -405,7 +405,7 @@ static struct templateSlot *GetNextTemplateSlotToPrint(
 /*   format. Returns TRUE if the fact was printed using   */
 /*   this format, otherwise FALSE.                        */
 /**********************************************************/
-globle void PrintTemplateFact(
+void PrintTemplateFact(
   void *theEnv,
   const char *logicalName,
   struct fact *theFact,
@@ -487,7 +487,7 @@ globle void PrintTemplateFact(
 /***************************************************************************/
 /* UpdateDeftemplateScope: Updates the scope flag of all the deftemplates. */
 /***************************************************************************/
-globle void UpdateDeftemplateScope(
+void UpdateDeftemplateScope(
   void *theEnv)
   {
    struct deftemplate *theDeftemplate;
@@ -532,7 +532,7 @@ globle void UpdateDeftemplateScope(
 /****************************************************************/
 /* FindSlot: Finds a specified slot in a deftemplate structure. */
 /****************************************************************/
-globle struct templateSlot *FindSlot(
+struct templateSlot *FindSlot(
   struct deftemplate *theDeftemplate,
   SYMBOL_HN *name,
   short *whichOne)
@@ -559,7 +559,7 @@ globle struct templateSlot *FindSlot(
 /* CreateImpliedDeftemplate: Creates an implied deftemplate */
 /*   and adds it to the list of deftemplates.               */
 /************************************************************/
-globle struct deftemplate *CreateImpliedDeftemplate(
+struct deftemplate *CreateImpliedDeftemplate(
   void *theEnv,
   SYMBOL_HN *deftemplateName,
   int setFlag)

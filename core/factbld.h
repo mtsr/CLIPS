@@ -34,10 +34,6 @@
 #include "network.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
 struct factPatternNode
   {
    struct patternNodeHeader header;
@@ -52,14 +48,8 @@ struct factPatternNode
    struct factPatternNode *rightNode;
   };
 
-#ifdef _FACTBUILD_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           InitializeFactPatterns(void *);
-   LOCALE void                           DestroyFactPatternNetwork(void *,
+   void                           InitializeFactPatterns(void *);
+   void                           DestroyFactPatternNetwork(void *,
                                                                    struct factPatternNode *);
 
 #endif /* _H_factbld */

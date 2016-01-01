@@ -160,42 +160,32 @@ struct defruleData
     NULL : \
     ((theJoin)->rightSideEntryStructure))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _RULEDEF_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           InitializeDefrules(void *);
-   LOCALE void                          *EnvFindDefrule(void *,const char *);
-   LOCALE void                          *EnvFindDefruleInModule(void *,const char *);
-   LOCALE void                          *EnvGetNextDefrule(void *,void *);
-   LOCALE struct defruleModule          *GetDefruleModuleItem(void *,struct defmodule *);
-   LOCALE intBool                        EnvIsDefruleDeletable(void *,void *);
+   void                           InitializeDefrules(void *);
+   void                          *EnvFindDefrule(void *,const char *);
+   void                          *EnvFindDefruleInModule(void *,const char *);
+   void                          *EnvGetNextDefrule(void *,void *);
+   struct defruleModule          *GetDefruleModuleItem(void *,struct defmodule *);
+   intBool                        EnvIsDefruleDeletable(void *,void *);
 #if RUN_TIME
-   LOCALE void                           DefruleRunTimeInitialize(void *,struct joinLink *,struct joinLink *);
+   void                           DefruleRunTimeInitialize(void *,struct joinLink *,struct joinLink *);
 #endif
 #if RUN_TIME || BLOAD_ONLY || BLOAD || BLOAD_AND_BSAVE
-   LOCALE void                           AddBetaMemoriesToJoin(void *,struct joinNode *);
+   void                           AddBetaMemoriesToJoin(void *,struct joinNode *);
 #endif
-   LOCALE long                           EnvGetDisjunctCount(void *,void *);
-   LOCALE void                          *EnvGetNthDisjunct(void *,void *,long);
-   LOCALE const char                    *EnvDefruleModule(void *,void *);
-   LOCALE const char                    *EnvGetDefruleName(void *,void *);
-   LOCALE const char                    *EnvGetDefrulePPForm(void *,void *);
+   long                           EnvGetDisjunctCount(void *,void *);
+   void                          *EnvGetNthDisjunct(void *,void *,long);
+   const char                    *EnvDefruleModule(void *,void *);
+   const char                    *EnvGetDefruleName(void *,void *);
+   const char                    *EnvGetDefrulePPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE const char                    *DefruleModule(void *);
-   LOCALE void                          *FindDefrule(const char *);
-   LOCALE const char                    *GetDefruleName(void *);
-   LOCALE const char                    *GetDefrulePPForm(void *);
-   LOCALE void                          *GetNextDefrule(void *);
-   LOCALE intBool                        IsDefruleDeletable(void *);
+   const char                    *DefruleModule(void *);
+   void                          *FindDefrule(const char *);
+   const char                    *GetDefruleName(void *);
+   const char                    *GetDefrulePPForm(void *);
+   void                          *GetNextDefrule(void *);
+   intBool                        IsDefruleDeletable(void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

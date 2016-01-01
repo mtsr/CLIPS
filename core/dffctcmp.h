@@ -29,17 +29,7 @@
 
 #define _H_dffctcmp
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DFFCTCMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           DeffactsCompilerSetup(void *);
-   LOCALE void                           DeffactsCModuleReference(void *,FILE *,int,int,int);
+   void                           DeffactsCompilerSetup(void *);
+   void                           DeffactsCModuleReference(void *,FILE *,int,int,int);
 
 #endif /* _H_dffctcmp */

@@ -37,21 +37,11 @@
 #ifndef _H_rulepsr
 #define _H_rulepsr
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _RULEPSR_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE int                            ParseDefrule(void *,const char *);
-   LOCALE struct lhsParseNode           *FindVariable(struct symbolHashNode *,
+   int                            ParseDefrule(void *,const char *);
+   struct lhsParseNode           *FindVariable(struct symbolHashNode *,
                                                       struct lhsParseNode *);
 #if DEVELOPER && DEBUGGING_FUNCTIONS
-   LOCALE void                           DumpRuleAnalysis(void *,struct lhsParseNode *);
+   void                           DumpRuleAnalysis(void *,struct lhsParseNode *);
 #endif
 
 #endif /* _H_rulepsr */

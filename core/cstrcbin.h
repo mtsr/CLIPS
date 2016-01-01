@@ -34,26 +34,16 @@ struct bsaveConstructHeader
 #include "constrct.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _CSTRCBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 #if BLOAD_AND_BSAVE
-LOCALE void MarkConstructHeaderNeededItems(struct constructHeader *,long);
-LOCALE void AssignBsaveConstructHeaderVals(struct bsaveConstructHeader *,
+void MarkConstructHeaderNeededItems(struct constructHeader *,long);
+void AssignBsaveConstructHeaderVals(struct bsaveConstructHeader *,
                                              struct constructHeader *);
 #endif
 
-LOCALE void UpdateConstructHeader(void *,
+void UpdateConstructHeader(void *,
                                   struct bsaveConstructHeader *,
                                   struct constructHeader *,int,void *,int,void *);
-LOCALE void UnmarkConstructHeader(void *,struct constructHeader *);
+void UnmarkConstructHeader(void *,struct constructHeader *);
 
 #ifndef _CSTRCBIN_SOURCE_
 #endif

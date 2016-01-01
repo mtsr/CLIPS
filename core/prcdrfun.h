@@ -42,16 +42,6 @@
 #include "evaluatn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _PRCDRFUN_SOURCE
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 typedef struct loopCounterStack
   {
    long long loopCounter;
@@ -70,18 +60,18 @@ struct procedureFunctionData
 
 #define ProcedureFunctionData(theEnv) ((struct procedureFunctionData *) GetEnvironmentData(theEnv,PRCDRFUN_DATA))
 
-   LOCALE void                           ProceduralFunctionDefinitions(void *);
-   LOCALE void                           WhileFunction(void *,DATA_OBJECT_PTR);
-   LOCALE void                           LoopForCountFunction(void *,DATA_OBJECT_PTR);
-   LOCALE long long                      GetLoopCount(void *);
-   LOCALE void                           IfFunction(void *,DATA_OBJECT_PTR);
-   LOCALE void                           BindFunction(void *,DATA_OBJECT_PTR);
-   LOCALE void                           PrognFunction(void *,DATA_OBJECT_PTR);
-   LOCALE void                           ReturnFunction(void *,DATA_OBJECT_PTR);
-   LOCALE void                           BreakFunction(void *);
-   LOCALE void                           SwitchFunction(void *,DATA_OBJECT_PTR);
-   LOCALE intBool                        GetBoundVariable(void *,struct dataObject *,struct symbolHashNode *);
-   LOCALE void                           FlushBindList(void *);
+   void                           ProceduralFunctionDefinitions(void *);
+   void                           WhileFunction(void *,DATA_OBJECT_PTR);
+   void                           LoopForCountFunction(void *,DATA_OBJECT_PTR);
+   long long                      GetLoopCount(void *);
+   void                           IfFunction(void *,DATA_OBJECT_PTR);
+   void                           BindFunction(void *,DATA_OBJECT_PTR);
+   void                           PrognFunction(void *,DATA_OBJECT_PTR);
+   void                           ReturnFunction(void *,DATA_OBJECT_PTR);
+   void                           BreakFunction(void *);
+   void                           SwitchFunction(void *,DATA_OBJECT_PTR);
+   intBool                        GetBoundVariable(void *,struct dataObject *,struct symbolHashNode *);
+   void                           FlushBindList(void *);
 
 #endif /* _H_prcdrfun */
 

@@ -44,19 +44,9 @@ struct defglobal;
 #include "expressn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _GLOBLPSR_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE intBool                 ParseDefglobal(void *,const char *);
-   LOCALE intBool                 ReplaceGlobalVariable(void *,struct expr *);
-   LOCALE void                    GlobalReferenceErrorMessage(void *,const char *);
+   intBool                 ParseDefglobal(void *,const char *);
+   intBool                 ReplaceGlobalVariable(void *,struct expr *);
+   void                    GlobalReferenceErrorMessage(void *,const char *);
 
 #endif /* _H_globlpsr */
 

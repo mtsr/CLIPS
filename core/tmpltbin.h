@@ -86,18 +86,8 @@ struct deftemplateBinaryData
 #include "tmpltdef.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _TMPLTBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           DeftemplateBinarySetup(void *);
-   LOCALE void                          *BloadDeftemplateModuleReference(void *,int);
+   void                           DeftemplateBinarySetup(void *);
+   void                          *BloadDeftemplateModuleReference(void *,int);
 
 #endif /* _H_tmpltbin */
 

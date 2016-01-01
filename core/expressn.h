@@ -128,31 +128,21 @@ struct expressionData
 /* Global Functions */
 /********************/
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _EXPRESSN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           ReturnExpression(void *,struct expr *);
-   LOCALE void                           ExpressionInstall(void *,struct expr *);
-   LOCALE void                           ExpressionDeinstall(void *,struct expr *);
-   LOCALE struct expr                   *PackExpression(void *,struct expr *);
-   LOCALE void                           ReturnPackedExpression(void *,struct expr *);
-   LOCALE void                           InitExpressionData(void *);
-   LOCALE void                           InitExpressionPointers(void *);
+   void                           ReturnExpression(void *,struct expr *);
+   void                           ExpressionInstall(void *,struct expr *);
+   void                           ExpressionDeinstall(void *,struct expr *);
+   struct expr                   *PackExpression(void *,struct expr *);
+   void                           ReturnPackedExpression(void *,struct expr *);
+   void                           InitExpressionData(void *);
+   void                           InitExpressionPointers(void *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
-   LOCALE EXPRESSION                    *AddHashedExpression(void *,EXPRESSION *);
+   EXPRESSION                    *AddHashedExpression(void *,EXPRESSION *);
 #endif
 #if (! RUN_TIME)
-   LOCALE void                           RemoveHashedExpression(void *,EXPRESSION *);
+   void                           RemoveHashedExpression(void *,EXPRESSION *);
 #endif
 #if BLOAD_AND_BSAVE || BLOAD_ONLY || BLOAD || CONSTRUCT_COMPILER
-   LOCALE long                           HashedExpressionIndex(void *,EXPRESSION *);
+   long                           HashedExpressionIndex(void *,EXPRESSION *);
 #endif
 
 #endif

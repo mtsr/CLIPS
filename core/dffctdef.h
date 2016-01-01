@@ -83,35 +83,25 @@ struct deffactsModule
 
 #define DeffactsData(theEnv) ((struct deffactsData *) GetEnvironmentData(theEnv,DEFFACTS_DATA))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DFFCTDEF_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           InitializeDeffacts(void *);
-   LOCALE void                          *EnvFindDeffacts(void *,const char *);
-   LOCALE void                          *EnvFindDeffactsInModule(void *,const char *);
-   LOCALE void                          *EnvGetNextDeffacts(void *,void *);
-   LOCALE void                           CreateInitialFactDeffacts(void);
-   LOCALE intBool                        EnvIsDeffactsDeletable(void *,void *);
-   LOCALE struct deffactsModule         *GetDeffactsModuleItem(void *,struct defmodule *);
-   LOCALE const char                    *EnvDeffactsModule(void *,void *);
-   LOCALE const char                    *EnvGetDeffactsName(void *,void *);
-   LOCALE const char                    *EnvGetDeffactsPPForm(void *,void *);
+   void                           InitializeDeffacts(void *);
+   void                          *EnvFindDeffacts(void *,const char *);
+   void                          *EnvFindDeffactsInModule(void *,const char *);
+   void                          *EnvGetNextDeffacts(void *,void *);
+   void                           CreateInitialFactDeffacts(void);
+   intBool                        EnvIsDeffactsDeletable(void *,void *);
+   struct deffactsModule         *GetDeffactsModuleItem(void *,struct defmodule *);
+   const char                    *EnvDeffactsModule(void *,void *);
+   const char                    *EnvGetDeffactsName(void *,void *);
+   const char                    *EnvGetDeffactsPPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE void                          *FindDeffacts(const char *);
-   LOCALE void                          *GetNextDeffacts(void *);
-   LOCALE intBool                        IsDeffactsDeletable(void *);
-   LOCALE const char                    *DeffactsModule(void *);
-   LOCALE const char                    *GetDeffactsName(void *);
-   LOCALE const char                    *GetDeffactsPPForm(void *);
+   void                          *FindDeffacts(const char *);
+   void                          *GetNextDeffacts(void *);
+   intBool                        IsDeffactsDeletable(void *);
+   const char                    *DeffactsModule(void *);
+   const char                    *GetDeffactsName(void *);
+   const char                    *GetDeffactsPPForm(void *);
    
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

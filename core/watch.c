@@ -72,7 +72,7 @@
 /* InitializeWatchData: Allocates environment */
 /*    data for watch items.                   */
 /**********************************************/
-globle void InitializeWatchData(
+void InitializeWatchData(
   void *theEnv)
   {
    AllocateEnvironmentData(theEnv,WATCH_DATA,sizeof(struct watchData),DeallocateWatchData);
@@ -102,7 +102,7 @@ static void DeallocateWatchData(
 /*   Returns FALSE if the item is already in the list,       */
 /*   otherwise returns TRUE.                                 */
 /*************************************************************/
-globle intBool AddWatchItem(
+intBool AddWatchItem(
   void *theEnv,
   const char *name,
   int code,
@@ -163,7 +163,7 @@ globle intBool AddWatchItem(
 /*****************************************************/
 /* EnvWatch: C access routine for the watch command. */
 /*****************************************************/
-globle intBool EnvWatch(
+intBool EnvWatch(
   void *theEnv,
   const char *itemName)
   {
@@ -173,7 +173,7 @@ globle intBool EnvWatch(
 /*********************************************************/
 /* EnvUnwatch: C access routine for the unwatch command. */
 /*********************************************************/
-globle intBool EnvUnwatch(
+intBool EnvUnwatch(
   void *theEnv,
   const char *itemName)
   {
@@ -184,7 +184,7 @@ globle intBool EnvUnwatch(
 /* EnvSetWatchItem: Sets the state of a specified watch item to either */
 /*   on or off. Returns TRUE if the item was set, otherwise FALSE.     */
 /***********************************************************************/
-globle int EnvSetWatchItem(
+int EnvSetWatchItem(
   void *theEnv,
   const char *itemName,
   unsigned newState,
@@ -275,7 +275,7 @@ globle int EnvSetWatchItem(
 /*   for on) if the watch item is found in the list of watch      */
 /*   items, otherwise -1 is returned.                             */
 /******************************************************************/
-globle int EnvGetWatchItem(
+int EnvGetWatchItem(
   void *theEnv,
   const char *itemName)
   {
@@ -317,7 +317,7 @@ static struct watchItem *ValidWatchItem(
 /*   item in the list of watchable items. If the nth item    */
 /*   does not exist, then NULL is returned.                  */
 /*************************************************************/
-globle const char *GetNthWatchName(
+const char *GetNthWatchName(
   void *theEnv,
   int whichItem)
   {
@@ -337,7 +337,7 @@ globle const char *GetNthWatchName(
 /*   the nth item in the list of watchable items. If the nth   */
 /*   item does not exist, then -1 is returned.                 */
 /***************************************************************/
-globle int GetNthWatchValue(
+int GetNthWatchValue(
   void *theEnv,
   int whichItem)
   {
@@ -356,7 +356,7 @@ globle int GetNthWatchValue(
 /* WatchCommand: H/L access routine   */
 /*   for the watch command.           */
 /**************************************/
-globle void WatchCommand(
+void WatchCommand(
   void *theEnv)
   {
    DATA_OBJECT theValue;
@@ -403,7 +403,7 @@ globle void WatchCommand(
 /* UnwatchCommand: H/L access routine   */
 /*   for the unwatch command.           */
 /****************************************/
-globle void UnwatchCommand(
+void UnwatchCommand(
   void *theEnv)
   {
    DATA_OBJECT theValue;
@@ -450,7 +450,7 @@ globle void UnwatchCommand(
 /* ListWatchItemsCommand: H/L access routines   */
 /*   for the list-watch-items command.          */
 /************************************************/
-globle void ListWatchItemsCommand(
+void ListWatchItemsCommand(
   void *theEnv)
   {
    struct watchItem *wPtr;
@@ -521,7 +521,7 @@ globle void ListWatchItemsCommand(
 /* GetWatchItemCommand: H/L access routine */
 /*   for the get-watch-item command.       */
 /*******************************************/
-globle int GetWatchItemCommand(
+int GetWatchItemCommand(
   void *theEnv)
   {
    DATA_OBJECT theValue;
@@ -564,7 +564,7 @@ globle int GetWatchItemCommand(
 /*************************************************************/
 /* WatchFunctionDefinitions: Initializes the watch commands. */
 /*************************************************************/
-globle void WatchFunctionDefinitions(
+void WatchFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
@@ -617,25 +617,25 @@ static int CaptureWatchPrints(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle intBool Watch(
+intBool Watch(
   const char *itemName)
   {
    return(EnvWatch(GetCurrentEnvironment(),itemName));
   }
 
-globle intBool Unwatch(
+intBool Unwatch(
   const char *itemName)
   {
    return(EnvUnwatch(GetCurrentEnvironment(),itemName));
   }
 
-globle int GetWatchItem(
+int GetWatchItem(
   const char *itemName)
   {
    return EnvGetWatchItem(GetCurrentEnvironment(),itemName);
   }
 
-globle int SetWatchItem(
+int SetWatchItem(
   const char *itemName,
   unsigned newState,
   struct expr *argExprs)

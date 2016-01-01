@@ -32,38 +32,28 @@
 
 #define _H_prdctfun
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _PRDCTFUN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           PredicateFunctionDefinitions(void *);
-   LOCALE intBool                        EqFunction(void *);
-   LOCALE intBool                        NeqFunction(void *);
-   LOCALE intBool                        StringpFunction(void *);
-   LOCALE intBool                        SymbolpFunction(void *);
-   LOCALE intBool                        LexemepFunction(void *);
-   LOCALE intBool                        NumberpFunction(void *);
-   LOCALE intBool                        FloatpFunction(void *);
-   LOCALE intBool                        IntegerpFunction(void *);
-   LOCALE intBool                        MultifieldpFunction(void *);
-   LOCALE intBool                        PointerpFunction(void *);
-   LOCALE intBool                        NotFunction(void *);
-   LOCALE intBool                        AndFunction(void *);
-   LOCALE intBool                        OrFunction(void *);
-   LOCALE intBool                        LessThanOrEqualFunction(void *);
-   LOCALE intBool                        GreaterThanOrEqualFunction(void *);
-   LOCALE intBool                        LessThanFunction(void *);
-   LOCALE intBool                        GreaterThanFunction(void *);
-   LOCALE intBool                        NumericEqualFunction(void *);
-   LOCALE intBool                        NumericNotEqualFunction(void *);
-   LOCALE intBool                        OddpFunction(void *);
-   LOCALE intBool                        EvenpFunction(void *);
+   void                           PredicateFunctionDefinitions(void *);
+   intBool                        EqFunction(void *);
+   intBool                        NeqFunction(void *);
+   intBool                        StringpFunction(void *);
+   intBool                        SymbolpFunction(void *);
+   intBool                        LexemepFunction(void *);
+   intBool                        NumberpFunction(void *);
+   intBool                        FloatpFunction(void *);
+   intBool                        IntegerpFunction(void *);
+   intBool                        MultifieldpFunction(void *);
+   intBool                        PointerpFunction(void *);
+   intBool                        NotFunction(void *);
+   intBool                        AndFunction(void *);
+   intBool                        OrFunction(void *);
+   intBool                        LessThanOrEqualFunction(void *);
+   intBool                        GreaterThanOrEqualFunction(void *);
+   intBool                        LessThanFunction(void *);
+   intBool                        GreaterThanFunction(void *);
+   intBool                        NumericEqualFunction(void *);
+   intBool                        NumericNotEqualFunction(void *);
+   intBool                        OddpFunction(void *);
+   intBool                        EvenpFunction(void *);
 
 #endif /* _H_prdctfun */
 

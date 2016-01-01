@@ -42,19 +42,9 @@
 #include "analysis.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _GENERATE_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           FieldConversion(void *,struct lhsParseNode *,struct lhsParseNode *,struct nandFrame *);
-   LOCALE struct expr                   *GetvarReplace(void *,struct lhsParseNode *,int,struct nandFrame *);
-   LOCALE void                           AddNandUnification(void *,struct lhsParseNode *,struct nandFrame *);
+   void                           FieldConversion(void *,struct lhsParseNode *,struct lhsParseNode *,struct nandFrame *);
+   struct expr                   *GetvarReplace(void *,struct lhsParseNode *,int,struct nandFrame *);
+   void                           AddNandUnification(void *,struct lhsParseNode *,struct nandFrame *);
 
 #endif /* _H_generate */
 

@@ -196,7 +196,7 @@ static void DeallocateTextProcessingData(void *);
 /* The function returns the number of entries loaded if the entire file was */
 /*   was correctly formatted, else it returns -1.                           */
 /****************************************************************************/
-globle int TextLookupFetch(
+int TextLookupFetch(
   void *theEnv,
   const char *file)
   {
@@ -322,7 +322,7 @@ globle int TextLookupFetch(
 /*          it from the lookup table and returns a boolean flag indicating    */
 /*          failure or success.                                               */
 /******************************************************************************/
-globle int TextLookupToss(
+int TextLookupToss(
   void *theEnv,
   const char *file)
   {
@@ -1021,7 +1021,7 @@ static FILE *FindTopicInEntries(void *,const char *,struct topics *,char **,int 
 /* Output : This function loads a file into the internal lookup table and  */
 /*          returns a (float) boolean flag indicating failure or success.  */
 /***************************************************************************/
-globle void FetchCommand(
+void FetchCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -1064,7 +1064,7 @@ globle void FetchCommand(
 /*                                                                            */
 /* For usage, see the external documentation.                                 */
 /******************************************************************************/
-globle int PrintRegionCommand(
+int PrintRegionCommand(
   void *theEnv)
   {
    struct topics *params,    /*Lookup file and list of topic requests  */
@@ -1114,7 +1114,7 @@ globle int PrintRegionCommand(
 /******************************************************************************/
 /*FUNCTION GetRegionCommand : (H/L functionget-region)                 */
 /******************************************************************************/
-globle void *GetRegionCommand(
+void *GetRegionCommand(
   void *theEnv)
   {
    struct topics *params,    /*Lookup file and list of topic requests  */
@@ -1184,7 +1184,7 @@ globle void *GetRegionCommand(
 /* Output : This function deletes the named file from the lookup table and */
 /*          returns a (float) boolean flag indicating failure or success.  */
 /***************************************************************************/
-globle int TossCommand(
+int TossCommand(
   void *theEnv)
   {
    const char *file;   /*Name of the file */
@@ -1322,7 +1322,7 @@ static FILE *FindTopicInEntries(
 /*******************************************/
 /* HelpFunctionDefinitions:                */
 /*******************************************/
-globle void HelpFunctionDefinitions(
+void HelpFunctionDefinitions(
   void *theEnv)
   {
    AllocateEnvironmentData(theEnv,TEXTPRO_DATA,sizeof(struct textProcessingData),DeallocateTextProcessingData);

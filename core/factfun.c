@@ -97,7 +97,7 @@
 /****************************************************/
 /* FactFunctionDefinitions: Defines fact functions. */
 /****************************************************/
-globle void FactFunctionDefinitions(
+void FactFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
@@ -118,7 +118,7 @@ globle void FactFunctionDefinitions(
 /* FactRelationFunction: H/L access routine   */
 /*   for the fact-relation function.          */
 /**********************************************/
-globle void *FactRelationFunction(
+void *FactRelationFunction(
   void *theEnv)
   {
    struct fact *theFact;
@@ -136,7 +136,7 @@ globle void *FactRelationFunction(
 /* FactRelation: C access routine for */
 /*   the fact-relation function.      */
 /**************************************/
-globle void *FactRelation(
+void *FactRelation(
   void *vTheFact)
   {
    struct fact *theFact = (struct fact *) vTheFact;
@@ -148,7 +148,7 @@ globle void *FactRelation(
 /* EnvFactDeftemplate: C access routine */
 /*   to retrieve a fact's deftemplate.  */
 /****************************************/
-globle void *EnvFactDeftemplate(
+void *EnvFactDeftemplate(
   void *theEnv,
   void *vTheFact)
   {
@@ -165,7 +165,7 @@ globle void *EnvFactDeftemplate(
 /* FactExistpFunction: H/L access routine   */
 /*   for the fact-existp function.          */
 /********************************************/
-globle int FactExistpFunction(
+int FactExistpFunction(
   void *theEnv)
   {
    struct fact *theFact;
@@ -181,7 +181,7 @@ globle int FactExistpFunction(
 /* EnvFactExistp: C access routine */
 /*   for the fact-existp function. */
 /***********************************/
-globle int EnvFactExistp(
+int EnvFactExistp(
   void *theEnv,
   void *vTheFact)
   {
@@ -201,7 +201,7 @@ globle int EnvFactExistp(
 /* FactSlotValueFunction: H/L access routine   */
 /*   for the fact-slot-value function.         */
 /***********************************************/
-globle void FactSlotValueFunction(
+void FactSlotValueFunction(
   void *theEnv,
   DATA_OBJECT *returnValue)
   {
@@ -246,7 +246,7 @@ globle void FactSlotValueFunction(
 /* FactSlotValue: C access routine for */
 /*   the fact-slot-value function.     */
 /***************************************/
-globle void FactSlotValue(
+void FactSlotValue(
   void *theEnv,
   void *vTheFact,
   const char *theSlotName,
@@ -293,7 +293,7 @@ globle void FactSlotValue(
 /* FactSlotNamesFunction: H/L access routine   */
 /*   for the fact-slot-names function.         */
 /***********************************************/
-globle void FactSlotNamesFunction(
+void FactSlotNamesFunction(
   void *theEnv,
   DATA_OBJECT *returnValue)
   {
@@ -330,7 +330,7 @@ globle void FactSlotNamesFunction(
 /* EnvFactSlotNames: C access routine  */
 /*   for the fact-slot-names function. */
 /***************************************/
-globle void EnvFactSlotNames(
+void EnvFactSlotNames(
   void *theEnv,
   void *vTheFact,
   DATA_OBJECT *returnValue)
@@ -393,7 +393,7 @@ globle void EnvFactSlotNames(
 /* GetFactListFunction: H/L access routine   */
 /*   for the get-fact-list function.         */
 /*********************************************/
-globle void GetFactListFunction(
+void GetFactListFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -448,7 +448,7 @@ globle void GetFactListFunction(
 /* EnvGetFactList: C access routine  */
 /*   for the get-fact-list function. */
 /*************************************/
-globle void EnvGetFactList(
+void EnvGetFactList(
   void *theEnv,
   DATA_OBJECT_PTR returnValue,
   void *vTheModule)
@@ -532,7 +532,7 @@ globle void EnvGetFactList(
 /* PPFactFunction: H/L access routine */
 /*   for the ppfact function.         */
 /**************************************/
-globle void PPFactFunction(
+void PPFactFunction(
   void *theEnv)
   {
    struct fact *theFact;
@@ -598,7 +598,7 @@ globle void PPFactFunction(
 /* EnvPPFact: C access routine */
 /*   for the ppfact function.  */
 /*******************************/
-globle void EnvPPFact(
+void EnvPPFact(
   void *theEnv,
   void *vTheFact,
   const char *logicalName,
@@ -622,7 +622,7 @@ globle void EnvPPFact(
 /* GetFactAddressOrIndexArgument: Retrieves an argument for a */
 /*   function which should be a reference to a valid fact.    */
 /**************************************************************/
-globle struct fact *GetFactAddressOrIndexArgument(
+struct fact *GetFactAddressOrIndexArgument(
   void *theEnv,
   const char *theFunction,
   int position,
@@ -670,33 +670,33 @@ globle struct fact *GetFactAddressOrIndexArgument(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle void *FactDeftemplate(
+void *FactDeftemplate(
   void *vTheFact)
   {
    return EnvFactDeftemplate(GetCurrentEnvironment(),vTheFact);
   }
 
-globle int FactExistp(
+int FactExistp(
   void *vTheFact)
   {
    return EnvFactExistp(GetCurrentEnvironment(),vTheFact);
   }
 
-globle void FactSlotNames(
+void FactSlotNames(
   void *vTheFact,
   DATA_OBJECT *returnValue)
   {
    EnvFactSlotNames(GetCurrentEnvironment(),vTheFact,returnValue);
   }
 
-globle void GetFactList(
+void GetFactList(
   DATA_OBJECT_PTR returnValue,
   void *vTheModule)
   {
    EnvGetFactList(GetCurrentEnvironment(),returnValue,vTheModule);
   }
 
-globle void PPFact(
+void PPFact(
   void *vTheFact,
   const char *logicalName,
   int ignoreDefaults)

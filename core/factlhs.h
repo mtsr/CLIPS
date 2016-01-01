@@ -40,18 +40,8 @@
 #include "scanner.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _FACTLHS_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE int                            FactPatternParserFind(SYMBOL_HN *);
-   LOCALE struct lhsParseNode           *FactPatternParse(void *,const char *,struct token *);
-   LOCALE struct lhsParseNode           *SequenceRestrictionParse(void *,const char *,struct token *);
+   int                            FactPatternParserFind(SYMBOL_HN *);
+   struct lhsParseNode           *FactPatternParse(void *,const char *,struct token *);
+   struct lhsParseNode           *SequenceRestrictionParse(void *,const char *,struct token *);
 
 #endif /* _H_factlhs */

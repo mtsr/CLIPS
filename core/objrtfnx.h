@@ -204,18 +204,8 @@ struct objectReteData
 
 #define ObjectReteData(theEnv) ((struct objectReteData *) GetEnvironmentData(theEnv,OBJECT_RETE_DATA))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _OBJRTFNX_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                    InstallObjectPrimitives(void *);
-   LOCALE intBool                 ObjectCmpConstantFunction(void *,void *,DATA_OBJECT *);
+   void                    InstallObjectPrimitives(void *);
+   intBool                 ObjectCmpConstantFunction(void *,void *,DATA_OBJECT *);
 
 #endif /* DEFRULE_CONSTRUCT && OBJECT_SYSTEM */
 

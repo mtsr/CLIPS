@@ -62,18 +62,8 @@ struct objectBinaryData
 #define DefclassPointer(i) (((i) == -1L) ? NULL : (DEFCLASS *) &ObjectBinaryData(theEnv)->DefclassArray[i])
 #define DefclassIndex(cls) (((cls) == NULL) ? -1 : ((struct constructHeader *) cls)->bsaveID)
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _OBJBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                    SetupObjectsBload(void *);
-   LOCALE void                   *BloadDefclassModuleReference(void *,int);
+   void                    SetupObjectsBload(void *);
+   void                   *BloadDefclassModuleReference(void *,int);
 
 #endif /* _H_objbin */
 

@@ -58,7 +58,7 @@
 /* FactPNGetVar1: Fact pattern network function for extracting */
 /*   a variable's value. This is the most generalized routine. */
 /***************************************************************/
-globle intBool FactPNGetVar1(
+intBool FactPNGetVar1(
   void *theEnv,
   void *theValue,
   DATA_OBJECT_PTR returnValue)
@@ -169,7 +169,7 @@ globle intBool FactPNGetVar1(
 /*   for extracting a variable's value. The value */
 /*   extracted is from a single field slot.       */
 /**************************************************/
-globle intBool FactPNGetVar2(
+intBool FactPNGetVar2(
   void *theEnv,
   void *theValue,
   DATA_OBJECT_PTR returnValue)
@@ -207,7 +207,7 @@ globle intBool FactPNGetVar2(
 /*   variable's value. The value extracted is from a multifield  */
 /*   slot that contains at most one multifield variable.         */
 /*****************************************************************/
-globle intBool FactPNGetVar3(
+intBool FactPNGetVar3(
   void *theEnv,
   void *theValue,
   DATA_OBJECT_PTR returnValue)
@@ -269,7 +269,7 @@ globle intBool FactPNGetVar3(
 /*   comparing a value stored in a single field slot  */
 /*   to a constant for either equality or inequality. */
 /******************************************************/
-globle intBool FactPNConstant1(
+intBool FactPNConstant1(
   void *theEnv,
   void *theValue,
   DATA_OBJECT_PTR returnValue)
@@ -310,7 +310,7 @@ globle intBool FactPNConstant1(
 /*   no multifields to its right (thus it can be retrieved      */
 /*   relative to the beginning).                                */
 /****************************************************************/
-globle intBool FactPNConstant2(
+intBool FactPNConstant2(
   void *theEnv,
   void *theValue,
   DATA_OBJECT_PTR returnValue)
@@ -365,7 +365,7 @@ globle intBool FactPNConstant2(
 /* FactJNGetVar1: Fact join network function for extracting a */
 /*   variable's value. This is the most generalized routine.  */
 /**************************************************************/
-globle intBool FactJNGetVar1(
+intBool FactJNGetVar1(
   void *theEnv,
   void *theValue,
   DATA_OBJECT_PTR returnValue)
@@ -513,7 +513,7 @@ globle intBool FactJNGetVar1(
 /*   extracting a variable's value. The value    */
 /*   extracted is from a single field slot.      */
 /*************************************************/
-globle intBool FactJNGetVar2(
+intBool FactJNGetVar2(
   void *theEnv,
   void *theValue,
   DATA_OBJECT_PTR returnValue)
@@ -564,7 +564,7 @@ globle intBool FactJNGetVar2(
 /*   variable's value. The value extracted is from a multifield */
 /*   slot that contains at most one multifield variable.        */
 /****************************************************************/
-globle intBool FactJNGetVar3(
+intBool FactJNGetVar3(
   void *theEnv,
   void *theValue,
   DATA_OBJECT_PTR returnValue)
@@ -638,7 +638,7 @@ globle intBool FactJNGetVar3(
 /* FactSlotLength: Determines if the length of a    */
 /*  multifield slot falls within a specified range. */
 /****************************************************/
-globle intBool FactSlotLength(
+intBool FactSlotLength(
   void *theEnv,
   void *theValue,
   DATA_OBJECT_PTR returnValue)
@@ -677,7 +677,7 @@ globle intBool FactSlotLength(
 /* FactJNCompVars1: Fact join network routine for comparing */
 /*   the values of two single field slots.                  */
 /************************************************************/
-globle int FactJNCompVars1(
+int FactJNCompVars1(
   void *theEnv,
   void *theValue,
   DATA_OBJECT *theResult)
@@ -734,7 +734,7 @@ globle int FactJNCompVars1(
 /*   This function is provided so that variable comparisons of   */
 /*   implied deftemplates will be faster.                        */
 /*****************************************************************/
-globle int FactJNCompVars2(
+int FactJNCompVars2(
   void *theEnv,
   void *theValue,
   DATA_OBJECT *theResult)
@@ -815,7 +815,7 @@ globle int FactJNCompVars2(
 /* FactPNCompVars1: Fact pattern network routine for */
 /*   comparing the values of two single field slots. */
 /*****************************************************/
-globle int FactPNCompVars1(
+int FactPNCompVars1(
   void *theEnv,
   void *theValue,
   DATA_OBJECT *theResult)
@@ -863,7 +863,7 @@ globle int FactPNCompVars1(
 /*   variable ?z) would be 8 since $?x binds to 2 fields and $?y binds   */
 /*   to 3 fields.                                                        */
 /*************************************************************************/
-globle unsigned short AdjustFieldPosition(
+unsigned short AdjustFieldPosition(
   void *theEnv,
   struct multifieldMarker *markList,
   unsigned short whichField,
@@ -928,7 +928,7 @@ globle unsigned short AdjustFieldPosition(
 /*   number of multifield functions for grouping a   */
 /*   series of valuesinto a single multifield value. */
 /*****************************************************/
-globle int FactStoreMultifield(
+int FactStoreMultifield(
   void *theEnv,
   void *theValue,
   DATA_OBJECT *theResult)

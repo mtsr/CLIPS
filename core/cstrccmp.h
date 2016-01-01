@@ -25,22 +25,12 @@
 #ifndef _H_cstrccmp
 #define _H_cstrccmp
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _CSTRCCMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 #ifndef _STDIO_INCLUDED_
 #define _STDIO_INCLUDED_
 #include <stdio.h>
 #endif
 
-   LOCALE void                           MarkConstructHeaders(int);
+   void                           MarkConstructHeaders(int);
 
 #endif /* _H_cstrccmp */
 

@@ -45,18 +45,8 @@
 #define JoinPrefix() ArbitraryPrefix(DefruleData(theEnv)->DefruleCodeItem,2)
 #define LinkPrefix() ArbitraryPrefix(DefruleData(theEnv)->DefruleCodeItem,3)
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _RULECMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                     DefruleCompilerSetup(void *);
-   LOCALE void                     DefruleCModuleReference(void *,FILE *,int,int,int);
+   void                     DefruleCompilerSetup(void *);
+   void                     DefruleCModuleReference(void *,FILE *,int,int,int);
 
 #endif /* _H_rulecmp */
 

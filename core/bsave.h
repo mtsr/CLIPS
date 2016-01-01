@@ -47,16 +47,6 @@ struct BinaryItem;
 #include "expressn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _BSAVE_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 struct BinaryItem
   {
    const char *name;
@@ -99,15 +89,15 @@ struct bsaveData
 
 #define BsaveData(theEnv) ((struct bsaveData *) GetEnvironmentData(theEnv,BSAVE_DATA))
 
-   LOCALE void                    InitializeBsaveData(void *);
-   LOCALE int                     BsaveCommand(void *);
+   void                    InitializeBsaveData(void *);
+   int                     BsaveCommand(void *);
 #if BLOAD_AND_BSAVE
-   LOCALE intBool                 EnvBsave(void *,const char *);
-   LOCALE void                    MarkNeededItems(void *,struct expr *);
-   LOCALE void                    SaveBloadCount(void *,long);
-   LOCALE void                    RestoreBloadCount(void *,long *);
+   intBool                 EnvBsave(void *,const char *);
+   void                    MarkNeededItems(void *,struct expr *);
+   void                    SaveBloadCount(void *,long);
+   void                    RestoreBloadCount(void *,long *);
 #endif
-   LOCALE intBool                 AddBinaryItem(void *,const char *,int,
+   intBool                 AddBinaryItem(void *,const char *,int,
                                                 void (*)(void *),
                                                 void (*)(void *,FILE *),
                                                 void (*)(void *,FILE *),
@@ -118,7 +108,7 @@ struct bsaveData
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE intBool                 Bsave(const char *);
+   intBool                 Bsave(const char *);
 
 #endif
 

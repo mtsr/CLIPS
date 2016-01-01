@@ -147,11 +147,9 @@
 /* Some definitions for use with declarations. */
 /***********************************************/
 
-#define VOID_ARG void
 #define STD_SIZE size_t
 
 #define intBool int
-#define globle
 
 /*******************************************/
 /* RUN_TIME:  Specifies whether a run-time */

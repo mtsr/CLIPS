@@ -33,16 +33,6 @@
 #include "constrnt.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _CSTRNBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 #ifndef _STDIO_INCLUDED_
 #define _STDIO_INCLUDED_
 #include <stdio.h>
@@ -52,10 +42,10 @@
 #define ConstraintPointer(i) (((i) == -1L) ? NULL : (CONSTRAINT_RECORD *) &ConstraintData(theEnv)->ConstraintArray[i])
 
 #if BLOAD_AND_BSAVE
-   LOCALE void                           WriteNeededConstraints(void *,FILE *);
+   void                           WriteNeededConstraints(void *,FILE *);
 #endif
-   LOCALE void                           ReadNeededConstraints(void *);
-   LOCALE void                           ClearBloadedConstraints(void *);
+   void                           ReadNeededConstraints(void *);
+   void                           ClearBloadedConstraints(void *);
 
 #endif /* _H_cstrnbin */
 

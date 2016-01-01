@@ -44,16 +44,6 @@
 #include "network.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _RETRACT_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 struct rdriveinfo
   {
    struct partialMatch *link;
@@ -61,14 +51,14 @@ struct rdriveinfo
    struct rdriveinfo *next;
   };
 
-LOCALE void                           NetworkRetract(void *,struct patternMatch *);
-LOCALE void                           ReturnPartialMatch(void *,struct partialMatch *);
-LOCALE void                           DestroyPartialMatch(void *,struct partialMatch *);
-LOCALE void                           FlushGarbagePartialMatches(void *);
-LOCALE void                           DeletePartialMatches(void *,struct partialMatch *);
-LOCALE void                           PosEntryRetractBeta(void *,struct partialMatch *,struct partialMatch *,int);
-LOCALE void                           PosEntryRetractAlpha(void *,struct partialMatch *,int);
-LOCALE intBool                        PartialMatchWillBeDeleted(void *,struct partialMatch *);
+void                           NetworkRetract(void *,struct patternMatch *);
+void                           ReturnPartialMatch(void *,struct partialMatch *);
+void                           DestroyPartialMatch(void *,struct partialMatch *);
+void                           FlushGarbagePartialMatches(void *);
+void                           DeletePartialMatches(void *,struct partialMatch *);
+void                           PosEntryRetractBeta(void *,struct partialMatch *,struct partialMatch *,int);
+void                           PosEntryRetractAlpha(void *,struct partialMatch *,int);
+intBool                        PartialMatchWillBeDeleted(void *,struct partialMatch *);
 
 #endif /* _H_retract */
 

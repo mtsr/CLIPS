@@ -108,7 +108,7 @@
                     (<single-field-varible>* [<multifield-variable>])
                     <action>*)
  ***************************************************************************/
-globle intBool ParseDeffunction(
+intBool ParseDeffunction(
   void *theEnv,
   const char *readSource)
   {

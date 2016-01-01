@@ -95,7 +95,7 @@ static SLOT_DESC *SlotInfoSlot(void *,DATA_OBJECT *,DEFCLASS *,const char *,cons
   SIDE EFFECTS : None
   NOTES        : Syntax: (class-abstractp <class>)
  *********************************************************************/
-globle int ClassAbstractPCommand(
+int ClassAbstractPCommand(
   void *theEnv)
   {
    DATA_OBJECT tmp;
@@ -124,7 +124,7 @@ globle int ClassAbstractPCommand(
   SIDE EFFECTS : None
   NOTES        : Syntax: (class-reactivep <class>)
  *****************************************************************/
-globle int ClassReactivePCommand(
+int ClassReactivePCommand(
   void *theEnv)
   {
    DATA_OBJECT tmp;
@@ -157,7 +157,7 @@ globle int ClassReactivePCommand(
                  error flag set
   NOTES        : None
  ***********************************************************/
-globle void *ClassInfoFnxArgs(
+void *ClassInfoFnxArgs(
   void *theEnv,
   const char *fnx,
   int *inhp)
@@ -206,7 +206,7 @@ globle void *ClassInfoFnxArgs(
                     the slots of the class
   NOTES        : Syntax: (class-slots <class> [inherit])
  ********************************************************************/
-globle void ClassSlotsCommand(
+void ClassSlotsCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -232,7 +232,7 @@ globle void ClassSlotsCommand(
                     the superclasses of the class
   NOTES        : Syntax: (class-superclasses <class> [inherit])
  ************************************************************************/
-globle void ClassSuperclassesCommand(
+void ClassSuperclassesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -258,7 +258,7 @@ globle void ClassSuperclassesCommand(
                     the subclasses of the class
   NOTES        : Syntax: (class-subclasses <class> [inherit])
  ************************************************************************/
-globle void ClassSubclassesCommand(
+void ClassSubclassesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -284,7 +284,7 @@ globle void ClassSubclassesCommand(
                     the message-handlers of the class
   NOTES        : Syntax: (get-defmessage-handler-list <class> [inherit])
  ***********************************************************************/
-globle void GetDefmessageHandlersListCmd(
+void GetDefmessageHandlersListCmd(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -308,49 +308,49 @@ globle void GetDefmessageHandlersListCmd(
 /*********************************
  Slot Information Access Functions
  *********************************/
-globle void SlotFacetsCommand(
+void SlotFacetsCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
    SlotInfoSupportFunction(theEnv,result,"slot-facets",EnvSlotFacets);
   }
 
-globle void SlotSourcesCommand(
+void SlotSourcesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {   
    SlotInfoSupportFunction(theEnv,result,"slot-sources",EnvSlotSources);
   }
 
-globle void SlotTypesCommand(
+void SlotTypesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
    SlotInfoSupportFunction(theEnv,result,"slot-types",EnvSlotTypes);
   }
 
-globle void SlotAllowedValuesCommand(
+void SlotAllowedValuesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
    SlotInfoSupportFunction(theEnv,result,"slot-allowed-values",EnvSlotAllowedValues);
   }
 
-globle void SlotAllowedClassesCommand(
+void SlotAllowedClassesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
    SlotInfoSupportFunction(theEnv,result,"slot-allowed-classes",EnvSlotAllowedClasses);
   }
 
-globle void SlotRangeCommand(
+void SlotRangeCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
    SlotInfoSupportFunction(theEnv,result,"slot-range",EnvSlotRange);
   }
 
-globle void SlotCardinalityCommand(
+void SlotCardinalityCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
@@ -365,7 +365,7 @@ globle void SlotCardinalityCommand(
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************************/
-globle intBool EnvClassAbstractP(
+intBool EnvClassAbstractP(
   void *theEnv,
   void *clsptr)
   {
@@ -386,7 +386,7 @@ globle intBool EnvClassAbstractP(
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************************/
-globle intBool EnvClassReactiveP(
+intBool EnvClassReactiveP(
   void *theEnv,
   void *clsptr)
   {
@@ -411,7 +411,7 @@ globle intBool EnvClassReactiveP(
                     the slots of the class
   NOTES        : None
  ********************************************************************/
-globle void EnvClassSlots(
+void EnvClassSlots(
   void *theEnv,
   void *clsptr,
   DATA_OBJECT *result,
@@ -460,7 +460,7 @@ globle void EnvClassSlots(
                     the message-handlers of the class
   NOTES        : None
  ************************************************************************/
-globle void EnvGetDefmessageHandlerList(
+void EnvGetDefmessageHandlerList(
   void *theEnv,
   void *clsptr,
   DATA_OBJECT *result,
@@ -536,7 +536,7 @@ globle void EnvGetDefmessageHandlerList(
                     the superclasses of the class
   NOTES        : None
  ***************************************************************************/
-globle void EnvClassSuperclasses(
+void EnvClassSuperclasses(
   void *theEnv,
   void *clsptr,
   DATA_OBJECT *result,
@@ -581,7 +581,7 @@ globle void EnvClassSuperclasses(
                     the subclasses of the class
   NOTES        : None
  **************************************************************************/
-globle void EnvClassSubclasses(
+void EnvClassSubclasses(
   void *theEnv,
   void *clsptr,
   DATA_OBJECT *result,
@@ -618,7 +618,7 @@ globle void EnvClassSubclasses(
                     addresss of the class
   NOTES        : None
  **************************************************************************/
-globle void ClassSubclassAddresses(
+void ClassSubclassAddresses(
   void *theEnv,
   void *clsptr,
   DATA_OBJECT *result,
@@ -656,7 +656,7 @@ globle void ClassSubclassAddresses(
   NOTES        : None
  **************************************************************************/
 
-globle void EnvSlotFacets(
+void EnvSlotFacets(
   void *theEnv,
   void *clsptr,
   const char *sname,
@@ -744,7 +744,7 @@ globle void EnvSlotFacets(
 #endif
   }
 
-globle void EnvSlotSources(
+void EnvSlotSources(
   void *theEnv,
   void *clsptr,
   const char *sname,
@@ -790,7 +790,7 @@ globle void EnvSlotSources(
    DeleteClassLinks(theEnv,ctop);
   }
 
-globle void EnvSlotTypes(
+void EnvSlotTypes(
   void *theEnv,
   void *clsptr,
   const char *sname,
@@ -872,7 +872,7 @@ DefclassData(theEnv)->PrimitiveClassMap[j]));
      }
   }
 
-globle void EnvSlotAllowedValues(
+void EnvSlotAllowedValues(
   void *theEnv,
   void *clsptr,
   const char *sname,
@@ -903,7 +903,7 @@ globle void EnvSlotAllowedValues(
      }
   }
 
-globle void EnvSlotAllowedClasses(
+void EnvSlotAllowedClasses(
   void *theEnv,
   void *clsptr,
   const char *sname,
@@ -934,7 +934,7 @@ globle void EnvSlotAllowedClasses(
      }
   }
 
-globle void EnvSlotRange(
+void EnvSlotRange(
   void *theEnv,
   void *clsptr,
   const char *sname,
@@ -963,7 +963,7 @@ globle void EnvSlotRange(
      }
   }
 
-globle void EnvSlotCardinality(
+void EnvSlotCardinality(
   void *theEnv,
   void *clsptr,
   const char *sname,
@@ -1162,21 +1162,21 @@ static SLOT_DESC *SlotInfoSlot(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle intBool ClassAbstractP(
+intBool ClassAbstractP(
   void *clsptr)
   {
    return EnvClassAbstractP(GetCurrentEnvironment(),clsptr);
   }
 
 #if DEFRULE_CONSTRUCT
-globle intBool ClassReactiveP(
+intBool ClassReactiveP(
   void *clsptr)
   {
    return EnvClassReactiveP(GetCurrentEnvironment(),clsptr);
   }
 #endif
 
-globle void ClassSlots(
+void ClassSlots(
   void *clsptr,
   DATA_OBJECT *result,
   int inhp)
@@ -1184,7 +1184,7 @@ globle void ClassSlots(
    EnvClassSlots(GetCurrentEnvironment(),clsptr,result,inhp);
   }
 
-globle void ClassSubclasses(
+void ClassSubclasses(
   void *clsptr,
   DATA_OBJECT *result,
   int inhp)
@@ -1192,7 +1192,7 @@ globle void ClassSubclasses(
    EnvClassSubclasses(GetCurrentEnvironment(),clsptr,result,inhp);
   }
 
-globle void ClassSuperclasses(
+void ClassSuperclasses(
   void *clsptr,
   DATA_OBJECT *result,
   int inhp)
@@ -1200,7 +1200,7 @@ globle void ClassSuperclasses(
    EnvClassSuperclasses(GetCurrentEnvironment(),clsptr,result,inhp);
   }
 
-globle void SlotAllowedValues(
+void SlotAllowedValues(
   void *clsptr,
   const char *sname,
   DATA_OBJECT *result)
@@ -1208,7 +1208,7 @@ globle void SlotAllowedValues(
    EnvSlotAllowedValues(GetCurrentEnvironment(),clsptr,sname,result);
   }
 
-globle void SlotAllowedClasses(
+void SlotAllowedClasses(
   void *clsptr,
   const char *sname,
   DATA_OBJECT *result)
@@ -1216,7 +1216,7 @@ globle void SlotAllowedClasses(
    EnvSlotAllowedClasses(GetCurrentEnvironment(),clsptr,sname,result);
   }
 
-globle void SlotCardinality(
+void SlotCardinality(
   void *clsptr,
   const char *sname,
   DATA_OBJECT *result)
@@ -1224,7 +1224,7 @@ globle void SlotCardinality(
    EnvSlotCardinality(GetCurrentEnvironment(),clsptr,sname,result);
   }
 
-globle void SlotFacets(
+void SlotFacets(
   void *clsptr,
   const char *sname,
   DATA_OBJECT *result)
@@ -1232,7 +1232,7 @@ globle void SlotFacets(
    EnvSlotFacets(GetCurrentEnvironment(),clsptr,sname,result);
   }
 
-globle void SlotRange(
+void SlotRange(
   void *clsptr,
   const char *sname,
   DATA_OBJECT *result)
@@ -1240,7 +1240,7 @@ globle void SlotRange(
    EnvSlotRange(GetCurrentEnvironment(),clsptr,sname,result);
   }
 
-globle void SlotSources(
+void SlotSources(
   void *clsptr,
   const char *sname,
   DATA_OBJECT *result)
@@ -1248,7 +1248,7 @@ globle void SlotSources(
    EnvSlotSources(GetCurrentEnvironment(),clsptr,sname,result);
   }
 
-globle void SlotTypes(
+void SlotTypes(
   void *clsptr,
   const char *sname,
   DATA_OBJECT *result)
@@ -1256,7 +1256,7 @@ globle void SlotTypes(
    EnvSlotTypes(GetCurrentEnvironment(),clsptr,sname,result);
   }
 
-globle void GetDefmessageHandlerList(
+void GetDefmessageHandlerList(
   void *clsptr,
   DATA_OBJECT *result,
   int inhp)

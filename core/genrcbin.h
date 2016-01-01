@@ -49,18 +49,8 @@ struct defgenericBinaryData
 
 #define GenericPointer(i) (((i) == -1L) ? NULL : (DEFGENERIC *) &DefgenericBinaryData(theEnv)->DefgenericArray[i])
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _GENRCBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           SetupGenericsBload(void *);
-   LOCALE void                          *BloadDefgenericModuleReference(void *,int);
+   void                           SetupGenericsBload(void *);
+   void                          *BloadDefgenericModuleReference(void *,int);
 
 #endif /* _H_genrcbin */
 

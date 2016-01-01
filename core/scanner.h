@@ -39,16 +39,6 @@ struct token;
 #include "pprint.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _SCANNER_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 struct token
   {
    unsigned short type;
@@ -69,14 +59,14 @@ struct scannerData
 
 #define ScannerData(theEnv) ((struct scannerData *) GetEnvironmentData(theEnv,SCANNER_DATA))
 
-   LOCALE void                           InitializeScannerData(void *);
-   LOCALE void                           GetToken(void *,const char *,struct token *);
-   LOCALE void                           CopyToken(struct token *,struct token *);
-   LOCALE void                           ResetLineCount(void *);
-   LOCALE long                           GetLineCount(void *);
-   LOCALE long                           SetLineCount(void *,long);
-   LOCALE void                           IncrementLineCount(void *);
-   LOCALE void                           DecrementLineCount(void *);
+   void                           InitializeScannerData(void *);
+   void                           GetToken(void *,const char *,struct token *);
+   void                           CopyToken(struct token *,struct token *);
+   void                           ResetLineCount(void *);
+   long                           GetLineCount(void *);
+   long                           SetLineCount(void *,long);
+   void                           IncrementLineCount(void *);
+   void                           DecrementLineCount(void *);
 
 #endif /* _H_scanner */
 

@@ -31,18 +31,8 @@
 #include <stdio.h>
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DFINSCMP_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           SetupDefinstancesCompiler(void *);
-   LOCALE void                           DefinstancesCModuleReference(void *,FILE *,int,int,int);
+   void                           SetupDefinstancesCompiler(void *);
+   void                           DefinstancesCModuleReference(void *,FILE *,int,int,int);
 
 #endif /* DEFINSTANCES_CONSTRUCT && CONSTRUCT_COMPILER && (! RUN_TIME) */
 

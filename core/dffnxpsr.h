@@ -34,17 +34,7 @@
 
 #if DEFFUNCTION_CONSTRUCT && (! BLOAD_ONLY) && (! RUN_TIME)
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DFFNXPSR_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE intBool                        ParseDeffunction(void *,const char *);
+   intBool                        ParseDeffunction(void *,const char *);
 
 #endif /* DEFFUNCTION_CONSTRUCT && (! BLOAD_ONLY) && (! RUN_TIME) */
 

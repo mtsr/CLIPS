@@ -43,18 +43,8 @@
 #include "expressn.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _FACTQPSR_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE EXPRESSION                    *FactParseQueryNoAction(void *,EXPRESSION *,const char *);
-   LOCALE EXPRESSION                    *FactParseQueryAction(void *,EXPRESSION *,const char *);
+   EXPRESSION                    *FactParseQueryNoAction(void *,EXPRESSION *,const char *);
+   EXPRESSION                    *FactParseQueryAction(void *,EXPRESSION *,const char *);
 
 #endif /* FACT_SET_QUERIES && (! RUN_TIME) */
 

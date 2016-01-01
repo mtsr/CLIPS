@@ -55,16 +55,6 @@ struct lhsParseNode;
 #include "pattern.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _REORDER_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 /***********************************************************************/
 /* lhsParseNode structure: Stores information about the intermediate   */
 /*   parsed representation of the lhs of a rule.                       */
@@ -115,17 +105,17 @@ struct lhsParseNode
    struct lhsParseNode *bottom;
   };
 
-   LOCALE struct lhsParseNode           *ReorderPatterns(void *,struct lhsParseNode *,int *);
-   LOCALE struct lhsParseNode           *CopyLHSParseNodes(void *,struct lhsParseNode *);
-   LOCALE void                           CopyLHSParseNode(void *,struct lhsParseNode *,struct lhsParseNode *,int);
-   LOCALE struct lhsParseNode           *GetLHSParseNode(void *);
-   LOCALE void                           ReturnLHSParseNodes(void *,struct lhsParseNode *);
-   LOCALE struct lhsParseNode           *ExpressionToLHSParseNodes(void *,struct expr *);
-   LOCALE struct expr                   *LHSParseNodesToExpression(void *,struct lhsParseNode *);
-   LOCALE void                           AddInitialPatterns(void *,struct lhsParseNode *);
-   LOCALE int                            IsExistsSubjoin(struct lhsParseNode *,int);
-   LOCALE struct lhsParseNode           *CombineLHSParseNodes(void *,struct lhsParseNode *,struct lhsParseNode *);
-   //LOCALE void                           AssignPatternMarkedFlag(struct lhsParseNode *,short);
+   struct lhsParseNode           *ReorderPatterns(void *,struct lhsParseNode *,int *);
+   struct lhsParseNode           *CopyLHSParseNodes(void *,struct lhsParseNode *);
+   void                           CopyLHSParseNode(void *,struct lhsParseNode *,struct lhsParseNode *,int);
+   struct lhsParseNode           *GetLHSParseNode(void *);
+   void                           ReturnLHSParseNodes(void *,struct lhsParseNode *);
+   struct lhsParseNode           *ExpressionToLHSParseNodes(void *,struct expr *);
+   struct expr                   *LHSParseNodesToExpression(void *,struct lhsParseNode *);
+   void                           AddInitialPatterns(void *,struct lhsParseNode *);
+   int                            IsExistsSubjoin(struct lhsParseNode *,int);
+   struct lhsParseNode           *CombineLHSParseNodes(void *,struct lhsParseNode *,struct lhsParseNode *);
+   //void                           AssignPatternMarkedFlag(struct lhsParseNode *,short);
 
 #endif /* _H_reorder */
 

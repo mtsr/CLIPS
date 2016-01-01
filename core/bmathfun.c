@@ -61,7 +61,7 @@ struct basicMathFunctionData
 /***************************************************************/
 /* BasicMathFunctionDefinitions: Defines basic math functions. */
 /***************************************************************/
-globle void BasicMathFunctionDefinitions(
+void BasicMathFunctionDefinitions(
   void *theEnv)
   {   
    AllocateEnvironmentData(theEnv,BMATHFUN_DATA,sizeof(struct basicMathFunctionData),NULL);
@@ -92,7 +92,7 @@ globle void BasicMathFunctionDefinitions(
 /* AdditionFunction: H/L access   */
 /*   routine for the + function.  */
 /**********************************/
-globle void AdditionFunction(
+void AdditionFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -154,7 +154,7 @@ globle void AdditionFunction(
 /* MultiplicationFunction: CLIPS access */
 /*   routine for the * function.        */
 /****************************************/
-globle void MultiplicationFunction(
+void MultiplicationFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -215,7 +215,7 @@ globle void MultiplicationFunction(
 /* SubtractionFunction: CLIPS access */
 /*   routine for the - function.     */
 /*************************************/
-globle void SubtractionFunction(
+void SubtractionFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -296,7 +296,7 @@ globle void SubtractionFunction(
 /* DivisionFunction:  CLIPS access */
 /*   routine for the / function.   */
 /***********************************/
-globle void DivisionFunction(
+void DivisionFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -393,7 +393,7 @@ globle void DivisionFunction(
 /* DivFunction: H/L access routine   */
 /*   for the div function.           */
 /*************************************/
-globle long long DivFunction(
+long long DivFunction(
   void *theEnv)
   {
    long long total = 1LL;
@@ -464,7 +464,7 @@ globle long long DivFunction(
 /* SetAutoFloatDividendCommand: H/L access routine   */
 /*   for the set-auto-float-dividend command.        */
 /*****************************************************/
-globle int SetAutoFloatDividendCommand(
+int SetAutoFloatDividendCommand(
   void *theEnv)
   {
    int oldValue;
@@ -505,7 +505,7 @@ globle int SetAutoFloatDividendCommand(
 /* GetAutoFloatDividendCommand: H/L access routine   */
 /*   for the get-auto-float-dividend command.        */
 /*****************************************************/
-globle int GetAutoFloatDividendCommand(
+int GetAutoFloatDividendCommand(
   void *theEnv)
   {
    /*============================================*/
@@ -525,7 +525,7 @@ globle int GetAutoFloatDividendCommand(
 /* EnvGetAutoFloatDividend: C access routine for */
 /*   the get-auto-float-dividend command.        */
 /*************************************************/
-globle intBool EnvGetAutoFloatDividend(
+intBool EnvGetAutoFloatDividend(
   void *theEnv)
   {
    return(BasicMathFunctionData(theEnv)->AutoFloatDividend);
@@ -535,7 +535,7 @@ globle intBool EnvGetAutoFloatDividend(
 /* EnvSetAutoFloatDividend: C access routine for */
 /*   the set-auto-float-dividend command.        */
 /*************************************************/
-globle intBool EnvSetAutoFloatDividend(
+intBool EnvSetAutoFloatDividend(
   void *theEnv,
   int value)
   {
@@ -550,7 +550,7 @@ globle intBool EnvSetAutoFloatDividend(
 /* IntegerFunction: H/L access routine   */
 /*   for the integer function.           */
 /*****************************************/
-globle long long IntegerFunction(
+long long IntegerFunction(
   void *theEnv)
   {
    DATA_OBJECT valstruct;
@@ -580,7 +580,7 @@ globle long long IntegerFunction(
 /* FloatFunction: H/L access routine   */
 /*   for the float function.           */
 /***************************************/
-globle double FloatFunction(
+double FloatFunction(
   void *theEnv)
   {
    DATA_OBJECT valstruct;
@@ -610,7 +610,7 @@ globle double FloatFunction(
 /* AbsFunction: H/L access routine   */
 /*   for the abs function.           */
 /*************************************/
-globle void AbsFunction(
+void AbsFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -653,7 +653,7 @@ globle void AbsFunction(
 /* MinFunction: H/L access routine   */
 /*   for the min function.           */
 /*************************************/
-globle void MinFunction(
+void MinFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -742,7 +742,7 @@ globle void MinFunction(
 /* MaxFunction: H/L access routine   */
 /*   for the max function.           */
 /*************************************/
-globle void MaxFunction(
+void MaxFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
@@ -829,12 +829,12 @@ globle void MaxFunction(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle intBool GetAutoFloatDividend()
+intBool GetAutoFloatDividend()
   {
    return EnvGetAutoFloatDividend(GetCurrentEnvironment());
   }
 
-globle intBool SetAutoFloatDividend(
+intBool SetAutoFloatDividend(
   int value)
   {
    return EnvSetAutoFloatDividend(GetCurrentEnvironment(),value);

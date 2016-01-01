@@ -59,27 +59,17 @@
 #include "symbol.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _TMPLTUTL_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           InvalidDeftemplateSlotMessage(void *,const char *,const char *,int);
-   LOCALE void                           SingleFieldSlotCardinalityError(void *,const char *);
-   LOCALE void                           MultiIntoSingleFieldSlotError(void *,struct templateSlot *,struct deftemplate *);
-   LOCALE void                           CheckTemplateFact(void *,struct fact *);
-   LOCALE intBool                        CheckRHSSlotTypes(void *,struct expr *,struct templateSlot *,const char *);
-   LOCALE struct templateSlot           *GetNthSlot(struct deftemplate *,int);
-   LOCALE int                            FindSlotPosition(struct deftemplate *,struct symbolHashNode *);
-   LOCALE void                           PrintTemplateFact(void *,const char *,struct fact *,int,int,const char *);
-   LOCALE void                           UpdateDeftemplateScope(void *);
-   LOCALE struct templateSlot           *FindSlot(struct deftemplate *,struct symbolHashNode *,short *);
-   LOCALE struct deftemplate            *CreateImpliedDeftemplate(void *,SYMBOL_HN *,int);
+   void                           InvalidDeftemplateSlotMessage(void *,const char *,const char *,int);
+   void                           SingleFieldSlotCardinalityError(void *,const char *);
+   void                           MultiIntoSingleFieldSlotError(void *,struct templateSlot *,struct deftemplate *);
+   void                           CheckTemplateFact(void *,struct fact *);
+   intBool                        CheckRHSSlotTypes(void *,struct expr *,struct templateSlot *,const char *);
+   struct templateSlot           *GetNthSlot(struct deftemplate *,int);
+   int                            FindSlotPosition(struct deftemplate *,struct symbolHashNode *);
+   void                           PrintTemplateFact(void *,const char *,struct fact *,int,int,const char *);
+   void                           UpdateDeftemplateScope(void *);
+   struct templateSlot           *FindSlot(struct deftemplate *,struct symbolHashNode *,short *);
+   struct deftemplate            *CreateImpliedDeftemplate(void *,SYMBOL_HN *,int);
 
 #endif /* _H_tmpltutl */
 

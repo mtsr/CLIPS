@@ -44,16 +44,6 @@
 #include "constrnt.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _PRCDRPSR_SOURCE
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 struct BindInfo
   {
    struct symbolHashNode *name;
@@ -62,17 +52,17 @@ struct BindInfo
   };
 
 #if (! RUN_TIME)
-   LOCALE void                           ProceduralFunctionParsers(void *);
-   LOCALE struct BindInfo               *GetParsedBindNames(void *);
-   LOCALE void                           SetParsedBindNames(void *,struct BindInfo *);
-   LOCALE void                           ClearParsedBindNames(void *);
-   LOCALE intBool                        ParsedBindNamesEmpty(void *);
+   void                           ProceduralFunctionParsers(void *);
+   struct BindInfo               *GetParsedBindNames(void *);
+   void                           SetParsedBindNames(void *,struct BindInfo *);
+   void                           ClearParsedBindNames(void *);
+   intBool                        ParsedBindNamesEmpty(void *);
 #endif
 #if (! BLOAD_ONLY) && (! RUN_TIME)
-   LOCALE int                            SearchParsedBindNames(void *,struct symbolHashNode *);
-   LOCALE int                            CountParsedBindNames(void *);
-   LOCALE void                           RemoveParsedBindName(void *,struct symbolHashNode *);
-   LOCALE struct constraintRecord       *FindBindConstraints(void *,struct symbolHashNode *);
+   int                            SearchParsedBindNames(void *,struct symbolHashNode *);
+   int                            CountParsedBindNames(void *);
+   void                           RemoveParsedBindName(void *,struct symbolHashNode *);
+   struct constraintRecord       *FindBindConstraints(void *,struct symbolHashNode *);
 #endif
 
 #endif /* _H_prcdrpsr */

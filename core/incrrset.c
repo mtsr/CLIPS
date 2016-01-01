@@ -79,7 +79,7 @@
 /**************************************************************/
 /* IncrementalReset: Incrementally resets the specified rule. */
 /**************************************************************/
-globle void IncrementalReset(
+void IncrementalReset(
   void *theEnv,
   struct defrule *tempRule)
   {
@@ -525,7 +525,7 @@ static void MarkPatternForIncrementalReset(
 /* EnvGetIncrementalReset: C access routine */
 /*   for the get-incremental-reset command. */
 /********************************************/
-globle intBool EnvGetIncrementalReset(
+intBool EnvGetIncrementalReset(
   void *theEnv)
   {   
    return(EngineData(theEnv)->IncrementalResetFlag);
@@ -535,7 +535,7 @@ globle intBool EnvGetIncrementalReset(
 /* EnvSetIncrementalReset: C access routine */
 /*   for the set-incremental-reset command. */
 /********************************************/
-globle intBool EnvSetIncrementalReset(
+intBool EnvSetIncrementalReset(
   void *theEnv,
   int value)
   {
@@ -576,7 +576,7 @@ globle intBool EnvSetIncrementalReset(
 /* SetIncrementalResetCommand: H/L access routine   */
 /*   for the set-incremental-reset command.         */
 /****************************************************/
-globle int SetIncrementalResetCommand(
+int SetIncrementalResetCommand(
   void *theEnv)
   {
    int oldValue;
@@ -639,7 +639,7 @@ globle int SetIncrementalResetCommand(
 /* GetIncrementalResetCommand: H/L access routine   */
 /*   for the get-incremental-reset command.         */
 /****************************************************/
-globle int GetIncrementalResetCommand(
+int GetIncrementalResetCommand(
   void *theEnv)
   {
    int oldValue;
@@ -658,12 +658,12 @@ globle int GetIncrementalResetCommand(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle intBool GetIncrementalReset()
+intBool GetIncrementalReset()
   {   
    return EnvGetIncrementalReset(GetCurrentEnvironment());
   }
 
-globle intBool SetIncrementalReset(
+intBool SetIncrementalReset(
   int value)
   {
    return EnvSetIncrementalReset(GetCurrentEnvironment(),value);

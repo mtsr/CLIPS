@@ -48,22 +48,12 @@ struct portConstructItem
 #include "moduldef.h"
 #endif
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _MODULPSR_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           SetNumberOfDefmodules(void *,long);
-   LOCALE void                           AddAfterModuleDefinedFunction(void *,const char *,void (*)(void *),int);
-   LOCALE int                            ParseDefmodule(void *,const char *);
-   LOCALE void                           AddPortConstructItem(void *,const char *,int);
-   LOCALE struct portConstructItem      *ValidPortConstructItem(void *,const char *);
-   LOCALE int                            FindImportExportConflict(void *,const char *,struct defmodule *,const char *);
+   void                           SetNumberOfDefmodules(void *,long);
+   void                           AddAfterModuleDefinedFunction(void *,const char *,void (*)(void *),int);
+   int                            ParseDefmodule(void *,const char *);
+   void                           AddPortConstructItem(void *,const char *,int);
+   struct portConstructItem      *ValidPortConstructItem(void *,const char *);
+   int                            FindImportExportConflict(void *,const char *,struct defmodule *,const char *);
 
 #endif /* _H_modulpsr */
 

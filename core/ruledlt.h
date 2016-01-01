@@ -37,18 +37,8 @@
 
 #define _H_ruledlt
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _RULEDLT_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           ReturnDefrule(void *,void *);
-   LOCALE void                           DestroyDefrule(void *,void *);
+   void                           ReturnDefrule(void *,void *);
+   void                           DestroyDefrule(void *,void *);
 
 #endif /* _H_ruledlt */
 

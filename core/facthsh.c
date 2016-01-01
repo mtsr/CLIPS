@@ -131,7 +131,7 @@ static struct fact *FactExists(
 /************************************************************/
 /* AddHashedFact: Adds a fact entry to the fact hash table. */
 /************************************************************/
-globle void AddHashedFact(
+void AddHashedFact(
   void *theEnv,
   struct fact *theFact,
   unsigned long hashValue)
@@ -155,7 +155,7 @@ globle void AddHashedFact(
 /* RemoveHashedFact: Removes a fact entry */
 /*   from the fact hash table.            */
 /******************************************/
-globle intBool RemoveHashedFact(
+intBool RemoveHashedFact(
   void *theEnv,
   struct fact *theFact)
   {
@@ -198,7 +198,7 @@ globle intBool RemoveHashedFact(
 /* FactWillBeAsserted: Determines if a fact will be */
 /*   asserted based on the duplication settings.    */
 /****************************************************/
-globle intBool FactWillBeAsserted(
+intBool FactWillBeAsserted(
   void *theEnv,
   void *theFact)
   {
@@ -221,7 +221,7 @@ globle intBool FactWillBeAsserted(
 /*   takes appropriate action based on the current   */
 /*   setting of the fact-duplication flag.           */
 /*****************************************************/
-globle unsigned long HandleFactDuplication(
+unsigned long HandleFactDuplication(
   void *theEnv,
   void *vTheFact,
   intBool *duplicate,
@@ -261,7 +261,7 @@ globle unsigned long HandleFactDuplication(
 /* EnvGetFactDuplication: C access routine */
 /*   for the get-fact-duplication command. */
 /*******************************************/
-globle intBool EnvGetFactDuplication(
+intBool EnvGetFactDuplication(
   void *theEnv)
   {   
    return(FactData(theEnv)->FactDuplication); 
@@ -271,7 +271,7 @@ globle intBool EnvGetFactDuplication(
 /* EnvSetFactDuplication: C access routine */
 /*   for the set-fact-duplication command. */
 /*******************************************/
-globle intBool EnvSetFactDuplication(
+intBool EnvSetFactDuplication(
   void *theEnv,
   int value)
   {
@@ -286,7 +286,7 @@ globle intBool EnvSetFactDuplication(
 /* InitializeFactHashTable: Initializes the table */
 /*   entries in the fact hash table to NULL.      */
 /**************************************************/
-globle void InitializeFactHashTable(
+void InitializeFactHashTable(
    void *theEnv)
    {
     FactData(theEnv)->FactHashTable = CreateFactHashTable(theEnv,SIZE_FACT_HASH);
@@ -393,7 +393,7 @@ static void ResetFactHashTable(
 /* ShowFactHashTable: Displays the number of entries */
 /*   in each slot of the fact hash table.            */
 /*****************************************************/
-globle void ShowFactHashTable(
+void ShowFactHashTable(
    void *theEnv)
    {
     int i, count;
@@ -423,12 +423,12 @@ globle void ShowFactHashTable(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle intBool GetFactDuplication()
+intBool GetFactDuplication()
   {   
    return EnvGetFactDuplication(GetCurrentEnvironment());
   }
 
-globle intBool SetFactDuplication(
+intBool SetFactDuplication(
   int value)
   {
    return EnvSetFactDuplication(GetCurrentEnvironment(),value);

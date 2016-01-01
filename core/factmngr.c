@@ -137,7 +137,7 @@
 /*   Facts are only available when both the defrule and       */
 /*   deftemplate constructs are available.                    */
 /**************************************************************/
-globle void InitializeFacts(
+void InitializeFacts(
   void *theEnv)
   {
    struct patternEntityRecord factInfo = { { "FACT_ADDRESS", FACT_ADDRESS,1,0,0,
@@ -301,7 +301,7 @@ static void DeallocateFactData(
 /* PrintFactWithIdentifier: Displays a single */
 /*   fact preceded by its fact identifier.    */
 /**********************************************/
-globle void PrintFactWithIdentifier(
+void PrintFactWithIdentifier(
   void *theEnv,
   const char *logicalName,
   struct fact *factPtr,
@@ -317,7 +317,7 @@ globle void PrintFactWithIdentifier(
 /****************************************************/
 /* PrintFactIdentifier: Displays a fact identifier. */
 /****************************************************/
-globle void PrintFactIdentifier(
+void PrintFactIdentifier(
   void *theEnv,
   const char *logicalName,
   void *factPtr)
@@ -332,7 +332,7 @@ globle void PrintFactIdentifier(
 /* PrintFactIdentifierInLongForm: Display a */
 /*   fact identifier in a longer format.    */
 /********************************************/
-globle void PrintFactIdentifierInLongForm(
+void PrintFactIdentifierInLongForm(
   void *theEnv,
   const char *logicalName,
   void *factPtr)
@@ -354,7 +354,7 @@ globle void PrintFactIdentifierInLongForm(
 /* DecrementFactBasisCount: Decrements the */
 /*   partial match busy count of a fact    */
 /*******************************************/
-globle void DecrementFactBasisCount(
+void DecrementFactBasisCount(
   void *theEnv,
   void *vFactPtr)
   {
@@ -388,7 +388,7 @@ globle void DecrementFactBasisCount(
 /* IncrementFactBasisCount: Increments the */
 /*   partial match busy count of a fact.   */
 /*******************************************/
-globle void IncrementFactBasisCount(
+void IncrementFactBasisCount(
   void *theEnv,
   void *vFactPtr)
   {
@@ -423,7 +423,7 @@ globle void IncrementFactBasisCount(
 /******************/
 /* FactIsDeleted: */
 /******************/
-globle intBool FactIsDeleted(
+intBool FactIsDeleted(
   void *theEnv,
   void *theFact)
   {
@@ -439,7 +439,7 @@ globle intBool FactIsDeleted(
 /*   of a fact containing the relation name and   */
 /*   all of the fact's slots or fields.           */
 /**************************************************/
-globle void PrintFact(
+void PrintFact(
   void *theEnv,
   const char *logicalName,
   struct fact *factPtr,
@@ -484,7 +484,7 @@ globle void PrintFact(
 /* MatchFactFunction: Filters a fact through */
 /*   the appropriate fact pattern network.   */
 /*********************************************/
-globle void MatchFactFunction(
+void MatchFactFunction(
   void *theEnv,
   void *vTheFact)
   {
@@ -496,7 +496,7 @@ globle void MatchFactFunction(
 /*************************************************/
 /* RetractDriver: Driver routine for EnvRetract. */
 /*************************************************/
-globle intBool RetractDriver(
+intBool RetractDriver(
   void *theEnv,
   void *vTheFact,
   intBool modifyOperation,
@@ -703,7 +703,7 @@ globle intBool RetractDriver(
 /*********************************************************/
 /* EnvRetract: C access routine for the retract command. */
 /*********************************************************/
-globle intBool EnvRetract(
+intBool EnvRetract(
   void *theEnv,
   void *vTheFact)
   {
@@ -743,7 +743,7 @@ static void RemoveGarbageFacts(
 /********************************************************/
 /* AssertDriver: Driver routine for the assert command. */
 /********************************************************/
-globle void *AssertDriver(
+void *AssertDriver(
   void *theEnv,
   void *vTheFact,
   long long reuseIndex,
@@ -986,7 +986,7 @@ globle void *AssertDriver(
 /********************************************************/
 /* EnvAssert: C access routine for the assert function. */
 /********************************************************/
-globle void *EnvAssert(
+void *EnvAssert(
   void *theEnv,
   void *vTheFact)
   {
@@ -997,7 +997,7 @@ globle void *EnvAssert(
 /* RemoveAllFacts: Loops through the  */
 /*   fact-list and removes each fact. */
 /**************************************/
-globle void RemoveAllFacts(
+void RemoveAllFacts(
   void *theEnv)
   {
    while (FactData(theEnv)->FactList != NULL)
@@ -1008,7 +1008,7 @@ globle void RemoveAllFacts(
 /* EnvCreateFact: Creates a fact data structure */
 /*   of the specified deftemplate.              */
 /************************************************/
-globle struct fact *EnvCreateFact(
+struct fact *EnvCreateFact(
   void *theEnv,
   void *vTheDeftemplate)
   {
@@ -1060,7 +1060,7 @@ globle struct fact *EnvCreateFact(
 /* EnvGetFactSlot: Returns the slot value */
 /*   from the specified slot of a fact.   */
 /******************************************/
-globle intBool EnvGetFactSlot(
+intBool EnvGetFactSlot(
   void *theEnv,
   void *vTheFact,
   const char *slotName,
@@ -1123,7 +1123,7 @@ globle intBool EnvGetFactSlot(
 /* EnvPutFactSlot: Sets the slot value */
 /*   of the specified slot of a fact.  */
 /***************************************/
-globle intBool EnvPutFactSlot(
+intBool EnvPutFactSlot(
   void *theEnv,
   void *vTheFact,
   const char *slotName,
@@ -1199,7 +1199,7 @@ globle intBool EnvPutFactSlot(
 /*   to its default value if the value of the slot has  */
 /*   not yet been set.                                  */
 /********************************************************/
-globle intBool EnvAssignFactSlotDefaults(
+intBool EnvAssignFactSlotDefaults(
   void *theEnv,
   void *vTheFact)
   {
@@ -1261,7 +1261,7 @@ globle intBool EnvAssignFactSlotDefaults(
 /* DeftemplateSlotDefault: Determines the default value */
 /*   for the specified slot of a deftemplate.           */
 /********************************************************/
-globle intBool DeftemplateSlotDefault(
+intBool DeftemplateSlotDefault(
   void *theEnv,
   struct deftemplate *theDeftemplate,
   struct templateSlot *slotPtr,
@@ -1339,7 +1339,7 @@ globle intBool DeftemplateSlotDefault(
 /* CopyFactSlotValues: Copies the slot values from one fact to */
 /*   another. Both facts must have the same relation name.     */
 /***************************************************************/
-globle intBool CopyFactSlotValues(
+intBool CopyFactSlotValues(
   void *theEnv,
   void *vTheDestFact,
   void *vTheSourceFact)
@@ -1393,7 +1393,7 @@ globle intBool CopyFactSlotValues(
 /* CreateFactBySize: Allocates a fact data   */
 /*   structure based on the number of slots. */
 /*********************************************/
-globle struct fact *CreateFactBySize(
+struct fact *CreateFactBySize(
   void *theEnv,
   unsigned size)
   {
@@ -1428,7 +1428,7 @@ globle struct fact *CreateFactBySize(
 /* ReturnFact: Returns a fact data structure */
 /*   to the pool of free memory.             */
 /*********************************************/
-globle void ReturnFact(
+void ReturnFact(
   void *theEnv,
   struct fact *theFact)
   {
@@ -1459,7 +1459,7 @@ globle void ReturnFact(
 /* FactInstall: Increments the fact, deftemplate, and atomic */
 /*   data value busy counts associated with the fact.        */
 /*************************************************************/
-globle void FactInstall(
+void FactInstall(
   void *theEnv,
   struct fact *newFact)
   {
@@ -1482,7 +1482,7 @@ globle void FactInstall(
 /* FactDeinstall: Decrements the fact, deftemplate, and atomic */
 /*   data value busy counts associated with the fact.          */
 /***************************************************************/
-globle void FactDeinstall(
+void FactDeinstall(
   void *theEnv,
   struct fact *newFact)
   {
@@ -1505,7 +1505,7 @@ globle void FactDeinstall(
 /* EnvIncrementFactCount: Increments the number */
 /*   of references to a specified fact.         */
 /************************************************/
-globle void EnvIncrementFactCount(
+void EnvIncrementFactCount(
   void *theEnv,
   void *factPtr)
   {
@@ -1520,7 +1520,7 @@ globle void EnvIncrementFactCount(
 /* EnvDecrementFactCount: Decrements the number */
 /*   of references to a specified fact.         */
 /************************************************/
-globle void EnvDecrementFactCount(
+void EnvDecrementFactCount(
   void *theEnv,
   void *factPtr)
   {
@@ -1536,7 +1536,7 @@ globle void EnvDecrementFactCount(
 /*   first fact in the fact-list. Otherwise returns the  */
 /*   next fact following the fact passed as an argument. */
 /*********************************************************/
-globle void *EnvGetNextFact(
+void *EnvGetNextFact(
   void *theEnv,
   void *factPtr)
   {
@@ -1554,7 +1554,7 @@ globle void *EnvGetNextFact(
 /*   a similar fashion to GetNextFact, but skips  */
 /*   facts that are out of scope.                 */
 /**************************************************/
-globle void *GetNextFactInScope(
+void *GetNextFactInScope(
   void *theEnv,
   void *vTheFact)
   {
@@ -1617,7 +1617,7 @@ globle void *GetNextFactInScope(
 /* EnvGetFactPPForm: Returns the pretty */
 /*   print representation of a fact.    */
 /****************************************/
-globle void EnvGetFactPPForm(
+void EnvGetFactPPForm(
   void *theEnv,
   char *buffer,
   size_t bufferLength,
@@ -1632,7 +1632,7 @@ globle void EnvGetFactPPForm(
 /* EnvFactIndex: C access routine */
 /*   for the fact-index function. */
 /**********************************/
-globle long long EnvFactIndex(
+long long EnvFactIndex(
   void *theEnv,
   void *factPtr)
   {
@@ -1647,7 +1647,7 @@ globle long long EnvFactIndex(
 /* EnvAssertString: C access routine */
 /*   for the assert-string function. */
 /*************************************/
-globle void *EnvAssertString(
+void *EnvAssertString(
   void *theEnv,
   const char *theString)
   {
@@ -1668,7 +1668,7 @@ globle void *EnvAssertString(
 /* EnvGetFactListChanged: Returns the flag indicating */
 /*   whether a change to the fact-list has been made. */
 /******************************************************/
-globle int EnvGetFactListChanged(
+int EnvGetFactListChanged(
   void *theEnv)
   {
    return(FactData(theEnv)->ChangeToFactList); 
@@ -1678,7 +1678,7 @@ globle int EnvGetFactListChanged(
 /* EnvSetFactListChanged: Sets the flag indicating whether */
 /*   a change to the fact-list has been made.              */
 /***********************************************************/
-globle void EnvSetFactListChanged(
+void EnvSetFactListChanged(
   void *theEnv,
   int value)
   {
@@ -1689,7 +1689,7 @@ globle void EnvSetFactListChanged(
 /* GetNumberOfFacts: Returns the number */
 /* of facts in the fact-list.           */
 /****************************************/
-globle unsigned long GetNumberOfFacts(
+unsigned long GetNumberOfFacts(
   void *theEnv)
   {   
    return(FactData(theEnv)->NumberOfFacts); 
@@ -1761,7 +1761,7 @@ static int ClearFactsReady(
 /* FindIndexedFact: Returns a pointer to a fact in */
 /*   the fact list with the specified fact index.  */
 /***************************************************/
-globle struct fact *FindIndexedFact(
+struct fact *FindIndexedFact(
   void *theEnv,
   long long factIndexSought)
   {
@@ -1782,7 +1782,7 @@ globle struct fact *FindIndexedFact(
 /* EnvAddAssertFunction: Adds a function */
 /*   to the ListOfAssertFunctions.       */
 /*****************************************/
-globle intBool EnvAddAssertFunction(
+intBool EnvAddAssertFunction(
   void *theEnv,
   const char *name,
   void (*functionPtr)(void *, void *),
@@ -1799,7 +1799,7 @@ globle intBool EnvAddAssertFunction(
 /* EnvAddAssertFunctionWithContext: Adds a  */
 /*   function to the ListOfAssertFunctions. */
 /********************************************/
-globle intBool EnvAddAssertFunctionWithContext(
+intBool EnvAddAssertFunctionWithContext(
   void *theEnv,
   const char *name,
   void (*functionPtr)(void *, void *),
@@ -1817,7 +1817,7 @@ globle intBool EnvAddAssertFunctionWithContext(
 /* EnvRemoveAssertFunction: Removes a function */
 /*   from the ListOfAssertFunctions.           */
 /***********************************************/
-globle intBool EnvRemoveAssertFunction(
+intBool EnvRemoveAssertFunction(
   void *theEnv,
   const char *name)
   {
@@ -1835,7 +1835,7 @@ globle intBool EnvRemoveAssertFunction(
 /* EnvAddRetractFunction: Adds a function */
 /*   to the ListOfRetractFunctions.       */
 /******************************************/
-globle intBool EnvAddRetractFunction(
+intBool EnvAddRetractFunction(
   void *theEnv,
   const char *name,
   void (*functionPtr)(void *, void *),
@@ -1852,7 +1852,7 @@ globle intBool EnvAddRetractFunction(
 /* EnvAddRetractFunctionWithContext: Adds a  */
 /*   function to the ListOfRetractFunctions. */
 /*********************************************/
-globle intBool EnvAddRetractFunctionWithContext(
+intBool EnvAddRetractFunctionWithContext(
   void *theEnv,
   const char *name,
   void (*functionPtr)(void *, void *),
@@ -1870,7 +1870,7 @@ globle intBool EnvAddRetractFunctionWithContext(
 /* EnvRemoveRetractFunction: Removes a function */
 /*   from the ListOfRetractFunctions.           */
 /************************************************/
-globle intBool EnvRemoveRetractFunction(
+intBool EnvRemoveRetractFunction(
   void *theEnv,
   const char *name)
   {
@@ -1888,7 +1888,7 @@ globle intBool EnvRemoveRetractFunction(
 /* EnvAddModifyFunction: Adds a function */
 /*   to the ListOfModifyFunctions.       */
 /*****************************************/
-globle intBool EnvAddModifyFunction(
+intBool EnvAddModifyFunction(
   void *theEnv,
   const char *name,
   void (*functionPtr)(void *, void *, void *),
@@ -1905,7 +1905,7 @@ globle intBool EnvAddModifyFunction(
 /* EnvAddModifyFunctionWithContext: Adds a  */
 /*   function to the ListOfModifyFunctions. */
 /********************************************/
-globle intBool EnvAddModifyFunctionWithContext(
+intBool EnvAddModifyFunctionWithContext(
   void *theEnv,
   const char *name,
   void (*functionPtr)(void *, void *, void *),
@@ -1924,7 +1924,7 @@ globle intBool EnvAddModifyFunctionWithContext(
 /* EnvRemoveModifyFunction: Removes a function */
 /*   from the ListOfModifyFunctions.           */
 /***********************************************/
-globle intBool EnvRemoveModifyFunction(
+intBool EnvRemoveModifyFunction(
   void *theEnv,
   const char *name)
   {
@@ -1944,7 +1944,7 @@ globle intBool EnvRemoveModifyFunction(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-globle intBool AddAssertFunction(
+intBool AddAssertFunction(
   const char *name,
   void (*functionPtr)(void *,void *),
   int priority)
@@ -1959,7 +1959,7 @@ globle intBool AddAssertFunction(
    return(1);
   }
 
-globle intBool AddModifyFunction(
+intBool AddModifyFunction(
   const char *name,
   void (*functionPtr)(void *,void *,void *),
   int priority)
@@ -1974,7 +1974,7 @@ globle intBool AddModifyFunction(
    return(1);
   }
 
-globle intBool AddRetractFunction(
+intBool AddRetractFunction(
   const char *name,
   void (*functionPtr)(void *,void *),
   int priority)
@@ -1989,48 +1989,48 @@ globle intBool AddRetractFunction(
    return(1);
   }
 
-globle void *Assert(
+void *Assert(
   void *vTheFact)
   {
    return EnvAssert(GetCurrentEnvironment(),vTheFact);
   }
 
-globle void *AssertString(
+void *AssertString(
   const char *theString)
   {
    return EnvAssertString(GetCurrentEnvironment(),theString);
   }
 
-globle intBool AssignFactSlotDefaults(
+intBool AssignFactSlotDefaults(
   void *vTheFact)
   {
    return EnvAssignFactSlotDefaults(GetCurrentEnvironment(),vTheFact);
   }
 
-globle struct fact *CreateFact(
+struct fact *CreateFact(
   void *vTheDeftemplate)
   {
    return EnvCreateFact(GetCurrentEnvironment(),vTheDeftemplate);
   }
 
-globle void DecrementFactCount(
+void DecrementFactCount(
   void *factPtr)
   {
    EnvDecrementFactCount(GetCurrentEnvironment(),factPtr);
   }
 
-globle long long FactIndex(
+long long FactIndex(
   void *factPtr)
   {
    return(EnvFactIndex(GetCurrentEnvironment(),factPtr));
   }
 
-globle int GetFactListChanged()
+int GetFactListChanged()
   {
    return EnvGetFactListChanged(GetCurrentEnvironment());
   }
 
-globle void GetFactPPForm(
+void GetFactPPForm(
   char *buffer,
   unsigned bufferLength,
   void *theFact)
@@ -2038,7 +2038,7 @@ globle void GetFactPPForm(
    EnvGetFactPPForm(GetCurrentEnvironment(),buffer,bufferLength,theFact);
   }
 
-globle intBool GetFactSlot(
+intBool GetFactSlot(
   void *vTheFact,
   const char *slotName,
   DATA_OBJECT *theValue)
@@ -2046,19 +2046,19 @@ globle intBool GetFactSlot(
    return(EnvGetFactSlot(GetCurrentEnvironment(),vTheFact,slotName,theValue));
   }
 
-globle void *GetNextFact(
+void *GetNextFact(
   void *factPtr)
   {
    return EnvGetNextFact(GetCurrentEnvironment(),factPtr);
   }
 
-globle void IncrementFactCount(
+void IncrementFactCount(
   void *factPtr)
   {
    EnvIncrementFactCount(GetCurrentEnvironment(),factPtr);
   }
 
-globle intBool PutFactSlot(
+intBool PutFactSlot(
   void *vTheFact,
   const char *slotName,
   DATA_OBJECT *theValue)
@@ -2066,31 +2066,31 @@ globle intBool PutFactSlot(
    return EnvPutFactSlot(GetCurrentEnvironment(),vTheFact,slotName,theValue);
   }
 
-globle intBool RemoveAssertFunction(
+intBool RemoveAssertFunction(
   const char *name)
   {
    return EnvRemoveAssertFunction(GetCurrentEnvironment(),name);
   }
 
-globle intBool RemoveModifyFunction(
+intBool RemoveModifyFunction(
   const char *name)
   {
    return EnvRemoveModifyFunction(GetCurrentEnvironment(),name);
   }
 
-globle intBool RemoveRetractFunction(
+intBool RemoveRetractFunction(
   const char *name)
   {
    return EnvRemoveRetractFunction(GetCurrentEnvironment(),name);
   }
 
-globle intBool Retract(
+intBool Retract(
   void *vTheFact)
   {
    return EnvRetract(GetCurrentEnvironment(),vTheFact);
   }
 
-globle void SetFactListChanged(
+void SetFactListChanged(
   int value)
   {
    EnvSetFactListChanged(GetCurrentEnvironment(),value);

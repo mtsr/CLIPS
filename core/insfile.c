@@ -154,7 +154,7 @@ static void FreeReadBuffer(void *);
   SIDE EFFECTS : Functions defined to KB
   NOTES        : None
  ***************************************************/
-globle void SetupInstanceFileCommands(
+void SetupInstanceFileCommands(
   void *theEnv)
   {
 #if BLOAD_INSTANCES || BSAVE_INSTANCES
@@ -195,7 +195,7 @@ globle void SetupInstanceFileCommands(
   NOTES        : H/L Syntax :
                  (save-instances <file> [local|visible [[inherit] <class>+]])
  ****************************************************************************/
-globle long SaveInstancesCommand(
+long SaveInstancesCommand(
   void *theEnv)
   {
    return(InstancesSaveCommandParser(theEnv,"save-instances",EnvSaveInstancesDriver));
@@ -210,7 +210,7 @@ globle long SaveInstancesCommand(
   SIDE EFFECTS : Instances loaded from named file
   NOTES        : H/L Syntax : (load-instances <file>)
  ******************************************************/
-globle long LoadInstancesCommand(
+long LoadInstancesCommand(
   void *theEnv)
   {
    const char *fileFound;
@@ -236,7 +236,7 @@ globle long LoadInstancesCommand(
   SIDE EFFECTS : Instances loaded from file
   NOTES        : None
  ***************************************************/
-globle long EnvLoadInstances(
+long EnvLoadInstances(
   void *theEnv,
   const char *file)
   {
@@ -253,7 +253,7 @@ globle long EnvLoadInstances(
   SIDE EFFECTS : Instances loaded from string
   NOTES        : Uses string routers
  ***************************************************/
-globle long EnvLoadInstancesFromString(
+long EnvLoadInstancesFromString(
   void *theEnv,
   const char *theString,
   int theMax)
@@ -278,7 +278,7 @@ globle long EnvLoadInstancesFromString(
   SIDE EFFECTS : Instances loaded from named file
   NOTES        : H/L Syntax : (restore-instances <file>)
  *********************************************************/
-globle long RestoreInstancesCommand(
+long RestoreInstancesCommand(
   void *theEnv)
   {
    const char *fileFound;
@@ -304,7 +304,7 @@ globle long RestoreInstancesCommand(
   SIDE EFFECTS : Instances restored from file
   NOTES        : None
  ***************************************************/
-globle long EnvRestoreInstances(
+long EnvRestoreInstances(
   void *theEnv,
   const char *file)
   {
@@ -321,7 +321,7 @@ globle long EnvRestoreInstances(
   SIDE EFFECTS : Instances loaded from string
   NOTES        : Uses string routers
  ***************************************************/
-globle long EnvRestoreInstancesFromString(
+long EnvRestoreInstancesFromString(
   void *theEnv,
   const char *theString,
   int theMax)
@@ -348,7 +348,7 @@ globle long EnvRestoreInstancesFromString(
   SIDE EFFECTS : Instances loaded from named binary file
   NOTES        : H/L Syntax : (bload-instances <file>)
  *******************************************************/
-globle long BinaryLoadInstancesCommand(
+long BinaryLoadInstancesCommand(
   void *theEnv)
   {
    const char *fileFound;
@@ -375,7 +375,7 @@ globle long BinaryLoadInstancesCommand(
   SIDE EFFECTS : Instances loaded w/o message-passing
   NOTES        : None
  ****************************************************/
-globle long EnvBinaryLoadInstances(
+long EnvBinaryLoadInstances(
   void *theEnv,
   const char *theFile)
   {
@@ -443,7 +443,7 @@ globle long EnvBinaryLoadInstances(
   SIDE EFFECTS : Instances saved to file
   NOTES        : None
  *******************************************************/
-globle long EnvSaveInstances(
+long EnvSaveInstances(
   void *theEnv,
   const char *file,
   int saveCode)
@@ -469,7 +469,7 @@ globle long EnvSaveInstances(
   SIDE EFFECTS : Instances saved to file
   NOTES        : None
  *******************************************************/
-globle long EnvSaveInstancesDriver(
+long EnvSaveInstancesDriver(
   void *theEnv,
   const char *file,
   int saveCode,
@@ -529,7 +529,7 @@ globle long EnvSaveInstancesDriver(
   NOTES        : H/L Syntax :
                  (bsave-instances <file> [local|visible [[inherit] <class>+]])
  *****************************************************************************/
-globle long BinarySaveInstancesCommand(
+long BinarySaveInstancesCommand(
   void *theEnv)
   {
    return(InstancesSaveCommandParser(theEnv,"bsave-instances",EnvBinarySaveInstancesDriver));
@@ -547,7 +547,7 @@ globle long BinarySaveInstancesCommand(
   SIDE EFFECTS : Instances saved to file
   NOTES        : None
  *******************************************************/
-globle long EnvBinarySaveInstances(
+long EnvBinarySaveInstances(
   void *theEnv,
   const char *file,
   int saveCode)
@@ -573,7 +573,7 @@ globle long EnvBinarySaveInstances(
   SIDE EFFECTS : Instances saved to file
   NOTES        : None
  *******************************************************/
-globle long EnvBinarySaveInstancesDriver(
+long EnvBinarySaveInstancesDriver(
   void *theEnv,
   const char *file,
   int saveCode,
@@ -1713,7 +1713,7 @@ static void FreeReadBuffer(
 #if ALLOW_ENVIRONMENT_GLOBALS
 
 #if BLOAD_INSTANCES
-globle long BinaryLoadInstances(
+long BinaryLoadInstances(
   const char *theFile)
   {
    return EnvBinaryLoadInstances(GetCurrentEnvironment(),theFile);
@@ -1721,7 +1721,7 @@ globle long BinaryLoadInstances(
 #endif
 
 #if BSAVE_INSTANCES
-globle long BinarySaveInstances(
+long BinarySaveInstances(
   const char *file,
   int saveCode)
   {
@@ -1729,33 +1729,33 @@ globle long BinarySaveInstances(
   }
 #endif
 
-globle long LoadInstances(
+long LoadInstances(
   const char *file)
   {
    return EnvLoadInstances(GetCurrentEnvironment(),file);
   }
 
-globle long LoadInstancesFromString(
+long LoadInstancesFromString(
   const char *theString,
   int theMax)
   {
    return EnvLoadInstancesFromString(GetCurrentEnvironment(),theString,theMax);
   }
 
-globle long RestoreInstances(
+long RestoreInstances(
   const char *file)
   {
    return EnvRestoreInstances(GetCurrentEnvironment(),file);
   }
 
-globle long RestoreInstancesFromString(
+long RestoreInstancesFromString(
   const char *theString,
   int theMax)
   {
    return EnvRestoreInstancesFromString(GetCurrentEnvironment(),theString,theMax);
   }
 
-globle long SaveInstances(
+long SaveInstances(
   const char *file,
   int saveCode)
   {

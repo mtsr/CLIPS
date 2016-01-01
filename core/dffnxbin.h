@@ -31,18 +31,8 @@
 
 #include "dffnxfun.h"
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _DFFNXBIN_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           SetupDeffunctionsBload(void *);
-   LOCALE void                          *BloadDeffunctionModuleReference(void *,int);
+   void                           SetupDeffunctionsBload(void *);
+   void                          *BloadDeffunctionModuleReference(void *,int);
 
 #define DFFNXBIN_DATA 24
 

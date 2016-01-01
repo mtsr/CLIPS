@@ -80,27 +80,17 @@ struct factQueryData
 
 #define FactQueryData(theEnv) ((struct factQueryData *) GetEnvironmentData(theEnv,FACT_QUERY_DATA))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _FACTQURY_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
 #define QUERY_DELIMETER_STRING     "(QDS)"
 
-   LOCALE void                           SetupFactQuery(void *);
-   LOCALE void                           GetQueryFact(void *,DATA_OBJECT *);
-   LOCALE void                           GetQueryFactSlot(void *,DATA_OBJECT *);
-   LOCALE intBool                        AnyFacts(void *);
-   LOCALE void                           QueryFindFact(void *,DATA_OBJECT *);
-   LOCALE void                           QueryFindAllFacts(void *,DATA_OBJECT *);
-   LOCALE void                           QueryDoForFact(void *,DATA_OBJECT *);
-   LOCALE void                           QueryDoForAllFacts(void *,DATA_OBJECT *);
-   LOCALE void                           DelayedQueryDoForAllFacts(void *,DATA_OBJECT *);
+   void                           SetupFactQuery(void *);
+   void                           GetQueryFact(void *,DATA_OBJECT *);
+   void                           GetQueryFactSlot(void *,DATA_OBJECT *);
+   intBool                        AnyFacts(void *);
+   void                           QueryFindFact(void *,DATA_OBJECT *);
+   void                           QueryFindAllFacts(void *,DATA_OBJECT *);
+   void                           QueryDoForFact(void *,DATA_OBJECT *);
+   void                           QueryDoForAllFacts(void *,DATA_OBJECT *);
+   void                           DelayedQueryDoForAllFacts(void *,DATA_OBJECT *);
 
 #endif /* FACT_SET_QUERIES */
 

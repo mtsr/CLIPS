@@ -134,43 +134,33 @@ struct deftemplateData
 
 #define DeftemplateData(theEnv) ((struct deftemplateData *) GetEnvironmentData(theEnv,DEFTEMPLATE_DATA))
 
-#ifdef LOCALE
-#undef LOCALE
-#endif
-
-#ifdef _TMPLTDEF_SOURCE_
-#define LOCALE
-#else
-#define LOCALE extern
-#endif
-
-   LOCALE void                           InitializeDeftemplates(void *);
-   LOCALE void                          *EnvFindDeftemplate(void *,const char *);
-   LOCALE void                          *EnvFindDeftemplateInModule(void *,const char *);
-   LOCALE void                          *EnvGetNextDeftemplate(void *,void *);
-   LOCALE intBool                        EnvIsDeftemplateDeletable(void *,void *);
-   LOCALE void                          *EnvGetNextFactInTemplate(void *,void *,void *);
-   LOCALE struct deftemplateModule      *GetDeftemplateModuleItem(void *,struct defmodule *);
-   LOCALE void                           ReturnSlots(void *,struct templateSlot *);
-   LOCALE void                           IncrementDeftemplateBusyCount(void *,void *);
-   LOCALE void                           DecrementDeftemplateBusyCount(void *,void *);
-   LOCALE void                          *CreateDeftemplateScopeMap(void *,struct deftemplate *);
+   void                           InitializeDeftemplates(void *);
+   void                          *EnvFindDeftemplate(void *,const char *);
+   void                          *EnvFindDeftemplateInModule(void *,const char *);
+   void                          *EnvGetNextDeftemplate(void *,void *);
+   intBool                        EnvIsDeftemplateDeletable(void *,void *);
+   void                          *EnvGetNextFactInTemplate(void *,void *,void *);
+   struct deftemplateModule      *GetDeftemplateModuleItem(void *,struct defmodule *);
+   void                           ReturnSlots(void *,struct templateSlot *);
+   void                           IncrementDeftemplateBusyCount(void *,void *);
+   void                           DecrementDeftemplateBusyCount(void *,void *);
+   void                          *CreateDeftemplateScopeMap(void *,struct deftemplate *);
 #if RUN_TIME
-   LOCALE void                           DeftemplateRunTimeInitialize(void *);
+   void                           DeftemplateRunTimeInitialize(void *);
 #endif
-   LOCALE const char                    *EnvDeftemplateModule(void *,void *);
-   LOCALE const char                    *EnvGetDeftemplateName(void *,void *);
-   LOCALE const char                    *EnvGetDeftemplatePPForm(void *,void *);
+   const char                    *EnvDeftemplateModule(void *,void *);
+   const char                    *EnvGetDeftemplateName(void *,void *);
+   const char                    *EnvGetDeftemplatePPForm(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   LOCALE const char                    *DeftemplateModule(void *);
-   LOCALE void                          *FindDeftemplate(const char *);
-   LOCALE const char                    *GetDeftemplateName(void *);
-   LOCALE const char                    *GetDeftemplatePPForm(void *);
-   LOCALE void                          *GetNextDeftemplate(void *);
-   LOCALE intBool                        IsDeftemplateDeletable(void *);
-   LOCALE void                          *GetNextFactInTemplate(void *,void *);
+   const char                    *DeftemplateModule(void *);
+   void                          *FindDeftemplate(const char *);
+   const char                    *GetDeftemplateName(void *);
+   const char                    *GetDeftemplatePPForm(void *);
+   void                          *GetNextDeftemplate(void *);
+   intBool                        IsDeftemplateDeletable(void *);
+   void                          *GetNextFactInTemplate(void *,void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
