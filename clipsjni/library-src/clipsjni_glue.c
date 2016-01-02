@@ -7,7 +7,7 @@ static void       DeallocateJNIData(void *);
 /********************/
 /* JNIUserFunction: */
 /********************/
-globle void JNIUserFunction(
+void JNIUserFunction(
   void *theEnv,
   DATA_OBJECT_PTR result)
   {
@@ -51,7 +51,7 @@ globle void JNIUserFunction(
 /************************/
 /* JNIPeriodicCallback: */
 /************************/
-globle void JNIPeriodicCallback(
+void JNIPeriodicCallback(
   void *theEnv)
   {
    jobject context;
@@ -78,7 +78,7 @@ globle void JNIPeriodicCallback(
 /***************************/
 /* JNIParserErrorCallback: */
 /***************************/
-globle void JNIParserErrorCallback(
+void JNIParserErrorCallback(
   void *theEnv,
   const char *fileName,
   const char *warningString,
@@ -111,7 +111,7 @@ globle void JNIParserErrorCallback(
 /*************************************************/
 /* FindJNIRouter: Query routine for JNI routers. */
 /*************************************************/
-globle int QueryJNIRouter(
+int QueryJNIRouter(
   void *theEnv,
   const char *logicalName)
   {
@@ -147,7 +147,7 @@ globle int QueryJNIRouter(
 /*************************************************/
 /* ExitJNIRouter:  Exit routine for JNI routers. */
 /*************************************************/
-globle int ExitJNIRouter(
+int ExitJNIRouter(
   void *theEnv,
   int num)
   {
@@ -164,7 +164,7 @@ globle int ExitJNIRouter(
 /**************************************************/
 /* PrintJNIRouter: Print routine for JNI routers. */
 /**************************************************/
-globle int PrintJNIRouter(
+int PrintJNIRouter(
   void *theEnv,
   const char *logicalName,
   const char *str)
@@ -202,7 +202,7 @@ globle int PrintJNIRouter(
 /************************************************/
 /* GetcJNIRouter: Getc routine for JNI routers. */
 /************************************************/
-globle int GetcJNIRouter(
+int GetcJNIRouter(
   void *theEnv,
   const char *logicalName)
   {
@@ -238,7 +238,7 @@ globle int GetcJNIRouter(
 /****************************************************/
 /* UngetcJNIRouter: Ungetc routine for JNI routers. */
 /****************************************************/
-globle int UngetcJNIRouter(
+int UngetcJNIRouter(
   void *theEnv,
   int ch,
   const char *logicalName)
@@ -275,7 +275,7 @@ globle int UngetcJNIRouter(
 /*********************/
 /* PrintJavaAddress: */
 /*********************/
-globle void PrintJavaAddress(
+void PrintJavaAddress(
   void *theEnv,
   const char *logicalName,
   void *theValue)
@@ -317,7 +317,7 @@ globle void PrintJavaAddress(
 /********************/
 /* NewJavaAddress:  */
 /********************/
-globle void NewJavaAddress(
+void NewJavaAddress(
   void *theEnv,
   DATA_OBJECT *rv)
   {
@@ -594,7 +594,7 @@ globle void NewJavaAddress(
 /*******************/
 /* CallJavaMethod: */
 /*******************/
-globle intBool CallJavaMethod(
+intBool CallJavaMethod(
   void *theEnv,
   DATA_OBJECT *target,
   DATA_OBJECT *rv)
@@ -797,7 +797,7 @@ globle intBool CallJavaMethod(
 /***********************/
 /* DiscardJavaAddress: */
 /***********************/
-globle intBool DiscardJavaAddress(
+intBool DiscardJavaAddress(
   void *theEnv,
   void *theValue)
   {
@@ -848,7 +848,7 @@ static void DeallocateJNIData(
 /*****************************/
 /* CreateCLIPSJNIEnvironment */
 /*****************************/
-globle jlong CreateCLIPSJNIEnvironment(
+jlong CreateCLIPSJNIEnvironment(
   JNIEnv *env, 
   jobject obj)
   {

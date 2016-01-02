@@ -4,18 +4,18 @@
 #ifndef _Included_clipsjni_glue
 #define _Included_clipsjni_glue
 
-globle void       JNIUserFunction(void *,DATA_OBJECT_PTR);
-globle int        QueryJNIRouter(void *,const char *);
-globle int        ExitJNIRouter(void *,int);
-globle int        PrintJNIRouter(void *,const char *,const char *);
-globle int        GetcJNIRouter(void *,const char *);
-globle int        UngetcJNIRouter(void *,int,const char *);
-globle void       JNIPeriodicCallback(void *);
-globle void       JNIParserErrorCallback(void *,const char *,const char *,const char *,long);
-globle void       PrintJavaAddress(void *,const char *,void *);
-globle void       NewJavaAddress(void *,DATA_OBJECT *);
-globle intBool    CallJavaMethod(void *,DATA_OBJECT *,DATA_OBJECT *);
-globle intBool    DiscardJavaAddress(void *,void *);
-globle jlong      CreateCLIPSJNIEnvironment(JNIEnv *,jobject);
+void       JNIUserFunction(void *,DATA_OBJECT_PTR);
+int        QueryJNIRouter(void *,const char *);
+int        ExitJNIRouter(void *,int);
+int        PrintJNIRouter(void *,const char *,const char *);
+int        GetcJNIRouter(void *,const char *);
+int        UngetcJNIRouter(void *,int,const char *);
+void       JNIPeriodicCallback(void *);
+void       JNIParserErrorCallback(void *,const char *,const char *,const char *,long);
+void       PrintJavaAddress(void *,const char *,void *);
+void       NewJavaAddress(void *,DATA_OBJECT *);
+intBool    CallJavaMethod(void *,DATA_OBJECT *,DATA_OBJECT *);
+intBool    DiscardJavaAddress(void *,void *);
+jlong      CreateCLIPSJNIEnvironment(JNIEnv *,jobject);
 
 #endif

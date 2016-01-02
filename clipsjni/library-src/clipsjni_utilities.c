@@ -6,7 +6,7 @@ static void      *ConvertSingleFieldPrimitiveValue(void *,int,jobject);
 /******************/
 /* JLongToPointer */
 /******************/
-globle void *JLongToPointer(
+void *JLongToPointer(
   jlong value)
   {
    return (void *) value;
@@ -15,7 +15,7 @@ globle void *JLongToPointer(
 /******************/
 /* PointerToJLong */
 /******************/
-globle jlong PointerToJLong(
+jlong PointerToJLong(
   void *value)
   {
    return (jlong) value;
@@ -24,7 +24,7 @@ globle jlong PointerToJLong(
 /**********************/
 /* ConvertDataObject: */
 /**********************/
-globle jobject ConvertDataObject(
+jobject ConvertDataObject(
   JNIEnv *env,
   jobject javaEnv,
   void *clipsEnv,
@@ -89,7 +89,7 @@ globle jobject ConvertDataObject(
 /****************************/
 /* ConvertSingleFieldValue: */
 /****************************/
-globle jobject ConvertSingleFieldValue(
+jobject ConvertSingleFieldValue(
   JNIEnv *env,
   jobject javaEnv,
   void *clipsEnv,
@@ -243,7 +243,7 @@ static void *ConvertSingleFieldPrimitiveValue(
 /**************************************/
 /* ConvertPrimitiveValueToDataObject: */
 /**************************************/
-globle void ConvertPrimitiveValueToDataObject(
+void ConvertPrimitiveValueToDataObject(
   void *theEnv,
   jobject theValue,
   DATA_OBJECT_PTR theDO)
