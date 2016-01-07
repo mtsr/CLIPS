@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             DEFMODULE BSAVE/BLOAD MODULE            */
    /*******************************************************/
@@ -180,7 +180,7 @@ static void BsaveFind(
       /* as being a needed symbol. */
       /*===========================*/
 
-      defmodulePtr->name->neededSymbol = TRUE;
+      defmodulePtr->name->neededSymbol = true;
 
       /*==============================================*/
       /* Loop through each of the port items in the   */
@@ -195,11 +195,11 @@ static void BsaveFind(
         {
          DefmoduleData(theEnv)->NumberOfPortItems++;
          if (theList->moduleName != NULL)
-           { theList->moduleName->neededSymbol = TRUE; }
+           { theList->moduleName->neededSymbol = true; }
          if (theList->constructType != NULL)
-           { theList->constructType->neededSymbol = TRUE; }
+           { theList->constructType->neededSymbol = true; }
          if (theList->constructName != NULL)
-           { theList->constructName->neededSymbol = TRUE; }
+           { theList->constructName->neededSymbol = true; }
         }
 
       /*==============================================*/
@@ -215,11 +215,11 @@ static void BsaveFind(
         {
          DefmoduleData(theEnv)->NumberOfPortItems++;
          if (theList->moduleName != NULL)
-           { theList->moduleName->neededSymbol = TRUE; }
+           { theList->moduleName->neededSymbol = true; }
          if (theList->constructType != NULL)
-           { theList->constructType->neededSymbol = TRUE; }
+           { theList->constructType->neededSymbol = true; }
          if (theList->constructName != NULL)
-           { theList->constructName->neededSymbol = TRUE; }
+           { theList->constructName->neededSymbol = true; }
         }
      }
   }
@@ -601,7 +601,7 @@ static void ClearBload(
 
    SetListOfDefmodules(theEnv,NULL);
    CreateMainModule(theEnv);
-   DefmoduleData(theEnv)->MainModuleRedefinable = TRUE;
+   DefmoduleData(theEnv)->MainModuleRedefinable = true;
   }
 
 #endif /*  (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE) && (! RUN_TIME) */

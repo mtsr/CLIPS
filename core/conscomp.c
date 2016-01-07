@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  09/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -54,7 +54,7 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.31: Changed restrictions from char * to            */
+/*      6.40: Changed restrictions from char * to            */
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
@@ -145,8 +145,8 @@
    void                               ConstructsToCCommand(void *);
    static int                         ConstructsToC(void *,const char *,const char *,char *,long long,long long);
    static void                        WriteFunctionExternDeclarations(void *,FILE *);
-   static int                         FunctionsToCode(void *theEnv,const char *,const char *,char *);
-   static int                         WriteInitializationFunction(void *,const char *,const char *,char *);
+   static bool                        FunctionsToCode(void *theEnv,const char *,const char *,char *);
+   static bool                        WriteInitializationFunction(void *,const char *,const char *,char *);
    static void                        DumpExpression(void *,struct expr *);
    static void                        MarkConstruct(void *,struct constructHeader *,void *);
    static void                        HashedExpressionsToCode(void *);
@@ -219,7 +219,7 @@ void ConstructsToCCommand(
    /* Get the name of the file in which to place C code. */
    /*====================================================*/
 
-   if (EnvArgTypeCheck(theEnv,"constructs-to-c",1,SYMBOL_OR_STRING,&theArg) == FALSE)
+   if (EnvArgTypeCheck(theEnv,"constructs-to-c",1,SYMBOL_OR_STRING,&theArg) == false)
      { return; }
 
    fileName = DOToString(theArg);
@@ -235,7 +235,7 @@ void ConstructsToCCommand(
      {
       if (*(fileName+i) == '.')
         {
-         PrintErrorID(theEnv,"CONSCOMP",1,FALSE);
+         PrintErrorID(theEnv,"CONSCOMP",1,false);
          EnvPrintRouter(theEnv,WERROR,"Invalid file name ");
          EnvPrintRouter(theEnv,WERROR,fileName);
          EnvPrintRouter(theEnv,WERROR," contains \'.\'\n");
@@ -254,7 +254,7 @@ void ConstructsToCCommand(
 
    if ((nameLength + EXTRA_FILE_NAME) > FILENAME_MAX)
      {
-      PrintErrorID(theEnv,"CONSCOMP",1,FALSE);
+      PrintErrorID(theEnv,"CONSCOMP",1,false);
       EnvPrintRouter(theEnv,WERROR,"Aborting because the base file name may cause the fopen maximum of ");
       PrintLongInteger(theEnv,WERROR,FILENAME_MAX);
       EnvPrintRouter(theEnv,WERROR," to be violated when file names are generated.\n");
@@ -270,7 +270,7 @@ void ConstructsToCCommand(
 
    if (nameLength > 3)
      {
-      PrintWarningID(theEnv,"CONSCOMP",1,FALSE);
+      PrintWarningID(theEnv,"CONSCOMP",1,false);
       EnvPrintRouter(theEnv,WWARNING,"Base file name exceeds 3 characters.\n");
       EnvPrintRouter(theEnv,WWARNING,"  This may cause files to be overwritten if file name length\n");
       EnvPrintRouter(theEnv,WWARNING,"  is limited on your platform.\n");
@@ -280,7 +280,7 @@ void ConstructsToCCommand(
    /* Get the runtime image ID argument. */
    /*====================================*/
 
-   if (EnvArgTypeCheck(theEnv,"constructs-to-c",2,INTEGER,&theArg) == FALSE)
+   if (EnvArgTypeCheck(theEnv,"constructs-to-c",2,INTEGER,&theArg) == false)
      { return; }
 
    id = DOToLong(theArg);
@@ -296,7 +296,7 @@ void ConstructsToCCommand(
    
    if (argCount == 3)
      {
-      if (EnvArgTypeCheck(theEnv,"constructs-to-c",3,SYMBOL_OR_STRING,&theArg) == FALSE)
+      if (EnvArgTypeCheck(theEnv,"constructs-to-c",3,SYMBOL_OR_STRING,&theArg) == false)
         { return; }
 
       pathName = DOToString(theArg);
@@ -315,7 +315,7 @@ void ConstructsToCCommand(
 
    if (argCount == 4)
      {
-      if (EnvArgTypeCheck(theEnv,"constructs-to-c",4,INTEGER,&theArg) == FALSE)
+      if (EnvArgTypeCheck(theEnv,"constructs-to-c",4,INTEGER,&theArg) == false)
         { return; }
 
       max = DOToLong(theArg);
@@ -406,7 +406,7 @@ static int ConstructsToC(
    ConstructCompilerData(theEnv)->ImageID = (int) theImageID; /* TBD */
    ConstructCompilerData(theEnv)->ExpressionFP = NULL;
    ConstructCompilerData(theEnv)->ExpressionVersion = 1;
-   ConstructCompilerData(theEnv)->ExpressionHeader = TRUE;
+   ConstructCompilerData(theEnv)->ExpressionHeader = true;
    ConstructCompilerData(theEnv)->ExpressionCount = 0;
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"#ifndef _CONSTRUCT_COMPILER_HEADER_\n");
@@ -521,11 +521,11 @@ static int ConstructsToC(
    GenClose(theEnv,ConstructCompilerData(theEnv)->HeaderFP);
 
    /*==================================================*/
-   /* Return TRUE to indicate that the constructs-to-c */
+   /* Return true to indicate that the constructs-to-c */
    /* command was successfully executed.               */
    /*==================================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /*******************************************************/
@@ -552,8 +552,11 @@ static void WriteFunctionExternDeclarations(
       switch(theFunction->returnValueType)
         {
          case 'i':
-         case 'b':
            fprintf(fp,"int ");
+           break;
+           
+         case 'b':
+           fprintf(fp,"bool ");
            break;
            
          case 'g':
@@ -647,7 +650,7 @@ static void WriteFunctionExternDeclarations(
 /*   the function declaration data structures (used */
 /*   to declare system and user defined functions). */
 /****************************************************/
-static int FunctionsToCode(
+static bool FunctionsToCode(
   void *theEnv,
   const char *fileName,
   const char *pathName,
@@ -656,7 +659,7 @@ static int FunctionsToCode(
    short i = 0;
    FILE *fp;
    int version = 1;
-   int newHeader = TRUE;
+   bool newHeader = true;
    struct FunctionDefinition *fctnPtr;
 
    /*=============================*/
@@ -674,8 +677,8 @@ static int FunctionsToCode(
    /* function definition data structures.  */
    /*=======================================*/
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,2,version,FALSE)) == NULL)
-     { return(0); }
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,2,version,false)) == NULL)
+     { return(false); }
 
    /*===============================================*/
    /* Construct the definition of the function list */
@@ -695,7 +698,7 @@ static int FunctionsToCode(
         {
          fprintf(fp,"struct FunctionDefinition P%d_%d[] = {\n",ConstructCompilerData(theEnv)->ImageID,version);
          fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct FunctionDefinition P%d_%d[];\n",ConstructCompilerData(theEnv)->ImageID,version);
-         newHeader = FALSE;
+         newHeader = false;
         }
 
       fprintf(fp,"{");
@@ -722,15 +725,15 @@ static int FunctionsToCode(
          version++;
          if (fctnPtr != NULL)
            {
-            if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,2,version,FALSE)) == NULL) return(0);
-            newHeader = TRUE;
+            if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,2,version,false)) == NULL) return(false);
+            newHeader = true;
            }
         }
       else
         { fprintf(fp,"},\n"); }
      }
 
-   return(TRUE);
+   return(true);
   }
 
 /************************************************************/
@@ -754,7 +757,7 @@ void PrintFunctionReference(
 /*   the C initialization function for    */
 /*   this constructs-to-c module.         */
 /******************************************/
-static int WriteInitializationFunction(
+static bool WriteInitializationFunction(
   void *theEnv,
   const char *fileName,
   const char *pathName,
@@ -771,7 +774,7 @@ static int WriteInitializationFunction(
    if ((fp = GenOpen(theEnv,fileNameBuffer,"w")) == NULL)
      {
       OpenErrorMessage(theEnv,"constructs-to-c",fileNameBuffer);
-      return(FALSE);
+      return(false);
      }
 
    /*=====================================*/
@@ -840,11 +843,11 @@ static int WriteInitializationFunction(
    GenClose(theEnv,fp);
 
    /*========================================*/
-   /* Return TRUE to indicate initialization */
+   /* Return true to indicate initialization */
    /* file was successfully written.         */
    /*========================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 
@@ -858,7 +861,7 @@ FILE *NewCFile(
   char *fileNameBuffer,
   int id,
   int version,
-  int reopenOldFile)
+  bool reopenOldFile)
   {
    FILE *newFP;
 
@@ -875,7 +878,7 @@ FILE *NewCFile(
       return(NULL);
      }
 
-   if (reopenOldFile == FALSE)
+   if (reopenOldFile == false)
      {
       fprintf(newFP,"#include \"%s.h\"\n",fileName);
       fprintf(newFP,"\n");
@@ -952,7 +955,7 @@ int ExpressionToCode(
    if (exprPtr == NULL)
      {
       if (fp != NULL) fprintf(fp,"NULL");
-      return(FALSE);
+      return(0);
      }
    else if (fp != NULL)
      { fprintf(fp,"&E%d_%d[%ld]",ConstructCompilerData(theEnv)->ImageID,ConstructCompilerData(theEnv)->ExpressionVersion,ConstructCompilerData(theEnv)->ExpressionCount); }
@@ -961,17 +964,17 @@ int ExpressionToCode(
    /* Create a new expression code file, if necessary. */
    /*==================================================*/
 
-   if (ConstructCompilerData(theEnv)->ExpressionHeader == TRUE)
+   if (ConstructCompilerData(theEnv)->ExpressionHeader == true)
      {
       if ((ConstructCompilerData(theEnv)->ExpressionFP = NewCFile(theEnv,ConstructCompilerData(theEnv)->FilePrefix,
                                                                   ConstructCompilerData(theEnv)->PathName,
                                                                   ConstructCompilerData(theEnv)->FileNameBuffer,
-                                                                  3,ConstructCompilerData(theEnv)->ExpressionVersion,FALSE)) == NULL)
+                                                                  3,ConstructCompilerData(theEnv)->ExpressionVersion,false)) == NULL)
         { return(-1); }
 
       fprintf(ConstructCompilerData(theEnv)->ExpressionFP,"struct expr E%d_%d[] = {\n",ConstructCompilerData(theEnv)->ImageID,ConstructCompilerData(theEnv)->ExpressionVersion);
       fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct expr E%d_%d[];\n",ConstructCompilerData(theEnv)->ImageID,ConstructCompilerData(theEnv)->ExpressionVersion);
-      ConstructCompilerData(theEnv)->ExpressionHeader = FALSE;
+      ConstructCompilerData(theEnv)->ExpressionHeader = false;
      }
    else
      { fprintf(ConstructCompilerData(theEnv)->ExpressionFP,",\n"); }
@@ -993,16 +996,16 @@ int ExpressionToCode(
       fprintf(ConstructCompilerData(theEnv)->ExpressionFP,"};\n");
       GenClose(theEnv,ConstructCompilerData(theEnv)->ExpressionFP);
       ConstructCompilerData(theEnv)->ExpressionFP = NULL;
-      ConstructCompilerData(theEnv)->ExpressionHeader = TRUE;
+      ConstructCompilerData(theEnv)->ExpressionHeader = true;
      }
 
    /*==========================================*/
-   /* Return TRUE to indicate the expression   */
+   /* Return 1 to indicate the expression      */
    /* reference and expression data structures */
    /* were succcessfully written to the file.  */
    /*==========================================*/
 
-   return(TRUE);
+   return(1);
   }
 
 /**********************************************************/
@@ -1175,7 +1178,7 @@ struct CodeGeneratorItem *AddCodeGeneratorItem(
   int priority,
   void (*beforeFunction)(void *),
   void (*initFunction)(void *,FILE *,int,int),
-  int (*generateFunction)(void *,const char *,const char *,char *,int,FILE *,int,int),
+  bool (*generateFunction)(void *,const char *,const char *,char *,int,FILE *,int,int),
   int arrayCount)
   {
    struct CodeGeneratorItem *newPtr, *currentPtr, *lastPtr = NULL;
@@ -1240,7 +1243,7 @@ struct CodeGeneratorItem *AddCodeGeneratorItem(
      }
 
    currentPtr = ConstructCompilerData(theEnv)->ListOfCodeGeneratorItems;
-   while ((currentPtr != NULL) ? (priority < currentPtr->priority) : FALSE)
+   while ((currentPtr != NULL) ? (priority < currentPtr->priority) : false)
      {
       lastPtr = currentPtr;
       currentPtr = currentPtr->next;
@@ -1279,7 +1282,7 @@ FILE *CloseFileIfNeeded(
   int *theCount,
   int *arrayVersion,
   int maxIndices,
-  int *canBeReopened,
+  bool *canBeReopened,
   struct CodeGeneratorFile *codeFile)
   {
    /*==========================================*/
@@ -1296,7 +1299,7 @@ FILE *CloseFileIfNeeded(
 
       if (canBeReopened != NULL)
         {
-         *canBeReopened = TRUE;
+         *canBeReopened = true;
          GenClose(theEnv,theFile);
          return(NULL);
         }
@@ -1311,7 +1314,7 @@ FILE *CloseFileIfNeeded(
    /*===========================================*/
 
    if (canBeReopened != NULL)
-     { *canBeReopened = FALSE; }
+     { *canBeReopened = false; }
 
    /*===============================================*/
    /* If the file is closed, then we need to reopen */
@@ -1329,7 +1332,7 @@ FILE *CloseFileIfNeeded(
       if (codeFile->filePrefix == NULL)
         { return(NULL); }
 
-      theFile = NewCFile(theEnv,codeFile->filePrefix,codeFile->pathName,codeFile->fileNameBuffer,codeFile->id,codeFile->version,TRUE);
+      theFile = NewCFile(theEnv,codeFile->filePrefix,codeFile->pathName,codeFile->fileNameBuffer,codeFile->id,codeFile->version,true);
       if (theFile == NULL)
         {
          SystemError(theEnv,"CONSCOMP",4);
@@ -1381,7 +1384,7 @@ FILE *OpenFileIfNeeded(
   FILE *headerFP,
   const char *structureName,
   char *structPrefix,
-  int reopenOldFile,
+  bool reopenOldFile,
   struct CodeGeneratorFile *codeFile)
   {
    char arrayName[80];
@@ -1449,7 +1452,7 @@ FILE *OpenFileIfNeeded(
    /* the array variable definition.          */
    /*=========================================*/
 
-   if (reopenOldFile == FALSE)
+   if (reopenOldFile == false)
      {
       (*fileCount)++;
       gensprintf(arrayName,"%s%d_%d",structPrefix,imageID,arrayVersion);
@@ -1476,7 +1479,7 @@ void MarkConstructBsaveIDs(
   {
    long theCount = 0;
 
-   DoForAllConstructs(theEnv,MarkConstruct,constructModuleIndex,FALSE,&theCount);
+   DoForAllConstructs(theEnv,MarkConstruct,constructModuleIndex,false,&theCount);
   }
 
 /*************************************************************/

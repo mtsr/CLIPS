@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               EXPRESSION HEADER FILE                */
    /*******************************************************/
@@ -116,10 +116,10 @@ struct expressionData
 #endif
 #if (! RUN_TIME)
    SAVED_CONTEXTS *svContexts;
-   int ReturnContext;
-   int BreakContext;
+   bool ReturnContext;
+   bool BreakContext;
 #endif
-   intBool SequenceOpMode;
+   bool SequenceOpMode;
   };
 
 #define ExpressionData(theEnv) ((struct expressionData *) GetEnvironmentData(theEnv,EXPRESSION_DATA))

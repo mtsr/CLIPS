@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 BLOAD HEADER FILE                   */
    /*******************************************************/
@@ -60,7 +60,7 @@ struct bloadData
    const char *BinaryPrefixID;
    const char *BinaryVersionID;
    struct FunctionDefinition **FunctionArray;
-   int BloadActive;
+   bool BloadActive;
    struct callFunctionItem *BeforeBloadFunctions;
    struct callFunctionItem *AfterBloadFunctions;
    struct callFunctionItem *ClearBloadReadyFunctions;
@@ -72,10 +72,10 @@ struct bloadData
 #define FunctionPointer(i) ((struct FunctionDefinition *) (((i) == -1L) ? NULL : BloadData(theEnv)->FunctionArray[i]))
 
    void                    InitializeBloadData(void *);
-   int                     BloadCommand(void *);
-   intBool                 EnvBload(void *,const char *);
+   bool                    BloadCommand(void *);
+   bool                    EnvBload(void *,const char *);
    void                    BloadandRefresh(void *,long,size_t,void (*)(void *,void *,long));
-   intBool                 Bloaded(void *);
+   bool                    Bloaded(void *);
    void                    AddBeforeBloadFunction(void *,const char *,void (*)(void *),int);
    void                    AddAfterBloadFunction(void *,const char *,void (*)(void *),int);
    void                    AddClearBloadReadyFunction(void *,const char *,int (*)(void *),int);

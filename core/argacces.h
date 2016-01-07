@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             ARGUMENT ACCESS HEADER FILE             */
    /*******************************************************/
@@ -53,17 +53,17 @@
    double                         EnvRtnDouble(void *,int);
    long long                      EnvRtnLong(void *,int);
    struct dataObject             *EnvRtnUnknown(void *,int,struct dataObject *);
-   int                            EnvArgTypeCheck(void *,const char *,int,int,struct dataObject *);
-   intBool                        GetNumericArgument(void *,struct expr *,const char *,struct dataObject *,int,int);
+   bool                           EnvArgTypeCheck(void *,const char *,int,int,struct dataObject *);
+   bool                           GetNumericArgument(void *,struct expr *,const char *,struct dataObject *,bool,int);
    const char                    *GetLogicalName(void *,int,const char *);
    const char                    *GetFileName(void *,const char *,int);
    const char                    *GetConstructName(void *,const char *,const char *);
    void                           ExpectedCountError(void *,const char *,int,int);
    void                           OpenErrorMessage(void *,const char *,const char *);
-   intBool                        CheckFunctionArgCount(void *,const char *,const char *,int);
+   bool                           CheckFunctionArgCount(void *,const char *,const char *,int);
    void                           ExpectedTypeError1(void *,const char *,int,const char *);
    void                           ExpectedTypeError2(void *,const char *,int);
-   struct defmodule              *GetModuleName(void *,const char *,int,int *);
+   struct defmodule              *GetModuleName(void *,const char *,int,bool *);
    void                          *GetFactOrInstanceArgument(void *,int,DATA_OBJECT *,const char *);
    void                           IllegalLogicalNameMessage(void *,const char *);
 

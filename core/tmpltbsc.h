@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*       DEFTEMPLATE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -52,7 +52,7 @@
 
    void                           DeftemplateBasicCommands(void *);
    void                           UndeftemplateCommand(void *);
-   intBool                        EnvUndeftemplate(void *,void *);
+   bool                           EnvUndeftemplate(void *,void *);
    void                           GetDeftemplateListFunction(void *,DATA_OBJECT_PTR);
    void                           EnvGetDeftemplateList(void *,DATA_OBJECT_PTR,void *);
    void                          *DeftemplateModuleFunction(void *);
@@ -61,10 +61,10 @@
    int                            PPDeftemplate(void *,const char *,const char *);
    void                           ListDeftemplatesCommand(void *);
    void                           EnvListDeftemplates(void *,const char *,void *);
-   unsigned                       EnvGetDeftemplateWatch(void *,void *);
-   void                           EnvSetDeftemplateWatch(void *,unsigned,void *);
-   unsigned                       DeftemplateWatchAccess(void *,int,unsigned,struct expr *);
-   unsigned                       DeftemplateWatchPrint(void *,const char *,int,struct expr *);
+   bool                           EnvGetDeftemplateWatch(void *,void *);
+   void                           EnvSetDeftemplateWatch(void *,bool,void *);
+   bool                           DeftemplateWatchAccess(void *,int,bool,struct expr *);
+   bool                           DeftemplateWatchPrint(void *,const char *,int,struct expr *);
 #endif
 
 #if ALLOW_ENVIRONMENT_GLOBALS
@@ -75,7 +75,7 @@
    void                           ListDeftemplates(const char *,void *);
    void                           SetDeftemplateWatch(unsigned,void *);
 #endif
-   intBool                        Undeftemplate(void *);
+   bool                           Undeftemplate(void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

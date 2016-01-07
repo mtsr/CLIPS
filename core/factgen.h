@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  12/10/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*        FACT RETE FUNCTION GENERATION HEADER FILE    */
    /*******************************************************/
@@ -211,7 +211,7 @@ struct factCheckLengthPNCall
    struct expr               *FactPNVariableComparison(void *,struct lhsParseNode *,
                                                               struct lhsParseNode *);
    struct expr               *FactJNVariableComparison(void *,struct lhsParseNode *,
-                                                              struct lhsParseNode *,int);
+                                                              struct lhsParseNode *,bool);
    void                       FactReplaceGetvar(void *,struct expr *,struct lhsParseNode *,int);
    void                       FactReplaceGetfield(void *,struct expr *,struct lhsParseNode *);
    struct expr               *FactGenPNConstant(void *,struct lhsParseNode *);

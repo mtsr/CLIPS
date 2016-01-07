@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -190,7 +190,7 @@ static void BsaveDeffunctionFind(
 
    DeffunctionBinaryData(theEnv)->ModuleCount = 
       DoForAllConstructs(theEnv,MarkDeffunctionItems,DeffunctionData(theEnv)->DeffunctionModuleIndex,
-                         FALSE,NULL);
+                         false,NULL);
   }
 
 /***************************************************
@@ -231,7 +231,7 @@ static void BsaveDeffunctionExpressions(
   FILE *fp)
   {
    DoForAllConstructs(theEnv,BsaveDeffunctionExpression,DeffunctionData(theEnv)->DeffunctionModuleIndex,
-                      FALSE,(void *) fp);
+                      false,(void *) fp);
   }
 
 /***************************************************
@@ -315,7 +315,7 @@ static void BsaveDeffunctions(
       Write out each deffunction
       ========================== */
    DoForAllConstructs(theEnv,BsaveDeffunction,DeffunctionData(theEnv)->DeffunctionModuleIndex,
-                      FALSE,(void *) fp);
+                      false,(void *) fp);
 
    RestoreBloadCount(theEnv,&DeffunctionBinaryData(theEnv)->ModuleCount);
    RestoreBloadCount(theEnv,&DeffunctionBinaryData(theEnv)->DeffunctionCount);

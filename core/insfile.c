@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.31  08/04/15           */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*         INSTANCE LOAD/SAVE (ASCII/BINARY) MODULE    */
    /*******************************************************/
@@ -39,7 +39,7 @@
 /*            have to be in scope if the module name is      */
 /*            specified.                                     */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*************************************************************/
@@ -110,13 +110,13 @@ struct bsaveSlotValueAtom
    ***************************************** */
 
 static long InstancesSaveCommandParser(void *,const char *,long (*)(void *,const char *,int,
-                                                   EXPRESSION *,intBool));
-static DATA_OBJECT *ProcessSaveClassList(void *,const char *,EXPRESSION *,int,intBool);
+                                                   EXPRESSION *,bool));
+static DATA_OBJECT *ProcessSaveClassList(void *,const char *,EXPRESSION *,int,bool);
 static void ReturnSaveClassList(void *,DATA_OBJECT *);
-static long SaveOrMarkInstances(void *,void *,int,DATA_OBJECT *,intBool,intBool,
+static long SaveOrMarkInstances(void *,void *,int,DATA_OBJECT *,bool,bool,
                                          void (*)(void *,void *,INSTANCE_TYPE *));
 static long SaveOrMarkInstancesOfClass(void *,void *,struct defmodule *,int,DEFCLASS *,
-                                                intBool,int,void (*)(void *,void *,INSTANCE_TYPE *));
+                                                bool,int,void (*)(void *,void *,INSTANCE_TYPE *));
 static void SaveSingleInstanceText(void *,void *,INSTANCE_TYPE *);
 static void ProcessFileErrorMessage(void *,const char *,const char *);
 #if BSAVE_INSTANCES
@@ -127,11 +127,11 @@ static void SaveSingleInstanceBinary(void *,void *,INSTANCE_TYPE *);
 static void SaveAtomBinary(void *,unsigned short,void *,FILE *);
 #endif
 
-static long LoadOrRestoreInstances(void *,const char *,int,int);
+static long LoadOrRestoreInstances(void *,const char *,bool,bool);
 
 #if BLOAD_INSTANCES
-static intBool VerifyBinaryHeader(void *,const char *);
-static intBool LoadSingleBinaryInstance(void *);
+static bool VerifyBinaryHeader(void *,const char *);
+static bool LoadSingleBinaryInstance(void *);
 static void BinaryLoadInstanceError(void *,SYMBOL_HN *,DEFCLASS *);
 static void CreateSlotValue(void *,DATA_OBJECT *,struct bsaveSlotValueAtom *,unsigned long); 
 static void *GetBinaryAtomValue(void *,struct bsaveSlotValueAtom *);
@@ -217,7 +217,7 @@ long LoadInstancesCommand(
    DATA_OBJECT temp;
    long instanceCount;
 
-   if (EnvArgTypeCheck(theEnv,"load-instances",1,SYMBOL_OR_STRING,&temp) == FALSE)
+   if (EnvArgTypeCheck(theEnv,"load-instances",1,SYMBOL_OR_STRING,&temp) == false)
      return(0L);
 
    fileFound = DOToString(temp);
@@ -240,7 +240,7 @@ long EnvLoadInstances(
   void *theEnv,
   const char *file)
   {
-   return(LoadOrRestoreInstances(theEnv,file,TRUE,TRUE));
+   return(LoadOrRestoreInstances(theEnv,file,true,true));
   }
 
 /***************************************************
@@ -264,7 +264,7 @@ long EnvLoadInstancesFromString(
    if ((theMax == -1) ? (!OpenStringSource(theEnv,theStrRouter,theString,0)) :
                         (!OpenTextSource(theEnv,theStrRouter,theString,0,(unsigned) theMax)))
      return(-1L);
-   theCount = LoadOrRestoreInstances(theEnv,theStrRouter,TRUE,FALSE);
+   theCount = LoadOrRestoreInstances(theEnv,theStrRouter,true,false);
    CloseStringSource(theEnv,theStrRouter);
    return(theCount);
   }
@@ -285,7 +285,7 @@ long RestoreInstancesCommand(
    DATA_OBJECT temp;
    long instanceCount;
 
-   if (EnvArgTypeCheck(theEnv,"restore-instances",1,SYMBOL_OR_STRING,&temp) == FALSE)
+   if (EnvArgTypeCheck(theEnv,"restore-instances",1,SYMBOL_OR_STRING,&temp) == false)
      return(0L);
 
    fileFound = DOToString(temp);
@@ -308,7 +308,7 @@ long EnvRestoreInstances(
   void *theEnv,
   const char *file)
   {
-   return(LoadOrRestoreInstances(theEnv,file,FALSE,TRUE));
+   return(LoadOrRestoreInstances(theEnv,file,false,true));
   }
 
 /***************************************************
@@ -332,7 +332,7 @@ long EnvRestoreInstancesFromString(
    if ((theMax == -1) ? (!OpenStringSource(theEnv,theStrRouter,theString,0)) :
                         (!OpenTextSource(theEnv,theStrRouter,theString,0,(unsigned) theMax)))
      return(-1L);
-   theCount = LoadOrRestoreInstances(theEnv,theStrRouter,FALSE,FALSE);
+   theCount = LoadOrRestoreInstances(theEnv,theStrRouter,false,false);
    CloseStringSource(theEnv,theStrRouter);
    return(theCount);
   }
@@ -355,7 +355,7 @@ long BinaryLoadInstancesCommand(
    DATA_OBJECT temp;
    long instanceCount;
 
-   if (EnvArgTypeCheck(theEnv,"bload-instances",1,SYMBOL_OR_STRING,&temp) == FALSE)
+   if (EnvArgTypeCheck(theEnv,"bload-instances",1,SYMBOL_OR_STRING,&temp) == false)
      return(0L);
 
    fileFound = DOToString(temp);
@@ -384,13 +384,13 @@ long EnvBinaryLoadInstances(
    if (GenOpenReadBinary(theEnv,"bload-instances",theFile) == 0)
      {
       OpenErrorMessage(theEnv,"bload-instances",theFile);
-      EnvSetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,true);
       return(-1L);
      }
-   if (VerifyBinaryHeader(theEnv,theFile) == FALSE)
+   if (VerifyBinaryHeader(theEnv,theFile) == false)
      {
       GenCloseBinary(theEnv);
-      EnvSetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,true);
       return(-1L);
      }
    
@@ -404,12 +404,12 @@ long EnvBinaryLoadInstances(
 
    for (i = 0L ; i < instanceCount ; i++)
      {
-      if (LoadSingleBinaryInstance(theEnv) == FALSE)
+      if (LoadSingleBinaryInstance(theEnv) == false)
         {
          FreeReadBuffer(theEnv);
          FreeAtomicValueStorage(theEnv);
          GenCloseBinary(theEnv);
-         EnvSetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,true);
          EnvDecrementGCLocks(theEnv);
          return(i);
         }
@@ -448,7 +448,7 @@ long EnvSaveInstances(
   const char *file,
   int saveCode)
   {
-   return EnvSaveInstancesDriver(theEnv,file,saveCode,NULL,TRUE);
+   return EnvSaveInstancesDriver(theEnv,file,saveCode,NULL,true);
   }
 
 /*******************************************************
@@ -474,7 +474,7 @@ long EnvSaveInstancesDriver(
   const char *file,
   int saveCode,
   EXPRESSION *classExpressionList,
-  intBool inheritFlag)
+  bool inheritFlag)
   {
    FILE *sfile = NULL;
    int oldPEC,oldATS,oldIAN;
@@ -487,26 +487,26 @@ long EnvSaveInstancesDriver(
      return(0L);
 
    SaveOrMarkInstances(theEnv,(void *) sfile,saveCode,classList,
-                             inheritFlag,TRUE,NULL);
+                             inheritFlag,true,NULL);
 
    if ((sfile = GenOpen(theEnv,file,"w")) == NULL)
      {
       OpenErrorMessage(theEnv,"save-instances",file);
       ReturnSaveClassList(theEnv,classList);
-      EnvSetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,true);
       return(0L);
      }
 
    oldPEC = PrintUtilityData(theEnv)->PreserveEscapedCharacters;
-   PrintUtilityData(theEnv)->PreserveEscapedCharacters = TRUE;
+   PrintUtilityData(theEnv)->PreserveEscapedCharacters = true;
    oldATS = PrintUtilityData(theEnv)->AddressesToStrings;
-   PrintUtilityData(theEnv)->AddressesToStrings = TRUE;
+   PrintUtilityData(theEnv)->AddressesToStrings = true;
    oldIAN = PrintUtilityData(theEnv)->InstanceAddressesToNames;
-   PrintUtilityData(theEnv)->InstanceAddressesToNames = TRUE;
+   PrintUtilityData(theEnv)->InstanceAddressesToNames = true;
 
    SetFastSave(theEnv,sfile);
    instanceCount = SaveOrMarkInstances(theEnv,(void *) sfile,saveCode,classList,
-                                       inheritFlag,TRUE,SaveSingleInstanceText);
+                                       inheritFlag,true,SaveSingleInstanceText);
    GenClose(theEnv,sfile);
    SetFastSave(theEnv,NULL);
 
@@ -552,7 +552,7 @@ long EnvBinarySaveInstances(
   const char *file,
   int saveCode)
   {
-   return EnvBinarySaveInstancesDriver(theEnv,file,saveCode,NULL,TRUE);
+   return EnvBinarySaveInstancesDriver(theEnv,file,saveCode,NULL,true);
   }
   
 /*******************************************************
@@ -578,7 +578,7 @@ long EnvBinarySaveInstancesDriver(
   const char *file,
   int saveCode,
   EXPRESSION *classExpressionList,
-  intBool inheritFlag)
+  bool inheritFlag)
   {
    DATA_OBJECT *classList;
    FILE *bsaveFP;
@@ -592,13 +592,13 @@ long EnvBinarySaveInstancesDriver(
    InstanceFileData(theEnv)->BinaryInstanceFileSize = 0L;
    InitAtomicValueNeededFlags(theEnv);
    instanceCount = SaveOrMarkInstances(theEnv,NULL,saveCode,classList,inheritFlag,
-                                       FALSE,MarkSingleInstance);
+                                       false,MarkSingleInstance);
 
    if ((bsaveFP = GenOpen(theEnv,file,"wb")) == NULL)
      {
       OpenErrorMessage(theEnv,"bsave-instances",file);
       ReturnSaveClassList(theEnv,classList);
-      EnvSetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,true);
       return(0L);
      }
    WriteBinaryHeader(theEnv,bsaveFP);
@@ -607,9 +607,9 @@ long EnvBinarySaveInstancesDriver(
    fwrite((void *) &InstanceFileData(theEnv)->BinaryInstanceFileSize,sizeof(unsigned long),1,bsaveFP);
    fwrite((void *) &instanceCount,sizeof(long),1,bsaveFP);
 
-   SetAtomicValueIndices(theEnv,FALSE);
+   SetAtomicValueIndices(theEnv,false);
    SaveOrMarkInstances(theEnv,(void *) bsaveFP,saveCode,classList,
-                       inheritFlag,FALSE,SaveSingleInstanceBinary);
+                       inheritFlag,false,SaveSingleInstanceBinary);
    RestoreAtomicValueBuckets(theEnv);
    GenClose(theEnv,bsaveFP);
    ReturnSaveClassList(theEnv,classList);
@@ -638,25 +638,25 @@ long EnvBinarySaveInstancesDriver(
 static long InstancesSaveCommandParser(
   void *theEnv,
   const char *functionName,
-  long (*saveFunction)(void *,const char *,int,EXPRESSION *,intBool))
+  long (*saveFunction)(void *,const char *,int,EXPRESSION *,bool))
   {
    const char *fileFound;
    DATA_OBJECT temp;
    int argCount,saveCode = LOCAL_SAVE;
    EXPRESSION *classList = NULL;
-   intBool inheritFlag = FALSE;
+   bool inheritFlag = false;
 
-   if (EnvArgTypeCheck(theEnv,functionName,1,SYMBOL_OR_STRING,&temp) == FALSE)
+   if (EnvArgTypeCheck(theEnv,functionName,1,SYMBOL_OR_STRING,&temp) == false)
      return(0L);
    fileFound = DOToString(temp);
 
    argCount = EnvRtnArgCount(theEnv);
    if (argCount > 1)
      {
-      if (EnvArgTypeCheck(theEnv,functionName,2,SYMBOL,&temp) == FALSE)
+      if (EnvArgTypeCheck(theEnv,functionName,2,SYMBOL,&temp) == false)
         {
          ExpectedTypeError1(theEnv,functionName,2,"symbol \"local\" or \"visible\"");
-         EnvSetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,true);
          return(0L);
         }
       if (strcmp(DOToString(temp),"local") == 0)
@@ -666,7 +666,7 @@ static long InstancesSaveCommandParser(
       else
         {
          ExpectedTypeError1(theEnv,functionName,2,"symbol \"local\" or \"visible\"");
-         EnvSetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,true);
          return(0L);
         }
       classList = GetFirstArgument()->nextArg->nextArg;
@@ -676,12 +676,12 @@ static long InstancesSaveCommandParser(
          Must be at least one class
          name following
          =========================== */
-      if ((classList != NULL) ? (classList->nextArg != NULL) : FALSE)
+      if ((classList != NULL) ? (classList->nextArg != NULL) : false)
         {
-         if ((classList->type != SYMBOL) ? FALSE :
+         if ((classList->type != SYMBOL) ? false :
              (strcmp(ValueToString(classList->value),"inherit") == 0))
            {
-            inheritFlag = TRUE;
+            inheritFlag = true;
             classList = classList->nextArg;
            }
         }
@@ -714,7 +714,7 @@ static DATA_OBJECT *ProcessSaveClassList(
   const char *functionName,
   EXPRESSION *classExps,
   int saveCode,
-  intBool inheritFlag)
+  bool inheritFlag)
   {
    DATA_OBJECT *head = NULL,*prv,*newItem,tmp;
    DEFCLASS *theDefclass;
@@ -736,7 +736,7 @@ static DATA_OBJECT *ProcessSaveClassList(
 
       if (theDefclass == NULL)
         goto ProcessClassListError;
-      else if (theDefclass->abstract && (inheritFlag == FALSE))
+      else if (theDefclass->abstract && (inheritFlag == false))
         goto ProcessClassListError;
       prv = newItem = head;
       while (newItem != NULL)
@@ -771,7 +771,7 @@ ProcessClassListError:
    else
      ExpectedTypeError1(theEnv,functionName,argIndex,"valid concrete class name");
    ReturnSaveClassList(theEnv,head);
-   EnvSetEvaluationError(theEnv,TRUE);
+   EnvSetEvaluationError(theEnv,true);
    return(NULL);
   }
 
@@ -829,8 +829,8 @@ static long SaveOrMarkInstances(
   void *theOutput,
   int saveCode,
   DATA_OBJECT *classList,
-  intBool inheritFlag,
-  intBool interruptOK,
+  bool inheritFlag,
+  bool interruptOK,
   void (*saveInstanceFunc)(void *,void *,INSTANCE_TYPE *))
   {
    struct defmodule *currentModule;
@@ -857,10 +857,10 @@ static long SaveOrMarkInstances(
    else
      {
       for (ins = (INSTANCE_TYPE *) GetNextInstanceInScope(theEnv,NULL) ;
-           (ins != NULL) && (EvaluationData(theEnv)->HaltExecution != TRUE) ;
+           (ins != NULL) && (EvaluationData(theEnv)->HaltExecution != true) ;
            ins = (INSTANCE_TYPE *) GetNextInstanceInScope(theEnv,(void *) ins))
         {
-         if ((saveCode == VISIBLE_SAVE) ? TRUE :
+         if ((saveCode == VISIBLE_SAVE) ? true :
              (ins->cls->header.whichModule->theModule == currentModule))
            {
             if (saveInstanceFunc != NULL)
@@ -901,7 +901,7 @@ static long SaveOrMarkInstancesOfClass(
   struct defmodule *currentModule,
   int saveCode,
   DEFCLASS *theDefclass,
-  intBool inheritFlag,
+  bool inheritFlag,
   int traversalID,
   void (*saveInstanceFunc)(void *,void *,INSTANCE_TYPE *))
   {
@@ -935,7 +935,7 @@ static long SaveOrMarkInstancesOfClass(
         {
          subclass = theDefclass->directSubclasses.classArray[i];
            instanceCount += SaveOrMarkInstancesOfClass(theEnv,theOutput,currentModule,saveCode,
-                                                       subclass,TRUE,traversalID,
+                                                       subclass,true,traversalID,
                                                        saveInstanceFunc);
         }
      }
@@ -978,7 +978,7 @@ static void SaveSingleInstanceText(
         {
          EnvPrintRouter(theEnv,logicalName," ");
          PrintMultifield(theEnv,logicalName,(MULTIFIELD_PTR) sp->value,0,
-                         (long) (GetInstanceSlotLength(sp) - 1),FALSE);
+                         (long) (GetInstanceSlotLength(sp) - 1),false);
         }
       EnvPrintRouter(theEnv,logicalName,")");
      }
@@ -1029,8 +1029,8 @@ static void MarkSingleInstance(
    long i, j;
 
    InstanceFileData(theEnv)->BinaryInstanceFileSize += (unsigned long) (sizeof(long) * 2);
-   theInstance->name->neededSymbol = TRUE;
-   theInstance->cls->header.name->neededSymbol = TRUE;
+   theInstance->name->neededSymbol = true;
+   theInstance->cls->header.name->neededSymbol = true;
    InstanceFileData(theEnv)->BinaryInstanceFileSize +=
        (unsigned long) ((sizeof(long) * 2) +
                         (sizeof(struct bsaveSlotValue) *
@@ -1040,7 +1040,7 @@ static void MarkSingleInstance(
    for (i = 0 ; i < theInstance->cls->instanceSlotCount ; i++)
      {
       sp = theInstance->slotAddresses[i];
-      sp->desc->slotName->name->neededSymbol = TRUE;
+      sp->desc->slotName->name->neededSymbol = true;
       if (sp->desc->multiple)
         {
          for (j = 1 ; j <= GetInstanceSlotLength(sp) ; j++)
@@ -1079,16 +1079,16 @@ static void MarkNeededAtom(
       case SYMBOL:
       case STRING:
       case INSTANCE_NAME:
-         ((SYMBOL_HN *) value)->neededSymbol = TRUE;
+         ((SYMBOL_HN *) value)->neededSymbol = true;
          break;
       case FLOAT:
-         ((FLOAT_HN *) value)->neededFloat = TRUE;
+         ((FLOAT_HN *) value)->neededFloat = true;
          break;
       case INTEGER:
-         ((INTEGER_HN *) value)->neededInteger = TRUE;
+         ((INTEGER_HN *) value)->neededInteger = true;
          break;
       case INSTANCE_ADDRESS:
-         GetFullInstanceName(theEnv,(INSTANCE_TYPE *) value)->neededSymbol = TRUE;
+         GetFullInstanceName(theEnv,(INSTANCE_TYPE *) value)->neededSymbol = true;
          break;
      }
   }
@@ -1244,8 +1244,8 @@ static void SaveAtomBinary(
 static long LoadOrRestoreInstances(
   void *theEnv,
   const char *file,
-  int usemsgs,
-  int isFileName)
+  bool usemsgs,
+  bool isFileName)
   {
    DATA_OBJECT temp;
    FILE *sfile = NULL,*svload = NULL;
@@ -1257,7 +1257,7 @@ static long LoadOrRestoreInstances(
    if (isFileName) {
      if ((sfile = GenOpen(theEnv,file,"r")) == NULL)
        {
-        EnvSetEvaluationError(theEnv,TRUE);
+        EnvSetEvaluationError(theEnv,true);
         return(-1L);
        }
      svload = GetFastLoad(theEnv);
@@ -1270,7 +1270,7 @@ static long LoadOrRestoreInstances(
    GetToken(theEnv,ilog,&DefclassData(theEnv)->ObjectParseToken);
    svoverride = InstanceData(theEnv)->MkInsMsgPass;
    InstanceData(theEnv)->MkInsMsgPass = usemsgs;
-   while ((GetType(DefclassData(theEnv)->ObjectParseToken) != STOP) && (EvaluationData(theEnv)->HaltExecution != TRUE))
+   while ((GetType(DefclassData(theEnv)->ObjectParseToken) != STOP) && (EvaluationData(theEnv)->HaltExecution != true))
      {
       if (GetType(DefclassData(theEnv)->ObjectParseToken) != LPAREN)
         {
@@ -1280,7 +1280,7 @@ static long LoadOrRestoreInstances(
            GenClose(theEnv,sfile);
            SetFastLoad(theEnv,svload);
          }
-         EnvSetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,true);
          InstanceData(theEnv)->MkInsMsgPass = svoverride;
          return(instanceCount);
         }
@@ -1291,7 +1291,7 @@ static long LoadOrRestoreInstances(
            SetFastLoad(theEnv,svload);
          }
          InstanceData(theEnv)->MkInsMsgPass = svoverride;
-         EnvSetEvaluationError(theEnv,TRUE);
+         EnvSetEvaluationError(theEnv,true);
          return(instanceCount);
         }
       ExpressionInstall(theEnv,top);
@@ -1328,7 +1328,7 @@ static void ProcessFileErrorMessage(
   const char *functionName,
   const char *fileName)
   {
-   PrintErrorID(theEnv,"INSFILE",1,FALSE);
+   PrintErrorID(theEnv,"INSFILE",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function ");
    EnvPrintRouter(theEnv,WERROR,functionName);
    EnvPrintRouter(theEnv,WERROR," could not completely process file ");
@@ -1344,12 +1344,12 @@ static void ProcessFileErrorMessage(
                  from a file to verify that the
                  input is a valid binary instances file
   INPUTS       : The name of the file
-  RETURNS      : TRUE if OK, FALSE otherwise
+  RETURNS      : true if OK, false otherwise
   SIDE EFFECTS : Input prefix and version read
   NOTES        : Assumes file already open with 
                  GenOpenReadBinary
  *******************************************************/
-static intBool VerifyBinaryHeader(
+static bool VerifyBinaryHeader(
   void *theEnv,
   const char *theFile)
   {
@@ -1358,20 +1358,20 @@ static intBool VerifyBinaryHeader(
    GenReadBinary(theEnv,(void *) buf,(unsigned long) (strlen(InstanceFileData(theEnv)->InstanceBinaryPrefixID) + 1));
    if (strcmp(buf,InstanceFileData(theEnv)->InstanceBinaryPrefixID) != 0)
      {
-      PrintErrorID(theEnv,"INSFILE",2,FALSE);
+      PrintErrorID(theEnv,"INSFILE",2,false);
       EnvPrintRouter(theEnv,WERROR,theFile);
       EnvPrintRouter(theEnv,WERROR," file is not a binary instances file.\n");
-      return(FALSE);
+      return(false);
      }
    GenReadBinary(theEnv,(void *) buf,(unsigned long) (strlen(InstanceFileData(theEnv)->InstanceBinaryVersionID) + 1));
    if (strcmp(buf,InstanceFileData(theEnv)->InstanceBinaryVersionID) != 0)
      {
-      PrintErrorID(theEnv,"INSFILE",3,FALSE);
+      PrintErrorID(theEnv,"INSFILE",3,false);
       EnvPrintRouter(theEnv,WERROR,theFile);
       EnvPrintRouter(theEnv,WERROR," file is not a compatible binary instances file.\n");
-      return(FALSE);
+      return(false);
      }
-   return(TRUE);
+   return(true);
   }
 
 /***************************************************
@@ -1380,13 +1380,13 @@ static intBool VerifyBinaryHeader(
                  instance and its slot values and
                  creates/initializes the instance
   INPUTS       : None
-  RETURNS      : TRUE if all OK,
-                 FALSE otherwise
+  RETURNS      : true if all OK,
+                 false otherwise
   SIDE EFFECTS : Binary data read and instance
                  created
   NOTES        : Uses global GenReadBinary(theEnv,)
  ***************************************************/
-static intBool LoadSingleBinaryInstance(
+static bool LoadSingleBinaryInstance(
   void *theEnv)
   {
    SYMBOL_HN *instanceName,
@@ -1428,25 +1428,25 @@ static intBool LoadSingleBinaryInstance(
    if (theDefclass == NULL)
      {
       ClassExistError(theEnv,"bload-instances",ValueToString(className));
-      return(FALSE);
+      return(false);
      }
    if (theDefclass->instanceSlotCount != slotCount)
      {
       BinaryLoadInstanceError(theEnv,instanceName,theDefclass);
-      return(FALSE);
+      return(false);
      }
 
    /* ===================================
       Create the new unitialized instance
       =================================== */
-   newInstance = BuildInstance(theEnv,instanceName,theDefclass,FALSE);
+   newInstance = BuildInstance(theEnv,instanceName,theDefclass,false);
    if (newInstance == NULL)
      {
       BinaryLoadInstanceError(theEnv,instanceName,theDefclass);
-      return(FALSE);
+      return(false);
      }
    if (slotCount == 0)
-     return(TRUE);
+     return(true);
 
    /* ====================================
       Read all slot override info and slot
@@ -1482,7 +1482,7 @@ static intBool LoadSingleBinaryInstance(
       CreateSlotValue(theEnv,&slotValue,(struct bsaveSlotValueAtom *) &bsaArray[j],
                       bsArray[i].valueCount);
 
-      if (PutSlotValue(theEnv,newInstance,sp,&slotValue,&junkValue,"bload-instances") == FALSE)
+      if (PutSlotValue(theEnv,newInstance,sp,&slotValue,&junkValue,"bload-instances") == false)
         goto LoadError;
 
       j += (unsigned long) bsArray[i].valueCount;
@@ -1494,7 +1494,7 @@ static intBool LoadSingleBinaryInstance(
      rm3(theEnv,(void *) bsaArray,
          (long) (totalValueCount * sizeof(struct bsaveSlotValueAtom)));
 
-   return(TRUE);
+   return(true);
 
 LoadError:
    BinaryLoadInstanceError(theEnv,instanceName,theDefclass);
@@ -1502,7 +1502,7 @@ LoadError:
    rm(theEnv,(void *) bsArray,(sizeof(struct bsaveSlotValue) * slotCount));
    rm3(theEnv,(void *) bsaArray,
        (long) (totalValueCount * sizeof(struct bsaveSlotValueAtom)));
-   return(FALSE);
+   return(false);
   }
 
 /***************************************************
@@ -1522,11 +1522,11 @@ static void BinaryLoadInstanceError(
   SYMBOL_HN *instanceName,
   DEFCLASS *theDefclass)
   {
-   PrintErrorID(theEnv,"INSFILE",4,FALSE);
+   PrintErrorID(theEnv,"INSFILE",4,false);
    EnvPrintRouter(theEnv,WERROR,"Function bload-instances unable to load instance [");
    EnvPrintRouter(theEnv,WERROR,ValueToString(instanceName));
    EnvPrintRouter(theEnv,WERROR,"] of class ");
-   PrintClassName(theEnv,WERROR,theDefclass,TRUE);
+   PrintClassName(theEnv,WERROR,theDefclass,true);
   }
 
 /***************************************************

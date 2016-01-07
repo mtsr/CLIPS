@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*           CONSTRUCT COMMAND HEADER MODULE           */
    /*******************************************************/
@@ -43,14 +43,14 @@
 #if (! RUN_TIME)
    void                           AddConstructToModule(struct constructHeader *);
 #endif
-   intBool                        DeleteNamedConstruct(void *,const char *,struct construct *);
+   bool                           DeleteNamedConstruct(void *,const char *,struct construct *);
    void                          *FindNamedConstructInModule(void *,const char *,struct construct *);
    void                          *FindNamedConstructInModuleOrImports(void *,const char *,struct construct *);
    void                           UndefconstructCommand(void *,const char *,struct construct *);
-   int                            PPConstruct(void *,const char *,const char *,struct construct *);
+   bool                           PPConstruct(void *,const char *,const char *,struct construct *);
    SYMBOL_HN                     *GetConstructModuleCommand(void *,const char *,struct construct *);
    struct defmodule              *GetConstructModule(void *,const char *,struct construct *);
-   intBool                        Undefconstruct(void *,void *,struct construct *);
+   bool                           Undefconstruct(void *,void *,struct construct *);
    void                           SaveConstruct(void *,void *,const char *,struct construct *);
    const char                    *GetConstructNameString(struct constructHeader *);
    const char                    *EnvGetConstructNameString(void *,struct constructHeader *);
@@ -72,24 +72,24 @@
                                                                    struct construct *);
    long                           DoForAllConstructs(void *,
                                                             void (*)(void *,struct constructHeader *,void *),
-                                                            int,int,void *);
+                                                            int,bool,void *);
    void                           DoForAllConstructsInModule(void *,void *,
                                                             void (*)(void *,struct constructHeader *,void *),
                                                             int,int,void *);
    void                           InitializeConstructHeader(void *,const char *,struct constructHeader *,SYMBOL_HN *);
    void                           SetConstructPPForm(void *,struct constructHeader *,const char *);
-   void                          *LookupConstruct(void *,struct construct *,const char *,intBool);
+   void                          *LookupConstruct(void *,struct construct *,const char *,bool);
 #if DEBUGGING_FUNCTIONS
-   unsigned                       ConstructPrintWatchAccess(void *,struct construct *,const char *,
+   bool                           ConstructPrintWatchAccess(void *,struct construct *,const char *,
                                             EXPRESSION *,
-                                            unsigned (*)(void *,void *),
-                                            void (*)(void *,unsigned,void *));
-   unsigned                       ConstructSetWatchAccess(void *,struct construct *,unsigned,
+                                            bool (*)(void *,void *),
+                                            void (*)(void *,bool,void *));
+   bool                           ConstructSetWatchAccess(void *,struct construct *,bool,
                                             EXPRESSION *,
-                                            unsigned (*)(void *,void *),
-                                            void (*)(void *,unsigned,void *));
+                                            bool (*)(void *,void *),
+                                            void (*)(void *,bool,void *));
 #endif
-   intBool                        ConstructsDeletable(void *);
+   bool                           ConstructsDeletable(void *);
 
 #endif
 

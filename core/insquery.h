@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -76,7 +76,7 @@ struct instanceQueryData
    SYMBOL_HN *QUERY_DELIMETER_SYMBOL;
    QUERY_CORE *QueryCore;
    QUERY_STACK *QueryCoreStack;
-   int AbortQuery;
+   bool AbortQuery;
   };
 
 #define InstanceQueryData(theEnv) ((struct instanceQueryData *) GetEnvironmentData(theEnv,INSTANCE_QUERY_DATA))
@@ -86,7 +86,7 @@ struct instanceQueryData
    void                           SetupQuery(void *);
    void                          *GetQueryInstance(void *);
    void                           GetQueryInstanceSlot(void *,DATA_OBJECT *);
-   intBool                        AnyInstances(void *);
+   bool                           AnyInstances(void *);
    void                           QueryFindInstance(void *,DATA_OBJECT *);
    void                           QueryFindAllInstances(void *,DATA_OBJECT *);
    void                           QueryDoForInstance(void *,DATA_OBJECT *);

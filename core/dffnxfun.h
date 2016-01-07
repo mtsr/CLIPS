@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              DEFFUNCTION HEADER FILE                */
    /*******************************************************/
@@ -85,7 +85,7 @@ struct deffunctionStruct
    struct constructHeader header;
    unsigned busy,
             executing;
-   unsigned short trace;
+   bool trace;
    EXPRESSION *code;
    int minNumberOfParameters,
        maxNumberOfParameters,
@@ -111,7 +111,7 @@ struct deffunctionData
 
 #define DeffunctionData(theEnv) ((struct deffunctionData *) GetEnvironmentData(theEnv,DEFFUNCTION_DATA))
 
-   int                            CheckDeffunctionCall(void *,void *,int);
+   bool                           CheckDeffunctionCall(void *,void *,int);
    void                           DeffunctionGetBind(DATA_OBJECT *);
    void                           DFRtnUnknown(DATA_OBJECT *);
    void                           DFWildargs(DATA_OBJECT *);
@@ -123,9 +123,9 @@ struct deffunctionData
    SYMBOL_HN                     *EnvGetDeffunctionNamePointer(void *,void *);
    const char                    *EnvGetDeffunctionPPForm(void *,void *);
    void                          *EnvGetNextDeffunction(void *,void *);
-   int                            EnvIsDeffunctionDeletable(void *,void *);
+   bool                           EnvIsDeffunctionDeletable(void *,void *);
    void                           EnvSetDeffunctionPPForm(void *,void *,const char *);
-   intBool                        EnvUndeffunction(void *,void *);
+   bool                           EnvUndeffunction(void *,void *);
    void                           GetDeffunctionListFunction(void *,DATA_OBJECT *);
    void                          *GetDeffunctionModuleCommand(void *);
    DEFFUNCTION                   *LookupDeffunctionByMdlOrScope(void *,const char *);
@@ -136,9 +136,9 @@ struct deffunctionData
    void                           SetupDeffunctions(void *);
    void                           UndeffunctionCommand(void *);
 #if DEBUGGING_FUNCTIONS
-   unsigned                       EnvGetDeffunctionWatch(void *,void *);
+   bool                           EnvGetDeffunctionWatch(void *,void *);
    void                           EnvListDeffunctions(void *,const char *,struct defmodule *);
-   void                           EnvSetDeffunctionWatch(void *,unsigned,void *);
+   void                           EnvSetDeffunctionWatch(void *,bool,void *);
    void                           ListDeffunctionsCommand(void *);
    void                           PPDeffunctionCommand(void *);
 #endif
@@ -151,8 +151,8 @@ struct deffunctionData
    const char                    *GetDeffunctionName(void *);
    const char                    *GetDeffunctionPPForm(void *);
    void                          *GetNextDeffunction(void *);
-   intBool                        IsDeffunctionDeletable(void *);
-   intBool                        Undeffunction(void *);
+   bool                           IsDeffunctionDeletable(void *);
+   bool                           Undeffunction(void *);
 #if DEBUGGING_FUNCTIONS
    unsigned                       GetDeffunctionWatch(void *);
    void                           ListDeffunctions(const char *,struct defmodule *);

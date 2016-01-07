@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 FILE COMMANDS MODULE                */
    /*******************************************************/
@@ -44,7 +44,7 @@
 /*            Added STDOUT and STDIN logical name            */
 /*            definitions.                                   */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
@@ -113,7 +113,7 @@ struct fileCommandData
    char *DribbleBuffer;
    size_t DribbleCurrentPosition;
    size_t DribbleMaximumPosition;
-   int (*DribbleStatusFunction)(void *,int);
+   int (*DribbleStatusFunction)(void *,bool);
 #endif
    int BatchType;
    void *BatchSource;
@@ -132,18 +132,18 @@ struct fileCommandData
 /***************************************/
 
 #if DEBUGGING_FUNCTIONS
-   static int                     FindDribble(void *,const char *);
+   static bool                    FindDribble(void *,const char *);
    static int                     GetcDribble(void *,const char *);
    static int                     UngetcDribble(void *,int,const char *);
    static int                     ExitDribble(void *,int);
    static int                     PrintDribble(void *,const char *,const char *);
    static void                    PutcDribbleBuffer(void *,int);
 #endif
-   static int                     FindBatch(void *,const char *);
+   static bool                    FindBatch(void *,const char *);
    static int                     GetcBatch(void *,const char *);
    static int                     UngetcBatch(void *,int,const char *);
    static int                     ExitBatch(void *,int);
-   static void                    AddBatch(void *,int,void *,int,const char *,const char *);
+   static void                    AddBatch(void *,bool,void *,int,const char *,const char *);
    static void                    DeallocateFileCommandData(void *);
 
 /***************************************/
@@ -219,7 +219,7 @@ static void DeallocateFileCommandData(
 /*****************************************************/
 /* FindDribble: Find routine for the dribble router. */
 /*****************************************************/
-static int FindDribble(
+static bool FindDribble(
   void *theEnv,
   const char *logicalName)
   {
@@ -235,9 +235,9 @@ static int FindDribble(
         (strcmp(logicalName,WWARNING) == 0) ||
         (strcmp(logicalName,WDISPLAY) == 0) ||
         (strcmp(logicalName,WDIALOG) == 0) )
-     { return(TRUE); }
+     { return(true); }
 
-    return(FALSE);
+    return(false);
   }
 
 /*******************************************************/
@@ -327,12 +327,12 @@ static void PutcDribbleBuffer(
    /* just received doesn't need to be placed in the dribble    */
    /* buffer--It can be written directly to the file. This will */
    /* occur for example when the command prompt is being        */
-   /* printed (the AwaitingInput variable will be FALSE because */
+   /* printed (the AwaitingInput variable will be false because */
    /* command input has not been receivied yet). Before writing */
    /* the character to the file, the dribble buffer is flushed. */
    /*===========================================================*/
 
-   else if (RouterData(theEnv)->AwaitingInput == FALSE)
+   else if (RouterData(theEnv)->AwaitingInput == false)
      {
       if (FileCommandData(theEnv)->DribbleCurrentPosition > 0)
         {
@@ -412,13 +412,13 @@ static int ExitDribble(
 /* DribbleOnCommand: H/L access routine   */
 /*   for the dribble-on command.          */
 /******************************************/
-int DribbleOnCommand(
+bool DribbleOnCommand(
   void *theEnv)
   {
    const char *fileName;
 
-   if (EnvArgCountCheck(theEnv,"dribble-on",EXACTLY,1) == -1) return(FALSE);
-   if ((fileName = GetFileName(theEnv,"dribble-on",1)) == NULL) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"dribble-on",EXACTLY,1) == -1) return(false);
+   if ((fileName = GetFileName(theEnv,"dribble-on",1)) == NULL) return(false);
 
    return (EnvDribbleOn(theEnv,fileName));
   }
@@ -427,7 +427,7 @@ int DribbleOnCommand(
 /* EnvDribbleOn: C access routine */
 /*   for the dribble-on command.  */
 /**********************************/
-intBool EnvDribbleOn(
+bool EnvDribbleOn(
   void *theEnv,
   const char *fileName)
   {
@@ -470,36 +470,36 @@ intBool EnvDribbleOn(
    /*================================================*/
 
    if (FileCommandData(theEnv)->DribbleStatusFunction != NULL)
-     { (*FileCommandData(theEnv)->DribbleStatusFunction)(theEnv,TRUE); }
+     { (*FileCommandData(theEnv)->DribbleStatusFunction)(theEnv,true); }
 
    /*=====================================*/
-   /* Return TRUE to indicate the dribble */
+   /* Return true to indicate the dribble */
    /* file was successfully opened.       */
    /*=====================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /*************************************************/
-/* EnvDribbleActive: Returns TRUE if the dribble */
-/*   router is active, otherwise FALSE>          */
+/* EnvDribbleActive: Returns true if the dribble */
+/*   router is active, otherwise false.          */
 /*************************************************/
-intBool EnvDribbleActive(
+bool EnvDribbleActive(
   void *theEnv)
   {
-   if (FileCommandData(theEnv)->DribbleFP != NULL) return(TRUE);
+   if (FileCommandData(theEnv)->DribbleFP != NULL) return(true);
 
-   return(FALSE);
+   return(false);
   }
 
 /*******************************************/
 /* DribbleOffCommand: H/L access  routine  */
 /*   for the dribble-off command.          */
 /*******************************************/
-int DribbleOffCommand(
+bool DribbleOffCommand(
   void *theEnv)
   {
-   if (EnvArgCountCheck(theEnv,"dribble-off",EXACTLY,0) == -1) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"dribble-off",EXACTLY,0) == -1) return(false);
    return(EnvDribbleOff(theEnv));
   }
 
@@ -507,7 +507,7 @@ int DribbleOffCommand(
 /* EnvDribbleOff: C access routine */
 /*   for the dribble-off command.  */
 /***********************************/
-intBool EnvDribbleOff(
+bool EnvDribbleOff(
   void *theEnv)
   {
    int rv = 0;
@@ -521,7 +521,7 @@ intBool EnvDribbleOff(
    /*================================================*/
 
    if (FileCommandData(theEnv)->DribbleStatusFunction != NULL)
-     { (*FileCommandData(theEnv)->DribbleStatusFunction)(theEnv,FALSE); }
+     { (*FileCommandData(theEnv)->DribbleStatusFunction)(theEnv,false); }
 
    /*=======================================*/
    /* Close the dribble file and deactivate */
@@ -554,8 +554,8 @@ intBool EnvDribbleOff(
    FileCommandData(theEnv)->DribbleMaximumPosition = 0;
 
    /*============================================*/
-   /* Return TRUE if the dribble file was closed */
-   /* without error, otherwise return FALSE.     */
+   /* Return true if the dribble file was closed */
+   /* without error, otherwise return false.     */
    /*============================================*/
 
    return(rv);
@@ -568,7 +568,7 @@ intBool EnvDribbleOff(
 /*****************************************************/
 void SetDribbleStatusFunction(
   void *theEnv,
-  int (*fnptr)(void *,int))
+  int (*fnptr)(void *,bool))
   {
    FileCommandData(theEnv)->DribbleStatusFunction = fnptr;
   }
@@ -578,7 +578,7 @@ void SetDribbleStatusFunction(
 /*************************************************/
 /* FindBatch: Find routine for the batch router. */
 /*************************************************/
-static int FindBatch(
+static bool FindBatch(
   void *theEnv,
   const char *logicalName)
   {
@@ -587,9 +587,9 @@ static int FindBatch(
 #endif
 
    if (strcmp(logicalName,STDIN) == 0)
-     { return(TRUE); }
+     { return(true); }
 
-   return(FALSE);
+   return(false);
   }
 
 /*************************************************/
@@ -599,7 +599,7 @@ static int GetcBatch(
   void *theEnv,
   const char *logicalName)
   {
-   return(LLGetcBatch(theEnv,logicalName,FALSE));
+   return(LLGetcBatch(theEnv,logicalName,false));
   }
 
 /***************************************************/
@@ -609,7 +609,7 @@ static int GetcBatch(
 int LLGetcBatch(
   void *theEnv,
   const char *logicalName,
-  int returnOnEOF)
+  bool returnOnEOF)
   {
    int rv = EOF, flag = 1;
 
@@ -643,7 +643,7 @@ int LLGetcBatch(
       if (FileCommandData(theEnv)->BatchCurrentPosition > 0) EnvPrintRouter(theEnv,STDOUT,(char *) FileCommandData(theEnv)->BatchBuffer);
       EnvDeleteRouter(theEnv,"batch");
       RemoveBatch(theEnv);
-      if (returnOnEOF == TRUE)
+      if (returnOnEOF == true)
         { return (EOF); }
       else
         { return(EnvGetcRouter(theEnv,logicalName)); }
@@ -725,33 +725,33 @@ static int ExitBatch(
 /* BatchCommand: H/L access routine   */
 /*   for the batch command.           */
 /**************************************/
-int BatchCommand(
+bool BatchCommand(
   void *theEnv)
   {
    const char *fileName;
 
-   if (EnvArgCountCheck(theEnv,"batch",EXACTLY,1) == -1) return(FALSE);
-   if ((fileName = GetFileName(theEnv,"batch",1)) == NULL) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"batch",EXACTLY,1) == -1) return(false);
+   if ((fileName = GetFileName(theEnv,"batch",1)) == NULL) return(false);
 
-   return(OpenBatch(theEnv,fileName,FALSE));
+   return(OpenBatch(theEnv,fileName,false));
   }
 
 /**************************************************/
 /* Batch: C access routine for the batch command. */
 /**************************************************/
-int Batch(
+bool Batch(
   void *theEnv,
   const char *fileName)
-  { return(OpenBatch(theEnv,fileName,FALSE)); }
+  { return(OpenBatch(theEnv,fileName,false)); }
 
 /***********************************************/
 /* OpenBatch: Adds a file to the list of files */
 /*   opened with the batch command.            */
 /***********************************************/
-int OpenBatch(
+bool OpenBatch(
   void *theEnv,
   const char *fileName,
-  int placeAtEnd)
+  bool placeAtEnd)
   {
    FILE *theFile;
 
@@ -764,7 +764,7 @@ int OpenBatch(
    if (theFile == NULL)
      {
       OpenErrorMessage(theEnv,"batch",fileName);
-      return(FALSE);
+      return(false);
      }
 
    /*============================*/
@@ -814,11 +814,11 @@ int OpenBatch(
    AddBatch(theEnv,placeAtEnd,(void *) theFile,FILE_BATCH,NULL,fileName);
 
    /*===================================*/
-   /* Return TRUE to indicate the batch */
+   /* Return true to indicate the batch */
    /* file was successfully opened.     */
    /*===================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /*****************************************************************/
@@ -828,14 +828,14 @@ int OpenBatch(
 /*   will be deallocated by the batch routines when batch        */
 /*   processing for the  string is completed.                    */
 /*****************************************************************/
-int OpenStringBatch(
+bool OpenStringBatch(
   void *theEnv,
   const char *stringName,
   const char *theString,
-  int placeAtEnd)
+  bool placeAtEnd)
   {
-   if (OpenStringSource(theEnv,stringName,theString,0) == 0)
-     { return(0); }
+   if (OpenStringSource(theEnv,stringName,theString,0) == false)
+     { return(false); }
 
    if (FileCommandData(theEnv)->TopOfBatchList == NULL)
      {
@@ -847,7 +847,7 @@ int OpenStringBatch(
 
    AddBatch(theEnv,placeAtEnd,(void *) stringName,STRING_BATCH,theString,NULL);
 
-   return(1);
+   return(true);
   }
 
 /*******************************************************/
@@ -856,7 +856,7 @@ int OpenStringBatch(
 /*******************************************************/
 static void AddBatch(
   void *theEnv,
-  int placeAtEnd,
+  bool placeAtEnd,
   void *theSource,
   int type,
   const char *theString,
@@ -888,7 +888,7 @@ static void AddBatch(
       FileCommandData(theEnv)->BatchSource = theSource;
       FileCommandData(theEnv)->BatchCurrentPosition = 0;
      }
-   else if (placeAtEnd == FALSE)
+   else if (placeAtEnd == false)
      {
       bptr->next = FileCommandData(theEnv)->TopOfBatchList;
       FileCommandData(theEnv)->TopOfBatchList = bptr;
@@ -906,13 +906,13 @@ static void AddBatch(
 /******************************************************************/
 /* RemoveBatch: Removes the top entry on the list of batch files. */
 /******************************************************************/
-int RemoveBatch(
+bool RemoveBatch(
   void *theEnv)
   {
    struct batchEntry *bptr;
-   int rv, fileBatch = FALSE;
+   bool rv, fileBatch = false;
 
-   if (FileCommandData(theEnv)->TopOfBatchList == NULL) return(FALSE);
+   if (FileCommandData(theEnv)->TopOfBatchList == NULL) return(false);
 
    /*==================================================*/
    /* Close the source from which batch input is read. */
@@ -920,7 +920,7 @@ int RemoveBatch(
 
    if (FileCommandData(theEnv)->TopOfBatchList->batchType == FILE_BATCH)
      {
-      fileBatch = TRUE;
+      fileBatch = true;
       GenClose(theEnv,(FILE *) FileCommandData(theEnv)->TopOfBatchList->inputSource);
 #if (! RUN_TIME) && (! BLOAD_ONLY)
       FlushParsingMessages(theEnv);
@@ -960,7 +960,7 @@ int RemoveBatch(
         }
       FileCommandData(theEnv)->BatchCurrentPosition = 0;
       FileCommandData(theEnv)->BatchMaximumPosition = 0;
-      rv = 0;
+      rv = false;
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
       if (fileBatch)
@@ -981,7 +981,7 @@ int RemoveBatch(
       FileCommandData(theEnv)->BatchType = FileCommandData(theEnv)->TopOfBatchList->batchType;
       FileCommandData(theEnv)->BatchSource = FileCommandData(theEnv)->TopOfBatchList->inputSource;
       FileCommandData(theEnv)->BatchCurrentPosition = 0;
-      rv = 1;
+      rv = true;
 #if (! RUN_TIME) && (! BLOAD_ONLY)
       if (FileCommandData(theEnv)->TopOfBatchList->batchType == FILE_BATCH)
         { EnvSetParsingFileName(theEnv,FileCommandData(theEnv)->TopOfBatchList->fileName); }
@@ -991,23 +991,23 @@ int RemoveBatch(
      }
 
    /*====================================================*/
-   /* Return TRUE if a batch file if there are remaining */
-   /* batch files to be processed, otherwise FALSE.      */
+   /* Return true if a batch file if there are remaining */
+   /* batch files to be processed, otherwise false.      */
    /*====================================================*/
 
    return(rv);
   }
 
 /****************************************/
-/* BatchActive: Returns TRUE if a batch */
-/*   file is open, otherwise FALSE.     */
+/* BatchActive: Returns true if a batch */
+/*   file is open, otherwise false.     */
 /****************************************/
-intBool BatchActive(
+bool BatchActive(
   void *theEnv)
   {
-   if (FileCommandData(theEnv)->TopOfBatchList != NULL) return(TRUE);
+   if (FileCommandData(theEnv)->TopOfBatchList != NULL) return(true);
 
-   return(FALSE);
+   return(false);
   }
 
 /******************************************************/
@@ -1047,13 +1047,13 @@ void CloseAllBatchSources(
 /* BatchStarCommand: H/L access routine   */
 /*   for the batch* command.              */
 /******************************************/
-int BatchStarCommand(
+bool BatchStarCommand(
   void *theEnv)
   {
    const char *fileName;
 
-   if (EnvArgCountCheck(theEnv,"batch*",EXACTLY,1) == -1) return(FALSE);
-   if ((fileName = GetFileName(theEnv,"batch*",1)) == NULL) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"batch*",EXACTLY,1) == -1) return(false);
+   if ((fileName = GetFileName(theEnv,"batch*",1)) == NULL) return(false);
 
    return(EnvBatchStar(theEnv,fileName));
   }
@@ -1063,7 +1063,7 @@ int BatchStarCommand(
 /**********************************************************/
 /* EnvBatchStar: C access routine for the batch* command. */
 /**********************************************************/
-int EnvBatchStar(
+bool EnvBatchStar(
   void *theEnv,
   const char *fileName)
   {
@@ -1085,7 +1085,7 @@ int EnvBatchStar(
    if (theFile == NULL)
      {
       OpenErrorMessage(theEnv,"batch",fileName);
-      return(FALSE);
+      return(false);
      }
 
    /*======================================*/
@@ -1105,8 +1105,8 @@ int EnvBatchStar(
    /* Reset the error state. */
    /*========================*/
 
-   EnvSetHaltExecution(theEnv,FALSE);
-   EnvSetEvaluationError(theEnv,FALSE);
+   EnvSetHaltExecution(theEnv,false);
+   EnvSetEvaluationError(theEnv,false);
 
    /*=============================================*/
    /* Evaluate commands from the file one by one. */
@@ -1120,11 +1120,11 @@ int EnvBatchStar(
       if (CompleteCommand(theString) != 0)
         {
          FlushPPBuffer(theEnv);
-         SetPPBufferStatus(theEnv,OFF);
-         RouteCommand(theEnv,theString,FALSE);
+         SetPPBufferStatus(theEnv,false);
+         RouteCommand(theEnv,theString,false);
          FlushPPBuffer(theEnv);
-         EnvSetHaltExecution(theEnv,FALSE);
-         EnvSetEvaluationError(theEnv,FALSE);
+         EnvSetHaltExecution(theEnv,false);
+         EnvSetEvaluationError(theEnv,false);
          FlushBindList(theEnv);      
          genfree(theEnv,theString,(unsigned) maxChars);
          theString = NULL;
@@ -1162,7 +1162,7 @@ int EnvBatchStar(
    DeleteString(theEnv,oldParsingFileName);
 #endif
 
-   return(TRUE);
+   return(true);
   }
 
 #else
@@ -1171,13 +1171,13 @@ int EnvBatchStar(
 /* EnvBatchStar: This is the non-functional stub  */
 /*   provided for use with a run-time version.    */
 /**************************************************/
-int EnvBatchStar(
+bool EnvBatchStar(
   void *theEnv,
   const char *fileName)
   {
-   PrintErrorID(theEnv,"FILECOM",1,FALSE);
+   PrintErrorID(theEnv,"FILECOM",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function batch* does not work in run time modules.\n");
-   return(FALSE);
+   return(false);
   }
 
 #endif
@@ -1185,84 +1185,84 @@ int EnvBatchStar(
 /***********************************************************/
 /* LoadCommand: H/L access routine for the load command.   */
 /***********************************************************/
-int LoadCommand(
+bool LoadCommand(
   void *theEnv)
   {
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    const char *theFileName;
    int rv;
 
-   if (EnvArgCountCheck(theEnv,"load",EXACTLY,1) == -1) return(FALSE);
-   if ((theFileName = GetFileName(theEnv,"load",1)) == NULL) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"load",EXACTLY,1) == -1) return(false);
+   if ((theFileName = GetFileName(theEnv,"load",1)) == NULL) return(false);
 
-   SetPrintWhileLoading(theEnv,TRUE);
+   SetPrintWhileLoading(theEnv,true);
 
-   if ((rv = EnvLoad(theEnv,theFileName)) == FALSE)
+   if ((rv = EnvLoad(theEnv,theFileName)) == 0)
      {
-      SetPrintWhileLoading(theEnv,FALSE);
+      SetPrintWhileLoading(theEnv,false);
       OpenErrorMessage(theEnv,"load",theFileName);
-      return(FALSE);
+      return(false);
      }
 
-   SetPrintWhileLoading(theEnv,FALSE);
-   if (rv == -1) return(FALSE);
-   return(TRUE);
+   SetPrintWhileLoading(theEnv,false);
+   if (rv == -1) return(false);
+   return(true);
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Load is not available in this environment\n");
-   return(FALSE);
+   return(false);
 #endif
   }
 
 /****************************************************************/
 /* LoadStarCommand: H/L access routine for the load* command.   */
 /****************************************************************/
-int LoadStarCommand(
+bool LoadStarCommand(
   void *theEnv)
   {
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    const char *theFileName;
    int rv;
 
-   if (EnvArgCountCheck(theEnv,"load*",EXACTLY,1) == -1) return(FALSE);
-   if ((theFileName = GetFileName(theEnv,"load*",1)) == NULL) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"load*",EXACTLY,1) == -1) return(false);
+   if ((theFileName = GetFileName(theEnv,"load*",1)) == NULL) return(false);
 
-   if ((rv = EnvLoad(theEnv,theFileName)) == FALSE)
+   if ((rv = EnvLoad(theEnv,theFileName)) == 0) // TBD Load Code
      {
       OpenErrorMessage(theEnv,"load*",theFileName);
-      return(FALSE);
+      return(false);
      }
 
-   if (rv == -1) return(FALSE);
-   return(TRUE);
+   if (rv == -1) return(false);
+   return(true);
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Load* is not available in this environment\n");
-   return(FALSE);
+   return(false);
 #endif
   }
 
 #if DEBUGGING_FUNCTIONS
-/***********************************************************/
-/* SaveCommand: H/L access routine for the save command.   */
-/***********************************************************/
-int SaveCommand(
+/*********************************************************/
+/* SaveCommand: H/L access routine for the save command. */
+/*********************************************************/
+bool SaveCommand(
   void *theEnv)
   {
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    const char *theFileName;
 
-   if (EnvArgCountCheck(theEnv,"save",EXACTLY,1) == -1) return(FALSE);
-   if ((theFileName = GetFileName(theEnv,"save",1)) == NULL) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"save",EXACTLY,1) == -1) return(false);
+   if ((theFileName = GetFileName(theEnv,"save",1)) == NULL) return(false);
 
-   if (EnvSave(theEnv,theFileName) == FALSE)
+   if (EnvSave(theEnv,theFileName) == false)
      {
       OpenErrorMessage(theEnv,"save",theFileName);
-      return(FALSE);
+      return(false);
      }
 
-   return(TRUE);
+   return(true);
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Save is not available in this environment\n");
-   return(FALSE);
+   return(false);
 #endif
   }
 #endif
@@ -1275,18 +1275,18 @@ int SaveCommand(
 
 #if DEBUGGING_FUNCTIONS
 
-intBool DribbleActive()
+bool DribbleActive()
   {
    return EnvDribbleActive(GetCurrentEnvironment());
   }
 
-intBool DribbleOn(
+bool DribbleOn(
   const char *fileName)
   {
    return EnvDribbleOn(GetCurrentEnvironment(),fileName);
   }
 
-intBool DribbleOff()
+bool DribbleOff()
   {
    return EnvDribbleOff(GetCurrentEnvironment());
   }

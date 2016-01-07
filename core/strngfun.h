@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             STRING FUNCTIONS HEADER FILE            */
    /*******************************************************/
@@ -51,8 +51,8 @@
    int                            Eval(const char *,DATA_OBJECT_PTR);
 #endif
 
-   int                            EnvBuild(void *,const char *);
-   int                            EnvEval(void *,const char *,DATA_OBJECT_PTR);
+   bool                           EnvBuild(void *,const char *);
+   bool                           EnvEval(void *,const char *,DATA_OBJECT_PTR);
    void                           StringFunctionDefinitions(void *);
    void                           StrCatFunction(void *,DATA_OBJECT_PTR);
    void                           SymCatFunction(void *,DATA_OBJECT_PTR);
@@ -63,7 +63,7 @@
    void                          *SubStringFunction(void *);
    void                           StrIndexFunction(void *,DATA_OBJECT_PTR);
    void                           EvalFunction(void *,DATA_OBJECT_PTR);
-   int                            BuildFunction(void *);
+   bool                           BuildFunction(void *);
    void                           StringToFieldFunction(void *,DATA_OBJECT *);
    void                           StringToField(void *,const char *,DATA_OBJECT *);
 

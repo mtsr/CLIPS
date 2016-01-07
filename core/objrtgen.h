@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -38,7 +38,7 @@
 
    void             ReplaceGetJNObjectValue(void *,EXPRESSION *,struct lhsParseNode *,int);
    EXPRESSION      *GenGetJNObjectValue(void *,struct lhsParseNode *,int);
-   EXPRESSION      *ObjectJNVariableComparison(void *,struct lhsParseNode *,struct lhsParseNode *,int);
+   EXPRESSION      *ObjectJNVariableComparison(void *,struct lhsParseNode *,struct lhsParseNode *,bool);
    EXPRESSION      *GenObjectPNConstantCompare(void *,struct lhsParseNode *);
    void             ReplaceGetPNObjectValue(void *,EXPRESSION *,struct lhsParseNode *);
    EXPRESSION      *GenGetPNObjectValue(void *,struct lhsParseNode *); 

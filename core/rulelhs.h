@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  07/25/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*           DEFRULE LHS PARSING HEADER FILE           */
    /*******************************************************/
@@ -38,7 +38,7 @@
 #include "pattern.h"
 #endif
 
-struct lhsParseNode           *ParseRuleLHS(void *,const char *,struct token *,const char *,int *);
+struct lhsParseNode           *ParseRuleLHS(void *,const char *,struct token *,const char *,bool *);
 void                           PropagatePatternType(struct lhsParseNode *,struct patternParser *);
 
 #endif

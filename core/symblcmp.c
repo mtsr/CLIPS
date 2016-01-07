@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*           SYMBOL CONSTRUCT COMPILER MODULE          */
    /*******************************************************/
@@ -84,7 +84,7 @@ void AtomicValuesToCode(
   {
    int version; // TBD Necessary?
 
-   SetAtomicValueIndices(theEnv,TRUE);
+   SetAtomicValueIndices(theEnv,true);
 
    HashTablesToCode(theEnv,fileName,pathName,fileNameBuffer);
 
@@ -112,7 +112,7 @@ static int SymbolHashNodesToCode(
    int count;
    int numberOfEntries;
    struct symbolHashNode **symbolTable;
-   int newHeader = TRUE;
+   bool newHeader = true;
    int arrayVersion = 1;
    FILE *fp;
 
@@ -140,7 +140,7 @@ static int SymbolHashNodesToCode(
    /* Create the file. */
    /*==================*/
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(-1);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(-1);
 
    /*===================*/
    /* List the entries. */
@@ -157,7 +157,7 @@ static int SymbolHashNodesToCode(
          if (newHeader)
            {
             fprintf(fp,"struct symbolHashNode S%d_%d[] = {\n",ConstructCompilerData(theEnv)->ImageID,arrayVersion);
-            newHeader = FALSE;
+            newHeader = false;
            }
 
          if (hashPtr->next == NULL)
@@ -185,8 +185,8 @@ static int SymbolHashNodesToCode(
             version++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(0);
-               newHeader = TRUE;
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               newHeader = true;
               }
            }
          else
@@ -214,7 +214,7 @@ static int BitMapHashNodesToCode(
    int count;
    int numberOfEntries;
    struct bitMapHashNode **bitMapTable;
-   int newHeader = TRUE;
+   bool newHeader = true;
    int arrayVersion = 1;
    FILE *fp;
    int longsReqdPartition = 1,longsReqdPartitionCount = 0;
@@ -243,7 +243,7 @@ static int BitMapHashNodesToCode(
    /* Create the file. */
    /*==================*/
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(-1);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(-1);
 
    /*===================*/
    /* List the entries. */
@@ -260,7 +260,7 @@ static int BitMapHashNodesToCode(
          if (newHeader)
            {
             fprintf(fp,"struct bitMapHashNode B%d_%d[] = {\n",ConstructCompilerData(theEnv)->ImageID,arrayVersion);
-            newHeader = FALSE;
+            newHeader = false;
            }
 
          if (hashPtr->next == NULL)
@@ -299,8 +299,8 @@ static int BitMapHashNodesToCode(
             version++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(0);
-               newHeader = TRUE;
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               newHeader = true;
               }
            }
          else
@@ -329,7 +329,7 @@ static int BitMapValuesToCode(
    int count;
    int numberOfEntries;
    struct bitMapHashNode **bitMapTable;
-   int newHeader = TRUE;
+   bool newHeader = true;
    int arrayVersion = 1;
    FILE *fp;
    unsigned long tmpLong;
@@ -363,7 +363,7 @@ static int BitMapValuesToCode(
    /* Create the file. */
    /*==================*/
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(-1);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(-1);
 
    /*===================*/
    /* List the entries. */
@@ -380,7 +380,7 @@ static int BitMapValuesToCode(
          if (newHeader)
            {
             fprintf(fp,"unsigned long L%d_%d[] = {\n",ConstructCompilerData(theEnv)->ImageID,arrayVersion);
-            newHeader = FALSE;
+            newHeader = false;
            }
 
          longsReqd = (int) (hashPtr->size / sizeof(unsigned long));
@@ -412,8 +412,8 @@ static int BitMapValuesToCode(
             version++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(0);
-               newHeader = TRUE;
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               newHeader = true;
               }
            }
          else
@@ -441,7 +441,7 @@ static int FloatHashNodesToCode(
    int count;
    int numberOfEntries;
    struct floatHashNode **floatTable;
-   int newHeader = TRUE;
+   bool newHeader = true;
    FILE *fp;
    int arrayVersion = 1;
 
@@ -469,7 +469,7 @@ static int FloatHashNodesToCode(
    /* Create the file. */
    /*==================*/
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(-1);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(-1);
 
    /*===================*/
    /* List the entries. */
@@ -486,7 +486,7 @@ static int FloatHashNodesToCode(
          if (newHeader)
            {
             fprintf(fp,"struct floatHashNode F%d_%d[] = {\n",ConstructCompilerData(theEnv)->ImageID,arrayVersion);
-            newHeader = FALSE;
+            newHeader = false;
            }
 
          if (hashPtr->next == NULL)
@@ -514,8 +514,8 @@ static int FloatHashNodesToCode(
             arrayVersion++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(0);
-               newHeader = TRUE;
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               newHeader = true;
               }
            }
          else
@@ -543,7 +543,7 @@ static int IntegerHashNodesToCode(
    int count;
    int numberOfEntries;
    struct integerHashNode **integerTable;
-   int newHeader = TRUE;
+   bool newHeader = true;
    FILE *fp;
    int arrayVersion = 1;
 
@@ -571,7 +571,7 @@ static int IntegerHashNodesToCode(
    /* Create the file. */
    /*==================*/
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(-1);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(-1);
 
    /*===================*/
    /* List the entries. */
@@ -588,7 +588,7 @@ static int IntegerHashNodesToCode(
          if (newHeader)
            {
             fprintf(fp,"struct integerHashNode I%d_%d[] = {\n",ConstructCompilerData(theEnv)->ImageID,arrayVersion);
-            newHeader = FALSE;
+            newHeader = false;
            }
 
          if (hashPtr->next == NULL)
@@ -616,8 +616,8 @@ static int IntegerHashNodesToCode(
             arrayVersion++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,FALSE)) == NULL) return(0);
-               newHeader = TRUE;
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               newHeader = true;
               }
            }
          else
@@ -652,7 +652,7 @@ static int HashTablesToCode(
 
    symbolTable = GetSymbolTable(theEnv);
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,1,FALSE)) == NULL) return(0);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,1,false)) == NULL) return(0);
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct symbolHashNode *sht%d[];\n",ConstructCompilerData(theEnv)->ImageID);
    fprintf(fp,"struct symbolHashNode *sht%d[%ld] = {\n",ConstructCompilerData(theEnv)->ImageID,SYMBOL_HASH_SIZE);
@@ -674,7 +674,7 @@ static int HashTablesToCode(
 
    floatTable = GetFloatTable(theEnv);
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,2,FALSE)) == NULL) return(0);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,2,false)) == NULL) return(0);
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct floatHashNode *fht%d[];\n",ConstructCompilerData(theEnv)->ImageID);
    fprintf(fp,"struct floatHashNode *fht%d[%d] = {\n",ConstructCompilerData(theEnv)->ImageID,FLOAT_HASH_SIZE);
@@ -697,7 +697,7 @@ static int HashTablesToCode(
 
    integerTable = GetIntegerTable(theEnv);
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,3,FALSE)) == NULL) return(0);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,3,false)) == NULL) return(0);
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct integerHashNode *iht%d[];\n",ConstructCompilerData(theEnv)->ImageID);
    fprintf(fp,"struct integerHashNode *iht%d[%d] = {\n",ConstructCompilerData(theEnv)->ImageID,INTEGER_HASH_SIZE);
@@ -720,7 +720,7 @@ static int HashTablesToCode(
 
    bitMapTable = GetBitMapTable(theEnv);
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,4,FALSE)) == NULL) return(0);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,4,false)) == NULL) return(0);
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct bitMapHashNode *bmht%d[];\n",ConstructCompilerData(theEnv)->ImageID);
    fprintf(fp,"struct bitMapHashNode *bmht%d[%d] = {\n",ConstructCompilerData(theEnv)->ImageID,BITMAP_HASH_SIZE);

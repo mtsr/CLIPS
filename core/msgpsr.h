@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -50,7 +50,7 @@
 #include "object.h"
 #endif
 
-   int              ParseDefmessageHandler(void *,const char *);
+   bool             ParseDefmessageHandler(void *,const char *);
    void             CreateGetAndPutHandlers(void *,SLOT_DESC *);
 
 #endif /* OBJECT_SYSTEM && (! BLOAD_ONLY) && (! RUN_TIME) */

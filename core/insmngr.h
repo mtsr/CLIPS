@@ -1,9 +1,9 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
-   /*            INSTANCE PRIMITIVE SUPPORT MODULE        */
+   /*          INSTANCE PRIMITIVE SUPPORT MODULE          */
    /*******************************************************/
 
 /*************************************************************/
@@ -46,9 +46,9 @@
    void                           InitializeInstanceCommand(void *,DATA_OBJECT *);
    void                           MakeInstanceCommand(void *,DATA_OBJECT *);
    SYMBOL_HN                     *GetFullInstanceName(void *,INSTANCE_TYPE *);
-   INSTANCE_TYPE                 *BuildInstance(void *,SYMBOL_HN *,DEFCLASS *,intBool);
+   INSTANCE_TYPE                 *BuildInstance(void *,SYMBOL_HN *,DEFCLASS *,bool);
    void                           InitSlotsCommand(void *,DATA_OBJECT *);
-   intBool                        QuashInstance(void *,INSTANCE_TYPE *);
+   bool                           QuashInstance(void *,INSTANCE_TYPE *);
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
    void                           InactiveInitializeInstance(void *,DATA_OBJECT *);

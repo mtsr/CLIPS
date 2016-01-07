@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -41,9 +41,9 @@
    void                           MVSlotReplaceCommand(void *,DATA_OBJECT *);
    void                           MVSlotInsertCommand(void *,DATA_OBJECT *);
    void                           MVSlotDeleteCommand(void *,DATA_OBJECT *);
-   intBool                        DirectMVReplaceCommand(void *);
-   intBool                        DirectMVInsertCommand(void *);
-   intBool                        DirectMVDeleteCommand(void *);
+   bool                           DirectMVReplaceCommand(void *);
+   bool                           DirectMVInsertCommand(void *);
+   bool                           DirectMVDeleteCommand(void *);
 
 #endif /* _H_insmult */
 

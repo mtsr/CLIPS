@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              FILE COMMANDS HEADER FILE              */
    /*******************************************************/
@@ -46,31 +46,31 @@
 #define _H_filecom
 
    void                           FileCommandDefinitions(void *);
-   intBool                        EnvDribbleOn(void *,const char *);
-   intBool                        EnvDribbleActive(void *);
-   intBool                        EnvDribbleOff(void *);
-   void                           SetDribbleStatusFunction(void *,int (*)(void *,int));
-   int                            LLGetcBatch(void *,const char *,int);
-   int                            Batch(void *,const char *);
-   int                            OpenBatch(void *,const char *,int);
-   int                            OpenStringBatch(void *,const char *,const char *,int);
-   int                            RemoveBatch(void *);
-   intBool                        BatchActive(void *);
+   bool                           EnvDribbleOn(void *,const char *);
+   bool                           EnvDribbleActive(void *);
+   bool                           EnvDribbleOff(void *);
+   void                           SetDribbleStatusFunction(void *,int (*)(void *,bool));
+   int                            LLGetcBatch(void *,const char *,bool);
+   bool                           Batch(void *,const char *);
+   bool                           OpenBatch(void *,const char *,bool);
+   bool                           OpenStringBatch(void *,const char *,const char *,bool);
+   bool                           RemoveBatch(void *);
+   bool                           BatchActive(void *);
    void                           CloseAllBatchSources(void *);
-   int                            BatchCommand(void *);
-   int                            BatchStarCommand(void *);
-   int                            EnvBatchStar(void *,const char *);
-   int                            LoadCommand(void *);
-   int                            LoadStarCommand(void *);
-   int                            SaveCommand(void *);
-   int                            DribbleOnCommand(void *);
-   int                            DribbleOffCommand(void *);
+   bool                           BatchCommand(void *);
+   bool                           BatchStarCommand(void *);
+   bool                           EnvBatchStar(void *,const char *);
+   bool                           LoadCommand(void *);
+   bool                           LoadStarCommand(void *);
+   bool                           SaveCommand(void *);
+   bool                           DribbleOnCommand(void *);
+   bool                           DribbleOffCommand(void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   intBool                        DribbleActive(void);
-   intBool                        DribbleOn(const char *);
-   intBool                        DribbleOff(void);
+   bool                           DribbleActive(void);
+   bool                           DribbleOn(const char *);
+   bool                           DribbleOff(void);
    int                            BatchStar(const char *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

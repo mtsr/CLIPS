@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                RETRACT HEADER FILE                  */
    /*******************************************************/
@@ -58,7 +58,7 @@ void                           FlushGarbagePartialMatches(void *);
 void                           DeletePartialMatches(void *,struct partialMatch *);
 void                           PosEntryRetractBeta(void *,struct partialMatch *,struct partialMatch *,int);
 void                           PosEntryRetractAlpha(void *,struct partialMatch *,int);
-intBool                        PartialMatchWillBeDeleted(void *,struct partialMatch *);
+bool                           PartialMatchWillBeDeleted(void *,struct partialMatch *);
 
 #endif /* _H_retract */
 

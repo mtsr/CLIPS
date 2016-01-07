@@ -1,9 +1,9 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
-   /*            FACT LHS PATTERN PARSING MODULE          */
+   /*           FACT LHS PATTERN PARSING MODULE           */
    /*******************************************************/
 
 /*************************************************************/
@@ -77,14 +77,14 @@ struct lhsParseNode *SequenceRestrictionParse(
 
    topNode = GetLHSParseNode(theEnv);
    topNode->type = SF_WILDCARD;
-   topNode->negated = FALSE;
-   topNode->exists = FALSE;
+   topNode->negated = false;
+   topNode->exists = false;
    topNode->index = -1;
    topNode->slotNumber = 1;
    topNode->bottom = GetLHSParseNode(theEnv);
    topNode->bottom->type = SYMBOL;
-   topNode->bottom->negated = FALSE;
-   topNode->bottom->exists = FALSE;
+   topNode->bottom->negated = false;
+   topNode->bottom->exists = false;
    topNode->bottom->value = (void *) theToken->value;
 
    /*======================================================*/
@@ -106,7 +106,7 @@ struct lhsParseNode *SequenceRestrictionParse(
    /* as if they were contained in a multifield slot.            */
    /*============================================================*/
 
-   nextField = RestrictionParse(theEnv,readSource,theToken,TRUE,NULL,1,NULL,1);
+   nextField = RestrictionParse(theEnv,readSource,theToken,true,NULL,1,NULL,1);
    if (nextField == NULL)
      {
       ReturnLHSParseNodes(theEnv,topNode);
@@ -155,13 +155,13 @@ struct lhsParseNode *SequenceRestrictionParse(
 /*   all patterns begin with a symbol, it follows that all patterns   */
 /*   can be parsed as a fact pattern.                                 */
 /**********************************************************************/
-int FactPatternParserFind(
+bool FactPatternParserFind(
   SYMBOL_HN *theRelation)
   {
 #if MAC_XCD
 #pragma unused(theRelation)
 #endif
-   return(TRUE);
+   return(true);
   }
 
 /******************************************************/
@@ -193,7 +193,7 @@ struct lhsParseNode *FactPatternParse(
 
    theDeftemplate = (struct deftemplate *)
                     FindImportedConstruct(theEnv,"deftemplate",NULL,ValueToString(theToken->value),
-                                          &count,TRUE,NULL);
+                                          &count,true,NULL);
 
    if (count > 1)
      {
@@ -217,7 +217,7 @@ struct lhsParseNode *FactPatternParse(
 #endif /* DEFMODULE_CONSTRUCT */
 
       if (! ConstructData(theEnv)->CheckSyntaxMode)
-        { theDeftemplate = CreateImpliedDeftemplate(theEnv,(SYMBOL_HN *) theToken->value,TRUE); }
+        { theDeftemplate = CreateImpliedDeftemplate(theEnv,(SYMBOL_HN *) theToken->value,true); }
       else
         { theDeftemplate = NULL; }
      }
@@ -227,7 +227,7 @@ struct lhsParseNode *FactPatternParse(
    /* the pattern as a deftemplate pattern.         */
    /*===============================================*/
 
-   if ((theDeftemplate != NULL) && (theDeftemplate->implied == FALSE))
+   if ((theDeftemplate != NULL) && (theDeftemplate->implied == false))
      { return(DeftemplateLHSParse(theEnv,readSource,theDeftemplate)); }
 
    /*================================*/

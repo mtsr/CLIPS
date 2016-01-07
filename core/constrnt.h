@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                CONSTRAINT HEADER FILE               */
    /*******************************************************/
@@ -87,8 +87,8 @@ typedef struct constraintRecord CONSTRAINT_RECORD;
 struct constraintData
   { 
    struct constraintRecord **ConstraintHashtable;
-   intBool StaticConstraintChecking;
-   intBool DynamicConstraintChecking;
+   bool StaticConstraintChecking;
+   bool DynamicConstraintChecking;
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE) && (! RUN_TIME)
    struct constraintRecord *ConstraintArray;
    long int NumberOfConstraints;
@@ -98,14 +98,14 @@ struct constraintData
 #define ConstraintData(theEnv) ((struct constraintData *) GetEnvironmentData(theEnv,CONSTRAINT_DATA))
 
    void                           InitializeConstraints(void *);
-   int                            GDCCommand(void *);
-   int                            SDCCommand(void *d);
-   int                            GSCCommand(void *);
-   int                            SSCCommand(void *);
-   intBool                        EnvSetDynamicConstraintChecking(void *,int);
-   intBool                        EnvGetDynamicConstraintChecking(void *);
-   intBool                        EnvSetStaticConstraintChecking(void *,int);
-   intBool                        EnvGetStaticConstraintChecking(void *);
+   bool                           GDCCommand(void *);
+   bool                           SDCCommand(void *d);
+   bool                           GSCCommand(void *);
+   bool                           SSCCommand(void *);
+   bool                           EnvSetDynamicConstraintChecking(void *,bool);
+   bool                           EnvGetDynamicConstraintChecking(void *);
+   bool                           EnvSetStaticConstraintChecking(void *,bool);
+   bool                           EnvGetStaticConstraintChecking(void *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    unsigned long                  HashConstraint(struct constraintRecord *);
    struct constraintRecord       *AddConstraint(void *,struct constraintRecord *);
@@ -116,10 +116,10 @@ struct constraintData
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   intBool                        SetDynamicConstraintChecking(int);
-   intBool                        GetDynamicConstraintChecking(void);
-   intBool                        SetStaticConstraintChecking(int);
-   intBool                        GetStaticConstraintChecking(void);
+   bool                           SetDynamicConstraintChecking(int);
+   bool                           GetDynamicConstraintChecking(void);
+   bool                           SetStaticConstraintChecking(int);
+   bool                           GetStaticConstraintChecking(void);
 
 #endif
 

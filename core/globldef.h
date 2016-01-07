@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                DEFGLOBAL HEADER FILE                */
    /*******************************************************/
@@ -75,11 +75,11 @@ struct defglobalData
   { 
    struct construct *DefglobalConstruct;
    int DefglobalModuleIndex;  
-   int ChangeToGlobals;
+   bool ChangeToGlobals;
 #if DEBUGGING_FUNCTIONS
    unsigned WatchGlobals;
 #endif
-   intBool ResetGlobals;
+   bool ResetGlobals;
    struct entityRecord GlobalInfo;
    struct entityRecord DefglobalPtrRecord;
    long LastModuleIndex;
@@ -111,18 +111,18 @@ struct defglobalModule
    void                          *EnvFindDefglobalInModule(void *,const char *);
    void                          *EnvGetNextDefglobal(void *,void *);
    void                           CreateInitialFactDefglobal(void);
-   intBool                        EnvIsDefglobalDeletable(void *,void *);
+   bool                           EnvIsDefglobalDeletable(void *,void *);
    struct defglobalModule        *GetDefglobalModuleItem(void *,struct defmodule *);
-   void                           QSetDefglobalValue(void *,struct defglobal *,DATA_OBJECT_PTR,int);
+   void                           QSetDefglobalValue(void *,struct defglobal *,DATA_OBJECT_PTR,bool);
    struct defglobal              *QFindDefglobal(void *,struct symbolHashNode *);
    void                           EnvGetDefglobalValueForm(void *,char *,size_t,void *);
    int                            EnvGetGlobalsChanged(void *);
    void                           EnvSetGlobalsChanged(void *,int);
-   intBool                        EnvGetDefglobalValue(void *,const char *,DATA_OBJECT_PTR);
-   intBool                        EnvSetDefglobalValue(void *,const char *,DATA_OBJECT_PTR);
+   bool                           EnvGetDefglobalValue(void *,const char *,DATA_OBJECT_PTR);
+   bool                           EnvSetDefglobalValue(void *,const char *,DATA_OBJECT_PTR);
    void                           UpdateDefglobalScope(void *);
    void                          *GetNextDefglobalInScope(void *,void *);
-   int                            QGetDefglobalValue(void *,void *,DATA_OBJECT_PTR);
+   bool                           QGetDefglobalValue(void *,void *,DATA_OBJECT_PTR);
    const char                    *EnvDefglobalModule(void *,void *);
    const char                    *EnvGetDefglobalName(void *,void *);
    const char                    *EnvGetDefglobalPPForm(void *,void *);
@@ -133,12 +133,12 @@ struct defglobalModule
    void                          *FindDefglobal(const char *);
    const char                    *GetDefglobalName(void *);
    const char                    *GetDefglobalPPForm(void *);
-   intBool                        GetDefglobalValue(const char *,DATA_OBJECT_PTR);
+   bool                           GetDefglobalValue(const char *,DATA_OBJECT_PTR);
    void                           GetDefglobalValueForm(char *,unsigned,void *);
    int                            GetGlobalsChanged(void);
    void                          *GetNextDefglobal(void *);
-   intBool                        IsDefglobalDeletable(void *);
-   intBool                        SetDefglobalValue(const char *,DATA_OBJECT_PTR);
+   bool                           IsDefglobalDeletable(void *);
+   bool                           SetDefglobalValue(const char *,DATA_OBJECT_PTR);
    void                           SetGlobalsChanged(int);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

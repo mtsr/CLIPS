@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 RULE DELETION MODULE                */
    /*******************************************************/
@@ -66,8 +66,8 @@
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    static void                    RemoveIntranetworkLink(void *,struct joinNode *);
 #endif
-   static void                    DetachJoins(void *,struct joinNode *,intBool);
-   static void                    DetachJoinsDriver(void *,struct defrule *,intBool);
+   static void                    DetachJoins(void *,struct joinNode *,bool);
+   static void                    DetachJoinsDriver(void *,struct defrule *,bool);
 
 /**********************************************************************/
 /* ReturnDefrule: Returns a defrule data structure and its associated */
@@ -82,7 +82,7 @@ void ReturnDefrule(
   {
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    struct defrule *waste = (struct defrule *) vWaste;
-   int first = TRUE;
+   bool first = true;
    struct defrule *nextPtr, *tmpPtr;
 
    if (waste == NULL) return;
@@ -116,7 +116,7 @@ void ReturnDefrule(
       /* Remove the rule's joins from the join network. */
       /*================================================*/
 
-      DetachJoinsDriver(theEnv,waste,FALSE);
+      DetachJoinsDriver(theEnv,waste,false);
 
       /*=============================================*/
       /* If this is the first disjunct, get rid of   */
@@ -145,7 +145,7 @@ void ReturnDefrule(
               { tmpPtr->header.ppForm = NULL; }
            }
 
-         first = FALSE;
+         first = false;
         }
 
       /*===========================*/
@@ -198,13 +198,13 @@ void DestroyDefrule(
   {
    struct defrule *theDefrule = (struct defrule *) vTheDefrule;
    struct defrule *nextDisjunct;
-   int first = TRUE;
+   bool first = true;
    
    if (theDefrule == NULL) return;
    
    while (theDefrule != NULL)
      {
-      DetachJoinsDriver(theEnv,theDefrule,TRUE);
+      DetachJoinsDriver(theEnv,theDefrule,true);
 
       if (first)
         {
@@ -228,7 +228,7 @@ void DestroyDefrule(
            }
 #endif
 
-         first = FALSE;
+         first = false;
         }
      
       if (theDefrule->header.usrData != NULL)
@@ -255,7 +255,7 @@ void DestroyDefrule(
 static void DetachJoinsDriver(
   void *theEnv,
   struct defrule *theRule,
-  intBool destroy)
+  bool destroy)
   {
    struct joinNode *join;
 
@@ -292,7 +292,7 @@ static void DetachJoinsDriver(
 static void DetachJoins(
   void *theEnv,
   struct joinNode *join,
-  intBool destroy)
+  bool destroy)
   {
    struct joinNode *prevJoin, *rightJoin;
    struct joinLink *lastLink, *theLink;
@@ -327,7 +327,7 @@ static void DetachJoins(
 #if (! RUN_TIME) && (! BLOAD_ONLY)
       if (! destroy)
         {
-         if ((join->rightSideEntryStructure != NULL) && (join->joinFromTheRight == FALSE))
+         if ((join->rightSideEntryStructure != NULL) && (join->joinFromTheRight == false))
            { RemoveIntranetworkLink(theEnv,join); }
         }
 #endif
@@ -495,7 +495,7 @@ static void DetachJoins(
             if (prevJoin != NULL)
               {
                lastMark = prevJoin->marked;  
-               prevJoin->marked = TRUE; 
+               prevJoin->marked = true;
                DetachJoins(theEnv,rightJoin,destroy);
                prevJoin->marked = lastMark;
               }

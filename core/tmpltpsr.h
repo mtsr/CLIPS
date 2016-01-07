@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*            DEFTEMPLATE PARSER HEADER FILE           */
    /*******************************************************/
@@ -43,7 +43,7 @@
 #include "tmpltdef.h"
 #endif
 
-   int                            ParseDeftemplate(void *,const char *);
+   bool                           ParseDeftemplate(void *,const char *);
    void                           InstallDeftemplate(void *,struct deftemplate *);
 
 #endif /* _H_tmpltpsr */

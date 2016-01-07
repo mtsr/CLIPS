@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.40  11/26/15          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               CLASS INITIALIZATION MODULE           */
    /*******************************************************/
@@ -209,10 +209,10 @@ static void DeallocateDefclassData(
    int i;
    struct defclassModule *theModuleItem;
    void *theModule;
-   int bloaded = FALSE;
+   bool bloaded = false;
    
 #if BLOAD || BLOAD_AND_BSAVE
-   if (Bloaded(theEnv)) bloaded = TRUE;
+   if (Bloaded(theEnv)) bloaded = true;
 #endif
 
    /*=============================*/
@@ -221,7 +221,7 @@ static void DeallocateDefclassData(
    
    if (! bloaded)
      {
-      DoForAllConstructs(theEnv,DestroyDefclassAction,DefclassData(theEnv)->DefclassModuleIndex,FALSE,NULL); 
+      DoForAllConstructs(theEnv,DestroyDefclassAction,DefclassData(theEnv)->DefclassModuleIndex,false,NULL);
 
       for (theModule = EnvGetNextDefmodule(theEnv,NULL);
            theModule != NULL;
@@ -412,7 +412,7 @@ void ObjectsRunTimeInitialize(
             tmpexp = cls->slots[i].defaultValue;
             cls->slots[i].defaultValue = (void *) get_struct(theEnv,dataObject);
             EvaluateAndStoreInDataObject(theEnv,(int) cls->slots[i].multiple,(EXPRESSION *) tmpexp,
-                                         (DATA_OBJECT *) cls->slots[i].defaultValue,TRUE);
+                                         (DATA_OBJECT *) cls->slots[i].defaultValue,true);
             ValueInstall(theEnv,(DATA_OBJECT *) cls->slots[i].defaultValue);
             ((DATA_OBJECT *) cls->slots[i].defaultValue)->supplementalInfo = tmpexp;
            }
@@ -469,8 +469,8 @@ void CreateSystemClasses(
       the is-a and name fields - used for
       object patterns
       =================================== */
-   AddSlotName(theEnv,DefclassData(theEnv)->ISA_SYMBOL,ISA_ID,TRUE);
-   AddSlotName(theEnv,DefclassData(theEnv)->NAME_SYMBOL,NAME_ID,TRUE);
+   AddSlotName(theEnv,DefclassData(theEnv)->ISA_SYMBOL,ISA_ID,true);
+   AddSlotName(theEnv,DefclassData(theEnv)->NAME_SYMBOL,NAME_ID,true);
 
    /* =========================================================
       Bsave Indices for non-primitive classes start at 9
@@ -801,7 +801,7 @@ static void UpdateDefclassesScope(
         if (theDefclass->system)
           SetBitMap(newScopeMap,newModuleID);
         else if (FindImportedConstruct(theEnv,"defclass",matchModule,
-                                       className,&count,TRUE,NULL) != NULL)
+                                       className,&count,true,NULL) != NULL)
           SetBitMap(newScopeMap,newModuleID);
         theDefclass->scopeMap = (BITMAP_HN *) EnvAddBitMap(theEnv,(void *) newScopeMap,newScopeMapSize);
         IncrementBitMapCount(theDefclass->scopeMap);

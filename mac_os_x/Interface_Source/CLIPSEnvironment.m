@@ -60,7 +60,7 @@
       lastAgendaFetch = -1;
       lastFactsFetch = -1;
       lastInstancesFetch = -1;
-      exited = FALSE;
+      exited = NO;
      }
    
    return self;
@@ -229,7 +229,7 @@
       executionThread = nil;
       [accessLock unlock];
        
-      exited = TRUE;
+      exited = YES;
       return;
      }
     
@@ -333,11 +333,11 @@
    /* agenda was fetched, nothing needs to be done.  */
    /*================================================*/
    
-   if ((EnvGetAgendaChanged(environment) == FALSE) &&
-       (EnvGetFocusChanged(environment) == FALSE)) return;
+   if ((EnvGetAgendaChanged(environment) == false) &&
+       (EnvGetFocusChanged(environment) == false)) return;
    
-   EnvSetAgendaChanged(environment,FALSE);
-   EnvSetFocusChanged(environment,FALSE);
+   EnvSetAgendaChanged(environment,false);
+   EnvSetFocusChanged(environment,false);
 
    if (lockAgenda)
      { [agendaLock lock]; }
@@ -447,9 +447,9 @@
      { [agendaLock unlock]; }
   }
 
-/********************/
+/***************/
 /* fetchFacts: */
-/********************/
+/***************/
 - (void) fetchFacts: (BOOL) lockFacts
   {
    struct defmodule *theModule;
@@ -465,8 +465,8 @@
    /* fact list was fetched, nothing needs to be done.  */
    /*===================================================*/
    
-   if (EnvGetFactListChanged(environment) == FALSE) return;
-   EnvSetFactListChanged(environment,FALSE);
+   if (EnvGetFactListChanged(environment) == false) return;
+   EnvSetFactListChanged(environment,false);
 
    if (lockFacts)
      { [factsLock lock]; }
@@ -552,8 +552,8 @@
    /* done.                                          */
    /*================================================*/
    
-   if (EnvGetInstancesChanged(environment) == FALSE) return;
-   EnvSetInstancesChanged(environment,FALSE);
+   if (EnvGetInstancesChanged(environment) == false) return;
+   EnvSetInstancesChanged(environment,false);
 
    if (lockInstances)
      { [instancesLock lock]; }

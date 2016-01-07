@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  09/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*            EXTERNAL FUNCTIONS HEADER FILE           */
    /*******************************************************/
@@ -30,7 +30,7 @@
 /*            Replaced ALLOW_ENVIRONMENT_GLOBALS macros      */
 /*            with functions.                                */
 /*                                                           */
-/*      6.31: Changed restrictions from char * to            */
+/*      6.40: Changed restrictions from char * to            */
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
@@ -58,8 +58,8 @@ struct FunctionDefinition
    int (*functionPointer)(void);
    struct expr *(*parser)(void *,struct expr *,const char *);
    struct symbolHashNode *restrictions;
-   short int overloadable;
-   short int sequenceuseok;
+   bool overloadable; // TBD Use unsigned ints here
+   bool sequenceuseok;
    short int environmentAware;
    short int bsaveIndex;
    struct FunctionDefinition *next;
@@ -110,17 +110,17 @@ struct FunctionHash
    int                            EnvDefineFunction2WithContext(void *,const char *,int,
                                                             int (*)(void *),const char *,const char *,void *);
    int                            DefineFunction3(void *,const char *,int,
-                                                         int (*)(void *),const char *,const char *,intBool,void *);
+                                                         int (*)(void *),const char *,const char *,bool,void *);
    int                            AddFunctionParser(void *,const char *,
                                                            struct expr *(*)( void *,struct expr *,const char *));
    int                            RemoveFunctionParser(void *,const char *);
-   int                            FuncSeqOvlFlags(void *,const char *,int,int);
+   bool                           FuncSeqOvlFlags(void *,const char *,bool,bool);
    struct FunctionDefinition     *GetFunctionList(void *);
    void                           InstallFunctionList(void *,struct FunctionDefinition *);
    struct FunctionDefinition     *FindFunction(void *,const char *);
    int                            GetNthRestriction(struct FunctionDefinition *,int);
    const char                    *GetArgumentTypeName(int);
-   int                            UndefineFunction(void *,const char *);
+   bool                           UndefineFunction(void *,const char *);
    int                            GetMinimumArgs(struct FunctionDefinition *);
    int                            GetMaximumArgs(struct FunctionDefinition *);
 

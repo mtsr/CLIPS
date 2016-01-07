@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*          CONSTRUCT BINARY LOAD/SAVE MODULE          */
    /*******************************************************/
@@ -53,7 +53,7 @@ void MarkConstructHeaderNeededItems(
   struct constructHeader *theConstruct,
   long theBsaveID)
   {
-   theConstruct->name->neededSymbol = TRUE;
+   theConstruct->name->neededSymbol = true;
    theConstruct->bsaveID = theBsaveID;
   }
 

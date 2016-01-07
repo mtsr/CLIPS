@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*              CLIPS Version 6.30  08/16/14           */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -47,7 +47,7 @@
    ***************************************** */
 
 static void ReadyDefinstancesForCode(void *);
-static int DefinstancesToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
+static bool DefinstancesToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
 static void CloseDefinstancesFiles(void *,FILE *,FILE *,int);
 static void DefinstancesModuleToCode(void *,FILE *,struct defmodule *,int,int);
 static void SingleDefinstancesToCode(void *,FILE *,DEFINSTANCES *,int,int,int);
@@ -133,12 +133,12 @@ static void ReadyDefinstancesForCode(
                  4) The base id for the construct set
                  5) The max number of indices allowed
                     in an array
-  RETURNS      : -1 if no definstances, 0 on errors,
+  RETURNS      : 0 on errors,
                   1 if definstances written
   SIDE EFFECTS : Code written to files
   NOTES        : None
  *******************************************************/
-static int DefinstancesToCode(
+static bool DefinstancesToCode(
   void *theEnv,
   const char *fileName,
   const char *pathName,
@@ -173,12 +173,12 @@ static int DefinstancesToCode(
       moduleFile = OpenFileIfNeeded(theEnv,moduleFile,fileName,pathName,fileNameBuffer,fileID,imageID,&fileCount,
                                     moduleArrayVersion,headerFP,
                                     "DEFINSTANCES_MODULE",ModulePrefix(DefinstancesData(theEnv)->DefinstancesCodeItem),
-                                    FALSE,NULL);
+                                    false,NULL);
 
       if (moduleFile == NULL)
         {
          CloseDefinstancesFiles(theEnv,moduleFile,definstancesFile,maxIndices);
-         return(0);
+         return(false);
         }
 
       DefinstancesModuleToCode(theEnv,moduleFile,theModule,imageID,maxIndices);
@@ -192,11 +192,11 @@ static int DefinstancesToCode(
          definstancesFile = OpenFileIfNeeded(theEnv,definstancesFile,fileName,pathName,fileNameBuffer,fileID,imageID,&fileCount,
                                              definstancesArrayVersion,headerFP,
                                              "DEFINSTANCES",ConstructPrefix(DefinstancesData(theEnv)->DefinstancesCodeItem),
-                                             FALSE,NULL);
+                                             false,NULL);
          if (definstancesFile == NULL)
            {
             CloseDefinstancesFiles(theEnv,moduleFile,definstancesFile,maxIndices);
-            return(0);
+            return(false);
            }
 
          SingleDefinstancesToCode(theEnv,definstancesFile,theDefinstances,imageID,
@@ -215,7 +215,7 @@ static int DefinstancesToCode(
 
    CloseDefinstancesFiles(theEnv,moduleFile,definstancesFile,maxIndices);
 
-   return(1);
+   return(true);
   }
 
 /***************************************************

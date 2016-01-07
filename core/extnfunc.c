@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  09/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               EXTERNAL FUNCTION MODULE              */
    /*******************************************************/
@@ -31,7 +31,7 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
-/*      6.31: Changed restrictions from char * to            */
+/*      6.40: Changed restrictions from char * to            */
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
@@ -61,7 +61,7 @@
    static void                    InitializeFunctionHashTable(void *);
    static void                    DeallocateExternalFunctionData(void *);
 #if (! RUN_TIME)
-   static int                     RemoveHashFunction(void *,struct FunctionDefinition *);
+   static bool                    RemoveHashFunction(void *,struct FunctionDefinition *);
 #endif
 
 /*********************************************************/
@@ -127,7 +127,7 @@ int EnvDefineFunction(
   int (*pointer)(void *),
   const char *actualName)
   {
-   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,TRUE,NULL));
+   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,true,NULL));
   }
   
 /************************************************************/
@@ -142,7 +142,7 @@ int EnvDefineFunctionWithContext(
   const char *actualName,
   void *context)
   {
-   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,TRUE,context));
+   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,true,context));
   }
   
 /*******************************************************/
@@ -157,7 +157,7 @@ int EnvDefineFunction2(
   const char *actualName,
   const char *restrictions)
   {
-   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,restrictions,TRUE,NULL));
+   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,restrictions,true,NULL));
   }
 
 /*************************************************************/
@@ -173,7 +173,7 @@ int EnvDefineFunction2WithContext(
   const char *restrictions,
   void *context)
   {
-   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,restrictions,TRUE,context));
+   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,restrictions,true,context));
   }
 
 /*************************************************************/
@@ -208,7 +208,7 @@ int DefineFunction3(
   int (*pointer)(void *),
   const char *actualName,
   const char *restrictions,
-  intBool environmentAware,
+  bool environmentAware,
   void *context)
   {
    struct FunctionDefinition *newFunction;
@@ -255,7 +255,7 @@ int DefineFunction3(
    newFunction->actualFunctionName = actualName;
    if (restrictions != NULL)
      {
-      if (((int) (strlen(restrictions)) < 2) ? TRUE :
+      if (((int) (strlen(restrictions)) < 2) ? true :
           ((! isdigit(restrictions[0]) && (restrictions[0] != '*')) ||
            (! isdigit(restrictions[1]) && (restrictions[1] != '*'))))
         restrictions = NULL;
@@ -270,8 +270,8 @@ int DefineFunction3(
      }
      
    newFunction->parser = NULL;
-   newFunction->overloadable = TRUE;
-   newFunction->sequenceuseok = TRUE;
+   newFunction->overloadable = true;
+   newFunction->sequenceuseok = true;
    newFunction->environmentAware = (short) environmentAware;
    newFunction->usrData = NULL;
    newFunction->context = context;
@@ -283,7 +283,7 @@ int DefineFunction3(
 /* UndefineFunction: Used to remove a function */
 /*   definition from the list of functions.    */
 /***********************************************/
-int UndefineFunction(
+bool UndefineFunction(
   void *theEnv,
   const char *functionName)
   {
@@ -310,20 +310,20 @@ int UndefineFunction(
            { DecrementSymbolCount(theEnv,fPtr->restrictions); }
          ClearUserDataList(theEnv,fPtr->usrData);
          rtn_struct(theEnv,FunctionDefinition,fPtr);
-         return(TRUE);
+         return(true);
         }
 
       lastPtr = fPtr;
      }
 
-   return(FALSE);
+   return(false);
   }
 
 /******************************************/
 /* RemoveHashFunction: Removes a function */
 /*   from the function hash table.        */
 /******************************************/
-static int RemoveHashFunction(
+static bool RemoveHashFunction(
   void *theEnv,
   struct FunctionDefinition *fdPtr)
   {
@@ -344,13 +344,13 @@ static int RemoveHashFunction(
            { lastPtr->next = fhPtr->next; }
 
          rtn_struct(theEnv,FunctionHash,fhPtr);
-         return(TRUE);
+         return(true);
         }
 
       lastPtr = fhPtr;
      }
 
-   return(FALSE);
+   return(false);
   }
 
 /***************************************************************************/
@@ -377,7 +377,7 @@ int AddFunctionParser(
      }
    fdPtr->restrictions = NULL;
    fdPtr->parser = fpPtr;
-   fdPtr->overloadable = FALSE;
+   fdPtr->overloadable = false;
 
    return(1);
   }
@@ -408,11 +408,11 @@ int RemoveFunctionParser(
 /* FuncSeqOvlFlags: Makes a system function overloadable or not, */
 /* i.e. can the function be a method for a generic function.     */
 /*****************************************************************/
-int FuncSeqOvlFlags(
+bool FuncSeqOvlFlags(
   void *theEnv,
   const char *functionName,
-  int seqp,
-  int ovlp)
+  bool seqp,
+  bool ovlp)
   {
    struct FunctionDefinition *fdPtr;
 
@@ -420,11 +420,11 @@ int FuncSeqOvlFlags(
    if (fdPtr == NULL)
      {
       EnvPrintRouter(theEnv,WERROR,"Only existing functions can be marked as using sequence expansion arguments/overloadable or not.\n");
-      return(FALSE);
+      return(false);
      }
-   fdPtr->sequenceuseok = (short) (seqp ? TRUE : FALSE);
-   fdPtr->overloadable = (short) (ovlp ? TRUE : FALSE);
-   return(TRUE);
+   fdPtr->sequenceuseok = (short) (seqp ? true : false);
+   fdPtr->overloadable = (short) (ovlp ? true : false);
+   return(true);
   }
 
 #endif
@@ -735,7 +735,7 @@ int DefineFunction(
 
    return(DefineFunction3(theEnv,name,returnType,
                           (int (*)(void *)) pointer,
-                          actualName,NULL,FALSE,NULL));
+                          actualName,NULL,false,NULL));
   }
 
 int DefineFunction2(
@@ -751,7 +751,7 @@ int DefineFunction2(
 
    return(DefineFunction3(theEnv,name,returnType,
                           (int (*)(void *)) pointer,
-                          actualName,restrictions,FALSE,NULL));
+                          actualName,restrictions,false,NULL));
   }
 
 #endif /* (! RUN_TIME) */

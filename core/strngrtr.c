@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              STRING I/O ROUTER MODULE               */
    /*******************************************************/
@@ -55,12 +55,12 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                     FindString(void *,const char *);
+   static bool                    FindString(void *,const char *);
    static int                     PrintString(void *,const char *,const char *);
    static int                     GetcString(void *,const char *);
    static int                     UngetcString(void *,int,const char *);
    static struct stringRouter    *FindStringRouter(void *,const char *);
-   static int                     CreateReadStringSource(void *,const char *,const char *,size_t,size_t);
+   static bool                    CreateReadStringSource(void *,const char *,const char *,size_t,size_t);
    static void                    DeallocateStringRouterData(void *);
 
 /**********************************************************/
@@ -96,7 +96,7 @@ static void DeallocateStringRouterData(
 /*************************************************************/
 /* FindString: Find routine for string router logical names. */
 /*************************************************************/
-static int FindString(
+static bool FindString(
   void *theEnv,
   const char *fileid)
   {
@@ -106,11 +106,11 @@ static int FindString(
    while (head != NULL)
      {
       if (strcmp(head->name,fileid) == 0)
-        { return(TRUE); }
+        { return(true); }
       head = head->next;
      }
 
-   return(FALSE);
+   return(false);
   }
 
 /**************************************************/
@@ -205,7 +205,7 @@ static int UngetcString(
 /************************************************/
 /* OpenStringSource: Opens a new string router. */
 /************************************************/
-int OpenStringSource(
+bool OpenStringSource(
   void *theEnv,
   const char *name,
   const char *str,
@@ -247,7 +247,7 @@ int OpenTextSource(
 /******************************************************************/
 /* CreateReadStringSource: Creates a new string router for input. */
 /******************************************************************/
-static int CreateReadStringSource(
+static bool CreateReadStringSource(
   void *theEnv,
   const char *name,
   const char *str,
@@ -257,7 +257,7 @@ static int CreateReadStringSource(
    struct stringRouter *newStringRouter;
    char *theName;
 
-   if (FindStringRouter(theEnv,name) != NULL) return(0);
+   if (FindStringRouter(theEnv,name) != NULL) return(false);
 
    newStringRouter = get_struct(theEnv,stringRouter);
    theName = (char *) gm1(theEnv,strlen(name) + 1);
@@ -271,7 +271,7 @@ static int CreateReadStringSource(
    newStringRouter->next = StringRouterData(theEnv)->ListOfStringRouters;
    StringRouterData(theEnv)->ListOfStringRouters = newStringRouter;
 
-   return(1);
+   return(true);
   }
 
 /**********************************************/

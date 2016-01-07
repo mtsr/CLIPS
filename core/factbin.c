@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                FACT BSAVE/BLOAD MODULE              */
    /*******************************************************/
@@ -114,7 +114,7 @@ static void DeallocateFactBloadData(
    int i;
    
    for (i = 0; i < FactBinaryData(theEnv)->NumberOfPatterns; i++)
-     { DestroyAlphaMemory(theEnv,&FactBinaryData(theEnv)->FactPatternArray[i].header,FALSE); }
+     { DestroyAlphaMemory(theEnv,&FactBinaryData(theEnv)->FactPatternArray[i].header,false); }
 
    space = FactBinaryData(theEnv)->NumberOfPatterns * sizeof(struct factPatternNode);
    if (space != 0) genfree(theEnv,(void *) FactBinaryData(theEnv)->FactPatternArray,space);

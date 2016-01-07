@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*            CONSTRAINT UTILITY HEADER FILE           */
    /*******************************************************/
@@ -35,9 +35,9 @@
    struct constraintRecord       *GetConstraintRecord(void *);
    int                            CompareNumbers(void *,int,void *,int,void *);
    struct constraintRecord       *CopyConstraintRecord(void *,CONSTRAINT_RECORD *);
-   int                            SetConstraintType(int,CONSTRAINT_RECORD *);
-   void                           SetAnyAllowedFlags(CONSTRAINT_RECORD *,int);
-   void                           SetAnyRestrictionFlags(CONSTRAINT_RECORD *,int);
+   bool                           SetConstraintType(int,CONSTRAINT_RECORD *);
+   void                           SetAnyAllowedFlags(CONSTRAINT_RECORD *,bool);
+   void                           SetAnyRestrictionFlags(CONSTRAINT_RECORD *,bool);
    CONSTRAINT_RECORD             *ArgumentTypeToConstraintRecord(void *,int);
    CONSTRAINT_RECORD             *FunctionCallToConstraintRecord(void *,void *);
    CONSTRAINT_RECORD             *ExpressionToConstraintRecord(void *,struct expr *);

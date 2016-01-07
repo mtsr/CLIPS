@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 SCANNER HEADER FILE                 */
    /*******************************************************/
@@ -54,7 +54,7 @@ struct scannerData
    size_t GlobalMax;
    size_t GlobalPos;
    long LineCount;
-   int IgnoreCompletionErrors;
+   bool IgnoreCompletionErrors;
   };
 
 #define ScannerData(theEnv) ((struct scannerData *) GetEnvironmentData(theEnv,SCANNER_DATA))

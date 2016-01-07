@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/29/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               I/O FUNCTIONS HEADER FILE             */
    /*******************************************************/
@@ -66,19 +66,19 @@
 
    void                           IOFunctionDefinitions(void *);
 #if IO_FUNCTIONS
-   intBool                        SetFullCRLF(void *,intBool);
+   bool                           SetFullCRLF(void *,bool);
    void                           PrintoutFunction(void *);
    void                           PrintFunction(void *);
    void                           PrintlnFunction(void *);
    void                           ReadFunction(void *,DATA_OBJECT_PTR);
-   int                            OpenFunction(void *);
-   int                            CloseFunction(void *);
+   bool                           OpenFunction(void *);
+   bool                           CloseFunction(void *);
    int                            GetCharFunction(void *);
    void                           PutCharFunction(void *);
    void                           ReadlineFunction(void *,DATA_OBJECT_PTR);
    void                          *FormatFunction(void *);
-   int                            RemoveFunction(void *);
-   int                            RenameFunction(void *);
+   bool                           RemoveFunction(void *);
+   bool                           RenameFunction(void *);
    void                           SetLocaleFunction(void *,DATA_OBJECT_PTR);
    void                           ReadNumberFunction(void *,DATA_OBJECT_PTR);
 #endif

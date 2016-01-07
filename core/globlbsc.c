@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*         DEFGLOBAL BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -74,8 +74,8 @@
    static void                    SaveDefglobals(void *,void *,const char *);
    static void                    ResetDefglobalAction(void *,struct constructHeader *,void *);
 #if DEBUGGING_FUNCTIONS && (! RUN_TIME)
-   static unsigned                DefglobalWatchAccess(void *,int,unsigned,struct expr *);
-   static unsigned                DefglobalWatchPrint(void *,const char *,int,struct expr *);
+   static bool                    DefglobalWatchAccess(void *,int,bool,struct expr *);
+   static bool                    DefglobalWatchPrint(void *,const char *,int,struct expr *);
 #endif
 
 /*****************************************************************/
@@ -117,7 +117,7 @@ void ResetDefglobals(
   void *theEnv)
   {
    if (! EnvGetResetGlobals(theEnv)) return;
-   DoForAllConstructs(theEnv,ResetDefglobalAction,DefglobalData(theEnv)->DefglobalModuleIndex,TRUE,NULL);
+   DoForAllConstructs(theEnv,ResetDefglobalAction,DefglobalData(theEnv)->DefglobalModuleIndex,true,NULL);
   }
 
 /******************************************************/
@@ -141,7 +141,7 @@ static void ResetDefglobalAction(
       assignValue.value = EnvFalseSymbol(theEnv);
      }
 
-   QSetDefglobalValue(theEnv,theDefglobal,&assignValue,FALSE);
+   QSetDefglobalValue(theEnv,theDefglobal,&assignValue,false);
   }
 
 /******************************************/
@@ -170,7 +170,7 @@ void UndefglobalCommand(
 /* EnvUndefglobal: C access routine */
 /*   for the undefglobal command.   */
 /************************************/
-intBool EnvUndefglobal(
+bool EnvUndefglobal(
   void *theEnv,
   void *theDefglobal)
   {
@@ -262,7 +262,7 @@ void EnvListDefglobals(
 /* EnvGetDefglobalWatch: C access routine for retrieving */
 /*   the current watch value of a defglobal.             */
 /*********************************************************/
-unsigned EnvGetDefglobalWatch(
+bool EnvGetDefglobalWatch(
   void *theEnv,
   void *theGlobal)
   { 
@@ -279,7 +279,7 @@ unsigned EnvGetDefglobalWatch(
 /******************************************************/
 void EnvSetDefglobalWatch(
   void *theEnv,
-  unsigned newState,
+  bool newState,
   void *theGlobal)
   {  
 #if MAC_XCD
@@ -295,10 +295,10 @@ void EnvSetDefglobalWatch(
 /* DefglobalWatchAccess: Access routine for setting the */
 /*   watch flag of a defglobal via the watch command.   */
 /********************************************************/
-static unsigned DefglobalWatchAccess(
+static bool DefglobalWatchAccess(
   void *theEnv,
   int code,
-  unsigned newState,
+  bool newState,
   EXPRESSION *argExprs)
   {
 #if MAC_XCD
@@ -313,7 +313,7 @@ static unsigned DefglobalWatchAccess(
 /* DefglobalWatchPrint: Access routine for printing which defglobals */
 /*   have their watch flag set via the list-watch-items command.     */
 /*********************************************************************/
-static unsigned DefglobalWatchPrint(
+static bool DefglobalWatchPrint(
   void *theEnv,
   const char *logName,
   int code,
@@ -368,7 +368,7 @@ void SetDefglobalWatch(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-intBool Undefglobal(
+bool Undefglobal(
   void *theDefglobal)
   {
    return EnvUndefglobal(GetCurrentEnvironment(),theDefglobal);

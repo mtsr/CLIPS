@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             BASIC MATH FUNCTIONS MODULE             */
    /*******************************************************/
@@ -38,10 +38,10 @@
    void                    SubtractionFunction(void *,DATA_OBJECT_PTR);
    void                    DivisionFunction(void *,DATA_OBJECT_PTR);
    long long               DivFunction(void *);
-   intBool                 SetAutoFloatDividendCommand(void *);
-   intBool                 GetAutoFloatDividendCommand(void *);
-   intBool                 EnvGetAutoFloatDividend(void *);
-   intBool                 EnvSetAutoFloatDividend(void *,int);
+   bool                    SetAutoFloatDividendCommand(void *);
+   bool                    GetAutoFloatDividendCommand(void *);
+   bool                    EnvGetAutoFloatDividend(void *);
+   bool                    EnvSetAutoFloatDividend(void *,int);
    long long               IntegerFunction(void *);
    double                  FloatFunction(void *);
    void                    AbsFunction(void *,DATA_OBJECT_PTR);
@@ -50,8 +50,8 @@
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   intBool                 GetAutoFloatDividend(void);
-   intBool                 SetAutoFloatDividend(int);
+   bool                    GetAutoFloatDividend(void);
+   bool                    SetAutoFloatDividend(int);
 
 #endif
 

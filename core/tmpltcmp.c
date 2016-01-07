@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*          DEFTEMPLATE CONSTRUCTS-TO-C MODULE         */
    /*******************************************************/
@@ -62,7 +62,7 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                     ConstructToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
+   static bool                    ConstructToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
    static void                    SlotToCode(void *,FILE *,struct templateSlot *,int,int,int);
    static void                    DeftemplateModuleToCode(void *,FILE *,struct defmodule *,int,int,int);
    static void                    DeftemplateToCode(void *,FILE *,struct deftemplate *,
@@ -84,7 +84,7 @@ void DeftemplateCompilerSetup(
 /* ConstructToCode: Produces deftemplate code for a run-time */
 /*   module created using the constructs-to-c function.      */
 /*************************************************************/
-static int ConstructToCode(
+static bool ConstructToCode(
   void *theEnv,
   const char *fileName,
   const char *pathName,
@@ -124,12 +124,12 @@ static int ConstructToCode(
       moduleFile = OpenFileIfNeeded(theEnv,moduleFile,fileName,pathName,fileNameBuffer,fileID,imageID,&fileCount,
                                     moduleArrayVersion,headerFP,
                                     "struct deftemplateModule",ModulePrefix(DeftemplateData(theEnv)->DeftemplateCodeItem),
-                                    FALSE,NULL);
+                                    false,NULL);
 
       if (moduleFile == NULL)
         {
          CloseDeftemplateFiles(theEnv,moduleFile,templateFile,slotFile,maxIndices);
-         return(0);
+         return(false);
         }
 
       DeftemplateModuleToCode(theEnv,moduleFile,theModule,imageID,maxIndices,moduleCount);
@@ -147,11 +147,11 @@ static int ConstructToCode(
          templateFile = OpenFileIfNeeded(theEnv,templateFile,fileName,pathName,fileNameBuffer,fileID,imageID,&fileCount,
                                          templateArrayVersion,headerFP,
                                          "struct deftemplate",ConstructPrefix(DeftemplateData(theEnv)->DeftemplateCodeItem),
-                                         FALSE,NULL);
+                                         false,NULL);
          if (templateFile == NULL)
            {
             CloseDeftemplateFiles(theEnv,moduleFile,templateFile,slotFile,maxIndices);
-            return(0);
+            return(false);
            }
 
          DeftemplateToCode(theEnv,templateFile,theTemplate,imageID,maxIndices,
@@ -169,11 +169,11 @@ static int ConstructToCode(
            {
             slotFile = OpenFileIfNeeded(theEnv,slotFile,fileName,pathName,fileNameBuffer,fileID,imageID,&fileCount,
                                         slotArrayVersion,headerFP,
-                                       "struct templateSlot",SlotPrefix(),FALSE,NULL);
+                                       "struct templateSlot",SlotPrefix(),false,NULL);
             if (slotFile == NULL)
               {
                CloseDeftemplateFiles(theEnv,moduleFile,templateFile,slotFile,maxIndices);
-               return(0);
+               return(false);
               }
 
             SlotToCode(theEnv,slotFile,slotPtr,imageID,maxIndices,slotCount);
@@ -195,7 +195,7 @@ static int ConstructToCode(
 
    CloseDeftemplateFiles(theEnv,moduleFile,templateFile,slotFile,maxIndices);
 
-   return(1);
+   return(true);
   }
 
 /************************************************************/

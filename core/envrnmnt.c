@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                ENVIRONMENT MODULE                   */
    /*******************************************************/
@@ -44,7 +44,7 @@
 /*                                                           */
 /*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
-/*      6.31: Refactored code to reduce header dependencies  */
+/*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
@@ -133,7 +133,7 @@
 #if ALLOW_ENVIRONMENT_GLOBALS
    static void                    AddHashedEnvironment(struct environmentData *);
    static struct environmentData *FindEnvironment(unsigned long);
-   static intBool                 RemoveHashedEnvironment(struct environmentData *);
+   static bool                    RemoveHashedEnvironment(struct environmentData *);
    static void                    InitializeEnvironmentHashTable(void);
 #endif
    static void                    RemoveEnvironmentCleanupFunctions(struct environmentData *);
@@ -160,7 +160,7 @@
 /* AllocateEnvironmentData: Allocates environment data */
 /*    for the specified environment data record.       */
 /*******************************************************/
-intBool AllocateEnvironmentData(
+bool AllocateEnvironmentData(
   void *vtheEnvironment,
   unsigned int position,
   unsigned long size,
@@ -175,7 +175,7 @@ intBool AllocateEnvironmentData(
    if (size <= 0)
      {
       printf("\n[ENVRNMNT1] Environment data position %d allocated with size of 0 or less.\n",position);      
-      return(FALSE);
+      return(false);
      }
      
    /*================================================================*/
@@ -185,7 +185,7 @@ intBool AllocateEnvironmentData(
    if (position >= MAXIMUM_ENVIRONMENT_POSITIONS)
      {
       printf("\n[ENVRNMNT2] Environment data position %d exceeds the maximum allowed.\n",position);      
-      return(FALSE);
+      return(false);
      }
      
    /*============================================================*/
@@ -195,7 +195,7 @@ intBool AllocateEnvironmentData(
    if (theEnvironment->theData[position] != NULL)
      {
       printf("\n[ENVRNMNT3] Environment data position %d already allocated.\n",position);      
-      return(FALSE);
+      return(false);
      }
      
    /*====================*/
@@ -206,7 +206,7 @@ intBool AllocateEnvironmentData(
    if (theEnvironment->theData[position] == NULL)
      {
       printf("\n[ENVRNMNT4] Environment data position %d could not be allocated.\n",position);      
-      return(FALSE);
+      return(false);
      }
    
    memset(theEnvironment->theData[position],0,size);
@@ -221,7 +221,7 @@ intBool AllocateEnvironmentData(
    /* Data successfully registered. */
    /*===============================*/
    
-   return(TRUE);
+   return(true);
   }
 
 /***************************************************************/
@@ -229,11 +229,12 @@ intBool AllocateEnvironmentData(
 /*   stored in the environment hash table and then deallocates */
 /*   the environment hash table.                               */
 /***************************************************************/
-intBool DeallocateEnvironmentData()
+bool DeallocateEnvironmentData()
   {
 #if ALLOW_ENVIRONMENT_GLOBALS
    struct environmentData *theEnvironment, *nextEnvironment;
-   int i, rv = TRUE;
+   int i;
+   bool rv = true;
    
    for (i = 0; i < SIZE_ENVIRONMENT_HASH; i++)
      {
@@ -244,7 +245,7 @@ intBool DeallocateEnvironmentData()
          nextEnvironment = theEnvironment->next;
          
          if (! DestroyEnvironment(theEnvironment))
-           { rv = FALSE; }
+           { rv = false; }
          
          theEnvironment = nextEnvironment;
         }
@@ -254,7 +255,7 @@ intBool DeallocateEnvironmentData()
    
    return(rv);
 #else
-   return(FALSE);
+   return(false);
 #endif
   }
 
@@ -306,7 +307,7 @@ static void AddHashedEnvironment(
 /* RemoveHashedEnvironment: Removes an environment */
 /*   entry from the environment hash table.        */
 /***************************************************/
-static intBool RemoveHashedEnvironment(
+static bool RemoveHashedEnvironment(
   struct environmentData *theEnvironment)
   {
    unsigned long hashValue;
@@ -323,18 +324,18 @@ static intBool RemoveHashedEnvironment(
          if (prev == NULL)
            {
             EnvironmentHashTable[hashValue] = hptr->next;
-            return(TRUE);
+            return(true);
            }
          else
            {
             prev->next = hptr->next;
-            return(TRUE);
+            return(true);
            }
         }
       prev = hptr;
      }
 
-   return(FALSE);
+   return(false);
   }
 
 /**********************************************************/
@@ -416,7 +417,7 @@ void *CreateEnvironmentDriver(
 
    memset(theData,0,sizeof(void *) * MAXIMUM_ENVIRONMENT_POSITIONS);
 
-   theEnvironment->initialized = FALSE;
+   theEnvironment->initialized = false;
    theEnvironment->theData = (void **) theData;
    theEnvironment->next = NULL;
    theEnvironment->listOfCleanupEnvironmentFunctions = NULL;
@@ -473,7 +474,7 @@ void SetCurrentEnvironment(
 /*   environment to the one having the specified  */
 /*   environment index.                           */
 /**************************************************/
-intBool SetCurrentEnvironmentByIndex(
+bool SetCurrentEnvironmentByIndex(
   unsigned long environmentIndex)
   {
    struct environmentData *theEnvironment;
@@ -481,11 +482,11 @@ intBool SetCurrentEnvironmentByIndex(
    theEnvironment = FindEnvironment(environmentIndex);
    
    if (theEnvironment == NULL)
-     { return(FALSE); }
+     { return(false); }
      
    SetCurrentEnvironment(theEnvironment);
    
-   return(TRUE);
+   return(true);
   }     
    
 /**************************************************/
@@ -635,21 +636,21 @@ void *SetEnvironmentCallbackContext(
 /* DestroyEnvironment: Destroys the specified */
 /*   environment returning all of its memory. */
 /**********************************************/
-intBool DestroyEnvironment(
+bool DestroyEnvironment(
   void *vtheEnvironment)
   {   
    struct environmentCleanupFunction *cleanupPtr;
    int i;
    struct memoryData *theMemData;
-   intBool rv = TRUE;
+   bool rv = true;
    struct environmentData *theEnvironment = (struct environmentData *) vtheEnvironment;
    /*
    if (EvaluationData(theEnvironment)->CurrentExpression != NULL)
-     { return(FALSE); }
+     { return(false); }
      
 #if DEFRULE_CONSTRUCT
    if (EngineData(theEnvironment)->ExecutingRule != NULL)
-     { return(FALSE); }
+     { return(false); }
 #endif
 */
    theMemData = MemoryData(theEnvironment);
@@ -682,7 +683,7 @@ intBool DestroyEnvironment(
       printf("\n[ENVRNMNT8] Environment data not fully deallocated.\n"); 
       printf("\n[ENVRNMNT8] MemoryAmount = %ld.\n",(long) theMemData->MemoryAmount); 
       printf("\n[ENVRNMNT8] MemoryCalls = %ld.\n",(long) theMemData->MemoryCalls); 
-      rv = FALSE;     
+      rv = false;
      }
 
 #if (MEM_TABLE_SIZE > 0)
@@ -714,7 +715,7 @@ intBool DestroyEnvironment(
 /* AddEnvironmentCleanupFunction: Adds a function */
 /*   to the ListOfCleanupEnvironmentFunctions.    */
 /**************************************************/
-intBool AddEnvironmentCleanupFunction(
+bool AddEnvironmentCleanupFunction(
   void *vtheEnv,
   const char *name,
   void (*functionPtr)(void *),
@@ -725,7 +726,7 @@ intBool AddEnvironmentCleanupFunction(
      
    newPtr = (struct environmentCleanupFunction *) malloc(sizeof(struct environmentCleanupFunction));
    if (newPtr == NULL)
-     { return(FALSE); }
+     { return(false); }
 
    newPtr->name = name;
    newPtr->func = functionPtr;
@@ -735,11 +736,11 @@ intBool AddEnvironmentCleanupFunction(
      {
       newPtr->next = NULL;
       theEnv->listOfCleanupEnvironmentFunctions = newPtr;
-      return(TRUE);
+      return(true);
      }
 
    currentPtr = theEnv->listOfCleanupEnvironmentFunctions;
-   while ((currentPtr != NULL) ? (priority < currentPtr->priority) : FALSE)
+   while ((currentPtr != NULL) ? (priority < currentPtr->priority) : false)
      {
       lastPtr = currentPtr;
       currentPtr = currentPtr->next;
@@ -756,7 +757,7 @@ intBool AddEnvironmentCleanupFunction(
       lastPtr->next = newPtr;
      }
      
-   return(TRUE);
+   return(true);
   }
 
 /**************************************************/
@@ -982,7 +983,7 @@ static void EnvInitializeEnvironment(
    /* Initialization is complete. */
    /*=============================*/
 
-   theEnvironment->initialized = TRUE;
+   theEnvironment->initialized = true;
   }
 
 /*****************************************************/
@@ -992,7 +993,7 @@ static void EnvInitializeEnvironment(
 void InterruptCurrentEnvironment()
   {
 #if ALLOW_ENVIRONMENT_GLOBALS
-   EnvSetHaltExecution(GetCurrentEnvironment(),TRUE);
+   EnvSetHaltExecution(GetCurrentEnvironment(),true);
    CloseAllBatchSources(GetCurrentEnvironment());
 #endif
   }

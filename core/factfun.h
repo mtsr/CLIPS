@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              FACT FUNCTIONS HEADER FILE             */
    /*******************************************************/
@@ -47,8 +47,8 @@
    void                          *FactRelationFunction(void *);
    void                          *FactRelation(void *);
    void                          *EnvFactDeftemplate(void *,void *);
-   int                            FactExistpFunction(void *);
-   int                            EnvFactExistp(void *,void *);
+   bool                           FactExistpFunction(void *);
+   bool                           EnvFactExistp(void *,void *);
    void                           FactSlotValueFunction(void *,DATA_OBJECT *);
    void                           FactSlotValue(void *,void *,const char *,DATA_OBJECT *);
    void                           FactSlotNamesFunction(void *,DATA_OBJECT *);
@@ -57,7 +57,7 @@
    void                           EnvGetFactList(void *,DATA_OBJECT *,void *);
    void                           PPFactFunction(void *);
    void                           EnvPPFact(void *,void *,const char *,int);
-   struct fact                   *GetFactAddressOrIndexArgument(void *,const char *,int,int);
+   struct fact                   *GetFactAddressOrIndexArgument(void *,const char *,int,bool);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 

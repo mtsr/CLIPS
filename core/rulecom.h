@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             DEFRULE COMMANDS HEADER FILE            */
    /*******************************************************/
@@ -71,11 +71,10 @@ struct joinInformation
 #define SUCCINCT 1
 #define TERSE    2
 
-   intBool                        EnvGetBetaMemoryResizing(void *);
-   intBool                        EnvSetBetaMemoryResizing(void *,intBool);
-   int                            GetBetaMemoryResizingCommand(void *);
-   int                            SetBetaMemoryResizingCommand(void *);
-
+   bool                           EnvGetBetaMemoryResizing(void *);
+   bool                           EnvSetBetaMemoryResizing(void *,bool);
+   bool                           GetBetaMemoryResizingCommand(void *);
+   bool                           SetBetaMemoryResizingCommand(void *);
    void                           EnvMatches(void *,void *,int,DATA_OBJECT *);
    void                           EnvJoinActivity(void *,void *,int,DATA_OBJECT *);
    void                           DefruleCommands(void *);
@@ -101,8 +100,8 @@ struct joinInformation
    void                           Matches(void *,int,DATA_OBJECT *);
    void                           JoinActivity(void *,int,DATA_OBJECT *);
 #endif
-   intBool                        GetBetaMemoryResizing(void);
-   intBool                        SetBetaMemoryResizing(int);
+   bool                           GetBetaMemoryResizing(void);
+   bool                           SetBetaMemoryResizing(int);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

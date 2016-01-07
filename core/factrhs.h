@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/20/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*        FACT RHS PATTERN PARSER HEADER MODULE        */
    /*******************************************************/
@@ -41,10 +41,10 @@
 #include "symbol.h"
 #endif
 
-   struct expr                   *BuildRHSAssert(void *,const char *,struct token *,int *,int,int,const char *);
-   struct expr                   *GetAssertArgument(void *,const char *,struct token *,int *,int,int,int *);
-   struct expr                   *GetRHSPattern(void *,const char *,struct token *,int *,int,
-                                                       int,int,int);
+   struct expr                   *BuildRHSAssert(void *,const char *,struct token *,bool *,bool,bool,const char *);
+   struct expr                   *GetAssertArgument(void *,const char *,struct token *,bool *,int,bool,bool *);
+   struct expr                   *GetRHSPattern(void *,const char *,struct token *,bool *,bool,
+                                                       bool,bool,int);
    struct fact                   *StringToFact(void *,const char *);
 
 #endif /* _H_factrhs */

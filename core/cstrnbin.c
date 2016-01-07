@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*            CONSTRAINT BLOAD/BSAVE MODULE            */
    /*******************************************************/
@@ -126,7 +126,7 @@ void WriteNeededConstraints(
    if ((! EnvGetDynamicConstraintChecking(theEnv)) && (numberOfUsedConstraints != 0))
      {
       numberOfUsedConstraints = 0;
-      PrintWarningID(theEnv,"CSTRNBIN",1,FALSE);
+      PrintWarningID(theEnv,"CSTRNBIN",1,false);
       EnvPrintRouter(theEnv,WWARNING,"Constraints are not saved with a binary image\n");
       EnvPrintRouter(theEnv,WWARNING,"  when dynamic constraint checking is disabled.\n");
      }
@@ -232,7 +232,7 @@ static void CopyFromBsaveConstraintRecord(
    constraints->instanceNamesAllowed = bsaveConstraints->instanceNamesAllowed;
    constraints->instanceAddressesAllowed = bsaveConstraints->instanceAddressesAllowed;
    constraints->externalAddressesAllowed = bsaveConstraints->externalAddressesAllowed;
-   constraints->voidAllowed = FALSE;
+   constraints->voidAllowed = false;
    constraints->multifieldsAllowed = bsaveConstraints->multifieldsAllowed;
    constraints->singlefieldsAllowed = bsaveConstraints->singlefieldsAllowed;
    constraints->factAddressesAllowed = bsaveConstraints->factAddressesAllowed;

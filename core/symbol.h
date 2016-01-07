@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  05/18/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 SYMBOL HEADER FILE                  */
    /*******************************************************/
@@ -58,7 +58,7 @@
 /*            Added ValueToPointer and EnvValueToPointer     */
 /*            macros.                                        */
 /*                                                           */
-/*      6.31: Refactored code to reduce header dependencies  */
+/*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*************************************************************/
@@ -297,9 +297,9 @@ struct symbolData
    void                           RefreshSpecialSymbols(void *);
    struct symbolMatch            *FindSymbolMatches(void *,const char *,unsigned *,size_t *);
    void                           ReturnSymbolMatches(void *,struct symbolMatch *);
-   SYMBOL_HN                     *GetNextSymbolMatch(void *,const char *,size_t,SYMBOL_HN *,int,size_t *);
+   SYMBOL_HN                     *GetNextSymbolMatch(void *,const char *,size_t,SYMBOL_HN *,bool,size_t *);
    void                           ClearBitString(void *,unsigned);
-   void                           SetAtomicValueIndices(void *,int);
+   void                           SetAtomicValueIndices(void *,bool);
    void                           RestoreAtomicValueBuckets(void *);
    void                          *EnvFalseSymbol(void *);
    void                          *EnvTrueSymbol(void *);

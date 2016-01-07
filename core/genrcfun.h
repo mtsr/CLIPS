@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -113,7 +113,8 @@ struct method
 struct defgeneric
   {
    struct constructHeader header;
-   unsigned busy,trace;
+   unsigned busy;
+   bool trace;
    DEFMETHOD *methods;
    short mcnt;
    short new_index;
@@ -149,24 +150,24 @@ struct defgenericData
 #define RestoreBusyCount(gfunc) (gfunc->busy = DefgenericData(theEnv)->OldGenericBusySave)
 
 #if ! RUN_TIME
-   intBool                        ClearDefgenericsReady(void *);
+   bool                           ClearDefgenericsReady(void *);
    void                          *AllocateDefgenericModule(void *);
    void                           FreeDefgenericModule(void *,void *);
 #endif
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
 
-   int                            ClearDefmethods(void *);
-   int                            RemoveAllExplicitMethods(void *,DEFGENERIC *);
+   bool                           ClearDefmethods(void *);
+   bool                           RemoveAllExplicitMethods(void *,DEFGENERIC *);
    void                           RemoveDefgeneric(void *,void *);
-   int                            ClearDefgenerics(void *);
+   bool                           ClearDefgenerics(void *);
    void                           MethodAlterError(void *,DEFGENERIC *);
    void                           DeleteMethodInfo(void *,DEFGENERIC *,DEFMETHOD *);
    void                           DestroyMethodInfo(void *,DEFGENERIC *,DEFMETHOD *);
-   int                            MethodsExecuting(DEFGENERIC *);
+   bool                           MethodsExecuting(DEFGENERIC *);
 #endif
 #if ! OBJECT_SYSTEM
-   intBool                        SubsumeType(int,int);
+   bool                           SubsumeType(int,int);
 #endif
 
    long                           FindMethodByIndex(DEFGENERIC *,long);

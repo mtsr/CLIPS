@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*          DEFTEMPLATE RHS PARSING HEADER FILE        */
    /*******************************************************/
@@ -41,8 +41,8 @@
 #include "tmpltdef.h"
 #endif
 
-   struct expr                   *ParseAssertTemplate(void *,const char *,struct token *,int *,
-                                                             int,int,struct deftemplate *);
+   struct expr                   *ParseAssertTemplate(void *,const char *,struct token *,bool *,
+                                                             int,bool,struct deftemplate *);
 
 #endif /* _H_tmpltrhs */
 

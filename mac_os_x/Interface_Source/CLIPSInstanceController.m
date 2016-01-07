@@ -293,7 +293,7 @@
       
       theInstanceName = (char *) [[theInstance name] UTF8String];
       if (theInstanceName != NULL)
-        { clipsInstance = (struct instance *) EnvFindInstance(theEnvironment,NULL,theInstanceName,TRUE); }
+        { clipsInstance = (struct instance *) EnvFindInstance(theEnvironment,NULL,theInstanceName,true); }
       
       /*===========================================================*/
       /* If we were able to find the corresponding CLIPS instance, */

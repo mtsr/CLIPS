@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             PROCEDURAL FUNCTIONS MODULE             */
    /*******************************************************/
@@ -34,7 +34,7 @@
 /*                                                           */
 /*            Support for long long integers.                */
 /*                                                           */
-/*      6.31: Added Env prefix to GetHaltExecution and       */
+/*      6.40: Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*************************************************************/
@@ -93,12 +93,12 @@ void ProceduralFunctionDefinitions(
 
    ProceduralFunctionParsers(theEnv);
 
-   FuncSeqOvlFlags(theEnv,"progn",FALSE,FALSE);
-   FuncSeqOvlFlags(theEnv,"if",FALSE,FALSE);
-   FuncSeqOvlFlags(theEnv,"while",FALSE,FALSE);
-   FuncSeqOvlFlags(theEnv,"loop-for-count",FALSE,FALSE);
-   FuncSeqOvlFlags(theEnv,"return",FALSE,FALSE);
-   FuncSeqOvlFlags(theEnv,"switch",FALSE,FALSE);
+   FuncSeqOvlFlags(theEnv,"progn",false,false);
+   FuncSeqOvlFlags(theEnv,"if",false,false);
+   FuncSeqOvlFlags(theEnv,"while",false,false);
+   FuncSeqOvlFlags(theEnv,"loop-for-count",false,false);
+   FuncSeqOvlFlags(theEnv,"return",false,false);
+   FuncSeqOvlFlags(theEnv,"switch",false,false);
 #endif
 
    EnvAddResetFunction(theEnv,"bind",FlushBindList,0);
@@ -138,7 +138,7 @@ void WhileFunction(
   
    /*====================================================*/
    /* Evaluate the body of the while loop as long as the */
-   /* while condition evaluates to a non-FALSE value.    */
+   /* while condition evaluates to a non-false value.    */
    /*====================================================*/
    
    oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
@@ -149,14 +149,14 @@ void WhileFunction(
    EnvRtnUnknown(theEnv,1,&theResult);
    while (((theResult.value != EnvFalseSymbol(theEnv)) ||
            (theResult.type != SYMBOL)) &&
-           (EvaluationData(theEnv)->HaltExecution != TRUE))
+           (EvaluationData(theEnv)->HaltExecution != true))
      {
-      if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
+      if ((ProcedureFunctionData(theEnv)->BreakFlag == true) || (ProcedureFunctionData(theEnv)->ReturnFlag == true))
         break;
         
       EnvRtnUnknown(theEnv,2,&theResult);
 
-      if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
+      if ((ProcedureFunctionData(theEnv)->BreakFlag == true) || (ProcedureFunctionData(theEnv)->ReturnFlag == true))
         break;
 
       CleanCurrentGarbageFrame(theEnv,NULL);
@@ -172,14 +172,14 @@ void WhileFunction(
    /* returned from as well.                              */
    /*=====================================================*/
 
-   ProcedureFunctionData(theEnv)->BreakFlag = FALSE;
+   ProcedureFunctionData(theEnv)->BreakFlag = false;
 
    /*====================================================*/
    /* If the return command was issued, then return that */
    /* value, otherwise return the symbol FALSE.          */
    /*====================================================*/
 
-   if (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE)
+   if (ProcedureFunctionData(theEnv)->ReturnFlag == true)
      {
       returnValue->type = theResult.type;
       returnValue->value = theResult.value;
@@ -214,7 +214,7 @@ void LoopForCountFunction(
    tmpCounter->loopCounter = 0L;
    tmpCounter->nxt = ProcedureFunctionData(theEnv)->LoopCounterStack;
    ProcedureFunctionData(theEnv)->LoopCounterStack = tmpCounter;
-   if (EnvArgTypeCheck(theEnv,"loop-for-count",1,INTEGER,&arg_ptr) == FALSE)
+   if (EnvArgTypeCheck(theEnv,"loop-for-count",1,INTEGER,&arg_ptr) == false)
      {
       loopResult->type = SYMBOL;
       loopResult->value = EnvFalseSymbol(theEnv);
@@ -223,7 +223,7 @@ void LoopForCountFunction(
       return;
      }
    tmpCounter->loopCounter = DOToLong(arg_ptr);
-   if (EnvArgTypeCheck(theEnv,"loop-for-count",2,INTEGER,&arg_ptr) == FALSE)
+   if (EnvArgTypeCheck(theEnv,"loop-for-count",2,INTEGER,&arg_ptr) == false)
      {
       loopResult->type = SYMBOL;
       loopResult->value = EnvFalseSymbol(theEnv);
@@ -239,14 +239,14 @@ void LoopForCountFunction(
 
    iterationEnd = DOToLong(arg_ptr);
    while ((tmpCounter->loopCounter <= iterationEnd) &&
-          (EvaluationData(theEnv)->HaltExecution != TRUE))
+          (EvaluationData(theEnv)->HaltExecution != true))
      {
-      if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
+      if ((ProcedureFunctionData(theEnv)->BreakFlag == true) || (ProcedureFunctionData(theEnv)->ReturnFlag == true))
         break;
 
       EnvRtnUnknown(theEnv,3,&arg_ptr);
 
-      if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
+      if ((ProcedureFunctionData(theEnv)->BreakFlag == true) || (ProcedureFunctionData(theEnv)->ReturnFlag == true))
         break;
         
       CleanCurrentGarbageFrame(theEnv,NULL);
@@ -255,8 +255,8 @@ void LoopForCountFunction(
       tmpCounter->loopCounter++;
      }
      
-   ProcedureFunctionData(theEnv)->BreakFlag = FALSE;
-   if (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE)
+   ProcedureFunctionData(theEnv)->BreakFlag = false;
+   if (ProcedureFunctionData(theEnv)->ReturnFlag == true)
      {
       loopResult->type = arg_ptr.type;
       loopResult->value = arg_ptr.value;
@@ -336,7 +336,7 @@ void IfFunction(
 
    EvaluateExpression(theEnv,EvaluationData(theEnv)->CurrentExpression->argList,returnValue);
 
-   if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
+   if ((ProcedureFunctionData(theEnv)->BreakFlag == true) || (ProcedureFunctionData(theEnv)->ReturnFlag == true))
      {
       returnValue->type = SYMBOL;
       returnValue->value = EnvFalseSymbol(theEnv);
@@ -344,7 +344,7 @@ void IfFunction(
      }
 
    /*=========================================*/
-   /* If the condition evaluated to FALSE and */
+   /* If the condition evaluated to false and */
    /* an "else" portion exists, evaluate it   */
    /* and return the value.                   */
    /*=========================================*/
@@ -377,7 +377,7 @@ void IfFunction(
      }
 
    /*===================================================*/
-   /* Otherwise if the symbol evaluated to a non-FALSE  */
+   /* Otherwise if the symbol evaluated to a non-false  */
    /* value, evaluate the "then" portion and return it. */
    /*===================================================*/
 
@@ -408,8 +408,8 @@ void IfFunction(
      }
 
    /*=========================================*/
-   /* Return FALSE if the condition evaluated */
-   /* to FALSE and there is no "else" portion */
+   /* Return false if the condition evaluated */
+   /* to false and there is no "else" portion */
    /* of the if statement.                    */
    /*=========================================*/
 
@@ -427,8 +427,8 @@ void BindFunction(
   DATA_OBJECT_PTR returnValue)
   {
    DATA_OBJECT *theBind, *lastBind;
-   int found = FALSE,
-       unbindVar = FALSE;
+   bool found = false,
+       unbindVar = false;
    SYMBOL_HN *variableName = NULL;
 #if DEFGLOBAL_CONSTRUCT
    struct defglobal *theGlobal = NULL;
@@ -453,11 +453,11 @@ void BindFunction(
    /*===========================================*/
 
    if (GetFirstArgument()->nextArg == NULL)
-     { unbindVar = TRUE; }
+     { unbindVar = true; }
    else if (GetFirstArgument()->nextArg->nextArg == NULL)
      { EvaluateExpression(theEnv,GetFirstArgument()->nextArg,returnValue); }
    else
-     { StoreInMultifield(theEnv,returnValue,GetFirstArgument()->nextArg,TRUE); }
+     { StoreInMultifield(theEnv,returnValue,GetFirstArgument()->nextArg,true); }
 
    /*==================================*/
    /* Bind a defglobal if appropriate. */
@@ -478,10 +478,10 @@ void BindFunction(
    theBind = ProcedureFunctionData(theEnv)->BindList;
    lastBind = NULL;
 
-   while ((theBind != NULL) && (found == FALSE))
+   while ((theBind != NULL) && (found == false))
      {
       if (theBind->supplementalInfo == (void *) variableName)
-        { found = TRUE; }
+        { found = true; }
       else
         {
          lastBind = theBind;
@@ -495,9 +495,9 @@ void BindFunction(
    /* as a stack.                                            */
    /*========================================================*/
 
-   if (found == FALSE)
+   if (found == false)
      {
-      if (unbindVar == FALSE)
+      if (unbindVar == false)
         {
          theBind = get_struct(theEnv,dataObject);
          theBind->supplementalInfo = (void *) variableName;
@@ -522,7 +522,7 @@ void BindFunction(
    /* Set the value of the variable. */
    /*================================*/
 
-   if (unbindVar == FALSE)
+   if (unbindVar == false)
      {
       theBind->type = returnValue->type;
       theBind->value = returnValue->value;
@@ -545,7 +545,7 @@ void BindFunction(
 /* GetBoundVariable: Searches the BindList */
 /*   for a specified variable.             */
 /*******************************************/
-intBool GetBoundVariable(
+bool GetBoundVariable(
   void *theEnv,
   DATA_OBJECT_PTR vPtr,
   SYMBOL_HN *varName)
@@ -560,11 +560,11 @@ intBool GetBoundVariable(
          vPtr->value = bindPtr->value;
          vPtr->begin = bindPtr->begin;
          vPtr->end = bindPtr->end;
-         return(TRUE);
+         return(true);
         }
      }
 
-   return(FALSE);
+   return(false);
   }
 
 /*************************************************/
@@ -574,7 +574,7 @@ intBool GetBoundVariable(
 void FlushBindList(
   void *theEnv)
   {
-   ReturnValues(theEnv,ProcedureFunctionData(theEnv)->BindList,TRUE);
+   ReturnValues(theEnv,ProcedureFunctionData(theEnv)->BindList,true);
    ProcedureFunctionData(theEnv)->BindList = NULL;
   }
 
@@ -597,16 +597,16 @@ void PrognFunction(
       return;
      }
 
-   while ((argPtr != NULL) && (EnvGetHaltExecution(theEnv) != TRUE))
+   while ((argPtr != NULL) && (EnvGetHaltExecution(theEnv) != true))
      {
       EvaluateExpression(theEnv,argPtr,returnValue);
 
-      if ((ProcedureFunctionData(theEnv)->BreakFlag == TRUE) || (ProcedureFunctionData(theEnv)->ReturnFlag == TRUE))
+      if ((ProcedureFunctionData(theEnv)->BreakFlag == true) || (ProcedureFunctionData(theEnv)->ReturnFlag == true))
         break;
       argPtr = argPtr->nextArg;
      }
 
-   if (EnvGetHaltExecution(theEnv) == TRUE)
+   if (EnvGetHaltExecution(theEnv) == true)
      {
       returnValue->type = SYMBOL;
       returnValue->value = EnvFalseSymbol(theEnv);
@@ -630,7 +630,7 @@ void ReturnFunction(
      }
    else
      EnvRtnUnknown(theEnv,1,result);
-   ProcedureFunctionData(theEnv)->ReturnFlag = TRUE;
+   ProcedureFunctionData(theEnv)->ReturnFlag = true;
   }
 
 /***************************************************************/
@@ -639,7 +639,7 @@ void ReturnFunction(
 void BreakFunction(
   void *theEnv)
   {
-   ProcedureFunctionData(theEnv)->BreakFlag = TRUE;
+   ProcedureFunctionData(theEnv)->BreakFlag = true;
   }
 
 /*****************************************************************/

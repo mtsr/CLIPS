@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                     MAIN MODULE                     */
    /*******************************************************/
@@ -65,7 +65,7 @@ int main(
    /* add function calls here to deallocate memory still being used by */
    /* CLIPS. If you have a multi-threaded application, no environments */
    /* can be currently executing. If the ALLOW_ENVIRONMENT_GLOBALS     */
-   /* flag in setup.h has been set to TRUE (the default value), you    */
+   /* flag in setup.h has been set to true (the default value), you    */
    /* call the DeallocateEnvironmentData function which will call      */
    /* DestroyEnvironment for each existing environment and then        */
    /* deallocate the remaining data used to keep track of allocated    */

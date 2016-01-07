@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              DEFFACTS DEFINITION MODULE             */
    /*******************************************************/
@@ -111,7 +111,7 @@ static void DeallocateDeffactsData(
    if (Bloaded(theEnv)) return;
 #endif
 
-   DoForAllConstructs(theEnv,DestroyDeffactsAction,DeffactsData(theEnv)->DeffactsModuleIndex,FALSE,NULL); 
+   DoForAllConstructs(theEnv,DestroyDeffactsAction,DeffactsData(theEnv)->DeffactsModuleIndex,false,NULL);
 
    for (theModule = EnvGetNextDefmodule(theEnv,NULL);
         theModule != NULL;
@@ -253,10 +253,10 @@ void *EnvGetNextDeffacts(
   }
 
 /********************************************************/
-/* EnvIsDeffactsDeletable: Returns TRUE if a particular */
-/*   deffacts can be deleted, otherwise returns FALSE.  */
+/* EnvIsDeffactsDeletable: Returns true if a particular */
+/*   deffacts can be deleted, otherwise returns false.  */
 /********************************************************/
-intBool EnvIsDeffactsDeletable(
+bool EnvIsDeffactsDeletable(
   void *theEnv,
   void *ptr)
   {
@@ -264,11 +264,11 @@ intBool EnvIsDeffactsDeletable(
 #pragma unused(ptr)
 #endif
    if (! ConstructsDeletable(theEnv))
-     { return FALSE; }
+     { return false; }
 
-   if (ConstructData(theEnv)->ResetInProgress) return(FALSE);
+   if (ConstructData(theEnv)->ResetInProgress) return(false);
 
-   return(TRUE);
+   return(true);
   }
 
 /***********************************************************/
@@ -336,7 +336,7 @@ void *GetNextDeffacts(
    return EnvGetNextDeffacts(GetCurrentEnvironment(),deffactsPtr);
   }
 
-intBool IsDeffactsDeletable(
+bool IsDeffactsDeletable(
   void *ptr)
   {
    return EnvIsDeffactsDeletable(GetCurrentEnvironment(),ptr);

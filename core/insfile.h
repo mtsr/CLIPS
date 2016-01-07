@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  02/04/15          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -68,11 +68,11 @@ struct instanceFileData
    long                           SaveInstancesCommand(void *);
    long                           LoadInstancesCommand(void *);
    long                           RestoreInstancesCommand(void *);
-   long                           EnvSaveInstancesDriver(void *,const char *,int,EXPRESSION *,intBool);
+   long                           EnvSaveInstancesDriver(void *,const char *,int,EXPRESSION *,bool);
    long                           EnvSaveInstances(void *,const char *,int);
 #if BSAVE_INSTANCES
    long                           BinarySaveInstancesCommand(void *);
-   long                           EnvBinarySaveInstancesDriver(void *,const char *,int,EXPRESSION *,intBool);
+   long                           EnvBinarySaveInstancesDriver(void *,const char *,int,EXPRESSION *,bool);
    long                           EnvBinarySaveInstances(void *,const char *,int);
 #endif
 #if BLOAD_INSTANCES

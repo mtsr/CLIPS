@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*         CONFLICT RESOLUTION STRATEGY MODULE         */
    /*******************************************************/
@@ -96,7 +96,7 @@ void PlaceActivation(
    /* been made to the agenda.                       */
    /*================================================*/
 
-   EnvSetAgendaChanged(theEnv,TRUE);
+   EnvSetAgendaChanged(theEnv,true);
 
    /*=============================================*/
    /* Determine the location where the activation */
@@ -425,7 +425,7 @@ static ACTIVATION *PlaceMEAActivation(
    ACTIVATION *lastAct, *actPtr;
    int flag;
    long long cWhoset = 0, oWhoset = 0;
-   intBool cSet, oSet;
+   bool cSet, oSet;
 
    /*============================================*/
    /* Set up initial information for the search. */
@@ -448,24 +448,24 @@ static ACTIVATION *PlaceMEAActivation(
       if (GetMatchingItem(newActivation,0) != NULL)
         { 
          cWhoset = GetMatchingItem(newActivation,0)->timeTag; 
-         cSet = TRUE;
+         cSet = true;
         }
       else
-        { cSet = FALSE; }
+        { cSet = false; }
         
       if (GetMatchingItem(actPtr,0) != NULL)
         {
          oWhoset = GetMatchingItem(actPtr,0)->timeTag; 
-         oSet = TRUE;
+         oSet = true;
         }
       else
-        { oSet = FALSE; }
+        { oSet = false; }
         
-      if ((cSet == FALSE) && (oSet == FALSE))  
+      if ((cSet == false) && (oSet == false))
         { flag = ComparePartialMatches(theEnv,actPtr,newActivation); }
-      else if ((cSet == TRUE) && (oSet == FALSE))
+      else if ((cSet == true) && (oSet == false))
         { flag = GREATER_THAN; }
-      else if ((cSet == FALSE) && (oSet == TRUE))
+      else if ((cSet == false) && (oSet == true))
         { flag = LESS_THAN; }
       else if (oWhoset < cWhoset)
         { flag = GREATER_THAN; }
@@ -799,7 +799,7 @@ static unsigned long long *SortPartialMatch(
   {
    unsigned long long *nbinds;
    unsigned long long temp;
-   int flag;
+   bool flag;
    unsigned j, k;
 
    /*====================================================*/
@@ -823,11 +823,11 @@ static unsigned long long *SortPartialMatch(
    /* Sort the array. */
    /*=================*/
 
-   for (flag = TRUE, k = binds->bcount - 1;
-        flag == TRUE;
+   for (flag = true, k = binds->bcount - 1;
+        flag == true;
         k--)
      {
-      flag = FALSE;
+      flag = false;
       for (j = 0 ; j < k ; j++)
         {
          if (nbinds[j] < nbinds[j + 1])
@@ -835,7 +835,7 @@ static unsigned long long *SortPartialMatch(
             temp = nbinds[j];
             nbinds[j] = nbinds[j+1];
             nbinds[j+1] = temp;
-            flag = TRUE;
+            flag = true;
            }
         }
      }
@@ -1000,7 +1000,7 @@ void *SetStrategyCommand(
    if (EnvArgCountCheck(theEnv,"set-strategy",EXACTLY,1) == -1)
      { return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetStrategyName(EnvGetStrategy(theEnv)))); }
 
-   if (EnvArgTypeCheck(theEnv,"set-strategy",1,SYMBOL,&argPtr) == FALSE)
+   if (EnvArgTypeCheck(theEnv,"set-strategy",1,SYMBOL,&argPtr) == false)
      { return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetStrategyName(EnvGetStrategy(theEnv)))); }
 
    argument = DOToString(argPtr);

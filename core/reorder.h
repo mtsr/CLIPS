@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  07/09/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 REORDER HEADER FILE                 */
    /*******************************************************/
@@ -35,7 +35,7 @@
 /*                                                           */
 /*            Added support for hashed alpha memories.       */
 /*                                                           */
-/*      6.31: Removed the marked flag used for not/and       */
+/*      6.40: Removed the marked flag used for not/and       */
 /*            unification.                                   */
 /*                                                           */
 /*************************************************************/
@@ -105,15 +105,15 @@ struct lhsParseNode
    struct lhsParseNode *bottom;
   };
 
-   struct lhsParseNode           *ReorderPatterns(void *,struct lhsParseNode *,int *);
+   struct lhsParseNode           *ReorderPatterns(void *,struct lhsParseNode *,bool *);
    struct lhsParseNode           *CopyLHSParseNodes(void *,struct lhsParseNode *);
-   void                           CopyLHSParseNode(void *,struct lhsParseNode *,struct lhsParseNode *,int);
+   void                           CopyLHSParseNode(void *,struct lhsParseNode *,struct lhsParseNode *,bool);
    struct lhsParseNode           *GetLHSParseNode(void *);
    void                           ReturnLHSParseNodes(void *,struct lhsParseNode *);
    struct lhsParseNode           *ExpressionToLHSParseNodes(void *,struct expr *);
    struct expr                   *LHSParseNodesToExpression(void *,struct lhsParseNode *);
    void                           AddInitialPatterns(void *,struct lhsParseNode *);
-   int                            IsExistsSubjoin(struct lhsParseNode *,int);
+   bool                           IsExistsSubjoin(struct lhsParseNode *,int);
    struct lhsParseNode           *CombineLHSParseNodes(void *,struct lhsParseNode *,struct lhsParseNode *);
    //void                           AssignPatternMarkedFlag(struct lhsParseNode *,short);
 

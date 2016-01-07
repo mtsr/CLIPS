@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -75,7 +75,7 @@ struct factQueryData
    SYMBOL_HN *QUERY_DELIMETER_SYMBOL;
    QUERY_CORE *QueryCore;
    QUERY_STACK *QueryCoreStack;
-   int AbortQuery;
+   bool AbortQuery;
   };
 
 #define FactQueryData(theEnv) ((struct factQueryData *) GetEnvironmentData(theEnv,FACT_QUERY_DATA))
@@ -85,7 +85,7 @@ struct factQueryData
    void                           SetupFactQuery(void *);
    void                           GetQueryFact(void *,DATA_OBJECT *);
    void                           GetQueryFactSlot(void *,DATA_OBJECT *);
-   intBool                        AnyFacts(void *);
+   bool                           AnyFacts(void *);
    void                           QueryFindFact(void *,DATA_OBJECT *);
    void                           QueryFindAllFacts(void *,DATA_OBJECT *);
    void                           QueryDoForFact(void *,DATA_OBJECT *);

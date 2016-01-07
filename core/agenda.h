@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 AGENDA HEADER FILE                  */
    /*******************************************************/
@@ -99,8 +99,8 @@ struct agendaData
 #endif
    unsigned long NumberOfActivations;
    unsigned long long CurrentTimetag;
-   int AgendaChanged;
-   intBool SalienceEvaluation;
+   bool AgendaChanged;
+   int SalienceEvaluation;
    int Strategy;
   };
 
@@ -120,17 +120,17 @@ struct agendaData
    int                     EnvSetActivationSalience(void *,void *,int);
    void                    EnvGetActivationPPForm(void *,char *,size_t,void *);
    void                    EnvGetActivationBasisPPForm(void *,char *,size_t,void *);
-   intBool                 MoveActivationToTop(void *,void *);
-   intBool                 EnvDeleteActivation(void *,void *);
-   intBool                 DetachActivation(void *,void *);
+   bool                    MoveActivationToTop(void *,void *);
+   bool                    EnvDeleteActivation(void *,void *);
+   bool                    DetachActivation(void *,void *);
    void                    EnvAgenda(void *,const char *,void *);
-   void                    RemoveActivation(void *,void *,int,int);
+   void                    RemoveActivation(void *,void *,bool,bool);
    void                    RemoveAllActivations(void *);
-   int                     EnvGetAgendaChanged(void *);
-   void                    EnvSetAgendaChanged(void *,int);
+   bool                    EnvGetAgendaChanged(void *);
+   void                    EnvSetAgendaChanged(void *,bool);
    unsigned long           GetNumberOfActivations(void *);
-   intBool                 EnvGetSalienceEvaluation(void *);
-   intBool                 EnvSetSalienceEvaluation(void *,intBool);
+   int                     EnvGetSalienceEvaluation(void *);
+   int                     EnvSetSalienceEvaluation(void *,int);
    void                    EnvRefreshAgenda(void *,void *);
    void                    EnvReorderAgenda(void *,void *);
    void                    InitializeAgenda(void *);
@@ -138,7 +138,7 @@ struct agendaData
    void                   *GetSalienceEvaluationCommand(void *);
    void                    RefreshAgendaCommand(void *);
    void                    RefreshCommand(void *);
-   intBool                 EnvRefresh(void *,void *);
+   bool                    EnvRefresh(void *,void *);
 #if DEBUGGING_FUNCTIONS
    void                    AgendaCommand(void *);
 #endif
@@ -146,7 +146,7 @@ struct agendaData
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    void                    Agenda(const char *,void *);
-   intBool                 DeleteActivation(void *);
+   bool                    DeleteActivation(void *);
    struct partialMatch    *GetActivationBasis(void *);
    const char             *GetActivationName(void *);
    void                    GetActivationPPForm(char *,unsigned,void *);
@@ -154,13 +154,13 @@ struct agendaData
    int                     GetActivationSalience(void *);
    int                     GetAgendaChanged(void);
    void                   *GetNextActivation(void *);
-   intBool                 GetSalienceEvaluation(void);
-   intBool                 Refresh(void *);
+   int                     GetSalienceEvaluation(void);
+   bool                    Refresh(void *);
    void                    RefreshAgenda(void *);
    void                    ReorderAgenda(void *);
    int                     SetActivationSalience(void *,int);
    void                    SetAgendaChanged(int);
-   intBool                 SetSalienceEvaluation(int);
+   int                     SetSalienceEvaluation(int);
 
 #endif
 

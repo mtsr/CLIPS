@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             RULE CONSTRAINTS HEADER FILE            */
    /*******************************************************/
@@ -29,14 +29,14 @@
 
    struct lhsParseNode           *GetExpressionVarConstraints(void *,struct lhsParseNode *);
    struct lhsParseNode           *DeriveVariableConstraints(void *,struct lhsParseNode *);
-   intBool                        ProcessConnectedConstraints(void *,struct lhsParseNode *,struct lhsParseNode *,struct lhsParseNode *);
+   bool                           ProcessConnectedConstraints(void *,struct lhsParseNode *,struct lhsParseNode *,struct lhsParseNode *);
    void                           ConstraintReferenceErrorMessage(void *,
                                                                 struct symbolHashNode *,
                                                                 struct lhsParseNode *,
                                                                 int,int,
                                                                 struct symbolHashNode *,
                                                                 int);
-   intBool                        CheckRHSForConstraintErrors(void *,struct expr *,struct lhsParseNode *);
+   bool                           CheckRHSForConstraintErrors(void *,struct expr *,struct lhsParseNode *);
 
 #endif /* _H_rulecstr */
 

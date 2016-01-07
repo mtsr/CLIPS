@@ -552,7 +552,7 @@
            break;
         }
         
-      EnablePeriodicFunctions([environment environment],TRUE);
+      EnablePeriodicFunctions([environment environment],true);
       return;
      }
 
@@ -1302,7 +1302,7 @@
 /*********/
 - (IBAction) halt: (id) sender
   {
-   EnvSetHaltRules([environment environment],TRUE);
+   EnvSetHaltRules([environment environment],true);
   }
 
 /*********************/    
@@ -1312,8 +1312,8 @@
   {
    /* Need to abort waitForChar */
    /* Need to abort batch */
-   SetHaltCommandLoopBatch([environment environment],TRUE);
-   EnvSetHaltExecution([environment environment],TRUE);
+   SetHaltCommandLoopBatch([environment environment],true);
+   EnvSetHaltExecution([environment environment],true);
   }
       
 /*%%%%%%%%%%%%%%%%%%%%%%%%%*/

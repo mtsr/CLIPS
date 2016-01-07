@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             FILE I/O ROUTER HEADER FILE             */
    /*******************************************************/
@@ -64,10 +64,10 @@ struct fileRouterData
 
    void                           InitializeFileRouter(void *);
    FILE                          *FindFptr(void *,const char *);
-   int                            OpenAFile(void *,const char *,const char *,const char *);
-   int                            CloseAllFiles(void *);
-   int                            CloseFile(void *,const char *);
-   int                            FindFile(void *,const char *);
+   bool                           OpenAFile(void *,const char *,const char *,const char *);
+   bool                           CloseAllFiles(void *);
+   bool                           CloseFile(void *,const char *);
+   bool                           FindFile(void *,const char *);
 
 #endif /* _H_filertr */
 

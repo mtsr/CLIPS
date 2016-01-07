@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -39,9 +39,9 @@
 #include "evaluatn.h"
 #endif
 
-   intBool                        ClassAbstractPCommand(void *);
+   bool                           ClassAbstractPCommand(void *);
 #if DEFRULE_CONSTRUCT
-   intBool                        ClassReactivePCommand(void *);
+   bool                           ClassReactivePCommand(void *);
 #endif
    void                          *ClassInfoFnxArgs(void *,const char *,int *);
    void                           ClassSlotsCommand(void *,DATA_OBJECT *);
@@ -55,15 +55,15 @@
    void                           SlotAllowedClassesCommand(void *,DATA_OBJECT *);
    void                           SlotRangeCommand(void *,DATA_OBJECT *);
    void                           SlotCardinalityCommand(void *,DATA_OBJECT *);
-   intBool                        EnvClassAbstractP(void *,void *);
+   bool                           EnvClassAbstractP(void *,void *);
 #if DEFRULE_CONSTRUCT
-   intBool                        EnvClassReactiveP(void *,void *);
+   bool                           EnvClassReactiveP(void *,void *);
 #endif
-   void                           EnvClassSlots(void *,void *,DATA_OBJECT *,int);
+   void                           EnvClassSlots(void *,void *,DATA_OBJECT *,bool);
    void                           EnvGetDefmessageHandlerList(void *,void *,DATA_OBJECT *,int);
    void                           EnvClassSuperclasses(void *,void *,DATA_OBJECT *,int);
-   void                           EnvClassSubclasses(void *,void *,DATA_OBJECT *,int);
-   void                           ClassSubclassAddresses(void *,void *,DATA_OBJECT *,int);
+   void                           EnvClassSubclasses(void *,void *,DATA_OBJECT *,bool);
+   void                           ClassSubclassAddresses(void *,void *,DATA_OBJECT *,bool);
    void                           EnvSlotFacets(void *,void *,const char *,DATA_OBJECT *);
    void                           EnvSlotSources(void *,void *,const char *,DATA_OBJECT *);
    void                           EnvSlotTypes(void *,void *,const char *,DATA_OBJECT *);
@@ -74,9 +74,9 @@
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   intBool                        ClassAbstractP(void *);
+   bool                           ClassAbstractP(void *);
 #if DEFRULE_CONSTRUCT
-   intBool                        ClassReactiveP(void *);
+   bool                           ClassReactiveP(void *);
 #endif
    void                           ClassSlots(void *,DATA_OBJECT *,int);
    void                           ClassSubclasses(void *,DATA_OBJECT *,int);

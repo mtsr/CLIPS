@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/26/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             DEFMODULE PARSER HEADER FILE            */
    /*******************************************************/
@@ -50,10 +50,10 @@ struct portConstructItem
 
    void                           SetNumberOfDefmodules(void *,long);
    void                           AddAfterModuleDefinedFunction(void *,const char *,void (*)(void *),int);
-   int                            ParseDefmodule(void *,const char *);
+   bool                           ParseDefmodule(void *,const char *);
    void                           AddPortConstructItem(void *,const char *,int);
    struct portConstructItem      *ValidPortConstructItem(void *,const char *);
-   int                            FindImportExportConflict(void *,const char *,struct defmodule *,const char *);
+   bool                           FindImportExportConflict(void *,const char *,struct defmodule *,const char *);
 
 #endif /* _H_modulpsr */
 

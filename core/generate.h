@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                GENERATE HEADER FILE                 */
    /*******************************************************/
@@ -43,7 +43,7 @@
 #endif
 
    void                           FieldConversion(void *,struct lhsParseNode *,struct lhsParseNode *,struct nandFrame *);
-   struct expr                   *GetvarReplace(void *,struct lhsParseNode *,int,struct nandFrame *);
+   struct expr                   *GetvarReplace(void *,struct lhsParseNode *,bool,struct nandFrame *);
    void                           AddNandUnification(void *,struct lhsParseNode *,struct nandFrame *);
 
 #endif /* _H_generate */

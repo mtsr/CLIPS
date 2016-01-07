@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  05/18/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              COMMAND LINE HEADER FILE               */
    /*******************************************************/
@@ -49,7 +49,7 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.31: Refactored code to reduce header dependencies  */
+/*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*************************************************************/
@@ -62,13 +62,13 @@
 
 struct commandLineData
   { 
-   int EvaluatingTopLevelCommand;
-   int HaltCommandLoopBatch;
+   bool EvaluatingTopLevelCommand;
+   bool HaltCommandLoopBatch;
 #if ! RUN_TIME
    struct expr *CurrentCommand;
    char *CommandString;
    size_t MaximumCharacters;
-   int ParsingTopLevelCommand;
+   bool ParsingTopLevelCommand;
    const char *BannerString;
    int (*EventFunction)(void *);
    int (*AfterPromptFunction)(void *);
@@ -79,7 +79,7 @@ struct commandLineData
 #define CommandLineData(theEnv) ((struct commandLineData *) GetEnvironmentData(theEnv,COMMANDLINE_DATA))
 
    void                           InitializeCommandLineData(void *);
-   int                            ExpandCommandString(void *,int);
+   bool                           ExpandCommandString(void *,int);
    void                           FlushCommandString(void *);
    void                           SetCommandString(void *,const char *);
    void                           AppendCommandString(void *,const char *);
@@ -93,17 +93,17 @@ struct commandLineData
    void                           PrintBanner(void *);
    void                           SetAfterPromptFunction(void *,int (*)(void *));
    void                           SetBeforeCommandExecutionFunction(void *,int (*)(void *));
-   intBool                        RouteCommand(void *,const char *,int);
+   bool                           RouteCommand(void *,const char *,bool);
    int                          (*SetEventFunction(void *,int (*)(void *)))(void *);
-   intBool                        TopLevelCommand(void *);
+   bool                           TopLevelCommand(void *);
    void                           AppendNCommandString(void *,const char *,unsigned);
    void                           SetNCommandString(void *,const char *,unsigned);
    const char                    *GetCommandCompletionString(void *,const char *,size_t);
-   intBool                        ExecuteIfCommandComplete(void *);
+   bool                           ExecuteIfCommandComplete(void *);
    void                           CommandLoopOnceThenBatch(void *);
-   intBool                        CommandCompleteAndNotEmpty(void *);
-   void                           SetHaltCommandLoopBatch(void *,int);
-   int                            GetHaltCommandLoopBatch(void *);
+   bool                           CommandCompleteAndNotEmpty(void *);
+   void                           SetHaltCommandLoopBatch(void *,bool);
+   bool                           GetHaltCommandLoopBatch(void *);
    void                           RerouteStdin(void *,int,char *[]);
 
 #endif

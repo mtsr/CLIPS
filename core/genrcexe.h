@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -44,9 +44,9 @@
 
    void                           GenericDispatch(void *,DEFGENERIC *,DEFMETHOD *,DEFMETHOD *,EXPRESSION *,DATA_OBJECT *);
    void                           UnboundMethodErr(void *);
-   intBool                        IsMethodApplicable(void *,DEFMETHOD *);
+   bool                           IsMethodApplicable(void *,DEFMETHOD *);
 
-   int                            NextMethodP(void *);
+   bool                           NextMethodP(void *);
    void                           CallNextMethod(void *,DATA_OBJECT *);
    void                           CallSpecificMethod(void *,DATA_OBJECT *);
    void                           OverrideNextMethod(void *,DATA_OBJECT *);

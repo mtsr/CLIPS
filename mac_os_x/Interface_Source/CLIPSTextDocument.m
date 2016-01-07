@@ -400,9 +400,9 @@
    FlushCommandString(theEnvironment);
    
    OpenTextSource(theEnvironment,"aecompiletext",theString,0,(unsigned) length); // TBD Make the name unique
-   SetPrintWhileLoading(theEnvironment,TRUE);
+   SetPrintWhileLoading(theEnvironment,true);
    LoadConstructsFromLogicalName(theEnvironment,"aecompiletext");
-   SetPrintWhileLoading(theEnvironment,FALSE);
+   SetPrintWhileLoading(theEnvironment,false);
    CloseStringSource(theEnvironment,"aecompiletext");
    
    rm(theEnvironment,theString,(unsigned int) length+1);
@@ -455,7 +455,7 @@
    /* Batch the selected text. */
    /*==========================*/
       
-   OpenStringBatch(theEnvironment,"batchtext",theString,FALSE); // TBD generate unique name
+   OpenStringBatch(theEnvironment,"batchtext",theString,false); // TBD generate unique name
   }
 
 /************************************************/
@@ -495,9 +495,9 @@
    FlushCommandString(theEnvironment);
    
    OpenTextSource(theEnvironment,"aecompiletext",theString,0,(unsigned) length); // TBD Make the name unique
-   SetPrintWhileLoading(theEnvironment,TRUE);
+   SetPrintWhileLoading(theEnvironment,true);
    LoadConstructsFromLogicalName(theEnvironment,"aecompiletext");
-   SetPrintWhileLoading(theEnvironment,FALSE);
+   SetPrintWhileLoading(theEnvironment,false);
    CloseStringSource(theEnvironment,"aecompiletext");
    
    rm(theEnvironment,theString,(unsigned int) length+1);

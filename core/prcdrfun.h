@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*          PROCEDURAL FUNCTIONS HEADER FILE           */
    /*******************************************************/
@@ -52,8 +52,8 @@ typedef struct loopCounterStack
 
 struct procedureFunctionData
   { 
-   int ReturnFlag;
-   int BreakFlag;
+   bool ReturnFlag;
+   bool BreakFlag;
    LOOP_COUNTER_STACK *LoopCounterStack;
    struct dataObject *BindList;
   };
@@ -70,7 +70,7 @@ struct procedureFunctionData
    void                           ReturnFunction(void *,DATA_OBJECT_PTR);
    void                           BreakFunction(void *);
    void                           SwitchFunction(void *,DATA_OBJECT_PTR);
-   intBool                        GetBoundVariable(void *,struct dataObject *,struct symbolHashNode *);
+   bool                           GetBoundVariable(void *,struct dataObject *,struct symbolHashNode *);
    void                           FlushBindList(void *);
 
 #endif /* _H_prcdrfun */

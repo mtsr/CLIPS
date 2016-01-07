@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                DEFFACTS HEADER FILE                 */
    /*******************************************************/
@@ -88,7 +88,7 @@ struct deffactsModule
    void                          *EnvFindDeffactsInModule(void *,const char *);
    void                          *EnvGetNextDeffacts(void *,void *);
    void                           CreateInitialFactDeffacts(void);
-   intBool                        EnvIsDeffactsDeletable(void *,void *);
+   bool                           EnvIsDeffactsDeletable(void *,void *);
    struct deffactsModule         *GetDeffactsModuleItem(void *,struct defmodule *);
    const char                    *EnvDeffactsModule(void *,void *);
    const char                    *EnvGetDeffactsName(void *,void *);
@@ -98,7 +98,7 @@ struct deffactsModule
 
    void                          *FindDeffacts(const char *);
    void                          *GetNextDeffacts(void *);
-   intBool                        IsDeffactsDeletable(void *);
+   bool                           IsDeffactsDeletable(void *);
    const char                    *DeffactsModule(void *);
    const char                    *GetDeffactsName(void *);
    const char                    *GetDeffactsPPForm(void *);

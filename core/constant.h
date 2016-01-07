@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  09/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                CONSTANTS HEADER FILE                */
    /*******************************************************/
@@ -24,17 +24,18 @@
 /*                                                           */
 /*            Added NESTED_RHS constant.                     */
 /*                                                           */
+/*      6.40: Added support for booleans with <stdbool.h>.   */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_constant
 
 #define _H_constant
 
+#include <stdbool.h>
+
 #ifndef FALSE
 #define FALSE 0
-#endif
-#ifndef TRUE
-#define TRUE 1
 #endif
 
 #define EXACTLY       0
@@ -83,11 +84,11 @@
 #endif
 
 #ifndef CREATION_DATE_STRING
-#define CREATION_DATE_STRING "12/30/15"
+#define CREATION_DATE_STRING "1/6/16"
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (Cypher Alpha 12/30/15)\n"
+#define BANNER_STRING "         CLIPS (Cypher Alpha 1/6/16)\n"
 #endif
 
 /*************************/

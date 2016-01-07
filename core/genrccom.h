@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  01/25/15          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -70,14 +70,14 @@
    DEFGENERIC                    *LookupDefgenericInScope(void *,const char *);
    void                          *EnvGetNextDefgeneric(void *,void *);
    long                           EnvGetNextDefmethod(void *,void *,long);
-   int                            EnvIsDefgenericDeletable(void *,void *);
-   int                            EnvIsDefmethodDeletable(void *,void *,long);
+   bool                           EnvIsDefgenericDeletable(void *,void *);
+   bool                           EnvIsDefmethodDeletable(void *,void *,long);
    void                           UndefgenericCommand(void *);
    void                          *GetDefgenericModuleCommand(void *);
    void                           UndefmethodCommand(void *);
    DEFMETHOD                     *GetDefmethodPointer(void *,long);
-   intBool                        EnvUndefgeneric(void *,void *);
-   intBool                        EnvUndefmethod(void *,void *,long);
+   bool                           EnvUndefgeneric(void *,void *);
+   bool                           EnvUndefmethod(void *,void *,long);
 #if ! OBJECT_SYSTEM
    void                           TypeCommand(void *,DATA_OBJECT *);
 #endif
@@ -85,10 +85,10 @@
    void                           EnvGetDefmethodDescription(void *,char *,size_t,void *,long);
 #endif
 #if DEBUGGING_FUNCTIONS
-   unsigned                       EnvGetDefgenericWatch(void *,void *);
-   void                           EnvSetDefgenericWatch(void *,unsigned,void *);
+   bool                           EnvGetDefgenericWatch(void *,void *);
+   void                           EnvSetDefgenericWatch(void *,bool,void *);
    unsigned                       EnvGetDefmethodWatch(void *,void *,long);
-   void                           EnvSetDefmethodWatch(void *,unsigned,void *,long);
+   void                           EnvSetDefmethodWatch(void *,bool,void *,long);
    void                           PPDefgenericCommand(void *);
    void                           PPDefmethodCommand(void *);
    void                           ListDefmethodsCommand(void *);
@@ -121,12 +121,12 @@
    const char                    *GetDefgenericPPForm(void *);
    void                          *GetNextDefgeneric(void *);
    int                            IsDefgenericDeletable(void *);
-   intBool                        Undefgeneric(void *);
+   bool                           Undefgeneric(void *);
    void                           GetDefmethodList(void *,DATA_OBJECT_PTR);
    void                           GetMethodRestrictions(void *,long,DATA_OBJECT *);
    long                           GetNextDefmethod(void *,long );
    int                            IsDefmethodDeletable(void *,long );
-   intBool                        Undefmethod(void *,long );
+   bool                           Undefmethod(void *,long );
 #if DEBUGGING_FUNCTIONS
    unsigned                       GetDefgenericWatch(void *);
    void                           ListDefgenerics(const char *,struct defmodule *);

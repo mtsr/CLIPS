@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               DEFTEMPLATE HEADER FILE               */
    /*******************************************************/
@@ -128,7 +128,7 @@ struct deftemplateData
    struct CodeGeneratorItem *DeftemplateCodeItem;
 #endif
 #if (! RUN_TIME) && (! BLOAD_ONLY)
-   int DeftemplateError;
+   bool DeftemplateError;
 #endif
   };
 
@@ -138,7 +138,7 @@ struct deftemplateData
    void                          *EnvFindDeftemplate(void *,const char *);
    void                          *EnvFindDeftemplateInModule(void *,const char *);
    void                          *EnvGetNextDeftemplate(void *,void *);
-   intBool                        EnvIsDeftemplateDeletable(void *,void *);
+   bool                           EnvIsDeftemplateDeletable(void *,void *);
    void                          *EnvGetNextFactInTemplate(void *,void *,void *);
    struct deftemplateModule      *GetDeftemplateModuleItem(void *,struct defmodule *);
    void                           ReturnSlots(void *,struct templateSlot *);
@@ -159,7 +159,7 @@ struct deftemplateData
    const char                    *GetDeftemplateName(void *);
    const char                    *GetDeftemplatePPForm(void *);
    void                          *GetNextDeftemplate(void *);
-   intBool                        IsDeftemplateDeletable(void *);
+   bool                           IsDeftemplateDeletable(void *);
    void                          *GetNextFactInTemplate(void *,void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

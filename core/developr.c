@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  06/10/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                   DEVELOPER MODULE                  */
    /*******************************************************/
@@ -35,7 +35,7 @@
 /*            Replaced deprecated WCLIPS logical name with   */
 /*            WPROMPT.                                       */
 /*                                                           */
-/*      6.31: Crash fix for show-opn.                        */
+/*      6.40: Crash fix for show-opn.                        */
 /*                                                           */
 /*************************************************************/
 
@@ -289,7 +289,7 @@ void PrimitiveTablesUsage(
 /* ValidateFactIntegrity: Command for checking */
 /*   the facts for atom value integrity.       */
 /***********************************************/
-intBool ValidateFactIntegrity(
+bool ValidateFactIntegrity(
   void *theEnv)
   {
    struct fact *theFact;
@@ -299,15 +299,15 @@ intBool ValidateFactIntegrity(
    FLOAT_HN *theFloat;
    INTEGER_HN *theInteger;
      
-   if (((struct environmentData *) theEnv)->initialized == FALSE)
-     { return TRUE; }
+   if (((struct environmentData *) theEnv)->initialized == false)
+     { return true; }
 
    for (theFact = (struct fact *) EnvGetNextFact(theEnv,NULL);
         theFact != NULL;
         theFact = (struct fact *) EnvGetNextFact(theEnv,theFact))
      {
       if (theFact->factHeader.busyCount <= 0)
-        { return FALSE; }
+        { return false; }
       
       theSegment = &theFact->theProposition;
       
@@ -319,26 +319,26 @@ intBool ValidateFactIntegrity(
            {
             theSymbol = (SYMBOL_HN *) theSegment->theFields[i].value;
             if (theSymbol->count <= 0)
-              { return FALSE; }
+              { return false; }
            }
 
          if (theSegment->theFields[i].type == INTEGER)
            {
             theInteger = (INTEGER_HN *) theSegment->theFields[i].value;
             if (theInteger->count <= 0)
-              { return FALSE; }
+              { return false; }
            }
 
          if (theSegment->theFields[i].type == FLOAT)
            {
             theFloat = (FLOAT_HN *) theSegment->theFields[i].value;
             if (theFloat->count <= 0)
-              { return FALSE; }
+              { return false; }
            }
         }
      }
      
-   return TRUE;
+   return true;
   }
   
 /*******************************************************/
@@ -643,7 +643,7 @@ void ValidateBetaMemories(
   void *theEnv)
   {
   EnvPrintRouter(theEnv,WPROMPT,"ValidateBetaMemories");
-   DoForAllConstructs(theEnv,ValidateRuleBetaMemoriesAction,DefruleData(theEnv)->DefruleModuleIndex,FALSE,NULL); 
+   DoForAllConstructs(theEnv,ValidateRuleBetaMemoriesAction,DefruleData(theEnv)->DefruleModuleIndex,false,NULL);
   }
 
 #endif

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 DEVELOPER HEADER FILE               */
    /*******************************************************/
@@ -38,7 +38,7 @@
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
    void                           ShowFactPatternNetwork(void *);
-   intBool                        ValidateFactIntegrity(void *);
+   bool                           ValidateFactIntegrity(void *);
 #endif
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
    void                           PrintObjectPatternNetwork(void *);

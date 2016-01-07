@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*            STRING I/O ROUTER HEADER FILE            */
    /*******************************************************/
@@ -64,7 +64,7 @@ struct stringRouterData
 /**************************/
 
    void                           InitializeStringRouter(void *);
-   int                            OpenStringSource(void *,const char *,const char *,size_t);
+   bool                           OpenStringSource(void *,const char *,const char *,size_t);
    int                            OpenTextSource(void *,const char *,const char *,size_t,size_t);
    int                            CloseStringSource(void *,const char *);
    int                            OpenStringDestination(void *,const char *,char *,size_t);

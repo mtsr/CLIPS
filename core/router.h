@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  09/04/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 ROUTER HEADER FILE                  */
    /*******************************************************/
@@ -37,7 +37,7 @@
 /*            Added STDOUT and STDIN logical name            */
 /*            definitions.                                   */
 /*                                                           */
-/*      6.31: Added EnvInputBufferCount function.            */
+/*      6.40: Added EnvInputBufferCount function.            */
 /*                                                           */
 /*            Added check for reuse of existing router name. */
 /*                                                           */
@@ -69,11 +69,11 @@
 struct router
   {
    const char *name;
-   int active;
+   bool active;
    int priority;
-   short int environmentAware;
+   bool environmentAware;
    void *context;
-   int (*query)(void *,const char *);
+   bool (*query)(void *,const char *);
    int (*printer)(void *,const char *,const char *);
    int (*exiter)(void *,int);
    int (*charget)(void *,const char *);
@@ -84,7 +84,7 @@ struct router
 struct routerData
   { 
    size_t CommandBufferInputCount;
-   int AwaitingInput;
+   bool AwaitingInput;
    const char *LineCountRouter;
    const char *FastCharGetRouter;
    char *FastCharGetString;
@@ -92,7 +92,7 @@ struct routerData
    struct router *ListOfRouters;
    FILE *FastLoadFilePtr;
    FILE *FastSaveFilePtr;
-   int Abort;
+   bool Abort;
   };
 
 #define RouterData(theEnv) ((struct routerData *) GetEnvironmentData(theEnv,ROUTER_DATA))
@@ -103,25 +103,25 @@ struct routerData
    int                            EnvUngetcRouter(void *,int,const char *);
    void                           EnvExitRouter(void *,int);
    void                           AbortExit(void *);
-   intBool                        EnvAddRouterWithContext(void *,
+   bool                           EnvAddRouterWithContext(void *,
                                                    const char *,int,
-                                                   int (*)(void *,const char *),
+                                                   bool (*)(void *,const char *),
                                                    int (*)(void *,const char *,const char *),
                                                    int (*)(void *,const char *),
                                                    int (*)(void *,int,const char *),
                                                    int (*)(void *,int),
                                                    void *);
-   intBool                        EnvAddRouter(void *,
+   bool                           EnvAddRouter(void *,
                                                    const char *,int,
-                                                   int (*)(void *,const char *),
+                                                   bool (*)(void *,const char *),
                                                    int (*)(void *,const char *,const char *),
                                                    int (*)(void *,const char *),
                                                    int (*)(void *,int,const char *),
                                                    int (*)(void *,int));
    int                            EnvDeleteRouter(void *,const char *);
-   int                            QueryRouters(void *,const char *);
-   int                            EnvDeactivateRouter(void *,const char *);
-   int                            EnvActivateRouter(void *,const char *);
+   bool                           QueryRouters(void *,const char *);
+   bool                           EnvDeactivateRouter(void *,const char *);
+   bool                           EnvActivateRouter(void *,const char *);
    void                           SetFastLoad(void *,FILE *);
    void                           SetFastSave(void *,FILE *);
    FILE                          *GetFastLoad(void *);
@@ -135,7 +135,7 @@ struct routerData
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    int                            ActivateRouter(const char *);
-   intBool                        AddRouter(const char *,int,
+   bool                           AddRouter(const char *,int,
                                                    int (*)(const char *),
                                                    int (*)(const char *,const char *),
                                                    int (*)(const char *),

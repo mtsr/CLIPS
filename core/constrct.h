@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  06/05/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -49,7 +49,7 @@
 /*            constructs that are contained externally to    */
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
-/*      6.31: Modified EnvClear to return completion status. */
+/*      6.40: Modified EnvClear to return completion status. */
 /*                                                           */
 /*************************************************************/
 
@@ -85,15 +85,15 @@ struct construct
   {
    const char *constructName;
    const char *pluralName;
-   int (*parseFunction)(void *,const char *);
+   bool (*parseFunction)(void *,const char *);
    void *(*findFunction)(void *,const char *);
    struct symbolHashNode *(*getConstructNameFunction)(struct constructHeader *);
    const char *(*getPPFormFunction)(void *,struct constructHeader *);
    struct defmoduleItemHeader *(*getModuleItemFunction)(struct constructHeader *);
    void *(*getNextItemFunction)(void *,void *);
    void (*setNextItemFunction)(struct constructHeader *,struct constructHeader *);
-   intBool (*isConstructDeletableFunction)(void *,void *);
-   int (*deleteFunction)(void *,void *);
+   bool (*isConstructDeletableFunction)(void *,void *);
+   bool (*deleteFunction)(void *,void *);
    void (*freeFunction)(void *,void *);
    struct construct *next;
   };
@@ -109,18 +109,18 @@ struct construct
 
 struct constructData
   { 
-   int ClearReadyInProgress;
-   int ClearInProgress;
-   int ResetReadyInProgress;
-   int ResetInProgress;
+   bool ClearReadyInProgress;
+   bool ClearInProgress;
+   bool ResetReadyInProgress;
+   bool ResetInProgress;
    short ClearReadyLocks;
-   int DanglingConstructs;
+   int DanglingConstructs; // TBD Where set?
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    struct callFunctionItem *ListOfSaveFunctions;
-   intBool PrintWhileLoading;
+   bool PrintWhileLoading;
    unsigned WatchCompilations;
-   int CheckSyntaxMode;
-   int ParsingConstruct;
+   bool CheckSyntaxMode;
+   bool ParsingConstruct;
    char *ErrorString;
    char *WarningString;
    char *ParsingFileName;
@@ -139,50 +139,50 @@ struct constructData
    struct callFunctionItem *ListOfResetFunctions;
    struct callFunctionItem *ListOfClearFunctions;
    struct callFunctionItem *ListOfClearReadyFunctions;
-   int Executing;
+   bool Executing;
    int (*BeforeResetFunction)(void *);
   };
 
 #define ConstructData(theEnv) ((struct constructData *) GetEnvironmentData(theEnv,CONSTRUCT_DATA))
 
-   int                            EnvClear(void *);
+   bool                           EnvClear(void *);
    void                           EnvReset(void *);
-   int                            EnvSave(void *,const char *);
+   bool                           EnvSave(void *,const char *);
 
    void                           InitializeConstructData(void *);
-   intBool                        AddSaveFunction(void *,const char *,void (*)(void *,void *,const char *),int);
-   intBool                        RemoveSaveFunction(void *,const char *);
-   intBool                        EnvAddResetFunction(void *,const char *,void (*)(void *),int);
-   intBool                        EnvRemoveResetFunction(void *,const char *);
-   intBool                        AddClearReadyFunction(void *,const char *,int (*)(void *),int);
-   intBool                        RemoveClearReadyFunction(void *,const char *);
-   intBool                        EnvAddClearFunction(void *,const char *,void (*)(void *),int);
-   intBool                        EnvRemoveClearFunction(void *,const char *);
+   bool                           AddSaveFunction(void *,const char *,void (*)(void *,void *,const char *),int);
+   bool                           RemoveSaveFunction(void *,const char *);
+   bool                           EnvAddResetFunction(void *,const char *,void (*)(void *),int);
+   bool                           EnvRemoveResetFunction(void *,const char *);
+   bool                           AddClearReadyFunction(void *,const char *,bool (*)(void *),int);
+   bool                           RemoveClearReadyFunction(void *,const char *);
+   bool                           EnvAddClearFunction(void *,const char *,void (*)(void *),int);
+   bool                           EnvRemoveClearFunction(void *,const char *);
    void                           EnvIncrementClearReadyLocks(void *);
    void                           EnvDecrementClearReadyLocks(void *);
    struct construct              *AddConstruct(void *,const char *,const char *,
-                                                      int (*)(void *,const char *),
+                                                      bool (*)(void *,const char *),
                                                       void *(*)(void *,const char *),
                                                       SYMBOL_HN *(*)(struct constructHeader *),
                                                       const char *(*)(void *,struct constructHeader *),
                                                       struct defmoduleItemHeader *(*)(struct constructHeader *),
                                                       void *(*)(void *,void *),
                                                       void (*)(struct constructHeader *,struct constructHeader *),
-                                                      intBool (*)(void *,void *),
-                                                      int (*)(void *,void *),
+                                                      bool (*)(void *,void *),
+                                                      bool (*)(void *,void *),
                                                       void (*)(void *,void *));
-   int                            RemoveConstruct(void *,const char *);
+   bool                           RemoveConstruct(void *,const char *);
    void                           SetCompilationsWatch(void *,unsigned);
    unsigned                       GetCompilationsWatch(void *);
-   void                           SetPrintWhileLoading(void *,intBool);
-   intBool                        GetPrintWhileLoading(void *);
-   int                            ExecutingConstruct(void *);
-   void                           SetExecutingConstruct(void *,int);
+   void                           SetPrintWhileLoading(void *,bool);
+   bool                           GetPrintWhileLoading(void *);
+   bool                           ExecutingConstruct(void *);
+   void                           SetExecutingConstruct(void *,bool);
    void                           InitializeConstructs(void *);
    int                          (*SetBeforeResetFunction(void *,int (*)(void *)))(void *);
    void                           ResetCommand(void *);
    void                           ClearCommand(void *);
-   intBool                        ClearReady(void *);
+   bool                           ClearReady(void *);
    struct construct              *FindConstruct(void *,const char *);
    void                           DeinstallConstructHeader(void *,struct constructHeader *);
    void                           DestroyConstructHeader(void *,struct constructHeader *);
@@ -194,12 +194,12 @@ struct constructData
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   intBool                        AddClearFunction(const char *,void (*)(void),int);
-   intBool                        AddResetFunction(const char *,void (*)(void),int);
+   bool                           AddClearFunction(const char *,void (*)(void),int);
+   bool                           AddResetFunction(const char *,void (*)(void),int);
    int                            Clear(void);
    void                           Reset(void);
-   intBool                        RemoveClearFunction(const char *);
-   intBool                        RemoveResetFunction(const char *);
+   bool                           RemoveClearFunction(const char *);
+   bool                           RemoveResetFunction(const char *);
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    int                            Save(const char *);
 #endif

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                RULE COMMANDS MODULE                 */
    /*******************************************************/
@@ -46,7 +46,7 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
-/*      6.31: Fixes for show-joins command.                  */
+/*      6.40: Fixes for show-joins command.                  */
 /*                                                           */
 /*            Fixes for matches command where the            */
 /*            activations listed were not correct if the     */
@@ -108,7 +108,7 @@
    static long                    BetaJoinCountDriver(void *,struct joinNode *);
    static void                    AlphaJoinsDriver(void *,struct joinNode *,long,struct joinInformation *);
    static void                    BetaJoinsDriver(void *,struct joinNode *,long,struct joinInformation *,struct betaMemory *,struct joinNode *);
-   static int                     CountPatterns(void *,struct joinNode *,int);
+   static int                     CountPatterns(void *,struct joinNode *,bool);
    static const char             *BetaHeaderString(void *,struct joinInformation *,long,long);
    static const char             *ActivityHeaderString(void *,struct joinInformation *,long,long);
    static void                    JoinActivityReset(void *,struct constructHeader *,void *);
@@ -154,14 +154,14 @@ void DefruleCommands(
 #endif /* DEBUGGING_FUNCTIONS */
 
    EnvDefineFunction2(theEnv,"get-incremental-reset",'b',
-                   GetIncrementalResetCommand,"GetIncrementalResetCommand","00");
+                   PTIEF GetIncrementalResetCommand,"GetIncrementalResetCommand","00");
    EnvDefineFunction2(theEnv,"set-incremental-reset",'b',
-                   SetIncrementalResetCommand,"SetIncrementalResetCommand","11");
+                   PTIEF SetIncrementalResetCommand,"SetIncrementalResetCommand","11");
 
    EnvDefineFunction2(theEnv,"get-beta-memory-resizing",'b',
-                   GetBetaMemoryResizingCommand,"GetBetaMemoryResizingCommand","00");
+                   PTIEF GetBetaMemoryResizingCommand,"GetBetaMemoryResizingCommand","00");
    EnvDefineFunction2(theEnv,"set-beta-memory-resizing",'b',
-                   SetBetaMemoryResizingCommand,"SetBetaMemoryResizingCommand","11");
+                   PTIEF SetBetaMemoryResizingCommand,"SetBetaMemoryResizingCommand","11");
 
    EnvDefineFunction2(theEnv,"get-strategy", 'w', PTIEF GetStrategyCommand,  "GetStrategyCommand", "00");
    EnvDefineFunction2(theEnv,"set-strategy", 'w', PTIEF SetStrategyCommand,  "SetStrategyCommand", "11w");
@@ -186,7 +186,7 @@ void DefruleCommands(
 /* EnvGetBetaMemoryResizing: C access routine  */
 /*   for the get-beta-memory-resizing command. */
 /***********************************************/
-intBool EnvGetBetaMemoryResizing(
+bool EnvGetBetaMemoryResizing(
   void *theEnv)
   {   
    return(DefruleData(theEnv)->BetaMemoryResizingFlag);
@@ -196,11 +196,11 @@ intBool EnvGetBetaMemoryResizing(
 /* EnvSetBetaMemoryResizing: C access routine  */
 /*   for the set-beta-memory-resizing command. */
 /***********************************************/
-intBool EnvSetBetaMemoryResizing(
+bool EnvSetBetaMemoryResizing(
   void *theEnv,
-  int value)
+  bool value)
   {
-   int ov;
+   bool ov;
 
    ov = DefruleData(theEnv)->BetaMemoryResizingFlag;
 
@@ -213,10 +213,10 @@ intBool EnvSetBetaMemoryResizing(
 /* SetBetaMemoryResizingCommand: H/L access routine */
 /*   for the set-beta-memory-resizing command.      */
 /****************************************************/
-int SetBetaMemoryResizingCommand(
+bool SetBetaMemoryResizingCommand(
   void *theEnv)
   {
-   int oldValue;
+   bool oldValue;
    DATA_OBJECT argPtr;
 
    oldValue = EnvGetBetaMemoryResizing(theEnv);
@@ -236,9 +236,9 @@ int SetBetaMemoryResizingCommand(
    EnvRtnUnknown(theEnv,1,&argPtr);
 
    if ((argPtr.value == EnvFalseSymbol(theEnv)) && (argPtr.type == SYMBOL))
-     { EnvSetBetaMemoryResizing(theEnv,FALSE); }
+     { EnvSetBetaMemoryResizing(theEnv,false); }
    else
-     { EnvSetBetaMemoryResizing(theEnv,TRUE); }
+     { EnvSetBetaMemoryResizing(theEnv,true); }
 
    /*=======================*/
    /* Return the old value. */
@@ -251,10 +251,10 @@ int SetBetaMemoryResizingCommand(
 /* GetBetaMemoryResizingCommand: H/L access routine */
 /*   for the get-beta-memory-resizing command.      */
 /****************************************************/
-int GetBetaMemoryResizingCommand(
+bool GetBetaMemoryResizingCommand(
   void *theEnv)
   {
-   int oldValue;
+   bool oldValue;
 
    oldValue = EnvGetBetaMemoryResizing(theEnv);
 
@@ -285,7 +285,7 @@ void MatchesCommand(
 
    if ((numberOfArguments = EnvArgRangeCheck(theEnv,"matches",1,2)) == -1) return;
 
-   if (EnvArgTypeCheck(theEnv,"matches",1,SYMBOL,&argPtr) == FALSE) return;
+   if (EnvArgTypeCheck(theEnv,"matches",1,SYMBOL,&argPtr) == false) return;
 
    if (GetType(argPtr) != SYMBOL)
      {
@@ -304,7 +304,7 @@ void MatchesCommand(
 
    if (numberOfArguments == 2)
      {
-      if (EnvArgTypeCheck(theEnv,"matches",2,SYMBOL,&argPtr) == FALSE)
+      if (EnvArgTypeCheck(theEnv,"matches",2,SYMBOL,&argPtr) == false)
         { return; }
 
       argument = DOToString(argPtr);
@@ -440,7 +440,7 @@ void EnvMatches(
         agendaPtr != NULL;
         agendaPtr = (struct activation *) EnvGetNextActivation(theEnv,agendaPtr))
      {
-      if (EnvGetHaltExecution(theEnv) == TRUE) return;
+      if (EnvGetHaltExecution(theEnv) == true) return;
 
       if (((struct activation *) agendaPtr)->theRule->header.name == topDisjunct->header.name)
         {
@@ -621,7 +621,7 @@ static void BetaJoinsDriver(
    /* remaining to be encountered.                 */
    /*==============================================*/
 
-   theCount = CountPatterns(theEnv,theJoin,TRUE);
+   theCount = CountPatterns(theEnv,theJoin,true);
    theJoinInfoArray[betaIndex-1].patternEnd = theCount;
 
    /*========================================================*/
@@ -629,7 +629,7 @@ static void BetaJoinsDriver(
    /*========================================================*/
 
 
-   theCount = CountPatterns(theEnv,theJoin,FALSE);
+   theCount = CountPatterns(theEnv,theJoin,false);
    theJoinInfoArray[betaIndex-1].patternBegin = theCount;
    
    /*==========================*/
@@ -704,7 +704,7 @@ static long long ListAlphaMatches(
    struct joinNode *theJoin;
    long long alphaCount = 0;
 
-   if (EnvGetHaltExecution(theEnv) == TRUE)
+   if (EnvGetHaltExecution(theEnv) == true)
      { return(alphaCount); }
 
    theJoin = theInfo->theJoin;
@@ -754,7 +754,7 @@ static long long ListAlphaMatches(
 
       while (listOfMatches != NULL)
         {
-         if (EnvGetHaltExecution(theEnv) == TRUE)
+         if (EnvGetHaltExecution(theEnv) == true)
            { return(alphaCount); }
                  
          count++;
@@ -795,7 +795,7 @@ static const char *BetaHeaderString(
    struct joinNode *theJoin;
    struct joinInformation *theInfo;
    long i, j, startPosition, endPosition, positionsToPrint = 0;
-   int nestedCEs = FALSE;
+   bool nestedCEs = false;
    const char *returnString = "";
    long lastIndex;
    char buffer[32];
@@ -805,7 +805,7 @@ static const char *BetaHeaderString(
    /*=============================================*/
    
    for (i = 0; i < arraySize; i++)
-     { infoArray[i].marked = FALSE; }
+     { infoArray[i].marked = false; }
      
    theInfo = &infoArray[joinIndex];
    theJoin = theInfo->theJoin;
@@ -818,9 +818,9 @@ static const char *BetaHeaderString(
          if (infoArray[i].theJoin == theJoin)
            {
             positionsToPrint++;
-            infoArray[i].marked = TRUE;
+            infoArray[i].marked = true;
             if (infoArray[i].patternBegin != infoArray[i].patternEnd)
-              { nestedCEs = TRUE; }
+              { nestedCEs = true; }
             lastIndex = i - 1;
             break;
            }
@@ -830,7 +830,7 @@ static const char *BetaHeaderString(
    
    for (i = 0; i <= joinIndex; i++)
      {
-      if (infoArray[i].marked == FALSE) continue;
+      if (infoArray[i].marked == false) continue;
 
       positionsToPrint--;
       startPosition = i;
@@ -840,7 +840,7 @@ static const char *BetaHeaderString(
         {
          for (j = i + 1; j <= joinIndex; j++)
            {
-            if (infoArray[j].marked == FALSE) continue;
+            if (infoArray[j].marked == false) continue;
          
             if (infoArray[j].patternBegin != infoArray[j].patternEnd) break;
          
@@ -927,7 +927,7 @@ static long long ListBetaMatches(
    struct joinInformation *theInfo;
    long int count;
 
-   if (EnvGetHaltExecution(theEnv) == TRUE)
+   if (EnvGetHaltExecution(theEnv) == true)
      { return(betaCount); }
 
    theInfo = &infoArray[joinIndex];
@@ -940,7 +940,7 @@ static long long ListBetaMatches(
       EnvPrintRouter(theEnv,WDISPLAY,"\n");
      }
 
-   count = PrintBetaMemory(theEnv,WDISPLAY,theInfo->theMemory,TRUE,"",output);
+   count = PrintBetaMemory(theEnv,WDISPLAY,theInfo->theMemory,true,"",output);
    
    betaCount += count;
    
@@ -965,13 +965,13 @@ static long long ListBetaMatches(
 static int CountPatterns(
   void *theEnv,
   struct joinNode *theJoin,
-  int followRight)
+  bool followRight)
   {
    int theCount = 0;
 
    if (theJoin == NULL) return theCount;
    
-   if (theJoin->joinFromTheRight && (followRight == FALSE))
+   if (theJoin->joinFromTheRight && (followRight == false))
      { theCount++; }
     
    while (theJoin != NULL)
@@ -989,7 +989,7 @@ static int CountPatterns(
          theJoin = theJoin->lastLevel;
         }
         
-      followRight = TRUE;
+      followRight = true;
      }
      
    return theCount;
@@ -1014,7 +1014,7 @@ void JoinActivityCommand(
 
    if ((numberOfArguments = EnvArgRangeCheck(theEnv,"join-activity",1,2)) == -1) return;
 
-   if (EnvArgTypeCheck(theEnv,"join-activity",1,SYMBOL,&argPtr) == FALSE) return;
+   if (EnvArgTypeCheck(theEnv,"join-activity",1,SYMBOL,&argPtr) == false) return;
 
    if (GetType(argPtr) != SYMBOL)
      {
@@ -1033,7 +1033,7 @@ void JoinActivityCommand(
 
    if (numberOfArguments == 2)
      {
-      if (EnvArgTypeCheck(theEnv,"join-activity",2,SYMBOL,&argPtr) == FALSE)
+      if (EnvArgTypeCheck(theEnv,"join-activity",2,SYMBOL,&argPtr) == false)
         { return; }
 
       argument = DOToString(argPtr);
@@ -1136,7 +1136,7 @@ static const char *ActivityHeaderString(
    struct joinNode *theJoin;
    struct joinInformation *theInfo;
    long i;
-   int nestedCEs = FALSE;
+   bool nestedCEs = false;
    const char *returnString = "";
    long lastIndex;
    char buffer[32];
@@ -1146,7 +1146,7 @@ static const char *ActivityHeaderString(
    /*=============================================*/
    
    for (i = 0; i < arraySize; i++)
-     { infoArray[i].marked = FALSE; }
+     { infoArray[i].marked = false; }
      
    theInfo = &infoArray[joinIndex];
    theJoin = theInfo->theJoin;
@@ -1159,7 +1159,7 @@ static const char *ActivityHeaderString(
          if (infoArray[i].theJoin == theJoin)
            {
             if (infoArray[i].patternBegin != infoArray[i].patternEnd)
-              { nestedCEs = TRUE; }
+              { nestedCEs = true; }
             lastIndex = i - 1;
             break;
            }
@@ -1169,7 +1169,7 @@ static const char *ActivityHeaderString(
   
    gensprintf(buffer,"%d",theInfo->whichCE);
    returnString = AppendStrings(theEnv,returnString,buffer);
-   if (nestedCEs == FALSE)
+   if (nestedCEs == false)
      { return returnString; }
 
    if (theInfo->patternBegin == theInfo->patternEnd)
@@ -1214,7 +1214,7 @@ static void ListBetaJoinActivity(
    struct joinNode *theJoin, *nextJoin;
    struct joinInformation *theInfo;
 
-   if (EnvGetHaltExecution(theEnv) == TRUE)
+   if (EnvGetHaltExecution(theEnv) == true)
      { return; }
 
    theInfo = &infoArray[joinIndex];
@@ -1311,7 +1311,7 @@ static void JoinActivityReset(
 void JoinActivityResetCommand(
   void *theEnv)
   { 
-   DoForAllConstructs(theEnv,JoinActivityReset,DefruleData(theEnv)->DefruleModuleIndex,TRUE,NULL);
+   DoForAllConstructs(theEnv,JoinActivityReset,DefruleData(theEnv)->DefruleModuleIndex,true,NULL);
   }
 
 /***************************************/
@@ -1495,7 +1495,7 @@ static void ShowJoins(
          if (! joinList[numberOfJoins]->firstJoin)
            {
             EnvPrintRouter(theEnv,WDISPLAY,"    LM : ");
-            count = PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->leftMemory,FALSE,"",SUCCINCT);
+            count = PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->leftMemory,false,"",SUCCINCT);
             if (count == 0)
               { EnvPrintRouter(theEnv,WDISPLAY,"None\n"); }
             else
@@ -1508,7 +1508,7 @@ static void ShowJoins(
          if (joinList[numberOfJoins]->joinFromTheRight)
            {
             EnvPrintRouter(theEnv,WDISPLAY,"    RM : ");
-            count = PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->rightMemory,FALSE,"",SUCCINCT);
+            count = PrintBetaMemory(theEnv,WDISPLAY,joinList[numberOfJoins]->rightMemory,false,"",SUCCINCT);
             if (count == 0)
               { EnvPrintRouter(theEnv,WDISPLAY,"None\n"); }
             else
@@ -1606,12 +1606,12 @@ void JoinActivity(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-intBool GetBetaMemoryResizing()
+bool GetBetaMemoryResizing()
   {   
    return EnvGetBetaMemoryResizing(GetCurrentEnvironment());
   }
 
-intBool SetBetaMemoryResizing(
+bool SetBetaMemoryResizing(
   int value)
   {
    return EnvSetBetaMemoryResizing(GetCurrentEnvironment(),value);

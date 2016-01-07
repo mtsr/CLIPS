@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*         DEFMODULE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -40,7 +40,7 @@
    void                           DefmoduleBasicCommands(void *);
    void                           EnvGetDefmoduleList(void *,DATA_OBJECT_PTR);
    void                           PPDefmoduleCommand(void *);
-   int                            PPDefmodule(void *,const char *,const char *);
+   bool                           PPDefmodule(void *,const char *,const char *);
    void                           ListDefmodulesCommand(void *);
    void                           EnvListDefmodules(void *,const char *);
 

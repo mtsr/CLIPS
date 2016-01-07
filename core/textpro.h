@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             TEXT PROCESSING HEADER FILE             */
    /*******************************************************/
@@ -51,9 +51,9 @@
 
 #if TEXTPRO_FUNCTIONS
    void                           FetchCommand(void *,DATA_OBJECT *);
-   int                            PrintRegionCommand(void *);
+   bool                           PrintRegionCommand(void *);
    void                          *GetRegionCommand(void *);
-   int                                   TossCommand(void *);
+   bool                           TossCommand(void *);
 #endif
 
    void                           HelpFunctionDefinitions(void *);

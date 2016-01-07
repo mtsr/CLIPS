@@ -1,9 +1,9 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
-   /*                INSTANCE FUNCTIONS MODULE            */
+   /*               INSTANCE FUNCTIONS MODULE             */
    /*******************************************************/
 
 /*************************************************************/
@@ -92,27 +92,27 @@ typedef struct igarbage
    void                           RemoveInstanceData(void *,INSTANCE_TYPE *);
    INSTANCE_TYPE                 *FindInstanceBySymbol(void *,SYMBOL_HN *);
    INSTANCE_TYPE                 *FindInstanceInModule(void *,SYMBOL_HN *,struct defmodule *,
-                                           struct defmodule *,unsigned);
+                                           struct defmodule *,bool);
    INSTANCE_SLOT                 *FindInstanceSlot(void *,INSTANCE_TYPE *,SYMBOL_HN *);
    int                            FindInstanceTemplateSlot(void *,DEFCLASS *,SYMBOL_HN *);
-   int                            PutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *,const char *);
-   int                            DirectPutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *);
-   intBool                        ValidSlotValue(void *,DATA_OBJECT *,SLOT_DESC *,INSTANCE_TYPE *,const char *);
+   bool                           PutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *,const char *);
+   bool                           DirectPutSlotValue(void *,INSTANCE_TYPE *,INSTANCE_SLOT *,DATA_OBJECT *,DATA_OBJECT *);
+   bool                           ValidSlotValue(void *,DATA_OBJECT *,SLOT_DESC *,INSTANCE_TYPE *,const char *);
    INSTANCE_TYPE                 *CheckInstance(void *,const char *);
    void                           NoInstanceError(void *,const char *,const char *);
    void                           StaleInstanceAddress(void *,const char *,int);
-   int                            EnvGetInstancesChanged(void *);
-   void                           EnvSetInstancesChanged(void *,int);
+   bool                           EnvGetInstancesChanged(void *);
+   void                           EnvSetInstancesChanged(void *,bool);
    void                           PrintSlot(void *,const char *,SLOT_DESC *,INSTANCE_TYPE *,const char *);
-   void                           PrintInstanceNameAndClass(void *,const char *,INSTANCE_TYPE *,intBool);
+   void                           PrintInstanceNameAndClass(void *,const char *,INSTANCE_TYPE *,bool);
    void                           PrintInstanceName(void *,const char *,void *);
    void                           PrintInstanceLongForm(void *,const char *,void *);
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
    void                           DecrementObjectBasisCount(void *,void *);
    void                           IncrementObjectBasisCount(void *,void *);
    void                           MatchObjectFunction(void *,void *);
-   intBool                        NetworkSynchronized(void *,void *);
-   intBool                        InstanceIsDeleted(void *,void *);
+   bool                           NetworkSynchronized(void *,void *);
+   bool                           InstanceIsDeleted(void *,void *);
 #endif
 
 #if ALLOW_ENVIRONMENT_GLOBALS

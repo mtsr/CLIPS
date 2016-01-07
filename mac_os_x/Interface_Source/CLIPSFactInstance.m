@@ -122,7 +122,7 @@
       
       theCPointer = theInstance; 
             
-      EnvClassSlots(theEnvironment,theClass,&slotNames,TRUE);
+      EnvClassSlots(theEnvironment,theClass,&slotNames,true);
       
       environment = theEnvironment;
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             LOGICAL DEPENDENCIES MODULE             */
    /*******************************************************/
@@ -26,7 +26,7 @@
 /*                                                           */
 /*      6.30: Added support for hashed memories.             */
 /*                                                           */
-/*      6.31: Added Env prefix to GetHaltExecution and       */
+/*      6.40: Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*************************************************************/
@@ -77,10 +77,10 @@
 /*   creating a fact with the assert command and creating an instance  */
 /*   with the make-instance command.                                   */
 /***********************************************************************/
-intBool AddLogicalDependencies(
+bool AddLogicalDependencies(
   void *theEnv,
   struct patternEntity *theEntity,
-  int existingEntity)
+  bool existingEntity)
   {
    struct partialMatch *theBinds;
    struct dependency *newDependency;
@@ -93,10 +93,10 @@ intBool AddLogicalDependencies(
    if (EngineData(theEnv)->TheLogicalJoin == NULL)
      {
       if (existingEntity) RemoveEntityDependencies(theEnv,theEntity);
-      return(TRUE);
+      return(true);
      }
    else if (existingEntity && (theEntity->dependents == NULL))
-     { return(TRUE); }
+     { return(true); }
 
    /*===========================================================*/
    /* Retrieve the partial match in the logical join associated */
@@ -108,9 +108,9 @@ intBool AddLogicalDependencies(
    /*===========================================================*/
 
    theBinds = EngineData(theEnv)->TheLogicalBind;
-   if (theBinds == NULL) return(FALSE);
+   if (theBinds == NULL) return(false);
    if ((theBinds->leftParent == NULL) && (theBinds->rightParent == NULL))
-     { return(FALSE); }
+     { return(false); }
 
    /*==============================================================*/
    /* Add a dependency link between the partial match and the data */
@@ -134,10 +134,10 @@ intBool AddLogicalDependencies(
    theEntity->dependents = (void *) newDependency;
 
    /*==================================================================*/
-   /* Return TRUE to indicate that the data entity should be asserted. */
+   /* Return true to indicate that the data entity should be asserted. */
    /*==================================================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /************************************************************************/
@@ -449,7 +449,7 @@ void ForceLogicalRetractions(
    /*===================================================*/
 
    if (EngineData(theEnv)->alreadyEntered) return;
-   EngineData(theEnv)->alreadyEntered = TRUE;
+   EngineData(theEnv)->alreadyEntered = true;
 
    /*=======================================================*/
    /* Continue to delete the first item on the list as long */
@@ -486,7 +486,7 @@ void ForceLogicalRetractions(
    /* Deletion of items on the list is complete. */
    /*============================================*/
 
-   EngineData(theEnv)->alreadyEntered = FALSE;
+   EngineData(theEnv)->alreadyEntered = false;
   }
 
 /****************************************************************/
@@ -518,7 +518,7 @@ void Dependencies(
         fdPtr != NULL;
         fdPtr = fdPtr->next)
      {
-      if (EnvGetHaltExecution(theEnv) == TRUE) return;
+      if (EnvGetHaltExecution(theEnv) == true) return;
       PrintPartialMatch(theEnv,WDISPLAY,(struct partialMatch *) fdPtr->dPtr);
       EnvPrintRouter(theEnv,WDISPLAY,"\n");
      }
@@ -535,7 +535,7 @@ void Dependents(
    struct patternParser *theParser = NULL;
    struct dependency *fdPtr;
    struct partialMatch *theBinds;
-   int found = FALSE;
+   bool found = false;
    
    /*=================================*/
    /* Loop through every data entity. */
@@ -545,7 +545,7 @@ void Dependents(
         entityPtr != NULL;
         GetNextPatternEntity(theEnv,&theParser,&entityPtr))
      {
-      if (EnvGetHaltExecution(theEnv) == TRUE) return;
+      if (EnvGetHaltExecution(theEnv) == true) return;
 
       /*====================================*/
       /* Loop through every dependency link */
@@ -556,7 +556,7 @@ void Dependents(
            fdPtr != NULL;
            fdPtr = fdPtr->next)
         {
-         if (EnvGetHaltExecution(theEnv) == TRUE) return;
+         if (EnvGetHaltExecution(theEnv) == true) return;
 
          /*=====================================================*/
          /* If the data entity which was the argument passed to */
@@ -568,11 +568,11 @@ void Dependents(
          /*=====================================================*/
 
          theBinds = (struct partialMatch *) fdPtr->dPtr;
-         if (FindEntityInPartialMatch(theEntity,theBinds) == TRUE)
+         if (FindEntityInPartialMatch(theEntity,theBinds) == true)
            {
             if (found) EnvPrintRouter(theEnv,WDISPLAY,",");
             (*entityPtr->theInfo->base.shortPrintFunction)(theEnv,WDISPLAY,entityPtr);
-            found = TRUE;
+            found = true;
             break;
            }
         }

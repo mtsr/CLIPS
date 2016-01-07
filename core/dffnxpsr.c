@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.40  12/02/15          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -94,21 +94,21 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static intBool                 ValidDeffunctionName(void *,const char *);
-   static DEFFUNCTION            *AddDeffunction(void *,SYMBOL_HN *,EXPRESSION *,int,int,int,int);
+   static bool                    ValidDeffunctionName(void *,const char *);
+   static DEFFUNCTION            *AddDeffunction(void *,SYMBOL_HN *,EXPRESSION *,int,int,int,bool);
 
 /***************************************************************************
   NAME         : ParseDeffunction
   DESCRIPTION  : Parses the deffunction construct
   INPUTS       : The input logical name
-  RETURNS      : FALSE if successful parse, TRUE otherwise
+  RETURNS      : false if successful parse, true otherwise
   SIDE EFFECTS : Creates valid deffunction definition
   NOTES        : H/L Syntax :
                  (deffunction <name> [<comment>]
                     (<single-field-varible>* [<multifield-variable>])
                     <action>*)
  ***************************************************************************/
-intBool ParseDeffunction(
+bool ParseDeffunction(
   void *theEnv,
   const char *readSource)
   {
@@ -116,21 +116,23 @@ intBool ParseDeffunction(
    EXPRESSION *actions;
    EXPRESSION *parameterList;
    SYMBOL_HN *wildcard;
-   int min,max,lvars,DeffunctionError = FALSE;
-   short overwrite = FALSE, owMin = 0, owMax = 0;
+   int min,max,lvars;
+   bool deffunctionError = false;
+   bool overwrite = false;
+   short owMin = 0, owMax = 0;
    DEFFUNCTION *dptr;
 
-   SetPPBufferStatus(theEnv,ON);
+   SetPPBufferStatus(theEnv,true);
 
    FlushPPBuffer(theEnv);
    SetIndentDepth(theEnv,3);
    SavePPBuffer(theEnv,"(deffunction ");
 
 #if BLOAD || BLOAD_AND_BSAVE
-   if ((Bloaded(theEnv) == TRUE) && (! ConstructData(theEnv)->CheckSyntaxMode))
+   if ((Bloaded(theEnv) == true) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"deffunctions");
-      return(TRUE);
+      return(true);
      }
 #endif
 
@@ -141,22 +143,22 @@ intBool ParseDeffunction(
    deffunctionName =
       GetConstructNameAndComment(theEnv,readSource,&DeffunctionData(theEnv)->DFInputToken,
                                  "deffunction",EnvFindDeffunctionInModule,NULL,
-                                 "!",TRUE,TRUE,TRUE,FALSE);
+                                 "!",true,true,true,false);
 
    if (deffunctionName == NULL)
-     { return(TRUE); }
+     { return(true); }
 
-   if (ValidDeffunctionName(theEnv,ValueToString(deffunctionName)) == FALSE)
-     { return(TRUE); }
+   if (ValidDeffunctionName(theEnv,ValueToString(deffunctionName)) == false)
+     { return(true); }
 
    /*==========================*/
    /* Parse the argument list. */
    /*==========================*/
    
    parameterList = ParseProcParameters(theEnv,readSource,&DeffunctionData(theEnv)->DFInputToken,
-                                       NULL,&wildcard,&min,&max,&DeffunctionError,NULL);
-   if (DeffunctionError)
-     { return(TRUE); }
+                                       NULL,&wildcard,&min,&max,&deffunctionError,NULL);
+   if (deffunctionError)
+     { return(true); }
 
    /*===================================================================*/
    /* Go ahead and add the deffunction so it can be recursively called. */
@@ -166,10 +168,10 @@ intBool ParseDeffunction(
      {
       dptr = (DEFFUNCTION *) EnvFindDeffunctionInModule(theEnv,ValueToString(deffunctionName));
       if (dptr == NULL)
-        { dptr = AddDeffunction(theEnv,deffunctionName,NULL,min,max,0,TRUE); }
+        { dptr = AddDeffunction(theEnv,deffunctionName,NULL,min,max,0,true); }
       else
         {
-         overwrite = TRUE;
+         overwrite = true;
          owMin = (short) dptr->minNumberOfParameters;
          owMax = (short) dptr->maxNumberOfParameters;
          dptr->minNumberOfParameters = min;
@@ -177,12 +179,12 @@ intBool ParseDeffunction(
         }
      }
    else
-     { dptr = AddDeffunction(theEnv,deffunctionName,NULL,min,max,0,TRUE); }
+     { dptr = AddDeffunction(theEnv,deffunctionName,NULL,min,max,0,true); }
 
    if (dptr == NULL)
      {
       ReturnExpression(theEnv,parameterList);
-      return(TRUE);
+      return(true);
      }
 
    /*==================================================*/
@@ -191,7 +193,7 @@ intBool ParseDeffunction(
 
    PPCRAndIndent(theEnv);
 
-   ExpressionData(theEnv)->ReturnContext = TRUE;
+   ExpressionData(theEnv)->ReturnContext = true;
    actions = ParseProcActions(theEnv,"deffunction",readSource,
                               &DeffunctionData(theEnv)->DFInputToken,parameterList,wildcard,
 #if DEFTEMPLATE_CONSTRUCT
@@ -227,7 +229,7 @@ intBool ParseDeffunction(
          RemoveDeffunction(theEnv,dptr);
         }
 
-      return(TRUE);
+      return(true);
      }
 
    if (actions == NULL)
@@ -244,7 +246,7 @@ intBool ParseDeffunction(
          RemoveConstructFromModule(theEnv,(struct constructHeader *) dptr);
          RemoveDeffunction(theEnv,dptr);
         }
-      return(TRUE);
+      return(true);
      }
 
    /*==============================================*/
@@ -266,7 +268,7 @@ intBool ParseDeffunction(
          RemoveConstructFromModule(theEnv,(struct constructHeader *) dptr);
          RemoveDeffunction(theEnv,dptr);
         }
-      return(FALSE);
+      return(false);
      }
 
    /*=============================*/
@@ -282,11 +284,11 @@ intBool ParseDeffunction(
    /* Add the deffunction. */
    /*======================*/
 
-   AddDeffunction(theEnv,deffunctionName,actions,min,max,lvars,FALSE);
+   AddDeffunction(theEnv,deffunctionName,actions,min,max,lvars,false);
 
    ReturnExpression(theEnv,parameterList);
 
-   return(DeffunctionError);
+   return(deffunctionError);
   }
 
 /* =========================================
@@ -300,14 +302,14 @@ intBool ParseDeffunction(
   DESCRIPTION  : Determines if a new deffunction of the given
                  name can be defined in the current module
   INPUTS       : The new deffunction name
-  RETURNS      : TRUE if OK, FALSE otherwise
+  RETURNS      : true if OK, false otherwise
   SIDE EFFECTS : Error message printed if not OK
   NOTES        : GetConstructNameAndComment() (called before
                  this function) ensures that the deffunction
                  name does not conflict with one from
                  another module
  ************************************************************/
-static intBool ValidDeffunctionName(
+static bool ValidDeffunctionName(
   void *theEnv,
   const char *theDeffunctionName)
   {
@@ -324,9 +326,9 @@ static intBool ValidDeffunctionName(
    
    if (FindConstruct(theEnv,theDeffunctionName) != NULL)
      {
-      PrintErrorID(theEnv,"DFFNXPSR",1,FALSE);
+      PrintErrorID(theEnv,"DFFNXPSR",1,false);
       EnvPrintRouter(theEnv,WERROR,"Deffunctions are not allowed to replace constructs.\n");
-      return(FALSE);
+      return(false);
      }
 
    /*========================================*/
@@ -337,9 +339,9 @@ static intBool ValidDeffunctionName(
    
    if (FindFunction(theEnv,theDeffunctionName) != NULL)
      {
-      PrintErrorID(theEnv,"DFFNXPSR",2,FALSE);
+      PrintErrorID(theEnv,"DFFNXPSR",2,false);
       EnvPrintRouter(theEnv,WERROR,"Deffunctions are not allowed to replace external functions.\n");
-      return(FALSE);
+      return(false);
      }
 
 #if DEFGENERIC_CONSTRUCT
@@ -358,20 +360,20 @@ static intBool ValidDeffunctionName(
       theModule = GetConstructModuleItem(theDefgeneric)->theModule;
       if (theModule != ((struct defmodule *) EnvGetCurrentModule(theEnv)))
         {
-         PrintErrorID(theEnv,"DFFNXPSR",5,FALSE);
+         PrintErrorID(theEnv,"DFFNXPSR",5,false);
          EnvPrintRouter(theEnv,WERROR,"Defgeneric ");
          EnvPrintRouter(theEnv,WERROR,EnvGetDefgenericName(theEnv,(void *) theDefgeneric));
          EnvPrintRouter(theEnv,WERROR," imported from module ");
          EnvPrintRouter(theEnv,WERROR,EnvGetDefmoduleName(theEnv,(void *) theModule));
          EnvPrintRouter(theEnv,WERROR," conflicts with this deffunction.\n");
-         return(FALSE);
+         return(false);
         }
       else
         {
-         PrintErrorID(theEnv,"DFFNXPSR",3,FALSE);
+         PrintErrorID(theEnv,"DFFNXPSR",3,false);
          EnvPrintRouter(theEnv,WERROR,"Deffunctions are not allowed to replace generic functions.\n");
         }
-      return(FALSE);
+      return(false);
      }
 #endif
 
@@ -385,14 +387,14 @@ static intBool ValidDeffunctionName(
       
       if (((DEFFUNCTION *) theDeffunction)->executing)
         {
-         PrintErrorID(theEnv,"DFNXPSR",4,FALSE);
+         PrintErrorID(theEnv,"DFNXPSR",4,false);
          EnvPrintRouter(theEnv,WERROR,"Deffunction ");
          EnvPrintRouter(theEnv,WERROR,EnvGetDeffunctionName(theEnv,(void *) theDeffunction));
          EnvPrintRouter(theEnv,WERROR," may not be redefined while it is executing.\n");
-         return(FALSE);
+         return(false);
         }
      }
-   return(TRUE);
+   return(true);
   }
 
 /****************************************************
@@ -420,12 +422,12 @@ static DEFFUNCTION *AddDeffunction(
   int min,
   int max,
   int lvars,
-  int headerp)
+  bool headerp)
   {
    DEFFUNCTION *dfuncPtr;
    unsigned oldbusy;
 #if DEBUGGING_FUNCTIONS
-   unsigned DFHadWatch = FALSE;
+   bool DFHadWatch = false;
 #else
 #if MAC_XCD
 #pragma unused(headerp)
@@ -501,10 +503,10 @@ static DEFFUNCTION *AddDeffunction(
 
 #if DEBUGGING_FUNCTIONS
    EnvSetDeffunctionWatch(theEnv,
-                          DFHadWatch ? TRUE : DeffunctionData(theEnv)->WatchDeffunctions,
+                          DFHadWatch ? true : DeffunctionData(theEnv)->WatchDeffunctions,
                           (void *) dfuncPtr);
       
-   if ((EnvGetConserveMemory(theEnv) == FALSE) && (headerp == FALSE))
+   if ((EnvGetConserveMemory(theEnv) == false) && (headerp == false))
      { EnvSetDeffunctionPPForm(theEnv,(void *) dfuncPtr,CopyPPBuffer(theEnv)); }
 #endif
 

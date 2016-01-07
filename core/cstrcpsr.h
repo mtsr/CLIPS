@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -68,8 +68,8 @@
    struct symbolHashNode         *GetConstructNameAndComment(void *,const char *,
                                                                     struct token *,const char *,
                                                                     void *(*)(void *,const char *),
-                                                                    int (*)(void *,void *),
-                                                                    const char *,int,int,int,int);
+                                                                    bool (*)(void *,void *),
+                                                                    const char *,bool,bool,bool,bool);
    void                           ImportExportConflictMessage(void *,const char *,const char *,const char *,const char *);
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    void                           FlushParsingMessages(void *);

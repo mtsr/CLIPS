@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  02/04/15          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -95,9 +95,9 @@ struct definstancesData
    SYMBOL_HN                     *EnvGetDefinstancesNamePointer(void *,void *);
    const char                    *EnvGetDefinstancesPPForm(void *,void *);
    void                          *EnvGetNextDefinstances(void *,void *);
-   int                            EnvIsDefinstancesDeletable(void *,void *);
+   bool                           EnvIsDefinstancesDeletable(void *,void *);
    void                           EnvSetDefinstancesPPForm(void *,void *,const char *);
-   intBool                        EnvUndefinstances(void *,void *);
+   bool                           EnvUndefinstances(void *,void *);
    void                           GetDefinstancesListFunction(void *,DATA_OBJECT *);
    void                          *GetDefinstancesModuleCommand(void *);
    void                           SetupDefinstances(void *);
@@ -120,7 +120,7 @@ struct definstancesData
 #if DEBUGGING_FUNCTIONS
    void                           ListDefinstances(const char *,struct defmodule *);
 #endif
-   intBool                        Undefinstances(void *);
+   bool                           Undefinstances(void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

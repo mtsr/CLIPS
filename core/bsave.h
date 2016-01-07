@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 BSAVE HEADER FILE                   */
    /*******************************************************/
@@ -90,14 +90,14 @@ struct bsaveData
 #define BsaveData(theEnv) ((struct bsaveData *) GetEnvironmentData(theEnv,BSAVE_DATA))
 
    void                    InitializeBsaveData(void *);
-   int                     BsaveCommand(void *);
+   bool                    BsaveCommand(void *);
 #if BLOAD_AND_BSAVE
-   intBool                 EnvBsave(void *,const char *);
+   bool                    EnvBsave(void *,const char *);
    void                    MarkNeededItems(void *,struct expr *);
    void                    SaveBloadCount(void *,long);
    void                    RestoreBloadCount(void *,long *);
 #endif
-   intBool                 AddBinaryItem(void *,const char *,int,
+   bool                    AddBinaryItem(void *,const char *,int,
                                                 void (*)(void *),
                                                 void (*)(void *,FILE *),
                                                 void (*)(void *,FILE *),
@@ -108,7 +108,7 @@ struct bsaveData
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   intBool                 Bsave(const char *);
+   bool                    Bsave(const char *);
 
 #endif
 

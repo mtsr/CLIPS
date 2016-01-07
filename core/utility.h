@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  09/15/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 UTILITY HEADER FILE                 */
    /*******************************************************/
@@ -43,7 +43,7 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
-/*      6.31: Added EnvAddPeriodicFunctionWithContext        */
+/*      6.40: Added EnvAddPeriodicFunctionWithContext        */
 /*            function.                                      */
 /*                                                           */
 /*************************************************************/
@@ -85,8 +85,8 @@ struct trackedMemory
 
 struct garbageFrame
   {
-   short dirty;
-   short topLevel;
+   bool dirty;
+   bool topLevel;
    struct garbageFrame *priorFrame;
    struct ephemeron *ephemeralSymbolList;
    struct ephemeron *ephemeralFloatList;
@@ -104,8 +104,8 @@ struct utilityData
    struct callFunctionItem *ListOfCleanupFunctions;
    struct callFunctionItem *ListOfPeriodicFunctions;
    short GarbageCollectionLocks;
-   short PeriodicFunctionsEnabled;
-   short YieldFunctionEnabled;
+   bool PeriodicFunctionsEnabled;
+   bool YieldFunctionEnabled;
    void (*YieldTimeFunction)(void);
    struct trackedMemory *trackList;
    struct garbageFrame MasterGarbageFrame;
@@ -120,12 +120,12 @@ struct utilityData
 #define IsUTF8MultiByteContinuation(ch) ((((unsigned char) ch) >= 0x80) && (((unsigned char) ch) <= 0xBF))
 
    void                           InitializeUtilityData(void *);
-   intBool                        AddCleanupFunction(void *,const char *,void (*)(void *),int);
-   intBool                        EnvAddPeriodicFunction(void *,const char *,void (*)(void *),int);
-   intBool                        EnvAddPeriodicFunctionWithContext(void *,const char *,void (*)(void *),int,void *);
-   intBool                        AddPeriodicFunction(const char *,void (*)(void),int);
-   intBool                        RemoveCleanupFunction(void *,const char *);
-   intBool                        EnvRemovePeriodicFunction(void *,const char *);
+   bool                           AddCleanupFunction(void *,const char *,void (*)(void *),int);
+   bool                           EnvAddPeriodicFunction(void *,const char *,void (*)(void *),int);
+   bool                           EnvAddPeriodicFunctionWithContext(void *,const char *,void (*)(void *),int,void *);
+   bool                           AddPeriodicFunction(const char *,void (*)(void),int);
+   bool                           RemoveCleanupFunction(void *,const char *);
+   bool                           EnvRemovePeriodicFunction(void *,const char *);
    char                          *CopyString(void *,const char *);
    void                           DeleteString(void *,char *);
    const char                    *AppendStrings(void *,const char *,const char *);
@@ -136,20 +136,20 @@ struct utilityData
    char                          *EnlargeString(void *,size_t,char *,size_t *,size_t *);
    char                          *ExpandStringWithChar(void *,int,char *,size_t *,size_t *,size_t);
    struct callFunctionItem       *AddFunctionToCallList(void *,const char *,int,void (*)(void *),
-                                                               struct callFunctionItem *,intBool);
+                                                               struct callFunctionItem *,bool);
    struct callFunctionItem       *AddFunctionToCallListWithContext(void *,const char *,int,void (*)(void *),
-                                                                          struct callFunctionItem *,intBool,void *);
+                                                                          struct callFunctionItem *,bool,void *);
    struct callFunctionItem       *RemoveFunctionFromCallList(void *,const char *,
                                                              struct callFunctionItem *,
-                                                             int *);
+                                                             bool *);
    void                           DeallocateCallList(void *,struct callFunctionItem *);
    struct callFunctionItemWithArg *AddFunctionToCallListWithArg(void *,const char *,int,void (*)(void *, void *),
-                                                                       struct callFunctionItemWithArg *,intBool);
+                                                                       struct callFunctionItemWithArg *,bool);
    struct callFunctionItemWithArg *AddFunctionToCallListWithArgWithContext(void *,const char *,int,void (*)(void *, void *),
-                                                                                  struct callFunctionItemWithArg *,intBool,void *);
+                                                                                  struct callFunctionItemWithArg *,bool,void *);
    struct callFunctionItemWithArg *RemoveFunctionFromCallListWithArg(void *,const char *,
                                                                             struct callFunctionItemWithArg *,
-                                                                            int *);
+                                                                            bool *);
    void                           DeallocateCallListWithArg(void *,struct callFunctionItemWithArg *);
 
    struct callFunctionItem       *GetFunctionFromCallList(void *,const char *,struct callFunctionItem *);
@@ -158,7 +158,7 @@ struct utilityData
    void                           YieldTime(void *);
    void                           EnvIncrementGCLocks(void *);
    void                           EnvDecrementGCLocks(void *);
-   short                          EnablePeriodicFunctions(void *,short);
+   bool                           EnablePeriodicFunctions(void *,bool);
    short                          EnableYieldFunction(void *,short);
    struct trackedMemory          *AddTrackedMemory(void *,void *,size_t);
    void                           RemoveTrackedMemory(void *,struct trackedMemory *);
@@ -175,7 +175,7 @@ struct utilityData
 
    void                           IncrementGCLocks(void);
    void                           DecrementGCLocks(void);
-   intBool                        RemovePeriodicFunction(const char *);
+   bool                           RemovePeriodicFunction(const char *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

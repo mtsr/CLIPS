@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*            INCREMENTAL RESET HEADER FILE            */
    /*******************************************************/
@@ -47,15 +47,15 @@
 #endif
 
    void                           IncrementalReset(void *,struct defrule *);
-   intBool                        EnvGetIncrementalReset(void *);
-   intBool                        EnvSetIncrementalReset(void *,intBool);
-   int                            GetIncrementalResetCommand(void *);
-   int                            SetIncrementalResetCommand(void *);
+   bool                           EnvGetIncrementalReset(void *);
+   int                            EnvSetIncrementalReset(void *,bool);
+   bool                           GetIncrementalResetCommand(void *);
+   bool                           SetIncrementalResetCommand(void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   intBool                        GetIncrementalReset(void);
-   intBool                        SetIncrementalReset(int);
+   bool                           GetIncrementalReset(void);
+   bool                           SetIncrementalReset(int);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

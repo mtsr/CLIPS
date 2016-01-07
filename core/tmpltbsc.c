@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*          DEFTEMPLATE BASIC COMMANDS MODULE          */
    /*******************************************************/
@@ -138,7 +138,7 @@ void UndeftemplateCommand(
 /* EnvUndeftemplate: C access routine */
 /*   for the undeftemplate command.   */
 /**************************************/
-intBool EnvUndeftemplate(
+bool EnvUndeftemplate(
   void *theEnv,
   void *theDeftemplate)
   {   
@@ -228,7 +228,7 @@ void EnvListDeftemplates(
 /* EnvGetDeftemplateWatch: C access routine for retrieving */
 /*   the current watch value of a deftemplate.             */
 /***********************************************************/
-unsigned EnvGetDeftemplateWatch(
+bool EnvGetDeftemplateWatch(
   void *theEnv,
   void *theTemplate)
   { 
@@ -245,7 +245,7 @@ unsigned EnvGetDeftemplateWatch(
 /*********************************************************/
 void EnvSetDeftemplateWatch(
   void *theEnv,
-  unsigned newState,
+  bool newState,
   void *theTemplate)
   {
 #if MAC_XCD
@@ -259,10 +259,10 @@ void EnvSetDeftemplateWatch(
 /* DeftemplateWatchAccess: Access routine for setting the */
 /*   watch flag of a deftemplate via the watch command.   */
 /**********************************************************/
-unsigned DeftemplateWatchAccess(
+bool DeftemplateWatchAccess(
   void *theEnv,
   int code,
-  unsigned newState,
+  bool newState,
   EXPRESSION *argExprs)
   {
 #if MAC_XCD
@@ -277,7 +277,7 @@ unsigned DeftemplateWatchAccess(
 /* DeftemplateWatchPrint: Access routine for printing which deftemplates */
 /*   have their watch flag set via the list-watch-items command.         */
 /*************************************************************************/
-unsigned DeftemplateWatchPrint(
+bool DeftemplateWatchPrint(
   void *theEnv,
   const char *logName,
   int code,
@@ -330,7 +330,7 @@ void SetDeftemplateWatch(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-intBool Undeftemplate(
+bool Undeftemplate(
   void *theDeftemplate)
   {
    return EnvUndeftemplate(GetCurrentEnvironment(),theDeftemplate);

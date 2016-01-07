@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              PREDICATE FUNCTIONS MODULE             */
    /*******************************************************/
@@ -55,33 +55,33 @@ void PredicateFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"not", 'b', NotFunction, "NotFunction", "11");
-   EnvDefineFunction2(theEnv,"and", 'b', AndFunction, "AndFunction", "2*");
-   EnvDefineFunction2(theEnv,"or", 'b', OrFunction, "OrFunction", "2*");
+   EnvDefineFunction2(theEnv,"not", 'b', PTIEF NotFunction, "NotFunction", "11");
+   EnvDefineFunction2(theEnv,"and", 'b', PTIEF AndFunction, "AndFunction", "2*");
+   EnvDefineFunction2(theEnv,"or", 'b', PTIEF OrFunction, "OrFunction", "2*");
 
-   EnvDefineFunction2(theEnv,"eq", 'b', EqFunction, "EqFunction", "2*");
-   EnvDefineFunction2(theEnv,"neq", 'b', NeqFunction, "NeqFunction", "2*");
+   EnvDefineFunction2(theEnv,"eq", 'b', PTIEF EqFunction, "EqFunction", "2*");
+   EnvDefineFunction2(theEnv,"neq", 'b', PTIEF NeqFunction, "NeqFunction", "2*");
 
-   EnvDefineFunction2(theEnv,"<=", 'b', LessThanOrEqualFunction, "LessThanOrEqualFunction", "2*n");
-   EnvDefineFunction2(theEnv,">=", 'b', GreaterThanOrEqualFunction, "GreaterThanOrEqualFunction", "2*n");
-   EnvDefineFunction2(theEnv,"<", 'b', LessThanFunction, "LessThanFunction", "2*n");
-   EnvDefineFunction2(theEnv,">", 'b', GreaterThanFunction, "GreaterThanFunction", "2*n");
-   EnvDefineFunction2(theEnv,"=", 'b', NumericEqualFunction, "NumericEqualFunction", "2*n");
-   EnvDefineFunction2(theEnv,"<>", 'b', NumericNotEqualFunction, "NumericNotEqualFunction", "2*n");
-   EnvDefineFunction2(theEnv,"!=", 'b', NumericNotEqualFunction, "NumericNotEqualFunction", "2*n");
+   EnvDefineFunction2(theEnv,"<=", 'b', PTIEF LessThanOrEqualFunction, "LessThanOrEqualFunction", "2*n");
+   EnvDefineFunction2(theEnv,">=", 'b', PTIEF GreaterThanOrEqualFunction, "GreaterThanOrEqualFunction", "2*n");
+   EnvDefineFunction2(theEnv,"<", 'b', PTIEF LessThanFunction, "LessThanFunction", "2*n");
+   EnvDefineFunction2(theEnv,">", 'b', PTIEF GreaterThanFunction, "GreaterThanFunction", "2*n");
+   EnvDefineFunction2(theEnv,"=", 'b', PTIEF NumericEqualFunction, "NumericEqualFunction", "2*n");
+   EnvDefineFunction2(theEnv,"<>", 'b', PTIEF NumericNotEqualFunction, "NumericNotEqualFunction", "2*n");
+   EnvDefineFunction2(theEnv,"!=", 'b', PTIEF NumericNotEqualFunction, "NumericNotEqualFunction", "2*n");
 
-   EnvDefineFunction2(theEnv,"symbolp", 'b', SymbolpFunction, "SymbolpFunction", "11");
-   EnvDefineFunction2(theEnv,"wordp", 'b', SymbolpFunction, "SymbolpFunction", "11");
-   EnvDefineFunction2(theEnv,"stringp", 'b', StringpFunction, "StringpFunction", "11");
-   EnvDefineFunction2(theEnv,"lexemep", 'b', LexemepFunction, "LexemepFunction", "11");
-   EnvDefineFunction2(theEnv,"numberp", 'b', NumberpFunction, "NumberpFunction", "11");
-   EnvDefineFunction2(theEnv,"integerp", 'b', IntegerpFunction, "IntegerpFunction", "11");
-   EnvDefineFunction2(theEnv,"floatp", 'b', FloatpFunction, "FloatpFunction", "11");
-   EnvDefineFunction2(theEnv,"oddp", 'b', OddpFunction, "OddpFunction", "11i");
-   EnvDefineFunction2(theEnv,"evenp", 'b', EvenpFunction, "EvenpFunction", "11i");
-   EnvDefineFunction2(theEnv,"multifieldp",'b', MultifieldpFunction, "MultifieldpFunction", "11");
-   EnvDefineFunction2(theEnv,"sequencep",'b', MultifieldpFunction, "MultifieldpFunction", "11");
-   EnvDefineFunction2(theEnv,"pointerp", 'b', PointerpFunction, "PointerpFunction", "11");
+   EnvDefineFunction2(theEnv,"symbolp", 'b', PTIEF SymbolpFunction, "SymbolpFunction", "11");
+   EnvDefineFunction2(theEnv,"wordp", 'b', PTIEF SymbolpFunction, "SymbolpFunction", "11");
+   EnvDefineFunction2(theEnv,"stringp", 'b', PTIEF StringpFunction, "StringpFunction", "11");
+   EnvDefineFunction2(theEnv,"lexemep", 'b', PTIEF LexemepFunction, "LexemepFunction", "11");
+   EnvDefineFunction2(theEnv,"numberp", 'b', PTIEF NumberpFunction, "NumberpFunction", "11");
+   EnvDefineFunction2(theEnv,"integerp", 'b', PTIEF IntegerpFunction, "IntegerpFunction", "11");
+   EnvDefineFunction2(theEnv,"floatp", 'b', PTIEF FloatpFunction, "FloatpFunction", "11");
+   EnvDefineFunction2(theEnv,"oddp", 'b', PTIEF OddpFunction, "OddpFunction", "11i");
+   EnvDefineFunction2(theEnv,"evenp", 'b', PTIEF EvenpFunction, "EvenpFunction", "11i");
+   EnvDefineFunction2(theEnv,"multifieldp",'b', PTIEF MultifieldpFunction, "MultifieldpFunction", "11");
+   EnvDefineFunction2(theEnv,"sequencep",'b', PTIEF MultifieldpFunction, "MultifieldpFunction", "11");
+   EnvDefineFunction2(theEnv,"pointerp", 'b', PTIEF PointerpFunction, "PointerpFunction", "11");
 #else
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -93,7 +93,7 @@ void PredicateFunctionDefinitions(
 /* EqFunction: H/L access routine   */
 /*   for the eq function.           */
 /************************************/
-intBool EqFunction(
+bool EqFunction(
   void *theEnv)
   {
    DATA_OBJECT item, nextItem;
@@ -105,7 +105,7 @@ intBool EqFunction(
    /*====================================*/
 
    numArgs = EnvRtnArgCount(theEnv);
-   if (numArgs == 0) return(FALSE);
+   if (numArgs == 0) return(false);
 
    /*==============================================*/
    /* Get the value of the first argument against  */
@@ -117,7 +117,7 @@ intBool EqFunction(
 
    /*=====================================*/
    /* Compare all arguments to the first. */
-   /* If any are the same, return FALSE.  */
+   /* If any are the same, return false.  */
    /*=====================================*/
 
    theExpression = GetNextArgument(theExpression);
@@ -126,32 +126,32 @@ intBool EqFunction(
       EvaluateExpression(theEnv,theExpression,&nextItem);
 
       if (GetType(nextItem) != GetType(item))
-        { return(FALSE); }
+        { return(false); }
 
       if (GetType(nextItem) == MULTIFIELD)
         {
-         if (MultifieldDOsEqual(&nextItem,&item) == FALSE)
-           { return(FALSE); }
+         if (MultifieldDOsEqual(&nextItem,&item) == false)
+           { return(false); }
         }
       else if (nextItem.value != item.value)
-        { return(FALSE); }
+        { return(false); }
 
       theExpression = GetNextArgument(theExpression);
      }
 
    /*=====================================*/
    /* All of the arguments were different */
-   /* from the first. Return TRUE.        */
+   /* from the first. Return true.        */
    /*=====================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /*************************************/
 /* NeqFunction: H/L access routine   */
 /*   for the neq function.           */
 /*************************************/
-intBool NeqFunction(
+bool NeqFunction(
   void *theEnv)
   {
    DATA_OBJECT item, nextItem;
@@ -163,7 +163,7 @@ intBool NeqFunction(
    /*====================================*/
 
    numArgs = EnvRtnArgCount(theEnv);
-   if (numArgs == 0) return(FALSE);
+   if (numArgs == 0) return(false);
 
    /*==============================================*/
    /* Get the value of the first argument against  */
@@ -175,7 +175,7 @@ intBool NeqFunction(
 
    /*=====================================*/
    /* Compare all arguments to the first. */
-   /* If any are different, return FALSE. */
+   /* If any are different, return false. */
    /*=====================================*/
 
    for (i = 2, theExpression = GetNextArgument(theExpression);
@@ -187,196 +187,196 @@ intBool NeqFunction(
         { continue; }
       else if (nextItem.type == MULTIFIELD)
         {
-         if (MultifieldDOsEqual(&nextItem,&item) == TRUE)
-           { return(FALSE); }
+         if (MultifieldDOsEqual(&nextItem,&item) == true)
+           { return(false); }
         }
       else if (nextItem.value == item.value)
-        { return(FALSE); }
+        { return(false); }
      }
 
    /*=====================================*/
    /* All of the arguments were identical */
-   /* to the first. Return TRUE.          */
+   /* to the first. Return true.          */
    /*=====================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /*****************************************/
 /* StringpFunction: H/L access routine   */
 /*   for the stringp function.           */
 /*****************************************/
-intBool StringpFunction(
+bool StringpFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
 
-   if (EnvArgCountCheck(theEnv,"stringp",EXACTLY,1) == -1) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"stringp",EXACTLY,1) == -1) return(false);
 
    EnvRtnUnknown(theEnv,1,&item);
 
    if (GetType(item) == STRING)
-     { return(TRUE); }
+     { return(true); }
    else
-     { return(FALSE); }
+     { return(false); }
   }
 
 /*****************************************/
 /* SymbolpFunction: H/L access routine   */
 /*   for the symbolp function.           */
 /*****************************************/
-intBool SymbolpFunction(
+bool SymbolpFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
 
-   if (EnvArgCountCheck(theEnv,"symbolp",EXACTLY,1) == -1) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"symbolp",EXACTLY,1) == -1) return(false);
 
    EnvRtnUnknown(theEnv,1,&item);
 
    if (GetType(item) == SYMBOL)
-     { return(TRUE); }
+     { return(true); }
    else
-     { return(FALSE); }
+     { return(false); }
   }
 
 /*****************************************/
 /* LexemepFunction: H/L access routine   */
 /*   for the lexemep function.           */
 /*****************************************/
-intBool LexemepFunction(
+bool LexemepFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
 
-   if (EnvArgCountCheck(theEnv,"lexemep",EXACTLY,1) == -1) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"lexemep",EXACTLY,1) == -1) return(false);
 
    EnvRtnUnknown(theEnv,1,&item);
 
    if ((GetType(item) == SYMBOL) || (GetType(item) == STRING))
-     { return(TRUE); }
+     { return(true); }
    else
-     { return(FALSE); }
+     { return(false); }
   }
 
 /*****************************************/
 /* NumberpFunction: H/L access routine   */
 /*   for the numberp function.           */
 /*****************************************/
-intBool NumberpFunction(
+bool NumberpFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
 
-   if (EnvArgCountCheck(theEnv,"numberp",EXACTLY,1) == -1) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"numberp",EXACTLY,1) == -1) return(false);
 
    EnvRtnUnknown(theEnv,1,&item);
 
    if ((GetType(item) == FLOAT) || (GetType(item) == INTEGER))
-     { return(TRUE); }
+     { return(true); }
    else
-     { return(FALSE); }
+     { return(false); }
   }
 
 /****************************************/
 /* FloatpFunction: H/L access routine   */
 /*   for the floatp function.           */
 /****************************************/
-intBool FloatpFunction(
+bool FloatpFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
 
-   if (EnvArgCountCheck(theEnv,"floatp",EXACTLY,1) == -1) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"floatp",EXACTLY,1) == -1) return(false);
 
    EnvRtnUnknown(theEnv,1,&item);
 
    if (GetType(item) == FLOAT)
-     { return(TRUE); }
+     { return(true); }
    else
-     { return(FALSE); }
+     { return(false); }
   }
 
 /******************************************/
 /* IntegerpFunction: H/L access routine   */
 /*   for the integerp function.           */
 /******************************************/
-intBool IntegerpFunction(
+bool IntegerpFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
 
-   if (EnvArgCountCheck(theEnv,"integerp",EXACTLY,1) == -1) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"integerp",EXACTLY,1) == -1) return(false);
 
    EnvRtnUnknown(theEnv,1,&item);
 
-   if (GetType(item) != INTEGER) return(FALSE);
+   if (GetType(item) != INTEGER) return(false);
 
-   return(TRUE);
+   return(true);
   }
 
 /*********************************************/
 /* MultifieldpFunction: H/L access routine   */
 /*   for the multifieldp function.           */
 /*********************************************/
-intBool MultifieldpFunction(
+bool MultifieldpFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
 
-   if (EnvArgCountCheck(theEnv,"multifieldp",EXACTLY,1) == -1) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"multifieldp",EXACTLY,1) == -1) return(false);
 
    EnvRtnUnknown(theEnv,1,&item);
 
-   if (GetType(item) != MULTIFIELD) return(FALSE);
+   if (GetType(item) != MULTIFIELD) return(false);
 
-   return(TRUE);
+   return(true);
   }
 
 /******************************************/
 /* PointerpFunction: H/L access routine   */
 /*   for the pointerp function.           */
 /******************************************/
-intBool PointerpFunction(
+bool PointerpFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
 
-   if (EnvArgCountCheck(theEnv,"pointerp",EXACTLY,1) == -1) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"pointerp",EXACTLY,1) == -1) return(false);
 
    EnvRtnUnknown(theEnv,1,&item);
 
-   if (GetType(item) != EXTERNAL_ADDRESS) return(FALSE);
+   if (GetType(item) != EXTERNAL_ADDRESS) return(false);
 
-   return(TRUE);
+   return(true);
   }
 
 /*************************************/
 /* NotFunction: H/L access routine   */
 /*   for the not function.           */
 /*************************************/
-intBool NotFunction(
+bool NotFunction(
   void *theEnv)
   {
    EXPRESSION *theArgument;
    DATA_OBJECT result;
 
    theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(FALSE); }
+   if (theArgument == NULL) { return(false); }
 
-   if (EvaluateExpression(theEnv,theArgument,&result)) return(FALSE);
+   if (EvaluateExpression(theEnv,theArgument,&result)) return(false);
 
    if ((result.value == EnvFalseSymbol(theEnv)) && (result.type == SYMBOL))
-     { return(TRUE); }
+     { return(true); }
    
-   return(FALSE);
+   return(false);
   }
 
 /*************************************/
 /* AndFunction: H/L access routine   */
 /*   for the and function.           */
 /*************************************/
-intBool AndFunction(
+bool AndFunction(
   void *theEnv)
   {
    EXPRESSION *theArgument;
@@ -386,19 +386,19 @@ intBool AndFunction(
         theArgument != NULL;
         theArgument = GetNextArgument(theArgument))
      {
-      if (EvaluateExpression(theEnv,theArgument,&result)) return(FALSE);
+      if (EvaluateExpression(theEnv,theArgument,&result)) return(false);
       if ((result.value == EnvFalseSymbol(theEnv)) && (result.type == SYMBOL))
-        { return(FALSE); }
+        { return(false); }
      }
 
-   return(TRUE);
+   return(true);
   }
 
 /************************************/
 /* OrFunction: H/L access routine   */
 /*   for the or function.           */
 /************************************/
-intBool OrFunction(
+bool OrFunction(
   void *theEnv)
   {
    EXPRESSION *theArgument;
@@ -408,20 +408,20 @@ intBool OrFunction(
         theArgument != NULL;
         theArgument = GetNextArgument(theArgument))
      {
-      if (EvaluateExpression(theEnv,theArgument,&result)) return(FALSE);
+      if (EvaluateExpression(theEnv,theArgument,&result)) return(false);
 
       if ((result.value != EnvFalseSymbol(theEnv)) || (result.type != SYMBOL))
-        { return(TRUE); }
+        { return(true); }
      }
 
-   return(FALSE);
+   return(false);
   }
 
 /*****************************************/
 /* LessThanOrEqualFunction: H/L access   */
 /*   routine for the <= function.        */
 /*****************************************/
-intBool LessThanOrEqualFunction(
+bool LessThanOrEqualFunction(
   void *theEnv)
   {
    EXPRESSION *theArgument;
@@ -433,31 +433,31 @@ intBool LessThanOrEqualFunction(
    /*=========================*/
 
    theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(TRUE); }
-   if (! GetNumericArgument(theEnv,theArgument,"<=",&rv1,FALSE,pos)) return(FALSE);
+   if (theArgument == NULL) { return(true); }
+   if (! GetNumericArgument(theEnv,theArgument,"<=",&rv1,false,pos)) return(false);
    pos++;
 
    /*====================================================*/
    /* Compare each of the subsequent arguments to its    */
-   /* predecessor. If any is greater, then return FALSE. */
+   /* predecessor. If any is greater, then return false. */
    /*====================================================*/
 
    for (theArgument = GetNextArgument(theArgument);
         theArgument != NULL;
         theArgument = GetNextArgument(theArgument), pos++)
      {
-      if (! GetNumericArgument(theEnv,theArgument,"<=",&rv2,FALSE,pos)) return(FALSE);
+      if (! GetNumericArgument(theEnv,theArgument,"<=",&rv2,false,pos)) return(false);
       if (rv1.type == INTEGER)
         {
          if (rv2.type == INTEGER)
            {
             if (ValueToLong(rv1.value) > ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if ((double) ValueToLong(rv1.value) > ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
       else
@@ -465,12 +465,12 @@ intBool LessThanOrEqualFunction(
          if (rv2.type == INTEGER)
            {
             if (ValueToDouble(rv1.value) > (double) ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if (ValueToDouble(rv1.value) > ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
 
@@ -480,17 +480,17 @@ intBool LessThanOrEqualFunction(
 
    /*======================================*/
    /* Each argument was less than or equal */
-   /* to it predecessor. Return TRUE.      */
+   /* to it predecessor. Return true.      */
    /*======================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /********************************************/
 /* GreaterThanOrEqualFunction: H/L access   */
 /*   routine for the >= function.           */
 /********************************************/
-intBool GreaterThanOrEqualFunction(
+bool GreaterThanOrEqualFunction(
   void *theEnv)
   {
    EXPRESSION *theArgument;
@@ -502,31 +502,31 @@ intBool GreaterThanOrEqualFunction(
    /*=========================*/
 
    theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(TRUE); }
-   if (! GetNumericArgument(theEnv,theArgument,">=",&rv1,FALSE,pos)) return(FALSE);
+   if (theArgument == NULL) { return(true); }
+   if (! GetNumericArgument(theEnv,theArgument,">=",&rv1,false,pos)) return(false);
    pos++;
 
    /*===================================================*/
    /* Compare each of the subsequent arguments to its   */
-   /* predecessor. If any is lesser, then return FALSE. */
+   /* predecessor. If any is lesser, then return false. */
    /*===================================================*/
 
    for (theArgument = GetNextArgument(theArgument);
         theArgument != NULL;
         theArgument = GetNextArgument(theArgument), pos++)
      {
-      if (! GetNumericArgument(theEnv,theArgument,">=",&rv2,FALSE,pos)) return(FALSE);
+      if (! GetNumericArgument(theEnv,theArgument,">=",&rv2,false,pos)) return(false);
       if (rv1.type == INTEGER)
         {
          if (rv2.type == INTEGER)
            {
             if (ValueToLong(rv1.value) < ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if ((double) ValueToLong(rv1.value) < ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
       else
@@ -534,12 +534,12 @@ intBool GreaterThanOrEqualFunction(
          if (rv2.type == INTEGER)
            {
             if (ValueToDouble(rv1.value) < (double) ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if (ValueToDouble(rv1.value) < ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
 
@@ -549,17 +549,17 @@ intBool GreaterThanOrEqualFunction(
 
    /*=========================================*/
    /* Each argument was greater than or equal */
-   /* to its predecessor. Return TRUE.        */
+   /* to its predecessor. Return true.        */
    /*=========================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /**********************************/
 /* LessThanFunction: H/L access   */
 /*   routine for the < function.  */
 /**********************************/
-intBool LessThanFunction(
+bool LessThanFunction(
   void *theEnv)
   {
    EXPRESSION *theArgument;
@@ -571,32 +571,32 @@ intBool LessThanFunction(
    /*=========================*/
 
    theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(TRUE); }
-   if (! GetNumericArgument(theEnv,theArgument,"<",&rv1,FALSE,pos)) return(FALSE);
+   if (theArgument == NULL) { return(true); }
+   if (! GetNumericArgument(theEnv,theArgument,"<",&rv1,false,pos)) return(false);
    pos++;
 
    /*==========================================*/
    /* Compare each of the subsequent arguments */
    /* to its predecessor. If any is greater or */
-   /* equal, then return FALSE.                */
+   /* equal, then return false.                */
    /*==========================================*/
 
    for (theArgument = GetNextArgument(theArgument);
         theArgument != NULL;
         theArgument = GetNextArgument(theArgument), pos++)
      {
-      if (! GetNumericArgument(theEnv,theArgument,"<",&rv2,FALSE,pos)) return(FALSE);
+      if (! GetNumericArgument(theEnv,theArgument,"<",&rv2,false,pos)) return(false);
       if (rv1.type == INTEGER)
         {
          if (rv2.type == INTEGER)
            {
             if (ValueToLong(rv1.value) >= ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if ((double) ValueToLong(rv1.value) >= ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
       else
@@ -604,12 +604,12 @@ intBool LessThanFunction(
          if (rv2.type == INTEGER)
            {
             if (ValueToDouble(rv1.value) >= (double) ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if (ValueToDouble(rv1.value) >= ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
 
@@ -619,17 +619,17 @@ intBool LessThanFunction(
 
    /*=================================*/
    /* Each argument was less than its */
-   /* predecessor. Return TRUE.       */
+   /* predecessor. Return true.       */
    /*=================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /*************************************/
 /* GreaterThanFunction: H/L access   */
 /*   routine for the > function.     */
 /*************************************/
-intBool GreaterThanFunction(
+bool GreaterThanFunction(
   void *theEnv)
   {
    EXPRESSION *theArgument;
@@ -641,32 +641,32 @@ intBool GreaterThanFunction(
    /*=========================*/
 
    theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(TRUE); }
-   if (! GetNumericArgument(theEnv,theArgument,">",&rv1,FALSE,pos)) return(FALSE);
+   if (theArgument == NULL) { return(true); }
+   if (! GetNumericArgument(theEnv,theArgument,">",&rv1,false,pos)) return(false);
    pos++;
 
    /*==========================================*/
    /* Compare each of the subsequent arguments */
    /* to its predecessor. If any is lesser or  */
-   /* equal, then return FALSE.                */
+   /* equal, then return false.                */
    /*==========================================*/
 
    for (theArgument = GetNextArgument(theArgument);
         theArgument != NULL;
         theArgument = GetNextArgument(theArgument), pos++)
      {
-      if (! GetNumericArgument(theEnv,theArgument,">",&rv2,FALSE,pos)) return(FALSE);
+      if (! GetNumericArgument(theEnv,theArgument,">",&rv2,false,pos)) return(false);
       if (rv1.type == INTEGER)
         {
          if (rv2.type == INTEGER)
            {
             if (ValueToLong(rv1.value) <= ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if ((double) ValueToLong(rv1.value) <= ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
       else
@@ -674,12 +674,12 @@ intBool GreaterThanFunction(
          if (rv2.type == INTEGER)
            {
             if (ValueToDouble(rv1.value) <= (double) ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if (ValueToDouble(rv1.value) <= ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
 
@@ -689,17 +689,17 @@ intBool GreaterThanFunction(
 
    /*================================*/
    /* Each argument was greater than */
-   /* its predecessor. Return TRUE.  */
+   /* its predecessor. Return true.  */
    /*================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /**************************************/
 /* NumericEqualFunction: H/L access   */
 /*   routine for the = function.      */
 /**************************************/
-intBool NumericEqualFunction(
+bool NumericEqualFunction(
   void *theEnv)
   {
    EXPRESSION *theArgument;
@@ -712,31 +712,31 @@ intBool NumericEqualFunction(
 
    theArgument = GetFirstArgument();
 
-   if (theArgument == NULL) { return(TRUE); }
-   if (! GetNumericArgument(theEnv,theArgument,"=",&rv1,FALSE,pos)) return(FALSE);
+   if (theArgument == NULL) { return(true); }
+   if (! GetNumericArgument(theEnv,theArgument,"=",&rv1,false,pos)) return(false);
    pos++;
 
    /*=================================================*/
    /* Compare each of the subsequent arguments to the */
-   /* first. If any is unequal, then return FALSE.    */
+   /* first. If any is unequal, then return false.    */
    /*=================================================*/
 
    for (theArgument = GetNextArgument(theArgument);
         theArgument != NULL;
         theArgument = GetNextArgument(theArgument), pos++)
      {
-      if (! GetNumericArgument(theEnv,theArgument,"=",&rv2,FALSE,pos)) return(FALSE);
+      if (! GetNumericArgument(theEnv,theArgument,"=",&rv2,false,pos)) return(false);
       if (rv1.type == INTEGER)
         {
          if (rv2.type == INTEGER)
            {
             if (ValueToLong(rv1.value) != ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if ((double) ValueToLong(rv1.value) != ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
       else
@@ -744,29 +744,29 @@ intBool NumericEqualFunction(
          if (rv2.type == INTEGER)
            {
             if (ValueToDouble(rv1.value) != (double) ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if (ValueToDouble(rv1.value) != ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
      }
 
    /*=================================*/
    /* All arguments were equal to the */
-   /* first argument. Return TRUE.    */
+   /* first argument. Return true.    */
    /*=================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /*****************************************/
 /* NumericNotEqualFunction: H/L access   */
 /*   routine for the <> function.        */
 /*****************************************/
-intBool NumericNotEqualFunction(
+bool NumericNotEqualFunction(
   void *theEnv)
   {
    EXPRESSION *theArgument;
@@ -778,31 +778,31 @@ intBool NumericNotEqualFunction(
    /*=========================*/
 
    theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(TRUE); }
-   if (! GetNumericArgument(theEnv,theArgument,"<>",&rv1,FALSE,pos)) return(FALSE);
+   if (theArgument == NULL) { return(true); }
+   if (! GetNumericArgument(theEnv,theArgument,"<>",&rv1,false,pos)) return(false);
    pos++;
 
    /*=================================================*/
    /* Compare each of the subsequent arguments to the */
-   /* first. If any is equal, then return FALSE.      */
+   /* first. If any is equal, then return false.      */
    /*=================================================*/
 
    for (theArgument = GetNextArgument(theArgument);
         theArgument != NULL;
         theArgument = GetNextArgument(theArgument), pos++)
      {
-      if (! GetNumericArgument(theEnv,theArgument,"<>",&rv2,FALSE,pos)) return(FALSE);
+      if (! GetNumericArgument(theEnv,theArgument,"<>",&rv2,false,pos)) return(false);
       if (rv1.type == INTEGER)
         {
          if (rv2.type == INTEGER)
            {
             if (ValueToLong(rv1.value) == ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if ((double) ValueToLong(rv1.value) == ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
       else
@@ -810,64 +810,64 @@ intBool NumericNotEqualFunction(
          if (rv2.type == INTEGER)
            {
             if (ValueToDouble(rv1.value) == (double) ValueToLong(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
          else
            {
             if (ValueToDouble(rv1.value) == ValueToDouble(rv2.value))
-              { return(FALSE); }
+              { return(false); }
            }
         }
      }
 
    /*===================================*/
    /* All arguments were unequal to the */
-   /* first argument. Return TRUE.      */
+   /* first argument. Return true.      */
    /*===================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /**************************************/
 /* OddpFunction: H/L access routine   */
 /*   for the oddp function.           */
 /**************************************/
-intBool OddpFunction(
+bool OddpFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
    long long num, halfnum;
 
-   if (EnvArgCountCheck(theEnv,"oddp",EXACTLY,1) == -1) return(FALSE);
-   if (EnvArgTypeCheck(theEnv,"oddp",1,INTEGER,&item) == FALSE) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"oddp",EXACTLY,1) == -1) return(false);
+   if (EnvArgTypeCheck(theEnv,"oddp",1,INTEGER,&item) == false) return(false);
 
    num = DOToLong(item);
 
    halfnum = (num / 2) * 2;
-   if (num == halfnum) return(FALSE);
+   if (num == halfnum) return(false);
 
-   return(TRUE);
+   return(true);
   }
 
 /***************************************/
 /* EvenpFunction: H/L access routine   */
 /*   for the evenp function.           */
 /***************************************/
-intBool EvenpFunction(
+bool EvenpFunction(
   void *theEnv)
   {
    DATA_OBJECT item;
    long long num, halfnum;
 
-   if (EnvArgCountCheck(theEnv,"evenp",EXACTLY,1) == -1) return(FALSE);
-   if (EnvArgTypeCheck(theEnv,"evenp",1,INTEGER,&item) == FALSE) return(FALSE);
+   if (EnvArgCountCheck(theEnv,"evenp",EXACTLY,1) == -1) return(false);
+   if (EnvArgTypeCheck(theEnv,"evenp",1,INTEGER,&item) == false) return(false);
 
    num = DOToLong(item);
 
    halfnum = (num / 2) * 2;
-   if (num != halfnum) return(FALSE);
+   if (num != halfnum) return(false);
 
-   return(TRUE);
+   return(true);
   }
 
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/22/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -90,10 +90,10 @@ struct messageHandlerData
    HANDLER         *GetDefmessageHandlerPointer(void *,int);
 #if DEBUGGING_FUNCTIONS
    unsigned         EnvGetDefmessageHandlerWatch(void *,void *,int);
-   void             EnvSetDefmessageHandlerWatch(void *,int,void *,int);
+   void             EnvSetDefmessageHandlerWatch(void *,bool,void *,int);
 #endif
    unsigned         EnvFindDefmessageHandler(void *,void *,const char *,const char *);
-   int              EnvIsDefmessageHandlerDeletable(void *,void *,int);
+   bool             EnvIsDefmessageHandlerDeletable(void *,void *,int);
    void             UndefmessageHandlerCommand(void *);
    int              EnvUndefmessageHandler(void *,void *,int);
 #if DEBUGGING_FUNCTIONS

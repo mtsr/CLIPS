@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*    OBJECT PATTERN NETWORK CONSTRUCTS-TO-C MODULE    */
    /*******************************************************/
@@ -70,7 +70,7 @@
 static void BeforeObjectPatternsToCode(void *);
 static OBJECT_PATTERN_NODE *GetNextObjectPatternNode(OBJECT_PATTERN_NODE *);
 static void InitObjectPatternsCode(void *,FILE *,int,int);
-static int ObjectPatternsToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
+static bool ObjectPatternsToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
 static void IntermediatePatternNodeReference(void *,OBJECT_PATTERN_NODE *,FILE *,int,int);
 static int IntermediatePatternNodesToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int);
 static int AlphaPatternNodesToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int);
@@ -258,7 +258,7 @@ static void InitObjectPatternsCode(
   SIDE EFFECTS : Object patterns code written to files
   NOTES        : None
  ***********************************************************/
-static int ObjectPatternsToCode(
+static bool ObjectPatternsToCode(
   void *theEnv,
   const char *fileName,
   const char *pathName,
@@ -273,10 +273,10 @@ static int ObjectPatternsToCode(
    version = IntermediatePatternNodesToCode(theEnv,fileName,pathName,fileNameBuffer,
                                             fileID,headerFP,imageID,maxIndices,1);
    if (version == 0)
-     return(0);
+     return(false);
    if (! AlphaPatternNodesToCode(theEnv,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,maxIndices,version))
-     return(0);
-   return(1);
+     return(false);
+   return(true);
   }
 
 /***************************************************
@@ -341,7 +341,7 @@ static int IntermediatePatternNodesToCode(
   {
    FILE *fp;
    int arrayVersion;
-   int newHeader;
+   bool newHeader;
    int i;
    OBJECT_PATTERN_NODE *thePattern;
 
@@ -356,9 +356,9 @@ static int IntermediatePatternNodesToCode(
    /* =================================
       Dump the pattern node structures.
       ================================= */
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,FALSE)) == NULL)
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,false)) == NULL)
      return(0);
-   newHeader = TRUE;
+   newHeader = true;
 
    arrayVersion = 1;
    i = 1;
@@ -372,7 +372,7 @@ static int IntermediatePatternNodesToCode(
                      ObjectPNPrefix(),imageID,arrayVersion);
          fprintf(headerFP,"extern OBJECT_PATTERN_NODE %s%d_%d[];\n",
                      ObjectPNPrefix(),imageID,arrayVersion);
-         newHeader = FALSE;
+         newHeader = false;
         }
       fprintf(fp,"{0,%u,%u,%u,%u,%u,0L,%u,",thePattern->multifieldNode,
                                         thePattern->endSlot,
@@ -406,9 +406,9 @@ static int IntermediatePatternNodesToCode(
          arrayVersion++;
          if (thePattern != NULL)
            {
-            if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,FALSE)) == NULL)
+            if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,false)) == NULL)
               return(0);
-            newHeader = TRUE;
+            newHeader = true;
            }
         }
       else if (thePattern != NULL)
@@ -446,7 +446,7 @@ static int AlphaPatternNodesToCode(
   {
    FILE *fp;
    int arrayVersion;
-   int newHeader;
+   bool newHeader;
    int i;
    OBJECT_ALPHA_NODE *thePattern;
 
@@ -459,9 +459,9 @@ static int AlphaPatternNodesToCode(
    /* =================================
       Dump the pattern node structures.
       ================================= */
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,FALSE)) == NULL)
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,false)) == NULL)
      return(0);
-   newHeader = TRUE;
+   newHeader = true;
 
    arrayVersion = 1;
    i = 1;
@@ -475,7 +475,7 @@ static int AlphaPatternNodesToCode(
                     ObjectANPrefix(),imageID,arrayVersion);
          fprintf(headerFP,"extern OBJECT_ALPHA_NODE %s%d_%d[];\n",
                           ObjectANPrefix(),imageID,arrayVersion);
-         newHeader = FALSE;
+         newHeader = false;
         }
 
       fprintf(fp,"{");
@@ -506,9 +506,9 @@ static int AlphaPatternNodesToCode(
          arrayVersion++;
          if (thePattern != NULL)
            {
-            if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,FALSE)) == NULL)
+            if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,false)) == NULL)
               return(0);
-            newHeader = TRUE;
+            newHeader = true;
            }
         }
       else if (thePattern != NULL)

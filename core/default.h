@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*            DEFAULT ATTRIBUTE HEADER FILE            */
    /*******************************************************/
@@ -38,8 +38,8 @@
 #include "evaluatn.h"
 #endif
 
-   void                           DeriveDefaultFromConstraints(void *,CONSTRAINT_RECORD *,DATA_OBJECT *,int,int);
-   struct expr                   *ParseDefault(void *,const char *,int,int,int,int *,int *,int *);
+   void                           DeriveDefaultFromConstraints(void *,CONSTRAINT_RECORD *,DATA_OBJECT *,bool,bool);
+   struct expr                   *ParseDefault(void *,const char *,bool,bool,bool,bool *,bool *,bool *);
 
 #endif /* _H_default */
 

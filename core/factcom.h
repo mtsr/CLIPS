@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  02/04/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               FACT COMMANDS HEADER FILE             */
    /*******************************************************/
@@ -55,14 +55,14 @@
    void                           AssertStringFunction(void *,DATA_OBJECT_PTR);
    void                           FactsCommand(void *);
    void                           EnvFacts(void *,const char *,void *,long long,long long,long long);
-   int                            SetFactDuplicationCommand(void *);
-   int                            GetFactDuplicationCommand(void *);
-   int                            SaveFactsCommand(void *);
-   int                            LoadFactsCommand(void *);
-   int                            EnvSaveFacts(void *,const char *,int);
-   int                            EnvSaveFactsDriver(void *,const char *,int,struct expr *);
-   int                            EnvLoadFacts(void *,const char *);
-   int                            EnvLoadFactsFromString(void *,const char *,long);
+   bool                           SetFactDuplicationCommand(void *);
+   bool                           GetFactDuplicationCommand(void *);
+   bool                           SaveFactsCommand(void *);
+   bool                           LoadFactsCommand(void *);
+   bool                           EnvSaveFacts(void *,const char *,int);
+   bool                           EnvSaveFactsDriver(void *,const char *,int,struct expr *);
+   bool                           EnvLoadFacts(void *,const char *);
+   bool                           EnvLoadFactsFromString(void *,const char *,long);
    long long                      FactIndexFunction(void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
@@ -70,9 +70,9 @@
 #if DEBUGGING_FUNCTIONS
    void                           Facts(const char *,void *,long long,long long,long long);
 #endif
-   intBool                        LoadFacts(const char *);
-   intBool                        SaveFacts(const char *,int);
-   intBool                        LoadFactsFromString(const char *,int);
+   bool                           LoadFacts(const char *);
+   bool                           SaveFacts(const char *,int);
+   bool                           LoadFactsFromString(const char *,int);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

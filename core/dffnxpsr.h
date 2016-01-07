@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -34,7 +34,7 @@
 
 #if DEFFUNCTION_CONSTRUCT && (! BLOAD_ONLY) && (! RUN_TIME)
 
-   intBool                        ParseDeffunction(void *,const char *);
+   bool                           ParseDeffunction(void *,const char *);
 
 #endif /* DEFFUNCTION_CONSTRUCT && (! BLOAD_ONLY) && (! RUN_TIME) */
 

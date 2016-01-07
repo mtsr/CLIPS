@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/26/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               FILE I/O ROUTER MODULE                */
    /*******************************************************/
@@ -137,7 +137,7 @@ FILE *FindFptr(
    /*==============================================================*/
 
    fptr = FileRouterData(theEnv)->ListOfFileRouters;
-   while ((fptr != NULL) ? (strcmp(logicalName,fptr->logicalName) != 0) : FALSE)
+   while ((fptr != NULL) ? (strcmp(logicalName,fptr->logicalName) != 0) : false)
      { fptr = fptr->next; }
 
    if (fptr != NULL) return(fptr->stream);
@@ -147,18 +147,18 @@ FILE *FindFptr(
 
 /*****************************************************/
 /* FindFile: Find routine for file router logical    */
-/*   names. Returns TRUE if the specified logical    */
+/*   names. Returns true if the specified logical    */
 /*   name has an associated file stream (which means */
 /*   that the logical name can be handled by the     */
-/*   file router). Otherwise, FALSE is returned.     */
+/*   file router). Otherwise, false is returned.     */
 /*****************************************************/
-int FindFile(
+bool FindFile(
   void *theEnv,
   const char *logicalName)
   {
-   if (FindFptr(theEnv,logicalName) != NULL) return(TRUE);
+   if (FindFptr(theEnv,logicalName) != NULL) return(true);
 
-   return(FALSE);
+   return(false);
   }
 
 /********************************************/
@@ -246,10 +246,10 @@ static int UngetcFile(
 /*********************************************************/
 /* OpenFile: Opens a file with the specified access mode */
 /*   and stores the opened stream on the list of files   */
-/*   associated with logical names Returns TRUE if the   */
-/*   file was succesfully opened, otherwise FALSE.       */
+/*   associated with logical names Returns true if the   */
+/*   file was succesfully opened, otherwise false.       */
 /*********************************************************/
-int OpenAFile(
+bool OpenAFile(
   void *theEnv,
   const char *fileName,
   const char *accessMode,
@@ -265,7 +265,7 @@ int OpenAFile(
    /*==================================*/
 
    if ((newstream = GenOpen(theEnv,fileName,accessMode)) == NULL)
-     { return(FALSE); }
+     { return(false); }
 
    /*===========================*/
    /* Create a new file router. */
@@ -286,19 +286,19 @@ int OpenAFile(
    FileRouterData(theEnv)->ListOfFileRouters = newRouter;
 
    /*==================================*/
-   /* Return TRUE to indicate the file */
+   /* Return true to indicate the file */
    /* was opened successfully.         */
    /*==================================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /*************************************************************/
 /* CloseFile: Closes the file associated with the specified  */
-/*   logical name. Returns TRUE if the file was successfully */
-/*   closed, otherwise FALSE.                                */
+/*   logical name. Returns true if the file was successfully */
+/*   closed, otherwise false.                                */
 /*************************************************************/
-int CloseFile(
+bool CloseFile(
   void *theEnv,
   const char *fid)
   {
@@ -318,26 +318,26 @@ int CloseFile(
            { prev->next = fptr->next; }
          rm(theEnv,fptr,(int) sizeof(struct fileRouter));
 
-         return(TRUE);
+         return(true);
         }
 
       prev = fptr;
      }
 
-   return(FALSE);
+   return(false);
   }
 
 /**********************************************/
 /* CloseAllFiles: Closes all files associated */
-/*   with a file I/O router. Returns TRUE if  */
-/*   any file was closed, otherwise FALSE.    */
+/*   with a file I/O router. Returns true if  */
+/*   any file was closed, otherwise false.    */
 /**********************************************/
-int CloseAllFiles(
+bool CloseAllFiles(
   void *theEnv)
   {
    struct fileRouter *fptr, *prev;
 
-   if (FileRouterData(theEnv)->ListOfFileRouters == NULL) return(FALSE);
+   if (FileRouterData(theEnv)->ListOfFileRouters == NULL) return(false);
 
    fptr = FileRouterData(theEnv)->ListOfFileRouters;
 
@@ -352,7 +352,7 @@ int CloseAllFiles(
 
    FileRouterData(theEnv)->ListOfFileRouters = NULL;
 
-   return(TRUE);
+   return(true);
   }
 
 

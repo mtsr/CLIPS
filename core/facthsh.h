@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/21/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 FACT HASHING MODULE                 */
    /*******************************************************/
@@ -51,19 +51,19 @@ struct factHashEntry
 #define SIZE_FACT_HASH 16231
 
    void                           AddHashedFact(void *,struct fact *,unsigned long);
-   intBool                        RemoveHashedFact(void *,struct fact *);
-   unsigned long                  HandleFactDuplication(void *,void *,intBool *,long long);
-   intBool                        EnvGetFactDuplication(void *);
-   intBool                        EnvSetFactDuplication(void *,int);
+   bool                           RemoveHashedFact(void *,struct fact *);
+   unsigned long                  HandleFactDuplication(void *,void *,bool *,long long);
+   bool                           EnvGetFactDuplication(void *);
+   bool                           EnvSetFactDuplication(void *,int);
    void                           InitializeFactHashTable(void *);
    void                           ShowFactHashTable(void *);
    unsigned long                  HashFact(struct fact *);
-   intBool                        FactWillBeAsserted(void *,void *);
+   bool                           FactWillBeAsserted(void *,void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   intBool                        GetFactDuplication(void);
-   intBool                        SetFactDuplication(int);
+   bool                           GetFactDuplication(void);
+   bool                           SetFactDuplication(int);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

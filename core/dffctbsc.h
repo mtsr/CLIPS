@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*         DEFFACTS BASIC COMMANDS HEADER FILE         */
    /*******************************************************/
@@ -44,7 +44,7 @@
 
    void                           DeffactsBasicCommands(void *);
    void                           UndeffactsCommand(void *);
-   intBool                        EnvUndeffacts(void *,void *);
+   bool                           EnvUndeffacts(void *,void *);
    void                           GetDeffactsListFunction(void *,DATA_OBJECT_PTR);
    void                           EnvGetDeffactsList(void *,DATA_OBJECT_PTR,void *);
    void                          *DeffactsModuleFunction(void *);
@@ -56,7 +56,7 @@
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    void                           GetDeffactsList(DATA_OBJECT_PTR,void *);
-   intBool                        Undeffacts(void *);
+   bool                           Undeffacts(void *);
 #if DEBUGGING_FUNCTIONS
    void                           ListDeffacts(const char *,void *);
 #endif

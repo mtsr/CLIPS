@@ -1,9 +1,9 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
-   /*            DEFTEMPLATE BSAVE/BLOAD MODULE           */
+   /*           DEFTEMPLATE BSAVE/BLOAD MODULE            */
    /*******************************************************/
 
 /*************************************************************/
@@ -183,7 +183,7 @@ static void BsaveFind(
               theSlot = theSlot->next)
            {
             DeftemplateBinaryData(theEnv)->NumberOfTemplateSlots++;
-            theSlot->slotName->neededSymbol = TRUE;
+            theSlot->slotName->neededSymbol = true;
            }
         }
 
@@ -499,7 +499,7 @@ static void UpdateDeftemplate(
 #if DEBUGGING_FUNCTIONS
    theDeftemplate->watch = FactData(theEnv)->WatchFacts;
 #endif
-   theDeftemplate->inScope = FALSE;
+   theDeftemplate->inScope = false;
    theDeftemplate->numberOfSlots = (unsigned short) bdtPtr->numberOfSlots;
    theDeftemplate->factList = NULL;
    theDeftemplate->lastFact = NULL;

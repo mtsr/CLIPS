@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.40  10/26/15          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -57,7 +57,7 @@
 
 void IncrementDefclassBusyCount(void *,void *);
 void DecrementDefclassBusyCount(void *,void *);
-intBool InstancesPurge(void *theEnv);
+bool InstancesPurge(void *theEnv);
 
 #if ! RUN_TIME
 void InitializeClasses(void *);
@@ -65,7 +65,7 @@ void InitializeClasses(void *);
 SLOT_DESC *FindClassSlot(DEFCLASS *,SYMBOL_HN *);
 void ClassExistError(void *,const char *,const char *);
 void DeleteClassLinks(void *,CLASS_LINK *);
-void PrintClassName(void *,const char *,DEFCLASS *,intBool);
+void PrintClassName(void *,const char *,DEFCLASS *,bool);
 
 #if DEBUGGING_FUNCTIONS || ((! BLOAD_ONLY) && (! RUN_TIME))
 void PrintPackedClassLinks(void *,const char *,const char *,PACKED_CLASS_LINKS *);
@@ -78,19 +78,19 @@ void AddClassLink(void *,PACKED_CLASS_LINKS *,DEFCLASS *,int);
 void DeleteSubclassLink(void *,DEFCLASS *,DEFCLASS *);
 void DeleteSuperclassLink(void *,DEFCLASS *,DEFCLASS *);
 DEFCLASS *NewClass(void *,SYMBOL_HN *);
-void DeletePackedClassLinks(void *,PACKED_CLASS_LINKS *,int);
+void DeletePackedClassLinks(void *,PACKED_CLASS_LINKS *,bool);
 void AssignClassID(void *,DEFCLASS *);
-SLOT_NAME *AddSlotName(void *,SYMBOL_HN *,int,int);
+SLOT_NAME *AddSlotName(void *,SYMBOL_HN *,int,bool);
 void DeleteSlotName(void *,SLOT_NAME *);
 void RemoveDefclass(void *,void *);
-void InstallClass(void *,DEFCLASS *,int);
+void InstallClass(void *,DEFCLASS *,bool);
 #endif
 void DestroyDefclass(void *,void *);
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
-int IsClassBeingUsed(DEFCLASS *);
-int RemoveAllUserClasses(void *);
-int DeleteClassUAG(void *,DEFCLASS *);
+bool IsClassBeingUsed(DEFCLASS *);
+bool RemoveAllUserClasses(void *);
+bool DeleteClassUAG(void *,DEFCLASS *);
 void MarkBitMapSubclasses(char *,DEFCLASS *,int);
 #endif
 

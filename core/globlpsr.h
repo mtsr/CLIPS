@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*             DEFGLOBAL PARSER HEADER FILE            */
    /*******************************************************/
@@ -44,8 +44,8 @@ struct defglobal;
 #include "expressn.h"
 #endif
 
-   intBool                 ParseDefglobal(void *,const char *);
-   intBool                 ReplaceGlobalVariable(void *,struct expr *);
+   bool                    ParseDefglobal(void *,const char *);
+   bool                    ReplaceGlobalVariable(void *,struct expr *);
    void                    GlobalReferenceErrorMessage(void *,const char *);
 
 #endif /* _H_globlpsr */

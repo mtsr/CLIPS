@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                    SCANNER MODULE                   */
    /*******************************************************/
@@ -431,7 +431,7 @@ static void *ScanSymbol(
 #if OBJECT_SYSTEM
    if (count > 2)
      {
-      if ((ScannerData(theEnv)->GlobalString[0] == '[') ? (ScannerData(theEnv)->GlobalString[count-1] == ']') : FALSE)
+      if ((ScannerData(theEnv)->GlobalString[0] == '[') ? (ScannerData(theEnv)->GlobalString[count-1] == ']') : false)
         {
          *type = INSTANCE_NAME;
          inchar = ']';
@@ -485,9 +485,9 @@ static void *ScanString(
       inchar = EnvGetcRouter(theEnv,logicalName);
      }
 
-   if ((inchar == EOF) && (ScannerData(theEnv)->IgnoreCompletionErrors == FALSE))
+   if ((inchar == EOF) && (ScannerData(theEnv)->IgnoreCompletionErrors == false))
      { 
-      PrintErrorID(theEnv,"SCANNER",1,TRUE);
+      PrintErrorID(theEnv,"SCANNER",1,true);
       EnvPrintRouter(theEnv,WERROR,"Encountered End-Of-File while scanning a string\n"); 
      }
 
@@ -517,8 +517,8 @@ static void ScanNumber(
   {
    int count = 0;
    int inchar, phase;
-   int digitFound = FALSE;
-   int processFloat = FALSE;
+   bool digitFound = false;
+   bool processFloat = false;
    double fvalue;
    long long lvalue;
    unsigned short type;
@@ -542,7 +542,7 @@ static void ScanNumber(
          if (isdigit(inchar))
            {
             phase = 0;
-            digitFound = TRUE;
+            digitFound = true;
             ScannerData(theEnv)->GlobalString = ExpandStringWithChar(theEnv,inchar,ScannerData(theEnv)->GlobalString,&ScannerData(theEnv)->GlobalPos,&ScannerData(theEnv)->GlobalMax,ScannerData(theEnv)->GlobalMax+80);
             count++;
            }
@@ -554,14 +554,14 @@ static void ScanNumber(
            }
          else if (inchar == '.')
            {
-            processFloat = TRUE;
+            processFloat = true;
             ScannerData(theEnv)->GlobalString = ExpandStringWithChar(theEnv,inchar,ScannerData(theEnv)->GlobalString,&ScannerData(theEnv)->GlobalPos,&ScannerData(theEnv)->GlobalMax,ScannerData(theEnv)->GlobalMax+80);
             count++;
             phase = 1;
            }
          else if ((inchar == 'E') || (inchar == 'e'))
            {
-            processFloat = TRUE;
+            processFloat = true;
             ScannerData(theEnv)->GlobalString = ExpandStringWithChar(theEnv,inchar,ScannerData(theEnv)->GlobalString,&ScannerData(theEnv)->GlobalPos,&ScannerData(theEnv)->GlobalMax,ScannerData(theEnv)->GlobalMax+80);
             count++;
             phase = 2;
@@ -583,20 +583,20 @@ static void ScanNumber(
         {
          if (isdigit(inchar))
            {
-            digitFound = TRUE;
+            digitFound = true;
             ScannerData(theEnv)->GlobalString = ExpandStringWithChar(theEnv,inchar,ScannerData(theEnv)->GlobalString,&ScannerData(theEnv)->GlobalPos,&ScannerData(theEnv)->GlobalMax,ScannerData(theEnv)->GlobalMax+80);
             count++;
            }
          else if (inchar == '.')
            {
-            processFloat = TRUE;
+            processFloat = true;
             ScannerData(theEnv)->GlobalString = ExpandStringWithChar(theEnv,inchar,ScannerData(theEnv)->GlobalString,&ScannerData(theEnv)->GlobalPos,&ScannerData(theEnv)->GlobalMax,ScannerData(theEnv)->GlobalMax+80);
             count++;
             phase = 1;
            }
          else if ((inchar == 'E') || (inchar == 'e'))
            {
-            processFloat = TRUE;
+            processFloat = true;
             ScannerData(theEnv)->GlobalString = ExpandStringWithChar(theEnv,inchar,ScannerData(theEnv)->GlobalString,&ScannerData(theEnv)->GlobalPos,&ScannerData(theEnv)->GlobalMax,ScannerData(theEnv)->GlobalMax+80);
             count++;
             phase = 2;
@@ -618,7 +618,7 @@ static void ScanNumber(
         {
          if (isdigit(inchar))
            {
-            digitFound = TRUE;
+            digitFound = true;
             ScannerData(theEnv)->GlobalString = ExpandStringWithChar(theEnv,inchar,ScannerData(theEnv)->GlobalString,&ScannerData(theEnv)->GlobalPos,&ScannerData(theEnv)->GlobalMax,ScannerData(theEnv)->GlobalMax+80);
             count++;
            }
@@ -661,7 +661,7 @@ static void ScanNumber(
                    (inchar == ' ') || (inchar == ';') ||
                    ((isprint(inchar) == 0) && (! IsUTF8MultiByteStart(inchar))) )
            {
-            digitFound = FALSE;
+            digitFound = false;
             phase = 5;
            }
          else
@@ -685,7 +685,7 @@ static void ScanNumber(
                    ((isprint(inchar) == 0) && (! IsUTF8MultiByteStart(inchar))) )
            {
             if ((ScannerData(theEnv)->GlobalString[count-1] == '+') || (ScannerData(theEnv)->GlobalString[count-1] == '-'))
-              { digitFound = FALSE; }
+              { digitFound = false; }
             phase = 5;
            }
          else
@@ -740,7 +740,7 @@ static void ScanNumber(
 #endif
       if (errno)
         {
-         PrintWarningID(theEnv,"SCANNER",1,FALSE);
+         PrintWarningID(theEnv,"SCANNER",1,false);
          EnvPrintRouter(theEnv,WWARNING,"Over or underflow of long long integer.\n");
         }
       theToken->type = INTEGER;

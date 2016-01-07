@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               RULE BUILD HEADER FILE                */
    /*******************************************************/
@@ -43,7 +43,7 @@
 #include "network.h"
 #endif
 
-   struct joinNode               *ConstructJoins(void *,int,struct lhsParseNode *,int,struct joinNode *,int,int);
+   struct joinNode               *ConstructJoins(void *,int,struct lhsParseNode *,int,struct joinNode *,bool,bool);
 
 #endif /* _H_rulebld */
 

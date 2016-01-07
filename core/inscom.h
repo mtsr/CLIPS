@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/22/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -63,23 +63,23 @@ struct instanceData
   { 
    INSTANCE_TYPE DummyInstance;
    INSTANCE_TYPE **InstanceTable;
-   int MaintainGarbageInstances;
-   int MkInsMsgPass;
-   int ChangesToInstances;
+   bool MaintainGarbageInstances;
+   bool MkInsMsgPass;
+   bool ChangesToInstances;
    IGARBAGE *InstanceGarbageList;
    struct patternEntityRecord InstanceInfo;
    INSTANCE_TYPE *InstanceList;  
    unsigned long GlobalNumberOfInstances;
    INSTANCE_TYPE *CurrentInstance;
    INSTANCE_TYPE *InstanceListBottom;
-   intBool ObjectModDupMsgValid;
+   bool ObjectModDupMsgValid;
   };
 
 #define InstanceData(theEnv) ((struct instanceData *) GetEnvironmentData(theEnv,INSTANCE_DATA))
 
    void                           SetupInstances(void *);
-   intBool                        EnvDeleteInstance(void *,void *);
-   intBool                        EnvUnmakeInstance(void *,void *);
+   bool                           EnvDeleteInstance(void *,void *);
+   bool                           EnvUnmakeInstance(void *,void *);
 #if DEBUGGING_FUNCTIONS
    void                           InstancesCommand(void *);
    void                           PPInstanceCommand(void *);
@@ -87,10 +87,10 @@ struct instanceData
 #endif
    void                          *EnvMakeInstance(void *,const char *);
    void                          *EnvCreateRawInstance(void *,void *,const char *);
-   void                          *EnvFindInstance(void *,void *,const char *,unsigned);
+   void                          *EnvFindInstance(void *,void *,const char *,bool);
    int                            EnvValidInstanceAddress(void *,void *);
    void                           EnvDirectGetSlot(void *,void *,const char *,DATA_OBJECT *);
-   int                            EnvDirectPutSlot(void *,void *,const char *,DATA_OBJECT *);
+   bool                           EnvDirectPutSlot(void *,void *,const char *,DATA_OBJECT *);
    const char                    *EnvGetInstanceName(void *,void *);
    void                          *EnvGetInstanceClass(void *,void *);
    unsigned long GetGlobalNumberOfInstances(void *);
@@ -100,23 +100,23 @@ struct instanceData
    void                          *EnvGetNextInstanceInClassAndSubclasses(void *,void **,void *,DATA_OBJECT *);
    void                           EnvGetInstancePPForm(void *,char *,size_t,void *);
    void                           ClassCommand(void *,DATA_OBJECT *);
-   intBool                        DeleteInstanceCommand(void *);
-   intBool                        UnmakeInstanceCommand(void *);
+   bool                           DeleteInstanceCommand(void *);
+   bool                           UnmakeInstanceCommand(void *);
    void                           SymbolToInstanceName(void *,DATA_OBJECT *);
    void                          *InstanceNameToSymbol(void *);
    void                           InstanceAddressCommand(void *,DATA_OBJECT *);
    void                           InstanceNameCommand(void *,DATA_OBJECT *);
-   intBool                        InstanceAddressPCommand(void *);
-   intBool                        InstanceNamePCommand(void *);
-   intBool                        InstancePCommand(void *);
-   intBool                        InstanceExistPCommand(void *);
-   intBool                        CreateInstanceHandler(void *);
+   bool                           InstanceAddressPCommand(void *);
+   bool                           InstanceNamePCommand(void *);
+   bool                           InstancePCommand(void *);
+   bool                           InstanceExistPCommand(void *);
+   bool                           CreateInstanceHandler(void *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    const char                    *GetInstanceName(void *);
    void                          *CreateRawInstance(void *,const char *);
-   intBool                        DeleteInstance(void *);
+   bool                           DeleteInstance(void *);
    void                           DirectGetSlot(void *,const char *,DATA_OBJECT *);
    int                            DirectPutSlot(void *,const char *,DATA_OBJECT *);
    void                          *FindInstance(void *,const char *,unsigned);
@@ -129,7 +129,7 @@ struct instanceData
 #if DEBUGGING_FUNCTIONS
    void                          *MakeInstance(const char *);
 #endif
-   intBool                        UnmakeInstance(void *);
+   bool                           UnmakeInstance(void *);
    int                            ValidInstanceAddress(void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

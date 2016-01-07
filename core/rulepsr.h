@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               RULE PARSING HEADER FILE              */
    /*******************************************************/
@@ -37,7 +37,7 @@
 #ifndef _H_rulepsr
 #define _H_rulepsr
 
-   int                            ParseDefrule(void *,const char *);
+   bool                           ParseDefrule(void *,const char *);
    struct lhsParseNode           *FindVariable(struct symbolHashNode *,
                                                       struct lhsParseNode *);
 #if DEVELOPER && DEBUGGING_FUNCTIONS

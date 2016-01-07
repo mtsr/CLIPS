@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  08/04/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -52,7 +52,7 @@
 /*            constructs that are contained externally to    */
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
-/*      6.31: Modified EnvClear to return completion status. */
+/*      6.40: Modified EnvClear to return completion status. */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
@@ -190,10 +190,10 @@ struct construct *FindConstruct(
 /***********************************************************/
 /* RemoveConstruct: Removes a construct and its associated */
 /*   parsing function from the ListOfConstructs. Returns   */
-/*   TRUE if the construct type was removed, otherwise     */
-/*   FALSE.                                                */
+/*   true if the construct type was removed, otherwise     */
+/*   false.                                                */
 /***********************************************************/
-int RemoveConstruct(
+bool RemoveConstruct(
   void *theEnv,
   const char *name)
   {
@@ -210,34 +210,34 @@ int RemoveConstruct(
          else
            { lastPtr->next = currentPtr->next; }
          rtn_struct(theEnv,construct,currentPtr);
-         return(TRUE);
+         return(true);
         }
 
       lastPtr = currentPtr;
      }
 
-   return(FALSE);
+   return(false);
   }
 
 /************************************************/
 /* Save: C access routine for the save command. */
 /************************************************/
-int EnvSave(
+bool EnvSave(
   void *theEnv,
   const char *fileName)
   {
    struct callFunctionItem *saveFunction;
    FILE *filePtr;
    struct defmodule *defmodulePtr;
-   intBool updated = FALSE;
-   intBool unvisited = TRUE;
+   bool updated = false;
+   bool unvisited = true;
 
    /*=====================*/
    /* Open the save file. */
    /*=====================*/
 
    if ((filePtr = GenOpen(theEnv,fileName,"w")) == NULL)
-     { return(FALSE); }
+     { return(false); }
 
    /*===========================*/
    /* Bypass the router system. */
@@ -258,8 +258,8 @@ int EnvSave(
    
    while (unvisited)
      {
-      unvisited = FALSE;
-      updated = FALSE;
+      unvisited = false;
+      updated = false;
       
       for (defmodulePtr = (struct defmodule *) EnvGetNextDefmodule(theEnv,NULL);
            defmodulePtr != NULL;
@@ -283,22 +283,22 @@ int EnvSave(
                ((* (void (*)(void *,void *,char *)) saveFunction->func))(theEnv,defmodulePtr,(char *) filePtr);
               }
               
-            updated = TRUE;
-            defmodulePtr->visitedFlag = TRUE;
+            updated = true;
+            defmodulePtr->visitedFlag = true;
            }
          else
-           { unvisited = TRUE; }
+           { unvisited = true; }
         }
         
       /*=====================================================================*/
       /* At least one module should be saved in every pass. If all have been */
-      /* visited/saved, then both flags will be FALSE. If all remaining      */
+      /* visited/saved, then both flags will be false. If all remaining      */
       /* unvisited/unsaved modules were visited/saved, then unvisited will   */
-      /* be FALSE and updated will be TRUE. If some, but not all, remaining  */
+      /* be false and updated will be true. If some, but not all, remaining  */
       /* unvisited/unsaved modules are visited/saved, then  unvisited will   */
-      /* be TRUE and updated will be TRUE. This leaves the case where there  */
+      /* be true and updated will be true. This leaves the case where there  */
       /* are remaining unvisited/unsaved modules, but none were              */
-      /* visited/saved: unvisited is TRUE and updated is FALSE.              */
+      /* visited/saved: unvisited is true and updated is false.              */
       /*=====================================================================*/
       
       if (unvisited && (! updated))
@@ -321,30 +321,30 @@ int EnvSave(
    SetFastSave(theEnv,NULL);
 
    /*=========================*/
-   /* Return TRUE to indicate */
+   /* Return true to indicate */
    /* successful completion.  */
    /*=========================*/
 
-   return(TRUE);
+   return(true);
   }
 
 /*******************************************************/
 /* RemoveSaveFunction: Removes a function from the     */
-/*   ListOfSaveFunctions. Returns TRUE if the function */
-/*   was successfully removed, otherwise FALSE.        */
+/*   ListOfSaveFunctions. Returns true if the function */
+/*   was successfully removed, otherwise false.        */
 /*******************************************************/
-intBool RemoveSaveFunction(
+bool RemoveSaveFunction(
   void *theEnv,
   const char *name)
   {
-   int found;
+   bool found;
 
    ConstructData(theEnv)->ListOfSaveFunctions =
      RemoveFunctionFromCallList(theEnv,name,ConstructData(theEnv)->ListOfSaveFunctions,&found);
 
-   if (found) return(TRUE);
+   if (found) return(true);
 
-   return(FALSE);
+   return(false);
   }
 
 /**********************************/
@@ -374,7 +374,7 @@ unsigned GetCompilationsWatch(
 /**********************************/
 void SetPrintWhileLoading(
   void *theEnv,
-  intBool value)
+  bool value)
   {
    ConstructData(theEnv)->PrintWhileLoading = value;
   }
@@ -383,7 +383,7 @@ void SetPrintWhileLoading(
 /* GetPrintWhileLoading: Returns the */
 /*   value of PrintWhileLoading.     */
 /*************************************/
-intBool GetPrintWhileLoading(
+bool GetPrintWhileLoading(
   void *theEnv)
   {
    return(ConstructData(theEnv)->PrintWhileLoading);
@@ -451,15 +451,15 @@ void EnvReset(
 
    if (ConstructData(theEnv)->ResetInProgress) return;
 
-   ConstructData(theEnv)->ResetInProgress = TRUE;
-   ConstructData(theEnv)->ResetReadyInProgress = TRUE;
+   ConstructData(theEnv)->ResetInProgress = true;
+   ConstructData(theEnv)->ResetReadyInProgress = true;
 
    /*================================================*/
    /* If the reset is performed from the top level   */
    /* command prompt, reset the halt execution flag. */
    /*================================================*/
 
-   if (UtilityData(theEnv)->CurrentGarbageFrame->topLevel) EnvSetHaltExecution(theEnv,FALSE);
+   if (UtilityData(theEnv)->CurrentGarbageFrame->topLevel) EnvSetHaltExecution(theEnv,false);
 
    /*=======================================================*/
    /* Call the before reset function to determine if the    */
@@ -469,21 +469,20 @@ void EnvReset(
    /*=======================================================*/
 
    if ((ConstructData(theEnv)->BeforeResetFunction != NULL) ? 
-       ((*ConstructData(theEnv)->BeforeResetFunction)(theEnv) == FALSE) :
-                                       FALSE)
+       ((*ConstructData(theEnv)->BeforeResetFunction)(theEnv) == false) : false)
      {
-      ConstructData(theEnv)->ResetReadyInProgress = FALSE;
-      ConstructData(theEnv)->ResetInProgress = FALSE;
+      ConstructData(theEnv)->ResetReadyInProgress = false;
+      ConstructData(theEnv)->ResetInProgress = false;
       return;
      }
-   ConstructData(theEnv)->ResetReadyInProgress = FALSE;
+   ConstructData(theEnv)->ResetReadyInProgress = false;
 
    /*===========================*/
    /* Call each reset function. */
    /*===========================*/
 
    for (resetPtr = ConstructData(theEnv)->ListOfResetFunctions;
-        (resetPtr != NULL) && (EnvGetHaltExecution(theEnv) == FALSE);
+        (resetPtr != NULL) && (EnvGetHaltExecution(theEnv) == false);
         resetPtr = resetPtr->next)
      { 
       if (resetPtr->environmentAware)
@@ -514,7 +513,7 @@ void EnvReset(
    /* A reset is no longer in progress. */
    /*===================================*/
 
-   ConstructData(theEnv)->ResetInProgress = FALSE;
+   ConstructData(theEnv)->ResetInProgress = false;
   }
 
 /************************************/
@@ -535,7 +534,7 @@ int (*SetBeforeResetFunction(void *theEnv,
 /* EnvAddResetFunction: Adds a function */
 /*   to ListOfResetFunctions.           */
 /****************************************/
-intBool EnvAddResetFunction(
+bool EnvAddResetFunction(
   void *theEnv,
   const char *name,
   void (*functionPtr)(void *),
@@ -543,26 +542,24 @@ intBool EnvAddResetFunction(
   {
    ConstructData(theEnv)->ListOfResetFunctions = AddFunctionToCallList(theEnv,name,priority,
                                                 functionPtr,
-                                                ConstructData(theEnv)->ListOfResetFunctions,TRUE);
-   return(TRUE);
+                                                ConstructData(theEnv)->ListOfResetFunctions,true);
+   return(true);
   }
 
 /**********************************************/
 /* EnvRemoveResetFunction: Removes a function */
 /*   from the ListOfResetFunctions.           */
 /**********************************************/
-intBool EnvRemoveResetFunction(
+bool EnvRemoveResetFunction(
   void *theEnv,
   const char *name)
   {
-   int found;
+   bool found;
 
    ConstructData(theEnv)->ListOfResetFunctions =
       RemoveFunctionFromCallList(theEnv,name,ConstructData(theEnv)->ListOfResetFunctions,&found);
-
-   if (found) return(TRUE);
-
-   return(FALSE);
+   
+   return found;
   }
 
 /*******************************************/
@@ -589,7 +586,7 @@ void EnvDecrementClearReadyLocks(
 /*****************************************************/
 /* EnvClear: C access routine for the clear command. */
 /*****************************************************/
-int EnvClear(
+bool EnvClear(
   void *theEnv)
   {
    struct callFunctionItem *theFunction;
@@ -608,26 +605,26 @@ int EnvClear(
    /* Determine if a clear is possible. */
    /*===================================*/
 
-   ConstructData(theEnv)->ClearReadyInProgress = TRUE;
+   ConstructData(theEnv)->ClearReadyInProgress = true;
    if ((ConstructData(theEnv)->ClearReadyLocks > 0) ||
        (ConstructData(theEnv)->DanglingConstructs > 0) ||
-       (ClearReady(theEnv) == FALSE))
+       (ClearReady(theEnv) == false))
      {
-      PrintErrorID(theEnv,"CONSTRCT",1,FALSE);
+      PrintErrorID(theEnv,"CONSTRCT",1,false);
       EnvPrintRouter(theEnv,WERROR,"Some constructs are still in use. Clear cannot continue.\n");
 #if DEBUGGING_FUNCTIONS
       EnvDeactivateRouter(theEnv,WTRACE);
 #endif
-      ConstructData(theEnv)->ClearReadyInProgress = FALSE;
-      return FALSE;
+      ConstructData(theEnv)->ClearReadyInProgress = false;
+      return false;
      }
-   ConstructData(theEnv)->ClearReadyInProgress = FALSE;
+   ConstructData(theEnv)->ClearReadyInProgress = false;
 
    /*===========================*/
    /* Call all clear functions. */
    /*===========================*/
 
-   ConstructData(theEnv)->ClearInProgress = TRUE;
+   ConstructData(theEnv)->ClearInProgress = true;
 
    for (theFunction = ConstructData(theEnv)->ListOfClearFunctions;
         theFunction != NULL;
@@ -664,7 +661,7 @@ int EnvClear(
    /* Clear has been completed. */
    /*===========================*/
 
-   ConstructData(theEnv)->ClearInProgress = FALSE;
+   ConstructData(theEnv)->ClearInProgress = false;
    
 #if DEFRULE_CONSTRUCT
    if ((DefruleData(theEnv)->RightPrimeJoins != NULL) ||
@@ -678,73 +675,73 @@ int EnvClear(
    
    EnvReset(theEnv);
    
-   return TRUE;
+   return true;
   }
 
 /*********************************************************/
-/* ClearReady: Returns TRUE if a clear can be performed, */
-/*   otherwise FALSE. Note that this is destructively    */
+/* ClearReady: Returns true if a clear can be performed, */
+/*   otherwise false. Note that this is destructively    */
 /*   determined (e.g. facts will be deleted as part of   */
 /*   the determination).                                 */
 /*********************************************************/
-intBool ClearReady(
+bool ClearReady(
   void *theEnv)
   {
    struct callFunctionItem *theFunction;
-   int (*tempFunction)(void *);
+   bool (*tempFunction)(void *);
 
    for (theFunction = ConstructData(theEnv)->ListOfClearReadyFunctions;
         theFunction != NULL;
         theFunction = theFunction->next)
      {
-      tempFunction = (int (*)(void *)) theFunction->func;
-      if ((*tempFunction)(theEnv) == FALSE)
-        { return(FALSE); }
+      tempFunction = (bool (*)(void *)) theFunction->func;
+      if ((*tempFunction)(theEnv) == false)
+        { return(false); }
      }
 
-   return(TRUE);
+   return(true);
   }
 
 /******************************************/
 /* AddClearReadyFunction: Adds a function */
 /*   to ListOfClearReadyFunctions.        */
 /******************************************/
-intBool AddClearReadyFunction(
+bool AddClearReadyFunction(
   void *theEnv,
   const char *name,
-  int (*functionPtr)(void *),
+  bool (*functionPtr)(void *),
   int priority)
   {
    ConstructData(theEnv)->ListOfClearReadyFunctions =
      AddFunctionToCallList(theEnv,name,priority,
                            (void (*)(void *)) functionPtr,
-                           ConstructData(theEnv)->ListOfClearReadyFunctions,TRUE);
-   return(1);
+                           ConstructData(theEnv)->ListOfClearReadyFunctions,true);
+   return(true);
   }
 
 /************************************************/
 /* RemoveClearReadyFunction: Removes a function */
 /*   from the ListOfClearReadyFunctions.        */
 /************************************************/
-intBool RemoveClearReadyFunction(
+bool RemoveClearReadyFunction(
   void *theEnv,
   const char *name)
   {
-   int found;
+   bool found;
 
    ConstructData(theEnv)->ListOfClearReadyFunctions =
       RemoveFunctionFromCallList(theEnv,name,ConstructData(theEnv)->ListOfClearReadyFunctions,&found);
 
-   if (found) return(TRUE);
+   if (found) return(true);
 
-   return(FALSE);
+   return(false);
   }
 
 /****************************************/
 /* EnvAddClearFunction: Adds a function */
 /*   to ListOfClearFunctions.           */
 /****************************************/
-intBool EnvAddClearFunction(
+bool EnvAddClearFunction(
   void *theEnv,
   const char *name,
   void (*functionPtr)(void *),
@@ -753,34 +750,34 @@ intBool EnvAddClearFunction(
    ConstructData(theEnv)->ListOfClearFunctions =
       AddFunctionToCallList(theEnv,name,priority,
                             (void (*)(void *)) functionPtr,
-                            ConstructData(theEnv)->ListOfClearFunctions,TRUE);
-   return(1);
+                            ConstructData(theEnv)->ListOfClearFunctions,true);
+   return(true);
   }
 
 /**********************************************/
 /* EnvRemoveClearFunction: Removes a function */
 /*    from the ListOfClearFunctions.          */
 /**********************************************/
-intBool EnvRemoveClearFunction(
+bool EnvRemoveClearFunction(
   void *theEnv,
   const char *name)
   {
-   int found;
+   bool found;
 
    ConstructData(theEnv)->ListOfClearFunctions =
      RemoveFunctionFromCallList(theEnv,name,ConstructData(theEnv)->ListOfClearFunctions,&found);
 
-   if (found) return(TRUE);
+   if (found) return(true);
 
-   return(FALSE);
+   return(false);
   }
 
-/***********************************************/
-/* ExecutingConstruct: Returns TRUE if a */
-/*   construct is currently being executed,    */
-/*   otherwise FALSE.                    */
-/***********************************************/
-int ExecutingConstruct(
+/********************************************/
+/* ExecutingConstruct: Returns true if a    */
+/*   construct is currently being executed, */
+/*   otherwise false.                       */
+/********************************************/
+bool ExecutingConstruct(
   void *theEnv)
   {
    return(ConstructData(theEnv)->Executing); 
@@ -794,7 +791,7 @@ int ExecutingConstruct(
 /********************************************/
 void SetExecutingConstruct(
   void *theEnv,
-  int value)
+  bool value)
   {
    ConstructData(theEnv)->Executing = value;
   }
@@ -856,15 +853,15 @@ struct construct *AddConstruct(
   void *theEnv,
   const char *name,
   const char *pluralName,
-  int (*parseFunction)(void *,const char *),
+  bool (*parseFunction)(void *,const char *),
   void *(*findFunction)(void *,const char *),
   SYMBOL_HN *(*getConstructNameFunction)(struct constructHeader *),
   const char *(*getPPFormFunction)(void *,struct constructHeader *),
   struct defmoduleItemHeader *(*getModuleItemFunction)(struct constructHeader *),
   void *(*getNextItemFunction)(void *,void *),
   void (*setNextItemFunction)(struct constructHeader *,struct constructHeader *),
-  intBool (*isConstructDeletableFunction)(void *,void *),
-  int (*deleteFunction)(void *,void *),
+  bool (*isConstructDeletableFunction)(void *,void *),
+  bool (*deleteFunction)(void *,void *),
   void (*freeFunction)(void *,void *))
   {
    struct construct *newPtr;
@@ -903,7 +900,7 @@ struct construct *AddConstruct(
 /* AddSaveFunction: Adds a function */
 /*   to the ListOfSaveFunctions.    */
 /************************************/
-intBool AddSaveFunction(
+bool AddSaveFunction(
   void *theEnv,
   const char *name,
   void (*functionPtr)(void *,void *,const char *),
@@ -913,14 +910,14 @@ intBool AddSaveFunction(
    ConstructData(theEnv)->ListOfSaveFunctions =
      AddFunctionToCallList(theEnv,name,priority,
                            (void (*)(void *)) functionPtr,
-                           ConstructData(theEnv)->ListOfSaveFunctions,TRUE);
+                           ConstructData(theEnv)->ListOfSaveFunctions,true);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
 #endif
 
-   return(1);
+   return(true);
   }
 
 /*#####################################*/
@@ -929,7 +926,7 @@ intBool AddSaveFunction(
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-intBool AddClearFunction(
+bool AddClearFunction(
   const char *name,
   void (*functionPtr)(void),
   int priority)
@@ -941,11 +938,11 @@ intBool AddClearFunction(
    ConstructData(theEnv)->ListOfClearFunctions =
       AddFunctionToCallList(theEnv,name,priority,
                             (void (*)(void *)) functionPtr,
-                            ConstructData(theEnv)->ListOfClearFunctions,FALSE);
-   return(1);
+                            ConstructData(theEnv)->ListOfClearFunctions,false);
+   return(true);
   }
 
-intBool AddResetFunction(
+bool AddResetFunction(
   const char *name,
   void (*functionPtr)(void),
   int priority)
@@ -956,8 +953,8 @@ intBool AddResetFunction(
    
    ConstructData(theEnv)->ListOfResetFunctions = 
       AddFunctionToCallList(theEnv,name,priority,(void (*)(void *)) functionPtr,
-                            ConstructData(theEnv)->ListOfResetFunctions,FALSE);
-   return(TRUE);
+                            ConstructData(theEnv)->ListOfResetFunctions,false);
+   return(true);
   }
 
 int Clear()
@@ -965,13 +962,13 @@ int Clear()
    return EnvClear(GetCurrentEnvironment());
   }  
 
-intBool RemoveClearFunction(
+bool RemoveClearFunction(
   const char *name)
   {
    return EnvRemoveClearFunction(GetCurrentEnvironment(),name);
   }
 
-intBool RemoveResetFunction(
+bool RemoveResetFunction(
   const char *name)
   {
    return EnvRemoveResetFunction(GetCurrentEnvironment(),name);

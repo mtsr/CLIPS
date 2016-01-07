@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  12/06/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*          MISCELLANEOUS FUNCTIONS HEADER FILE        */
    /*******************************************************/
@@ -87,7 +87,7 @@
    void                           ExpandFuncCall(void *,DATA_OBJECT *);
    void                           DummyExpandFuncMultifield(void *,DATA_OBJECT *);
    void                          *CauseEvaluationError(void *);
-   intBool                        SetSORCommand(void *);
+   bool                           SetSORCommand(void *);
    void                          *GetFunctionRestrictions(void *);
    void                           AproposCommand(void *);
    void                          *GensymStar(void *);

@@ -769,23 +769,23 @@
       
       if ([theEvent modifierFlags] & NSShiftKeyMask)
         {
-         EnvSetHaltExecution(theEnvironment,TRUE);
+         EnvSetHaltExecution(theEnvironment,true);
          CloseAllBatchSources(theEnvironment);
         }
       else
         {
 #if DEFRULE_CONSTRUCT
          if (EngineData(theEnvironment)->ExecutingRule != NULL)
-           { EngineData(theEnvironment)->HaltRules = TRUE; }
+           { EngineData(theEnvironment)->HaltRules = true; }
          else
 #endif
            {
-            EnvSetHaltExecution(theEnvironment,TRUE);
+            EnvSetHaltExecution(theEnvironment,true);
             CloseAllBatchSources(theEnvironment);
            }
         }
        
-      waitingForChar = FALSE;
+      waitingForChar = NO;
       charFound = -1;
       [NSApp stopModal];
 

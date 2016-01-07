@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*         DEFGLOBAL BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -49,7 +49,7 @@
 
    void                           DefglobalBasicCommands(void *);
    void                           UndefglobalCommand(void *);
-   intBool                        EnvUndefglobal(void *,void *);
+   bool                           EnvUndefglobal(void *,void *);
    void                           GetDefglobalListFunction(void *,DATA_OBJECT_PTR);
    void                           EnvGetDefglobalList(void *,DATA_OBJECT_PTR,void *);
    void                          *DefglobalModuleFunction(void *);
@@ -57,9 +57,9 @@
    int                            PPDefglobal(void *,const char *,const char *);
    void                           ListDefglobalsCommand(void *);
 #if DEBUGGING_FUNCTIONS
-   unsigned                       EnvGetDefglobalWatch(void *,void *);
+   bool                           EnvGetDefglobalWatch(void *,void *);
    void                           EnvListDefglobals(void *,const char *,void *);
-   void                           EnvSetDefglobalWatch(void *,unsigned,void *);
+   void                           EnvSetDefglobalWatch(void *,bool,void *);
 #endif
    void                           ResetDefglobals(void *);
 
@@ -71,7 +71,7 @@
    void                           ListDefglobals(const char *,void *);
    void                           SetDefglobalWatch(unsigned,void *);
 #endif
-   intBool                        Undefglobal(void *);
+   bool                           Undefglobal(void *);
    
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

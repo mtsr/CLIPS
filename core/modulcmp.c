@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*           DEFMODULE CONSTRUCTS-TO-C MODULE          */
    /*******************************************************/
@@ -59,11 +59,11 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                     ConstructToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
+   static bool                    ConstructToCode(void *,const char *,const char *,char *,int,FILE *,int,int);
    static void                    InitDefmoduleCode(void *,FILE *,int,int);
    static struct portItem        *GetNextPortItem(void *,struct defmodule **,struct portItem **,
-                                                  int *,int *);
-   static int                     PortItemsToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int *);
+                                                  bool *,bool *);
+   static bool                    PortItemsToCode(void *,const char *,const char *,char *,int,FILE *,int,int,int *);
    static void                    BeforeDefmodulesToCode(void *);
 
 /***************************************************************/
@@ -135,7 +135,7 @@ static void InitDefmoduleCode(
 /* ConstructToCode: Produces defmodule code for a run-time */
 /*   module created using the constructs-to-c function.    */
 /***********************************************************/
-static int ConstructToCode(
+static bool ConstructToCode(
   void *theEnv,
   const char *fileName,
   const char *pathName,
@@ -167,8 +167,8 @@ static int ConstructToCode(
    /* the maximum number of indices is ignored.  */
    /*============================================*/
 
-   if ((itemsFile = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,1,FALSE)) == NULL)
-     { return(FALSE); }
+   if ((itemsFile = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,1,false)) == NULL)
+     { return(false); }
    fprintf(itemsFile,"struct defmoduleItemHeader *%s%d_%d[] = {\n",ItemPrefix(),imageID,1);
    fprintf(headerFP,"extern struct defmoduleItemHeader *%s%d_%d[];\n",ItemPrefix(),imageID,1);
 
@@ -188,7 +188,7 @@ static int ConstructToCode(
       moduleFile = OpenFileIfNeeded(theEnv,moduleFile,fileName,pathName,fileNameBuffer,fileID,imageID,
                                     &fileCount,moduleArrayVersion,headerFP,
                                     "struct defmodule",DefmodulePrefix(),
-                                    FALSE,NULL);
+                                    false,NULL);
 
       if (moduleFile == NULL)
         {
@@ -196,7 +196,7 @@ static int ConstructToCode(
          CloseFileIfNeeded(theEnv,moduleFile,&moduleCount,
                            &moduleArrayVersion,maxIndices,NULL,NULL);
          GenClose(theEnv,itemsFile);
-         return(FALSE);
+         return(false);
         }
 
       /*======================================*/
@@ -311,7 +311,7 @@ static int ConstructToCode(
    /* Write out the portItem data structures. */
    /*=========================================*/
 
-   if (portItemCount == 0) return(TRUE);
+   if (portItemCount == 0) return(true);
    return(PortItemsToCode(theEnv,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,maxIndices,&fileCount));
   }
 
@@ -319,7 +319,7 @@ static int ConstructToCode(
 /* PortItemsToCode: Writes the C code representation of all */
 /*   portItem data structure nodes the specified file.      */
 /************************************************************/
-static int PortItemsToCode(
+static bool PortItemsToCode(
   void *theEnv,
   const char *fileName,
   const char *pathName,
@@ -333,8 +333,8 @@ static int PortItemsToCode(
    struct defmodule *theDefmodule = NULL;
    struct portItem *thePortItem = NULL;
    int portItemCount = 0;
-   int importChecked = FALSE;
-   int exportChecked = FALSE;
+   bool importChecked = false;
+   bool exportChecked = false;
    FILE *portItemsFile = NULL;
    int portItemArrayVersion = 1;
 
@@ -354,14 +354,14 @@ static int PortItemsToCode(
       portItemsFile = OpenFileIfNeeded(theEnv,portItemsFile,fileName,pathName,fileNameBuffer,fileID,imageID,
                                        fileCount,portItemArrayVersion,headerFP,
                                        "struct portItem",PortPrefix(),
-                                       FALSE,NULL);
+                                       false,NULL);
 
       if (portItemsFile == NULL)
         {
          portItemCount = maxIndices;
          CloseFileIfNeeded(theEnv,portItemsFile,&portItemCount,
                            &portItemArrayVersion,maxIndices,NULL,NULL);
-         return(FALSE);
+         return(false);
         }
 
       /*================================================*/
@@ -396,7 +396,7 @@ static int PortItemsToCode(
      }
 
    /*===================================================*/
-   /* Close the output file and return TRUE to indicate */
+   /* Close the output file and return true to indicate */
    /* the data structures were successfully written.    */
    /*===================================================*/
 
@@ -404,7 +404,7 @@ static int PortItemsToCode(
    CloseFileIfNeeded(theEnv,portItemsFile,&portItemCount,
                      &portItemArrayVersion,maxIndices,NULL,NULL);
 
-   return(TRUE);
+   return(true);
   }
 
 /*********************************************************************/
@@ -417,8 +417,8 @@ static struct portItem *GetNextPortItem(
   void *theEnv,
   struct defmodule **theDefmodule,
   struct portItem **thePortItem,
-  int *importChecked,
-  int *exportChecked)
+  bool *importChecked,
+  bool *exportChecked)
   {
    /*====================================================*/
    /* If the defmodule pointer is NULL, then the "first" */
@@ -430,8 +430,8 @@ static struct portItem *GetNextPortItem(
      {
       *theDefmodule = (struct defmodule *) EnvGetNextDefmodule(theEnv,NULL);
       *thePortItem = NULL;
-      *importChecked = FALSE;
-      *exportChecked = FALSE;
+      *importChecked = false;
+      *exportChecked = false;
      }
 
    /*==============================================*/
@@ -459,11 +459,11 @@ static struct portItem *GetNextPortItem(
       if (! (*importChecked))
         {
          *thePortItem = (*theDefmodule)->importList;
-         *importChecked = TRUE;
+         *importChecked = true;
          if (*thePortItem == NULL)
            {
             *thePortItem = (*theDefmodule)->exportList;
-            *exportChecked = TRUE;
+            *exportChecked = true;
            }
         }
 
@@ -474,7 +474,7 @@ static struct portItem *GetNextPortItem(
 
       else if (! (*exportChecked))
         {
-         *exportChecked = TRUE;
+         *exportChecked = true;
          *thePortItem = (*theDefmodule)->exportList;
         }
 
@@ -491,8 +491,8 @@ static struct portItem *GetNextPortItem(
       /*==================================*/
 
       *theDefmodule = (struct defmodule *) EnvGetNextDefmodule(theEnv,*theDefmodule);
-      *importChecked = FALSE;
-      *exportChecked = FALSE;
+      *importChecked = false;
+      *exportChecked = false;
      }
 
    /*=======================================================*/

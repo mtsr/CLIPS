@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -111,14 +111,14 @@ struct proceduralPrimitiveData
 
 #if DEFFUNCTION_CONSTRUCT || OBJECT_SYSTEM
    EXPRESSION                    *ParseProcParameters(void *,const char *,struct token *,EXPRESSION *,
-                                                             SYMBOL_HN **,int *,int *,int *,
-                                                             int (*)(void *,const char *));
+                                                             SYMBOL_HN **,int *,int *,bool *,
+                                                             bool (*)(void *,const char *));
 #endif
    EXPRESSION                    *ParseProcActions(void *,const char *,const char *,struct token *,EXPRESSION *,SYMBOL_HN *,
                                                           int (*)(void *,EXPRESSION *,void *),
                                                           int (*)(void *,EXPRESSION *,void *),
                                                           int *,void *);
-   intBool                        ReplaceProcVars(void *,const char *,EXPRESSION *,EXPRESSION *,SYMBOL_HN *,
+   int                            ReplaceProcVars(void *,const char *,EXPRESSION *,EXPRESSION *,SYMBOL_HN *,
                                                          int (*)(void *,EXPRESSION *,void *),void *);
 #if DEFGENERIC_CONSTRUCT
    EXPRESSION                    *GenProcWildcardReference(void *,int);

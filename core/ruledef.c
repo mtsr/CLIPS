@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                   DEFRULE MODULE                    */
    /*******************************************************/
@@ -141,7 +141,7 @@ void InitializeDefrules(
 
    for (i = 0; i < ALPHA_MEMORY_HASH_SIZE; i++) DefruleData(theEnv)->AlphaMemoryTable[i] = NULL;
 
-   DefruleData(theEnv)->BetaMemoryResizingFlag = TRUE;
+   DefruleData(theEnv)->BetaMemoryResizingFlag = true;
    
    DefruleData(theEnv)->RightPrimeJoins = NULL;
    DefruleData(theEnv)->LeftPrimeJoins = NULL;   
@@ -164,7 +164,7 @@ static void DeallocateDefruleData(
      { return; }
 #endif
    
-   DoForAllConstructs(theEnv,DestroyDefruleAction,DefruleData(theEnv)->DefruleModuleIndex,FALSE,NULL);
+   DoForAllConstructs(theEnv,DestroyDefruleAction,DefruleData(theEnv)->DefruleModuleIndex,false,NULL);
 
    for (theModule = EnvGetNextDefmodule(theEnv,NULL);
         theModule != NULL;
@@ -314,26 +314,26 @@ void *EnvGetNextDefrule(
   }
 
 /*******************************************************/
-/* EnvIsDefruleDeletable: Returns TRUE if a particular */
-/*   defrule can be deleted, otherwise returns FALSE.  */
+/* EnvIsDefruleDeletable: Returns true if a particular */
+/*   defrule can be deleted, otherwise returns false.  */
 /*******************************************************/
-intBool EnvIsDefruleDeletable(
+bool EnvIsDefruleDeletable(
   void *theEnv,
   void *vTheDefrule)
   {
    struct defrule *theDefrule;
 
    if (! ConstructsDeletable(theEnv))
-     { return FALSE; }
+     { return false; }
 
    for (theDefrule = (struct defrule *) vTheDefrule;
         theDefrule != NULL;
         theDefrule = theDefrule->disjunct)
-     { if (theDefrule->executing) return(FALSE); }
+     { if (theDefrule->executing) return(false); }
 
-   if (EngineData(theEnv)->JoinOperationInProgress) return(FALSE);
+   if (EngineData(theEnv)->JoinOperationInProgress) return(false);
 
-   return(TRUE);
+   return(true);
   }
 
 /***********************************************************/
@@ -509,7 +509,7 @@ void AddBetaMemoriesToJoin(
       theNode->rightMemory->last = (struct partialMatch **) genalloc(theEnv,sizeof(struct partialMatch *));
       theNode->rightMemory->beta[0] = CreateEmptyPartialMatch(theEnv);
       theNode->rightMemory->beta[0]->owner = theNode;
-      theNode->rightMemory->beta[0]->rhsMemory = TRUE;
+      theNode->rightMemory->beta[0]->rhsMemory = true;
       theNode->rightMemory->last[0] = theNode->rightMemory->beta[0];
       theNode->rightMemory->size = 1;
       theNode->rightMemory->count = 1;    
@@ -581,7 +581,7 @@ void *GetNextDefrule(
    return EnvGetNextDefrule(GetCurrentEnvironment(),defrulePtr);
   }
 
-intBool IsDefruleDeletable(
+bool IsDefruleDeletable(
   void *vTheDefrule)
   {
    return EnvIsDefruleDeletable(GetCurrentEnvironment(),vTheDefrule);

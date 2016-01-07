@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -130,8 +130,8 @@ typedef struct objectMatchAction
   } OBJECT_MATCH_ACTION;
 
    void                  ObjectMatchDelay(void *,DATA_OBJECT *);
-   intBool               SetDelayObjectPatternMatching(void *,int);
-   intBool               GetDelayObjectPatternMatching(void *);
+   bool                  SetDelayObjectPatternMatching(void *,bool);
+   bool                  GetDelayObjectPatternMatching(void *);
    OBJECT_PATTERN_NODE  *ObjectNetworkPointer(void *);
    OBJECT_ALPHA_NODE    *ObjectNetworkTerminalPointer(void *);
    void                  SetObjectNetworkPointer(void *,OBJECT_PATTERN_NODE *);

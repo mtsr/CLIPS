@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*      CONSTRUCT PROFILING FUNCTIONS HEADER FILE      */
    /*******************************************************/
@@ -74,8 +74,8 @@ struct profileFunctionData
    double PercentThreshold;
    struct userDataRecord ProfileDataInfo;
    unsigned char ProfileDataID;
-   int ProfileUserFunctions;
-   int ProfileConstructs;
+   bool ProfileUserFunctions; // TBD bit fields?
+   bool ProfileConstructs;
    struct constructProfileInfo *ActiveProfileFrame;
    const char *OutputString;
   };
@@ -88,7 +88,7 @@ struct profileFunctionData
    void                           StartProfile(void *,
                                                       struct profileFrameInfo *,
                                                       struct userData **,
-                                                      intBool);
+                                                      bool);
    void                           EndProfile(void *,struct profileFrameInfo *);
    void                           ProfileResetCommand(void *);
    void                           ResetProfileInfo(struct constructProfileInfo *);
@@ -97,7 +97,7 @@ struct profileFunctionData
    double                         SetProfilePercentThreshold(void *,double);
    double                         GetProfilePercentThresholdCommand(void *);
    double                         GetProfilePercentThreshold(void *);
-   intBool                        Profile(void *,const char *);
+   bool                           Profile(void *,const char *);
    void                           DeleteProfileData(void *,void *);
    void                          *CreateProfileData(void *);
    const char                    *SetProfileOutputString(void *,const char *);

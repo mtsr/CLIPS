@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 SYMBOL BSAVE MODULE                 */
    /*******************************************************/
@@ -93,7 +93,7 @@ void InitAtomicValueNeededFlags(
       symbolPtr = symbolArray[i];
       while (symbolPtr != NULL)
         {
-         symbolPtr->neededSymbol = FALSE;
+         symbolPtr->neededSymbol = false;
          symbolPtr = symbolPtr->next;
         }
      }
@@ -109,7 +109,7 @@ void InitAtomicValueNeededFlags(
       floatPtr = floatArray[i];
       while (floatPtr != NULL)
         {
-         floatPtr->neededFloat = FALSE;
+         floatPtr->neededFloat = false;
          floatPtr = floatPtr->next;
         }
      }
@@ -125,7 +125,7 @@ void InitAtomicValueNeededFlags(
       integerPtr = integerArray[i];
       while (integerPtr != NULL)
         {
-         integerPtr->neededInteger = FALSE;
+         integerPtr->neededInteger = false;
          integerPtr = integerPtr->next;
         }
      }
@@ -141,7 +141,7 @@ void InitAtomicValueNeededFlags(
       bitMapPtr = bitMapArray[i];
       while (bitMapPtr != NULL)
         {
-         bitMapPtr->neededBitMap = FALSE;
+         bitMapPtr->neededBitMap = false;
          bitMapPtr = bitMapPtr->next;
         }
      }

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.40  12/10/15          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -104,22 +104,22 @@ typedef struct
    ***************************************** */
 
 static void EvaluateProcParameters(void *,EXPRESSION *,int,const char *,const char *);
-static intBool RtnProcParam(void *,void *,DATA_OBJECT *);
-static intBool GetProcBind(void *,void *,DATA_OBJECT *);
-static intBool PutProcBind(void *,void *,DATA_OBJECT *);
-static intBool RtnProcWild(void *,void *,DATA_OBJECT *);
+static bool RtnProcParam(void *,void *,DATA_OBJECT *);
+static bool GetProcBind(void *,void *,DATA_OBJECT *);
+static bool PutProcBind(void *,void *,DATA_OBJECT *);
+static bool RtnProcWild(void *,void *,DATA_OBJECT *);
 static void DeallocateProceduralPrimitiveData(void *);
 static void ReleaseProcParameters(void *);
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
 static int FindProcParameter(SYMBOL_HN *,EXPRESSION *,SYMBOL_HN *);
-static int ReplaceProcBinds(void *,EXPRESSION *,
+static bool ReplaceProcBinds(void *,EXPRESSION *,
                              int (*)(void *,EXPRESSION *,void *),void *);
 static EXPRESSION *CompactActions(void *,EXPRESSION *);
 #endif
 
 #if (! DEFFUNCTION_CONSTRUCT) || (! DEFGENERIC_CONSTRUCT)
-static intBool EvaluateBadCall(void *,void *,DATA_OBJECT *);
+static bool EvaluateBadCall(void *,void *,DATA_OBJECT *);
 #endif
 
 /* =========================================
@@ -239,7 +239,7 @@ static void DeallocateProceduralPrimitiveData(
                  7) The address of a function to do specialized
                     checking on a parameter (can be NULL)
                     The function should accept a string and
-                    return FALSE if the parameter is OK, TRUE
+                    return false if the parameter is OK, true
                     otherwise.
   RETURNS      : A list of expressions containing the
                    parameter names
@@ -254,15 +254,15 @@ EXPRESSION *ParseProcParameters(
   SYMBOL_HN **wildcard,
   int *min,
   int *max,
-  int *error,
-  int (*checkfunc)(void *,const char *))
+  bool *error,
+  bool (*checkfunc)(void *,const char *))
   {
    EXPRESSION *nextOne,*lastOne,*check;
    int paramprintp = 0;
 
    *wildcard = NULL;
    *min = 0;
-   *error = TRUE;
+   *error = true;
    lastOne = nextOne = parameterList;
    while (nextOne != NULL)
      {
@@ -282,19 +282,19 @@ EXPRESSION *ParseProcParameters(
       for (check = parameterList ; check != NULL ; check = check->nextArg)
         if (check->value == tkn->value)
          {
-          PrintErrorID(theEnv,"PRCCODE",7,FALSE);
+          PrintErrorID(theEnv,"PRCCODE",7,false);
           EnvPrintRouter(theEnv,WERROR,"Duplicate parameter names not allowed.\n");
           ReturnExpression(theEnv,parameterList);
           return(NULL);
          }
       if (*wildcard != NULL)
         {
-         PrintErrorID(theEnv,"PRCCODE",8,FALSE);
+         PrintErrorID(theEnv,"PRCCODE",8,false);
          EnvPrintRouter(theEnv,WERROR,"No parameters allowed after wildcard parameter.\n");
          ReturnExpression(theEnv,parameterList);
          return(NULL);
         }
-      if ((checkfunc != NULL) ? (*checkfunc)(theEnv,ValueToString(tkn->value)) : FALSE)
+      if ((checkfunc != NULL) ? (*checkfunc)(theEnv,ValueToString(tkn->value)) : false)
         {
          ReturnExpression(theEnv,parameterList);
          return(NULL);
@@ -325,7 +325,7 @@ EXPRESSION *ParseProcParameters(
       PPBackup(theEnv);
       SavePPBuffer(theEnv,")");
      }
-   *error = FALSE;
+   *error = false;
    *max = (*wildcard != NULL) ? -1 : *min;
    return(parameterList);
   }
@@ -394,7 +394,7 @@ EXPRESSION *ParseProcActions(
       "bind" function adds vars to this list.
       ==================================================================== */
    ClearParsedBindNames(theEnv);
-   actions = GroupActions(theEnv,readSource,tkn,TRUE,NULL,FALSE);
+   actions = GroupActions(theEnv,readSource,tkn,true,NULL,false);
    if (actions == NULL)
      return(NULL);
 
@@ -469,7 +469,7 @@ EXPRESSION *ParseProcActions(
                     This argument can be NULL.
                  6) Data buffer to be passed to alternate parsing
                     function
-  RETURNS      : FALSE if OK, TRUE on errors
+  RETURNS      : false if OK, true on errors
   SIDE EFFECTS : Variable references replaced with function calls
   NOTES        : This function works from the ParsedBindNames list in
                     SPCLFORM.C to access local binds.  Make sure that
@@ -477,7 +477,7 @@ EXPRESSION *ParseProcActions(
                     ClearParsedBindNames(theEnv) before the parse of the body
                     in which variables are being replaced.
  *************************************************************************/
-int ReplaceProcVars(
+int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
   void *theEnv,
   const char *bodytype,
   EXPRESSION *actions,
@@ -487,7 +487,7 @@ int ReplaceProcVars(
   void *specdata)
   {
    int position,altcode;
-   intBool boundPosn;
+   int boundPosn;
    EXPRESSION *arg_lvl,*altvarexp;
    SYMBOL_HN *bindName;
    PACKED_PROC_VAR pvar;
@@ -531,14 +531,14 @@ int ReplaceProcVars(
               {
                if (errorCode == 0)
                  {
-                  PrintErrorID(theEnv,"PRCCODE",3,TRUE);
+                  PrintErrorID(theEnv,"PRCCODE",3,true);
                   EnvPrintRouter(theEnv,WERROR,"Undefined variable ");
                   EnvPrintRouter(theEnv,WERROR,ValueToString(bindName));
                   EnvPrintRouter(theEnv,WERROR," referenced in ");
                   EnvPrintRouter(theEnv,WERROR,bodytype);
                   EnvPrintRouter(theEnv,WERROR,".\n");
                  }
-               return(TRUE);
+               return(1);
               }
            }
 
@@ -571,7 +571,7 @@ int ReplaceProcVars(
                else if (altcode == -1)
                  {
                   rtn_struct(theEnv,expr,altvarexp);
-                  return(TRUE);
+                  return(true);
                  }
               }
             else
@@ -589,17 +589,17 @@ int ReplaceProcVars(
 #if DEFGLOBAL_CONSTRUCT
       else if (actions->type == GBL_VARIABLE)
         {
-         if (ReplaceGlobalVariable(theEnv,actions) == FALSE)
+         if (ReplaceGlobalVariable(theEnv,actions) == false)
            return(-1);
         }
 #endif
-      if ((altvarfunc != NULL) ? ((*altvarfunc)(theEnv,actions,specdata) == -1) : FALSE)
-        return(TRUE);
+      if ((altvarfunc != NULL) ? ((*altvarfunc)(theEnv,actions,specdata) == -1) : false)
+        return(1);
       if (actions->argList != NULL)
         {
          if (ReplaceProcVars(theEnv,bodytype,actions->argList,parameterList,
                                         wildcard,altvarfunc,specdata))
-           return(TRUE);
+           return(1);
 
          /* ====================================================================
             Check to see if this is a call to the bind function.  If so (and the
@@ -614,7 +614,7 @@ int ReplaceProcVars(
            {
             actions->type = PROC_BIND;
             boundPosn = SearchParsedBindNames(theEnv,(SYMBOL_HN *) actions->argList->value);
-            actions->value = EnvAddBitMap(theEnv,(void *) &boundPosn,(int) sizeof(intBool));
+            actions->value = EnvAddBitMap(theEnv,(void *) &boundPosn,(int) sizeof(int));
             arg_lvl = actions->argList->nextArg;
             rtn_struct(theEnv,expr,actions->argList);
             actions->argList = arg_lvl;
@@ -622,7 +622,7 @@ int ReplaceProcVars(
         }
       actions = actions->nextArg;
      }
-   return(FALSE);
+   return(0);
   }
 
 #if DEFGENERIC_CONSTRUCT
@@ -914,13 +914,13 @@ void EvaluateProcActions(
    ProceduralPrimitiveData(theEnv)->CurrentProcActions = oldActions;
    if (oldModule != ((struct defmodule *) EnvGetCurrentModule(theEnv)))
      EnvSetCurrentModule(theEnv,(void *) oldModule);
-   if ((crtproc != NULL) ? EvaluationData(theEnv)->HaltExecution : FALSE)
+   if ((crtproc != NULL) ? EvaluationData(theEnv)->HaltExecution : false)
      {
-      PrintErrorID(theEnv,"PRCCODE",4,FALSE);
+      PrintErrorID(theEnv,"PRCCODE",4,false);
       EnvPrintRouter(theEnv,WERROR,"Execution halted during the actions of ");
       (*crtproc)(theEnv);
      }
-   if ((ProceduralPrimitiveData(theEnv)->WildcardValue != NULL) ? (result->value == ProceduralPrimitiveData(theEnv)->WildcardValue->value) : FALSE)
+   if ((ProceduralPrimitiveData(theEnv)->WildcardValue != NULL) ? (result->value == ProceduralPrimitiveData(theEnv)->WildcardValue->value) : false)
      {
       MultifieldDeinstall(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
@@ -1091,18 +1091,18 @@ static void EvaluateProcParameters(
    rva = (DATA_OBJECT *) gm2(theEnv,(sizeof(DATA_OBJECT) * numberOfParameters));
    while (parameterList != NULL)
      {
-      if ((EvaluateExpression(theEnv,parameterList,&temp) == TRUE) ? TRUE :
+      if ((EvaluateExpression(theEnv,parameterList,&temp) == true) ? true :
           (temp.type == RVOID))
         {
          if (temp.type == RVOID)
            {
-            PrintErrorID(theEnv,"PRCCODE",2,FALSE);
+            PrintErrorID(theEnv,"PRCCODE",2,false);
             EnvPrintRouter(theEnv,WERROR,"Functions without a return value are illegal as ");
             EnvPrintRouter(theEnv,WERROR,bodytype);
             EnvPrintRouter(theEnv,WERROR," arguments.\n");
-            EnvSetEvaluationError(theEnv,TRUE);
+            EnvSetEvaluationError(theEnv,true);
            }
-         PrintErrorID(theEnv,"PRCCODE",6,FALSE);
+         PrintErrorID(theEnv,"PRCCODE",6,false);
          EnvPrintRouter(theEnv,WERROR,"This error occurred while evaluating arguments ");
          EnvPrintRouter(theEnv,WERROR,"for the ");
          EnvPrintRouter(theEnv,WERROR,bodytype);
@@ -1136,7 +1136,7 @@ static void EvaluateProcParameters(
                    node of ProcParamArray
   NOTES        : None
  ***************************************************/
-static intBool RtnProcParam(
+static bool RtnProcParam(
   void *theEnv,
   void *value,
   DATA_OBJECT *result)
@@ -1148,7 +1148,7 @@ static intBool RtnProcParam(
    result->value = src->value;
    result->begin = src->begin;
    result->end = src->end;
-   return(TRUE);
+   return(true);
   }
 
 /**************************************************************
@@ -1164,7 +1164,7 @@ static intBool RtnProcParam(
                    ProcParamArray or the value in LocalVarArray
   NOTES        : None
  **************************************************************/
-static intBool GetProcBind(
+static bool GetProcBind(
   void *theEnv,
   void *value,
   DATA_OBJECT *result)
@@ -1180,17 +1180,17 @@ static intBool GetProcBind(
       result->value = src->value;
       result->begin = src->begin;
       result->end = src->end;
-      return(TRUE);
+      return(true);
      }
    if (GetFirstArgument()->nextArg != NULL)
      {
       EvaluateExpression(theEnv,GetFirstArgument()->nextArg,result);
-      return(TRUE);
+      return(true);
      }
    if (pvar->second == 0)
      {
-      PrintErrorID(theEnv,"PRCCODE",5,FALSE);
-      EnvSetEvaluationError(theEnv,TRUE);
+      PrintErrorID(theEnv,"PRCCODE",5,false);
+      EnvSetEvaluationError(theEnv,true);
       EnvPrintRouter(theEnv,WERROR,"Variable ");
       EnvPrintRouter(theEnv,WERROR,ValueToString(GetFirstArgument()->value));
       if (ProceduralPrimitiveData(theEnv)->ProcUnboundErrFunc != NULL)
@@ -1202,7 +1202,7 @@ static intBool GetProcBind(
         EnvPrintRouter(theEnv,WERROR," unbound.\n");
       result->type = SYMBOL;
       result->value = EnvFalseSymbol(theEnv);
-      return(TRUE);
+      return(true);
      }
    if (pvar->secondFlag == 0)
      {
@@ -1214,7 +1214,7 @@ static intBool GetProcBind(
      }
    else
      GrabProcWildargs(theEnv,result,(int) pvar->second);
-   return(TRUE);
+   return(true);
   }
 
 /**************************************************************
@@ -1229,7 +1229,7 @@ static intBool GetProcBind(
                    value in caller's buffer.
   NOTES        : None
  **************************************************************/
-static intBool PutProcBind(
+static bool PutProcBind(
   void *theEnv,
   void *value,
   DATA_OBJECT *result)
@@ -1248,7 +1248,7 @@ static intBool PutProcBind(
    else
      {
       if (GetFirstArgument()->nextArg != NULL)
-        StoreInMultifield(theEnv,result,GetFirstArgument(),TRUE);
+        StoreInMultifield(theEnv,result,GetFirstArgument(),true);
       else
         EvaluateExpression(theEnv,GetFirstArgument(),result);
       if (dst->supplementalInfo == EnvTrueSymbol(theEnv))
@@ -1260,7 +1260,7 @@ static intBool PutProcBind(
       dst->end = result->end;
       ValueInstall(theEnv,dst);
      }
-   return(TRUE);
+   return(true);
   }
 
 /****************************************************************
@@ -1276,13 +1276,13 @@ static intBool PutProcBind(
                    with corresponding values of ProcParamArray
   NOTES        : Multi-field is NOT on list of ephemeral segments
  ****************************************************************/
-static intBool RtnProcWild(
+static bool RtnProcWild(
   void *theEnv,
   void *value,
   DATA_OBJECT *result)
   {
    GrabProcWildargs(theEnv,result,*(int *) ValueToBitMap(value));
-   return(TRUE);
+   return(true);
   }
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -1350,14 +1350,14 @@ static int FindProcParameter(
                     if recognized, 0 if not, -1 on errors.
                     This argument CANNOT be NULL.
                  3) Specialized user data buffer
-  RETURNS      : FALSE if OK, TRUE on errors
+  RETURNS      : false if OK, true on errors
   SIDE EFFECTS : Some binds replaced with specialized calls
   NOTES        : Local variable binds are replaced in ReplaceProcVars
                  (after this routine has had a chance to replace all
                   special binds and remove the names from the parsed
                   bind list)
  *************************************************************************/
-static int ReplaceProcBinds(
+static bool ReplaceProcBinds(
   void *theEnv,
   EXPRESSION *actions,
   int (*altbindfunc)(void *,EXPRESSION *,void *),
@@ -1371,21 +1371,21 @@ static int ReplaceProcBinds(
       if (actions->argList != NULL)
         {
          if (ReplaceProcBinds(theEnv,actions->argList,altbindfunc,userBuffer))
-           return(TRUE);
+           return(true);
          if ((actions->value == (void *) FindFunction(theEnv,"bind")) &&
              (actions->argList->type == SYMBOL))
            {
             bname = (SYMBOL_HN *) actions->argList->value;
             bcode = (*altbindfunc)(theEnv,actions,userBuffer);
             if (bcode == -1)
-              return(TRUE);
+              return(true);
             if (bcode == 1)
               RemoveParsedBindName(theEnv,bname);
            }
         }
       actions = actions->nextArg;
      }
-   return(FALSE);
+   return(false);
   }
 
 /*****************************************************
@@ -1436,14 +1436,14 @@ static EXPRESSION *CompactActions(
                  capability is not present.
   INPUTS       : 1) The function (ignored)
                  2) A data object buffer for the result
-  RETURNS      : FALSE
+  RETURNS      : false
   SIDE EFFECTS : Data object buffer set to the
                  symbol FALSE and evaluation error set
   NOTES        : Used for binary images which
                  contain deffunctions and generic
                  functions which cannot be used
  ******************************************************/
-static intBool EvaluateBadCall(
+static bool EvaluateBadCall(
   void *theEnv,
   void *value,
   DATA_OBJECT *result)
@@ -1451,13 +1451,13 @@ static intBool EvaluateBadCall(
 #if MAC_XCD
 #pragma unused(value)
 #endif
-   PrintErrorID(theEnv,"PRCCODE",1,FALSE);
+   PrintErrorID(theEnv,"PRCCODE",1,false);
    EnvPrintRouter(theEnv,WERROR,"Attempted to call a deffunction/generic function ");
    EnvPrintRouter(theEnv,WERROR,"which does not exist.\n");
-   EnvSetEvaluationError(theEnv,TRUE);
+   EnvSetEvaluationError(theEnv,true);
    SetpType(result,SYMBOL);
    SetpValue(result,EnvFalseSymbol(theEnv));
-   return(FALSE);
+   return(false);
   }
 
 #endif

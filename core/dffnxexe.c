@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -108,7 +108,7 @@ void CallDeffunction(
 
    result->type = SYMBOL;
    result->value = EnvFalseSymbol(theEnv);
-   EvaluationData(theEnv)->EvaluationError = FALSE;
+   EvaluationData(theEnv)->EvaluationError = false;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
      
@@ -118,7 +118,7 @@ void CallDeffunction(
    UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
 
    oldce = ExecutingConstruct(theEnv);
-   SetExecutingConstruct(theEnv,TRUE);
+   SetExecutingConstruct(theEnv,true);
    previouslyExecutingDeffunction = DeffunctionData(theEnv)->ExecutingDeffunction;
    DeffunctionData(theEnv)->ExecutingDeffunction = dptr;
    EvaluationData(theEnv)->CurrentEvaluationDepth++;
@@ -161,7 +161,7 @@ void CallDeffunction(
    if (dptr->trace)
      WatchDeffunction(theEnv,END_TRACE);
 #endif
-   ProcedureFunctionData(theEnv)->ReturnFlag = FALSE;
+   ProcedureFunctionData(theEnv)->ReturnFlag = false;
 
    dptr->executing--;
    PopProcParameters(theEnv);

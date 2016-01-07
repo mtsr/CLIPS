@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*            PARSING FUNCTIONS HEADER FILE            */
    /*******************************************************/
@@ -46,7 +46,7 @@
 
    void                           ParseFunctionDefinitions(void *);
    void                           CheckSyntaxFunction(void *,DATA_OBJECT *);
-   int                            CheckSyntax(void *,const char *,DATA_OBJECT_PTR);
+   bool                           CheckSyntax(void *,const char *,DATA_OBJECT_PTR);
 
 #endif /* _H_parsefun */
 

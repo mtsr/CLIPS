@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  12/10/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*          DEFTEMPLATE FUNCTION HEADER FILE           */
    /*******************************************************/
@@ -79,7 +79,7 @@
 #include "tmpltdef.h"
 #endif
 
-   intBool                        UpdateModifyDuplicate(void *,struct expr *,const char *,void *);
+   bool                           UpdateModifyDuplicate(void *,struct expr *,const char *,void *);
    struct expr                   *ModifyParse(void *,struct expr *,const char *);
    struct expr                   *DuplicateParse(void *,struct expr *,const char *);
    void                           DeftemplateFunctions( void *);
@@ -88,7 +88,7 @@
    void                           DeftemplateSlotNamesFunction(void *,DATA_OBJECT *);
    void                           EnvDeftemplateSlotNames(void *,void *,DATA_OBJECT *);
    void                           DeftemplateSlotDefaultValueFunction(void *,DATA_OBJECT *);
-   intBool                        EnvDeftemplateSlotDefaultValue(void *,void *,const char *,DATA_OBJECT *);
+   bool                           EnvDeftemplateSlotDefaultValue(void *,void *,const char *,DATA_OBJECT *);
    void                           DeftemplateSlotCardinalityFunction(void *,DATA_OBJECT *);
    void                           EnvDeftemplateSlotCardinality(void *,void *,const char *,DATA_OBJECT *);
    void                           DeftemplateSlotAllowedValuesFunction(void *,DATA_OBJECT *);
@@ -97,24 +97,24 @@
    void                           EnvDeftemplateSlotRange(void *,void *,const char *,DATA_OBJECT *);
    void                           DeftemplateSlotTypesFunction(void *,DATA_OBJECT *);
    void                           EnvDeftemplateSlotTypes(void *,void *,const char *,DATA_OBJECT *);
-   int                            DeftemplateSlotMultiPFunction(void *);
-   int                            EnvDeftemplateSlotMultiP(void *,void *,const char *);
-   int                            DeftemplateSlotSinglePFunction(void *);
-   int                            EnvDeftemplateSlotSingleP(void *,void *,const char *);
-   int                            DeftemplateSlotExistPFunction(void *);
-   int                            EnvDeftemplateSlotExistP(void *,void *,const char *);
+   bool                           DeftemplateSlotMultiPFunction(void *);
+   bool                           EnvDeftemplateSlotMultiP(void *,void *,const char *);
+   bool                           DeftemplateSlotSinglePFunction(void *);
+   bool                           EnvDeftemplateSlotSingleP(void *,void *,const char *);
+   bool                           DeftemplateSlotExistPFunction(void *);
+   bool                           EnvDeftemplateSlotExistP(void *,void *,const char *);
    void                          *DeftemplateSlotDefaultPFunction(void *);
    int                            EnvDeftemplateSlotDefaultP(void *,void *,const char *);
-   int                            DeftemplateSlotFacetExistPFunction(void *);
-   int                            EnvDeftemplateSlotFacetExistP(void *,void *,const char *,const char *);
+   bool                           DeftemplateSlotFacetExistPFunction(void *);
+   bool                           EnvDeftemplateSlotFacetExistP(void *,void *,const char *,const char *);
    void                           DeftemplateSlotFacetValueFunction(void *,DATA_OBJECT *);
-   int                            EnvDeftemplateSlotFacetValue(void *,void *,const char *,const char *,DATA_OBJECT *);
+   bool                           EnvDeftemplateSlotFacetValue(void *,void *,const char *,const char *,DATA_OBJECT *);
    SYMBOL_HN                     *FindTemplateForFactAddress(SYMBOL_HN *,struct lhsParseNode *);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    void                           DeftemplateSlotNames(void *,DATA_OBJECT *);
-   intBool                        DeftemplateSlotDefaultValue(void *,const char *,DATA_OBJECT_PTR);
+   bool                           DeftemplateSlotDefaultValue(void *,const char *,DATA_OBJECT_PTR);
    void                           DeftemplateSlotCardinality(void *,const char *,DATA_OBJECT *);
    void                           DeftemplateSlotAllowedValues(void *,const char *,DATA_OBJECT *);
    void                           DeftemplateSlotRange(void *,const char *,DATA_OBJECT *);

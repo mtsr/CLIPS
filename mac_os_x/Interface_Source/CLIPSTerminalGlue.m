@@ -29,7 +29,7 @@ void ClearEnvironmentWindowCommand(
 /* QueryInterfaceRouter: Router function which recognizes */
 /*   I/O directed to the display window.                  */
 /**********************************************************/
-intBool QueryInterfaceRouter(
+bool QueryInterfaceRouter(
   void *theEnv,
   const char *logicalName)
   {
@@ -45,9 +45,9 @@ intBool QueryInterfaceRouter(
         (strcmp(logicalName,WWARNING) == 0) ||
         (strcmp(logicalName,WDISPLAY) == 0) ||
         (strcmp(logicalName,WDIALOG) == 0) )
-     { return(TRUE); }
+     { return(true); }
 
-    return(FALSE);
+    return(false);
   }
 
 /*****************************************/
@@ -68,7 +68,7 @@ int PrintInterfaceRouter(
    else
      { fprintf(fptr,"%s",str); } // TBD Is this necessary?
  
-   return(TRUE);
+   return(true);  // TBD bool?
   }
 
 /*******************************************/
@@ -102,7 +102,7 @@ int ExitInterfaceRouter(
    [[NSApplication sharedApplication] terminate: NULL];
    [theController exit];
    /* AbortExit(theEnv); */
-   return(TRUE);
+   return(true);  // TBD bool?
   }  
     
 /************************/
@@ -171,13 +171,13 @@ void MacPeriodicFunction(
    /* They'll be reenabled by a timer. */
    /*==================================*/
     
-   EnablePeriodicFunctions(theEnv,FALSE);
+   EnablePeriodicFunctions(theEnv,false);
   }
     
 /**************************************/
 /* MacBeforeOpenFunction:             */
 /**************************************/
-int MacBeforeOpenFunction(
+int MacBeforeOpenFunction( // TBD bool?
   void *theEnv)
   {
    AppController *theDelegate = [NSApp delegate];
@@ -189,13 +189,13 @@ int MacBeforeOpenFunction(
    
    [[NSFileManager defaultManager] changeCurrentDirectoryPath: [theController currentDirectory]];
 
-   return TRUE;
+   return true;
   }  
   
 /*************************/
 /* MacAfterOpenFunction: */
 /*************************/
-int MacAfterOpenFunction(
+int MacAfterOpenFunction( // TBD bool?
   void *theEnv)
   {
    AppController *theDelegate = [NSApp delegate];
@@ -203,5 +203,5 @@ int MacAfterOpenFunction(
    
    [theLock unlock];
 
-   return TRUE;
+   return true;
   } 

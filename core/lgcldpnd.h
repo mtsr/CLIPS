@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/16/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*          LOGICAL DEPENDENCIES HEADER FILE           */
    /*******************************************************/
@@ -45,7 +45,7 @@ struct dependency
 #include "pattern.h"
 #endif
 
-   intBool                        AddLogicalDependencies(void *,struct patternEntity *,int);
+   bool                           AddLogicalDependencies(void *,struct patternEntity *,bool);
    void                           RemoveEntityDependencies(void *,struct patternEntity *);
    void                           RemovePMDependencies(void *,struct partialMatch *);
    void                           DestroyPMDependencies(void *,struct partialMatch *);

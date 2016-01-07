@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.31  09/25/15          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*         IMPLICIT SYSTEM METHODS PARSING MODULE      */
    /*******************************************************/
@@ -30,7 +30,7 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.31: Changed restrictions from char * to            */
+/*      6.40: Changed restrictions from char * to            */
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
@@ -134,7 +134,8 @@ static void FormMethodsFromRestrictions(
    EXPRESSION *plist,*tmp,*bot,*svBot;
    RESTRICTION *rptr;
    char theChar[2],defaultc;
-   int min,max,mposn,needMinimumMethod;
+   int min,max,mposn;
+   bool needMinimumMethod;
    register int i,j;
 
    /* ===================================
@@ -150,7 +151,7 @@ static void FormMethodsFromRestrictions(
       tmp->argList = (EXPRESSION *) rptr;
       tmp->nextArg = NULL;
       meth = AddMethod(theEnv,gfunc,NULL,0,0,tmp,1,0,(SYMBOL_HN *) EnvTrueSymbol(theEnv),
-                       PackExpression(theEnv,actions),NULL,FALSE);
+                       PackExpression(theEnv,actions),NULL,false);
       meth->system = 1;
       DeleteTempRestricts(theEnv,tmp);
       return;
@@ -210,7 +211,7 @@ static void FormMethodsFromRestrictions(
       for minimum number of arguments
       =============================== */
    svBot = bot;
-   needMinimumMethod = TRUE;
+   needMinimumMethod = true;
 
    /* =======================================================
       Attach one or more new methods to correspond
@@ -241,7 +242,7 @@ static void FormMethodsFromRestrictions(
         {
          FindMethodByRestrictions(gfunc,plist,min + i,NULL,&mposn);
          meth = AddMethod(theEnv,gfunc,NULL,mposn,0,plist,min + i,0,NULL,
-                          PackExpression(theEnv,actions),NULL,TRUE);
+                          PackExpression(theEnv,actions),NULL,true);
          meth->system = 1;
         }
      }
@@ -259,7 +260,7 @@ static void FormMethodsFromRestrictions(
          need to add an extra method for that case
          ================================================ */
       if (i == 0)
-        needMinimumMethod = FALSE;
+        needMinimumMethod = false;
 
       rptr = ParseRestrictionType(theEnv,(int) defaultc);
       if (max != -1)
@@ -279,7 +280,7 @@ static void FormMethodsFromRestrictions(
         bot->nextArg = tmp;
       FindMethodByRestrictions(gfunc,plist,min + i + 1,(SYMBOL_HN *) EnvTrueSymbol(theEnv),&mposn);
       meth = AddMethod(theEnv,gfunc,NULL,mposn,0,plist,min + i + 1,0,(SYMBOL_HN *) EnvTrueSymbol(theEnv),
-                       PackExpression(theEnv,actions),NULL,FALSE);
+                       PackExpression(theEnv,actions),NULL,false);
       meth->system = 1;
      }
 
@@ -300,7 +301,7 @@ static void FormMethodsFromRestrictions(
         }
       FindMethodByRestrictions(gfunc,plist,min,NULL,&mposn);
       meth = AddMethod(theEnv,gfunc,NULL,mposn,0,plist,min,0,NULL,
-                       PackExpression(theEnv,actions),NULL,TRUE);
+                       PackExpression(theEnv,actions),NULL,true);
       meth->system = 1;
      }
    DeleteTempRestricts(theEnv,plist);
@@ -327,7 +328,7 @@ static RESTRICTION *ParseRestrictionType(
    rptr = get_struct(theEnv,restriction);
    rptr->query = NULL;
    rv = ArgumentTypeToConstraintRecord(theEnv,code);
-   if (rv->anyAllowed == FALSE)
+   if (rv->anyAllowed == false)
      {
       if (rv->symbolsAllowed && rv->stringsAllowed)
         types = GenTypeExpression(theEnv,types,LEXEME_TYPE_CODE,-1,LEXEME_TYPE_NAME);

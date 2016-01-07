@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                FACT BUILD HEADER FILE               */
    /*******************************************************/
@@ -40,7 +40,7 @@
 #include "scanner.h"
 #endif
 
-   int                            FactPatternParserFind(SYMBOL_HN *);
+   bool                           FactPatternParserFind(SYMBOL_HN *);
    struct lhsParseNode           *FactPatternParse(void *,const char *,struct token *);
    struct lhsParseNode           *SequenceRestrictionParse(void *,const char *,struct token *);
 

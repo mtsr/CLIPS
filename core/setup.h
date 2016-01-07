@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  02/05/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                  SETUP HEADER FILE                  */
    /*******************************************************/
@@ -148,8 +148,6 @@
 /***********************************************/
 
 #define STD_SIZE size_t
-
-#define intBool int
 
 /*******************************************/
 /* RUN_TIME:  Specifies whether a run-time */

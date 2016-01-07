@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  10/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*         DEFFACTS BASIC COMMANDS HEADER FILE         */
    /*******************************************************/
@@ -122,7 +122,7 @@ void DeffactsBasicCommands(
 static void ResetDeffacts(
   void *theEnv)
   { 
-   DoForAllConstructs(theEnv,ResetDeffactsAction,DeffactsData(theEnv)->DeffactsModuleIndex,TRUE,NULL); 
+   DoForAllConstructs(theEnv,ResetDeffactsAction,DeffactsData(theEnv)->DeffactsModuleIndex,true,NULL);
   }
 
 /*****************************************************/
@@ -142,7 +142,7 @@ static void ResetDeffactsAction(
 
    if (theDeffacts->assertList == NULL) return;
 
-   EnvSetEvaluationError(theEnv,FALSE);
+   EnvSetEvaluationError(theEnv,false);
 
    EvaluateExpression(theEnv,theDeffacts->assertList,&result);
   }
@@ -173,7 +173,7 @@ void UndeffactsCommand(
 /* EnvUndeffacts: C access routine */
 /*   for the undeffacts command.   */
 /***********************************/
-intBool EnvUndeffacts(
+bool EnvUndeffacts(
   void *theEnv,
   void *theDeffacts)
   { 
@@ -274,7 +274,7 @@ void GetDeffactsList(
    EnvGetDeffactsList(GetCurrentEnvironment(),returnValue,theModule);
   }
 
-intBool Undeffacts(
+bool Undeffacts(
   void *theDeffacts)
   {
    return EnvUndeffacts(GetCurrentEnvironment(),theDeffacts);

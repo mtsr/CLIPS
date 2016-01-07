@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.31  09/05/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -75,7 +75,7 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.31: Refactored code to reduce header dependencies  */
+/*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Modified gentime to return "comparable" epoch  */
@@ -570,24 +570,24 @@ int genchdir(
 /****************************************************/
 /* genremove: Generic function for removing a file. */
 /****************************************************/
-int genremove(
+bool genremove(
   const char *fileName)
   {
-   if (remove(fileName)) return(0);
+   if (remove(fileName)) return(false);
 
-   return(1);
+   return(true);
   }
 
 /****************************************************/
 /* genrename: Generic function for renaming a file. */
 /****************************************************/
-int genrename(
+bool genrename(
   const char *oldFileName,
   const char *newFileName)
   {
-   if (rename(oldFileName,newFileName)) return(0);
+   if (rename(oldFileName,newFileName)) return(false);
 
-   return(1);
+   return(true);
   }
 
 /**************************************/

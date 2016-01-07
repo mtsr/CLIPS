@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  08/22/14            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              PRINT UTILITY HEADER FILE              */
    /*******************************************************/
@@ -62,9 +62,9 @@
 
 struct printUtilityData
   { 
-   intBool PreserveEscapedCharacters;
-   intBool AddressesToStrings;
-   intBool InstanceAddressesToNames;
+   bool PreserveEscapedCharacters; // TBD convert to unsigned bit fields
+   bool AddressesToStrings;
+   bool InstanceAddressesToNames;
   };
 
 #define PrintUtilityData(theEnv) ((struct printUtilityData *) GetEnvironmentData(theEnv,PRINT_UTILITY_DATA))
@@ -80,8 +80,8 @@ struct printUtilityData
    const char                    *DataObjectToString(void *,DATA_OBJECT *);
    void                           SyntaxErrorMessage(void *,const char *);
    void                           SystemError(void *,const char *,int);
-   void                           PrintErrorID(void *,const char *,int,int);
-   void                           PrintWarningID(void *,const char *,int,int);
+   void                           PrintErrorID(void *,const char *,int,bool);
+   void                           PrintWarningID(void *,const char *,int,bool);
    void                           CantFindItemErrorMessage(void *,const char *,const char *);
    void                           CantDeleteItemErrorMessage(void *,const char *,const char *);
    void                           AlreadyParsedErrorMessage(void *,const char *,const char *);

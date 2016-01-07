@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.30  01/25/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 DEFRULE HEADER FILE                 */
    /*******************************************************/
@@ -133,7 +133,7 @@ struct defruleData
    int DefruleModuleIndex;
    long long CurrentEntityTimeTag;
    struct alphaMemoryHash **AlphaMemoryTable;
-   intBool BetaMemoryResizingFlag;
+   bool BetaMemoryResizingFlag;
    struct joinLink *RightPrimeJoins;
    struct joinLink *LeftPrimeJoins;
 
@@ -165,7 +165,7 @@ struct defruleData
    void                          *EnvFindDefruleInModule(void *,const char *);
    void                          *EnvGetNextDefrule(void *,void *);
    struct defruleModule          *GetDefruleModuleItem(void *,struct defmodule *);
-   intBool                        EnvIsDefruleDeletable(void *,void *);
+   bool                           EnvIsDefruleDeletable(void *,void *);
 #if RUN_TIME
    void                           DefruleRunTimeInitialize(void *,struct joinLink *,struct joinLink *);
 #endif
@@ -185,7 +185,7 @@ struct defruleData
    const char                    *GetDefruleName(void *);
    const char                    *GetDefrulePPForm(void *);
    void                          *GetNextDefrule(void *);
-   intBool                        IsDefruleDeletable(void *);
+   bool                           IsDefruleDeletable(void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

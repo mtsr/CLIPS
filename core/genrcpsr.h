@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -51,10 +51,10 @@
 
 #include "genrcfun.h"
 
-   intBool                        ParseDefgeneric(void *,const char *);
-   intBool                        ParseDefmethod(void *,const char *);
+   bool                           ParseDefgeneric(void *,const char *);
+   bool                           ParseDefmethod(void *,const char *);
    DEFMETHOD                     *AddMethod(void *,DEFGENERIC *,DEFMETHOD *,int,short,EXPRESSION *,
-                                                   int,int,SYMBOL_HN *,EXPRESSION *,char *,int);
+                                                   int,int,SYMBOL_HN *,EXPRESSION *,char *,bool);
    void                           PackRestrictionTypes(void *,RESTRICTION *,EXPRESSION *);
    void                           DeleteTempRestricts(void *,EXPRESSION *);
    DEFMETHOD                     *FindMethodByRestrictions(DEFGENERIC *,EXPRESSION *,int,

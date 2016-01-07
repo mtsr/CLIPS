@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.30  08/16/14          */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -49,7 +49,7 @@ typedef struct tempSlotLink
    struct tempSlotLink *nxt;
   } TEMP_SLOT_LINK;
 
-TEMP_SLOT_LINK *ParseSlot(void *,const char *,TEMP_SLOT_LINK *,PACKED_CLASS_LINKS *,int,int);
+TEMP_SLOT_LINK *ParseSlot(void *,const char *,TEMP_SLOT_LINK *,PACKED_CLASS_LINKS *,bool,bool);
 void DeleteSlots(void *,TEMP_SLOT_LINK *);
 
 #ifndef _CLSLTPSR_SOURCE_

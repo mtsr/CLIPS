@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/05/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*                 PRETTY PRINT MODULE                 */
    /*******************************************************/
@@ -65,7 +65,7 @@ void InitializePrettyPrintData(
   {
    AllocateEnvironmentData(theEnv,PRETTY_PRINT_DATA,sizeof(struct prettyPrintData),DeallocatePrettyPrintData);
    
-   PrettyPrintData(theEnv)->PPBufferEnabled = TRUE;
+   PrettyPrintData(theEnv)->PPBufferEnabled = true;
   }
 
 /******************************************************/
@@ -121,7 +121,7 @@ void SavePPBuffer(
    /* then don't bother writing to it.         */
    /*==========================================*/
 
-   if ((PrettyPrintData(theEnv)->PPBufferStatus == OFF) || (! PrettyPrintData(theEnv)->PPBufferEnabled)) 
+   if ((PrettyPrintData(theEnv)->PPBufferStatus == false) || (! PrettyPrintData(theEnv)->PPBufferEnabled))
      { return; }
 
    /*===============================*/
@@ -169,7 +169,7 @@ void SavePPBuffer(
 void PPBackup(
   void *theEnv)
   {
-   if ((PrettyPrintData(theEnv)->PPBufferStatus == OFF) || 
+   if ((PrettyPrintData(theEnv)->PPBufferStatus == false) ||
        (PrettyPrintData(theEnv)->PrettyPrintBuffer == NULL) ||
        (! PrettyPrintData(theEnv)->PPBufferEnabled))
      { return; }
@@ -218,7 +218,7 @@ void PPCRAndIndent(
    int i;
    char buffer[120];
 
-   if ((PrettyPrintData(theEnv)->PPBufferStatus == OFF) || 
+   if ((PrettyPrintData(theEnv)->PPBufferStatus == false) ||
        (! PrettyPrintData(theEnv)->PPBufferEnabled))
      { return; }
 
@@ -270,7 +270,7 @@ void SetIndentDepth(
 /******************************************/
 void SetPPBufferStatus(
   void *theEnv,
-  int value)
+  bool value)
   {
    PrettyPrintData(theEnv)->PPBufferStatus = value;
   }
@@ -279,7 +279,7 @@ void SetPPBufferStatus(
 /* GetPPBufferStatus: Returns value */
 /*   of the PPBufferStatus flag.    */
 /************************************/
-int GetPPBufferStatus(
+bool GetPPBufferStatus(
   void *theEnv)
   {
    return(PrettyPrintData(theEnv)->PPBufferStatus);

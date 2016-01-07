@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  11/26/15            */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*          DEFTEMPLATE UTILITIES HEADER FILE          */
    /*******************************************************/
@@ -59,17 +59,17 @@
 #include "symbol.h"
 #endif
 
-   void                           InvalidDeftemplateSlotMessage(void *,const char *,const char *,int);
+   void                           InvalidDeftemplateSlotMessage(void *,const char *,const char *,bool);
    void                           SingleFieldSlotCardinalityError(void *,const char *);
    void                           MultiIntoSingleFieldSlotError(void *,struct templateSlot *,struct deftemplate *);
    void                           CheckTemplateFact(void *,struct fact *);
-   intBool                        CheckRHSSlotTypes(void *,struct expr *,struct templateSlot *,const char *);
+   bool                           CheckRHSSlotTypes(void *,struct expr *,struct templateSlot *,const char *);
    struct templateSlot           *GetNthSlot(struct deftemplate *,int);
    int                            FindSlotPosition(struct deftemplate *,struct symbolHashNode *);
    void                           PrintTemplateFact(void *,const char *,struct fact *,int,int,const char *);
    void                           UpdateDeftemplateScope(void *);
    struct templateSlot           *FindSlot(struct deftemplate *,struct symbolHashNode *,short *);
-   struct deftemplate            *CreateImpliedDeftemplate(void *,SYMBOL_HN *,int);
+   struct deftemplate            *CreateImpliedDeftemplate(void *,SYMBOL_HN *,bool);
 
 #endif /* _H_tmpltutl */
 
