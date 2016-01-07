@@ -116,8 +116,8 @@ struct defglobalModule
    void                           QSetDefglobalValue(void *,struct defglobal *,DATA_OBJECT_PTR,bool);
    struct defglobal              *QFindDefglobal(void *,struct symbolHashNode *);
    void                           EnvGetDefglobalValueForm(void *,char *,size_t,void *);
-   int                            EnvGetGlobalsChanged(void *);
-   void                           EnvSetGlobalsChanged(void *,int);
+   bool                           EnvGetGlobalsChanged(void *);
+   void                           EnvSetGlobalsChanged(void *,bool);
    bool                           EnvGetDefglobalValue(void *,const char *,DATA_OBJECT_PTR);
    bool                           EnvSetDefglobalValue(void *,const char *,DATA_OBJECT_PTR);
    void                           UpdateDefglobalScope(void *);

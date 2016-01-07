@@ -81,9 +81,9 @@
    static HWND                    statusWindow_New(HWND,char *,int,int,int,int,
                                                    void (*)(void *,char *,size_t,void *),
                                                    void *(*)(void *,void *),
-												   int (*)(void *),
-                                                   void (*)(void *,int),
-												   int (*)(void *));
+                                                   bool (*)(void *),
+                                                   void (*)(void *,bool),
+                                                   int (*)(void *));
   
 /****************************************/
 /* GLOBAL INTERNAL VARIABLE DEFINITIONS */
@@ -381,8 +381,8 @@ static HWND statusWindow_New(
   int height,
   void (*getPPForm)(void *,char *,size_t,void *),
   void *(*getNextValue)(void *,void *),
-  int (*getChanged)(void *),
-  void (*setChanged)(void *,int),
+  bool (*getChanged)(void *),
+  void (*setChanged)(void *,bool),
   int (*getCount)(void *))
   {
    HWND hwndChild;

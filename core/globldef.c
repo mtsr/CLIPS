@@ -517,7 +517,7 @@ void EnvGetDefglobalValueForm(
 /************************************************************/
 /* EnvGetGlobalsChanged: Returns the defglobal change flag. */
 /************************************************************/
-int EnvGetGlobalsChanged(
+bool EnvGetGlobalsChanged(
   void *theEnv)
   {    
    return(DefglobalData(theEnv)->ChangeToGlobals); 
@@ -528,7 +528,7 @@ int EnvGetGlobalsChanged(
 /*********************************************************/
 void EnvSetGlobalsChanged(
   void *theEnv,
-  int value)
+  bool value)
   {
    DefglobalData(theEnv)->ChangeToGlobals = value; 
   }

@@ -73,7 +73,7 @@ void UserFunctions(void);
 /***************************************/
 
    static void                    SetUpRouters(void *);
-   static intBool                 QueryInterfaceRouter(void *,const char *);
+   static bool                    QueryInterfaceRouter(void *,const char *);
    static int                     PrintInterfaceRouter(void *,const char *,const char *);
    static int                     ExitInterfaceRouter(void *,int);
    static int                     GetcInterfaceRouter(void *,const char *);
@@ -224,7 +224,7 @@ static int ExitInterfaceRouter(
 /* QueryInterfaceRouter: Router function which recognizes */
 /*   I/O directed to the display window.                  */
 /**********************************************************/
-static intBool QueryInterfaceRouter(
+static bool QueryInterfaceRouter(
   void *theEnv,
   const char *logicalName)
   {
