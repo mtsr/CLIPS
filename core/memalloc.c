@@ -560,7 +560,7 @@ bool SetConserveMemory(
    return EnvSetConserveMemory(GetCurrentEnvironment(),value);
   }
 
-int (*SetOutOfMemoryFunction(int (*functionPtr)(void *,size_t)))(void *,size_t)
+bool (*SetOutOfMemoryFunction(bool (*functionPtr)(void *,size_t)))(void *,size_t)
   {
    return EnvSetOutOfMemoryFunction(GetCurrentEnvironment(),functionPtr);
   }

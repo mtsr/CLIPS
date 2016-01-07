@@ -765,7 +765,7 @@ void EvalFunction(
 /*   for the eval function. */
 /****************************/
 #if ALLOW_ENVIRONMENT_GLOBALS
-int Eval(
+bool Eval(
   const char *theString,
   DATA_OBJECT_PTR returnValue)
   {

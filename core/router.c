@@ -750,7 +750,7 @@ int ActivateRouter(
 bool AddRouter(
   const char *routerName,
   int priority,
-  int (*queryFunction)(const char *),
+  bool (*queryFunction)(const char *),
   int (*printFunction)(const char *,const char *),
   int (*getcFunction)(const char *),
   int (*ungetcFunction)(int,const char *),
@@ -772,7 +772,7 @@ bool AddRouter(
    newPtr->environmentAware = false;
    newPtr->priority = priority;
    newPtr->context = NULL;
-   newPtr->query = (int (*)(void *,const char *)) queryFunction;
+   newPtr->query = (bool (*)(void *,const char *)) queryFunction;
    newPtr->printer = (int (*)(void *,const char *,const char *)) printFunction;
    newPtr->exiter = (int (*)(void *,int)) exitFunction;
    newPtr->charget = (int (*)(void *,const char *)) getcFunction;

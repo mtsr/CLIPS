@@ -203,7 +203,7 @@ struct memoryData
    long int                       MemUsed(void);
    long int                       ReleaseMem(long);
    bool                           SetConserveMemory(bool);
-   int                          (*SetOutOfMemoryFunction(int (*)(void *,size_t)))(void *,size_t);
+   bool                         (*SetOutOfMemoryFunction(bool (*)(void *,size_t)))(void *,size_t);
  
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

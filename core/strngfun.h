@@ -47,8 +47,8 @@
 #endif
 
 #if ALLOW_ENVIRONMENT_GLOBALS
-   int                            Build(const char *);
-   int                            Eval(const char *,DATA_OBJECT_PTR);
+   bool                           Build(const char *);
+   bool                           Eval(const char *,DATA_OBJECT_PTR);
 #endif
 
    bool                           EnvBuild(void *,const char *);

@@ -136,7 +136,7 @@ struct routerData
 
    int                            ActivateRouter(const char *);
    bool                           AddRouter(const char *,int,
-                                                   int (*)(const char *),
+                                                   bool (*)(const char *),
                                                    int (*)(const char *,const char *),
                                                    int (*)(const char *),
                                                    int (*)(int,const char *),
