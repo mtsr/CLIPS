@@ -1443,9 +1443,9 @@ unsigned long ComputeRightHashValue(
      return hashValue;
     }
 
-/***********************************************************/
-/* ResizeBetaMemory:                                */
-/***********************************************************/
+/*********************/
+/* ResizeBetaMemory: */
+/*********************/
 void ResizeBetaMemory(
   void *theEnv,
   struct betaMemory *theMemory)
@@ -1497,9 +1497,9 @@ void ResizeBetaMemory(
    genfree(theEnv,oldArray,sizeof(struct partialMatch *) * oldSize);
   }
 
-/***********************************************************/
-/* ResetBetaMemory:                                */
-/***********************************************************/
+/********************/
+/* ResetBetaMemory: */
+/********************/
 static void ResetBetaMemory(
   void *theEnv,
   struct betaMemory *theMemory)

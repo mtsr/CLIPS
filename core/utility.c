@@ -108,7 +108,6 @@ void InitializeUtilityData(
 static void DeallocateUtilityData(
   void *theEnv)
   {
-   struct callFunctionItem *tmpPtr, *nextPtr;
    struct trackedMemory *tmpTM, *nextTM;
    struct garbageFrame *theGarbageFrame;
    struct ephemeron *edPtr, *nextEDPtr;
@@ -131,22 +130,9 @@ static void DeallocateUtilityData(
    /* Free callback functions. */
    /*==========================*/
    
-   tmpPtr = UtilityData(theEnv)->ListOfPeriodicFunctions;
-   while (tmpPtr != NULL)
-     {
-      nextPtr = tmpPtr->next;
-      rtn_struct(theEnv,callFunctionItem,tmpPtr);
-      tmpPtr = nextPtr;
-     }
+   DeallocateCallList(theEnv,UtilityData(theEnv)->ListOfPeriodicFunctions);
+   DeallocateCallList(theEnv,UtilityData(theEnv)->ListOfCleanupFunctions);
 
-   tmpPtr = UtilityData(theEnv)->ListOfCleanupFunctions;
-   while (tmpPtr != NULL)
-     {
-      nextPtr = tmpPtr->next;
-      rtn_struct(theEnv,callFunctionItem,tmpPtr);
-      tmpPtr = nextPtr;
-     }
-     
    /*=========================================*/
    /* Free the ephemerons tracking data which */
    /* needs to be garbage collected.          */
@@ -911,6 +897,7 @@ void DeallocateCallList(
    while (tmpPtr != NULL)
      {
       nextPtr = tmpPtr->next;
+      genfree(theEnv,(void *) tmpPtr->name,strlen(tmpPtr->name) + 1);
       rtn_struct(theEnv,callFunctionItem,tmpPtr);
       tmpPtr = nextPtr;
      }
