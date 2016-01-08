@@ -111,7 +111,7 @@ void JNIParserErrorCallback(
 /*************************************************/
 /* FindJNIRouter: Query routine for JNI routers. */
 /*************************************************/
-int QueryJNIRouter(
+bool QueryJNIRouter(
   void *theEnv,
   const char *logicalName)
   {
@@ -133,7 +133,7 @@ int QueryJNIRouter(
    (*env)->DeleteLocalRef(env,cls);
 
    if (mid == NULL)
-     { return FALSE; }
+     { return false; }
 
    str = (*env)->NewStringUTF(env,logicalName);
 
@@ -186,7 +186,7 @@ int PrintJNIRouter(
    (*env)->DeleteLocalRef(env,cls);
 
    if (mid == NULL)
-     { return FALSE; }
+     { return 0; }
 
    str1 = (*env)->NewStringUTF(env,logicalName);
    str2 = (*env)->NewStringUTF(env,str);
@@ -333,7 +333,7 @@ void NewJavaAddress(
    jsize theSize, c; 
    jsize paramCount, p; 
    jobject theConstructor, theObject, oldObject; 
-   int found = FALSE, matches;
+   bool found = false, matches;
    DATA_OBJECT_PTR newArgs;
    jvalue *javaArgs;
    
@@ -356,7 +356,7 @@ void NewJavaAddress(
    /* The Java class name must be a symbol. */
    /*=======================================*/
    
-   if (EnvArgTypeCheck(theEnv,"new (with type Java)",2,SYMBOL,&theValue) == FALSE) 
+   if (EnvArgTypeCheck(theEnv,"new (with type Java)",2,SYMBOL,&theValue) == false) 
      { return; }
    
    className = DOToString(theValue);
@@ -398,7 +398,7 @@ void NewJavaAddress(
      {
       if ((*env)->ExceptionOccurred(env))
         { (*env)->ExceptionClear(env); }
-      EnvSetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,true);
       ExpectedTypeError1(theEnv,"new (with type Java)",2,"Java class name");
       return;
      }
@@ -473,7 +473,7 @@ void NewJavaAddress(
       if (paramCount != (numberOfArguments - 2))
         { continue; }
         
-      matches = TRUE;
+      matches = true;
       
       for (p = 0; (p < paramCount) && matches; p++)
         {
@@ -499,10 +499,10 @@ void NewJavaAddress(
                javaArgs[p].i = DOToLong(newArgs[p]);
               }
             else
-              { matches = FALSE; }
+              { matches = false; }
            }
          else
-           { matches = FALSE; }
+           { matches = false; }
          
          (*env)->ReleaseStringUTFChars(env,str,cStr);
       
@@ -511,7 +511,7 @@ void NewJavaAddress(
       
       if (matches)
         { 
-         found = TRUE;
+         found = true;
          break; 
         }
      } 
@@ -574,7 +574,7 @@ void NewJavaAddress(
    
    if ((*env)->ExceptionOccurred(env))
      { 
-      EnvSetEvaluationError(theEnv,TRUE);
+      EnvSetEvaluationError(theEnv,true);
       (*env)->ExceptionClear(env); 
      }
 
@@ -594,7 +594,7 @@ void NewJavaAddress(
 /*******************/
 /* CallJavaMethod: */
 /*******************/
-intBool CallJavaMethod(
+bool CallJavaMethod(
   void *theEnv,
   DATA_OBJECT *target,
   DATA_OBJECT *rv)
@@ -611,7 +611,7 @@ intBool CallJavaMethod(
    const char *methodName;
    jstring str;
    char *cStr;
-   int matches;
+   bool matches;
    DATA_OBJECT_PTR newArgs;
    jvalue *javaArgs;
    int i;
@@ -629,14 +629,14 @@ intBool CallJavaMethod(
    /*=================================================================*/
    
    if ((numberOfArguments = EnvArgCountCheck(theEnv,"call (with type Java)",AT_LEAST,2)) == -1) 
-     { return FALSE; }
+     { return false; }
 
    /*========================================*/
    /* The Java method name must be a symbol. */
    /*========================================*/
    
-   if (EnvArgTypeCheck(theEnv,"call (with type Java)",2,SYMBOL,&theValue) == FALSE) 
-     { return FALSE; }
+   if (EnvArgTypeCheck(theEnv,"call (with type Java)",2,SYMBOL,&theValue) == false) 
+     { return false; }
    
    methodName = DOToString(theValue);
 
@@ -653,7 +653,7 @@ intBool CallJavaMethod(
         {
          EnvRtnUnknown(theEnv,i+3,&newArgs[i]);
          if (EnvGetEvaluationError(theEnv))
-           { return FALSE; }
+           { return false; }
         }
      }
 
@@ -746,7 +746,7 @@ intBool CallJavaMethod(
             continue; 
            }
 
-         matches = TRUE;
+         matches = true;
       
          for (p = 0; (p < paramCount) && matches; p++)
            {
@@ -771,10 +771,10 @@ intBool CallJavaMethod(
                   javaArgs[p].i = DOToLong(newArgs[p]);
                  }
                else
-                 { matches = FALSE; }
+                 { matches = false; }
               }
             else
-              { matches = FALSE; }
+              { matches = false; }
 
             (*env)->ReleaseStringUTFChars(env,str,cStr);
          
@@ -791,13 +791,13 @@ intBool CallJavaMethod(
    if (javaArgs != NULL)
      { genfree(theEnv,javaArgs,sizeof(jvalue) * (numberOfArguments - 2)); }
      
-   return TRUE;
+   return true;
   }
   
 /***********************/
 /* DiscardJavaAddress: */
 /***********************/
-intBool DiscardJavaAddress(
+bool DiscardJavaAddress(
   void *theEnv,
   void *theValue)
   {
@@ -811,7 +811,7 @@ intBool DiscardJavaAddress(
       (*env)->DeleteGlobalRef(env,theValue);
      }
    
-   return TRUE;
+   return true;
   }
   
 /**********************************************/
