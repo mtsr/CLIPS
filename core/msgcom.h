@@ -89,19 +89,19 @@ struct messageHandlerData
    int              EnvGetNextDefmessageHandler(void *,void *,int);
    HANDLER         *GetDefmessageHandlerPointer(void *,int);
 #if DEBUGGING_FUNCTIONS
-   unsigned         EnvGetDefmessageHandlerWatch(void *,void *,int);
+   bool             EnvGetDefmessageHandlerWatch(void *,void *,int);
    void             EnvSetDefmessageHandlerWatch(void *,bool,void *,int);
 #endif
    unsigned         EnvFindDefmessageHandler(void *,void *,const char *,const char *);
    bool             EnvIsDefmessageHandlerDeletable(void *,void *,int);
    void             UndefmessageHandlerCommand(void *);
-   int              EnvUndefmessageHandler(void *,void *,int);
+   bool             EnvUndefmessageHandler(void *,void *,int);
 #if DEBUGGING_FUNCTIONS
    void             PPDefmessageHandlerCommand(void *);
    void             ListDefmessageHandlersCommand(void *);
    void             PreviewSendCommand(void *); 
    const char      *EnvGetDefmessageHandlerPPForm(void *,void *,int);
-   void             EnvListDefmessageHandlers(void *,const char *,void *,int);
+   void             EnvListDefmessageHandlers(void *,const char *,void *,bool);
    void             EnvPreviewSend(void *,const char *,void *,const char *);
    long             DisplayHandlersInLinks(void *,const char *,PACKED_CLASS_LINKS *,int);
 #endif
@@ -112,14 +112,14 @@ struct messageHandlerData
    const char      *GetDefmessageHandlerName(void *,int);
    const char      *GetDefmessageHandlerType(void *,int);
    int              GetNextDefmessageHandler(void *,int);
-   int              IsDefmessageHandlerDeletable(void *,int);
-   int              UndefmessageHandler(void *,int);
+   bool             IsDefmessageHandlerDeletable(void *,int);
+   bool             UndefmessageHandler(void *,int);
 #if DEBUGGING_FUNCTIONS
    const char      *GetDefmessageHandlerPPForm(void *,int);
-   unsigned         GetDefmessageHandlerWatch(void *,int);
-   void             ListDefmessageHandlers(const char *,void *,int);
+   bool             GetDefmessageHandlerWatch(void *,int);
+   void             ListDefmessageHandlers(const char *,void *,bool);
    void             PreviewSend(const char *,void *,const char *);
-   void             SetDefmessageHandlerWatch(int,void *,int);
+   void             SetDefmessageHandlerWatch(bool,void *,int);
 #endif /* DEBUGGING_FUNCTIONS */
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

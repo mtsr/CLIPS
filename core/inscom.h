@@ -83,12 +83,12 @@ struct instanceData
 #if DEBUGGING_FUNCTIONS
    void                           InstancesCommand(void *);
    void                           PPInstanceCommand(void *);
-   void                           EnvInstances(void *,const char *,void *,const char *,int);
+   void                           EnvInstances(void *,const char *,void *,const char *,bool);
 #endif
    void                          *EnvMakeInstance(void *,const char *);
    void                          *EnvCreateRawInstance(void *,void *,const char *);
    void                          *EnvFindInstance(void *,void *,const char *,bool);
-   int                            EnvValidInstanceAddress(void *,void *);
+   bool                           EnvValidInstanceAddress(void *,void *);
    void                           EnvDirectGetSlot(void *,void *,const char *,DATA_OBJECT *);
    bool                           EnvDirectPutSlot(void *,void *,const char *,DATA_OBJECT *);
    const char                    *EnvGetInstanceName(void *,void *);
@@ -121,16 +121,16 @@ struct instanceData
    int                            DirectPutSlot(void *,const char *,DATA_OBJECT *);
    void                          *FindInstance(void *,const char *,unsigned);
    void                          *GetInstanceClass(void *);
-   void                           GetInstancePPForm(char *,unsigned,void *);
+   void                           GetInstancePPForm(char *,size_t,void *);
    void                          *GetNextInstance(void *);
    void                          *GetNextInstanceInClass(void *,void *);
    void                          *GetNextInstanceInClassAndSubclasses(void **,void *,DATA_OBJECT *);
-   void                           Instances(const char *,void *,const char *,int);
+   void                           Instances(const char *,void *,const char *,bool);
 #if DEBUGGING_FUNCTIONS
    void                          *MakeInstance(const char *);
 #endif
    bool                           UnmakeInstance(void *);
-   int                            ValidInstanceAddress(void *);
+   bool                           ValidInstanceAddress(void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

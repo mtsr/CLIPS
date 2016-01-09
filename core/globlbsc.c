@@ -346,7 +346,7 @@ void GetDefglobalList(
 
 #if DEBUGGING_FUNCTIONS
 
-unsigned GetDefglobalWatch(
+bool GetDefglobalWatch(
   void *theGlobal)
   {
    return EnvGetDefglobalWatch(GetCurrentEnvironment(),theGlobal);
@@ -360,7 +360,7 @@ void ListDefglobals(
   }
 
 void SetDefglobalWatch(
-  unsigned newState,
+  bool newState,
   void *theGlobal)
   {
    EnvSetDefglobalWatch(GetCurrentEnvironment(),newState,theGlobal);

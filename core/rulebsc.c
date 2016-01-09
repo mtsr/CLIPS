@@ -499,13 +499,13 @@ void GetDefruleList(
 
 #if DEBUGGING_FUNCTIONS
 
-unsigned GetDefruleWatchActivations(
+bool GetDefruleWatchActivations(
   void *rulePtr)
   {
    return EnvGetDefruleWatchActivations(GetCurrentEnvironment(),rulePtr);
   }
 
-unsigned GetDefruleWatchFirings(
+bool GetDefruleWatchFirings(
   void *rulePtr)
   {
    return EnvGetDefruleWatchFirings(GetCurrentEnvironment(),rulePtr);
@@ -519,14 +519,14 @@ void ListDefrules(
   }
 
 void SetDefruleWatchActivations(
-  unsigned newState,
+  bool newState,
   void *rulePtr)
   {
    EnvSetDefruleWatchActivations(GetCurrentEnvironment(),newState,rulePtr);
   }
 
 void SetDefruleWatchFirings(
-  unsigned newState,
+  bool newState,
   void *rulePtr)
   {
    EnvSetDefruleWatchFirings(GetCurrentEnvironment(),newState,rulePtr);

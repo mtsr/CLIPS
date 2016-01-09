@@ -154,9 +154,9 @@ struct deffunctionData
    bool                           IsDeffunctionDeletable(void *);
    bool                           Undeffunction(void *);
 #if DEBUGGING_FUNCTIONS
-   unsigned                       GetDeffunctionWatch(void *);
+   bool                           GetDeffunctionWatch(void *);
    void                           ListDeffunctions(const char *,struct defmodule *);
-   void                           SetDeffunctionWatch(unsigned,void *);
+   void                           SetDeffunctionWatch(bool,void *);
 #endif 
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

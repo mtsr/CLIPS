@@ -87,7 +87,7 @@
 #if DEBUGGING_FUNCTIONS
    bool                           EnvGetDefgenericWatch(void *,void *);
    void                           EnvSetDefgenericWatch(void *,bool,void *);
-   unsigned                       EnvGetDefmethodWatch(void *,void *,long);
+   bool                           EnvGetDefmethodWatch(void *,void *,long);
    void                           EnvSetDefmethodWatch(void *,bool,void *,long);
    void                           PPDefgenericCommand(void *);
    void                           PPDefmethodCommand(void *);
@@ -120,24 +120,24 @@
    const char                    *GetDefgenericName(void *);
    const char                    *GetDefgenericPPForm(void *);
    void                          *GetNextDefgeneric(void *);
-   int                            IsDefgenericDeletable(void *);
+   bool                           IsDefgenericDeletable(void *);
    bool                           Undefgeneric(void *);
    void                           GetDefmethodList(void *,DATA_OBJECT_PTR);
    void                           GetMethodRestrictions(void *,long,DATA_OBJECT *);
    long                           GetNextDefmethod(void *,long );
-   int                            IsDefmethodDeletable(void *,long );
+   bool                           IsDefmethodDeletable(void *,long );
    bool                           Undefmethod(void *,long );
 #if DEBUGGING_FUNCTIONS
-   unsigned                       GetDefgenericWatch(void *);
+   bool                           GetDefgenericWatch(void *);
    void                           ListDefgenerics(const char *,struct defmodule *);
-   void                           SetDefgenericWatch(unsigned,void *);
+   void                           SetDefgenericWatch(bool,void *);
    const char                    *GetDefmethodPPForm(void *,long);
-   unsigned                       GetDefmethodWatch(void *,long);
+   bool                           GetDefmethodWatch(void *,long);
    void                           ListDefmethods(const char *,void *);
-   void                           SetDefmethodWatch(unsigned,void *,long);
+   void                           SetDefmethodWatch(bool,void *,long);
 #endif /* DEBUGGING_FUNCTIONS */
 #if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
-   void                           GetDefmethodDescription(char *,int,void *,long );
+   void                           GetDefmethodDescription(char *,size_t,void *,long );
 #endif /* DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS */
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

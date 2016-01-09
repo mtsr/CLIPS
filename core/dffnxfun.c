@@ -1176,14 +1176,14 @@ void ListDeffunctions(
    EnvListDeffunctions(GetCurrentEnvironment(),logicalName,theModule);
   }
 
-unsigned GetDeffunctionWatch(
+bool GetDeffunctionWatch(
   void *dptr)
   {
    return EnvGetDeffunctionWatch(GetCurrentEnvironment(),dptr);
   }
 
 void SetDeffunctionWatch(
-  unsigned newState,
+  bool newState,
   void *dptr)
   {
    EnvSetDeffunctionWatch(GetCurrentEnvironment(),newState,dptr);

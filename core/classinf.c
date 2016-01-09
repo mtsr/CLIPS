@@ -160,12 +160,12 @@ bool ClassReactivePCommand(
 void *ClassInfoFnxArgs(
   void *theEnv,
   const char *fnx,
-  int *inhp)
+  bool *inhp)
   {
    void *clsptr;
    DATA_OBJECT tmp;
 
-   *inhp = 0;
+   *inhp = false;
    if (EnvRtnArgCount(theEnv) == 0)
      {
       ExpectedCountError(theEnv,fnx,AT_LEAST,1);
@@ -185,7 +185,7 @@ void *ClassInfoFnxArgs(
       if (EnvArgTypeCheck(theEnv,fnx,2,SYMBOL,&tmp) == false)
         return(NULL);
       if (strcmp(ValueToString(tmp.value),"inherit") == 0)
-        *inhp = 1;
+        *inhp = true;
       else
         {
          SyntaxErrorMessage(theEnv,fnx);
@@ -210,7 +210,7 @@ void ClassSlotsCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
-   int inhp;
+   bool inhp;
    void *clsptr;
    
    clsptr = ClassInfoFnxArgs(theEnv,"class-slots",&inhp);
@@ -236,7 +236,7 @@ void ClassSuperclassesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
-   int inhp;
+   bool inhp;
    void *clsptr;
    
    clsptr = ClassInfoFnxArgs(theEnv,"class-superclasses",&inhp);
@@ -262,7 +262,7 @@ void ClassSubclassesCommand(
   void *theEnv,
   DATA_OBJECT *result)
   {
-   int inhp;
+   bool inhp;
    void *clsptr;
      
    clsptr = ClassInfoFnxArgs(theEnv,"class-subclasses",&inhp);
@@ -288,11 +288,11 @@ void GetDefmessageHandlersListCmd(
   void *theEnv,
   DATA_OBJECT *result)
   {
-   int inhp;
+   bool inhp;
    void *clsptr;
    
    if (EnvRtnArgCount(theEnv) == 0)
-      EnvGetDefmessageHandlerList(theEnv,NULL,result,0);
+      EnvGetDefmessageHandlerList(theEnv,NULL,result,false);
    else
      {
       clsptr = ClassInfoFnxArgs(theEnv,"get-defmessage-handler-list",&inhp);
@@ -464,7 +464,7 @@ void EnvGetDefmessageHandlerList(
   void *theEnv,
   void *clsptr,
   DATA_OBJECT *result,
-  int inhp)
+  bool inhp)
   {
    DEFCLASS *cls,*svcls,*svnxt,*supcls;
    long j;
@@ -540,7 +540,7 @@ void EnvClassSuperclasses(
   void *theEnv,
   void *clsptr,
   DATA_OBJECT *result,
-  int inhp)
+  bool inhp)
   {
    PACKED_CLASS_LINKS *plinks;
    unsigned offset;
@@ -1179,7 +1179,7 @@ bool ClassReactiveP(
 void ClassSlots(
   void *clsptr,
   DATA_OBJECT *result,
-  int inhp)
+  bool inhp)
   {
    EnvClassSlots(GetCurrentEnvironment(),clsptr,result,inhp);
   }
@@ -1187,7 +1187,7 @@ void ClassSlots(
 void ClassSubclasses(
   void *clsptr,
   DATA_OBJECT *result,
-  int inhp)
+  bool inhp)
   {
    EnvClassSubclasses(GetCurrentEnvironment(),clsptr,result,inhp);
   }
@@ -1195,7 +1195,7 @@ void ClassSubclasses(
 void ClassSuperclasses(
   void *clsptr,
   DATA_OBJECT *result,
-  int inhp)
+  bool inhp)
   {
    EnvClassSuperclasses(GetCurrentEnvironment(),clsptr,result,inhp);
   }
@@ -1259,7 +1259,7 @@ void SlotTypes(
 void GetDefmessageHandlerList(
   void *clsptr,
   DATA_OBJECT *result,
-  int inhp)
+  bool inhp)
   {
    EnvGetDefmessageHandlerList(GetCurrentEnvironment(),clsptr,result,inhp);
   }

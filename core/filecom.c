@@ -447,7 +447,7 @@ bool EnvDribbleOn(
    if (FileCommandData(theEnv)->DribbleFP == NULL)
      {
       OpenErrorMessage(theEnv,"dribble-on",fileName);
-      return(0);
+      return(false);
      }
 
    /*============================*/
@@ -510,7 +510,7 @@ bool DribbleOffCommand(
 bool EnvDribbleOff(
   void *theEnv)
   {
-   int rv = 0;
+   bool rv = false;
 
    /*================================================*/
    /* Call the dribble status function. This is used */
@@ -533,10 +533,10 @@ bool EnvDribbleOff(
       if (FileCommandData(theEnv)->DribbleCurrentPosition > 0)
         { fprintf(FileCommandData(theEnv)->DribbleFP,"%s",FileCommandData(theEnv)->DribbleBuffer); }
       EnvDeleteRouter(theEnv,"dribble");
-      if (GenClose(theEnv,FileCommandData(theEnv)->DribbleFP) == 0) rv = 1;
+      if (GenClose(theEnv,FileCommandData(theEnv)->DribbleFP) == 0) rv = true;
      }
    else
-     { rv = 1; }
+     { rv = true; }
 
    FileCommandData(theEnv)->DribbleFP = NULL;
 

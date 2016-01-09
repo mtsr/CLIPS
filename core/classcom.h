@@ -111,14 +111,14 @@
                                  *GetDefclassModule(void *);
    const char             *GetDefclassName(void *);
    const char             *GetDefclassPPForm(void *);
-   unsigned                GetDefclassWatchInstances(void *);
-   unsigned                GetDefclassWatchSlots(void *);
+   bool                    GetDefclassWatchInstances(void *);
+   bool                    GetDefclassWatchSlots(void *);
    void                   *GetNextDefclass(void *);
    bool                    IsDefclassDeletable(void *);
    void                    ListDefclasses(const char *,struct defmodule *);
    unsigned short          SetClassDefaultsMode(unsigned short);
-   void                    SetDefclassWatchInstances(unsigned,void *);
-   void                    SetDefclassWatchSlots(unsigned,void *);
+   void                    SetDefclassWatchInstances(bool,void *);
+   void                    SetDefclassWatchSlots(bool,void *);
    bool                    Undefclass(void *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

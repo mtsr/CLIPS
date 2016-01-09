@@ -54,7 +54,7 @@ struct factHashEntry
    bool                           RemoveHashedFact(void *,struct fact *);
    unsigned long                  HandleFactDuplication(void *,void *,bool *,long long);
    bool                           EnvGetFactDuplication(void *);
-   bool                           EnvSetFactDuplication(void *,int);
+   bool                           EnvSetFactDuplication(void *,bool);
    void                           InitializeFactHashTable(void *);
    void                           ShowFactHashTable(void *);
    unsigned long                  HashFact(struct fact *);
@@ -63,7 +63,7 @@ struct factHashEntry
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    bool                           GetFactDuplication(void);
-   bool                           SetFactDuplication(int);
+   bool                           SetFactDuplication(bool);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

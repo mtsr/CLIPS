@@ -82,7 +82,7 @@ typedef struct saved_contexts
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   bool                           SetSequenceOperatorRecognition(int);
+   bool                           SetSequenceOperatorRecognition(bool);
    bool                           GetSequenceOperatorRecognition(void);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

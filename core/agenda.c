@@ -1397,7 +1397,7 @@ const char *GetActivationName(
 
 void GetActivationPPForm(
   char *buffer,
-  unsigned bufferLength,
+  size_t bufferLength,
   void *theActivation)
   {
    EnvGetActivationPPForm(GetCurrentEnvironment(),buffer,bufferLength,theActivation);
@@ -1415,7 +1415,7 @@ int GetActivationSalience(
    return EnvGetActivationSalience(GetCurrentEnvironment(),actPtr);
   }
 
-int GetAgendaChanged()
+bool GetAgendaChanged()
   {
    return EnvGetAgendaChanged(GetCurrentEnvironment());
   }
@@ -1445,7 +1445,7 @@ void ReorderAgenda(
   }
 
 void SetAgendaChanged(
-  int value)
+  bool value)
   {
    EnvSetAgendaChanged(GetCurrentEnvironment(),value);
   }

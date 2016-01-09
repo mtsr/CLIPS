@@ -118,9 +118,9 @@ typedef struct igarbage
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    void                           DecrementInstanceCount(void *);
-   int                            GetInstancesChanged(void);
+   bool                           GetInstancesChanged(void);
    void                           IncrementInstanceCount(void *);
-   void                           SetInstancesChanged(int);
+   void                           SetInstancesChanged(bool);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

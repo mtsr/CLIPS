@@ -293,7 +293,7 @@ bool GetResetGlobals()
   }
 
 bool SetResetGlobals(
-  int value)
+  bool value)
   {
    return EnvSetResetGlobals(GetCurrentEnvironment(),value);
   }

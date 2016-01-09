@@ -308,7 +308,7 @@ void GetDeftemplateList(
 
 #if DEBUGGING_FUNCTIONS
 
-unsigned GetDeftemplateWatch(
+bool GetDeftemplateWatch(
   void *theTemplate)
   {
    return EnvGetDeftemplateWatch(GetCurrentEnvironment(),theTemplate);
@@ -322,7 +322,7 @@ void ListDeftemplates(
   }
 
 void SetDeftemplateWatch(
-  unsigned newState,
+  bool newState,
   void *theTemplate)
   {
    EnvSetDeftemplateWatch(GetCurrentEnvironment(),newState,theTemplate);

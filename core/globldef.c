@@ -894,13 +894,13 @@ bool GetDefglobalValue(
 
 void GetDefglobalValueForm(
   char *buffer,
-  unsigned bufferLength,
+  size_t bufferLength,
   void *vTheGlobal)
   {
    EnvGetDefglobalValueForm(GetCurrentEnvironment(),buffer,bufferLength,vTheGlobal);
   }
 
-int GetGlobalsChanged()
+bool GetGlobalsChanged()
   {
    return EnvGetGlobalsChanged(GetCurrentEnvironment());
   }
@@ -925,7 +925,7 @@ bool SetDefglobalValue(
   }
 
 void SetGlobalsChanged(
-  int value)
+  bool value)
   {
    EnvSetGlobalsChanged(GetCurrentEnvironment(),value);
   }

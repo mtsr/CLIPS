@@ -273,9 +273,9 @@ bool EnvGetFactDuplication(
 /*******************************************/
 bool EnvSetFactDuplication(
   void *theEnv,
-  int value)
+  bool value)
   {
-   int ov;
+   bool ov;
 
    ov = FactData(theEnv)->FactDuplication;
    FactData(theEnv)->FactDuplication = value;
@@ -429,7 +429,7 @@ bool GetFactDuplication()
   }
 
 bool SetFactDuplication(
-  int value)
+  bool value)
   {
    return EnvSetFactDuplication(GetCurrentEnvironment(),value);
   }

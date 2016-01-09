@@ -41,7 +41,7 @@
    bool                    SetAutoFloatDividendCommand(void *);
    bool                    GetAutoFloatDividendCommand(void *);
    bool                    EnvGetAutoFloatDividend(void *);
-   bool                    EnvSetAutoFloatDividend(void *,int);
+   bool                    EnvSetAutoFloatDividend(void *,bool);
    long long               IntegerFunction(void *);
    double                  FloatFunction(void *);
    void                    AbsFunction(void *,DATA_OBJECT_PTR);

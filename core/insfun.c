@@ -1398,7 +1398,7 @@ void DecrementInstanceCount(
    EnvDecrementInstanceCount(GetCurrentEnvironment(),vptr);
   }
 
-int GetInstancesChanged()
+bool GetInstancesChanged()
   {
    return EnvGetInstancesChanged(GetCurrentEnvironment());
   }
@@ -1410,7 +1410,7 @@ void IncrementInstanceCount(
   }
 
 void SetInstancesChanged(
-  int changed)
+  bool changed)
   {
    EnvSetInstancesChanged(GetCurrentEnvironment(),changed);
   }

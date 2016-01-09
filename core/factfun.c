@@ -602,7 +602,7 @@ void EnvPPFact(
   void *theEnv,
   void *vTheFact,
   const char *logicalName,
-  int ignoreDefaults)
+  bool ignoreDefaults)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -676,7 +676,7 @@ void *FactDeftemplate(
    return EnvFactDeftemplate(GetCurrentEnvironment(),vTheFact);
   }
 
-int FactExistp(
+bool FactExistp(
   void *vTheFact)
   {
    return EnvFactExistp(GetCurrentEnvironment(),vTheFact);
@@ -699,7 +699,7 @@ void GetFactList(
 void PPFact(
   void *vTheFact,
   const char *logicalName,
-  int ignoreDefaults)
+  bool ignoreDefaults)
   {
    EnvPPFact(GetCurrentEnvironment(),vTheFact,logicalName,ignoreDefaults);
   }

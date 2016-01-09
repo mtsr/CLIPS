@@ -256,7 +256,7 @@ long EnvLoadInstances(
 long EnvLoadInstancesFromString(
   void *theEnv,
   const char *theString,
-  int theMax)
+  size_t theMax)
   {
    long theCount;
    const char * theStrRouter = "*** load-instances-from-string ***";
@@ -324,7 +324,7 @@ long EnvRestoreInstances(
 long EnvRestoreInstancesFromString(
   void *theEnv,
   const char *theString,
-  int theMax)
+  size_t theMax)
   {
    long theCount;
    const char *theStrRouter = "*** load-instances-from-string ***";
@@ -1737,7 +1737,7 @@ long LoadInstances(
 
 long LoadInstancesFromString(
   const char *theString,
-  int theMax)
+  size_t theMax)
   {
    return EnvLoadInstancesFromString(GetCurrentEnvironment(),theString,theMax);
   }
@@ -1750,7 +1750,7 @@ long RestoreInstances(
 
 long RestoreInstancesFromString(
   const char *theString,
-  int theMax)
+  size_t theMax)
   {
    return EnvRestoreInstancesFromString(GetCurrentEnvironment(),theString,theMax);
   }

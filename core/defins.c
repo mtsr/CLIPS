@@ -1015,7 +1015,7 @@ void *GetNextDefinstances(
    return EnvGetNextDefinstances(GetCurrentEnvironment(),ptr);
   }
 
-int IsDefinstancesDeletable(
+bool IsDefinstancesDeletable(
   void *ptr)
   {
    return EnvIsDefinstancesDeletable(GetCurrentEnvironment(),ptr);

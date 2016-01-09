@@ -537,9 +537,9 @@ bool EnvGetAutoFloatDividend(
 /*************************************************/
 bool EnvSetAutoFloatDividend(
   void *theEnv,
-  int value)
+  bool value)
   {
-   int ov;
+   bool ov;
 
    ov = BasicMathFunctionData(theEnv)->AutoFloatDividend;
    BasicMathFunctionData(theEnv)->AutoFloatDividend = value;

@@ -116,9 +116,9 @@ struct constraintData
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
-   bool                           SetDynamicConstraintChecking(int);
+   bool                           SetDynamicConstraintChecking(bool);
    bool                           GetDynamicConstraintChecking(void);
-   bool                           SetStaticConstraintChecking(int);
+   bool                           SetStaticConstraintChecking(bool);
    bool                           GetStaticConstraintChecking(void);
 
 #endif

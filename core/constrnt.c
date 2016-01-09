@@ -635,7 +635,7 @@ bool EnvGetStaticConstraintChecking(
 #if ALLOW_ENVIRONMENT_GLOBALS
 
 bool SetDynamicConstraintChecking(
-  int value)
+  bool value)
   {
    return EnvSetDynamicConstraintChecking(GetCurrentEnvironment(),value);
   }
@@ -646,7 +646,7 @@ bool GetDynamicConstraintChecking()
   }
 
 bool SetStaticConstraintChecking(
-  int value)
+  bool value)
   {
    return EnvSetStaticConstraintChecking(GetCurrentEnvironment(),value);
   }

@@ -76,11 +76,11 @@
 
    void                           GetDefruleList(DATA_OBJECT_PTR,void *);
 #if DEBUGGING_FUNCTIONS
-   unsigned                       GetDefruleWatchActivations(void *);
-   unsigned                       GetDefruleWatchFirings(void *);
+   bool                           GetDefruleWatchActivations(void *);
+   bool                           GetDefruleWatchFirings(void *);
    void                           ListDefrules(const char *,void *);
-   void                           SetDefruleWatchActivations(unsigned,void *);
-   void                           SetDefruleWatchFirings(unsigned,void *);
+   void                           SetDefruleWatchActivations(bool,void *);
+   void                           SetDefruleWatchFirings(bool,void *);
 #endif
    bool                           Undefrule(void *);
 

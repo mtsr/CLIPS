@@ -43,7 +43,7 @@
 #if DEFRULE_CONSTRUCT
    bool                           ClassReactivePCommand(void *);
 #endif
-   void                          *ClassInfoFnxArgs(void *,const char *,int *);
+   void                          *ClassInfoFnxArgs(void *,const char *,bool *);
    void                           ClassSlotsCommand(void *,DATA_OBJECT *);
    void                           ClassSuperclassesCommand(void *,DATA_OBJECT *);
    void                           ClassSubclassesCommand(void *,DATA_OBJECT *);
@@ -60,8 +60,8 @@
    bool                           EnvClassReactiveP(void *,void *);
 #endif
    void                           EnvClassSlots(void *,void *,DATA_OBJECT *,bool);
-   void                           EnvGetDefmessageHandlerList(void *,void *,DATA_OBJECT *,int);
-   void                           EnvClassSuperclasses(void *,void *,DATA_OBJECT *,int);
+   void                           EnvGetDefmessageHandlerList(void *,void *,DATA_OBJECT *,bool);
+   void                           EnvClassSuperclasses(void *,void *,DATA_OBJECT *,bool);
    void                           EnvClassSubclasses(void *,void *,DATA_OBJECT *,bool);
    void                           ClassSubclassAddresses(void *,void *,DATA_OBJECT *,bool);
    void                           EnvSlotFacets(void *,void *,const char *,DATA_OBJECT *);
@@ -78,9 +78,9 @@
 #if DEFRULE_CONSTRUCT
    bool                           ClassReactiveP(void *);
 #endif
-   void                           ClassSlots(void *,DATA_OBJECT *,int);
-   void                           ClassSubclasses(void *,DATA_OBJECT *,int);
-   void                           ClassSuperclasses(void *,DATA_OBJECT *,int);
+   void                           ClassSlots(void *,DATA_OBJECT *,bool);
+   void                           ClassSubclasses(void *,DATA_OBJECT *,bool);
+   void                           ClassSuperclasses(void *,DATA_OBJECT *,bool);
    void                           SlotAllowedValues(void *,const char *,DATA_OBJECT *);
    void                           SlotAllowedClasses(void *,const char *,DATA_OBJECT *);
    void                           SlotCardinality(void *,const char *,DATA_OBJECT *);
@@ -88,7 +88,7 @@
    void                           SlotRange(void *,const char *,DATA_OBJECT *);
    void                           SlotSources(void *,const char *,DATA_OBJECT *);
    void                           SlotTypes(void *,const char *,DATA_OBJECT *);
-   void                           GetDefmessageHandlerList(void *,DATA_OBJECT *,int);
+   void                           GetDefmessageHandlerList(void *,DATA_OBJECT *,bool);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

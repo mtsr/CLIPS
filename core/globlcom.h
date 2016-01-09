@@ -46,7 +46,7 @@
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    bool                           GetResetGlobals(void);
-   bool                           SetResetGlobals(int);
+   bool                           SetResetGlobals(bool);
 #if DEBUGGING_FUNCTIONS
    void                           ShowDefglobals(const char *,void *);
 #endif

@@ -355,7 +355,7 @@ HANDLER *GetDefmessageHandlerPointer(
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************************/
-unsigned EnvGetDefmessageHandlerWatch(
+bool EnvGetDefmessageHandlerWatch(
   void *theEnv,
   void *theClass,
   int theIndex)
@@ -522,7 +522,7 @@ void UndefmessageHandlerCommand(
   SIDE EFFECTS : Handler deleted if possible
   NOTES        : None
  ***********************************************************/
-int EnvUndefmessageHandler(
+bool EnvUndefmessageHandler(
   void *theEnv,
   void *vptr,
   int mhi)
@@ -530,7 +530,7 @@ int EnvUndefmessageHandler(
 #if RUN_TIME || BLOAD_ONLY
    PrintErrorID(theEnv,"MSGCOM",3,false);
    EnvPrintRouter(theEnv,WERROR,"Unable to delete message-handlers.\n");
-   return(0);
+   return(false);
 #else
    DEFCLASS *cls;
 
@@ -539,7 +539,7 @@ int EnvUndefmessageHandler(
      {
       PrintErrorID(theEnv,"MSGCOM",3,false);
       EnvPrintRouter(theEnv,WERROR,"Unable to delete message-handlers.\n");
-      return(0);
+      return(false);
      }
 #endif
    if (vptr == NULL)
@@ -548,7 +548,7 @@ int EnvUndefmessageHandler(
         {
          PrintErrorID(theEnv,"MSGCOM",1,false);
          EnvPrintRouter(theEnv,WERROR,"Incomplete message-handler specification for deletion.\n");
-         return(0);
+         return(false);
         }
       return(WildDeleteHandler(theEnv,NULL,NULL,NULL));
      }
@@ -558,11 +558,11 @@ int EnvUndefmessageHandler(
    if (HandlersExecuting(cls))
      {
       HandlerDeleteError(theEnv,EnvGetDefclassName(theEnv,(void *) cls));
-      return(0);
+      return(false);
      }
    cls->handlers[mhi-1].mark = 1;
    DeallocateMarkedHandlers(theEnv,cls);
-   return(1);
+   return(true);
 #endif
   }
 
@@ -638,8 +638,8 @@ void PPDefmessageHandlerCommand(
 void ListDefmessageHandlersCommand(
   void *theEnv)
   {
-   int inhp;
-   void *clsptr;
+   bool inhp;
+   bool *clsptr;
 
    if (EnvRtnArgCount(theEnv) == 0)
      EnvListDefmessageHandlers(theEnv,WDISPLAY,NULL,0);
@@ -720,7 +720,7 @@ void EnvListDefmessageHandlers(
   void *theEnv,
   const char *logName,
   void *vptr,
-  int inhp)
+  bool inhp)
   {
    DEFCLASS *cls;
    long cnt;
@@ -1204,14 +1204,14 @@ int GetNextDefmessageHandler(
    return EnvGetNextDefmessageHandler(GetCurrentEnvironment(),ptr,theIndex);
   }
 
-int IsDefmessageHandlerDeletable(
+bool IsDefmessageHandlerDeletable(
   void *ptr,
   int theIndex)
   {
    return EnvIsDefmessageHandlerDeletable(GetCurrentEnvironment(),ptr,theIndex);
   }
 
-int UndefmessageHandler(
+bool UndefmessageHandler(
   void *vptr,
   int mhi)
   {
@@ -1227,7 +1227,7 @@ const char *GetDefmessageHandlerPPForm(
    return EnvGetDefmessageHandlerPPForm(GetCurrentEnvironment(),ptr,theIndex);
   }
 
-unsigned GetDefmessageHandlerWatch(
+bool GetDefmessageHandlerWatch(
   void *theClass,
   int theIndex)
   {
@@ -1237,7 +1237,7 @@ unsigned GetDefmessageHandlerWatch(
 void ListDefmessageHandlers(
   const char *logName,
   void *vptr,
-  int inhp)
+  bool inhp)
   {
    EnvListDefmessageHandlers(GetCurrentEnvironment(),logName,vptr,inhp);
   }
@@ -1251,7 +1251,7 @@ void PreviewSend(
   }
 
 void SetDefmessageHandlerWatch(
-  int newState,
+  bool newState,
   void *theClass,
   int theIndex)
   {

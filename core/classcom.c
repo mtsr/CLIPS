@@ -805,7 +805,7 @@ void *GetClassDefaultsModeCommand(
 /* SetClassDefaultsModeCommand: H/L access routine */
 /*   for the set-class-defaults-mode command.      */
 /***************************************************/
-void *SetClassDefaultsModeCommand(
+void *SetClassDefaultsModeCommand( // TBD enum?
   void *theEnv)
   {
    DATA_OBJECT argPtr;
@@ -1006,13 +1006,13 @@ const char *DefclassModule(
 
 #if DEBUGGING_FUNCTIONS
 
-unsigned GetDefclassWatchInstances(
+bool GetDefclassWatchInstances(
   void *theClass)
   {
    return EnvGetDefclassWatchInstances(GetCurrentEnvironment(),theClass);
   }
 
-unsigned GetDefclassWatchSlots(
+bool GetDefclassWatchSlots(
   void *theClass)
   {
    return EnvGetDefclassWatchSlots(GetCurrentEnvironment(),theClass);
@@ -1026,14 +1026,14 @@ void ListDefclasses(
   }
 
 void SetDefclassWatchInstances(
-  unsigned newState,
+  bool newState,
   void *theClass)
   {
    EnvSetDefclassWatchInstances(GetCurrentEnvironment(),newState,theClass);
   }
 
 void SetDefclassWatchSlots(
-  unsigned newState,
+  bool newState,
   void *theClass)
   {
    EnvSetDefclassWatchSlots(GetCurrentEnvironment(),newState,theClass);

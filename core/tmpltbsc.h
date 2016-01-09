@@ -71,9 +71,9 @@
 
    void                           GetDeftemplateList(DATA_OBJECT_PTR,void *);
 #if DEBUGGING_FUNCTIONS
-   unsigned                       GetDeftemplateWatch(void *);
+   bool                           GetDeftemplateWatch(void *);
    void                           ListDeftemplates(const char *,void *);
-   void                           SetDeftemplateWatch(unsigned,void *);
+   void                           SetDeftemplateWatch(bool,void *);
 #endif
    bool                           Undeftemplate(void *);
 

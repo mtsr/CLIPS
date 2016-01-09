@@ -198,8 +198,8 @@ struct factsData
    struct fact                   *CreateFact(void *);
    void                           DecrementFactCount(void *);
    long long                      FactIndex(void *);
-   int                            GetFactListChanged(void);
-   void                           GetFactPPForm(char *,unsigned,void *);
+   bool                           GetFactListChanged(void);
+   void                           GetFactPPForm(char *,size_t,void *);
    bool                           GetFactSlot(void *,const char *,DATA_OBJECT *);
    void                          *GetNextFact(void *);
    void                           IncrementFactCount(void *);
@@ -208,7 +208,7 @@ struct factsData
    bool                           RemoveModifyFunction(const char *);
    bool                           RemoveRetractFunction(const char *);
    bool                           Retract(void *);
-   void                           SetFactListChanged(int);
+   void                           SetFactListChanged(bool);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

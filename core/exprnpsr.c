@@ -979,7 +979,7 @@ struct expr *RemoveUnneededProgn(
 #if ALLOW_ENVIRONMENT_GLOBALS
 
 bool SetSequenceOperatorRecognition(
-  int value)
+  bool value)
   {
    return EnvSetSequenceOperatorRecognition(GetCurrentEnvironment(),value);
   }

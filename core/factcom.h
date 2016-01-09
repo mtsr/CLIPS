@@ -72,7 +72,7 @@
 #endif
    bool                           LoadFacts(const char *);
    bool                           SaveFacts(const char *,int);
-   bool                           LoadFactsFromString(const char *,int);
+   bool                           LoadFactsFromString(const char *,long);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

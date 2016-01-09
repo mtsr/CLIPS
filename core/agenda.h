@@ -117,7 +117,7 @@ struct agendaData
    const char             *EnvGetActivationName(void *,void *);
    struct defrule         *EnvGetActivationRule(void *,void *);
    int                     EnvGetActivationSalience(void *,void *);
-   int                     EnvSetActivationSalience(void *,void *,int);
+   int                     EnvSetActivationSalience(void *,void *,int); // TBD remove?
    void                    EnvGetActivationPPForm(void *,char *,size_t,void *);
    void                    EnvGetActivationBasisPPForm(void *,char *,size_t,void *);
    bool                    MoveActivationToTop(void *,void *);
@@ -149,17 +149,17 @@ struct agendaData
    bool                    DeleteActivation(void *);
    struct partialMatch    *GetActivationBasis(void *);
    const char             *GetActivationName(void *);
-   void                    GetActivationPPForm(char *,unsigned,void *);
+   void                    GetActivationPPForm(char *,size_t,void *);
    struct defrule         *GetActivationRule(void *);
    int                     GetActivationSalience(void *);
-   int                     GetAgendaChanged(void);
+   bool                    GetAgendaChanged(void);
    void                   *GetNextActivation(void *);
    int                     GetSalienceEvaluation(void);
    bool                    Refresh(void *);
    void                    RefreshAgenda(void *);
    void                    ReorderAgenda(void *);
    int                     SetActivationSalience(void *,int);
-   void                    SetAgendaChanged(int);
+   void                    SetAgendaChanged(bool);
    int                     SetSalienceEvaluation(int);
 
 #endif

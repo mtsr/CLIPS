@@ -67,9 +67,9 @@
 
    void                           GetDefglobalList(DATA_OBJECT_PTR,void *);
 #if DEBUGGING_FUNCTIONS
-   unsigned                       GetDefglobalWatch(void *);
+   bool                           GetDefglobalWatch(void *);
    void                           ListDefglobals(const char *,void *);
-   void                           SetDefglobalWatch(unsigned,void *);
+   void                           SetDefglobalWatch(bool,void *);
 #endif
    bool                           Undefglobal(void *);
    

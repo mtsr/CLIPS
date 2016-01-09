@@ -1375,7 +1375,7 @@ bool SaveFacts(
 
 bool LoadFactsFromString(
   const char *theString,
-  int theMax)
+  long theMax)
   {
    return EnvLoadFactsFromString(GetCurrentEnvironment(),theString,theMax);
   }

@@ -2542,21 +2542,21 @@ void DeftemplateSlotTypes(
    EnvDeftemplateSlotTypes(GetCurrentEnvironment(),vTheDeftemplate,slotName,result);
   }
 
-int DeftemplateSlotMultiP(
+bool DeftemplateSlotMultiP(
   void *vTheDeftemplate,
   const char *slotName)
   {
    return EnvDeftemplateSlotMultiP(GetCurrentEnvironment(),vTheDeftemplate,slotName);
   }
 
-int DeftemplateSlotSingleP(
+bool DeftemplateSlotSingleP(
   void *vTheDeftemplate,
   const char *slotName)
   {
    return EnvDeftemplateSlotSingleP(GetCurrentEnvironment(),vTheDeftemplate,slotName);
   }
 
-int DeftemplateSlotExistP(
+bool DeftemplateSlotExistP(
   void *vTheDeftemplate,
   const char *slotName)
   {

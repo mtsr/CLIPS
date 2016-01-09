@@ -119,9 +119,9 @@
    void                           DeftemplateSlotAllowedValues(void *,const char *,DATA_OBJECT *);
    void                           DeftemplateSlotRange(void *,const char *,DATA_OBJECT *);
    void                           DeftemplateSlotTypes(void *,const char *,DATA_OBJECT *);
-   int                            DeftemplateSlotMultiP(void *,const char *);
-   int                            DeftemplateSlotSingleP(void *,const char *);
-   int                            DeftemplateSlotExistP(void *,const char *);
+   bool                           DeftemplateSlotMultiP(void *,const char *);
+   bool                           DeftemplateSlotSingleP(void *,const char *);
+   bool                           DeftemplateSlotExistP(void *,const char *);
    int                            DeftemplateSlotDefaultP(void *,const char *);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */

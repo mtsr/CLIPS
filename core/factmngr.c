@@ -2025,14 +2025,14 @@ long long FactIndex(
    return(EnvFactIndex(GetCurrentEnvironment(),factPtr));
   }
 
-int GetFactListChanged()
+bool GetFactListChanged()
   {
    return EnvGetFactListChanged(GetCurrentEnvironment());
   }
 
 void GetFactPPForm(
   char *buffer,
-  unsigned bufferLength,
+  size_t bufferLength,
   void *theFact)
   {
    EnvGetFactPPForm(GetCurrentEnvironment(),buffer,bufferLength,theFact);
@@ -2091,7 +2091,7 @@ bool Retract(
   }
 
 void SetFactListChanged(
-  int value)
+  bool value)
   {
    EnvSetFactListChanged(GetCurrentEnvironment(),value);
   }

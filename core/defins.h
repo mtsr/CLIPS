@@ -116,7 +116,7 @@ struct definstancesData
    const char                    *GetDefinstancesName(void *);
    const char                    *GetDefinstancesPPForm(void *);
    void                          *GetNextDefinstances(void *);
-   int                            IsDefinstancesDeletable(void *);
+   bool                           IsDefinstancesDeletable(void *);
 #if DEBUGGING_FUNCTIONS
    void                           ListDefinstances(const char *,struct defmodule *);
 #endif

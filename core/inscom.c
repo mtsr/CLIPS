@@ -511,7 +511,7 @@ void EnvInstances(
   const char *logicalName,
   void *theVModule,
   const char *className,
-  int inheritFlag)
+  bool inheritFlag)
   {
    int id;
    struct defmodule *theModule;
@@ -680,7 +680,7 @@ void *EnvFindInstance(
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************************************/
-int EnvValidInstanceAddress(
+bool EnvValidInstanceAddress(
   void *theEnv,
   void *iptr)
   {
@@ -688,7 +688,7 @@ int EnvValidInstanceAddress(
 #pragma unused(theEnv)
 #endif
 
-   return((((INSTANCE_TYPE *) iptr)->garbage == 0) ? 1 : 0);
+   return((((INSTANCE_TYPE *) iptr)->garbage == 0) ? true : false);
   }
 
 /***************************************************
@@ -1676,7 +1676,7 @@ void *GetInstanceClass(
 
 void GetInstancePPForm(
   char *buf,
-  unsigned buflen,
+  size_t buflen,
   void *iptr)
   {
    EnvGetInstancePPForm(GetCurrentEnvironment(),buf,buflen,iptr);
@@ -1708,7 +1708,7 @@ void Instances(
   const char *logicalName,
   void *theVModule,
   const char *className,
-  int inheritFlag)
+  bool inheritFlag)
   {
    EnvInstances(GetCurrentEnvironment(),logicalName,theVModule,className,inheritFlag);
   }
@@ -1726,7 +1726,7 @@ bool UnmakeInstance(
    return EnvUnmakeInstance(GetCurrentEnvironment(),iptr);
   }
 
-int ValidInstanceAddress(
+bool ValidInstanceAddress(
   void *iptr)
   {
    return EnvValidInstanceAddress(GetCurrentEnvironment(),iptr);

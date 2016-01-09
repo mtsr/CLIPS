@@ -842,7 +842,7 @@ void EnvSetDefgenericWatch(
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************************/
-unsigned EnvGetDefmethodWatch(
+bool EnvGetDefmethodWatch(
   void *theEnv,
   void *theGeneric,
   long theIndex)
@@ -1968,7 +1968,7 @@ void *GetNextDefgeneric(
    return EnvGetNextDefgeneric(GetCurrentEnvironment(),ptr);
   }
 
-int IsDefgenericDeletable(
+bool IsDefgenericDeletable(
   void *ptr)
   {
    return EnvIsDefgenericDeletable(GetCurrentEnvironment(),ptr);
@@ -2002,7 +2002,7 @@ long GetNextDefmethod(
    return EnvGetNextDefmethod(GetCurrentEnvironment(),ptr,theIndex);
   }
 
-int IsDefmethodDeletable(
+bool IsDefmethodDeletable(
   void *ptr,
   long theIndex)
   {
@@ -2018,7 +2018,7 @@ bool Undefmethod(
 
 #if DEBUGGING_FUNCTIONS
 
-unsigned GetDefgenericWatch(
+bool GetDefgenericWatch(
   void *theGeneric)
   {
    return EnvGetDefgenericWatch(GetCurrentEnvironment(),theGeneric);
@@ -2032,7 +2032,7 @@ void ListDefgenerics(
   }
 
 void SetDefgenericWatch(
-  unsigned newState,
+  bool newState,
   void *theGeneric)
   {
    EnvSetDefgenericWatch(GetCurrentEnvironment(),newState,theGeneric);
@@ -2045,7 +2045,7 @@ const char *GetDefmethodPPForm(
    return EnvGetDefmethodPPForm(GetCurrentEnvironment(),ptr,theIndex);
   }
 
-unsigned GetDefmethodWatch(
+bool GetDefmethodWatch(
   void *theGeneric,
   long theIndex)
   {
@@ -2060,7 +2060,7 @@ void ListDefmethods(
   }
 
 void SetDefmethodWatch(
-  unsigned newState,
+  bool newState,
   void *theGeneric,
   long theIndex)
   {
@@ -2073,7 +2073,7 @@ void SetDefmethodWatch(
 
 void GetDefmethodDescription(
   char *buf,
-  int buflen,
+  size_t buflen,
   void *ptr,
   long theIndex)
   {

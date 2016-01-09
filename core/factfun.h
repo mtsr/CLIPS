@@ -56,16 +56,16 @@
    void                           GetFactListFunction(void *,DATA_OBJECT *);
    void                           EnvGetFactList(void *,DATA_OBJECT *,void *);
    void                           PPFactFunction(void *);
-   void                           EnvPPFact(void *,void *,const char *,int);
+   void                           EnvPPFact(void *,void *,const char *,bool);
    struct fact                   *GetFactAddressOrIndexArgument(void *,const char *,int,bool);
 
 #if ALLOW_ENVIRONMENT_GLOBALS
 
    void                          *FactDeftemplate(void *);
-   int                            FactExistp(void *);
+   bool                           FactExistp(void *);
    void                           FactSlotNames(void *,DATA_OBJECT *);
    void                           GetFactList(DATA_OBJECT_PTR,void *);
-   void                           PPFact(void *,const char *,int);
+   void                           PPFact(void *,const char *,bool);
 
 #endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
