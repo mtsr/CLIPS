@@ -338,29 +338,6 @@ bool AddCleanupFunction(
    return(true);
   }
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-/****************************************************/
-/* AddPeriodicFunction: Adds a function to the list */
-/*   of functions called to handle periodic tasks.  */
-/****************************************************/
-bool AddPeriodicFunction(
-  const char *name,
-  void (*theFunction)(void),
-  int priority)
-  {
-   void *theEnv;
-   
-   theEnv = GetCurrentEnvironment();
-   
-   UtilityData(theEnv)->ListOfPeriodicFunctions =
-     AddFunctionToCallList(theEnv,name,priority,
-                           (void (*)(void *)) theFunction,
-                           UtilityData(theEnv)->ListOfPeriodicFunctions,false);
-
-   return(true);
-  }
-#endif
-
 /******************************************************/
 /* EnvGetPeriodicFunctionContext: Returns the context */
 /*   associated with a periodic function.             */
@@ -1277,26 +1254,3 @@ size_t UTF8CharNum(
    return charnum;
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void IncrementGCLocks()
-  {
-   EnvIncrementGCLocks(GetCurrentEnvironment());
-  }
-
-void DecrementGCLocks()
-  {
-   EnvDecrementGCLocks(GetCurrentEnvironment());
-  }
-
-bool RemovePeriodicFunction(
-  const char *name)
-  {
-   return EnvRemovePeriodicFunction(GetCurrentEnvironment(),name);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */

@@ -115,15 +115,6 @@ typedef struct igarbage
    bool                           InstanceIsDeleted(void *,void *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           DecrementInstanceCount(void *);
-   bool                           GetInstancesChanged(void);
-   void                           IncrementInstanceCount(void *);
-   void                           SetInstancesChanged(bool);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_insfun */
 
 

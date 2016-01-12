@@ -76,6 +76,8 @@
 /*                                                           */
 /*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
+/*      6.40: ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_setup
@@ -431,17 +433,6 @@
 
 #ifndef WINDOW_INTERFACE
 #define WINDOW_INTERFACE 0
-#endif
-
-/*************************************************************/
-/* ALLOW_ENVIRONMENT_GLOBALS: If enabled, tracks the current */
-/*   environment and allows environments to be referred to   */
-/*   by index. If disabled, CLIPS makes no use of global     */
-/*   variables.                                              */
-/*************************************************************/
-
-#ifndef ALLOW_ENVIRONMENT_GLOBALS
-#define ALLOW_ENVIRONMENT_GLOBALS 0
 #endif
 
 /********************************************/

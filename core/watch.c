@@ -605,39 +605,5 @@ static int CaptureWatchPrints(
    return(1);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-bool Watch(
-  const char *itemName)
-  {
-   return(EnvWatch(GetCurrentEnvironment(),itemName));
-  }
-
-bool Unwatch(
-  const char *itemName)
-  {
-   return(EnvUnwatch(GetCurrentEnvironment(),itemName));
-  }
-
-int GetWatchItem(
-  const char *itemName)
-  {
-   return EnvGetWatchItem(GetCurrentEnvironment(),itemName);
-  }
-
-int SetWatchItem(
-  const char *itemName,
-  unsigned newState,
-  struct expr *argExprs)
-  {
-   return EnvSetWatchItem(GetCurrentEnvironment(),itemName,newState,argExprs);
-  }
-
-#endif
-
 #endif /* DEBUGGING_FUNCTIONS */
 

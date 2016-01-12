@@ -106,11 +106,6 @@ struct bsaveData
                                                 void (*)(void *),
                                                 void (*)(void *));
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                    Bsave(const char *);
-
-#endif
 
 #endif /* _H_bsave */
 

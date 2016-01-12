@@ -196,17 +196,6 @@ struct memoryData
    void                           genmemcpy(char *,char *,unsigned long);
    void                           ReturnAllBlocks(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           GetConserveMemory(void);
-   long int                       MemRequests(void);
-   long int                       MemUsed(void);
-   long int                       ReleaseMem(long);
-   bool                           SetConserveMemory(bool);
-   bool                         (*SetOutOfMemoryFunction(bool (*)(void *,size_t)))(void *,size_t);
- 
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_memalloc */
 
 

@@ -75,22 +75,4 @@
    bool                           ClassExistPCommand(void *);
    int                            EnvSlotDefaultP(void *,void *,const char *);
   
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-#if DEBUGGING_FUNCTIONS
-   void                           BrowseClasses(const char *,void *);
-   void                           DescribeClass(const char *,void *);
-#endif
-   bool                           SlotDirectAccessP(void *,const char *);
-   bool                           SlotExistP(void *,const char *,bool);
-   bool                           SlotInitableP(void *,const char *);
-   bool                           SlotPublicP(void *,const char *);
-   int                            SlotDefaultP(void *,const char *);
-   bool                           SlotWritableP(void *,const char *);
-   bool                           SubclassP(void *,void *);
-   bool                           SuperclassP(void *,void *);
-   bool                           SlotDefaultValue(void *,const char *,DATA_OBJECT_PTR);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_classexm */

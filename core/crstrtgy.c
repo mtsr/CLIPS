@@ -1078,24 +1078,5 @@ static const char *GetStrategyName(
    return(sname);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-int SetStrategy(
-  int value)
-  {
-   return EnvSetStrategy(GetCurrentEnvironment(),value);
-  }
-
-int GetStrategy()
-  {
-   return EnvGetStrategy(GetCurrentEnvironment());
-  }
-
-#endif
-
 #endif /* DEFRULE_CONSTRUCT */
 

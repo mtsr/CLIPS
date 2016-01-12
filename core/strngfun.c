@@ -759,19 +759,6 @@ void EvalFunction(
 
    EnvEval(theEnv,DOToString(theArg),returnValue);
   }
-
-/****************************/
-/* Eval: C access routine   */
-/*   for the eval function. */
-/****************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-bool Eval(
-  const char *theString,
-  DATA_OBJECT_PTR returnValue)
-  {
-   return EnvEval(GetCurrentEnvironment(),theString,returnValue);
-  }
-#endif
   
 /*****************************/
 /* EnvEval: C access routine */
@@ -993,18 +980,6 @@ bool BuildFunction(
 
    return(EnvBuild(theEnv,DOToString(theArg)));
   }
-
-/*****************************/
-/* Build: C access routine   */
-/*   for the build function. */
-/*****************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-bool Build(
-  const char *theString)
-  {
-   return EnvBuild(GetCurrentEnvironment(),theString);
-  }
-#endif
   
 /******************************/
 /* EnvBuild: C access routine */

@@ -652,23 +652,4 @@ bool GetIncrementalResetCommand(
    return(oldValue);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-bool GetIncrementalReset()
-  {   
-   return EnvGetIncrementalReset(GetCurrentEnvironment());
-  }
-
-bool SetIncrementalReset(
-  int value)
-  {
-   return EnvSetIncrementalReset(GetCurrentEnvironment(),value);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFRULE_CONSTRUCT */

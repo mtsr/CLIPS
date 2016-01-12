@@ -101,26 +101,4 @@
    void                    SaveDefclasses(void *,void *,const char *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   const char             *DefclassModule(void *);
-   void                   *FindDefclass(const char *);
-   void                    GetDefclassList(DATA_OBJECT *,struct defmodule *);
-   unsigned short          GetClassDefaultsMode(void);
-   struct defmoduleItemHeader 
-                                 *GetDefclassModule(void *);
-   const char             *GetDefclassName(void *);
-   const char             *GetDefclassPPForm(void *);
-   bool                    GetDefclassWatchInstances(void *);
-   bool                    GetDefclassWatchSlots(void *);
-   void                   *GetNextDefclass(void *);
-   bool                    IsDefclassDeletable(void *);
-   void                    ListDefclasses(const char *,struct defmodule *);
-   unsigned short          SetClassDefaultsMode(unsigned short);
-   void                    SetDefclassWatchInstances(bool,void *);
-   void                    SetDefclassWatchSlots(bool,void *);
-   bool                    Undefclass(void *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_classcom */

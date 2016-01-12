@@ -305,16 +305,6 @@ struct symbolData
    void                          *EnvTrueSymbol(void *);
    void                           EphemerateValue(void *,int,void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                          *AddDouble(double);
-   void                          *AddLong(long long);
-   void                          *AddSymbol(const char *);
-   void                          *FalseSymbol(void);
-   void                          *TrueSymbol(void);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_symbol */
 
 

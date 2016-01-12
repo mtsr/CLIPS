@@ -178,18 +178,6 @@ struct defruleData
    const char                    *EnvGetDefruleName(void *,void *);
    const char                    *EnvGetDefrulePPForm(void *,void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   const char                    *DefruleModule(void *);
-   void                          *FindDefrule(const char *);
-   const char                    *GetDefruleName(void *);
-   const char                    *GetDefrulePPForm(void *);
-   void                          *GetNextDefrule(void *);
-   bool                           IsDefruleDeletable(void *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
-
 #endif /* _H_ruledef */
 
 

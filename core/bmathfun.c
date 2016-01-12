@@ -827,17 +827,3 @@ void MaxFunction(
    return;
   }
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-bool GetAutoFloatDividend()
-  {
-   return EnvGetAutoFloatDividend(GetCurrentEnvironment());
-  }
-
-bool SetAutoFloatDividend(
-  int value)
-  {
-   return EnvSetAutoFloatDividend(GetCurrentEnvironment(),value);
-  }
-
-#endif

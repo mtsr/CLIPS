@@ -238,11 +238,4 @@ struct evaluationData
    bool                           DOsEqual(DATA_OBJECT_PTR,DATA_OBJECT_PTR);
    bool                           EvaluateAndStoreInDataObject(void *,bool,EXPRESSION *,DATA_OBJECT *,bool);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           SetMultifieldErrorValue(DATA_OBJECT_PTR);
-   int                            FunctionCall(const char *,const char *,DATA_OBJECT *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_evaluatn */

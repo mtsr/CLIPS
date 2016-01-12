@@ -82,9 +82,5 @@ struct bloadData
    void                    AddAbortBloadFunction(void *,const char *,void (*)(void *),int);
    void                    CannotLoadWithBloadMessage(void *,const char *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-   int                     Bload(const char *);
-#endif
-
 #endif
 

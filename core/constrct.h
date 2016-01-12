@@ -191,21 +191,6 @@ struct constructData
                                                                                        const char *,long)))
                                             (void *,const char *,const char *,const char*,long);
 
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           AddClearFunction(const char *,void (*)(void),int);
-   bool                           AddResetFunction(const char *,void (*)(void),int);
-   int                            Clear(void);
-   void                           Reset(void);
-   bool                           RemoveClearFunction(const char *);
-   bool                           RemoveResetFunction(const char *);
-#if (! RUN_TIME) && (! BLOAD_ONLY)
-   int                            Save(const char *);
-#endif
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_constrct */
 
 

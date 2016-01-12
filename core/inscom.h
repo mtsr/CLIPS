@@ -112,28 +112,6 @@ struct instanceData
    bool                           InstanceExistPCommand(void *);
    bool                           CreateInstanceHandler(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   const char                    *GetInstanceName(void *);
-   void                          *CreateRawInstance(void *,const char *);
-   bool                           DeleteInstance(void *);
-   void                           DirectGetSlot(void *,const char *,DATA_OBJECT *);
-   int                            DirectPutSlot(void *,const char *,DATA_OBJECT *);
-   void                          *FindInstance(void *,const char *,unsigned);
-   void                          *GetInstanceClass(void *);
-   void                           GetInstancePPForm(char *,size_t,void *);
-   void                          *GetNextInstance(void *);
-   void                          *GetNextInstanceInClass(void *,void *);
-   void                          *GetNextInstanceInClassAndSubclasses(void **,void *,DATA_OBJECT *);
-   void                           Instances(const char *,void *,const char *,bool);
-#if DEBUGGING_FUNCTIONS
-   void                          *MakeInstance(const char *);
-#endif
-   bool                           UnmakeInstance(void *);
-   bool                           ValidInstanceAddress(void *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_inscom */
 
 

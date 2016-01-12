@@ -152,18 +152,6 @@ struct deftemplateData
    const char                    *EnvGetDeftemplateName(void *,void *);
    const char                    *EnvGetDeftemplatePPForm(void *,void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   const char                    *DeftemplateModule(void *);
-   void                          *FindDeftemplate(const char *);
-   const char                    *GetDeftemplateName(void *);
-   const char                    *GetDeftemplatePPForm(void *);
-   void                          *GetNextDeftemplate(void *);
-   bool                           IsDeftemplateDeletable(void *);
-   void                          *GetNextFactInTemplate(void *,void *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_tmpltdef */
 
 

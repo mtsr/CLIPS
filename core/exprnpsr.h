@@ -80,13 +80,6 @@ typedef struct saved_contexts
                                                                             const char *,const char *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           SetSequenceOperatorRecognition(bool);
-   bool                           GetSequenceOperatorRecognition(void);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_exprnpsr */
 
 

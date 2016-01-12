@@ -1386,37 +1386,6 @@ static void NetworkModifyForSharedSlot(
 
 #endif /* DEFRULE_CONSTRUCT */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void DecrementInstanceCount(
-  void *vptr)
-  {
-   EnvDecrementInstanceCount(GetCurrentEnvironment(),vptr);
-  }
-
-bool GetInstancesChanged()
-  {
-   return EnvGetInstancesChanged(GetCurrentEnvironment());
-  }
-
-void IncrementInstanceCount(
-  void *vptr)
-  {
-   EnvIncrementInstanceCount(GetCurrentEnvironment(),vptr);
-  }
-
-void SetInstancesChanged(
-  bool changed)
-  {
-   EnvSetInstancesChanged(GetCurrentEnvironment(),changed);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* OBJECT_SYSTEM */
 
 

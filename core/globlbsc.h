@@ -63,18 +63,6 @@
 #endif
    void                           ResetDefglobals(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           GetDefglobalList(DATA_OBJECT_PTR,void *);
-#if DEBUGGING_FUNCTIONS
-   bool                           GetDefglobalWatch(void *);
-   void                           ListDefglobals(const char *,void *);
-   void                           SetDefglobalWatch(bool,void *);
-#endif
-   bool                           Undefglobal(void *);
-   
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_globlbsc */
 
 

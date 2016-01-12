@@ -42,6 +42,8 @@
 /*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
+/*            Removed support for environment globals.       */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_envrnmnt
@@ -67,7 +69,6 @@ struct environmentCleanupFunction
 struct environmentData
   {   
    unsigned int initialized : 1;
-   unsigned long environmentIndex;
    void *context;
    void *routerContext;
    void *functionContext;
@@ -85,14 +86,6 @@ typedef struct environmentData * ENVIRONMENT_DATA_PTR;
 #define SetEnvironmentData(theEnv,position,value) (((struct environmentData *) theEnv)->theData[position] = value)
 
    bool                           AllocateEnvironmentData(void *,unsigned int,unsigned long,void (*)(void *));
-   bool                           DeallocateEnvironmentData(void);
-#if ALLOW_ENVIRONMENT_GLOBALS
-   void                           SetCurrentEnvironment(void *);
-   bool                           SetCurrentEnvironmentByIndex(unsigned long);
-   void                          *GetEnvironmentByIndex(unsigned long);
-   void                          *GetCurrentEnvironment(void);
-   unsigned long                  GetEnvironmentIndex(void *);
-#endif
    void                          *CreateEnvironment(void);
    void                          *CreateRuntimeEnvironment(struct symbolHashNode **,struct floatHashNode **,
                                                                   struct integerHashNode **,struct bitMapHashNode **);
@@ -106,10 +99,6 @@ typedef struct environmentData * ENVIRONMENT_DATA_PTR;
    void                          *SetEnvironmentFunctionContext(void *,void *);
    void                          *GetEnvironmentCallbackContext(void *);
    void                          *SetEnvironmentCallbackContext(void *,void *);
-   void                           InterruptCurrentEnvironment(void);
-#if ALLOW_ENVIRONMENT_GLOBALS
-   void                           InitializeEnvironment(void);
-#endif
 
 #endif /* _H_envrnmnt */
 

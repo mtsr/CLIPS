@@ -664,48 +664,6 @@ struct fact *GetFactAddressOrIndexArgument(
    return(NULL);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void *FactDeftemplate(
-  void *vTheFact)
-  {
-   return EnvFactDeftemplate(GetCurrentEnvironment(),vTheFact);
-  }
-
-bool FactExistp(
-  void *vTheFact)
-  {
-   return EnvFactExistp(GetCurrentEnvironment(),vTheFact);
-  }
-
-void FactSlotNames(
-  void *vTheFact,
-  DATA_OBJECT *returnValue)
-  {
-   EnvFactSlotNames(GetCurrentEnvironment(),vTheFact,returnValue);
-  }
-
-void GetFactList(
-  DATA_OBJECT_PTR returnValue,
-  void *vTheModule)
-  {
-   EnvGetFactList(GetCurrentEnvironment(),returnValue,vTheModule);
-  }
-
-void PPFact(
-  void *vTheFact,
-  const char *logicalName,
-  bool ignoreDefaults)
-  {
-   EnvPPFact(GetCurrentEnvironment(),vTheFact,logicalName,ignoreDefaults);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFTEMPLATE_CONSTRUCT */
 
 

@@ -628,32 +628,3 @@ bool EnvGetStaticConstraintChecking(
    return(ConstraintData(theEnv)->StaticConstraintChecking); 
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-bool SetDynamicConstraintChecking(
-  bool value)
-  {
-   return EnvSetDynamicConstraintChecking(GetCurrentEnvironment(),value);
-  }
-
-bool GetDynamicConstraintChecking()
-  { 
-   return EnvGetDynamicConstraintChecking(GetCurrentEnvironment());
-  }
-
-bool SetStaticConstraintChecking(
-  bool value)
-  {
-   return EnvSetStaticConstraintChecking(GetCurrentEnvironment(),value);
-  }
-
-bool GetStaticConstraintChecking()
-  {    
-   return EnvGetStaticConstraintChecking(GetCurrentEnvironment());
-  }
-
-#endif

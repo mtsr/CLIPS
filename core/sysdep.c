@@ -86,6 +86,8 @@
 /*            Added genchdir function for changing the       */
 /*            current directory.                             */
 /*                                                           */
+/*            Moved CatchCtrlC to main.c.                    */
+/*                                                           */
 /*************************************************************/
 
 #define _SYSDEP_SOURCE_
@@ -105,7 +107,6 @@
 #include <descrip.h>
 #include <ssdef.h>
 #include <stsdef.h>
-#include signal
 extern int LIB$SPAWN();
 #endif
 
@@ -164,14 +165,6 @@ struct systemDependentData
   };
 
 #define SystemDependentData(theEnv) ((struct systemDependentData *) GetEnvironmentData(theEnv,SYSTEM_DEPENDENT_DATA))
-
-/***************************************/
-/* LOCAL INTERNAL FUNCTION DEFINITIONS */
-/***************************************/
-
-#if   (VAX_VMS || UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC) && ((! WINDOW_INTERFACE) && ALLOW_ENVIRONMENT_GLOBALS)
-   static void                    CatchCtrlC(int);
-#endif
 
 /********************************************************/
 /* InitializeSystemDependentData: Allocates environment */
@@ -396,40 +389,7 @@ void InitializeNonportableFeatures(
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
-#if (! WINDOW_INTERFACE) && ALLOW_ENVIRONMENT_GLOBALS
-
-#if VAX_VMS || UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC
-   signal(SIGINT,CatchCtrlC);
-#endif
-
-#endif
   }
-
-/*************************************************************/
-/* Functions For Handling Control C Interrupt: The following */
-/*   functions handle interrupt processing for several       */
-/*   machines. For the Macintosh control-c is not handle,    */
-/*   but a function is provided to call periodically which   */
-/*   calls SystemTask (allowing periodic tasks to be handled */
-/*   by the operating system).                               */
-/*************************************************************/
-
-#if (! WINDOW_INTERFACE) && ALLOW_ENVIRONMENT_GLOBALS
-
-#if   VAX_VMS || UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC || DARWIN
-/**********************************************/
-/* CatchCtrlC: VMS and UNIX specific function */
-/*   to allow control-c interrupts.           */
-/**********************************************/
-static void CatchCtrlC(
-  int sgnl)
-  {
-   InterruptCurrentEnvironment();
-   signal(SIGINT,CatchCtrlC);
-  }
-#endif
-
-#endif
 
 /**************************************/
 /* genexit:  A generic exit function. */

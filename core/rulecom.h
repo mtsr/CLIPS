@@ -94,15 +94,4 @@ struct joinInformation
    void                           ShowAlphaHashTable(void *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-#if DEBUGGING_FUNCTIONS
-   void                           Matches(void *,int,DATA_OBJECT *);
-   void                           JoinActivity(void *,int,DATA_OBJECT *);
-#endif
-   bool                           GetBetaMemoryResizing(void);
-   bool                           SetBetaMemoryResizing(int);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_rulecom */

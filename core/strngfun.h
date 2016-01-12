@@ -46,11 +46,6 @@
 #include "evaluatn.h"
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-   bool                           Build(const char *);
-   bool                           Eval(const char *,DATA_OBJECT_PTR);
-#endif
-
    bool                           EnvBuild(void *,const char *);
    bool                           EnvEval(void *,const char *,DATA_OBJECT_PTR);
    void                           StringFunctionDefinitions(void *);

@@ -417,24 +417,5 @@ void ShowFactHashTable(
 
 #endif /* DEVELOPER */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-bool GetFactDuplication()
-  {   
-   return EnvGetFactDuplication(GetCurrentEnvironment());
-  }
-
-bool SetFactDuplication(
-  bool value)
-  {
-   return EnvSetFactDuplication(GetCurrentEnvironment(),value);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFTEMPLATE_CONSTRUCT */
 

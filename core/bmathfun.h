@@ -48,13 +48,6 @@
    void                    MinFunction(void *,DATA_OBJECT_PTR);
    void                    MaxFunction(void *,DATA_OBJECT_PTR);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                    GetAutoFloatDividend(void);
-   bool                    SetAutoFloatDividend(int);
-
-#endif
-
 #endif
 
 

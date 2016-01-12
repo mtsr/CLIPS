@@ -111,21 +111,6 @@
    bool                           EnvDeftemplateSlotFacetValue(void *,void *,const char *,const char *,DATA_OBJECT *);
    SYMBOL_HN                     *FindTemplateForFactAddress(SYMBOL_HN *,struct lhsParseNode *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           DeftemplateSlotNames(void *,DATA_OBJECT *);
-   bool                           DeftemplateSlotDefaultValue(void *,const char *,DATA_OBJECT_PTR);
-   void                           DeftemplateSlotCardinality(void *,const char *,DATA_OBJECT *);
-   void                           DeftemplateSlotAllowedValues(void *,const char *,DATA_OBJECT *);
-   void                           DeftemplateSlotRange(void *,const char *,DATA_OBJECT *);
-   void                           DeftemplateSlotTypes(void *,const char *,DATA_OBJECT *);
-   bool                           DeftemplateSlotMultiP(void *,const char *);
-   bool                           DeftemplateSlotSingleP(void *,const char *);
-   bool                           DeftemplateSlotExistP(void *,const char *);
-   int                            DeftemplateSlotDefaultP(void *,const char *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_tmpltfun */
 
 

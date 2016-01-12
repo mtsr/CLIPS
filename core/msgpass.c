@@ -1410,22 +1410,5 @@ static void EarlySlotBindError(
    PrintInstanceNameAndClass(theEnv,WERROR,theInstance,true);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void Send(
-  DATA_OBJECT *idata,
-  const char *msg,
-  const char *args,
-  DATA_OBJECT *result)
-  {
-   EnvSend(GetCurrentEnvironment(),idata,msg,args,result);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* OBJECT_SYSTEM */
 

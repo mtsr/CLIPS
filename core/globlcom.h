@@ -43,15 +43,5 @@
    void                           ShowDefglobalsCommand(void *);
    void                           EnvShowDefglobals(void *,const char *,void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           GetResetGlobals(void);
-   bool                           SetResetGlobals(bool);
-#if DEBUGGING_FUNCTIONS
-   void                           ShowDefglobals(const char *,void *);
-#endif
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_globlcom */
 

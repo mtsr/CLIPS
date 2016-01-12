@@ -72,26 +72,6 @@
    void                           EnvSlotRange(void *,void *,const char *,DATA_OBJECT *);
    void                           EnvSlotCardinality(void *,void *,const char *,DATA_OBJECT *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           ClassAbstractP(void *);
-#if DEFRULE_CONSTRUCT
-   bool                           ClassReactiveP(void *);
-#endif
-   void                           ClassSlots(void *,DATA_OBJECT *,bool);
-   void                           ClassSubclasses(void *,DATA_OBJECT *,bool);
-   void                           ClassSuperclasses(void *,DATA_OBJECT *,bool);
-   void                           SlotAllowedValues(void *,const char *,DATA_OBJECT *);
-   void                           SlotAllowedClasses(void *,const char *,DATA_OBJECT *);
-   void                           SlotCardinality(void *,const char *,DATA_OBJECT *);
-   void                           SlotFacets(void *,const char *,DATA_OBJECT *);
-   void                           SlotRange(void *,const char *,DATA_OBJECT *);
-   void                           SlotSources(void *,const char *,DATA_OBJECT *);
-   void                           SlotTypes(void *,const char *,DATA_OBJECT *);
-   void                           GetDefmessageHandlerList(void *,DATA_OBJECT *,bool);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_classinf */
 
 

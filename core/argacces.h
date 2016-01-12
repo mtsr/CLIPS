@@ -67,19 +67,6 @@
    void                          *GetFactOrInstanceArgument(void *,int,DATA_OBJECT *,const char *);
    void                           IllegalLogicalNameMessage(void *,const char *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-  int                             ArgCountCheck(const char *,int,int);
-  int                             ArgRangeCheck(const char *,int,int);
-  int                             ArgTypeCheck(const char *,int,int,DATA_OBJECT_PTR);
-  int                             RtnArgCount(void);
-  double                          RtnDouble(int);
-  const char                     *RtnLexeme(int);
-  long long                       RtnLong(int);
-  DATA_OBJECT_PTR                 RtnUnknown(int,DATA_OBJECT_PTR);
-
-#endif
-
 #endif
 
 

@@ -108,22 +108,6 @@ struct definstancesData
    void                           EnvListDefinstances(void *,const char *,struct defmodule *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   const char                    *DefinstancesModule(void *);
-   void                          *FindDefinstances(const char *);
-   void                           GetDefinstancesList(DATA_OBJECT *,struct defmodule *);
-   const char                    *GetDefinstancesName(void *);
-   const char                    *GetDefinstancesPPForm(void *);
-   void                          *GetNextDefinstances(void *);
-   bool                           IsDefinstancesDeletable(void *);
-#if DEBUGGING_FUNCTIONS
-   void                           ListDefinstances(const char *,struct defmodule *);
-#endif
-   bool                           Undefinstances(void *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFINSTANCES_CONSTRUCT */
 
 #endif /* _H_defins */

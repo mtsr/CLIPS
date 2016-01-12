@@ -1267,38 +1267,5 @@ bool SaveCommand(
   }
 #endif
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-#if DEBUGGING_FUNCTIONS
-
-bool DribbleActive()
-  {
-   return EnvDribbleActive(GetCurrentEnvironment());
-  }
-
-bool DribbleOn(
-  const char *fileName)
-  {
-   return EnvDribbleOn(GetCurrentEnvironment(),fileName);
-  }
-
-bool DribbleOff()
-  {
-   return EnvDribbleOff(GetCurrentEnvironment());
-  }
-
-#endif /* DEBUGGING_FUNCTIONS */
-
-int BatchStar(
-  const char *fileName)
-  {
-   return EnvBatchStar(GetCurrentEnvironment(),fileName);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 
 

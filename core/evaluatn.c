@@ -1251,25 +1251,3 @@ static bool DiscardCAddress(
   }
 */
 
-/*##################################*/
-/* Additional Environment Functions */
-/*##################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void SetMultifieldErrorValue(
-  DATA_OBJECT_PTR returnValue)
-  {
-   EnvSetMultifieldErrorValue(GetCurrentEnvironment(),returnValue);
-  }
-
-int FunctionCall(
-  const char *name,
-  const char *args,
-  DATA_OBJECT *result)
-  {
-   return EnvFunctionCall(GetCurrentEnvironment(),name,args,result);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-

@@ -263,30 +263,6 @@ void EnvListDefmodules(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void GetDefmoduleList(
-  DATA_OBJECT_PTR returnValue)
-  {
-   EnvGetDefmoduleList(GetCurrentEnvironment(),returnValue);
-  }
-
-#if DEBUGGING_FUNCTIONS
-
-void ListDefmodules(
-  const char *logicalName)
-  {
-   EnvListDefmodules(GetCurrentEnvironment(),logicalName);
-  }
-
-#endif /* DEBUGGING_FUNCTIONS */
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFMODULE_CONSTRUCT */
 
 

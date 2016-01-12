@@ -114,15 +114,6 @@ struct constraintData
    void                           RemoveConstraint(void *,struct constraintRecord *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           SetDynamicConstraintChecking(bool);
-   bool                           GetDynamicConstraintChecking(void);
-   bool                           SetStaticConstraintChecking(bool);
-   bool                           GetStaticConstraintChecking(void);
-
-#endif
-
 #endif
 
 

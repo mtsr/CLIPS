@@ -1706,65 +1706,6 @@ static void FreeReadBuffer(
 
 #endif /* BLOAD_INSTANCES */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-#if BLOAD_INSTANCES
-long BinaryLoadInstances(
-  const char *theFile)
-  {
-   return EnvBinaryLoadInstances(GetCurrentEnvironment(),theFile);
-  }
-#endif
-
-#if BSAVE_INSTANCES
-long BinarySaveInstances(
-  const char *file,
-  int saveCode)
-  {
-   return EnvBinarySaveInstances(GetCurrentEnvironment(),file,saveCode);
-  }
-#endif
-
-long LoadInstances(
-  const char *file)
-  {
-   return EnvLoadInstances(GetCurrentEnvironment(),file);
-  }
-
-long LoadInstancesFromString(
-  const char *theString,
-  size_t theMax)
-  {
-   return EnvLoadInstancesFromString(GetCurrentEnvironment(),theString,theMax);
-  }
-
-long RestoreInstances(
-  const char *file)
-  {
-   return EnvRestoreInstances(GetCurrentEnvironment(),file);
-  }
-
-long RestoreInstancesFromString(
-  const char *theString,
-  size_t theMax)
-  {
-   return EnvRestoreInstancesFromString(GetCurrentEnvironment(),theString,theMax);
-  }
-
-long SaveInstances(
-  const char *file,
-  int saveCode)
-  {
-   return EnvSaveInstances(GetCurrentEnvironment(),file,saveCode);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
-
 #endif /* OBJECT_SYSTEM */
 
 

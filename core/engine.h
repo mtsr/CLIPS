@@ -173,31 +173,6 @@ struct engineData
    void                    EnvSetHaltRules(void *,bool);
    struct activation      *NextActivationToFire(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                    AddBeforeRunFunction(const char *,void (*)(void *),int);
-   bool                    AddRunFunction(const char *,void (*)(void),int);
-   void                    ClearFocusStack(void);
-   void                    Focus(void *);
-   void                    GetFocusStack(DATA_OBJECT_PTR);
-   void                   *GetFocus(void);
-   int                     GetFocusChanged(void);
-   void                   *GetNextFocus(void *);
-   void                    Halt(void);
-   void                   *PopFocus(void);
-   bool                    RemoveRunFunction(const char *);
-   long long               Run(long long);
-   void                    SetFocusChanged(int);
-#if DEBUGGING_FUNCTIONS
-   bool                    DefruleHasBreakpoint(void *);
-   void                    ListFocusStack(const char *);
-   bool                    RemoveBreak(void *);
-   void                    SetBreak(void *);
-   void                    ShowBreaks(const char *,void *);
-#endif
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_engine */
 
 

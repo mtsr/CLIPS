@@ -815,20 +815,6 @@ void CannotLoadWithBloadMessage(
    EnvPrintRouter(theEnv,WERROR," construct with binary load in effect.\n");
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-int Bload(
-  const char *fileName)
-  {
-   return EnvBload(GetCurrentEnvironment(),fileName);
-  }
-
-#endif
-
 #endif /* (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE) */
 
 /**************************************/

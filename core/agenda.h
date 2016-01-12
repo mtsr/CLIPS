@@ -143,27 +143,6 @@ struct agendaData
    void                    AgendaCommand(void *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                    Agenda(const char *,void *);
-   bool                    DeleteActivation(void *);
-   struct partialMatch    *GetActivationBasis(void *);
-   const char             *GetActivationName(void *);
-   void                    GetActivationPPForm(char *,size_t,void *);
-   struct defrule         *GetActivationRule(void *);
-   int                     GetActivationSalience(void *);
-   bool                    GetAgendaChanged(void);
-   void                   *GetNextActivation(void *);
-   int                     GetSalienceEvaluation(void);
-   bool                    Refresh(void *);
-   void                    RefreshAgenda(void *);
-   void                    ReorderAgenda(void *);
-   int                     SetActivationSalience(void *,int);
-   void                    SetAgendaChanged(bool);
-   int                     SetSalienceEvaluation(int);
-
-#endif
-
 #endif
 
 

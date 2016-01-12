@@ -261,38 +261,6 @@ void EnvListDeffacts(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void GetDeffactsList(
-  DATA_OBJECT_PTR returnValue,
-  void *theModule)
-  {
-   EnvGetDeffactsList(GetCurrentEnvironment(),returnValue,theModule);
-  }
-
-bool Undeffacts(
-  void *theDeffacts)
-  {
-   return EnvUndeffacts(GetCurrentEnvironment(),theDeffacts);
-  }
-
-#if DEBUGGING_FUNCTIONS
-
-void ListDeffacts(
-  const char *logicalName,
-  void *theModule)
-  {
-   EnvListDeffacts(GetCurrentEnvironment(),logicalName,theModule);
-  }
-
-#endif
-
-#endif
-
 #endif /* DEFFACTS_CONSTRUCT */
 
 

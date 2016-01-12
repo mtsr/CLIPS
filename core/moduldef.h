@@ -234,17 +234,6 @@ struct defmoduleData
    void                           AllocateDefmoduleGlobals(void *);
    long                           GetNumberOfDefmodules(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                          *FindDefmodule(const char *);
-   void                          *GetCurrentModule(void);
-   const char                    *GetDefmoduleName(void *);
-   const char                    *GetDefmodulePPForm(void *);
-   void                          *GetNextDefmodule(void *);
-   void                          *SetCurrentModule(void *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_moduldef */
 
 

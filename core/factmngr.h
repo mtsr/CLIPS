@@ -187,31 +187,6 @@ struct factsData
                                                                          void (*)(void *,void *,void *),int,void *);
    bool                           EnvRemoveModifyFunction(void *,const char *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           AddAssertFunction(const char *,void (*)(void *,void *),int);
-   bool                           AddModifyFunction(const char *,void (*)(void *,void *,void *),int);
-   bool                           AddRetractFunction(const char *,void (*)(void *,void *),int);
-   void                          *Assert(void *);
-   void                          *AssertString(const char *);
-   bool                           AssignFactSlotDefaults(void *);
-   struct fact                   *CreateFact(void *);
-   void                           DecrementFactCount(void *);
-   long long                      FactIndex(void *);
-   bool                           GetFactListChanged(void);
-   void                           GetFactPPForm(char *,size_t,void *);
-   bool                           GetFactSlot(void *,const char *,DATA_OBJECT *);
-   void                          *GetNextFact(void *);
-   void                           IncrementFactCount(void *);
-   bool                           PutFactSlot(void *,const char *,DATA_OBJECT *);
-   bool                           RemoveAssertFunction(const char *);
-   bool                           RemoveModifyFunction(const char *);
-   bool                           RemoveRetractFunction(const char *);
-   bool                           Retract(void *);
-   void                           SetFactListChanged(bool);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_factmngr */
 
 

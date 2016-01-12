@@ -88,7 +88,7 @@
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (Cypher Alpha 1/6/16)\n"
+#define BANNER_STRING "         CLIPS (Cypher Alpha 1/11/16)\n"
 #endif
 
 /*************************/

@@ -53,15 +53,5 @@
    void                           ListDeffactsCommand(void *);
    void                           EnvListDeffacts(void *,const char *,void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           GetDeffactsList(DATA_OBJECT_PTR,void *);
-   bool                           Undeffacts(void *);
-#if DEBUGGING_FUNCTIONS
-   void                           ListDeffacts(const char *,void *);
-#endif
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_dffctbsc */
 

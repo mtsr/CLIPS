@@ -484,64 +484,6 @@ bool DefruleWatchPrint(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void GetDefruleList(
-  DATA_OBJECT_PTR returnValue,
-  void *theModule)
-  {
-   EnvGetDefruleList(GetCurrentEnvironment(),returnValue,theModule);
-  }
-
-#if DEBUGGING_FUNCTIONS
-
-bool GetDefruleWatchActivations(
-  void *rulePtr)
-  {
-   return EnvGetDefruleWatchActivations(GetCurrentEnvironment(),rulePtr);
-  }
-
-bool GetDefruleWatchFirings(
-  void *rulePtr)
-  {
-   return EnvGetDefruleWatchFirings(GetCurrentEnvironment(),rulePtr);
-  }
-
-void ListDefrules(
-  const char *logicalName,
-  void *theModule)
-  {
-   EnvListDefrules(GetCurrentEnvironment(),logicalName,theModule);
-  }
-
-void SetDefruleWatchActivations(
-  bool newState,
-  void *rulePtr)
-  {
-   EnvSetDefruleWatchActivations(GetCurrentEnvironment(),newState,rulePtr);
-  }
-
-void SetDefruleWatchFirings(
-  bool newState,
-  void *rulePtr)
-  {
-   EnvSetDefruleWatchFirings(GetCurrentEnvironment(),newState,rulePtr);
-  }
-
-#endif
-
-bool Undefrule(
-  void *theDefrule)
-  {
-   return EnvUndefrule(GetCurrentEnvironment(),theDefrule);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFTEMPLATE_CONSTRUCT */
 
 

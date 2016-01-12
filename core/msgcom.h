@@ -106,24 +106,6 @@ struct messageHandlerData
    long             DisplayHandlersInLinks(void *,const char *,PACKED_CLASS_LINKS *,int);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   unsigned         FindDefmessageHandler(void *,const char *,const char *);
-   const char      *GetDefmessageHandlerName(void *,int);
-   const char      *GetDefmessageHandlerType(void *,int);
-   int              GetNextDefmessageHandler(void *,int);
-   bool             IsDefmessageHandlerDeletable(void *,int);
-   bool             UndefmessageHandler(void *,int);
-#if DEBUGGING_FUNCTIONS
-   const char      *GetDefmessageHandlerPPForm(void *,int);
-   bool             GetDefmessageHandlerWatch(void *,int);
-   void             ListDefmessageHandlers(const char *,void *,bool);
-   void             PreviewSend(const char *,void *,const char *);
-   void             SetDefmessageHandlerWatch(bool,void *,int);
-#endif /* DEBUGGING_FUNCTIONS */
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_msgcom */
 
 

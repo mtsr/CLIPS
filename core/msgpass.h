@@ -76,12 +76,6 @@ typedef struct messageHandlerLink
    void             DynamicHandlerGetSlot(void *,DATA_OBJECT *);
    void             DynamicHandlerPutSlot(void *,DATA_OBJECT *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void             Send(DATA_OBJECT *,const char *,const char *,DATA_OBJECT *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_object */
 
 

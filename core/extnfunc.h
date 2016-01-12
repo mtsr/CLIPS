@@ -124,15 +124,6 @@ struct FunctionHash
    int                            GetMinimumArgs(struct FunctionDefinition *);
    int                            GetMaximumArgs(struct FunctionDefinition *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-#if (! RUN_TIME)
-   int                            DefineFunction(const char *,int,int (*)(void),const char *);
-   int                            DefineFunction2(const char *,int,int (*)(void),const char *,const char *);
-#endif /* (! RUN_TIME) */
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_extnfunc */
 
 

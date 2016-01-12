@@ -293,52 +293,6 @@ bool DeftemplateWatchPrint(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void GetDeftemplateList(
-  DATA_OBJECT_PTR returnValue,
-  void *theModule)
-  {
-   EnvGetDeftemplateList(GetCurrentEnvironment(),returnValue,theModule);
-  }
-
-#if DEBUGGING_FUNCTIONS
-
-bool GetDeftemplateWatch(
-  void *theTemplate)
-  {
-   return EnvGetDeftemplateWatch(GetCurrentEnvironment(),theTemplate);
-  }
-
-void ListDeftemplates(
-  const char *logicalName,
-  void *theModule)
-  {
-   EnvListDeftemplates(GetCurrentEnvironment(),logicalName,theModule);
-  }
-
-void SetDeftemplateWatch(
-  bool newState,
-  void *theTemplate)
-  {
-   EnvSetDeftemplateWatch(GetCurrentEnvironment(),newState,theTemplate);
-  }
-
-#endif /* DEBUGGING_FUNCTIONS */
-
-bool Undeftemplate(
-  void *theDeftemplate)
-  {
-   return EnvUndeftemplate(GetCurrentEnvironment(),theDeftemplate);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
-
 #endif /* DEFTEMPLATE_CONSTRUCT */
 
 

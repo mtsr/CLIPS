@@ -67,18 +67,6 @@
    bool                           DeftemplateWatchPrint(void *,const char *,int,struct expr *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           GetDeftemplateList(DATA_OBJECT_PTR,void *);
-#if DEBUGGING_FUNCTIONS
-   bool                           GetDeftemplateWatch(void *);
-   void                           ListDeftemplates(const char *,void *);
-   void                           SetDeftemplateWatch(bool,void *);
-#endif
-   bool                           Undeftemplate(void *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_tmpltbsc */
 
 

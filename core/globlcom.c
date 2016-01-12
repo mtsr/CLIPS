@@ -281,35 +281,5 @@ static void PrintDefglobalValueForm(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-bool GetResetGlobals()
-  {   
-   return EnvGetResetGlobals(GetCurrentEnvironment());
-  }
-
-bool SetResetGlobals(
-  bool value)
-  {
-   return EnvSetResetGlobals(GetCurrentEnvironment(),value);
-  }
-
-#if DEBUGGING_FUNCTIONS
-
-void ShowDefglobals(
-  const char *logicalName,
-  void *vTheModule)
-  {
-   EnvShowDefglobals(GetCurrentEnvironment(),logicalName,vTheModule);
-  }
-
-#endif /* DEBUGGING_FUNCTIONS */
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFGLOBAL_CONSTRUCT */
 

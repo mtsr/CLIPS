@@ -577,57 +577,6 @@ const char *EnvGetDeftemplatePPForm(
    return GetConstructPPForm(theEnv,(struct constructHeader *) theDeftemplate);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-const char *DeftemplateModule(
-  void *theDeftemplate)
-  {
-   return EnvDeftemplateModule(GetCurrentEnvironment(),theDeftemplate);
-  }
-
-void *FindDeftemplate(
-  const char *deftemplateName)
-  {
-   return EnvFindDeftemplate(GetCurrentEnvironment(),deftemplateName);
-  }
-
-const char *GetDeftemplateName(
-  void *theDeftemplate)
-  {
-   return EnvGetDeftemplateName(GetCurrentEnvironment(),theDeftemplate);
-  }
-
-const char *GetDeftemplatePPForm(
-  void *theDeftemplate)
-  {
-   return EnvGetDeftemplatePPForm(GetCurrentEnvironment(),theDeftemplate);
-  }
-
-void *GetNextDeftemplate(
-  void *deftemplatePtr)
-  {
-   return EnvGetNextDeftemplate(GetCurrentEnvironment(),deftemplatePtr);
-  }
-
-bool IsDeftemplateDeletable(
-  void *vTheDeftemplate)
-  {
-   return EnvIsDeftemplateDeletable(GetCurrentEnvironment(),vTheDeftemplate);
-  }
-
-void *GetNextFactInTemplate(
-  void *theTemplate,
-  void *factPtr)
-  {
-   return EnvGetNextFactInTemplate(GetCurrentEnvironment(),theTemplate,factPtr);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFTEMPLATE_CONSTRUCT */
 
 

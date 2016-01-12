@@ -60,13 +60,6 @@ struct factHashEntry
    unsigned long                  HashFact(struct fact *);
    bool                           FactWillBeAsserted(void *,void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           GetFactDuplication(void);
-   bool                           SetFactDuplication(bool);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_facthsh */
 
 

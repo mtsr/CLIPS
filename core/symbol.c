@@ -1840,39 +1840,4 @@ void *EnvTrueSymbol(
    return SymbolData(theEnv)->TrueSymbolHN;
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void *AddSymbol(
-  const char *str)
-  {
-   return EnvAddSymbol(GetCurrentEnvironment(),str);
-  }
-
-void *AddLong(
-  long long number)
-  {
-   return EnvAddLong(GetCurrentEnvironment(),number);
-  }
-
-void *AddDouble(
-  double number)
-  {
-   return EnvAddDouble(GetCurrentEnvironment(),number);
-  }
-
-void *FalseSymbol()
-  {
-   return SymbolData(GetCurrentEnvironment())->FalseSymbolHN;
-  }
-
-void *TrueSymbol()
-  {
-   return SymbolData(GetCurrentEnvironment())->TrueSymbolHN;
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
 

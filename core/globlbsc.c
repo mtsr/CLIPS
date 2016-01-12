@@ -331,51 +331,6 @@ static bool DefglobalWatchPrint(
 
 #endif /* DEBUGGING_FUNCTIONS */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void GetDefglobalList(
-  DATA_OBJECT_PTR returnValue,
-  void *theModule)
-  {
-   EnvGetDefglobalList(GetCurrentEnvironment(),returnValue,theModule);
-  }
-
-#if DEBUGGING_FUNCTIONS
-
-bool GetDefglobalWatch(
-  void *theGlobal)
-  {
-   return EnvGetDefglobalWatch(GetCurrentEnvironment(),theGlobal);
-  }
-
-void ListDefglobals(
-  const char *logicalName,
-  void *vTheModule)
-  {
-   EnvListDefglobals(GetCurrentEnvironment(),logicalName,vTheModule);
-  }
-
-void SetDefglobalWatch(
-  bool newState,
-  void *theGlobal)
-  {
-   EnvSetDefglobalWatch(GetCurrentEnvironment(),newState,theGlobal);
-  }
-
-#endif /* DEBUGGING_FUNCTIONS */
-
-bool Undefglobal(
-  void *theDefglobal)
-  {
-   return EnvUndefglobal(GetCurrentEnvironment(),theDefglobal);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFGLOBAL_CONSTRUCT */
 
 

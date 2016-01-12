@@ -57,10 +57,6 @@
 #include "constrct.h"
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-   int                            Load(const char *);
-#endif
-
    int                            EnvLoad(void *,const char *);
    int                            LoadConstructsFromLogicalName(void *,const char *);
    int                            ParseConstruct(void *,const char *,const char *);

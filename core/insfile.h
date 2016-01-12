@@ -84,22 +84,6 @@ struct instanceFileData
    long                           EnvRestoreInstances(void *,const char *);
    long                           EnvRestoreInstancesFromString(void *,const char *,size_t);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-#if BLOAD_INSTANCES
-   long                           BinaryLoadInstances(const char *);
-#endif
-#if BSAVE_INSTANCES
-   long                           BinarySaveInstances(const char *,int);
-#endif
-   long                           LoadInstances(const char *);
-   long                           LoadInstancesFromString(const char *,size_t);
-   long                           RestoreInstances(const char *);
-   long                           RestoreInstancesFromString(const char *,size_t);
-   long                           SaveInstances(const char *,int);
-   
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_insfile */
 
 

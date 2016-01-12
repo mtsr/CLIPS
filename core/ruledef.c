@@ -545,50 +545,6 @@ const char *EnvGetDefrulePPForm(
    return GetConstructPPForm(theEnv,(struct constructHeader *) theDefrule);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-const char *DefruleModule(
-  void *theDefrule)
-  {
-   return EnvDefruleModule(GetCurrentEnvironment(),theDefrule);
-  }
-
-void *FindDefrule(
-  const char *defruleName)
-  {
-   return EnvFindDefrule(GetCurrentEnvironment(),defruleName);
-  }
-
-const char *GetDefruleName(
-  void *theDefrule)
-  {
-   return EnvGetDefruleName(GetCurrentEnvironment(),theDefrule);
-  }
-
-const char *GetDefrulePPForm(
-  void *theDefrule)
-  {
-   return EnvGetDefrulePPForm(GetCurrentEnvironment(),theDefrule);
-  }
-
-void *GetNextDefrule(
-  void *defrulePtr)
-  {
-   return EnvGetNextDefrule(GetCurrentEnvironment(),defrulePtr);
-  }
-
-bool IsDefruleDeletable(
-  void *vTheDefrule)
-  {
-   return EnvIsDefruleDeletable(GetCurrentEnvironment(),vTheDefrule);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFRULE_CONSTRUCT */
 
 

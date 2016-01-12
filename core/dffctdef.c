@@ -318,49 +318,6 @@ const char *EnvGetDeffactsPPForm(
    return GetConstructPPForm(theEnv,(struct constructHeader *) theDeffacts);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void *FindDeffacts(
-  const char *deffactsName)
-  {
-   return EnvFindDeffacts(GetCurrentEnvironment(),deffactsName);
-  }
-
-void *GetNextDeffacts(
-  void *deffactsPtr)
-  {
-   return EnvGetNextDeffacts(GetCurrentEnvironment(),deffactsPtr);
-  }
-
-bool IsDeffactsDeletable(
-  void *ptr)
-  {
-   return EnvIsDeffactsDeletable(GetCurrentEnvironment(),ptr);
-  }
-
-const char *DeffactsModule(
-  void *theDeffacts)
-  {
-   return EnvDeffactsModule(GetCurrentEnvironment(),theDeffacts);
-  }
-
-const char *GetDeffactsName(
-  void *theDeffacts)
-  {
-   return EnvGetDeffactsName(GetCurrentEnvironment(),theDeffacts);
-  }
-
-const char *GetDeffactsPPForm(
-  void *theDeffacts)
-  {
-   return EnvGetDeffactsPPForm(GetCurrentEnvironment(),theDeffacts);
-  }
-
-#endif
 
 #endif /* DEFFACTS_CONSTRUCT */
 

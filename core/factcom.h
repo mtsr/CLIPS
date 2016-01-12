@@ -65,17 +65,6 @@
    bool                           EnvLoadFactsFromString(void *,const char *,long);
    long long                      FactIndexFunction(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-#if DEBUGGING_FUNCTIONS
-   void                           Facts(const char *,void *,long long,long long,long long);
-#endif
-   bool                           LoadFacts(const char *);
-   bool                           SaveFacts(const char *,int);
-   bool                           LoadFactsFromString(const char *,long);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_factcom */
 
 

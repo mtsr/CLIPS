@@ -132,24 +132,6 @@ struct routerData
    size_t                         EnvInputBufferCount(void *);
    struct router                 *EnvFindRouter(void *,const char *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   int                            ActivateRouter(const char *);
-   bool                           AddRouter(const char *,int,
-                                                   bool (*)(const char *),
-                                                   int (*)(const char *,const char *),
-                                                   int (*)(const char *),
-                                                   int (*)(int,const char *),
-                                                   int (*)(int));
-   int                            DeactivateRouter(const char *);
-   int                            DeleteRouter(const char *);
-   void                           ExitRouter(int);
-   int                            GetcRouter(const char *);
-   int                            PrintRouter(const char *,const char *);
-   int                            UngetcRouter(int,const char *);
-   
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_router */
 
 

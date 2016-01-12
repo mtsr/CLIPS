@@ -72,20 +72,6 @@
    bool                           DefruleWatchPrint(void *,const char *,int,struct expr *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           GetDefruleList(DATA_OBJECT_PTR,void *);
-#if DEBUGGING_FUNCTIONS
-   bool                           GetDefruleWatchActivations(void *);
-   bool                           GetDefruleWatchFirings(void *);
-   void                           ListDefrules(const char *,void *);
-   void                           SetDefruleWatchActivations(bool,void *);
-   void                           SetDefruleWatchFirings(bool,void *);
-#endif
-   bool                           Undefrule(void *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_rulebsc */
 
 

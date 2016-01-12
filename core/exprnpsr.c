@@ -972,22 +972,3 @@ struct expr *RemoveUnneededProgn(
    return(theExpression);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-bool SetSequenceOperatorRecognition(
-  bool value)
-  {
-   return EnvSetSequenceOperatorRecognition(GetCurrentEnvironment(),value);
-  }
-
-bool GetSequenceOperatorRecognition()
-  {
-   return EnvGetSequenceOperatorRecognition(GetCurrentEnvironment());
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-

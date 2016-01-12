@@ -44,14 +44,5 @@
    void                           ListDefmodulesCommand(void *);
    void                           EnvListDefmodules(void *,const char *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           GetDefmoduleList(DATA_OBJECT_PTR);
-#if DEBUGGING_FUNCTIONS
-   void                           ListDefmodules(const char *);
-#endif
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_modulbsc */
 

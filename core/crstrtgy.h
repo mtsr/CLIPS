@@ -64,13 +64,6 @@
    void                          *SetStrategyCommand(void *);
    void                          *GetStrategyCommand(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   int                            SetStrategy(int);
-   int                            GetStrategy(void);
-
-#endif
-
 #endif /* _H_crstrtgy */
 
 

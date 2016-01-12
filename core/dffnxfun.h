@@ -143,24 +143,6 @@ struct deffunctionData
    void                           PPDeffunctionCommand(void *);
 #endif
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   const char                    *DeffunctionModule(void *);
-   void                          *FindDeffunction(const char *);
-   void                           GetDeffunctionList(DATA_OBJECT *,struct defmodule *);
-   const char                    *GetDeffunctionName(void *);
-   const char                    *GetDeffunctionPPForm(void *);
-   void                          *GetNextDeffunction(void *);
-   bool                           IsDeffunctionDeletable(void *);
-   bool                           Undeffunction(void *);
-#if DEBUGGING_FUNCTIONS
-   bool                           GetDeffunctionWatch(void *);
-   void                           ListDeffunctions(const char *,struct defmodule *);
-   void                           SetDeffunctionWatch(bool,void *);
-#endif 
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_dffnxfun */
 
 

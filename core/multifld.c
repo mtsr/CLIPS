@@ -869,18 +869,3 @@ void *ImplodeMultifield(
    return(rv);
   }
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-void *CreateMultifield(
-  long size)
-  {
-   return EnvCreateMultifield(GetCurrentEnvironment(),size);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
-

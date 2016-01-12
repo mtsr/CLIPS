@@ -127,22 +127,6 @@ struct defglobalModule
    const char                    *EnvGetDefglobalName(void *,void *);
    const char                    *EnvGetDefglobalPPForm(void *,void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   const char                    *DefglobalModule(void *);
-   void                          *FindDefglobal(const char *);
-   const char                    *GetDefglobalName(void *);
-   const char                    *GetDefglobalPPForm(void *);
-   bool                           GetDefglobalValue(const char *,DATA_OBJECT_PTR);
-   void                           GetDefglobalValueForm(char *,size_t,void *);
-   bool                           GetGlobalsChanged(void);
-   void                          *GetNextDefglobal(void *);
-   bool                           IsDefglobalDeletable(void *);
-   bool                           SetDefglobalValue(const char *,DATA_OBJECT_PTR);
-   void                           SetGlobalsChanged(bool);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_globldef */
 
 

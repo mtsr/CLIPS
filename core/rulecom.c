@@ -1580,43 +1580,4 @@ void ShowAlphaHashTable(
 
 #endif /* DEVELOPER */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-#if DEBUGGING_FUNCTIONS
-
-void Matches(
-  void *theRule,
-  int output,
-  DATA_OBJECT *result)
-  {
-   EnvMatches(GetCurrentEnvironment(),theRule,output,result);
-  }
-
-void JoinActivity(
-  void *theRule,
-  int output,
-  DATA_OBJECT *result)
-  {
-   EnvJoinActivity(GetCurrentEnvironment(),theRule,output,result);
-  }
-
-#endif /* DEBUGGING_FUNCTIONS */
-
-bool GetBetaMemoryResizing()
-  {   
-   return EnvGetBetaMemoryResizing(GetCurrentEnvironment());
-  }
-
-bool SetBetaMemoryResizing(
-  int value)
-  {
-   return EnvSetBetaMemoryResizing(GetCurrentEnvironment(),value);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* DEFRULE_CONSTRUCT */

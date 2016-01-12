@@ -94,17 +94,6 @@ struct deffactsModule
    const char                    *EnvGetDeffactsName(void *,void *);
    const char                    *EnvGetDeffactsPPForm(void *,void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                          *FindDeffacts(const char *);
-   void                          *GetNextDeffacts(void *);
-   bool                           IsDeffactsDeletable(void *);
-   const char                    *DeffactsModule(void *);
-   const char                    *GetDeffactsName(void *);
-   const char                    *GetDeffactsPPForm(void *);
-   
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_dffctdef */
 
 

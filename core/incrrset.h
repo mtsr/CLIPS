@@ -52,13 +52,6 @@
    bool                           GetIncrementalResetCommand(void *);
    bool                           SetIncrementalResetCommand(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           GetIncrementalReset(void);
-   bool                           SetIncrementalReset(int);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_incrrset */
 
 

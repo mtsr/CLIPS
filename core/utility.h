@@ -171,14 +171,6 @@ struct utilityData
    void                           CallPeriodicTasks(void *);
    void                           CleanCurrentGarbageFrame(void *,struct dataObject *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           IncrementGCLocks(void);
-   void                           DecrementGCLocks(void);
-   bool                           RemovePeriodicFunction(const char *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_utility */
 
 

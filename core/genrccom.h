@@ -111,37 +111,6 @@
    SYMBOL_HN                     *EnvGetDefgenericNamePointer(void *,void *);
    void                           EnvSetDefgenericPPForm(void *,void *,const char *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                           SetDefgenericPPForm(void *,const char *);
-   const char                    *DefgenericModule(void *);
-   void                          *FindDefgeneric(const char *);
-   void                           GetDefgenericList(DATA_OBJECT *,struct defmodule *);
-   const char                    *GetDefgenericName(void *);
-   const char                    *GetDefgenericPPForm(void *);
-   void                          *GetNextDefgeneric(void *);
-   bool                           IsDefgenericDeletable(void *);
-   bool                           Undefgeneric(void *);
-   void                           GetDefmethodList(void *,DATA_OBJECT_PTR);
-   void                           GetMethodRestrictions(void *,long,DATA_OBJECT *);
-   long                           GetNextDefmethod(void *,long );
-   bool                           IsDefmethodDeletable(void *,long );
-   bool                           Undefmethod(void *,long );
-#if DEBUGGING_FUNCTIONS
-   bool                           GetDefgenericWatch(void *);
-   void                           ListDefgenerics(const char *,struct defmodule *);
-   void                           SetDefgenericWatch(bool,void *);
-   const char                    *GetDefmethodPPForm(void *,long);
-   bool                           GetDefmethodWatch(void *,long);
-   void                           ListDefmethods(const char *,void *);
-   void                           SetDefmethodWatch(bool,void *,long);
-#endif /* DEBUGGING_FUNCTIONS */
-#if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
-   void                           GetDefmethodDescription(char *,size_t,void *,long );
-#endif /* DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS */
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_genrccom */
 
 

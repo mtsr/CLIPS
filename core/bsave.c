@@ -601,25 +601,6 @@ bool AddBinaryItem(
 
 #endif /* BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE */
 
-/*#####################################*/
-/* ALLOW_ENVIRONMENT_GLOBALS Functions */
-/*#####################################*/
-
-#if BLOAD_AND_BSAVE
-
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-bool Bsave(
-  const char *fileName)
-  {
-   return EnvBsave(GetCurrentEnvironment(),fileName);
-  }
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
-#endif /* BLOAD_AND_BSAVE */
-
-
 
 
 

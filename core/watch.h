@@ -78,15 +78,6 @@ struct watchData
    void                           WatchFunctionDefinitions(void *);
    bool                           GetWatchItemCommand(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           Watch(const char *);
-   bool                           Unwatch(const char *);
-   int                            GetWatchItem(const char *);
-   int                            SetWatchItem(const char *,unsigned,struct expr *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_watch */
 
 

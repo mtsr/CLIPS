@@ -110,12 +110,6 @@ typedef struct field * FIELD_PTR;
    void                          *ImplodeMultifield(void *,DATA_OBJECT *);
    void                           EphemerateMultifield(void *,struct multifield *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   void                          *CreateMultifield(long);
-   
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_multifld */
 
 

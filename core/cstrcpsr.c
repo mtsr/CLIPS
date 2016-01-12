@@ -79,17 +79,6 @@
 /***************************************/
 
    static bool                    FindConstructBeginning(void *,const char *,struct token *,bool,bool *);
-
-/************************************************/
-/* Load: C access routine for the load command. */
-/************************************************/
-#if ALLOW_ENVIRONMENT_GLOBALS
-int Load(
-  const char *fileName)
-  {
-   return EnvLoad(GetCurrentEnvironment(),fileName);
-  }
-#endif
   
 /************************************************************/
 /* EnvLoad: C access routine for the load command. Returns  */

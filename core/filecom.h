@@ -66,15 +66,6 @@
    bool                           DribbleOnCommand(void *);
    bool                           DribbleOffCommand(void *);
 
-#if ALLOW_ENVIRONMENT_GLOBALS
-
-   bool                           DribbleActive(void);
-   bool                           DribbleOn(const char *);
-   bool                           DribbleOff(void);
-   int                            BatchStar(const char *);
-
-#endif /* ALLOW_ENVIRONMENT_GLOBALS */
-
 #endif /* _H_filecom */
 
 
