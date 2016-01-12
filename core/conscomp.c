@@ -205,7 +205,7 @@ void ConstructsToCCommand(
    int argCount;
    long long id, max; 
    int nameLength, pathLength;
-#if VAX_VMS || WIN_MVC
+#if WIN_MVC
    int i;
 #endif
 
@@ -230,7 +230,7 @@ void ConstructsToCCommand(
    /* PCs can't contain a period.    */
    /*================================*/
 
-#if VAX_VMS || WIN_MVC
+#if WIN_MVC
    for (i = 0 ; *(fileName+i) ; i++)
      {
       if (*(fileName+i) == '.')

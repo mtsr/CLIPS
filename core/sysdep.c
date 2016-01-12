@@ -102,14 +102,6 @@
 #include <time.h>
 #include <stdarg.h>
 
-#if   VAX_VMS
-#include timeb
-#include <descrip.h>
-#include <ssdef.h>
-#include <stsdef.h>
-extern int LIB$SPAWN();
-#endif
-
 #if MAC_XCD
 #include <sys/time.h>
 #include <unistd.h>

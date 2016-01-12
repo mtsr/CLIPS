@@ -78,6 +78,8 @@
 /*                                                           */
 /*      6.40: ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            Removed VAX_VMS support.                       */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_setup
@@ -122,17 +124,12 @@
 #define WIN_GCC 0   /* Windows XP, with DJGPP 3.21 */
 #endif
 
-#ifndef VAX_VMS                    
-#define VAX_VMS 0   /* VAX VMS */
-#endif
-
 /* Use GENERIC if nothing else is used. */
 
 #ifndef GENERIC
 #if (! UNIX_V) && (! LINUX) && (! UNIX_7) && \
     (! MAC_XCD) && (! DARWIN) && \
-    (! WIN_MVC) && (! WIN_GCC) && \
-    (! VAX_VMS)
+    (! WIN_MVC) && (! WIN_GCC) 
 #define GENERIC 1   /* Generic (any machine)                   */
 #else
 #define GENERIC 0   /* Generic (any machine)                   */
