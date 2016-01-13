@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*            EXTERNAL FUNCTIONS HEADER FILE           */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
 /*                                                           */
+/*            Callbacks must be environment aware.           */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_extnfunc
@@ -60,7 +62,6 @@ struct FunctionDefinition
    struct symbolHashNode *restrictions;
    bool overloadable; // TBD Use unsigned ints here
    bool sequenceuseok;
-   short int environmentAware;
    short int bsaveIndex;
    struct FunctionDefinition *next;
    struct userData *usrData;
@@ -110,7 +111,7 @@ struct FunctionHash
    int                            EnvDefineFunction2WithContext(void *,const char *,int,
                                                             int (*)(void *),const char *,const char *,void *);
    int                            DefineFunction3(void *,const char *,int,
-                                                         int (*)(void *),const char *,const char *,bool,void *);
+                                                         int (*)(void *),const char *,const char *,void *);
    int                            AddFunctionParser(void *,const char *,
                                                            struct expr *(*)( void *,struct expr *,const char *));
    int                            RemoveFunctionParser(void *,const char *);

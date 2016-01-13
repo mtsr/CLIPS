@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -68,6 +68,8 @@
 /*            changed slots.                                 */
 /*                                                           */
 /*            Fact ?var:slot references in defrule actions.  */
+/*                                                           */
+/*            Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 
@@ -483,10 +485,7 @@ void ModifyCommand(
            theModifyFunction = theModifyFunction->next)
         {
          SetEnvironmentCallbackContext(theEnv,theModifyFunction->context);
-         if (theModifyFunction->environmentAware)
-           { ((void (*)(void *,void *,void *))(*theModifyFunction->func))(theEnv,oldFact,NULL); }
-         else
-           { ((void (*)(void *,void *))(*theModifyFunction->func))(oldFact,NULL); }
+         ((void (*)(void *,void *,void *))(*theModifyFunction->func))(theEnv,oldFact,NULL);
         }
      }
      
@@ -562,10 +561,7 @@ void ModifyCommand(
            theModifyFunction = theModifyFunction->next)
         {
          SetEnvironmentCallbackContext(theEnv,theModifyFunction->context);
-         if (theModifyFunction->environmentAware)
-           { ((void (*)(void *,void *,void *))(*theModifyFunction->func))(theEnv,NULL,theFact); }
-         else
-           { ((void (*)(void *,void *))(*theModifyFunction->func))(NULL,theFact); }
+         ((void (*)(void *,void *,void *))(*theModifyFunction->func))(theEnv,NULL,theFact);
         }
      }
      

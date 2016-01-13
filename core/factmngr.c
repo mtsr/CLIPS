@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -70,6 +70,8 @@
 /*                                                           */
 /*            Watch facts for modify command only prints     */
 /*            changed slots.                                 */
+/*                                                           */
+/*            Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 
@@ -545,10 +547,7 @@ bool RetractDriver(
         theRetractFunction = theRetractFunction->next)
      {
       SetEnvironmentCallbackContext(theEnv,theRetractFunction->context);
-      if (theRetractFunction->environmentAware)
-        { (*theRetractFunction->func)(theEnv,theFact); }
-      else
-        { ((void (*)(void *))(*theRetractFunction->func))(theFact); }
+      (*theRetractFunction->func)(theEnv,theFact);
      }
 
    /*============================*/
@@ -901,10 +900,7 @@ void *AssertDriver(
         theAssertFunction = theAssertFunction->next)
      {
       SetEnvironmentCallbackContext(theEnv,theAssertFunction->context);
-      if (theAssertFunction->environmentAware)
-        { (*theAssertFunction->func)(theEnv,theFact); }
-      else
-        { ((void (*)(void *))(*theAssertFunction->func))(theFact); }
+      (*theAssertFunction->func)(theEnv,theFact);
      }
 
    /*==========================*/
@@ -1791,7 +1787,7 @@ bool EnvAddAssertFunction(
    FactData(theEnv)->ListOfAssertFunctions =
       AddFunctionToCallListWithArg(theEnv,name,priority,
                                               functionPtr,
-                                              FactData(theEnv)->ListOfAssertFunctions,true);
+                                              FactData(theEnv)->ListOfAssertFunctions);
    return(1);
   }
     
@@ -1809,7 +1805,7 @@ bool EnvAddAssertFunctionWithContext(
    FactData(theEnv)->ListOfAssertFunctions =
       AddFunctionToCallListWithArgWithContext(theEnv,name,priority,functionPtr,
                                        FactData(theEnv)->ListOfAssertFunctions,
-                                       true,context);
+                                       context);
    return(1);
   }
     
@@ -1844,7 +1840,7 @@ bool EnvAddRetractFunction(
    FactData(theEnv)->ListOfRetractFunctions =
       AddFunctionToCallListWithArg(theEnv,name,priority,
                                               functionPtr,
-                                              FactData(theEnv)->ListOfRetractFunctions,true);
+                                              FactData(theEnv)->ListOfRetractFunctions);
    return(1);
   }
     
@@ -1862,7 +1858,7 @@ bool EnvAddRetractFunctionWithContext(
    FactData(theEnv)->ListOfRetractFunctions =
       AddFunctionToCallListWithArgWithContext(theEnv,name,priority,functionPtr,
                                        FactData(theEnv)->ListOfRetractFunctions,
-                                       true,context);
+                                       context);
    return(1);
   }
     
@@ -1897,7 +1893,7 @@ bool EnvAddModifyFunction(
    FactData(theEnv)->ListOfModifyFunctions =
       AddFunctionToCallListWithArg(theEnv,name,priority,
                                               (void (*)(void *, void *)) functionPtr,
-                                              FactData(theEnv)->ListOfModifyFunctions,true);
+                                              FactData(theEnv)->ListOfModifyFunctions);
    return(1);
   }
     
@@ -1916,7 +1912,7 @@ bool EnvAddModifyFunctionWithContext(
       AddFunctionToCallListWithArgWithContext(theEnv,name,priority,
                                        (void (*)(void *, void *)) functionPtr,
                                        FactData(theEnv)->ListOfModifyFunctions,
-                                       true,context);
+                                       context);
    return(1);
   }
     

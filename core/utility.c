@@ -52,6 +52,8 @@
 /*            Added CLIPSBlockStart and CLIPSBlockEnd        */
 /*            functions for garbage collection blocks.       */
 /*                                                           */
+/*            Callbacks must be environment aware.           */
+/*                                                           */
 /*************************************************************/
 
 #define _UTILITY_SOURCE_
@@ -312,12 +314,7 @@ void CallCleanupFunctions(
    for (cleanupPtr = UtilityData(theEnv)->ListOfCleanupFunctions;
         cleanupPtr != NULL;
         cleanupPtr = cleanupPtr->next)
-     {
-      if (cleanupPtr->environmentAware)
-        { (*cleanupPtr->func)(theEnv); }
-      else            
-        { (* (void (*)(void)) cleanupPtr->func)(); }
-     }
+     { (*cleanupPtr->func)(theEnv); }
   }
 
 /**************************************************/
@@ -337,12 +334,9 @@ void CallPeriodicTasks(
         {
          void *oldContext = SetEnvironmentCallbackContext(theEnv,periodPtr->context);
 
-         if (periodPtr->environmentAware)
-           { (*periodPtr->func)(theEnv); }
-         else            
-           { (* (void (*)(void)) periodPtr->func)(); }
+         (*periodPtr->func)(theEnv);
            
-          SetEnvironmentCallbackContext(theEnv,oldContext);
+         SetEnvironmentCallbackContext(theEnv,oldContext);
         }
      }
   }
@@ -361,7 +355,7 @@ bool AddCleanupFunction(
    UtilityData(theEnv)->ListOfCleanupFunctions =
      AddFunctionToCallList(theEnv,name,priority,
                            (void (*)(void *)) theFunction,
-                           UtilityData(theEnv)->ListOfCleanupFunctions,true);
+                           UtilityData(theEnv)->ListOfCleanupFunctions);
    return(true);
   }
 
@@ -397,7 +391,7 @@ bool EnvAddPeriodicFunctionWithContext(
    UtilityData(theEnv)->ListOfPeriodicFunctions =
      AddFunctionToCallListWithContext(theEnv,name,priority,
                            (void (*)(void *)) theFunction,
-                           UtilityData(theEnv)->ListOfPeriodicFunctions,true,context);
+                           UtilityData(theEnv)->ListOfPeriodicFunctions,context);
    return(1);
   }
 
@@ -765,10 +759,9 @@ struct callFunctionItem *AddFunctionToCallList(
   const char *name,
   int priority,
   void (*func)(void *),
-  struct callFunctionItem *head,
-  bool environmentAware)
+  struct callFunctionItem *head)
   {
-   return AddFunctionToCallListWithContext(theEnv,name,priority,func,head,environmentAware,NULL);
+   return AddFunctionToCallListWithContext(theEnv,name,priority,func,head,NULL);
   }
   
 /***********************************************************/
@@ -782,7 +775,6 @@ struct callFunctionItem *AddFunctionToCallListWithContext(
   int priority,
   void (*func)(void *),
   struct callFunctionItem *head,
-  bool environmentAware,
   void *context)
   {
    struct callFunctionItem *newPtr, *currentPtr, *lastPtr = NULL;
@@ -796,7 +788,6 @@ struct callFunctionItem *AddFunctionToCallListWithContext(
 
    newPtr->func = func;
    newPtr->priority = priority;
-   newPtr->environmentAware = (short) environmentAware;
    newPtr->context = context;
 
    if (head == NULL)
@@ -917,10 +908,9 @@ struct callFunctionItemWithArg *AddFunctionToCallListWithArg(
   const char *name,
   int priority,
   void (*func)(void *, void *),
-  struct callFunctionItemWithArg *head,
-  bool environmentAware)
+  struct callFunctionItemWithArg *head)
   {
-   return AddFunctionToCallListWithArgWithContext(theEnv,name,priority,func,head,environmentAware,NULL);
+   return AddFunctionToCallListWithArgWithContext(theEnv,name,priority,func,head,NULL);
   }
   
 /***************************************************************/
@@ -934,7 +924,6 @@ struct callFunctionItemWithArg *AddFunctionToCallListWithArgWithContext(
   int priority,
   void (*func)(void *, void *),
   struct callFunctionItemWithArg *head,
-  bool environmentAware,
   void *context)
   {
    struct callFunctionItemWithArg *newPtr, *currentPtr, *lastPtr = NULL;
@@ -944,7 +933,6 @@ struct callFunctionItemWithArg *AddFunctionToCallListWithArgWithContext(
    newPtr->name = name;
    newPtr->func = func;
    newPtr->priority = priority;
-   newPtr->environmentAware = (short) environmentAware;
    newPtr->context = context;
 
    if (head == NULL)

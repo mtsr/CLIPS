@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -56,6 +56,8 @@
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 
@@ -484,12 +486,7 @@ void EnvReset(
    for (resetPtr = ConstructData(theEnv)->ListOfResetFunctions;
         (resetPtr != NULL) && (EnvGetHaltExecution(theEnv) == false);
         resetPtr = resetPtr->next)
-     { 
-      if (resetPtr->environmentAware)
-        { (*resetPtr->func)(theEnv); }
-      else            
-        { (* (void (*)(void)) resetPtr->func)(); }
-     }
+     { (*resetPtr->func)(theEnv); }
 
    /*============================================*/
    /* Set the current module to the MAIN module. */
@@ -542,7 +539,7 @@ bool EnvAddResetFunction(
   {
    ConstructData(theEnv)->ListOfResetFunctions = AddFunctionToCallList(theEnv,name,priority,
                                                 functionPtr,
-                                                ConstructData(theEnv)->ListOfResetFunctions,true);
+                                                ConstructData(theEnv)->ListOfResetFunctions);
    return(true);
   }
 
@@ -629,12 +626,7 @@ bool EnvClear(
    for (theFunction = ConstructData(theEnv)->ListOfClearFunctions;
         theFunction != NULL;
         theFunction = theFunction->next)
-     { 
-      if (theFunction->environmentAware)
-        { (*theFunction->func)(theEnv); }
-      else            
-        { (* (void (*)(void)) theFunction->func)(); }
-     }
+     { (*theFunction->func)(theEnv); }
 
    /*=============================*/
    /* Deactivate the watch router */
@@ -715,7 +707,7 @@ bool AddClearReadyFunction(
    ConstructData(theEnv)->ListOfClearReadyFunctions =
      AddFunctionToCallList(theEnv,name,priority,
                            (void (*)(void *)) functionPtr,
-                           ConstructData(theEnv)->ListOfClearReadyFunctions,true);
+                           ConstructData(theEnv)->ListOfClearReadyFunctions);
    return(true);
   }
 
@@ -750,7 +742,7 @@ bool EnvAddClearFunction(
    ConstructData(theEnv)->ListOfClearFunctions =
       AddFunctionToCallList(theEnv,name,priority,
                             (void (*)(void *)) functionPtr,
-                            ConstructData(theEnv)->ListOfClearFunctions,true);
+                            ConstructData(theEnv)->ListOfClearFunctions);
    return(true);
   }
 
@@ -910,7 +902,7 @@ bool AddSaveFunction(
    ConstructData(theEnv)->ListOfSaveFunctions =
      AddFunctionToCallList(theEnv,name,priority,
                            (void (*)(void *)) functionPtr,
-                           ConstructData(theEnv)->ListOfSaveFunctions,true);
+                           ConstructData(theEnv)->ListOfSaveFunctions);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                  I/O ROUTER MODULE                  */
    /*******************************************************/
@@ -41,6 +41,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Added check for reuse of existing router name. */
+/*                                                           */
+/*            Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 
@@ -142,11 +144,7 @@ int EnvPrintRouter(
       if ((currentPtr->printer != NULL) ? QueryRouter(theEnv,logicalName,currentPtr) : false)
         {
          SetEnvironmentRouterContext(theEnv,currentPtr->context);
-         if (currentPtr->environmentAware)
-           { (*currentPtr->printer)(theEnv,logicalName,str); }
-         else            
-           { ((int (*)(const char *,const char *)) (*currentPtr->printer))(logicalName,str); }
-         
+         (*currentPtr->printer)(theEnv,logicalName,str);
          return(1);
         }
       currentPtr = currentPtr->next;
@@ -227,10 +225,7 @@ int EnvGetcRouter(
       if ((currentPtr->charget != NULL) ? QueryRouter(theEnv,logicalName,currentPtr) : false)
         {
          SetEnvironmentRouterContext(theEnv,currentPtr->context);
-         if (currentPtr->environmentAware)
-           { inchar = (*currentPtr->charget)(theEnv,logicalName); }
-         else            
-           { inchar = ((int (*)(const char *)) (*currentPtr->charget))(logicalName); }
+         inchar = (*currentPtr->charget)(theEnv,logicalName);
 
          if ((inchar == '\r') || (inchar == '\n'))
            {
@@ -317,10 +312,7 @@ int EnvUngetcRouter(
            }
            
          SetEnvironmentRouterContext(theEnv,currentPtr->context);
-         if (currentPtr->environmentAware)
-           { return((*currentPtr->charunget)(theEnv,ch,logicalName)); }
-         else            
-           { return(((int (*)(int,const char *)) (*currentPtr->charunget))(ch,logicalName)); }
+         return((*currentPtr->charunget)(theEnv,ch,logicalName));
         }
 
       currentPtr = currentPtr->next;
@@ -376,10 +368,7 @@ void EnvExitRouter(
          if (currentPtr->exiter != NULL) 
            {
             SetEnvironmentRouterContext(theEnv,currentPtr->context);
-            if (currentPtr->environmentAware)
-              { (*currentPtr->exiter)(theEnv,num); }
-            else            
-              { ((int (*)(int))(*currentPtr->exiter))(num); }
+            (*currentPtr->exiter)(theEnv,num);
            }
         }
       currentPtr = nextPtr;
@@ -453,7 +442,6 @@ bool EnvAddRouterWithContext(
    newPtr->name = nameCopy;
 
    newPtr->active = true;
-   newPtr->environmentAware = true;
    newPtr->context = context;
    newPtr->priority = priority;
    newPtr->query = queryFunction;
@@ -572,16 +560,8 @@ static bool QueryRouter(
    /*=========================================*/
    
    SetEnvironmentRouterContext(theEnv,currentPtr->context);
-   if (currentPtr->environmentAware)
-     { 
-      if ((*currentPtr->query)(theEnv,logicalName) == true)
-        { return(true); }
-     }
-   else            
-     { 
-      if (((int (*)(const char *)) (*currentPtr->query))(logicalName) == true)
-        { return(true); }
-     }
+   if ((*currentPtr->query)(theEnv,logicalName) == true)
+     { return(true); }
 
    return(false);
   }

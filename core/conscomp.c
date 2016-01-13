@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -58,6 +58,8 @@
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
+/*                                                           */
+/*            Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 
@@ -623,10 +625,7 @@ static void WriteFunctionExternDeclarations(
          case 'x':
          case 'y':
          case 'v':
-           if (theFunction->environmentAware) 
-             { fprintf(fp,"void *"); }
-           else
-             { fprintf(fp,"void"); }
+           fprintf(fp,"void *");
            break;
 
          case 'm':
@@ -634,10 +633,7 @@ static void WriteFunctionExternDeclarations(
          case 'n':
          case 'j':
          case 'k':
-           if (theFunction->environmentAware) 
-             { fprintf(fp,"void *,DATA_OBJECT_PTR_ARG"); }
-           else
-             { fprintf(fp,"DATA_OBJECT_PTR_ARG"); }
+           fprintf(fp,"void *,DATA_OBJECT_PTR_ARG");
            break;
         }
 
@@ -712,7 +708,7 @@ static bool FunctionsToCode(
       //if (fctnPtr->restrictions != NULL) fprintf(fp,"\"%s\",",fctnPtr->restrictions);
       //else fprintf(fp,"NULL,");
       
-      fprintf(fp,",0,0,%d,0,",(fctnPtr->environmentAware ? 1 : 0));
+      fprintf(fp,",0,0,0,");
       PrintFunctionReference(theEnv,fp,fctnPtr->next);
 
       i++;

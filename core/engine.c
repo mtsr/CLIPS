@@ -67,6 +67,8 @@
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
+/*            Callbacks must be environment aware.           */
+/*                                                           */
 /*************************************************************/
 
 #define _ENGINE_SOURCE_
@@ -254,10 +256,7 @@ long long EnvRun(
            theBeforeRunFunction = theBeforeRunFunction->next)
         { 
          SetEnvironmentCallbackContext(theEnv,theBeforeRunFunction->context);
-         if (theBeforeRunFunction->environmentAware)
-           { (*theBeforeRunFunction->func)(theEnv,theActivation); }
-         else            
-           { ((void (*)(void *))(*theBeforeRunFunction->func))(theActivation); }
+         (*theBeforeRunFunction->func)(theEnv,theActivation);
         }
 
       /*===========================================*/
@@ -478,10 +477,7 @@ long long EnvRun(
            theRunFunction = theRunFunction->next)
         { 
          SetEnvironmentCallbackContext(theEnv,theRunFunction->context);
-         if (theRunFunction->environmentAware)
-           { (*theRunFunction->func)(theEnv); }
-         else            
-           { ((void (*)(void))(*theRunFunction->func))(); }
+         (*theRunFunction->func)(theEnv);
         }
 
       /*========================================*/
@@ -525,12 +521,7 @@ long long EnvRun(
       for (theRunFunction = EngineData(theEnv)->ListOfRunFunctions;
            theRunFunction != NULL;
            theRunFunction = theRunFunction->next)
-        { 
-         if (theRunFunction->environmentAware)
-           { (*theRunFunction->func)(theEnv); }
-         else            
-           { ((void (*)(void))(*theRunFunction->func))(); }
-        }
+        { (*theRunFunction->func)(theEnv); }
      }
 
    /*======================================================*/
@@ -925,7 +916,7 @@ bool EnvAddRunFunction(
   {
    EngineData(theEnv)->ListOfRunFunctions = AddFunctionToCallList(theEnv,name,priority,
                                               functionPtr,
-                                              EngineData(theEnv)->ListOfRunFunctions,true);
+                                              EngineData(theEnv)->ListOfRunFunctions);
    return(true);
   }
   
@@ -941,7 +932,7 @@ bool EnvAddBeforeRunFunction(
   {
    EngineData(theEnv)->ListOfBeforeRunFunctions = AddFunctionToCallListWithArg(theEnv,name,priority,
                                               functionPtr,
-                                              EngineData(theEnv)->ListOfBeforeRunFunctions,true);
+                                              EngineData(theEnv)->ListOfBeforeRunFunctions);
    return(true);
   }
   
@@ -959,7 +950,7 @@ bool EnvAddRunFunctionWithContext(
    EngineData(theEnv)->ListOfRunFunctions = 
       AddFunctionToCallListWithContext(theEnv,name,priority,functionPtr,
                                        EngineData(theEnv)->ListOfRunFunctions,
-                                       true,context);
+                                       context);
    return(true);
   }
   
@@ -977,7 +968,7 @@ bool EnvAddBeforeRunFunctionWithContext(
    EngineData(theEnv)->ListOfBeforeRunFunctions = 
       AddFunctionToCallListWithArgWithContext(theEnv,name,priority,functionPtr,
                                        EngineData(theEnv)->ListOfBeforeRunFunctions,
-                                       true,context);
+                                       context);
    return(true);
   }
   

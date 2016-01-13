@@ -49,6 +49,8 @@
 /*            Added CLIPSBlockStart and CLIPSBlockEnd        */
 /*            functions for garbage collection blocks.       */
 /*                                                           */
+/*            Callbacks must be environment aware.           */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_utility
@@ -64,7 +66,6 @@ struct callFunctionItem
    void (*func)(void *);
    int priority;
    struct callFunctionItem *next;
-   short int environmentAware;
    void *context;
   };
 
@@ -74,7 +75,6 @@ struct callFunctionItemWithArg
    void (*func)(void *,void *);
    int priority;
    struct callFunctionItemWithArg *next;
-   short int environmentAware;
    void *context;
   };
   
@@ -146,17 +146,17 @@ struct utilityData
    char                          *EnlargeString(void *,size_t,char *,size_t *,size_t *);
    char                          *ExpandStringWithChar(void *,int,char *,size_t *,size_t *,size_t);
    struct callFunctionItem       *AddFunctionToCallList(void *,const char *,int,void (*)(void *),
-                                                               struct callFunctionItem *,bool);
+                                                               struct callFunctionItem *);
    struct callFunctionItem       *AddFunctionToCallListWithContext(void *,const char *,int,void (*)(void *),
-                                                                          struct callFunctionItem *,bool,void *);
+                                                                          struct callFunctionItem *,void *);
    struct callFunctionItem       *RemoveFunctionFromCallList(void *,const char *,
                                                              struct callFunctionItem *,
                                                              bool *);
    void                           DeallocateCallList(void *,struct callFunctionItem *);
    struct callFunctionItemWithArg *AddFunctionToCallListWithArg(void *,const char *,int,void (*)(void *, void *),
-                                                                       struct callFunctionItemWithArg *,bool);
+                                                                       struct callFunctionItemWithArg *);
    struct callFunctionItemWithArg *AddFunctionToCallListWithArgWithContext(void *,const char *,int,void (*)(void *, void *),
-                                                                                  struct callFunctionItemWithArg *,bool,void *);
+                                                                                  struct callFunctionItemWithArg *,void *);
    struct callFunctionItemWithArg *RemoveFunctionFromCallListWithArg(void *,const char *,
                                                                             struct callFunctionItemWithArg *,
                                                                             bool *);

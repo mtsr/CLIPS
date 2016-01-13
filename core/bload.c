@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                    BLOAD MODULE                     */
    /*******************************************************/
@@ -32,6 +32,8 @@
 /*                                                           */
 /*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
+/*                                                           */
+/*            Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 
@@ -187,12 +189,8 @@ bool EnvBload(
    for (bfPtr = BloadData(theEnv)->BeforeBloadFunctions;
         bfPtr != NULL;
         bfPtr = bfPtr->next)
-     { 
-      if (bfPtr->environmentAware)
-        { (*bfPtr->func)(theEnv); }
-      else            
-        { (* (void (*)(void)) bfPtr->func)(); }
-     }
+     { (*bfPtr->func)(theEnv); }
+
    ConstructData(theEnv)->ClearInProgress = false;
 
    /*====================================================*/
@@ -354,12 +352,7 @@ bool EnvBload(
    for (bfPtr = BloadData(theEnv)->AfterBloadFunctions;
         bfPtr != NULL;
         bfPtr = bfPtr->next)
-     {       
-      if (bfPtr->environmentAware)
-        { (*bfPtr->func)(theEnv); }
-      else            
-        { (* (void (*)(void)) bfPtr->func)(); }
-     }
+     { (*bfPtr->func)(theEnv); }
 
    /*=======================================*/
    /* Add a clear function to remove binary */
@@ -630,10 +623,7 @@ static bool ClearBload(
         bfPtr != NULL;
         bfPtr = bfPtr->next)
      {
-      if (bfPtr->environmentAware)
-        { ready = (* ((int (*)(void *)) bfPtr->func))(theEnv); }
-      else            
-        { ready = (* ((int (*)(void)) bfPtr->func))(); }
+      ready = (* ((int (*)(void *)) bfPtr->func))(theEnv);
 
       if (ready == false)
         {
@@ -709,12 +699,7 @@ static void AbortBload(
    for (bfPtr = BloadData(theEnv)->AbortBloadFunctions;
         bfPtr != NULL;
         bfPtr = bfPtr->next)
-     { 
-      if (bfPtr->environmentAware)
-        { (*bfPtr->func)(theEnv); }
-      else            
-        { (* (void (*)(void)) bfPtr->func)(); }
-     }
+     { (*bfPtr->func)(theEnv); }
   }
 
 /********************************************/
@@ -729,7 +714,7 @@ void AddBeforeBloadFunction(
   int priority)
   {
    BloadData(theEnv)->BeforeBloadFunctions =
-     AddFunctionToCallList(theEnv,name,priority,func,BloadData(theEnv)->BeforeBloadFunctions,true);
+     AddFunctionToCallList(theEnv,name,priority,func,BloadData(theEnv)->BeforeBloadFunctions);
   }
 
 /*******************************************/
@@ -744,7 +729,7 @@ void AddAfterBloadFunction(
   int priority)
   {
    BloadData(theEnv)->AfterBloadFunctions =
-      AddFunctionToCallList(theEnv,name,priority,func,BloadData(theEnv)->AfterBloadFunctions,true);
+      AddFunctionToCallList(theEnv,name,priority,func,BloadData(theEnv)->AfterBloadFunctions);
   }
 
 /**************************************************/
@@ -761,7 +746,7 @@ void AddClearBloadReadyFunction(
    BloadData(theEnv)->ClearBloadReadyFunctions =
       AddFunctionToCallList(theEnv,name,priority,
                             (void (*)(void *)) func,
-                            BloadData(theEnv)->ClearBloadReadyFunctions,true);
+                            BloadData(theEnv)->ClearBloadReadyFunctions);
   }
 
 /*********************************************/
@@ -775,7 +760,7 @@ void AddAbortBloadFunction(
   void (*func)(void *),
   int priority)
   {
-   BloadData(theEnv)->AbortBloadFunctions = AddFunctionToCallList(theEnv,name,priority,func,BloadData(theEnv)->AbortBloadFunctions,true);
+   BloadData(theEnv)->AbortBloadFunctions = AddFunctionToCallList(theEnv,name,priority,func,BloadData(theEnv)->AbortBloadFunctions);
   }
 
 /*******************************************************
