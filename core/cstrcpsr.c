@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -249,8 +249,7 @@ int LoadConstructsFromLogicalName(
    struct token theToken;
    bool noErrors = true;
    bool foundConstruct;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
+   struct CLIPSBlock gcBlock;
    long oldLineCountValue;
    const char *oldLineCountRouter;
 
@@ -280,11 +279,8 @@ int LoadConstructsFromLogicalName(
    /* Set up the frame for garbage collection. */
    /*==========================================*/
 
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
-
+   CLIPSBlockStart(theEnv,&gcBlock);
+   
    /*========================================================*/
    /* Find the beginning of the first construct in the file. */
    /*========================================================*/
@@ -383,7 +379,7 @@ int LoadConstructsFromLogicalName(
    /* Remove the garbage collection frame. */
    /*======================================*/
    
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,NULL);
+   CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
 
    /*==============================*/
@@ -690,8 +686,7 @@ int ParseConstruct(
   {
    struct construct *currentPtr;
    int rv, ov;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
+   struct CLIPSBlock gcBlock;
 
    /*=================================*/
    /* Look for a valid construct name */
@@ -705,11 +700,8 @@ int ParseConstruct(
    /* Set up the frame for garbage collection. */
    /*==========================================*/
 
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
-      
+   CLIPSBlockStart(theEnv,&gcBlock);
+   
    /*==================================*/
    /* Prepare the parsing environment. */
    /*==================================*/
@@ -744,7 +736,7 @@ int ParseConstruct(
    /* Remove the garbage collection frame. */
    /*======================================*/
    
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,NULL);
+   CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
 
    /*==============================*/

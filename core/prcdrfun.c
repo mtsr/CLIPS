@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*             PROCEDURAL FUNCTIONS MODULE             */
    /*******************************************************/
@@ -133,18 +133,14 @@ void WhileFunction(
   DATA_OBJECT_PTR returnValue)
   {
    DATA_OBJECT theResult;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
-  
+   struct CLIPSBlock gcBlock;
+   
    /*====================================================*/
    /* Evaluate the body of the while loop as long as the */
    /* while condition evaluates to a non-false value.    */
    /*====================================================*/
    
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+   CLIPSBlockStart(theEnv,&gcBlock);
 
    EnvRtnUnknown(theEnv,1,&theResult);
    while (((theResult.value != EnvFalseSymbol(theEnv)) ||
@@ -191,8 +187,8 @@ void WhileFunction(
       returnValue->type = SYMBOL;
       returnValue->value = EnvFalseSymbol(theEnv);
      }
-     
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,returnValue);
+   
+   CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
    CallPeriodicTasks(theEnv);
   }
 
@@ -207,8 +203,7 @@ void LoopForCountFunction(
    DATA_OBJECT arg_ptr;
    long long iterationEnd;
    LOOP_COUNTER_STACK *tmpCounter;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
+   struct CLIPSBlock gcBlock;
 
    tmpCounter = get_struct(theEnv,loopCounterStack);
    tmpCounter->loopCounter = 0L;
@@ -232,11 +227,8 @@ void LoopForCountFunction(
       return;
      }
      
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
-
+   CLIPSBlockStart(theEnv,&gcBlock);
+   
    iterationEnd = DOToLong(arg_ptr);
    while ((tmpCounter->loopCounter <= iterationEnd) &&
           (EvaluationData(theEnv)->HaltExecution != true))
@@ -271,7 +263,7 @@ void LoopForCountFunction(
    ProcedureFunctionData(theEnv)->LoopCounterStack = tmpCounter->nxt;
    rtn_struct(theEnv,loopCounterStack,tmpCounter);
     
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,loopResult);
+   CLIPSBlockEnd(theEnv,&gcBlock,loopResult);
    CallPeriodicTasks(theEnv);
   }
 

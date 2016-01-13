@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -508,8 +508,7 @@ void DelayedQueryDoForAllInstances(
    QUERY_CLASS *qclasses;
    unsigned rcnt;
    register unsigned i;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
+   struct CLIPSBlock gcBlock;
 
    result->type = SYMBOL;
    result->value = EnvFalseSymbol(theEnv);
@@ -530,10 +529,7 @@ void DelayedQueryDoForAllInstances(
    InstanceQueryData(theEnv)->AbortQuery = false;
    InstanceQueryData(theEnv)->QueryCore->action = GetFirstArgument()->nextArg;
    
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+   CLIPSBlockStart(theEnv,&gcBlock);
 
    while (InstanceQueryData(theEnv)->QueryCore->soln_set != NULL)
      {
@@ -553,7 +549,7 @@ void DelayedQueryDoForAllInstances(
       CallPeriodicTasks(theEnv);
      }
       
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CLIPSBlockEnd(theEnv,&gcBlock,result);
    CallPeriodicTasks(theEnv);
 
    ProcedureFunctionData(theEnv)->BreakFlag = false;
@@ -906,20 +902,16 @@ static bool TestForFirstInstanceInClass(
    long i;
    INSTANCE_TYPE *ins;
    DATA_OBJECT temp;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
-
+   struct CLIPSBlock gcBlock;
+   
    if (TestTraversalID(cls->traversalRecord,id))
      return(false);
    SetTraversalID(cls->traversalRecord,id);
    if (DefclassInScope(theEnv,cls,theModule) == false)
      return(false);
      
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
-      
+   CLIPSBlockStart(theEnv,&gcBlock);
+   
    ins = cls->instanceList;
    while (ins != NULL)
      {
@@ -956,7 +948,7 @@ static bool TestForFirstInstanceInClass(
         ins = ins->nxtClass;
      }
 
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);
+   CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
 
    if (ins != NULL)
@@ -1033,19 +1025,15 @@ static void TestEntireClass(
    long i;
    INSTANCE_TYPE *ins;
    DATA_OBJECT temp;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
-
+   struct CLIPSBlock gcBlock;
+   
    if (TestTraversalID(cls->traversalRecord,id))
      return;
    SetTraversalID(cls->traversalRecord,id);
    if (DefclassInScope(theEnv,cls,theModule) == false)
      return;
      
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+   CLIPSBlockStart(theEnv,&gcBlock);
 
    ins = cls->instanceList;
    while (ins != NULL)
@@ -1101,7 +1089,7 @@ static void TestEntireClass(
       CallPeriodicTasks(theEnv);
      }
    
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);
+   CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
 
    if (ins != NULL)

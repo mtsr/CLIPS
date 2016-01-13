@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -176,9 +176,9 @@ long long EnvRun(
    struct profileFrameInfo profileFrame;
 #endif
    struct trackedMemory *theTM;
-   struct garbageFrame newGarbageFrame, *oldGarbageFrame;
    int danglingConstructs;
-
+   struct CLIPSBlock gcBlock;
+   
    /*=====================================================*/
    /* Make sure the run command is not already executing. */
    /*=====================================================*/
@@ -190,11 +190,8 @@ long long EnvRun(
    /* Set up the frame for tracking garbage. */
    /*========================================*/
    
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
-
+   CLIPSBlockStart(theEnv,&gcBlock);
+   
    /*================================*/
    /* Set up statistics information. */
    /*================================*/
@@ -659,7 +656,7 @@ long long EnvRun(
    /* Restore the old garbage frame. */
    /*================================*/
    
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);
+   CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
      
    /*===================================*/

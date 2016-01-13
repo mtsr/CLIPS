@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -48,6 +48,9 @@
 /*                                                           */
 /*      6.40: Added EnvAddPeriodicFunctionWithContext        */
 /*            function.                                      */
+/*                                                           */
+/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*            functions for garbage collection blocks.       */
 /*                                                           */
 /*************************************************************/
 
@@ -272,6 +275,30 @@ void RestorePriorGarbageFrame(
      
    if (returnValue != NULL)
      { EphemerateValue(theEnv,returnValue->type,returnValue->value); }
+  }
+
+/********************/
+/* CLIPSBlockStart: */
+/********************/
+void CLIPSBlockStart(
+  void *theEnv,
+  struct CLIPSBlock *theBlock)
+  {
+   theBlock->oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
+   memset(&theBlock->newGarbageFrame,0,sizeof(struct garbageFrame));
+   theBlock->newGarbageFrame.priorFrame = theBlock->oldGarbageFrame;
+   UtilityData(theEnv)->CurrentGarbageFrame = &theBlock->newGarbageFrame;
+  }  
+  
+/******************/
+/* CLIPSBlockEnd: */
+/******************/
+void CLIPSBlockEnd(
+  void *theEnv,
+  struct CLIPSBlock *theBlock,
+  DATA_OBJECT *rv)
+  {
+   RestorePriorGarbageFrame(theEnv,&theBlock->newGarbageFrame,theBlock->oldGarbageFrame,rv);
   }
 
 /*************************/

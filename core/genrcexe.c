@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -138,20 +138,16 @@ void GenericDispatch(
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
-
+   struct CLIPSBlock gcBlock;
+   
    result->type = SYMBOL;
    result->value = EnvFalseSymbol(theEnv);
    EvaluationData(theEnv)->EvaluationError = false;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
 
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
-
+   CLIPSBlockStart(theEnv,&gcBlock);
+   
    oldce = ExecutingConstruct(theEnv);
    SetExecutingConstruct(theEnv,true);
    previousGeneric = DefgenericData(theEnv)->CurrentGeneric;
@@ -169,7 +165,7 @@ void GenericDispatch(
       DefgenericData(theEnv)->CurrentMethod = previousMethod;
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
       
-      RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+      CLIPSBlockEnd(theEnv,&gcBlock,result);
       CallPeriodicTasks(theEnv);
      
       SetExecutingConstruct(theEnv,oldce);
@@ -253,7 +249,7 @@ void GenericDispatch(
    DefgenericData(theEnv)->CurrentMethod = previousMethod;
    EvaluationData(theEnv)->CurrentEvaluationDepth--;
 
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CLIPSBlockEnd(theEnv,&gcBlock,result);
    CallPeriodicTasks(theEnv);
    
    SetExecutingConstruct(theEnv,oldce);

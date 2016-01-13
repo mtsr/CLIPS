@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                 UTILITY HEADER FILE                 */
    /*******************************************************/
@@ -45,6 +45,9 @@
 /*                                                           */
 /*      6.40: Added EnvAddPeriodicFunctionWithContext        */
 /*            function.                                      */
+/*                                                           */
+/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*            functions for garbage collection blocks.       */
 /*                                                           */
 /*************************************************************/
 
@@ -95,6 +98,13 @@ struct garbageFrame
    struct ephemeron *ephemeralExternalAddressList;
    struct multifield *ListOfMultifields;
    struct multifield *LastMultifield;
+  };
+
+struct CLIPSBlock
+  {
+   struct garbageFrame newGarbageFrame;
+   struct garbageFrame *oldGarbageFrame;
+   DATA_OBJECT *result;
   };
 
 #define UTILITY_DATA 55
@@ -170,6 +180,8 @@ struct utilityData
    void                           CallCleanupFunctions(void *);
    void                           CallPeriodicTasks(void *);
    void                           CleanCurrentGarbageFrame(void *,struct dataObject *);
+   void                           CLIPSBlockStart(void *,struct CLIPSBlock *);
+   void                           CLIPSBlockEnd(void *,struct CLIPSBlock *,struct dataObject *);
 
 #endif /* _H_utility */
 

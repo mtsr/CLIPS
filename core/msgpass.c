@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*             OBJECT MESSAGE DISPATCH CODE            */
    /*******************************************************/
@@ -974,19 +974,16 @@ static bool PerformMessage(
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
-
+   struct CLIPSBlock gcBlock;
+   
    result->type = SYMBOL;
    result->value = EnvFalseSymbol(theEnv);
    EvaluationData(theEnv)->EvaluationError = false;
    if (EvaluationData(theEnv)->HaltExecution)
      return false;
 
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
-
+   CLIPSBlockStart(theEnv,&gcBlock);
+   
    oldce = ExecutingConstruct(theEnv);
    SetExecutingConstruct(theEnv,true);
    oldName = MessageHandlerData(theEnv)->CurrentMessageName;
@@ -1003,8 +1000,8 @@ static bool PerformMessage(
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
       MessageHandlerData(theEnv)->CurrentMessageName = oldName;
       
-      RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
-      CallPeriodicTasks(theEnv);      
+      CLIPSBlockEnd(theEnv,&gcBlock,result);
+      CallPeriodicTasks(theEnv);
       
       SetExecutingConstruct(theEnv,oldce);
       return false;
@@ -1056,7 +1053,7 @@ static bool PerformMessage(
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
       MessageHandlerData(theEnv)->CurrentMessageName = oldName;
          
-      RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+      CLIPSBlockEnd(theEnv,&gcBlock,result);
       CallPeriodicTasks(theEnv);
 
       SetExecutingConstruct(theEnv,oldce);
@@ -1152,7 +1149,7 @@ static bool PerformMessage(
    EvaluationData(theEnv)->CurrentEvaluationDepth--;
    MessageHandlerData(theEnv)->CurrentMessageName = oldName;
 
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CLIPSBlockEnd(theEnv,&gcBlock,result);
    CallPeriodicTasks(theEnv);
 
    SetExecutingConstruct(theEnv,oldce);

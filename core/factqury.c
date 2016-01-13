@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -526,7 +526,7 @@ void DelayedQueryDoForAllFacts(
    QUERY_TEMPLATE *qtemplates;
    unsigned rcnt;
    register unsigned i;
-   struct garbageFrame newGarbageFrame, *oldGarbageFrame;
+   struct CLIPSBlock gcBlock;
 
    result->type = SYMBOL;
    result->value = EnvFalseSymbol(theEnv);
@@ -547,10 +547,7 @@ void DelayedQueryDoForAllFacts(
    FactQueryData(theEnv)->AbortQuery = false;
    FactQueryData(theEnv)->QueryCore->action = GetFirstArgument()->nextArg;
 
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+   CLIPSBlockStart(theEnv,&gcBlock);
 
    while (FactQueryData(theEnv)->QueryCore->soln_set != NULL)
      {
@@ -571,7 +568,7 @@ void DelayedQueryDoForAllFacts(
       CallPeriodicTasks(theEnv);
      }
    
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CLIPSBlockEnd(theEnv,&gcBlock,result);
    CallPeriodicTasks(theEnv);
 
    ProcedureFunctionData(theEnv)->BreakFlag = false;
@@ -910,13 +907,9 @@ static bool TestForFirstFactInTemplate(
   {
    struct fact *theFact;
    DATA_OBJECT temp;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
-
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+   struct CLIPSBlock gcBlock;
+   
+   CLIPSBlockStart(theEnv,&gcBlock);
 
    theFact = templatePtr->factList;
    while (theFact != NULL)
@@ -954,7 +947,7 @@ static bool TestForFirstFactInTemplate(
         theFact = theFact->nextTemplateFact;
      }
      
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);
+   CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
 
    if (theFact != NULL)
@@ -1017,14 +1010,10 @@ static void TestEntireTemplate(
   {
    struct fact *theFact;
    DATA_OBJECT temp;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
-
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
-
+   struct CLIPSBlock gcBlock;
+   
+   CLIPSBlockStart(theEnv,&gcBlock);
+   
    theFact = templatePtr->factList;
    while (theFact != NULL)
      {
@@ -1078,7 +1067,7 @@ static void TestEntireTemplate(
       CallPeriodicTasks(theEnv);
      }
      
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame, oldGarbageFrame,NULL);
+   CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
   }
 

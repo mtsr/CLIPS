@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/13/16             */
    /*                                                     */
    /*             MULTIFIELD FUNCTIONS MODULE             */
    /*******************************************************/
@@ -1317,9 +1317,8 @@ static void MultifieldPrognDriver(
    DATA_OBJECT argval;
    long i, end; /* 6.04 Bug Fix */
    FIELD_VAR_STACK *tmpField;
-   struct garbageFrame newGarbageFrame;
-   struct garbageFrame *oldGarbageFrame;
-     
+   struct CLIPSBlock gcBlock;
+   
    tmpField = get_struct(theEnv,fieldVarStack);
    tmpField->type = SYMBOL;
    tmpField->value = EnvFalseSymbol(theEnv);
@@ -1334,10 +1333,7 @@ static void MultifieldPrognDriver(
       return;
      }
      
-   oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
-   memset(&newGarbageFrame,0,sizeof(struct garbageFrame));
-   newGarbageFrame.priorFrame = oldGarbageFrame;
-   UtilityData(theEnv)->CurrentGarbageFrame = &newGarbageFrame;
+   CLIPSBlockStart(theEnv,&gcBlock);
 
    end = GetDOEnd(argval);
    for (i = GetDOBegin(argval) ; i <= end ; i++)
@@ -1360,7 +1356,7 @@ static void MultifieldPrognDriver(
               }
             MultiFunctionData(theEnv)->FieldVarStack = tmpField->nxt;
             rtn_struct(theEnv,fieldVarStack,tmpField);
-            RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+            CLIPSBlockEnd(theEnv,&gcBlock,result);
             return;
            }
 
@@ -1381,7 +1377,7 @@ static void MultifieldPrognDriver(
    MultiFunctionData(theEnv)->FieldVarStack = tmpField->nxt;
    rtn_struct(theEnv,fieldVarStack,tmpField);
    
-   RestorePriorGarbageFrame(theEnv,&newGarbageFrame,oldGarbageFrame,result);
+   CLIPSBlockEnd(theEnv,&gcBlock,result);
    CallPeriodicTasks(theEnv);
   }
 
