@@ -58,21 +58,15 @@
 //*************************************************************/
 
 #ifndef _H_insfun
+
+#pragma once
+
 #define _H_insfun
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
-#ifndef _H_moduldef
 #include "moduldef.h"
-#endif
-#ifndef _H_object
 #include "object.h"
-#endif
-
-#ifndef _H_pattern
 #include "pattern.h"
-#endif
 
 typedef struct igarbage
   {

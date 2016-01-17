@@ -40,11 +40,11 @@
 
 #ifndef _H_strngfun
 
+#pragma once
+
 #define _H_strngfun
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
    bool                           EnvBuild(void *,const char *);
    bool                           EnvEval(void *,const char *,DATA_OBJECT_PTR);

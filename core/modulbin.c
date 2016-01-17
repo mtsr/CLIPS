@@ -22,21 +22,18 @@
 /*                                                           */
 /*************************************************************/
 
-#define _MODULBIN_SOURCE_
-
 #include "setup.h"
 
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE) && (! RUN_TIME)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
-#include "memalloc.h"
-#include "constrct.h"
-#include "moduldef.h"
 #include "bload.h"
 #include "bsave.h"
+#include "constrct.h"
 #include "envrnmnt.h"
+#include "memalloc.h"
+#include "moduldef.h"
 
 #include "modulbin.h"
 

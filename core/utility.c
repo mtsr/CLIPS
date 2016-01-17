@@ -56,15 +56,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _UTILITY_SOURCE_
-
 #include "setup.h"
 
 #include <ctype.h>
 #include <stdlib.h>
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "commline.h"

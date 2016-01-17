@@ -41,7 +41,6 @@
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM && (! RUN_TIME) && CONSTRUCT_COMPILER
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "conscomp.h"
 #include "envrnmnt.h"
@@ -50,7 +49,6 @@
 #include "pattern.h"
 #include "sysdep.h"
 
-#define _OBJRTCMP_SOURCE_
 #include "objrtcmp.h"
 
 /* =========================================

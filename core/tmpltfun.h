@@ -61,23 +61,15 @@
 
 #ifndef _H_tmpltfun
 
+#pragma once
+
 #define _H_tmpltfun
 
-#ifndef _H_symbol
-#include "symbol.h"
-#endif
-#ifndef _H_scanner
-#include "scanner.h"
-#endif
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
-#ifndef _H_factmngr
 #include "factmngr.h"
-#endif
-#ifndef _H_tmpltdef
+#include "scanner.h"
+#include "symbol.h"
 #include "tmpltdef.h"
-#endif
 
    bool                           UpdateModifyDuplicate(void *,struct expr *,const char *,void *);
    struct expr                   *ModifyParse(void *,struct expr *,const char *);

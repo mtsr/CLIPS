@@ -90,12 +90,9 @@
 /*                                                           */
 /*************************************************************/
 
-#define _SYSDEP_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include <stdlib.h>

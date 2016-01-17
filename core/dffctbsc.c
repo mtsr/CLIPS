@@ -44,29 +44,27 @@
 /*                                                           */
 /*************************************************************/
 
-#define _DFFCTBSC_SOURCE_
-
 #include "setup.h"
 
 #if DEFFACTS_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
-#include "envrnmnt.h"
 #include "argacces.h"
-#include "memalloc.h"
-#include "scanner.h"
-#include "router.h"
-#include "extnfunc.h"
 #include "constrct.h"
 #include "cstrccom.h"
-#include "factrhs.h"
-#include "tmpltdef.h"
 #include "cstrcpsr.h"
-#include "dffctpsr.h"
 #include "dffctdef.h"
+#include "dffctpsr.h"
+#include "envrnmnt.h"
+#include "extnfunc.h"
+#include "factrhs.h"
+#include "memalloc.h"
+#include "router.h"
+#include "scanner.h"
+#include "tmpltdef.h"
+
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
 #include "dffctbin.h"
 #endif

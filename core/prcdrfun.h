@@ -36,11 +36,11 @@
 
 #ifndef _H_prcdrfun
 
+#pragma once
+
 #define _H_prcdrfun
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
 typedef struct loopCounterStack
   {

@@ -36,33 +36,30 @@
 /*                                                           */
 /*************************************************************/
 
-#define _GLOBLPSR_SOURCE_
-
 #include "setup.h"
 
 #if DEFGLOBAL_CONSTRUCT
 
 #include <string.h>
 
-#include "pprint.h"
-#include "router.h"
-#include "memalloc.h"
-#include "scanner.h"
-#include "evaluatn.h"
-#include "exprnpsr.h"
-#include "constrct.h"
-#include "multifld.h"
-#include "watch.h"
-#include "modulutl.h"
-#include "modulpsr.h"
-#include "cstrcpsr.h"
-#include "globldef.h"
-#include "globlbsc.h"
-#include "envrnmnt.h"
-
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
 #include "bload.h"
 #endif
+#include "constrct.h"
+#include "cstrcpsr.h"
+#include "envrnmnt.h"
+#include "evaluatn.h"
+#include "exprnpsr.h"
+#include "globlbsc.h"
+#include "globldef.h"
+#include "memalloc.h"
+#include "modulpsr.h"
+#include "modulutl.h"
+#include "multifld.h"
+#include "pprint.h"
+#include "router.h"
+#include "scanner.h"
+#include "watch.h"
 
 #include "globlpsr.h"
 

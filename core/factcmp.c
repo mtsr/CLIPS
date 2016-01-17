@@ -26,8 +26,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FACTCMP_SOURCE_
-
 #include "setup.h"
 
 #if DEFRULE_CONSTRUCT && (! RUN_TIME) && DEFTEMPLATE_CONSTRUCT && CONSTRUCT_COMPILER
@@ -35,7 +33,6 @@
 #define FactPrefix() ArbitraryPrefix(FactData(theEnv)->FactCodeItem,0)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "factbld.h"
 #include "conscomp.h"

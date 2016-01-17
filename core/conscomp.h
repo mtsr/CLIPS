@@ -52,6 +52,9 @@
 /*************************************************************/
 
 #ifndef _H_conscomp
+
+#pragma once
+
 #define _H_conscomp
 
 #define ArbitraryPrefix(codeItem,i)    (codeItem)->arrayNames[(i)]
@@ -59,18 +62,12 @@
 #define ModulePrefix(codeItem)         (codeItem)->arrayNames[0]
 #define ConstructPrefix(codeItem)      (codeItem)->arrayNames[1]
 
-#ifndef _H_constrct
+#include <stdio.h>
+
 #include "constrct.h"
-#endif
-#ifndef _H_extnfunc
 #include "extnfunc.h"
-#endif
-#ifndef _H_symblcmp
 #include "symblcmp.h"
-#endif
-#ifndef _H_moduldef
 #include "moduldef.h"
-#endif
 
 #define CONSTRUCT_COMPILER_DATA 41
 
@@ -104,11 +101,6 @@ struct constructCompilerData
   };
 
 #define ConstructCompilerData(theEnv) ((struct constructCompilerData *) GetEnvironmentData(theEnv,CONSTRUCT_COMPILER_DATA))
-
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
-#include <stdio.h>
-#endif
 
 struct CodeGeneratorFile
  {

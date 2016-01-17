@@ -22,26 +22,23 @@
 /*                                                           */
 /*************************************************************/
 
-#define _CSTRNOPS_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 
 #if (! RUN_TIME)
 
 #include "constant.h"
-#include "envrnmnt.h"
-#include "memalloc.h"
-#include "router.h"
-#include "extnfunc.h"
-#include "scanner.h"
-#include "multifld.h"
 #include "constrnt.h"
 #include "cstrnchk.h"
 #include "cstrnutl.h"
+#include "envrnmnt.h"
+#include "extnfunc.h"
+#include "memalloc.h"
+#include "multifld.h"
+#include "router.h"
+#include "scanner.h"
 
 #include "cstrnops.h"
 

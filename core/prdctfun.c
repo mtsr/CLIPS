@@ -32,16 +32,13 @@
 /*                                                           */
 /*************************************************************/
 
-#define _PRDCTFUN_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "setup.h"
 
+#include "argacces.h"
 #include "envrnmnt.h"
 #include "exprnpsr.h"
-#include "argacces.h"
 #include "multifld.h"
 #include "router.h"
 

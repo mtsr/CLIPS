@@ -30,8 +30,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _CSTRNCMP_SOURCE_
-
 #include "setup.h"
 
 #if CONSTRUCT_COMPILER && (! RUN_TIME)

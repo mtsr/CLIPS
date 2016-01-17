@@ -40,13 +40,14 @@
 /*************************************************************/
 
 #ifndef _H_msgpass
+
+#pragma once
+
 #define _H_msgpass
 
 #define GetActiveInstance(theEnv) ((INSTANCE_TYPE *) GetNthMessageArgument(theEnv,0)->value)
 
-#ifndef _H_object
 #include "object.h"
-#endif
 
 typedef struct messageHandlerLink
   {

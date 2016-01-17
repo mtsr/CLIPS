@@ -80,8 +80,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _IOFUN_SOURCE_
-
 #include "setup.h"
 
 #if IO_FUNCTIONS
@@ -91,19 +89,18 @@
 #endif
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
-#include "envrnmnt.h"
-#include "router.h"
-#include "strngrtr.h"
-#include "filertr.h"
 #include "argacces.h"
-#include "extnfunc.h"
-#include "scanner.h"
-#include "constant.h"
-#include "memalloc.h"
 #include "commline.h"
+#include "constant.h"
+#include "envrnmnt.h"
+#include "extnfunc.h"
+#include "filertr.h"
+#include "memalloc.h"
+#include "router.h"
+#include "scanner.h"
+#include "strngrtr.h"
 #include "sysdep.h"
 #include "utility.h"
 

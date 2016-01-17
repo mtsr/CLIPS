@@ -35,6 +35,8 @@
 
 #ifndef _H_ruledlt
 
+#pragma once
+
 #define _H_ruledlt
 
    void                           ReturnDefrule(void *,void *);

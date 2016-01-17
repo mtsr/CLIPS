@@ -56,7 +56,6 @@
 #include "prntutil.h"
 #include "router.h"
 
-#define _OBJBIN_SOURCE_
 #include "objbin.h"
 
 /* =========================================

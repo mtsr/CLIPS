@@ -36,11 +36,12 @@
 /*************************************************************/
 
 #ifndef _H_dffctbsc
+
+#pragma once
+
 #define _H_dffctbsc
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
    void                           DeffactsBasicCommands(void *);
    void                           UndeffactsCommand(void *);

@@ -36,16 +36,13 @@
 
 #ifndef _H_pattern
 
+#pragma once
+
 #define _H_pattern
 
-#ifndef _STDIO_INCLUDED_
 #include <stdio.h>
-#define _STDIO_INCLUDED_
-#endif
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
 struct patternEntityRecord
   {

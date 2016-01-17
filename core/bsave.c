@@ -37,8 +37,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _BSAVE_SOURCE_
-
 #include "setup.h"
 
 #include "argacces.h"

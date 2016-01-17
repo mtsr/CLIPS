@@ -33,13 +33,14 @@
 /*************************************************************/
 
 #ifndef _H_insquery
+
+#pragma once
+
 #define _H_insquery
 
 #if INSTANCE_SET_QUERIES
 
-#ifndef _H_object
 #include "object.h"
-#endif
 
 typedef struct query_class
   {

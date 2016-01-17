@@ -45,17 +45,13 @@
 
 #ifndef _H_cstrcpsr
 
+#pragma once
+
 #define _H_cstrcpsr
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
-#ifndef _H_scanner
 #include "scanner.h"
-#endif
-#ifndef _H_constrct
 #include "constrct.h"
-#endif
 
    int                            EnvLoad(void *,const char *);
    int                            LoadConstructsFromLogicalName(void *,const char *);

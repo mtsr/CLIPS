@@ -42,10 +42,7 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FILERTR_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "setup.h"

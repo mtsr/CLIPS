@@ -45,29 +45,24 @@
 /*                                                           */
 /*************************************************************/
 
-#define _EXPRNPSR_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#include "constant.h"
-#include "envrnmnt.h"
-#include "router.h"
-#include "strngrtr.h"
-#include "scanner.h"
-#include "memalloc.h"
 #include "argacces.h"
-#include "prntutil.h"
+#include "constant.h"
 #include "cstrnchk.h"
-#include "extnfunc.h"
-#include "exprnpsr.h"
+#include "envrnmnt.h"
+#include "memalloc.h"
 #include "modulutl.h"
 #include "prcdrfun.h"
+#include "prntutil.h"
+#include "router.h"
+#include "scanner.h"
+#include "strngrtr.h"
 
 #if DEFRULE_CONSTRUCT
 #include "network.h"
@@ -80,6 +75,8 @@
 #if DEFFUNCTION_CONSTRUCT
 #include "dffnxfun.h"
 #endif
+
+#include "exprnpsr.h"
 
 #if (! RUN_TIME)
 

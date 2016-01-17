@@ -52,7 +52,6 @@
 #include "classcom.h"
 #include "envrnmnt.h"
 #include "exprnpsr.h"
-#include "extnfunc.h"
 #include "insquery.h"
 #include "prcdrpsr.h"
 #include "prntutil.h"
@@ -60,7 +59,6 @@
 #include "scanner.h"
 #include "strngrtr.h"
 
-#define _INSQYPSR_SOURCE_
 #include "insqypsr.h"
 
 /* =========================================

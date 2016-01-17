@@ -35,13 +35,14 @@
 /*************************************************************/
 
 #ifndef _H_factqpsr
+
+#pragma once
+
 #define _H_factqpsr
 
 #if FACT_SET_QUERIES && (! RUN_TIME)
 
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
 
    EXPRESSION                    *FactParseQueryNoAction(void *,EXPRESSION *,const char *);
    EXPRESSION                    *FactParseQueryAction(void *,EXPRESSION *,const char *);

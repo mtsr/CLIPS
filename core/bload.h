@@ -32,26 +32,17 @@
 /*************************************************************/
 
 #ifndef _H_bload
+
+#pragma once
+
 #define _H_bload
 
-#ifndef _H_utility
 #include "utility.h"
-#endif
-#ifndef _H_extnfunc
 #include "extnfunc.h"
-#endif
-#ifndef _H_exprnbin
 #include "exprnbin.h"
-#endif
-#ifndef _H_symbol
 #include "symbol.h"
-#endif
-#ifndef _H_sysdep
 #include "sysdep.h"
-#endif
-#ifndef _H_symblbin
 #include "symblbin.h"
-#endif
 
 #define BLOAD_DATA 38
 

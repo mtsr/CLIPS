@@ -39,19 +39,16 @@
 /*                                                           */
 /*************************************************************/
 
-#define _DFFCTDEF_SOURCE_
-
 #include "setup.h"
 
 #if DEFFACTS_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
-#include "memalloc.h"
-#include "dffctpsr.h"
 #include "dffctbsc.h"
+#include "dffctpsr.h"
 #include "envrnmnt.h"
+#include "memalloc.h"
 
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
 #include "bload.h"

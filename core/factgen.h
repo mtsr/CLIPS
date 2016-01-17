@@ -28,11 +28,11 @@
 
 #ifndef _H_factgen
 
+#pragma once
+
 #define _H_factgen
 
-#ifndef _H_reorder
 #include "reorder.h"
-#endif
 
 /**********************************************************/
 /* factGetVarPN1Call: This structure is used to store the */

@@ -75,22 +75,19 @@
 /*************************************************************/
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT
 
-#define _FACTFUN_SOURCE_
-
-#include "extnfunc.h"
-#include "envrnmnt.h"
 #include "argacces.h"
+#include "envrnmnt.h"
+#include "extnfunc.h"
 #include "prntutil.h"
-#include "tmpltutl.h"
 #include "router.h"
 #include "sysdep.h"
+#include "tmpltutl.h"
 
 #include "factfun.h"
 

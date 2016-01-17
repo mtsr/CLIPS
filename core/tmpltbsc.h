@@ -44,11 +44,12 @@
 /*************************************************************/
 
 #ifndef _H_tmpltbsc
+
+#pragma once
+
 #define _H_tmpltbsc
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
    void                           DeftemplateBasicCommands(void *);
    void                           UndeftemplateCommand(void *);

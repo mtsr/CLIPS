@@ -23,12 +23,12 @@
 /*************************************************************/
 
 #ifndef _H_cstrccmp
+
+#pragma once
+
 #define _H_cstrccmp
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
 
    void                           MarkConstructHeaders(int);
 

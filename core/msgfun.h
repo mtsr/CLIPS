@@ -38,6 +38,9 @@
 /*************************************************************/
 
 #ifndef _H_msgfun
+
+#pragma once
+
 #define _H_msgfun
 
 typedef struct handlerSlotReference
@@ -46,10 +49,8 @@ typedef struct handlerSlotReference
    long slotID;
   } HANDLER_SLOT_REFERENCE;
 
-#ifndef _H_object
-#include "object.h"
-#endif
 #include "msgpass.h"
+#include "object.h"
 
 #define BEGIN_TRACE ">>"
 #define END_TRACE   "<<"

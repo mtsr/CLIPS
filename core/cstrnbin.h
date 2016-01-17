@@ -24,19 +24,15 @@
 /*************************************************************/
 
 #ifndef _H_cstrnbin
+
+#pragma once
+
 #define _H_cstrnbin
 
-#ifndef _H_evaluatn
-#include "evaluatn.h"
-#endif
-#ifndef _H_constrnt
-#include "constrnt.h"
-#endif
-
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
+
+#include "evaluatn.h"
+#include "constrnt.h"
 
 #define ConstraintIndex(theConstraint) (((! EnvGetDynamicConstraintChecking(theEnv)) || (theConstraint == NULL)) ? -1L : ((long) theConstraint->bsaveIndex))
 #define ConstraintPointer(i) (((i) == -1L) ? NULL : (CONSTRAINT_RECORD *) &ConstraintData(theEnv)->ConstraintArray[i])

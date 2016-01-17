@@ -42,19 +42,16 @@
 
 #if DEFGENERIC_CONSTRUCT && CONSTRUCT_COMPILER && (! RUN_TIME)
 
+#include "conscomp.h"
+#include "envrnmnt.h"
+#include "genrccom.h"
 #if DEFRULE_CONSTRUCT
 #include "network.h"
 #endif
-
-#include "genrccom.h"
-#include "conscomp.h"
-#include "envrnmnt.h"
-
 #if OBJECT_SYSTEM
 #include "objcmp.h"
 #endif
 
-#define _GENRCCMP_SOURCE_
 #include "genrccmp.h"
 
 /* =========================================

@@ -25,14 +25,14 @@
 /*************************************************************/
 
 #ifndef _H_dffnxcmp
+
+#pragma once
+
 #define _H_dffnxcmp
 
 #if DEFFUNCTION_CONSTRUCT && CONSTRUCT_COMPILER && (! RUN_TIME)
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
 
 #include "dffnxfun.h"
 

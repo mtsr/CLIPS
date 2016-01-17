@@ -30,6 +30,8 @@
 
 #ifndef _H_prdctfun
 
+#pragma once
+
 #define _H_prdctfun
 
    void                           PredicateFunctionDefinitions(void *);

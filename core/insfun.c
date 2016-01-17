@@ -80,6 +80,10 @@
 #include "classcom.h"
 #include "classfun.h"
 #include "cstrnchk.h"
+#if DEFRULE_CONSTRUCT
+#include "drive.h"
+#include "objrtmch.h"
+#endif
 #include "engine.h"
 #include "envrnmnt.h"
 #include "inscom.h"
@@ -92,12 +96,6 @@
 #include "router.h"
 #include "utility.h"
 
-#if DEFRULE_CONSTRUCT
-#include "drive.h"
-#include "objrtmch.h"
-#endif
-
-#define _INSFUN_SOURCE_
 #include "insfun.h"
 
 /* =========================================

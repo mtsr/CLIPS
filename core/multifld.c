@@ -45,24 +45,21 @@
 /*                                                           */
 /*************************************************************/
 
-#define _MULTIFLD_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "setup.h"
 
 #include "constant.h"
-#include "memalloc.h"
 #include "envrnmnt.h"
 #include "evaluatn.h"
+#include "memalloc.h"
+#if OBJECT_SYSTEM
+#include "object.h"
+#endif
 #include "scanner.h"
 #include "router.h"
 #include "strngrtr.h"
 #include "utility.h"
-#if OBJECT_SYSTEM
-#include "object.h"
-#endif
 
 #include "multifld.h"
 

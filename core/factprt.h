@@ -31,6 +31,8 @@
 
 #ifndef _H_factprt
 
+#pragma once
+
 #define _H_factprt
 
    void                           PrintFactJNCompVars1(void *,const char *,void *);

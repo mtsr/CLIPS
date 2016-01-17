@@ -52,15 +52,13 @@
 #include "classcom.h"
 #include "classfun.h"
 #endif
-
-#include "envrnmnt.h"
-#include "memalloc.h"
 #include "cstrnutl.h"
+#include "envrnmnt.h"
 #include "extnfunc.h"
 #include "genrcpsr.h"
+#include "memalloc.h"
 #include "prccode.h"
 
-#define _IMMTHPSR_SOURCE_
 #include "immthpsr.h"
 
 /* =========================================

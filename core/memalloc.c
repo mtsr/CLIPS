@@ -42,10 +42,7 @@
 /*                                                           */
 /*************************************************************/
 
-#define _MEMORY_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "setup.h"
 

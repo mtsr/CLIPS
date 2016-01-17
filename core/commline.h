@@ -56,6 +56,8 @@
 
 #ifndef _H_commline
 
+#pragma once
+
 #define _H_commline
 
 #define COMMANDLINE_DATA 40

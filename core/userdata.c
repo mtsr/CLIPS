@@ -17,8 +17,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _USERDATA_SOURCE_
-
 #include <stdlib.h>
 
 #include "setup.h"

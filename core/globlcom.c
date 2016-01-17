@@ -32,19 +32,16 @@
 /*                                                           */
 /*************************************************************/
 
-#define _GLOBLCOM_SOURCE_
-
 #include "setup.h"
 
 #if DEFGLOBAL_CONSTRUCT
 
-#include "extnfunc.h"
 #include "argacces.h"
+#include "envrnmnt.h"
+#include "extnfunc.h"
+#include "globldef.h"
 #include "prntutil.h"
 #include "router.h"
-#include "envrnmnt.h"
-
-#include "globldef.h"
 
 #include "globlcom.h"
 

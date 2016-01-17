@@ -38,14 +38,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _RULECMP_SOURCE_
-
 #include "setup.h"
 
 #if DEFRULE_CONSTRUCT && (! RUN_TIME) && CONSTRUCT_COMPILER
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "envrnmnt.h"

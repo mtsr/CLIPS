@@ -23,11 +23,11 @@
 
 #ifndef _H_modulbin
 
+#pragma once
+
 #define _H_modulbin
 
-#ifndef _H_moduldef
 #include "moduldef.h"
-#endif
 
 struct bsaveDefmodule
   {

@@ -67,9 +67,9 @@
 #include "classfun.h"
 #include "engine.h"
 #include "envrnmnt.h"
-#include "memalloc.h"
 #include "extnfunc.h"
 #include "insfun.h"
+#include "memalloc.h"
 #include "modulutl.h"
 #include "msgcom.h"
 #include "msgfun.h"
@@ -78,7 +78,6 @@
 #include "sysdep.h"
 #include "utility.h"
 
-#define _INSMNGR_SOURCE_
 #include "insmngr.h"
 
 #include "inscom.h"

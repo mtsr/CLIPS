@@ -61,12 +61,9 @@
 /**************************************************************************/
 /**************************************************************************/
 
-#define _TEXTPRO_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <ctype.h>
 #include <string.h>
 

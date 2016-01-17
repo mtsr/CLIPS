@@ -28,26 +28,23 @@
 /*                                                           */
 /*************************************************************/
 
-#define _TMPLTRHS_SOURCE_
-
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
+#include "default.h"
+#include "extnfunc.h"
+#include "factrhs.h"
 #include "memalloc.h"
+#include "modulutl.h"
 #include "prntutil.h"
 #include "router.h"
-#include "tmpltfun.h"
 #include "tmpltdef.h"
-#include "factrhs.h"
-#include "extnfunc.h"
-#include "modulutl.h"
-#include "default.h"
-#include "tmpltutl.h"
+#include "tmpltfun.h"
 #include "tmpltlhs.h"
+#include "tmpltutl.h"
 
 #include "tmpltrhs.h"
 

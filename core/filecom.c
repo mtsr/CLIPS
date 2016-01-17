@@ -52,18 +52,18 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FILECOM_SOURCE_
-
 #include <stdio.h>
-
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "setup.h"
 
 #include "argacces.h"
-#include "constrct.h"
+#if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
+#include "bload.h"
+#include "bsave.h"
+#endif
 #include "commline.h"
+#include "constrct.h"
 #include "cstrcpsr.h"
 #include "envrnmnt.h"
 #include "extnfunc.h"
@@ -75,11 +75,6 @@
 #include "utility.h"
 
 #include "filecom.h"
-
-#if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
-#include "bsave.h"
-#include "bload.h"
-#endif
 
 /***************/
 /* STRUCTURES  */

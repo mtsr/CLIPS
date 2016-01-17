@@ -41,11 +41,12 @@
 /*************************************************************/
 
 #ifndef _H_globlbsc
+
+#pragma once
+
 #define _H_globlbsc
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
    void                           DefglobalBasicCommands(void *);
    void                           UndefglobalCommand(void *);

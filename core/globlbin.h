@@ -25,6 +25,8 @@
 
 #ifndef _H_globlbin
 
+#pragma once
+
 #define _H_globlbin
 
 #include "modulbin.h"

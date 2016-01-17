@@ -22,21 +22,18 @@
 /*                                                           */
 /*************************************************************/
 
-#define _DFFCTBIN_SOURCE_
-
 #include "setup.h"
 
 #if DEFFACTS_CONSTRUCT && (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE) && (! RUN_TIME)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
-#include "memalloc.h"
-#include "dffctdef.h"
-#include "moduldef.h"
 #include "bload.h"
 #include "bsave.h"
+#include "dffctdef.h"
 #include "envrnmnt.h"
+#include "memalloc.h"
+#include "moduldef.h"
 
 #include "dffctbin.h"
 

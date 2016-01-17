@@ -47,14 +47,14 @@
 
 #ifndef _H_multifld
 
+#pragma once
+
 #define _H_multifld
 
 struct field;
 struct multifield;
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
 struct field
   {

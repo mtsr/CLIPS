@@ -39,11 +39,12 @@
 /*************************************************************/
 
 #ifndef _H_classfun
+
+#pragma once
+
 #define _H_classfun
 
-#ifndef _H_object
 #include "object.h"
-#endif
 
 #define TestTraversalID(traversalRecord,id) TestBitMap(traversalRecord,id)
 #define SetTraversalID(traversalRecord,id) SetBitMap(traversalRecord,id)
@@ -100,16 +101,6 @@ SLOT_NAME *FindIDSlotNameHash(void *,int);
 int GetTraversalID(void *);
 void ReleaseTraversalID(void *);
 unsigned HashClass(SYMBOL_HN *);
-
-#ifndef _CLASSFUN_SOURCE_
-
-#if DEFRULE_CONSTRUCT
-extern SYMBOL_HN *INITIAL_OBJECT_SYMBOL;
-#endif
-#if DEBUGGING_FUNCTIONS
-extern unsigned WatchInstances,WatchSlots;
-#endif
-#endif
 
 #define DEFCLASS_DATA 21
 

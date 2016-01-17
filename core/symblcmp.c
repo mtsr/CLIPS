@@ -34,27 +34,24 @@
 /*                                                           */
 /*************************************************************/
 
-#define _SYMBLCMP_SOURCE_
-
 #include "setup.h"
 
 #if CONSTRUCT_COMPILER && (! RUN_TIME)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
-#include "envrnmnt.h"
-#include "symbol.h"
-#include "memalloc.h"
-#include "constant.h"
-#include "exprnpsr.h"
-#include "cstrccom.h"
-#include "constrct.h"
 #include "argacces.h"
-#include "cstrncmp.h"
-#include "router.h"
+#include "constant.h"
 #include "conscomp.h"
+#include "constrct.h"
+#include "cstrncmp.h"
+#include "cstrccom.h"
+#include "envrnmnt.h"
+#include "exprnpsr.h"
+#include "memalloc.h"
+#include "router.h"
+#include "symbol.h"
 #include "sysdep.h"
 #include "utility.h"
 

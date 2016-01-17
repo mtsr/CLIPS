@@ -41,6 +41,8 @@
 
 #ifndef _H_proflfun
 
+#pragma once
+
 #define _H_proflfun
 
 #include "userdata.h"

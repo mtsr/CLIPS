@@ -29,6 +29,9 @@
 /*************************************************************/
 
 #ifndef _H_dffctpsr
+
+#pragma once
+
 #define _H_dffctpsr
 
    bool                           ParseDeffacts(void *,const char *);

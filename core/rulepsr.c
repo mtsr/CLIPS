@@ -43,14 +43,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _RULEPSR_SOURCE_
-
 #include "setup.h"
 
 #if DEFRULE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "analysis.h"

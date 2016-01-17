@@ -83,13 +83,12 @@
 /*************************************************************/
 
 #ifndef _H_sysdep
+
+#pragma once
+
 #define _H_sysdep
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
-
 #include <setjmp.h>
 
    void                        SetRedrawFunction(void *,void (*)(void *));

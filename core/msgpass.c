@@ -58,35 +58,30 @@
 
 #if OBJECT_SYSTEM
 
-#ifndef _STDIO_INCLUDED_
 #include <stdio.h>
-#define _STDIO_INCLUDED_
-#endif
 #include <stdlib.h>
 
 #include "argacces.h"
 #include "classcom.h"
 #include "classfun.h"
-#include "memalloc.h"
+#include "commline.h"
 #include "constrct.h"
 #include "envrnmnt.h"
 #include "exprnpsr.h"
+#include "inscom.h"
 #include "insfun.h"
+#include "memalloc.h"
 #include "msgcom.h"
 #include "msgfun.h"
 #include "multifld.h"
-#include "prcdrfun.h"
 #include "prccode.h"
+#include "prcdrfun.h"
 #include "proflfun.h"
 #include "router.h"
 #include "strngfun.h"
 #include "utility.h"
-#include "commline.h"
 
-#define _MSGPASS_SOURCE_
 #include "msgpass.h"
-
-#include "inscom.h"
 
 /* =========================================
    *****************************************

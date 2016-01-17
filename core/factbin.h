@@ -24,6 +24,8 @@
 
 #ifndef _H_factbin
 
+#pragma once
+
 #define _H_factbin
 
 #include "factbld.h"

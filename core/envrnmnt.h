@@ -47,13 +47,14 @@
 /*************************************************************/
 
 #ifndef _H_envrnmnt
+
+#pragma once
+
 #define _H_envrnmnt
 
 #include <stdbool.h>
 
-#ifndef _H_symbol
 #include "symbol.h"
-#endif
 
 #define USER_ENVIRONMENT_DATA 70
 #define MAXIMUM_ENVIRONMENT_POSITIONS 100

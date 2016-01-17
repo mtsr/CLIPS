@@ -77,7 +77,6 @@
 #include "strngrtr.h"
 #include "sysdep.h"
 
-#define _CLASSEXM_SOURCE_
 #include "classexm.h"
 
 /* =========================================

@@ -52,7 +52,6 @@
 #include "objrtfnx.h"
 #include "sysdep.h"
 
-#define _OBJCMP_SOURCE_
 #include "objcmp.h"
 
 /* =========================================

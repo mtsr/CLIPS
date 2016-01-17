@@ -36,38 +36,34 @@
 /*                                                           */
 /*************************************************************/
 
-#define _TMPLTPSR_SOURCE_
-
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
-#include "constant.h"
-#include "memalloc.h"
-#include "symbol.h"
-#include "scanner.h"
-#include "exprnpsr.h"
-#include "router.h"
-#include "constrct.h"
-#include "envrnmnt.h"
-#include "factmngr.h"
-#include "cstrnchk.h"
-#include "cstrnpsr.h"
-#include "cstrcpsr.h"
 #if BLOAD || BLOAD_AND_BSAVE
 #include "bload.h"
 #endif
-#include "default.h"
-#include "pattern.h"
-#include "watch.h"
+#include "constant.h"
+#include "constrct.h"
+#include "cstrcpsr.h"
+#include "cstrnchk.h"
+#include "cstrnpsr.h"
 #include "cstrnutl.h"
-
-#include "tmpltdef.h"
+#include "default.h"
+#include "envrnmnt.h"
+#include "exprnpsr.h"
+#include "factmngr.h"
+#include "memalloc.h"
+#include "pattern.h"
+#include "router.h"
+#include "scanner.h"
+#include "symbol.h"
 #include "tmpltbsc.h"
+#include "tmpltdef.h"
+#include "watch.h"
 
 #include "tmpltpsr.h"
 

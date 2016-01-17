@@ -26,11 +26,13 @@
 /*                                                           */
 /*************************************************************/
 
-#if (! RUN_TIME)
-
 #ifndef _H_tmpltbin
 
+#pragma once
+
 #define _H_tmpltbin
+
+#if (! RUN_TIME)
 
 struct bsaveTemplateSlot
   {
@@ -89,9 +91,9 @@ struct deftemplateBinaryData
    void                           DeftemplateBinarySetup(void *);
    void                          *BloadDeftemplateModuleReference(void *,int);
 
-#endif /* _H_tmpltbin */
-
 #endif /* (! RUN_TIME) */
+
+#endif /* _H_tmpltbin */
 
 
 

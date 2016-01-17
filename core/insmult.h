@@ -28,11 +28,12 @@
 /*************************************************************/
 
 #ifndef _H_insmult
+
+#pragma once
+
 #define _H_insmult
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
 #if (! RUN_TIME)
    void                           SetupInstanceMultifieldCommands(void *);

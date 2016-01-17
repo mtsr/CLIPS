@@ -37,6 +37,8 @@
 
 #ifndef _H_emathfun
 
+#pragma once
+
 #define _H_emathfun
 
    void                           ExtendedMathFunctionDefinitions(void *theEnv);

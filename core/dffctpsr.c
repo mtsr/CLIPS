@@ -32,22 +32,21 @@
 /*                                                           */
 /*************************************************************/
 
-#define _DFFCTPSR_SOURCE_
-
 #include "setup.h"
 
 #if DEFFACTS_CONSTRUCT
 
-#include "envrnmnt.h"
-#include "memalloc.h"
-#include "router.h"
-#include "cstrcpsr.h"
-#include "factrhs.h"
 #if BLOAD || BLOAD_AND_BSAVE
 #include "bload.h"
 #endif
-#include "dffctdef.h"
+
+#include "cstrcpsr.h"
 #include "dffctbsc.h"
+#include "dffctdef.h"
+#include "envrnmnt.h"
+#include "factrhs.h"
+#include "memalloc.h"
+#include "router.h"
 
 #include "dffctpsr.h"
 

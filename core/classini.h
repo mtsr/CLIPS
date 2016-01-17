@@ -40,14 +40,13 @@
 /*************************************************************/
 
 #ifndef _H_classini
+
+#pragma once
+
 #define _H_classini
 
-#ifndef _H_constrct
 #include "constrct.h"
-#endif
-#ifndef _H_object
 #include "object.h"
-#endif
 
 #if OBJECT_SYSTEM
 

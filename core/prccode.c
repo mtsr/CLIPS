@@ -58,10 +58,7 @@
    ***************************************** */
 #include "setup.h"
 
-#ifndef _STDIO_INCLUDED_
 #include <stdio.h>
-#define _STDIO_INCLUDED_
-#endif
 
 #include <stdlib.h>
 #include <ctype.h>
@@ -81,7 +78,6 @@
 #include "router.h"
 #include "utility.h"
 
-#define _PRCCODE_SOURCE_
 #include "prccode.h"
 
 /* =========================================

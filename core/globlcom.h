@@ -33,6 +33,9 @@
 /*************************************************************/
 
 #ifndef _H_globlcom
+
+#pragma once
+
 #define _H_globlcom
 
    void                           DefglobalCommandDefinitions(void *);

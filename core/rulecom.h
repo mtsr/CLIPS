@@ -50,11 +50,12 @@
 /*************************************************************/
 
 #ifndef _H_rulecom
+
+#pragma once
+
 #define _H_rulecom
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
 struct joinInformation
   {

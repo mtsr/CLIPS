@@ -40,8 +40,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _PROFLFUN_SOURCE_
-
 #include "setup.h"
 
 #if PROFILING_FUNCTIONS

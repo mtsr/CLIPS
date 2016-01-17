@@ -46,25 +46,23 @@
 /*                                                           */
 /*************************************************************/
 
-#define _RULEBSC_SOURCE_
-
 #include "setup.h"
 
 #if DEFRULE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "argacces.h"
 #include "constrct.h"
-#include "envrnmnt.h"
-#include "router.h"
-#include "watch.h"
-#include "extnfunc.h"
-#include "ruledef.h"
-#include "engine.h"
 #include "drive.h"
+#include "engine.h"
+#include "envrnmnt.h"
+#include "extnfunc.h"
 #include "reteutil.h"
+#include "router.h"
+#include "ruledef.h"
+#include "watch.h"
+
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
 #include "rulebin.h"
 #endif

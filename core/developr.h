@@ -30,6 +30,9 @@
 /*************************************************************/
 
 #ifndef _H_developr
+
+#pragma once
+
 #define _H_developr
 
    void                           DeveloperCommands(void *);

@@ -31,12 +31,12 @@
 /*************************************************************/
 
 #ifndef _H_strngrtr
+
+#pragma once
+
 #define _H_strngrtr
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
 
 #define STRING_ROUTER_DATA 48
 
@@ -45,7 +45,6 @@ struct stringRouter
    const char *name;
    const char *readString;
    char *writeString;
-   //char *str;
    size_t currentPosition;
    size_t maximumPosition;
    int readWriteType;

@@ -47,16 +47,14 @@
 /*************************************************************/
 
 #ifndef _H_prntutil
+
+#pragma once
+
 #define _H_prntutil
 
-#ifndef _H_moduldef
 #include "moduldef.h"
-#endif
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
 
 #define PRINT_UTILITY_DATA 53
 

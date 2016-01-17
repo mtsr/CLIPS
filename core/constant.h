@@ -30,6 +30,8 @@
 
 #ifndef _H_constant
 
+#pragma once
+
 #define _H_constant
 
 #include <stdbool.h>

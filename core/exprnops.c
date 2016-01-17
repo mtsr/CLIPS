@@ -27,24 +27,21 @@
 /*                                                           */
 /*************************************************************/
 
-#define _EXPRNOPS_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
-#include "memalloc.h"
-#include "envrnmnt.h"
-#include "router.h"
-#include "extnfunc.h"
 #include "cstrnchk.h"
-#include "prntutil.h"
-#include "cstrnutl.h"
 #include "cstrnops.h"
+#include "cstrnutl.h"
+#include "envrnmnt.h"
+#include "extnfunc.h"
+#include "memalloc.h"
+#include "prntutil.h"
+#include "router.h"
 
 #include "exprnops.h"
 

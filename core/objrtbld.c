@@ -88,21 +88,20 @@
 #include "reorder.h"
 #include "router.h"
 
-#if CONSTRUCT_COMPILER && (! RUN_TIME)
-#include "objrtcmp.h"
-#endif
-
 #if BLOAD_AND_BSAVE || BLOAD || BLOAD_ONLY
 #include "objrtbin.h"
 #endif
 
-#define _OBJRTBLD_SOURCE_
+#if CONSTRUCT_COMPILER && (! RUN_TIME)
+#include "objrtcmp.h"
+#endif
+
 #include "objrtbld.h"
 
 #if ! DEFINSTANCES_CONSTRUCT
-#include "extnfunc.h"
 #include "classfun.h"
 #include "classcom.h"
+#include "extnfunc.h"
 #endif
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)

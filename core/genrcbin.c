@@ -33,25 +33,20 @@
 
 #if DEFGENERIC_CONSTRUCT && (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)
 
-#include "constant.h"
-#include "envrnmnt.h"
-#include "memalloc.h"
 #include "bload.h"
 #include "bsave.h"
-
+#include "constant.h"
 #include "cstrcbin.h"
-
+#include "envrnmnt.h"
+#include "genrccom.h"
+#include "memalloc.h"
+#include "modulbin.h"
 #if OBJECT_SYSTEM
 #include "objbin.h"
 #endif
-
-#include "genrccom.h"
-#include "modulbin.h"
-
-#define _GENRCBIN_SOURCE_
-#include "genrcbin.h"
-
 #include "router.h"
+
+#include "genrcbin.h"
 
 /* =========================================
    *****************************************

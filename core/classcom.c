@@ -65,7 +65,6 @@
 #include "msgcom.h"
 #include "router.h"
 
-#define _CLASSCOM_SOURCE_
 #include "classcom.h"
 
 /* =========================================

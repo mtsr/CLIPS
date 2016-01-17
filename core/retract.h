@@ -35,14 +35,13 @@
 /*************************************************************/
 
 #ifndef _H_retract
+
+#pragma once
+
 #define _H_retract
 
-#ifndef _H_match
 #include "match.h"
-#endif
-#ifndef _H_network
 #include "network.h"
-#endif
 
 struct rdriveinfo
   {

@@ -25,6 +25,8 @@
 
 #ifndef _H_rulecstr
 
+#pragma once
+
 #define _H_rulecstr
 
    struct lhsParseNode           *GetExpressionVarConstraints(void *,struct lhsParseNode *);

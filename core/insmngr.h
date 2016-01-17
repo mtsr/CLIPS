@@ -37,11 +37,12 @@
 /*************************************************************/
 
 #ifndef _H_insmngr
+
+#pragma once
+
 #define _H_insmngr
 
-#ifndef _H_object
 #include "object.h"
-#endif
 
    void                           InitializeInstanceCommand(void *,DATA_OBJECT *);
    void                           MakeInstanceCommand(void *,DATA_OBJECT *);

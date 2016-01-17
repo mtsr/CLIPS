@@ -34,10 +34,9 @@
 #if DEFINSTANCES_CONSTRUCT && CONSTRUCT_COMPILER && (! RUN_TIME)
 
 #include "conscomp.h"
-#include "envrnmnt.h"
 #include "defins.h"
+#include "envrnmnt.h"
 
-#define _DFINSCMP_SOURCE_
 #include "dfinscmp.h"
 
 /* =========================================

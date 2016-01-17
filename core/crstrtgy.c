@@ -41,23 +41,20 @@
 /*                                                           */
 /*************************************************************/
 
-#define _CRSTRTGY_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "setup.h"
 
 #if DEFRULE_CONSTRUCT
 
-#include "constant.h"
-#include "pattern.h"
-#include "reteutil.h"
-#include "argacces.h"
 #include "agenda.h"
+#include "argacces.h"
+#include "constant.h"
 #include "envrnmnt.h"
 #include "memalloc.h"
+#include "pattern.h"
+#include "reteutil.h"
 
 #include "crstrtgy.h"
 

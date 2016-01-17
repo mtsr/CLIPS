@@ -43,11 +43,12 @@
 /*************************************************************/
 
 #ifndef _H_factcom
+
+#pragma once
+
 #define _H_factcom
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
    void                           FactCommandDefinitions(void *);
    void                           AssertCommand(void *,DATA_OBJECT_PTR);

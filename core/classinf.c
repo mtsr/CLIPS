@@ -53,11 +53,7 @@
 
 #if OBJECT_SYSTEM
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
-
 #include <string.h>
 
 #include "argacces.h"
@@ -73,7 +69,6 @@
 #include "multifld.h"
 #include "prntutil.h"
 
-#define _CLASSINF_SOURCE_
 #include "classinf.h"
 
 /* =========================================

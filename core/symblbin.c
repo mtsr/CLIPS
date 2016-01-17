@@ -24,8 +24,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _BSAVE_SOURCE_
-
 #include "setup.h"
 
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE || BLOAD_INSTANCES || BSAVE_INSTANCES

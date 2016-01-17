@@ -62,23 +62,18 @@
 #include "drive.h"
 #include "engine.h"
 #include "envrnmnt.h"
-#include "lgcldpnd.h"
-#include "multifld.h"
-
 #if (! RUN_TIME) && (! BLOAD_ONLY)
 #include "incrrset.h"
 #endif
-
+#include "lgcldpnd.h"
+#include "multifld.h"
+#include "objrtfnx.h"
+#include "objrtmch.h"
 #include "reteutil.h"
 #include "ruledlt.h"
 #include "reorder.h"
 #include "retract.h"
 #include "router.h"
-
-#include "objrtfnx.h"
-
-#define _OBJRTMCH_SOURCE_
-#include "objrtmch.h"
 
 #include "insmngr.h"
 

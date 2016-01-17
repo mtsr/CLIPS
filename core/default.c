@@ -32,26 +32,23 @@
 /*                                                           */
 /*************************************************************/
 
-#define _DEFAULT_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 #include <string.h>
 
 #include "constant.h"
 #include "constrnt.h"
 #include "cstrnchk.h"
-#include "multifld.h"
-#include "inscom.h"
-#include "exprnpsr.h"
-#include "scanner.h"
-#include "router.h"
-#include "factmngr.h"
 #include "cstrnutl.h"
 #include "envrnmnt.h"
+#include "exprnpsr.h"
+#include "factmngr.h"
+#include "inscom.h"
+#include "multifld.h"
+#include "router.h"
+#include "scanner.h"
 
 #include "default.h"
 

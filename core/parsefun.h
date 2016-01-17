@@ -38,11 +38,11 @@
 
 #ifndef _H_parsefun
 
+#pragma once
+
 #define _H_parsefun
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
    void                           ParseFunctionDefinitions(void *);
    void                           CheckSyntaxFunction(void *,DATA_OBJECT *);

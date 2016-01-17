@@ -41,22 +41,20 @@
 /*                                                           */
 /*************************************************************/
 
-#define _WATCH_SOURCE_
-
 #include "setup.h"
 
 #if DEBUGGING_FUNCTIONS
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
+#include "argacces.h"
 #include "constant.h"
 #include "envrnmnt.h"
+#include "extnfunc.h"
 #include "memalloc.h"
 #include "router.h"
-#include "argacces.h"
-#include "extnfunc.h"
+
 #include "watch.h"
 
 /***************************************/

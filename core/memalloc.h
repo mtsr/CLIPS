@@ -45,9 +45,11 @@
 
 #ifndef _H_memalloc
 
-#include <string.h>
+#pragma once
 
 #define _H_memalloc
+
+#include <string.h>
 
 struct chunkInfo;
 struct blockInfo;

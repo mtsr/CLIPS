@@ -40,11 +40,11 @@
 
 #ifndef _H_incrrset
 
+#pragma once
+
 #define _H_incrrset
 
-#ifndef _H_ruledef
 #include "ruledef.h"
-#endif
 
    void                           IncrementalReset(void *,struct defrule *);
    bool                           EnvGetIncrementalReset(void *);

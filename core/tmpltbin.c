@@ -29,25 +29,22 @@
 /*                                                           */
 /*************************************************************/
 
-#define  _TMPLTBIN_SOURCE_
-
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT && (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE) && (! RUN_TIME)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
-#include "memalloc.h"
 #include "bload.h"
 #include "bsave.h"
-#include "factbin.h"
 #include "cstrnbin.h"
-#include "factmngr.h"
-#include "tmpltpsr.h"
-#include "tmpltdef.h"
-#include "tmpltutl.h"
 #include "envrnmnt.h"
+#include "factbin.h"
+#include "factmngr.h"
+#include "memalloc.h"
+#include "tmpltdef.h"
+#include "tmpltpsr.h"
+#include "tmpltutl.h"
 
 #include "tmpltbin.h"
 

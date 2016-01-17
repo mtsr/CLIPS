@@ -65,6 +65,7 @@
 #include "classcom.h"
 #include "classfun.h"
 #include "classinf.h"
+#include "commline.h"
 #include "envrnmnt.h"
 #include "exprnpsr.h"
 #include "evaluatn.h"
@@ -82,9 +83,7 @@
 #include "strngrtr.h"
 #include "sysdep.h"
 #include "utility.h"
-#include "commline.h"
 
-#define _INSCOM_SOURCE_
 #include "inscom.h"
 
 /* =========================================

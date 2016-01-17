@@ -36,7 +36,6 @@
 #include "conscomp.h"
 #include "envrnmnt.h"
 
-#define _DFFNXCMP_SOURCE_
 #include "dffnxcmp.h"
 
 /* =========================================

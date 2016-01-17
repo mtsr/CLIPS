@@ -27,6 +27,8 @@
 
 #ifndef _H_dffctcmp
 
+#pragma once
+
 #define _H_dffctcmp
 
    void                           DeffactsCompilerSetup(void *);

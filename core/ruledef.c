@@ -57,14 +57,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _RULEDEF_SOURCE_
-
 #include "setup.h"
 
 #if DEFRULE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "agenda.h"
 #include "drive.h"

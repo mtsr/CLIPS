@@ -44,6 +44,9 @@
 /*************************************************************/
 
 #ifndef _H_objrtmch
+
+#pragma once
+
 #define _H_objrtmch
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
@@ -52,24 +55,12 @@
 #define OBJECT_RETRACT 2
 #define OBJECT_MODIFY  3
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
-#ifndef _H_match
 #include "match.h"
-#endif
-#ifndef _H_network
 #include "network.h"
-#endif
-#ifndef _H_object
 #include "object.h"
-#endif
-#ifndef _H_symbol
 #include "symbol.h"
-#endif
 
 typedef struct classBitMap
   {

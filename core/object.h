@@ -24,6 +24,9 @@
 /*************************************************************/
 
 #ifndef _H_object
+
+#pragma once
+
 #define _H_object
 
 typedef struct defclassModule DEFCLASS_MODULE;

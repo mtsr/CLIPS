@@ -83,10 +83,7 @@
 /*                                                           */
 /*************************************************************/
 
-#define _MISCFUN_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 #include <time.h>
 

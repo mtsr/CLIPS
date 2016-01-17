@@ -25,6 +25,9 @@
 /*************************************************************/
 
 #ifndef _H_genrcbin
+
+#pragma once
+
 #define _H_genrcbin
 
 #include "genrcfun.h"

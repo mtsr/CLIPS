@@ -57,35 +57,32 @@
 /*************************************************************/
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT
 
-#define _FACTCOM_SOURCE_
-
-#include "memalloc.h"
+#include "argacces.h"
+#include "constant.h"
 #include "envrnmnt.h"
 #include "exprnpsr.h"
+#include "extnfunc.h"
+#include "facthsh.h"
+#include "factmch.h"
 #include "factmngr.h"
-#include "argacces.h"
+#include "factrhs.h"
 #include "match.h"
+#include "memalloc.h"
+#include "modulutl.h"
 #include "router.h"
 #include "scanner.h"
-#include "constant.h"
-#include "factrhs.h"
-#include "factmch.h"
-#include "extnfunc.h"
-#include "tmpltpsr.h"
-#include "tmpltutl.h"
-#include "facthsh.h"
-#include "modulutl.h"
 #include "strngrtr.h"
+#include "sysdep.h"
 #include "tmpltdef.h"
 #include "tmpltfun.h"
-#include "sysdep.h"
+#include "tmpltpsr.h"
+#include "tmpltutl.h"
 
 #if BLOAD_AND_BSAVE || BLOAD || BLOAD_ONLY
 #include "bload.h"

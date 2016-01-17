@@ -47,11 +47,12 @@
 /*************************************************************/
 
 #ifndef _H_rulebsc
+
+#pragma once
+
 #define _H_rulebsc
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
    void                           DefruleBasicCommands(void *);
    void                           UndefruleCommand(void *);

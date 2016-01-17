@@ -42,26 +42,17 @@
 /*************************************************************/
 
 #ifndef _H_genrccom
+
+#pragma once
+
 #define _H_genrccom
 
-#ifndef _H_constrct
 #include "constrct.h"
-#endif
-#ifndef _H_cstrccom
 #include "cstrccom.h"
-#endif
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
-#ifndef _H_moduldef
-#include "moduldef.h"
-#endif
-#ifndef _H_genrcfun
 #include "genrcfun.h"
-#endif
-#ifndef _H_symbol
+#include "moduldef.h"
 #include "symbol.h"
-#endif
 
    void                           SetupGenericFunctions(void *);
    void                          *EnvFindDefgeneric(void *,const char *);

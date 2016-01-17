@@ -39,12 +39,12 @@
 /*************************************************************/
 
 #ifndef _H_filertr
+
+#pragma once
+
 #define _H_filertr
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
 
 #define FILE_ROUTER_DATA 47
    

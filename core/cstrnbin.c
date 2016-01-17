@@ -24,8 +24,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _CSTRNBIN_SOURCE_
-
 #include "setup.h"
 
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE) && (! RUN_TIME)

@@ -34,14 +34,12 @@
 
 #ifndef _H_tmpltpsr
 
+#pragma once
+
 #define _H_tmpltpsr
 
-#ifndef _H_symbol
 #include "symbol.h"
-#endif
-#ifndef _H_tmpltdef
 #include "tmpltdef.h"
-#endif
 
    bool                           ParseDeftemplate(void *,const char *);
    void                           InstallDeftemplate(void *,struct deftemplate *);

@@ -37,8 +37,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _BLOAD_SOURCE_
-
 #include "setup.h"
 
 #include "argacces.h"

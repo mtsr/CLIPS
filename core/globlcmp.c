@@ -30,18 +30,16 @@
 /*                                                           */
 /*************************************************************/
 
-#define _GLOBLCMP_SOURCE_
-
 #include "setup.h"
 
 #if DEFGLOBAL_CONSTRUCT && CONSTRUCT_COMPILER && (! RUN_TIME)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "conscomp.h"
-#include "globldef.h"
 #include "envrnmnt.h"
+#include "globldef.h"
+
 #include "globlcmp.h"
 
 /***************************************/

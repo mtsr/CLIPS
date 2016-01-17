@@ -31,28 +31,21 @@
 /*                                                           */
 /*************************************************************/
 
-#define _LGCLDPND_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "setup.h"
 
 #if DEFRULE_CONSTRUCT
 
-#include "memalloc.h"
-#include "router.h"
+#include "argacces.h"
+#include "engine.h"
 #include "envrnmnt.h"
 #include "evaluatn.h"
-#include "engine.h"
-#include "reteutil.h"
-#include "pattern.h"
-#include "argacces.h"
 #include "factmngr.h"
-
-#if OBJECT_SYSTEM
-#include "insfun.h"
-#endif
+#include "memalloc.h"
+#include "pattern.h"
+#include "reteutil.h"
+#include "router.h"
 
 #include "lgcldpnd.h"
 

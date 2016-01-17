@@ -41,12 +41,9 @@
 /*                                                           */
 /*************************************************************/
 
-#define _INCRRSET_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #if DEFRULE_CONSTRUCT
 

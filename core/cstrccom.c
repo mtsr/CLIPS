@@ -52,8 +52,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _CSTRCCOM_SOURCE_
-
 #include <string.h>
 
 #include "setup.h"

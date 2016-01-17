@@ -34,10 +34,7 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FACTHSH_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 
 #include "setup.h"
@@ -45,10 +42,10 @@
 #if DEFTEMPLATE_CONSTRUCT
 
 #include "constant.h"
+#include "envrnmnt.h"
 #include "memalloc.h"
 #include "router.h"
 #include "sysdep.h"
-#include "envrnmnt.h"
 
 #if DEFRULE_CONSTRUCT
 #include "lgcldpnd.h"

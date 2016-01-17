@@ -38,6 +38,9 @@
 /*************************************************************/
 
 #ifndef _H_classpsr
+
+#pragma once
+
 #define _H_classpsr
 
 #if OBJECT_SYSTEM && (! BLOAD_ONLY) && (! RUN_TIME)

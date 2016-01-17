@@ -55,14 +55,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _MULTIFUN_SOURCE_
-
 #include "setup.h"
 
 #if MULTIFIELD_FUNCTIONS || OBJECT_SYSTEM
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "argacces.h"
@@ -71,6 +68,9 @@
 #include "memalloc.h"
 #include "multifld.h"
 #include "multifun.h"
+#if OBJECT_SYSTEM
+#include "object.h"
+#endif
 #include "prcdrpsr.h"
 #include "prcdrfun.h"
 #include "router.h"
@@ -78,10 +78,6 @@
 #include "scanner.h"
 #endif
 #include "utility.h"
-
-#if OBJECT_SYSTEM
-#include "object.h"
-#endif
 
 /**************/
 /* STRUCTURES */

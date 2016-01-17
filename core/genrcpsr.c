@@ -70,12 +70,12 @@
 #include "classcom.h"
 #endif
 
-#include "memalloc.h"
 #include "cstrcpsr.h"
 #include "envrnmnt.h"
 #include "exprnpsr.h"
 #include "genrccom.h"
 #include "immthpsr.h"
+#include "memalloc.h"
 #include "modulutl.h"
 #include "prcdrpsr.h"
 #include "prccode.h"
@@ -83,7 +83,6 @@
 #include "scanner.h"
 #include "sysdep.h"
 
-#define _GENRCPSR_SOURCE_
 #include "genrcpsr.h"
 
 /* =========================================

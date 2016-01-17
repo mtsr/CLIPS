@@ -47,6 +47,8 @@
 
 #ifndef _H_textpro
 
+#pragma once
+
 #define _H_textpro
 
 #if TEXTPRO_FUNCTIONS

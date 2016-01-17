@@ -41,15 +41,15 @@
 
 #ifndef _H_extnfunc
 
+#pragma once
+
 #define _H_extnfunc
 
-#ifndef _H_symbol
-#include "symbol.h"
-#endif
-#ifndef _H_expressn
-#include "expressn.h"
-#endif
+struct FunctionDefinition;
 
+#include "evaluatn.h"
+#include "expressn.h"
+#include "symbol.h"
 #include "userdata.h"
 
 struct FunctionDefinition
@@ -91,7 +91,6 @@ struct externalFunctionData
 
 #define ExternalFunctionData(theEnv) ((struct externalFunctionData *) GetEnvironmentData(theEnv,EXTERNAL_FUNCTION_DATA))
 
-#ifdef _EXTNFUNC_SOURCE_ // TBD Necessary?
 struct FunctionHash
   {
    struct FunctionDefinition *fdPtr;
@@ -99,7 +98,6 @@ struct FunctionHash
   };
 
 #define SIZE_FUNCTION_HASH 517
-#endif
 
    void                           InitializeExternalFunctionData(void *);
    int                            EnvDefineFunction(void *,const char *,int,

@@ -61,33 +61,30 @@
 /*                                                           */
 /*************************************************************/
 
-#define _CONSTRCT_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "setup.h"
 
-#include "constant.h"
-#include "envrnmnt.h"
-#include "memalloc.h"
-#include "router.h"
-#include "scanner.h"
-#include "watch.h"
-#include "prcdrfun.h"
-#include "prcdrpsr.h"
 #include "argacces.h"
+#include "commline.h"
+#include "constant.h"
+#include "cstrcpsr.h"
+#include "envrnmnt.h"
 #include "exprnpsr.h"
-#include "multifld.h"
+#include "memalloc.h"
 #include "moduldef.h"
 #include "modulutl.h"
+#include "multifld.h"
+#include "prcdrfun.h"
+#include "prcdrpsr.h"
+#include "router.h"
+#include "ruledef.h"
+#include "scanner.h"
 #include "sysdep.h"
 #include "utility.h"
-#include "commline.h"
-#include "cstrcpsr.h"
+#include "watch.h"
 
-#include "ruledef.h" /* TBD Remove */
 #include "constrct.h"
 
 /***************************************/

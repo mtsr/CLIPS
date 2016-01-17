@@ -25,16 +25,15 @@
 /*************************************************************/
 
 #ifndef _H_objrtgen
+
+#pragma once
+
 #define _H_objrtgen
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM && (! RUN_TIME) && (! BLOAD_ONLY)
 
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
-#ifndef _H_reorder
 #include "reorder.h"
-#endif
 
    void             ReplaceGetJNObjectValue(void *,EXPRESSION *,struct lhsParseNode *,int);
    EXPRESSION      *GenGetJNObjectValue(void *,struct lhsParseNode *,int);

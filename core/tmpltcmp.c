@@ -39,8 +39,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _TMPLTCMP_SOURCE_
-
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT && CONSTRUCT_COMPILER && (! RUN_TIME)
@@ -48,13 +46,12 @@
 #define SlotPrefix() ArbitraryPrefix(DeftemplateData(theEnv)->DeftemplateCodeItem,2)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "conscomp.h"
-#include "factcmp.h"
 #include "cstrncmp.h"
-#include "tmpltdef.h"
 #include "envrnmnt.h"
+#include "factcmp.h"
+#include "tmpltdef.h"
 
 #include "tmpltcmp.h"
 

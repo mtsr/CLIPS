@@ -58,10 +58,7 @@
 /*                                                           */
 /*************************************************************/
 
-#define _RULECOM_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "setup.h"

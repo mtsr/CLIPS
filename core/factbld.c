@@ -30,28 +30,25 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FACTBLD_SOURCE_
-
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
+#include "argacces.h"
+#include "envrnmnt.h"
+#include "factcmp.h"
+#include "factgen.h"
+#include "factlhs.h"
+#include "factmch.h"
+#include "factmngr.h"
 #include "memalloc.h"
+#include "modulutl.h"
+#include "reorder.h"
 #include "reteutil.h"
 #include "router.h"
-#include "reorder.h"
-#include "factcmp.h"
-#include "factmch.h"
-#include "factgen.h"
-#include "factmngr.h"
-#include "factlhs.h"
-#include "argacces.h"
-#include "modulutl.h"
 #include "tmpltdef.h"
-#include "envrnmnt.h"
 
 #include "factbld.h"
 

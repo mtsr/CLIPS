@@ -76,7 +76,6 @@
 #include "router.h"
 #include "sysdep.h"
 
-#define _GENRCFUN_SOURCE_
 #include "genrcfun.h"
 
 /* =========================================

@@ -22,23 +22,20 @@
 /*                                                           */
 /*************************************************************/
 
-#define _EXPRNBIN_SOURCE_
-
 #include "setup.h"
 
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
-#include "memalloc.h"
-#include "dffctdef.h"
-#include "moduldef.h"
-#include "constrct.h"
-#include "extnfunc.h"
 #include "bload.h"
 #include "bsave.h"
+#include "constrct.h"
+#include "dffctdef.h"
 #include "envrnmnt.h"
+#include "extnfunc.h"
+#include "memalloc.h"
+#include "moduldef.h"
 
 #if DEFRULE_CONSTRUCT
 #include "network.h"

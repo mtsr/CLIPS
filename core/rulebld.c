@@ -32,14 +32,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _RULEBLD_SOURCE_
-
 #include "setup.h"
 
 #if DEFRULE_CONSTRUCT && (! RUN_TIME) && (! BLOAD_ONLY)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 
 #include "constant.h"

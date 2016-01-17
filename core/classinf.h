@@ -33,11 +33,12 @@
 /*************************************************************/
 
 #ifndef _H_classinf
+
+#pragma once
+
 #define _H_classinf
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
    bool                           ClassAbstractPCommand(void *);
 #if DEFRULE_CONSTRUCT

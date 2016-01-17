@@ -43,6 +43,8 @@
 
 #ifndef _H_crstrtgy
 
+#pragma once
+
 #define _H_crstrtgy
 
 #include "agenda.h"

@@ -32,14 +32,14 @@
 
 #ifndef _H_expressn
 
+#pragma once
+
 #define _H_expressn
 
 struct expr;
 struct exprHashNode;
 
-#ifndef _H_exprnops
 #include "exprnops.h"
-#endif
 
 /******************************/
 /* Expression Data Structures */

@@ -40,15 +40,16 @@
 /*************************************************************/
 
 #ifndef _H_msgpsr
+
+#pragma once
+
 #define _H_msgpsr
 
 #if OBJECT_SYSTEM && (! BLOAD_ONLY) && (! RUN_TIME)
 
 #define SELF_STRING     "self"
 
-#ifndef _H_object
 #include "object.h"
-#endif
 
    bool             ParseDefmessageHandler(void *,const char *);
    void             CreateGetAndPutHandlers(void *,SLOT_DESC *);

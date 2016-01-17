@@ -27,6 +27,9 @@
 /*************************************************************/
 
 #ifndef _H_pprint
+
+#pragma once
+
 #define _H_pprint
 
 #define PRETTY_PRINT_DATA 52

@@ -54,7 +54,6 @@
 #include "router.h"
 #include "scanner.h"
 
-#define _CLSLTPSR_SOURCE_
 #include "clsltpsr.h"
 
 /* =========================================

@@ -50,14 +50,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _REORDER_SOURCE_
-
 #include "setup.h"
 
 #if (! RUN_TIME) && (! BLOAD_ONLY) && DEFRULE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "cstrnutl.h"
 #include "envrnmnt.h"

@@ -35,13 +35,11 @@
 
 #include "bload.h"
 #include "bsave.h"
-
-#include "memalloc.h"
 #include "cstrcbin.h"
 #include "envrnmnt.h"
+#include "memalloc.h"
 #include "modulbin.h"
 
-#define _DFFNXBIN_SOURCE_
 #include "dffnxbin.h"
 
 /* =========================================

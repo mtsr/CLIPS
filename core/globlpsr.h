@@ -34,15 +34,11 @@
 
 #ifndef _H_globlpsr
 
+#pragma once
+
 #define _H_globlpsr
 
-#ifdef _DEFGLOBL_SOURCE_
-struct defglobal;
-#endif
-
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
 
    bool                    ParseDefglobal(void *,const char *);
    bool                    ReplaceGlobalVariable(void *,struct expr *);

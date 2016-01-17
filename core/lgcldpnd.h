@@ -30,6 +30,8 @@
 
 #ifndef _H_lgcldpnd
 
+#pragma once
+
 #define _H_lgcldpnd
 
 struct dependency
@@ -38,12 +40,8 @@ struct dependency
    struct dependency *next;
   };
 
-#ifndef _H_match
 #include "match.h"
-#endif
-#ifndef _H_pattern
 #include "pattern.h"
-#endif
 
    bool                           AddLogicalDependencies(void *,struct patternEntity *,bool);
    void                           RemoveEntityDependencies(void *,struct patternEntity *);

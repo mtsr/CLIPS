@@ -35,19 +35,15 @@
 /*************************************************************/
 
 #ifndef _H_objcmp
+
+#pragma once
+
 #define _H_objcmp
 
-#ifndef _STDIO_INCLUDED_
 #include <stdio.h>
-#define _STDIO_INCLUDED_
-#endif
 
-#ifndef _H_conscomp
 #include "conscomp.h"
-#endif
-#ifndef _H_object
 #include "object.h"
-#endif
 
 #define OBJECT_COMPILER_DATA 36
 

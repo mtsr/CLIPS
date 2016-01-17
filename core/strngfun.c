@@ -58,14 +58,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _STRNGFUN_SOURCE_
-
 #include "setup.h"
 
 #if STRING_FUNCTIONS
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <ctype.h>
 #include <string.h>
 

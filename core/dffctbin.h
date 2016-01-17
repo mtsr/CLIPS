@@ -21,17 +21,17 @@
 /*                                                           */
 /*************************************************************/
 
-#if (! RUN_TIME)
-
 #ifndef _H_dffctbin
+
+#pragma once
 
 #define _H_dffctbin
 
-#include "modulbin.h"
-#include "cstrcbin.h"
-#ifndef _H_constrct
+#if (! RUN_TIME)
+
 #include "constrct.h"
-#endif
+#include "cstrcbin.h"
+#include "modulbin.h"
 
 struct bsaveDeffacts
   {
@@ -59,9 +59,10 @@ struct deffactsBinaryData
    void                           DeffactsBinarySetup(void *);
    void                          *BloadDeffactsModuleReference(void *,int);
 
+#endif /* (! RUN_TIME) */
+
 #endif /* _H_dffctbin */
 
-#endif /* (! RUN_TIME) */
 
 
 

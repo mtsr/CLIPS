@@ -38,35 +38,30 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FACTRHS_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT
 
-#include "constant.h"
-#include "envrnmnt.h"
-#include "extnfunc.h"
-#include "modulutl.h"
-#include "modulpsr.h"
-#include "pattern.h"
-#include "prntutil.h"
-#include "cstrcpsr.h"
-
 #if BLOAD_AND_BSAVE || BLOAD || BLOAD_ONLY
 #include "bload.h"
 #endif
 
+#include "constant.h"
+#include "cstrcpsr.h"
+#include "envrnmnt.h"
+#include "exprnpsr.h"
+#include "modulutl.h"
+#include "modulpsr.h"
+#include "pattern.h"
+#include "prntutil.h"
+#include "router.h"
+#include "strngrtr.h"
 #include "tmpltpsr.h"
 #include "tmpltrhs.h"
 #include "tmpltutl.h"
-#include "exprnpsr.h"
-#include "strngrtr.h"
-#include "router.h"
 
 #include "factrhs.h"
 

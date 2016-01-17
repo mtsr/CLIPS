@@ -51,15 +51,14 @@
 
 #include "classcom.h"
 #include "classfun.h"
-#include "memalloc.h"
 #include "envrnmnt.h"
 #include "extnfunc.h"
 #include "insfun.h"
+#include "memalloc.h"
 #include "msgcom.h"
 #include "prccode.h"
 #include "router.h"
 
-#define _MSGFUN_SOURCE_
 #include "msgfun.h"
 
 /* =========================================

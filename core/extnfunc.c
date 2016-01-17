@@ -40,18 +40,16 @@
 /*                                                           */
 /*************************************************************/
 
-#define _EXTNFUNC_SOURCE_
-
 #include "setup.h"
 
 #include <ctype.h>
 #include <stdlib.h>
 
+#include "argacces.h"
 #include "constant.h"
 #include "envrnmnt.h"
-#include "router.h"
 #include "memalloc.h"
-#include "evaluatn.h"
+#include "router.h"
 
 #include "extnfunc.h"
 

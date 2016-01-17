@@ -25,6 +25,9 @@
 /*************************************************************/
 
 #ifndef _H_dffnxbin
+
+#pragma once
+
 #define _H_dffnxbin
 
 #if DEFFUNCTION_CONSTRUCT && (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)

@@ -25,6 +25,8 @@
 
 #ifndef _H_match
 
+#pragma once
+
 #define _H_match
 
 struct genericMatch;
@@ -33,15 +35,9 @@ struct partialMatch;
 struct alphaMatch;
 struct multifieldMarker;
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
-#ifndef _H_network
 #include "network.h"
-#endif
-#ifndef _H_pattern
 #include "pattern.h"
-#endif
 
 /************************************************************/
 /* PATTERNMATCH STRUCTURE:                                  */

@@ -31,14 +31,12 @@
 
 #ifndef _H_factlhs
 
+#pragma once
+
 #define _H_factlhs
 
-#ifndef _H_symbol
-#include "symbol.h"
-#endif
-#ifndef _H_scanner
 #include "scanner.h"
-#endif
+#include "symbol.h"
 
    bool                           FactPatternParserFind(SYMBOL_HN *);
    struct lhsParseNode           *FactPatternParse(void *,const char *,struct token *);

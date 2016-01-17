@@ -32,7 +32,6 @@
 
 #include "moduldef.h"
 
-#define _CSTRCBIN_SOURCE_
 #include "cstrcbin.h"
 
 #if BLOAD_AND_BSAVE

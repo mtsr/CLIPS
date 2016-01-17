@@ -59,13 +59,13 @@
 
 #include "classcom.h"
 #include "classfun.h"
-#include "memalloc.h"
 #include "constrct.h"
 #include "cstrcpsr.h"
 #include "cstrnchk.h"
 #include "envrnmnt.h"
 #include "exprnpsr.h"
 #include "insfun.h"
+#include "memalloc.h"
 #include "msgcom.h"
 #include "msgfun.h"
 #include "pprint.h"
@@ -75,7 +75,6 @@
 #include "strngrtr.h"
 #include "sysdep.h"
 
-#define _MSGPSR_SOURCE_
 #include "msgpsr.h"
 
 /* =========================================

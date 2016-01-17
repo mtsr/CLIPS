@@ -50,27 +50,25 @@
 
 #if OBJECT_SYSTEM
 
-#if DEFRULE_CONSTRUCT
-#include "network.h"
-#include "objrtmch.h"
-#endif
-
 #include "argacces.h"
-#include "memalloc.h"
 #include "envrnmnt.h"
 #include "extnfunc.h"
 #include "inscom.h"
 #include "insfun.h"
 #include "insmngr.h"
 #include "inspsr.h"
+#include "memalloc.h"
 #include "miscfun.h"
 #include "msgcom.h"
 #include "msgfun.h"
 #include "msgpass.h"
+#if DEFRULE_CONSTRUCT
+#include "network.h"
+#include "objrtmch.h"
+#endif
 #include "prccode.h"
 #include "router.h"
 
-#define _INSMODDP_SOURCE_
 #include "insmoddp.h"
 
 /* =========================================

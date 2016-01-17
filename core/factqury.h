@@ -33,13 +33,14 @@
 /*************************************************************/
 
 #ifndef _H_factqury
+
+#pragma once
+
 #define _H_factqury
 
 #if FACT_SET_QUERIES
 
-#ifndef _H_factmngr
 #include "factmngr.h"
-#endif
 
 typedef struct query_template
   {

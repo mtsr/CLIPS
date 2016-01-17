@@ -35,24 +35,21 @@
 /*                                                           */
 /*************************************************************/
 
-#define _EXPRESSN_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 
 #include "bload.h"
-#include "memalloc.h"
 #include "envrnmnt.h"
-#include "router.h"
-#include "extnfunc.h"
-#include "exprnops.h"
-#include "prntutil.h"
 #include "evaluatn.h"
+#include "exprnops.h"
+#include "extnfunc.h"
+#include "memalloc.h"
+#include "prntutil.h"
+#include "router.h"
 
 #include "expressn.h"
 

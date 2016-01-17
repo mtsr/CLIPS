@@ -48,28 +48,25 @@
 /*                                                           */
 /*************************************************************/
 
-#define _TMPLTDEF_SOURCE_
-
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
-#include "memalloc.h"
-#include "exprnops.h"
 #include "cstrccom.h"
-#include "network.h"
-#include "tmpltpsr.h"
-#include "tmpltbsc.h"
-#include "tmpltutl.h"
-#include "tmpltfun.h"
-#include "router.h"
-#include "modulpsr.h"
-#include "modulutl.h"
 #include "cstrnchk.h"
 #include "envrnmnt.h"
+#include "exprnops.h"
+#include "memalloc.h"
+#include "modulpsr.h"
+#include "modulutl.h"
+#include "network.h"
+#include "router.h"
+#include "tmpltbsc.h"
+#include "tmpltfun.h"
+#include "tmpltpsr.h"
+#include "tmpltutl.h"
 
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
 #include "bload.h"

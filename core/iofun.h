@@ -62,6 +62,8 @@
 
 #ifndef _H_iofun
 
+#pragma once
+
 #define _H_iofun
 
    void                           IOFunctionDefinitions(void *);

@@ -29,13 +29,13 @@
 
 #ifndef _H_exprnops
 
+#pragma once
+
 #define _H_exprnops
 
 #include <stdbool.h>
 
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
 
    bool                           ConstantExpression(struct expr *);
    void                           PrintExpression(void *,const char *,struct expr *);

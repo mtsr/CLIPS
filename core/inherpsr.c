@@ -40,7 +40,6 @@
 #include "router.h"
 #include "scanner.h"
 
-#define _INHERPSR_SOURCE_
 #include "inherpsr.h"
 
 /* =========================================

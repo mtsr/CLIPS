@@ -24,23 +24,20 @@
 /*                                                           */
 /*************************************************************/
 
-#define _GLOBLBIN_SOURCE_
-
 #include "setup.h"
 
 #if DEFGLOBAL_CONSTRUCT && (BLOAD || BLOAD_AND_BSAVE || BLOAD_ONLY) && (! RUN_TIME)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
-#include "memalloc.h"
-#include "multifld.h"
-#include "globldef.h"
 #include "bload.h"
 #include "bsave.h"
-#include "moduldef.h"
-#include "globlbsc.h"
 #include "envrnmnt.h"
+#include "globlbsc.h"
+#include "globldef.h"
+#include "memalloc.h"
+#include "moduldef.h"
+#include "multifld.h"
 
 #include "globlbin.h"
 

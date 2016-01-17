@@ -42,6 +42,9 @@
 /*************************************************************/
 
 #ifndef _H_classexm
+
+#pragma once
+
 #define _H_classexm
 
 #if DEBUGGING_FUNCTIONS

@@ -47,15 +47,13 @@
 /*************************************************************/
 
 #ifndef _H_inscom
+
+#pragma once
+
 #define _H_inscom
 
-#ifndef _H_object
-#include "object.h"
-#endif
-
-#ifndef _H_insfun
 #include "insfun.h"
-#endif
+#include "object.h"
 
 #define INSTANCE_DATA 29
 

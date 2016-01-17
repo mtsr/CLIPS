@@ -30,6 +30,8 @@
 
 #ifndef _H_globlcmp
 
+#pragma once
+
 #define _H_globlcmp
 
    void                           DefglobalCompilerSetup(void *);

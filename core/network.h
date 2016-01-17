@@ -22,19 +22,16 @@
 
 #ifndef _H_network
 
+#pragma once
+
 #define _H_network
 
 struct patternNodeHeader;
 struct joinNode;
 struct alphaMemoryHash;
 
-#ifndef _H_match
-#include "match.h"
-#endif
-
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
+#include "match.h"
 
 struct patternNodeHeader
   {

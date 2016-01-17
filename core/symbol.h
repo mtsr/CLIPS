@@ -64,6 +64,9 @@
 /*************************************************************/
 
 #ifndef _H_symbol
+
+#pragma once
+
 #define _H_symbol
 
 #include <stdlib.h>

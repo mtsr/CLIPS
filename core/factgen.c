@@ -31,32 +31,28 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FACTGEN_SOURCE_
-
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "constant.h"
-#include "memalloc.h"
-#include "router.h"
-#include "scanner.h"
-#include "exprnpsr.h"
 #include "constrct.h"
-#include "network.h"
-#include "reteutil.h"
+#include "envrnmnt.h"
+#include "exprnpsr.h"
 #include "factmch.h"
-#include "factrete.h"
 #include "factmngr.h"
+#include "factprt.h"
+#include "factrete.h"
+#include "memalloc.h"
+#include "network.h"
 #include "pattern.h"
 #include "prcdrpsr.h"
-#include "factprt.h"
-#include "envrnmnt.h"
+#include "reteutil.h"
+#include "router.h"
+#include "scanner.h"
 #include "sysdep.h"
-
 #include "tmpltdef.h"
 #include "tmpltfun.h"
 #include "tmpltlhs.h"

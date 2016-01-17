@@ -40,10 +40,7 @@
 /*                                                           */
 /*************************************************************/
 
-#define _DRIVE_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 
 #include "setup.h"
@@ -54,13 +51,13 @@
 #include "constant.h"
 #include "engine.h"
 #include "envrnmnt.h"
+#include "incrrset.h"
+#include "lgcldpnd.h"
 #include "memalloc.h"
 #include "prntutil.h"
 #include "reteutil.h"
 #include "retract.h"
 #include "router.h"
-#include "lgcldpnd.h"
-#include "incrrset.h"
 
 #include "drive.h"  
   

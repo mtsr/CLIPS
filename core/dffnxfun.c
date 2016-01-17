@@ -92,11 +92,10 @@
 #endif
 
 #include "argacces.h"
-#include "memalloc.h"
 #include "cstrccom.h"
+#include "memalloc.h"
 #include "router.h"
 
-#define _DFFNXFUN_SOURCE_
 #include "dffnxfun.h"
 
 /* =========================================

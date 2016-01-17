@@ -31,6 +31,9 @@
 /*************************************************************/
 
 #ifndef _H_clsltpsr
+
+#pragma once
+
 #define _H_clsltpsr
 
 #if OBJECT_SYSTEM && (! BLOAD_ONLY) && (! RUN_TIME)
@@ -39,9 +42,7 @@
 #define REACTIVE_RLN         "reactive"
 #define NONREACTIVE_RLN      "non-reactive"
 
-#ifndef _H_object
 #include "object.h"
-#endif
 
 typedef struct tempSlotLink
   {
@@ -51,9 +52,6 @@ typedef struct tempSlotLink
 
 TEMP_SLOT_LINK *ParseSlot(void *,const char *,TEMP_SLOT_LINK *,PACKED_CLASS_LINKS *,bool,bool);
 void DeleteSlots(void *,TEMP_SLOT_LINK *);
-
-#ifndef _CLSLTPSR_SOURCE_
-#endif
 
 #endif
 

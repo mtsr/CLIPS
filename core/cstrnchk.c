@@ -41,24 +41,22 @@
 /*                                                           */
 /*************************************************************/
 
-#define _CSTRNCHK_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 
 #include "setup.h"
 
-#include "router.h"
-#include "multifld.h"
+#include "cstrnutl.h"
 #include "envrnmnt.h"
 #include "extnfunc.h"
-#include "cstrnutl.h"
+#include "multifld.h"
+#include "router.h"
+
 #if OBJECT_SYSTEM
-#include "inscom.h"
-#include "insfun.h"
 #include "classcom.h"
 #include "classexm.h"
+#include "inscom.h"
+#include "insfun.h"
 #endif
 
 #include "cstrnchk.h"

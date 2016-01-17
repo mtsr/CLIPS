@@ -79,7 +79,6 @@
 #include "sysdep.h"
 #include "utility.h"
 
-#define _CLASSFUN_SOURCE_
 #include "classfun.h"
 
 /* =========================================

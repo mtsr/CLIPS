@@ -38,11 +38,11 @@
 
 #ifndef _H_prcdrpsr
 
+#pragma once
+
 #define _H_prcdrpsr
 
-#ifndef _H_constrnt
 #include "constrnt.h"
-#endif
 
 struct BindInfo
   {

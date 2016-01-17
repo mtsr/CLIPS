@@ -45,17 +45,13 @@
 
 #ifndef _H_agenda
 
+#pragma once
+
 #define _H_agenda
 
-#ifndef _H_ruledef
 #include "ruledef.h"
-#endif
-#ifndef _H_symbol
 #include "symbol.h"
-#endif
-#ifndef _H_match
 #include "match.h"
-#endif
 
 #define WHEN_DEFINED 0
 #define WHEN_ACTIVATED 1

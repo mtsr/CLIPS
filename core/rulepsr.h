@@ -35,6 +35,9 @@
 /*************************************************************/
 
 #ifndef _H_rulepsr
+
+#pragma once
+
 #define _H_rulepsr
 
    bool                           ParseDefrule(void *,const char *);

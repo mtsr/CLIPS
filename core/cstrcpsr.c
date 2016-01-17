@@ -49,14 +49,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _CSTRCPSR_SOURCE_
-
 #include "setup.h"
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 #include <string.h>
 

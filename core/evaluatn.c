@@ -52,10 +52,7 @@
 /*                                                           */
 /*************************************************************/
 
-#define _EVALUATN_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
@@ -68,7 +65,6 @@
 #include "envrnmnt.h"
 #include "memalloc.h"
 #include "router.h"
-#include "extnfunc.h"
 #include "prcdrfun.h"
 #include "multifld.h"
 #include "factmngr.h"

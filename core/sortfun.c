@@ -27,8 +27,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _SORTFUN_SOURCE_
-
 #include "setup.h"
 
 #include "argacces.h"

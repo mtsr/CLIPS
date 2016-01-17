@@ -25,16 +25,14 @@
 /*************************************************************/
 
 #ifndef _H_symblbin
+
+#pragma once
+
 #define _H_symblbin
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
 
-#ifndef _H_symbol
 #include "symbol.h"
-#endif
 
 #define BitMapPointer(i) ((BITMAP_HN *) (SymbolData(theEnv)->BitMapArray[i]))
 #define SymbolPointer(i) ((SYMBOL_HN *) (SymbolData(theEnv)->SymbolArray[i]))

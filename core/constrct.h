@@ -55,17 +55,15 @@
 
 #ifndef _H_constrct
 
+#pragma once
+
 #define _H_constrct
 
 struct constructHeader;
 struct construct;
 
-#ifndef _H_moduldef
 #include "moduldef.h"
-#endif
-#ifndef _H_symbol
 #include "symbol.h"
-#endif
 
 #include "userdata.h"
 

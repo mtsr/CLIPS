@@ -30,6 +30,9 @@
 /*************************************************************/
 
 #ifndef _H_dffnxpsr
+
+#pragma once
+
 #define _H_dffnxpsr
 
 #if DEFFUNCTION_CONSTRUCT && (! BLOAD_ONLY) && (! RUN_TIME)

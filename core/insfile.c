@@ -60,7 +60,11 @@
 #include "classcom.h"
 #include "classfun.h"
 #include "memalloc.h"
+#include "envrnmnt.h"
 #include "extnfunc.h"
+#if DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT
+#include "factmngr.h"
+#endif
 #include "inscom.h"
 #include "insfun.h"
 #include "insmngr.h"
@@ -70,13 +74,7 @@
 #include "strngrtr.h"
 #include "symblbin.h"
 #include "sysdep.h"
-#include "envrnmnt.h"
 
-#if DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT
-#include "factmngr.h"
-#endif
-
-#define _INSFILE_SOURCE_
 #include "insfile.h"
 
 /* =========================================

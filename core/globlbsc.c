@@ -43,27 +43,22 @@
 /*                                                           */
 /*************************************************************/
 
-#define _GLOBLBSC_SOURCE_
-
 #include "setup.h"
 
 #if DEFGLOBAL_CONSTRUCT
 
 #include "constrct.h"
-#include "extnfunc.h"
-#include "watch.h"
 #include "envrnmnt.h"
-
-#include "globlcom.h"
-#include "globldef.h"
-
+#include "extnfunc.h"
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
 #include "globlbin.h"
 #endif
-
 #if CONSTRUCT_COMPILER && (! RUN_TIME)
 #include "globlcmp.h"
 #endif
+#include "globlcom.h"
+#include "globldef.h"
+#include "watch.h"
 
 #include "globlbsc.h"
 

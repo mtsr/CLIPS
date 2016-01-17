@@ -51,11 +51,7 @@
 
 #if OBJECT_SYSTEM
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
-
 #include <string.h>
 
 #include "classcom.h"
@@ -65,12 +61,10 @@
 #include "envrnmnt.h"
 #include "evaluatn.h"
 #include "exprnpsr.h"
-#include "extnfunc.h"
 #include "moduldef.h"
 #include "prntutil.h"
 #include "router.h"
 
-#define _INSPSR_SOURCE_
 #include "inspsr.h"
 
 /* =========================================

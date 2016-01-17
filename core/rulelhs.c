@@ -25,14 +25,11 @@
 /*                                                           */
 /*************************************************************/
 
-#define _RULELHS_SOURCE_
-
 #include "setup.h"
 
 #if (! RUN_TIME) && (! BLOAD_ONLY) &&  DEFRULE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "agenda.h"

@@ -80,14 +80,12 @@
 #include "envrnmnt.h"
 #include "expressn.h"
 #include "exprnpsr.h"
-#include "extnfunc.h"
 #include "memalloc.h"
 #include "prccode.h"
 #include "router.h"
 #include "scanner.h"
 #include "symbol.h"
 
-#define _DFFNXPSR_SOURCE_
 #include "dffnxpsr.h"
 
 /***************************************/

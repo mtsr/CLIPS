@@ -50,7 +50,6 @@
 #include "reteutil.h"
 #include "rulebin.h"
 
-#define _OBJRTBIN_SOURCE_
 #include "objrtbin.h"
 
 /* =========================================

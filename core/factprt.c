@@ -29,19 +29,16 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FACTPRT_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT
 
 #include "envrnmnt.h"
-#include "symbol.h"
-#include "router.h"
 #include "factgen.h"
+#include "router.h"
+#include "symbol.h"
 
 #include "factprt.h"
 

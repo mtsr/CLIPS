@@ -31,13 +31,14 @@
 /*************************************************************/
 
 #ifndef _H_scanner
+
+#pragma once
+
 #define _H_scanner
 
 struct token;
 
-#ifndef _H_pprint
 #include "pprint.h"
-#endif
 
 struct token
   {

@@ -38,16 +38,12 @@
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM && (! RUN_TIME) && (! BLOAD_ONLY)
 
-#ifndef _STDIO_INCLUDED_
 #include <stdio.h>
-#define _STDIO_INCLUDED_
-#endif
 
 #include "classfun.h"
 #include "envrnmnt.h"
 #include "objrtfnx.h"
 
-#define _OBJRTGEN_SOURCE_
 #include "objrtgen.h"
 
 /* =========================================

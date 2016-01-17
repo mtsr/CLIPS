@@ -39,8 +39,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _PARSEFUN_SOURCE_
-
 #include "setup.h"
 
 #include <string.h>
@@ -49,7 +47,6 @@
 #include "cstrcpsr.h"
 #include "envrnmnt.h"
 #include "exprnpsr.h"
-#include "extnfunc.h"
 #include "memalloc.h"
 #include "multifld.h"
 #include "prcdrpsr.h"

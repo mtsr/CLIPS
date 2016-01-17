@@ -30,24 +30,21 @@
 /*                                                           */
 /*************************************************************/
 
-#define _MODULBSC_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
-#include "constrct.h"
-#include "extnfunc.h"
-#include "modulbin.h"
-#include "prntutil.h"
-#include "modulcmp.h"
-#include "router.h"
 #include "argacces.h"
 #include "bload.h"
-#include "multifld.h"
+#include "constrct.h"
 #include "envrnmnt.h"
+#include "extnfunc.h"
+#include "modulbin.h"
+#include "modulcmp.h"
+#include "multifld.h"
+#include "prntutil.h"
+#include "router.h"
 
 #include "modulbsc.h"
 

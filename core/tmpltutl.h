@@ -41,23 +41,15 @@
 
 #ifndef _H_tmpltutl
 
+#pragma once
+
 #define _H_tmpltutl
 
-#ifndef _H_expressn
-#include "expressn.h"
-#endif
-#ifndef _H_evaluatn
-#include "evaluatn.h"
-#endif
-#ifndef _H_factmngr
-#include "factmngr.h"
-#endif
-#ifndef _H_constrnt
 #include "constrnt.h"
-#endif
-#ifndef _H_symbol
+#include "evaluatn.h"
+#include "expressn.h"
+#include "factmngr.h"
 #include "symbol.h"
-#endif
 
    void                           InvalidDeftemplateSlotMessage(void *,const char *,const char *,bool);
    void                           SingleFieldSlotCardinalityError(void *,const char *);

@@ -68,6 +68,8 @@
 
 #ifndef _H_miscfun
 
+#pragma once
+
 #define _H_miscfun
 
    void                           MiscFunctionDefinitions(void *);

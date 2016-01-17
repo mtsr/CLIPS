@@ -45,7 +45,6 @@
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 
 #include "classcom.h"
@@ -67,7 +66,6 @@
 #include "reteutil.h"
 #include "router.h"
 
-#define _OBJRTFNX_SOURCE_
 #include "objrtfnx.h"
 
 /* =========================================

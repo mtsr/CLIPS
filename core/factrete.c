@@ -32,25 +32,22 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FACTRETE_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT
 
-#include "memalloc.h"
-#include "extnfunc.h"
-#include "router.h"
-#include "incrrset.h"
-#include "reteutil.h"
 #include "drive.h"
 #include "engine.h"
+#include "envrnmnt.h"
+#include "extnfunc.h"
 #include "factgen.h"
 #include "factmch.h"
-#include "envrnmnt.h"
+#include "incrrset.h"
+#include "memalloc.h"
+#include "reteutil.h"
+#include "router.h"
 
 #include "factrete.h"
 

@@ -29,16 +29,14 @@
 /*                                                           */
 /*************************************************************/
 
-#define _MODULUTL_SOURCE_
-
 #include "setup.h"
 
-#include "memalloc.h"
-#include "router.h"
 #include "envrnmnt.h"
+#include "memalloc.h"
+#include "modulpsr.h"
+#include "router.h"
 #include "sysdep.h"
 
-#include "modulpsr.h"
 #include "modulutl.h"
 
 /***************************************/

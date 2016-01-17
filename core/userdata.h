@@ -18,6 +18,9 @@
 /*************************************************************/
 
 #ifndef _H_userdata
+
+#pragma once
+
 #define _H_userdata
 
 struct userData

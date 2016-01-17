@@ -37,11 +37,12 @@
 /*************************************************************/
 
 #ifndef _H_watch
+
+#pragma once
+
 #define _H_watch
 
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
 
 #define WATCH_DATA 54
 

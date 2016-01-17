@@ -36,13 +36,14 @@
 /*************************************************************/
 
 #ifndef _H_constrnt
+
+#pragma once
+
 #define _H_constrnt
 
 struct constraintRecord;
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
 struct constraintRecord
   {

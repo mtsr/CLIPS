@@ -21,16 +21,12 @@
 /*************************************************************/
 
 #ifndef _H_cstrnutl
+
+#pragma once
+
 #define _H_cstrnutl
 
-#ifndef _H_constrnt
 #include "constrnt.h"
-#endif
-
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
-#include <stdio.h>
-#endif
 
    struct constraintRecord       *GetConstraintRecord(void *);
    int                            CompareNumbers(void *,int,void *,int,void *);

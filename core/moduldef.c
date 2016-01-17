@@ -41,30 +41,26 @@
 /*                                                           */
 /*************************************************************/
 
-#define _MODULDEF_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
 #include <string.h>
-#define _STDIO_INCLUDED_
 
-#include "memalloc.h"
-#include "constant.h"
-#include "router.h"
-#include "extnfunc.h"
 #include "argacces.h"
-#include "constrct.h"
-#include "modulpsr.h"
-#include "modulcmp.h"
-#include "modulbsc.h"
-#include "utility.h"
-#include "envrnmnt.h"
-
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
 #include "bload.h"
 #include "modulbin.h"
 #endif
+#include "constant.h"
+#include "constrct.h"
+#include "envrnmnt.h"
+#include "extnfunc.h"
+#include "memalloc.h"
+#include "modulbsc.h"
+#include "modulcmp.h"
+#include "modulpsr.h"
+#include "router.h"
+#include "utility.h"
 
 #include "moduldef.h"
 

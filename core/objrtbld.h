@@ -42,6 +42,9 @@
 /*************************************************************/
 
 #ifndef _H_objrtbld
+
+#pragma once
+
 #define _H_objrtbld
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM

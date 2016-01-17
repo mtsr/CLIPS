@@ -49,16 +49,15 @@
 #include "classcom.h"
 #include "classfun.h"
 #include "envrnmnt.h"
-#include "memalloc.h"
 #include "exprnpsr.h"
 #include "insfun.h"
 #include "insmngr.h"
 #include "insqypsr.h"
+#include "memalloc.h"
 #include "prcdrfun.h"
 #include "router.h"
 #include "utility.h"
 
-#define _INSQUERY_SOURCE_
 #include "insquery.h"
 
 /* =========================================

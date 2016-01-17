@@ -88,7 +88,6 @@
 #include "symbol.h"
 #include "utility.h"
 
-#define _DEFINS_SOURCE_
 #include "defins.h"
 
 /* =========================================

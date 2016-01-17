@@ -31,19 +31,16 @@
 /*                                                           */
 /*************************************************************/
 
-#define _MODULCMP_SOURCE_
-
 #include "setup.h"
 
 #if CONSTRUCT_COMPILER && (! RUN_TIME)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "conscomp.h"
+#include "envrnmnt.h"
 #include "moduldef.h"
 #include "sysdep.h"
-#include "envrnmnt.h"
 
 #include "modulcmp.h"
 

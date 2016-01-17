@@ -67,7 +67,6 @@
 #include "router.h"
 #include "scanner.h"
 
-#define _CLASSPSR_SOURCE_
 #include "classpsr.h"
 
 /* =========================================

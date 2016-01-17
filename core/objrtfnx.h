@@ -35,25 +35,18 @@
 /*************************************************************/
 
 #ifndef _H_objrtfnx
+
+#pragma once
+
 #define _H_objrtfnx
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
 
-#ifndef _H_conscomp
 #include "conscomp.h"
-#endif
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
-#ifndef _H_object
-#include "object.h"
-#endif
-#ifndef _H_match
 #include "match.h"
-#endif
-#ifndef _H_objrtmch
+#include "object.h"
 #include "objrtmch.h"
-#endif
 
 struct ObjectMatchVar1
   {

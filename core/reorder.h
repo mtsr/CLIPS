@@ -41,19 +41,16 @@
 /*************************************************************/
 
 #ifndef _H_reorder
+
+#pragma once
+
 #define _H_reorder
 
 struct lhsParseNode;
 
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
-#ifndef _H_ruledef
-#include "ruledef.h"
-#endif
-#ifndef _H_pattern
 #include "pattern.h"
-#endif
+#include "ruledef.h"
 
 /***********************************************************************/
 /* lhsParseNode structure: Stores information about the intermediate   */

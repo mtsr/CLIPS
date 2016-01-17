@@ -43,6 +43,8 @@
 
 #ifndef _H_filecom
 
+#pragma once
+
 #define _H_filecom
 
    void                           FileCommandDefinitions(void *);

@@ -29,6 +29,8 @@
 
 #ifndef _H_sortfun
 
+#pragma once
+
 #define _H_sortfun
 
    void                           SortFunctionDefinitions(void *);

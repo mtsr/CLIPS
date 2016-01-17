@@ -37,11 +37,12 @@
 /*************************************************************/
 
 #ifndef _H_factfun
+
+#pragma once
+
 #define _H_factfun
 
-#ifndef _H_factmngr
 #include "factmngr.h"
-#endif
 
    void                           FactFunctionDefinitions(void *);
    void                          *FactRelationFunction(void *);

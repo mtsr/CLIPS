@@ -40,23 +40,20 @@
 /*                                                           */
 /*************************************************************/
 
-#define _ARGACCES_SOURCE_
-
 #include "setup.h"
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 
+#include "cstrnchk.h"
 #include "envrnmnt.h"
 #include "extnfunc.h"
-#include "router.h"
-#include "cstrnchk.h"
-#include "insfun.h"
 #include "factmngr.h"
+#include "insfun.h"
 #include "prntutil.h"
+#include "router.h"
 #include "sysdep.h"
 
 #include "argacces.h"

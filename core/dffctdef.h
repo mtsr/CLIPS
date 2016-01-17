@@ -35,29 +35,18 @@
 /*************************************************************/
 
 #ifndef _H_dffctdef
+
+#pragma once
+
 #define _H_dffctdef
 
-#ifndef _H_conscomp
-#include "conscomp.h"
-#endif
-#ifndef _H_symbol
-#include "symbol.h"
-#endif
-#ifndef _H_expressn
-#include "expressn.h"
-#endif
-#ifndef _H_evaluatn
-#include "evaluatn.h"
-#endif
-#ifndef _H_constrct
 #include "constrct.h"
-#endif
-#ifndef _H_moduldef
-#include "moduldef.h"
-#endif
-#ifndef _H_cstrccom
+#include "conscomp.h"
 #include "cstrccom.h"
-#endif
+#include "evaluatn.h"
+#include "expressn.h"
+#include "moduldef.h"
+#include "symbol.h"
 
 #define DEFFACTS_DATA 0
 

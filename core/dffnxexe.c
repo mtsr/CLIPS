@@ -36,11 +36,7 @@
 
 #if DEFFUNCTION_CONSTRUCT
 
-#ifndef _STDIO_INCLUDED_
-#define _STDIO_INCLUDED_
 #include <stdio.h>
-#endif
-
 #include <string.h>
 
 #include "constrct.h"
@@ -52,7 +48,6 @@
 #include "utility.h"
 #include "watch.h"
 
-#define _DFFNXEXE_SOURCE_
 #include "dffnxexe.h"
 
 /* =========================================

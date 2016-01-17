@@ -51,20 +51,16 @@
 
 #ifndef _H_evaluatn
 
+#pragma once
+
 #define _H_evaluatn
 
 struct entityRecord;
 struct dataObject;
 
-#ifndef _H_constant
 #include "constant.h"
-#endif
-#ifndef _H_symbol
 #include "symbol.h"
-#endif
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
 
 struct dataObject
   {

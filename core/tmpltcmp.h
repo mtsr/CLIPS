@@ -39,6 +39,8 @@
 
 #ifndef _H_tmpltcmp
 
+#pragma once
+
 #define _H_tmpltcmp
 
    void                           DeftemplateCompilerSetup(void *);

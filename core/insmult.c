@@ -48,7 +48,6 @@
 #include "multifun.h"
 #include "router.h"
 
-#define _INSMULT_SOURCE_
 #include "insmult.h"
 
 /* =========================================

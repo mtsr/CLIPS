@@ -25,37 +25,30 @@
 /*                                                           */
 /*************************************************************/
 
-#define _ANALYSIS_SOURCE_
-
 #include "setup.h"
 
 #if (! RUN_TIME) && (! BLOAD_ONLY) && DEFRULE_CONSTRUCT
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "constant.h"
-#include "symbol.h"
-#include "memalloc.h"
-#include "exprnpsr.h"
-#include "reorder.h"
-#include "generate.h"
-#include "pattern.h"
-#include "router.h"
-#include "ruledef.h"
 #include "cstrnchk.h"
 #include "cstrnutl.h"
 #include "cstrnops.h"
-#include "rulecstr.h"
+#include "exprnpsr.h"
+#include "generate.h"
+#include "memalloc.h"
 #include "modulutl.h"
-#include "analysis.h"
-
-#include "watch.h"
+#include "pattern.h"
+#include "reorder.h"
+#include "router.h"
+#include "rulecstr.h"
+#include "ruledef.h"
 #include "rulepsr.h"
+#include "symbol.h"
+#include "watch.h"
 
-#if DEFGLOBAL_CONSTRUCT
-#include "globldef.h"
-#endif
+#include "analysis.h"
 
 /***************************************/
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */

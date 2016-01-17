@@ -33,26 +33,23 @@
 /*                                                           */
 /*************************************************************/
 
-#define _FACTLHS_SOURCE_
-
 #include "setup.h"
 
 #if DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT && (! RUN_TIME) && (! BLOAD_ONLY)
 
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 
 #include "cstrcpsr.h"
 #include "envrnmnt.h"
+#include "modulpsr.h"
+#include "modulutl.h"
 #include "pattern.h"
-#include "router.h"
 #include "reorder.h"
-#include "tmpltpsr.h"
+#include "router.h"
 #include "tmpltdef.h"
 #include "tmpltlhs.h"
+#include "tmpltpsr.h"
 #include "tmpltutl.h"
-#include "modulutl.h"
-#include "modulpsr.h"
 
 #include "factlhs.h"
 

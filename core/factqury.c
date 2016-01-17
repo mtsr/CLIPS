@@ -56,7 +56,6 @@
 #include "router.h"
 #include "utility.h"
 
-#define _FACTQURY_SOURCE_
 #include "factqury.h"
 
 /* =========================================

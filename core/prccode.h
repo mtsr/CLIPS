@@ -43,23 +43,16 @@
 /*************************************************************/
 
 #ifndef _H_prccode
+
+#pragma once
+
 #define _H_prccode
 
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
-#ifndef _H_moduldef
 #include "moduldef.h"
-#endif
-#ifndef _H_scanner
 #include "scanner.h"
-#endif
-#ifndef _H_symbol
 #include "symbol.h"
-#endif
 
 typedef struct ProcParamStack
   {

@@ -54,8 +54,6 @@
 /*                                                           */
 /*************************************************************/
 
-#define _ENVRNMNT_SOURCE_
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

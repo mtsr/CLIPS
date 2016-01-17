@@ -60,7 +60,6 @@
 #include "router.h"
 #include "utility.h"
 
-#define _GENRCEXE_SOURCE_
 #include "genrcexe.h"
 
 /* =========================================

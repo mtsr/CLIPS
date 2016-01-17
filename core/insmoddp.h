@@ -35,6 +35,9 @@
 /*************************************************************/
 
 #ifndef _H_insmoddp
+
+#pragma once
+
 #define _H_insmoddp
 
 #define DIRECT_MODIFY_STRING    "direct-modify"

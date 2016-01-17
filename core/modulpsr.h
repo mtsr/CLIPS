@@ -29,6 +29,9 @@
 /*************************************************************/
 
 #ifndef _H_modulpsr
+
+#pragma once
+
 #define _H_modulpsr
 
 struct portConstructItem
@@ -38,15 +41,9 @@ struct portConstructItem
    struct portConstructItem *next;
   };
 
-#ifndef _H_symbol
-#include "symbol.h"
-#endif
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
-#ifndef _H_moduldef
 #include "moduldef.h"
-#endif
+#include "symbol.h"
 
    void                           SetNumberOfDefmodules(void *,long);
    void                           AddAfterModuleDefinedFunction(void *,const char *,void (*)(void *),int);

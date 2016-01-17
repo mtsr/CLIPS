@@ -34,10 +34,7 @@
 /*                                                           */
 /*************************************************************/
 
-#define _RETRACT_SOURCE_
-
 #include <stdio.h>
-#define _STDIO_INCLUDED_
 #include <stdlib.h>
 
 #include "setup.h"

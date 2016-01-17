@@ -29,17 +29,13 @@
 
 #ifndef _H_tmpltrhs
 
+#pragma once
+
 #define _H_tmpltrhs
 
-#ifndef _H_scanner
-#include "scanner.h"
-#endif
-#ifndef _H_expressn
 #include "expressn.h"
-#endif
-#ifndef _H_tmpltdef
+#include "scanner.h"
 #include "tmpltdef.h"
-#endif
 
    struct expr                   *ParseAssertTemplate(void *,const char *,struct token *,bool *,
                                                              int,bool,struct deftemplate *);

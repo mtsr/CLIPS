@@ -32,11 +32,11 @@
 
 #ifndef _H_factrete
 
+#pragma once
+
 #define _H_factrete
 
-#ifndef _H_evaluatn
 #include "evaluatn.h"
-#endif
 
    bool                           FactPNGetVar1(void *,void *,DATA_OBJECT_PTR);
    bool                           FactPNGetVar2(void *,void *,DATA_OBJECT_PTR);

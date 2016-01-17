@@ -60,7 +60,6 @@
 #include "scanner.h"
 #include "strngrtr.h"
 
-#define _FACTQPSR_SOURCE_
 #include "factqpsr.h"
 
 /* =========================================
