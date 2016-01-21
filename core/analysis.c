@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*                  ANALYSIS MODULE                    */
    /*******************************************************/
@@ -22,6 +22,8 @@
 /*      6.24: Renamed BOOLEAN macro type to intBool.         */
 /*                                                           */
 /*      6.30: Join network rework and optimizations.         */
+/*                                                           */
+/*      6.40: Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
 
@@ -909,8 +911,7 @@ static bool UnboundVariablesInPattern(
 
          else if (((andField->type == INTEGER) || (andField->type == FLOAT) ||
                    (andField->type == SYMBOL) || (andField->type == STRING) ||
-                   (andField->type == INSTANCE_NAME)) &&
-                  EnvGetStaticConstraintChecking(theEnv))
+                   (andField->type == INSTANCE_NAME)))
            {
             result = ConstraintCheckValue(theEnv,andField->type,andField->value,theConstraints);
             if (result != NO_VIOLATION)
@@ -965,8 +966,7 @@ static struct lhsParseNode *CheckExpression(
                                           whichCE,slotName,theField);
             return(exprPtr);
            }
-         else if ((UnmatchableConstraint(exprPtr->constraints)) &&
-                  EnvGetStaticConstraintChecking(theEnv))
+         else if (UnmatchableConstraint(exprPtr->constraints))
            {
             ConstraintReferenceErrorMessage(theEnv,(SYMBOL_HN *) exprPtr->value,lastOne,i,
                                             whichCE,slotName,theField);

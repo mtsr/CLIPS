@@ -1,6 +1,5 @@
 (set-dynamic-constraint-checking FALSE)
 (set-sequence-operator-recognition FALSE)
-(set-static-constraint-checking TRUE)
 (set-reset-globals TRUE)
 (set-auto-float-dividend TRUE)
 (set-fact-duplication FALSE)

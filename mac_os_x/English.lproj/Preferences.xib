@@ -213,19 +213,8 @@
                             <tabViewItem label="Options" identifier="2" id="8">
                                 <view key="view" id="9">
                                     <rect key="frame" x="10" y="33" width="501" height="197"/>
-                                    <autoresizingMask key="autoresizingMask"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
-                                        <button id="28">
-                                            <rect key="frame" x="18" y="78" width="189" height="18"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <buttonCell key="cell" type="check" title="Static Constraint Checking" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="174">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <binding destination="101" name="value" keyPath="values.staticConstraintChecking" id="128"/>
-                                            </connections>
-                                        </button>
                                         <button id="29">
                                             <rect key="frame" x="324" y="38" width="124" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>

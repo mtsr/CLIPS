@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*                 CONSTRAINT MODULE                   */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*            Changed integer type/precision.                */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.40: Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
 
@@ -79,9 +81,7 @@ void InitializeConstraints(
 #endif
 
    AllocateEnvironmentData(theEnv,CONSTRAINT_DATA,sizeof(struct constraintData),DeallocateConstraintData);
-   
-   ConstraintData(theEnv)->StaticConstraintChecking = true;
-   
+      
 #if (! RUN_TIME) && (! BLOAD_ONLY)
 
     ConstraintData(theEnv)->ConstraintHashtable = (struct constraintRecord **)
@@ -96,9 +96,6 @@ void InitializeConstraints(
 #if (! RUN_TIME)
    EnvDefineFunction2(theEnv,"get-dynamic-constraint-checking",'b', PTIEF GDCCommand,"GDCCommand", "00");
    EnvDefineFunction2(theEnv,"set-dynamic-constraint-checking",'b', PTIEF SDCCommand,"SDCCommand", "11");
-
-   EnvDefineFunction2(theEnv,"get-static-constraint-checking",'b', PTIEF GSCCommand,"GSCCommand", "00");
-   EnvDefineFunction2(theEnv,"set-static-constraint-checking",'b', PTIEF SSCCommand,"SSCCommand", "11");
 #endif
   }
   
@@ -534,48 +531,6 @@ bool GDCCommand(
    return(oldValue);
   }
 
-/*********************************************/
-/* SSCCommand: H/L access routine for the    */
-/*   set-static-constraint-checking command. */
-/*********************************************/
-bool SSCCommand(
-  void *theEnv)
-  {
-   bool oldValue;
-   DATA_OBJECT arg_ptr;
-
-   oldValue = EnvGetStaticConstraintChecking(theEnv);
-
-   if (EnvArgCountCheck(theEnv,"set-static-constraint-checking",EXACTLY,1) == -1)
-     { return(oldValue); }
-
-   EnvRtnUnknown(theEnv,1,&arg_ptr);
-
-   if ((arg_ptr.value == EnvFalseSymbol(theEnv)) && (arg_ptr.type == SYMBOL))
-     { EnvSetStaticConstraintChecking(theEnv,false); }
-   else
-     { EnvSetStaticConstraintChecking(theEnv,true); }
-
-   return(oldValue);
-  }
-
-/*********************************************/
-/* GSCCommand: H/L access routine for the    */
-/*   get-static-constraint-checking command. */
-/*********************************************/
-bool GSCCommand(
-  void *theEnv)
-  {
-   bool oldValue;
-
-   oldValue = EnvGetStaticConstraintChecking(theEnv);
-
-   if (EnvArgCountCheck(theEnv,"get-static-constraint-checking",EXACTLY,0) == -1)
-     { return(oldValue); }
-
-   return(oldValue);
-  }
-
 /******************************************************/
 /* EnvSetDynamicConstraintChecking: C access routine  */
 /*   for the set-dynamic-constraint-checking command. */
@@ -598,30 +553,5 @@ bool EnvGetDynamicConstraintChecking(
   void *theEnv)
   { 
    return(ConstraintData(theEnv)->DynamicConstraintChecking); 
-  }
-
-/*****************************************************/
-/* EnvSetStaticConstraintChecking: C access routine  */
-/*   for the set-static-constraint-checking command. */
-/*****************************************************/
-bool EnvSetStaticConstraintChecking(
-  void *theEnv,
-  bool value)
-  {
-   bool ov;
-
-   ov = ConstraintData(theEnv)->StaticConstraintChecking;
-   ConstraintData(theEnv)->StaticConstraintChecking = value;
-   return(ov);
-  }
-
-/*****************************************************/
-/* EnvGetStaticConstraintChecking: C access routine  */
-/*   for the get-static-constraint-checking command. */
-/*****************************************************/
-bool EnvGetStaticConstraintChecking(
-  void *theEnv)
-  {    
-   return(ConstraintData(theEnv)->StaticConstraintChecking); 
   }
 

@@ -47,7 +47,6 @@
          [NSNumber numberWithInt: WHEN_DEFINED],   @"salienceEvaluation", 
          [NSNumber numberWithInt: DEPTH_STRATEGY], @"strategy", 
          
-         [NSNumber numberWithBool:YES], @"staticConstraintChecking",
          [NSNumber numberWithBool:NO],  @"dynamicConstraintChecking",
          [NSNumber numberWithBool:YES], @"resetGlobalVariables",
          [NSNumber numberWithBool:NO],  @"sequenceExpansionOperatorRecognition",

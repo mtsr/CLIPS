@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*                  CLASS PARSER MODULE                */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*                                                            */
 /*            Added const qualifiers to remove C++            */
 /*            deprecation warnings.                           */
+/*                                                            */
+/*      6.40: Static constraint checking is always enabled.   */
 /*                                                            */
 /**************************************************************/
 
@@ -842,7 +844,7 @@ static bool EvaluateSlotDefaultValue(
         {
          oldce = ExecutingConstruct(theEnv);
          SetExecutingConstruct(theEnv,true);
-         olddcc = EnvSetDynamicConstraintChecking(theEnv,EnvGetStaticConstraintChecking(theEnv));
+         olddcc = EnvSetDynamicConstraintChecking(theEnv,true);
          vPass = EvaluateAndStoreInDataObject(theEnv,sd->multiple,
                   (EXPRESSION *) sd->defaultValue,&temp,true);
          if (vPass != false)
@@ -871,7 +873,7 @@ static bool EvaluateSlotDefaultValue(
          ValueInstall(theEnv,(DATA_OBJECT *) sd->defaultValue);
         }
      }
-   else if (EnvGetStaticConstraintChecking(theEnv))
+   else
      {
       vCode = ConstraintCheckExpressionChain(theEnv,(EXPRESSION *) sd->defaultValue,sd->constraint);
       if (vCode != NO_VIOLATION)

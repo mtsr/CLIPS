@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*            DEFTEMPLATE UTILITIES MODULE             */
    /*******************************************************/
@@ -43,6 +43,8 @@
 /*                                                           */
 /*            Watch facts for modify command only prints     */
 /*            changed slots.                                 */
+/*                                                           */
+/*            Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
 
@@ -230,7 +232,6 @@ bool CheckRHSSlotTypes(
    int rv;
    const char *theName;
 
-   if (EnvGetStaticConstraintChecking(theEnv) == false) return(true);
    rv = ConstraintCheckExpressionChain(theEnv,rhsSlots,slotPtr->constraints);
    if (rv != NO_VIOLATION)
      {

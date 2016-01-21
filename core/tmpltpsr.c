@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*              DEFTEMPLATE PARSER MODULE              */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*            Changed find construct functionality so that   */
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
+/*                                                           */
+/*      6.40: Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
 
@@ -425,7 +427,7 @@ static struct templateSlot *ParseSlot(
    else
      { rv = NO_VIOLATION; }
 
-   if ((rv != NO_VIOLATION) && EnvGetStaticConstraintChecking(theEnv))
+   if (rv != NO_VIOLATION)
      {
       const char *temp;
       if (newSlot->defaultDynamic) temp = "the default-dynamic attribute";

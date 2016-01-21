@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*                CONSTRAINT HEADER FILE               */
    /*******************************************************/
@@ -32,6 +32,8 @@
 /*            Changed integer type/precision.                */
 /*                                                           */
 /*            Converted API macros to function calls.        */
+/*                                                           */
+/*      6.40: Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
 
@@ -88,7 +90,6 @@ typedef struct constraintRecord CONSTRAINT_RECORD;
 struct constraintData
   { 
    struct constraintRecord **ConstraintHashtable;
-   bool StaticConstraintChecking;
    bool DynamicConstraintChecking;
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE) && (! RUN_TIME)
    struct constraintRecord *ConstraintArray;
@@ -101,12 +102,8 @@ struct constraintData
    void                           InitializeConstraints(void *);
    bool                           GDCCommand(void *);
    bool                           SDCCommand(void *d);
-   bool                           GSCCommand(void *);
-   bool                           SSCCommand(void *);
    bool                           EnvSetDynamicConstraintChecking(void *,bool);
    bool                           EnvGetDynamicConstraintChecking(void *);
-   bool                           EnvSetStaticConstraintChecking(void *,bool);
-   bool                           EnvGetStaticConstraintChecking(void *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    unsigned long                  HashConstraint(struct constraintRecord *);
    struct constraintRecord       *AddConstraint(void *,struct constraintRecord *);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Removed initial-object support.                */
+/*                                                           */
+/*            Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
 /* =========================================
@@ -490,8 +492,6 @@ static bool ReorderAndAnalyzeObjectPattern(
       ========================================================== */
    topNode->right = FilterObjectPattern(theEnv,topNode->patternType,topNode->right,
                                         &bitmap_node,&isa_node,&name_node);
-   if (EnvGetStaticConstraintChecking(theEnv) == false)
-     return(false);
 
    /* ============================================
       Allocate a temporary set for marking classes
