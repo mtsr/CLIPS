@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*                DEFGLOBAL HEADER FILE                */
    /*******************************************************/
@@ -42,6 +42,8 @@
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
 /*                                                           */
+/*      6.40: Reset globals behavior always enabled.         */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_globldef
@@ -68,7 +70,6 @@ struct defglobalData
 #if DEBUGGING_FUNCTIONS
    unsigned WatchGlobals;
 #endif
-   bool ResetGlobals;
    struct entityRecord GlobalInfo;
    struct entityRecord DefglobalPtrRecord;
    long LastModuleIndex;

@@ -85,22 +85,6 @@ CLIPS> (ppdefglobal z)
 (defglobal MAIN ?*z* = (+ 4 ?*x*))
 CLIPS> (ppdefglobal q)
 (defglobal MAIN ?*q* = (create$ a b c))
-CLIPS> (get-reset-globals)
-TRUE
-CLIPS> (get-reset-globals TRUE)
-[ARGACCES4] Function get-reset-globals expected exactly 0 argument(s)
-CLIPS> (set-reset-globals)
-[ARGACCES4] Function set-reset-globals expected exactly 1 argument(s)
-CLIPS> (set-reset-globals TRUE FALSE)
-[ARGACCES4] Function set-reset-globals expected exactly 1 argument(s)
-CLIPS> (set-reset-globals 10)
-TRUE
-CLIPS> (get-reset-globals)
-TRUE
-CLIPS> (set-reset-globals FALSE)
-TRUE
-CLIPS> (get-reset-globals)
-FALSE
 CLIPS> (bind ?*x* a)
 a
 CLIPS> (bind ?*y* 3.2)
@@ -109,16 +93,11 @@ CLIPS> (bind ?*z* [x])
 [x]
 CLIPS> (bind ?*q* "red")
 "red"
-CLIPS> (reset)
 CLIPS> (show-defglobals)
 ?*x* = a
 ?*y* = 3.2
 ?*z* = [x]
 ?*q* = "red"
-CLIPS> (set-reset-globals TRUE)
-FALSE
-CLIPS> (get-reset-globals)
-TRUE
 CLIPS> (reset)
 CLIPS> (show-defglobals)
 ?*x* = 3

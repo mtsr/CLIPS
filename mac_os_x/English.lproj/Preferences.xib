@@ -216,7 +216,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <button id="29">
-                                            <rect key="frame" x="324" y="38" width="124" height="18"/>
+                                            <rect key="frame" x="18" y="38" width="124" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <buttonCell key="cell" type="check" title="Fact Duplication" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="175">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
@@ -246,17 +246,6 @@
                                             </buttonCell>
                                             <connections>
                                                 <binding destination="101" name="value" keyPath="values.sequenceExpansionOperatorRecognition" id="131"/>
-                                            </connections>
-                                        </button>
-                                        <button id="33">
-                                            <rect key="frame" x="18" y="38" width="163" height="18"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <buttonCell key="cell" type="check" title="Reset Global Variables" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="179">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <binding destination="101" name="value" keyPath="values.resetGlobalVariables" id="130"/>
                                             </connections>
                                         </button>
                                         <button id="34">

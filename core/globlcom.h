@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*            DEFGLOBAL COMMANDS HEADER FILE           */
    /*******************************************************/
@@ -30,6 +30,8 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*      6.40: Reset globals behavior always enabled.         */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_globlcom
@@ -39,10 +41,6 @@
 #define _H_globlcom
 
    void                           DefglobalCommandDefinitions(void *);
-   bool                           SetResetGlobalsCommand(void *);
-   bool                           EnvSetResetGlobals(void *,bool);
-   bool                           GetResetGlobalsCommand(void *);
-   bool                           EnvGetResetGlobals(void *);
    void                           ShowDefglobalsCommand(void *);
    void                           EnvShowDefglobals(void *,const char *,void *);
 
