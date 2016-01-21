@@ -139,10 +139,13 @@ bool EvaluateExpression(
    struct expr *oldArgument;
    void *oldContext;
    struct FunctionDefinition *fptr;
+   UDFContext theUDFContext;
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
 
+   returnValue->environment = theEnv;
+   returnValue->type = RVOID;
    if (problem == NULL)
      {
       returnValue->type = SYMBOL;
@@ -281,6 +284,12 @@ bool EvaluateExpression(
             case 'n' :
             case 'u' :
               (* (void (*)(void *,DATA_OBJECT_PTR)) fptr->functionPointer)(theEnv,returnValue);
+              break;
+
+            case 'z' :
+              theUDFContext.environment = theEnv;
+              theUDFContext.theFunction = fptr;
+              (* (void (*)(UDFContext *,DATA_OBJECT_PTR)) fptr->functionPointer)(&theUDFContext,returnValue);
               break;
 
             default :
@@ -1078,6 +1087,175 @@ bool EvaluateAndStoreInDataObject(
      StoreInMultifield(theEnv,val,theExp,garbageSegment);
    
    return(EvaluationData(theEnv)->EvaluationError ? false : true);
+  }
+
+/***********/
+/* CVInit: */
+/***********/
+void CVInit(
+  void *theEnv,
+  CLIPSValue *rv)
+  {
+   rv->environment = theEnv;
+  }
+
+/****************/
+/* CVToInteger: */
+/****************/
+CLIPSInteger CVToInteger(
+  CLIPSValue *value)
+  {
+   if (value->type == INTEGER)
+     { return DOPToLong(value); }
+   else if (value->type == FLOAT)
+     { return (long long) DOPToDouble(value); }
+   return 0LL;
+  }
+
+/**************/
+/* CVToFloat: */
+/**************/
+CLIPSFloat CVToFloat(
+  CLIPSValue *value)
+  {
+   if (value->type == FLOAT)
+     { return DOPToDouble(value); }
+   else if (value->type == INTEGER)
+     { return (double) DOPToLong(value); }
+     
+   return 0.0;
+  }
+
+/**************/
+/* CVSetVoid: */
+/**************/
+void CVSetVoid(
+  CLIPSValue *rv)
+  {
+   rv->type = RVOID;
+  }
+
+/*****************/
+/* CVSetBoolean: */
+/*****************/
+void CVSetBoolean(
+  CLIPSValue *rv,
+  bool value)
+  {
+   rv->type = SYMBOL;
+   if (value)
+     { rv->value = EnvTrueSymbol(rv->environment); }
+   else
+     { rv->value = EnvFalseSymbol(rv->environment); }
+  }
+
+/*****************/
+/* CVSetInteger: */
+/*****************/
+void CVSetInteger(
+  CLIPSValue *rv,
+  long long integerValue)
+  {
+   rv->type = INTEGER;
+   rv->value = EnvAddLong(rv->environment,integerValue);
+  }
+
+/***************/
+/* CVSetFloat: */
+/***************/
+void CVSetFloat(
+  CLIPSValue *rv,
+  CLIPSFloat floatValue)
+  {
+   rv->type = FLOAT;
+   rv->value = EnvAddDouble(rv->environment,floatValue);
+  }
+
+/****************/
+/* CVSetSymbol: */
+/****************/
+void CVSetSymbol(
+  CLIPSValue *rv,
+  const char *stringValue)
+  {
+   rv->type = SYMBOL;
+   rv->value = EnvAddSymbol(rv->environment,stringValue);
+  }
+
+/********************/
+/* CVSetCLIPSValue: */
+/********************/
+void CVSetCLIPSValue(
+  CLIPSValue *rv,
+  CLIPSValue *cv)
+  {
+   rv->type = cv->type;
+   rv->value = cv->value;
+  }
+
+/********************/
+/* CVIsFalseSymbol: */
+/********************/
+bool CVIsFalseSymbol(
+  CLIPSValue *value)
+  {
+   if (value->type != SYMBOL) return false;
+    
+   return (value->value == EnvFalseSymbol(value->environment));
+  }
+
+/*******************/
+/* CVIsTrueSymbol: */
+/*******************/
+bool CVIsTrueSymbol(
+  CLIPSValue *value)
+  {
+   if (value->type != SYMBOL) return false;
+    
+   return (value->value == EnvTrueSymbol(value->environment));
+  }
+
+/*************/
+/* CVIsType: */
+/*************/
+bool CVIsType(
+  CLIPSValue *value,
+  unsigned cvType)
+  {
+   switch (value->type)
+     {
+      case RVOID:
+        return (cvType & VOID_TYPE);
+      
+      case INTEGER:
+        return (cvType & INTEGER_TYPE);
+      
+      case FLOAT:
+        return (cvType & FLOAT_TYPE);
+      
+      case STRING:
+        return (cvType & STRING_TYPE);
+      
+      case SYMBOL:
+        return (cvType & SYMBOL_TYPE);
+      
+      case INSTANCE_NAME:
+        return (cvType & INSTANCE_NAME_TYPE);
+      
+      case MULTIFIELD:
+        return (cvType & MULTIFIELD_TYPE);
+      
+      case INSTANCE_ADDRESS:
+        return (cvType & INSTANCE_ADDRESS_TYPE);
+      
+      case FACT_ADDRESS:
+        return (cvType & FACT_ADDRESS_TYPE);
+
+      case EXTERNAL_ADDRESS:
+        return (cvType & EXTERNAL_ADDRESS_TYPE);
+     }
+     
+   return false;
   }
 
 /******************/

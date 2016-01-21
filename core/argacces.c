@@ -272,6 +272,7 @@ DATA_OBJECT_PTR EnvRtnUnknown(
 
    if (argPtr == NULL)
      {
+      returnValue->environment = theEnv;
       NonexistantError(theEnv,"RtnUnknown",
                        ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)),
                        argumentPosition);
@@ -888,6 +889,23 @@ bool CheckFunctionArgCount(
   }
 
 /*******************************************************************/
+/* ExpectedTypeError0: Prints the error message for the wrong type */
+/*   of argument passed to a user or system defined function.      */
+/*******************************************************************/
+void ExpectedTypeError0(
+  void *theEnv,
+  const char *functionName,
+  int whichArg)
+  {
+   PrintErrorID(theEnv,"ARGACCES",5,false);
+   EnvPrintRouter(theEnv,WERROR,"Function ");
+   EnvPrintRouter(theEnv,WERROR,functionName);
+   EnvPrintRouter(theEnv,WERROR," expected argument #");
+   PrintLongInteger(theEnv,WERROR,(long int) whichArg);
+   EnvPrintRouter(theEnv,WERROR," to be of type ");
+  }
+
+/*******************************************************************/
 /* ExpectedTypeError1: Prints the error message for the wrong type */
 /*   of argument passed to a user or system defined function. The  */
 /*   expected type is passed as a string to this function.         */
@@ -898,12 +916,7 @@ void ExpectedTypeError1(
   int whichArg,
   const char *expectedType)
   {
-   PrintErrorID(theEnv,"ARGACCES",5,false);
-   EnvPrintRouter(theEnv,WERROR,"Function ");
-   EnvPrintRouter(theEnv,WERROR,functionName);
-   EnvPrintRouter(theEnv,WERROR," expected argument #");
-   PrintLongInteger(theEnv,WERROR,(long int) whichArg);
-   EnvPrintRouter(theEnv,WERROR," to be of type ");
+   ExpectedTypeError0(theEnv,functionName,whichArg);
    EnvPrintRouter(theEnv,WERROR,expectedType);
    EnvPrintRouter(theEnv,WERROR,"\n");
   }

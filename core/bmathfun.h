@@ -38,15 +38,15 @@
    void                    SubtractionFunction(void *,DATA_OBJECT_PTR);
    void                    DivisionFunction(void *,DATA_OBJECT_PTR);
    long long               DivFunction(void *);
-   bool                    SetAutoFloatDividendCommand(void *);
-   bool                    GetAutoFloatDividendCommand(void *);
+   void                    SetAutoFloatDividendCommand(UDFContext *,CLIPSValue *);
+   void                    GetAutoFloatDividendCommand(UDFContext *,CLIPSValue *);
    bool                    EnvGetAutoFloatDividend(void *);
    bool                    EnvSetAutoFloatDividend(void *,bool);
-   long long               IntegerFunction(void *);
-   double                  FloatFunction(void *);
-   void                    AbsFunction(void *,DATA_OBJECT_PTR);
-   void                    MinFunction(void *,DATA_OBJECT_PTR);
-   void                    MaxFunction(void *,DATA_OBJECT_PTR);
+   void                    IntegerFunction(UDFContext *,CLIPSValue *);
+   void                    FloatFunction(UDFContext *,CLIPSValue *);
+   void                    AbsFunction(UDFContext *,CLIPSValue *);
+   void                    MinFunction(UDFContext *,CLIPSValue *);
+   void                    MaxFunction(UDFContext *,CLIPSValue *);
 
 #endif
 

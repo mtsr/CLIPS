@@ -75,7 +75,8 @@ typedef struct saved_contexts
 #if (! RUN_TIME)
 
    bool                           CheckExpressionAgainstRestrictions(void *,struct expr *,
-                                                                            const char *,const char *);
+                                                                     struct FunctionDefinition *,const char *);
+   void                           PopulateRestriction(unsigned *,unsigned,const char *,int);
 #endif
 
 #endif /* _H_exprnpsr */

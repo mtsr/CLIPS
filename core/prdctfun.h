@@ -37,14 +37,14 @@
    void                           PredicateFunctionDefinitions(void *);
    bool                           EqFunction(void *);
    bool                           NeqFunction(void *);
-   bool                           StringpFunction(void *);
-   bool                           SymbolpFunction(void *);
-   bool                           LexemepFunction(void *);
-   bool                           NumberpFunction(void *);
-   bool                           FloatpFunction(void *);
-   bool                           IntegerpFunction(void *);
-   bool                           MultifieldpFunction(void *);
-   bool                           PointerpFunction(void *);
+   void                           StringpFunction(UDFContext *,CLIPSValue *);
+   void                           SymbolpFunction(UDFContext *,CLIPSValue *);
+   void                           LexemepFunction(UDFContext *,CLIPSValue *);
+   void                           NumberpFunction(UDFContext *,CLIPSValue *);
+   void                           FloatpFunction(UDFContext *,CLIPSValue *);
+   void                           IntegerpFunction(UDFContext *,CLIPSValue *);
+   void                           MultifieldpFunction(UDFContext *,CLIPSValue *);
+   void                           PointerpFunction(UDFContext *,CLIPSValue *);
    bool                           NotFunction(void *);
    bool                           AndFunction(void *);
    bool                           OrFunction(void *);
@@ -54,8 +54,8 @@
    bool                           GreaterThanFunction(void *);
    bool                           NumericEqualFunction(void *);
    bool                           NumericNotEqualFunction(void *);
-   bool                           OddpFunction(void *);
-   bool                           EvenpFunction(void *);
+   void                           OddpFunction(UDFContext *,CLIPSValue *);
+   void                           EvenpFunction(UDFContext *,CLIPSValue *);
 
 #endif /* _H_prdctfun */
 

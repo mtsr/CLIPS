@@ -37,6 +37,7 @@
    CONSTRAINT_RECORD             *ArgumentTypeToConstraintRecord(void *,int);
    CONSTRAINT_RECORD             *FunctionCallToConstraintRecord(void *,void *);
    CONSTRAINT_RECORD             *ExpressionToConstraintRecord(void *,struct expr *);
+   CONSTRAINT_RECORD             *ArgumentTypeToConstraintRecord2(void *,unsigned);
 
 #endif /* _H_cstrnutl */
 

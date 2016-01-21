@@ -32,9 +32,9 @@ CLIPS> (read 1 1)                        ; DR0114 - Error
 CLIPS> (readline 1 1)                    ; DR0114 - Error
 [ARGACCES4] Function readline expected no more than 1 argument(s)
 CLIPS> (min)                             ; DR0114 - Error
-[ARGACCES4] Function min expected at least 2 argument(s)
+[ARGACCES4] Function min expected at least 1 argument(s)
 CLIPS> (max)                             ; DR0114 - Error
-[ARGACCES4] Function max expected at least 2 argument(s)
+[ARGACCES4] Function max expected at least 1 argument(s)
 CLIPS> (pi 1)                            ; DR0114 - Error
 [ARGACCES4] Function pi expected exactly 0 argument(s)
 CLIPS> (halt 1)                          ; DR0114 - Error
@@ -107,7 +107,7 @@ For a total of 4 activations.
 CLIPS> (setgen 1)                        ; DR0156
 1
 CLIPS> (setgen -1)                       ; DR0156
-[ARGACCES5] Function setgen expected argument #1 to be of type number (greater than or equal to 1)
+[ARGACCES5] Function setgen expected argument #1 to be of type integer (greater than or equal to 1)
 1
 CLIPS> (gensym)                          ; DR0156
 gen1

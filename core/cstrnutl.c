@@ -440,7 +440,7 @@ CONSTRAINT_RECORD *ExpressionToConstraintRecord(
 
    rv = GetConstraintRecord(theEnv);
    rv->anyAllowed = false;
-
+   // TBD Switch
    if (theExpression->type == FLOAT)
      {
       rv->floatRestriction = true;
@@ -488,6 +488,9 @@ CONSTRAINT_RECORD *FunctionCallToConstraintRecord(
   {
    CONSTRAINT_RECORD *rv;
 
+   if (ValueFunctionType(theFunction) == 'z')
+     { return ArgumentTypeToConstraintRecord2(theEnv,UnknownFunctionType(theFunction)); }
+     
    rv = GetConstraintRecord(theEnv);
    rv->anyAllowed = false;
 
@@ -561,6 +564,61 @@ CONSTRAINT_RECORD *FunctionCallToConstraintRecord(
         break;
      }
 
+   return(rv);
+  }
+
+/*********************************************/
+/* ArgumentTypeToConstraintRecord2: Uses the */
+/*   new argument type codes for 6.4.        */
+/*********************************************/
+CONSTRAINT_RECORD *ArgumentTypeToConstraintRecord2(
+  void *theEnv,
+  unsigned bitTypes)
+  {
+   CONSTRAINT_RECORD *rv;
+
+   rv = GetConstraintRecord(theEnv);
+   rv->anyAllowed = false;
+
+   if (bitTypes & VOID_TYPE)
+     { rv->voidAllowed = true; }
+   if (bitTypes & FLOAT_TYPE)
+     { rv->floatsAllowed = true; }
+   if (bitTypes & INTEGER_TYPE)
+     { rv->integersAllowed = true; }
+   if (bitTypes & SYMBOL_TYPE)
+     { rv->symbolsAllowed = true; }
+   if (bitTypes & STRING_TYPE)
+     { rv->stringsAllowed = true; }
+   if (bitTypes & MULTIFIELD_TYPE)
+     { rv->multifieldsAllowed = true; }
+   if (bitTypes & EXTERNAL_ADDRESS_TYPE)
+     { rv->externalAddressesAllowed = true; }
+   if (bitTypes & FACT_ADDRESS_TYPE)
+     { rv->factAddressesAllowed = true; }
+   if (bitTypes & INSTANCE_ADDRESS_TYPE)
+     { rv->instanceAddressesAllowed = true; }
+   if (bitTypes & INSTANCE_NAME_TYPE)
+     { rv->instanceNamesAllowed = true; }
+   if (bitTypes & BOOLEAN_TYPE)
+     { rv->symbolsAllowed = true; }
+   /*
+   if (bitTypes & NUMBER_TYPES)
+     {
+      rv->floatsAllowed = true;
+      rv->integersAllowed = true;
+     }
+   if (bitTypes & LEXEME_TYPES)
+     {
+      rv->symbolsAllowed = true;
+      rv->stringsAllowed = true;
+     }
+   if (bitTypes & INSTANCE_TYPES)
+     {
+      rv->instanceAddressesAllowed = true;
+      rv->instanceNamesAllowed = true;
+     }
+   */
    return(rv);
   }
 

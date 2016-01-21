@@ -1281,6 +1281,7 @@ struct lhsParseNode *ExpressionToLHSParseNodes(
    struct lhsParseNode *newList, *theList;
    struct FunctionDefinition *theFunction;
    int i, theRestriction;
+   unsigned theRestriction2;
 
    /*===========================================*/
    /* A NULL expression requires no conversion. */
@@ -1314,8 +1315,17 @@ struct lhsParseNode *ExpressionToLHSParseNodes(
      {
       if (theList->type == SF_VARIABLE)
         {
-         theRestriction = GetNthRestriction(theFunction,i);
-         theList->constraints = ArgumentTypeToConstraintRecord(theEnv,theRestriction);
+         if (theFunction->returnValueType != 'z')
+           {
+            theRestriction = GetNthRestriction(theFunction,i);
+            theList->constraints = ArgumentTypeToConstraintRecord(theEnv,theRestriction);
+           }
+         else
+           {
+            theRestriction2 = GetNthRestriction2(theFunction,i);
+            theList->constraints = ArgumentTypeToConstraintRecord2(theEnv,theRestriction2);
+           }
+         
          theList->derivedConstraints = true;
         }
      }

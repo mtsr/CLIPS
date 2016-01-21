@@ -58,12 +58,19 @@
 struct entityRecord;
 struct dataObject;
 
+typedef struct dataObject DATA_OBJECT;
+typedef struct dataObject * DATA_OBJECT_PTR;
+typedef struct dataObject CLIPSValue;
+typedef struct dataObject * CLIPSValuePtr;
+typedef struct expr FUNCTION_REFERENCE;
+
 #include "constant.h"
 #include "symbol.h"
 #include "expressn.h"
 
 struct dataObject
   {
+   void *environment;
    void *supplementalInfo;
    unsigned short type;
    void *value;
@@ -71,11 +78,6 @@ struct dataObject
    long end;
    struct dataObject *next;
   };
-
-typedef struct dataObject DATA_OBJECT;
-typedef struct dataObject * DATA_OBJECT_PTR;
-
-typedef struct expr FUNCTION_REFERENCE;
 
 #define DATA_OBJECT_PTR_ARG DATA_OBJECT_PTR
 
@@ -233,5 +235,18 @@ struct evaluationData
    bool                           GetFunctionReference(void *,const char *,FUNCTION_REFERENCE *);
    bool                           DOsEqual(DATA_OBJECT_PTR,DATA_OBJECT_PTR);
    bool                           EvaluateAndStoreInDataObject(void *,bool,EXPRESSION *,DATA_OBJECT *,bool);
+
+   void                           CVInit(void *,CLIPSValue *);
+   CLIPSInteger                   CVToInteger(CLIPSValue *);
+   CLIPSFloat                     CVToFloat(CLIPSValue *);
+   bool                           CVIsType(CLIPSValue *,unsigned);
+   bool                           CVIsFalseSymbol(CLIPSValue *);
+   bool                           CVIsTrueSymbol(CLIPSValue *);
+   void                           CVSetVoid(CLIPSValue *);
+   void                           CVSetBoolean(CLIPSValue *,bool);
+   void                           CVSetSymbol(CLIPSValue *,const char *);
+   void                           CVSetInteger(CLIPSValue *,long long);
+   void                           CVSetFloat(CLIPSValue *,CLIPSFloat);
+   void                           CVSetCLIPSValue(CLIPSValue *,CLIPSValue *);
 
 #endif /* _H_evaluatn */

@@ -49,7 +49,6 @@
 #include <signal.h>
 #endif
 
-
 /***************************************/
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/

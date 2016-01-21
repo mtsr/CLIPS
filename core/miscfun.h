@@ -74,9 +74,9 @@
 
    void                           MiscFunctionDefinitions(void *);
    void                           CreateFunction(void *,DATA_OBJECT_PTR);
-   long long                      SetgenFunction(void *);
-   void                          *GensymFunction(void *);
-   void                          *GensymStarFunction(void *);
+   void                           SetgenFunction(UDFContext *,CLIPSValue *);
+   void                           GensymFunction(UDFContext *,CLIPSValue *);
+   void                           GensymStarFunction(UDFContext *,CLIPSValue *);
    long long                      RandomFunction(void *);
    void                           SeedFunction(void *);
    long long                      LengthFunction(void *);
@@ -84,7 +84,7 @@
    long long                      ReleaseMemCommand(void *);
    long long                      MemUsedCommand(void *);
    long long                      MemRequestsCommand(void *);
-   void                           OptionsCommand(void *);
+   void                           OptionsCommand(UDFContext *,CLIPSValue *);
    void                          *OperatingSystemFunction(void *);
    void                           ExpandFuncCall(void *,DATA_OBJECT *);
    void                           DummyExpandFuncMultifield(void *,DATA_OBJECT *);
@@ -92,7 +92,7 @@
    bool                           SetSORCommand(void *);
    void                          *GetFunctionRestrictions(void *);
    void                           AproposCommand(void *);
-   void                          *GensymStar(void *);
+   void                           GensymStar(void *,CLIPSValue *);
    void                           GetFunctionListFunction(void *,DATA_OBJECT *);
    void                           FuncallFunction(void *,DATA_OBJECT *);
    void                           NewFunction(void *,DATA_OBJECT *);

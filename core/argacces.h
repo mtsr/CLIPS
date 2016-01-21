@@ -57,6 +57,7 @@
    void                           ExpectedCountError(void *,const char *,int,int);
    void                           OpenErrorMessage(void *,const char *,const char *);
    bool                           CheckFunctionArgCount(void *,const char *,const char *,int);
+   void                           ExpectedTypeError0(void *,const char *,int);
    void                           ExpectedTypeError1(void *,const char *,int,const char *);
    void                           ExpectedTypeError2(void *,const char *,int);
    struct defmodule              *GetModuleName(void *,const char *,int,bool *);

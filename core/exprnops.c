@@ -127,6 +127,60 @@ bool CheckArgumentAgainstRestriction(
    return(false);
   }
 
+/*************************************/
+/* CheckArgumentAgainstRestriction2: */
+/*************************************/
+bool CheckArgumentAgainstRestriction2(
+  void *theEnv,
+  struct expr *theExpression,
+  unsigned theRestriction)
+  {
+   CONSTRAINT_RECORD *cr1, *cr2, *cr3;
+
+   /*=============================================*/
+   /* Generate a constraint record for the actual */
+   /* argument passed to the function.            */
+   /*=============================================*/
+
+   cr1 = ExpressionToConstraintRecord(theEnv,theExpression);
+
+   /*================================================*/
+   /* Generate a constraint record based on the type */
+   /* of argument expected by the function.          */
+   /*================================================*/
+
+   cr2 = ArgumentTypeToConstraintRecord2(theEnv,theRestriction);
+
+   /*===============================================*/
+   /* Intersect the two constraint records and then */
+   /* discard them.                                 */
+   /*===============================================*/
+
+   cr3 = IntersectConstraints(theEnv,cr1,cr2);
+
+   RemoveConstraint(theEnv,cr1);
+   RemoveConstraint(theEnv,cr2);
+
+   /*====================================================*/
+   /* If the intersection of the two constraint records  */
+   /* is empty, then the argument passed to the function */
+   /* doesn't satisfy the restrictions for the argument. */
+   /*====================================================*/
+
+   if (UnmatchableConstraint(cr3))
+     {
+      RemoveConstraint(theEnv,cr3);
+      return(true);
+     }
+
+   /*===================================================*/
+   /* The argument satisfies the function restrictions. */
+   /*===================================================*/
+
+   RemoveConstraint(theEnv,cr3);
+   return(false);
+  }
+
 #endif /* (! RUN_TIME) */
 
 /******************************************************/

@@ -596,6 +596,7 @@ static void WriteFunctionExternDeclarations(
          case 'n':
          case 'j':
          case 'k':
+         case 'z':
            fprintf(fp,"void ");
            break;
 
@@ -630,6 +631,7 @@ static void WriteFunctionExternDeclarations(
          case 'n':
          case 'j':
          case 'k':
+         case 'z':
            fprintf(fp,"void *,DATA_OBJECT_PTR_ARG");
            break;
         }
@@ -698,14 +700,14 @@ static bool FunctionsToCode(
       PrintSymbolReference(theEnv,fp,fctnPtr->callFunctionName);
       fprintf(fp,",\"%s\",",fctnPtr->actualFunctionName);
       fprintf(fp,"'%c',",fctnPtr->returnValueType);
+      fprintf(fp,"%u,",fctnPtr->unknownReturnValueType);
       fprintf(fp,"PTIF %s,",fctnPtr->actualFunctionName);
       fprintf(fp,"NULL,");
       
       PrintSymbolReference(theEnv,fp,fctnPtr->restrictions);
-      //if (fctnPtr->restrictions != NULL) fprintf(fp,"\"%s\",",fctnPtr->restrictions);
-      //else fprintf(fp,"NULL,");
+         
+      fprintf(fp,",%d,%d,0,0,0,",fctnPtr->minArgs,fctnPtr->maxArgs);
       
-      fprintf(fp,",0,0,0,");
       PrintFunctionReference(theEnv,fp,fctnPtr->next);
 
       i++;

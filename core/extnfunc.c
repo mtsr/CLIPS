@@ -63,6 +63,7 @@
 #if (! RUN_TIME)
    static bool                    RemoveHashFunction(void *,struct FunctionDefinition *);
 #endif
+   static void                    PrintType(void *,const char *,int,int *,const char *);
 
 /*********************************************************/
 /* InitializeExternalFunctionData: Allocates environment */
@@ -120,21 +121,21 @@ static void DeallocateExternalFunctionData(
 /* EnvDefineFunction: Used to define a system or user */
 /*   external function so that the KB can access it.  */
 /******************************************************/
-int EnvDefineFunction(
+bool EnvDefineFunction(
   void *theEnv,
   const char *name,
   int returnType,
   int (*pointer)(void *),
   const char *actualName)
   {
-   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,NULL));
+   return(DefineFunction3(theEnv,name,returnType,0,pointer,actualName,UNBOUNDED,UNBOUNDED,NULL,NULL));
   }
   
 /************************************************************/
 /* EnvDefineFunctionWithContext: Used to define a system or */
 /*   user external function so that the KB can access it.   */
 /************************************************************/
-int EnvDefineFunctionWithContext(
+bool EnvDefineFunctionWithContext(
   void *theEnv,
   const char *name,
   int returnType,
@@ -142,14 +143,14 @@ int EnvDefineFunctionWithContext(
   const char *actualName,
   void *context)
   {
-   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,NULL,context));
+   return(DefineFunction3(theEnv,name,returnType,0,pointer,actualName,UNBOUNDED,UNBOUNDED,NULL,context));
   }
   
 /*******************************************************/
 /* EnvDefineFunction2: Used to define a system or user */
 /*   external function so that the KB can access it.   */
 /*******************************************************/
-int EnvDefineFunction2(
+bool EnvDefineFunction2(
   void *theEnv,
   const char *name,
   int returnType,
@@ -157,14 +158,14 @@ int EnvDefineFunction2(
   const char *actualName,
   const char *restrictions)
   {
-   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,restrictions,NULL));
+   return(DefineFunction3(theEnv,name,returnType,0,pointer,actualName,UNBOUNDED,UNBOUNDED,restrictions,NULL));
   }
 
 /*************************************************************/
 /* EnvDefineFunction2WithContext: Used to define a system or */
 /*   user external function so that the KB can access it.    */
 /*************************************************************/
-int EnvDefineFunction2WithContext(
+bool EnvDefineFunction2WithContext(
   void *theEnv,
   const char *name,
   int returnType,
@@ -173,7 +174,25 @@ int EnvDefineFunction2WithContext(
   const char *restrictions,
   void *context)
   {
-   return(DefineFunction3(theEnv,name,returnType,pointer,actualName,restrictions,context));
+   return(DefineFunction3(theEnv,name,returnType,0,pointer,actualName,UNBOUNDED,UNBOUNDED,restrictions,context));
+  }
+
+/*******************************************************/
+/* EnvAddUDF: Used to define a system or user external */
+/*   function so that the KB can access it.            */
+/*******************************************************/
+bool EnvAddUDF(
+  void *theEnv,
+  const char *name,
+  unsigned returnTypeBits,
+  void (*pointer)(UDFContext *,struct dataObject *),
+  const char *actualName,
+  int minArgs,
+  int maxArgs,
+  const char *restrictions,
+  void *context)
+  {
+   return(DefineFunction3(theEnv,name,'z',returnTypeBits,PTIEF pointer,actualName,minArgs,maxArgs,restrictions,context));
   }
 
 /*************************************************************/
@@ -200,13 +219,17 @@ int EnvDefineFunction2WithContext(
 /*     v - void                                              */
 /*     w - symbol                                            */
 /*     x - instance address                                  */
+/*     z - unknown (with return type bits)                   */
 /*************************************************************/
-int DefineFunction3(
+bool DefineFunction3(
   void *theEnv,
   const char *name,
   int returnType,
-  int (*pointer)(void *),
+  unsigned returnTypeBits,
+  int (*pointer)(void *), // TBD New UDF Cast void (*pointer)(void *,DATA_OBJECT_PTR)
   const char *actualName,
+  int minArgs,
+  int maxArgs,
   const char *restrictions,
   void *context)
   {
@@ -236,8 +259,10 @@ int DefineFunction3(
 #if DEFTEMPLATE_CONSTRUCT
         (returnType != 'y') &&
 #endif
-        (returnType != 'w') )
-     { return(0); }
+        (returnType != 'w') &&
+       
+        (returnType != 'z'))
+     { return(false); }
 
    newFunction = FindFunction(theEnv,name);
    if (newFunction != NULL) return(0);
@@ -250,9 +275,14 @@ int DefineFunction3(
    AddHashFunction(theEnv,newFunction);
      
    newFunction->returnValueType = (char) returnType;
+   newFunction->unknownReturnValueType = returnTypeBits;
    newFunction->functionPointer = (int (*)(void)) pointer;
    newFunction->actualFunctionName = actualName;
-   if (restrictions != NULL)
+   
+   newFunction->minArgs = minArgs;
+   newFunction->maxArgs = maxArgs;
+   
+   if ((restrictions != NULL) && (returnType != 'z'))
      {
       if (((int) (strlen(restrictions)) < 2) ? true :
           ((! isdigit(restrictions[0]) && (restrictions[0] != '*')) ||
@@ -274,7 +304,7 @@ int DefineFunction3(
    newFunction->usrData = NULL;
    newFunction->context = context;
 
-   return(1);
+   return(true);
   }
   
 /***********************************************/
@@ -553,6 +583,28 @@ int GetNthRestriction(
    return((int) theFunction->restrictions->contents[position + 2]);
   }
 
+/***************************************************/
+/* GetNthRestriction2: Returns the restriction type */
+/*   for the nth parameter of a function.          */
+/***************************************************/
+unsigned GetNthRestriction2(
+  struct FunctionDefinition *theFunction,
+  int position)
+  {
+   unsigned rv, df;
+   const char *restrictions;
+   
+   if (theFunction == NULL) return(ANY_TYPE);
+
+   if (theFunction->restrictions == NULL) return(ANY_TYPE);
+   restrictions = theFunction->restrictions->contents;
+   
+   PopulateRestriction(&df,ANY_TYPE,restrictions,0);
+   PopulateRestriction(&rv,df,restrictions,position);
+
+   return rv;
+  }
+
 /*************************************************/
 /* GetFunctionList: Returns the ListOfFunctions. */
 /*************************************************/
@@ -713,3 +765,218 @@ int GetMaximumArgs(
    
    return(-1); 
   }
+
+/*********************/
+/* UDFArgCountCheck: */
+/*********************/
+int UDFArgCountCheck(
+  UDFContext *context) // TBD can this be removed with static constraint checking always enabled?
+  {
+   struct FunctionDefinition *theFunction = context->theFunction;
+   const char *functionName = theFunction->callFunctionName->contents;
+   void *theEnv = UDFContextEnvironment(context);
+      
+   if ((theFunction->minArgs == UNBOUNDED) && (theFunction->maxArgs == UNBOUNDED))
+     { return EnvRtnArgCount(theEnv); }
+     
+   if ((theFunction->minArgs != UNBOUNDED) && (theFunction->maxArgs == UNBOUNDED))
+     { return EnvArgCountCheck(theEnv,functionName,AT_LEAST,theFunction->minArgs); }
+
+   if ((theFunction->minArgs == UNBOUNDED) && (theFunction->maxArgs != UNBOUNDED))
+     { return EnvArgCountCheck(theEnv,functionName,NO_MORE_THAN,theFunction->maxArgs); }
+
+   if (theFunction->minArgs == theFunction->maxArgs)
+     { return EnvArgCountCheck(theEnv,functionName,EXACTLY,theFunction->maxArgs); }
+
+   if (theFunction->minArgs < theFunction->maxArgs)
+     { return EnvArgCountCheck(theEnv,functionName,EXACTLY,theFunction->maxArgs); }
+    
+   return -1;
+  }
+  
+/********************/
+/* UDFArgTypeCheck: */
+/********************/
+bool UDFArgTypeCheck(
+  UDFContext *context,
+  int argumentPosition,
+  unsigned expectedType,
+  DATA_OBJECT_PTR returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   
+   EnvRtnUnknown(theEnv,argumentPosition,returnValue);
+   if (EvaluationData(theEnv)->EvaluationError) return false;
+   
+   switch (returnValue->type)
+     {
+      case RVOID:
+        if (expectedType & VOID_TYPE) return(true);
+        break;
+
+      case INTEGER:
+        if (expectedType & INTEGER_TYPE) return(true);
+        break;
+
+      case FLOAT:
+        if (expectedType & FLOAT_TYPE) return(true);
+        break;
+
+      case SYMBOL:
+        if (expectedType & SYMBOL_TYPE) return(true);
+        break;
+
+      case STRING:
+        if (expectedType & STRING_TYPE) return(true);
+        break;
+
+      case INSTANCE_NAME:
+        if (expectedType & INSTANCE_NAME_TYPE) return(true);
+        break;
+
+      case EXTERNAL_ADDRESS:
+        if (expectedType & EXTERNAL_ADDRESS_TYPE) return(true);
+        break;
+
+      case FACT_ADDRESS:
+        if (expectedType & FACT_ADDRESS_TYPE) return(true);
+        break;
+
+      case INSTANCE_ADDRESS:
+        if (expectedType & INSTANCE_ADDRESS_TYPE) return(true);
+        break;
+        
+      case MULTIFIELD:
+        if (expectedType & MULTIFIELD_TYPE) return(true);
+        break;
+     }
+
+   ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
+   PrintTypesString(theEnv,WERROR,expectedType,true);
+
+   EnvSetHaltExecution(theEnv,true);
+   EnvSetEvaluationError(theEnv,true);
+
+   return false;
+  }
+
+/******************************/
+/* UDFInvalidArgumentMessage: */
+/******************************/
+void UDFInvalidArgumentMessage(
+  UDFContext *context,
+  int argumentPosition,
+  const char *typeString)
+  {
+   ExpectedTypeError1(UDFContextEnvironment(context),UDFContextFunctionName(context),argumentPosition,typeString);
+  }
+
+/**************************/
+/* UDFContextEnvironment: */
+/**************************/
+void *UDFContextEnvironment(
+  UDFContext *context)
+  {
+   return context->environment;
+  }
+
+/***************************/
+/* UDFContextFunctionName: */
+/***************************/
+const char *UDFContextFunctionName(
+  UDFContext *context)
+  {
+   return context->theFunction->callFunctionName->contents;
+  }
+
+/**************************/
+/* UDFContextUserContext: */
+/**************************/
+void *UDFContextUserContext(
+  UDFContext *context)
+  {
+   return context->theFunction->context;
+  }
+
+/**************/
+/* PrintType: */
+/**************/
+static void PrintType(
+  void *theEnv,
+  const char *logicalName,
+  int typeCount,
+  int *typesPrinted,
+  const char *typeName)
+  {
+   if (*typesPrinted == 0)
+     {
+      EnvPrintRouter(theEnv,logicalName,typeName);
+      (*typesPrinted)++;
+      return;
+     }
+
+   if (typeCount == 2)
+     { EnvPrintRouter(theEnv,logicalName," or "); }
+   else if (((*typesPrinted) + 1) == typeCount)
+     { EnvPrintRouter(theEnv,logicalName,", or "); }
+   else
+     { EnvPrintRouter(theEnv,logicalName,", "); }
+     
+   EnvPrintRouter(theEnv,logicalName,typeName);
+   (*typesPrinted)++;
+  }
+
+/********************/
+/* PrintTypesString */
+/********************/
+void PrintTypesString(
+  void *theEnv,
+  const char *logicalName,
+  unsigned expectedType,
+  bool printCRLF)
+  {
+   int typeCount, typesPrinted;
+
+   typeCount = 0;
+   if (expectedType & INTEGER_TYPE) typeCount++;
+   if (expectedType & FLOAT_TYPE) typeCount++;
+   if (expectedType & SYMBOL_TYPE) typeCount++;
+   if (expectedType & STRING_TYPE) typeCount++;
+   if (expectedType & INSTANCE_NAME_TYPE) typeCount++;
+   if (expectedType & INSTANCE_ADDRESS_TYPE) typeCount++;
+   if (expectedType & FACT_ADDRESS_TYPE) typeCount++;
+   if (expectedType & EXTERNAL_ADDRESS_TYPE) typeCount++;
+   if (expectedType & MULTIFIELD_TYPE) typeCount++;
+   
+   typesPrinted = 0;
+   if (expectedType & INTEGER_TYPE)
+     { PrintType(theEnv,logicalName,typeCount,&typesPrinted,"integer"); }
+  
+    if (expectedType & FLOAT_TYPE)
+     { PrintType(theEnv,logicalName,typeCount,&typesPrinted,"float"); }
+
+   if (expectedType & SYMBOL_TYPE)
+     { PrintType(theEnv,logicalName,typeCount,&typesPrinted,"symbol"); }
+
+   if (expectedType & STRING_TYPE)
+     { PrintType(theEnv,logicalName,typeCount,&typesPrinted,"string"); }
+
+   if (expectedType & INSTANCE_NAME_TYPE) 
+     { PrintType(theEnv,logicalName,typeCount,&typesPrinted,"instance name"); }
+
+   if (expectedType & INSTANCE_ADDRESS_TYPE) 
+     { PrintType(theEnv,logicalName,typeCount,&typesPrinted,"instance address"); }
+
+   if (expectedType & FACT_ADDRESS_TYPE) 
+     { PrintType(theEnv,logicalName,typeCount,&typesPrinted,"fact address"); }
+
+   if (expectedType & EXTERNAL_ADDRESS_TYPE) 
+     { PrintType(theEnv,logicalName,typeCount,&typesPrinted,"external address"); }
+
+   if (expectedType & MULTIFIELD_TYPE) 
+     { PrintType(theEnv,logicalName,typeCount,&typesPrinted,"multifield"); }
+   
+   if (printCRLF)
+     { EnvPrintRouter(theEnv,logicalName,"\n"); }
+  }
+

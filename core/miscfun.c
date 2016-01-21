@@ -137,9 +137,10 @@ void MiscFunctionDefinitions(
    MiscFunctionData(theEnv)->GensymNumber = 1;
    
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"gensym",           'w', PTIEF GensymFunction,      "GensymFunction", "00");
-   EnvDefineFunction2(theEnv,"gensym*",          'w', PTIEF GensymStarFunction,  "GensymStarFunction", "00");
-   EnvDefineFunction2(theEnv,"setgen",           'g', PTIEF SetgenFunction,      "SetgenFunction", "11i");
+   EnvAddUDF(theEnv,"gensym", SYMBOL_TYPE, GensymFunction,    "GensymFunction",    0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"gensym*",SYMBOL_TYPE, GensymStarFunction,"GensymStarFunction",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"setgen", INTEGER_TYPE,SetgenFunction,    "SetgenFunction",    1,1,"l", NULL);
+   
    EnvDefineFunction2(theEnv,"system",           'v', PTIEF SystemCommand,       "SystemCommand", "1*k");
    EnvDefineFunction2(theEnv,"length",           'g', PTIEF LengthFunction,      "LengthFunction", "11q");
    EnvDefineFunction2(theEnv,"length$",          'g', PTIEF LengthFunction,      "LengthFunction", "11q");
@@ -155,7 +156,9 @@ void MiscFunctionDefinitions(
    EnvDefineFunction2(theEnv,"mem-used",         'g', PTIEF MemUsedCommand,      "MemUsedCommand", "00");
    EnvDefineFunction2(theEnv,"mem-requests",     'g', PTIEF MemRequestsCommand,  "MemRequestsCommand", "00");
 #endif
-   EnvDefineFunction2(theEnv,"options",          'v', PTIEF OptionsCommand,      "OptionsCommand", "00");
+
+   EnvAddUDF(theEnv,"options", VOID_TYPE,OptionsCommand,    "OptionsCommand",    0,0,NULL, NULL);
+
    EnvDefineFunction2(theEnv,"operating-system", 'w', PTIEF OperatingSystemFunction,"OperatingSystemFunction", "00");
    EnvDefineFunction2(theEnv,"(expansion-call)", 'u', PTIEF ExpandFuncCall,      "ExpandFuncCall",NULL);
    EnvDefineFunction2(theEnv,"expand$",'u', PTIEF DummyExpandFuncMultifield,
@@ -196,54 +199,65 @@ void CreateFunction(
 /*****************************************************************/
 /* SetgenFunction: H/L access routine for the setgen function.   */
 /*****************************************************************/
-long long SetgenFunction(
-  void *theEnv)
+void SetgenFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   long long theLong;
-   DATA_OBJECT theValue;
+   CLIPSInteger theLong;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*==========================================================*/
    /* Check to see that a single integer argument is provided. */
    /*==========================================================*/
 
-   if (EnvArgCountCheck(theEnv,"setgen",EXACTLY,1) == -1) return(MiscFunctionData(theEnv)->GensymNumber);
-   if (EnvArgTypeCheck(theEnv,"setgen",1,INTEGER,&theValue) == false) return(MiscFunctionData(theEnv)->GensymNumber);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetInteger(returnValue,MiscFunctionData(theEnv)->GensymNumber);
+      return;
+     }
+
+   if (! UDFArgTypeCheck(context,1,INTEGER_TYPE,returnValue))
+     {
+      CVSetInteger(returnValue,MiscFunctionData(theEnv)->GensymNumber);
+      return;
+     }
 
    /*========================================*/
    /* The integer must be greater than zero. */
    /*========================================*/
 
-   theLong = ValueToLong(theValue.value);
+   theLong = CVToInteger(returnValue);
 
    if (theLong < 1LL)
      {
-      ExpectedTypeError1(theEnv,"setgen",1,"number (greater than or equal to 1)");
-      return(MiscFunctionData(theEnv)->GensymNumber);
+      UDFInvalidArgumentMessage(context,1,"integer (greater than or equal to 1)");
+      CVSetInteger(returnValue,MiscFunctionData(theEnv)->GensymNumber);
+      return;
      }
 
-   /*====================================*/
-   /* Set the gensym index to the number */
-   /* provided and return this value.    */
-   /*====================================*/
+   /*==============================================*/
+   /* Set the gensym index to the number provided. */
+   /*==============================================*/
 
    MiscFunctionData(theEnv)->GensymNumber = theLong;
-   return(theLong);
   }
 
 /****************************************/
 /* GensymFunction: H/L access routine   */
 /*   for the gensym function.           */
 /****************************************/
-void *GensymFunction(
-  void *theEnv)
+void GensymFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   void *theEnv = UDFContextEnvironment(context);
    char genstring[128];
    
    /*===========================================*/
    /* The gensym function accepts no arguments. */
    /*===========================================*/
 
-   EnvArgCountCheck(theEnv,"gensym",EXACTLY,0);
+   UDFArgCountCheck(context);
 
    /*================================================*/
    /* Create a symbol using the current gensym index */
@@ -257,35 +271,37 @@ void *GensymFunction(
    /* Return the symbol. */
    /*====================*/
 
-   return(EnvAddSymbol(theEnv,genstring));
+   CVSetSymbol(returnValue,genstring);
   }
 
 /************************************************/
 /* GensymStarFunction: H/L access routine for   */
 /*   the gensym* function.                      */
 /************************************************/
-void *GensymStarFunction(
-  void *theEnv)
+void GensymStarFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   /*============================================*/
-   /* The gensym* function accepts no arguments. */
-   /*============================================*/
+   /*===========================================*/
+   /* The gensym function accepts no arguments. */
+   /*===========================================*/
 
-   EnvArgCountCheck(theEnv,"gensym*",EXACTLY,0);
+   UDFArgCountCheck(context);
 
    /*====================*/
    /* Return the symbol. */
    /*====================*/
 
-   return(GensymStar(theEnv));
+   GensymStar(UDFContextEnvironment(context),returnValue);
   }
 
 /************************************/
 /* GensymStar: C access routine for */
 /*   the gensym* function.          */
 /************************************/
-void *GensymStar(
-  void *theEnv)
+void GensymStar(
+  void *theEnv,
+  CLIPSValue *returnValue)
   {
    char genstring[128];
    
@@ -307,7 +323,8 @@ void *GensymStar(
    /* Return the symbol. */
    /*====================*/
 
-   return(EnvAddSymbol(theEnv,genstring));
+   CVInit(theEnv,returnValue);
+   CVSetSymbol(returnValue,genstring);
   }
 
 /********************************************/
@@ -590,13 +607,23 @@ void AproposCommand(
 /*   for the options command.           */
 /****************************************/
 void OptionsCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   /*===========================================*/
-   /* The options command accepts no arguments. */
-   /*===========================================*/
+   void *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgCountCheck(theEnv,"options",EXACTLY,0) == -1) return;
+   /*=======================*/
+   /* Set the return value. */
+   /*=======================*/
+   
+   CVSetVoid(returnValue);
+   
+   /*============================================*/
+   /* Check for the correct number of arguments. */
+   /*============================================*/
+
+   if (UDFArgCountCheck(context) < 0)
+     { return; }
 
    /*=================================*/
    /* Print the state of the compiler */

@@ -57,9 +57,12 @@ struct FunctionDefinition
    struct symbolHashNode *callFunctionName;
    const char *actualFunctionName;
    char returnValueType;
+   unsigned unknownReturnValueType;
    int (*functionPointer)(void);
    struct expr *(*parser)(void *,struct expr *,const char *);
    struct symbolHashNode *restrictions;
+   int minArgs;
+   int maxArgs;
    bool overloadable; // TBD Use unsigned ints here
    bool sequenceuseok;
    short int bsaveIndex;
@@ -69,10 +72,12 @@ struct FunctionDefinition
   };
 
 #define ValueFunctionType(target) (((struct FunctionDefinition *) target)->returnValueType)
+#define UnknownFunctionType(target) (((struct FunctionDefinition *) target)->unknownReturnValueType)
 #define ExpressionFunctionType(target) (((struct FunctionDefinition *) ((target)->value))->returnValueType)
 #define ExpressionFunctionPointer(target) (((struct FunctionDefinition *) ((target)->value))->functionPointer)
 #define ExpressionFunctionCallName(target) (((struct FunctionDefinition *) ((target)->value))->callFunctionName)
 #define ExpressionFunctionRealName(target) (((struct FunctionDefinition *) ((target)->value))->actualFunctionName)
+#define ExpressionUnknownFunctionType(target) (((struct FunctionDefinition *) ((target)->value))->unknownReturnValueType)
 
 #define PTIF (int (*)(void))
 #define PTIEF (int (*)(void *))
@@ -84,10 +89,16 @@ struct FunctionDefinition
 #define EXTERNAL_FUNCTION_DATA 50
 
 struct externalFunctionData
-  { 
+  {
    struct FunctionDefinition *ListOfFunctions;
    struct FunctionHash **FunctionHashtable;
   };
+
+typedef struct UDFContext_t
+  {
+   struct environmentData *environment;
+   struct FunctionDefinition *theFunction;
+  } UDFContext;
 
 #define ExternalFunctionData(theEnv) ((struct externalFunctionData *) GetEnvironmentData(theEnv,EXTERNAL_FUNCTION_DATA))
 
@@ -100,16 +111,21 @@ struct FunctionHash
 #define SIZE_FUNCTION_HASH 517
 
    void                           InitializeExternalFunctionData(void *);
-   int                            EnvDefineFunction(void *,const char *,int,
+   bool                           EnvDefineFunction(void *,const char *,int,
                                                            int (*)(void *),const char *);
-   int                            EnvDefineFunction2(void *,const char *,int,
+   bool                           EnvDefineFunction2(void *,const char *,int,
                                                             int (*)(void *),const char *,const char *);
-   int                            EnvDefineFunctionWithContext(void *,const char *,int,
+   bool                           EnvDefineFunctionWithContext(void *,const char *,int,
                                                            int (*)(void *),const char *,void *);
-   int                            EnvDefineFunction2WithContext(void *,const char *,int,
+   bool                           EnvDefineFunction2WithContext(void *,const char *,int,
                                                             int (*)(void *),const char *,const char *,void *);
-   int                            DefineFunction3(void *,const char *,int,
-                                                         int (*)(void *),const char *,const char *,void *);
+   bool                           DefineFunction3(void *,const char *,int,unsigned,
+                                                         int (*)(void *),const char *,int,int,const char *,void *);
+
+   bool                           EnvAddUDF(void *,const char *,unsigned,
+                                            void (*)(UDFContext *,struct dataObject *),
+                                            const char *,int,int,const char *,void *);
+
    int                            AddFunctionParser(void *,const char *,
                                                            struct expr *(*)( void *,struct expr *,const char *));
    int                            RemoveFunctionParser(void *,const char *);
@@ -118,10 +134,19 @@ struct FunctionHash
    void                           InstallFunctionList(void *,struct FunctionDefinition *);
    struct FunctionDefinition     *FindFunction(void *,const char *);
    int                            GetNthRestriction(struct FunctionDefinition *,int);
+   unsigned                       GetNthRestriction2(struct FunctionDefinition *,int);
    const char                    *GetArgumentTypeName(int);
    bool                           UndefineFunction(void *,const char *);
    int                            GetMinimumArgs(struct FunctionDefinition *);
    int                            GetMaximumArgs(struct FunctionDefinition *);
+
+   int                            UDFArgCountCheck(UDFContext *);
+   bool                           UDFArgTypeCheck(UDFContext *,int,unsigned,struct dataObject *);
+   void                           UDFInvalidArgumentMessage(UDFContext *,int,const char *);
+   void                          *UDFContextEnvironment(UDFContext *);
+   void                          *UDFContextUserContext(UDFContext *);
+   const char                    *UDFContextFunctionName(UDFContext *);
+   void                           PrintTypesString(void *,const char *,unsigned,bool);
 
 #endif /* _H_extnfunc */
 

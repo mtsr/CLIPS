@@ -231,15 +231,15 @@ bool CheckRHSSlotTypes(
    const char *theName;
 
    if (EnvGetStaticConstraintChecking(theEnv) == false) return(true);
-      rv = ConstraintCheckExpressionChain(theEnv,rhsSlots,slotPtr->constraints);
-      if (rv != NO_VIOLATION)
-        {
-         if (rv != CARDINALITY_VIOLATION) theName = "A literal slot value";
-         else theName = "Literal slot values";
-         ConstraintViolationErrorMessage(theEnv,theName,thePlace,true,0,
+   rv = ConstraintCheckExpressionChain(theEnv,rhsSlots,slotPtr->constraints);
+   if (rv != NO_VIOLATION)
+     {
+      if (rv != CARDINALITY_VIOLATION) theName = "A literal slot value";
+      else theName = "Literal slot values";
+      ConstraintViolationErrorMessage(theEnv,theName,thePlace,true,0,
                                          slotPtr->slotName,0,rv,slotPtr->constraints,true);
-         return(0);
-        }
+      return(0);
+     }
 
    return(1);
   }

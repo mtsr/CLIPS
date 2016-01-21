@@ -773,6 +773,8 @@ bool EnvEval(
    struct BindInfo *oldBinds;
    int danglingConstructs;
 
+   returnValue->environment = theEnv;
+   
    /*=====================================*/
    /* If embedded, clear the error flags. */
    /*=====================================*/

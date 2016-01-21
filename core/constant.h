@@ -45,6 +45,8 @@
 #define NO_MORE_THAN  2
 #define RANGE         3
 
+#define UNBOUNDED    -1
+
 #define OFF           0
 #define ON            1
 #define LHS           0
@@ -86,11 +88,11 @@
 #endif
 
 #ifndef CREATION_DATE_STRING
-#define CREATION_DATE_STRING "1/13/16"
+#define CREATION_DATE_STRING "1/20/16"
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (Cypher Alpha 1/13/16)\n"
+#define BANNER_STRING "         CLIPS (Cypher Alpha 1/20/16)\n"
 #endif
 
 /*************************/
@@ -127,6 +129,29 @@
 #define LEXEME_TYPE_CODE               12
 #define ADDRESS_TYPE_CODE              13
 #define INSTANCE_TYPE_CODE             14
+
+typedef enum
+  {
+   VOID_TYPE = (1 << 0),
+   FLOAT_TYPE = (1 << 1),
+   INTEGER_TYPE = (1 << 2),
+   SYMBOL_TYPE = (1 << 3),
+   STRING_TYPE = (1 << 4),
+   MULTIFIELD_TYPE = (1 << 5),
+   EXTERNAL_ADDRESS_TYPE = (1 << 6),
+   FACT_ADDRESS_TYPE = (1 << 7),
+   INSTANCE_ADDRESS_TYPE = (1 << 8),
+   INSTANCE_NAME_TYPE = (1 << 9),
+   BOOLEAN_TYPE = (1 << 10),
+   NUMBER_TYPES = INTEGER_TYPE | FLOAT_TYPE,
+   LEXEME_TYPES = SYMBOL_TYPE | STRING_TYPE,
+   ADDRESS_TYPES = EXTERNAL_ADDRESS_TYPE | FACT_ADDRESS_TYPE | INSTANCE_ADDRESS_TYPE,
+   INSTANCE_TYPES = INSTANCE_ADDRESS_TYPE | INSTANCE_NAME_TYPE,
+   ANY_TYPE = VOID_TYPE | NUMBER_TYPES | LEXEME_TYPES | MULTIFIELD_TYPE | ADDRESS_TYPES | INSTANCE_NAME_TYPE
+  } CLIPSType;
+
+typedef long long CLIPSInteger;
+typedef double CLIPSFloat;
 
 /****************************************************/
 /* The first 9 primitive types need to retain their */

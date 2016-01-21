@@ -759,6 +759,7 @@ static bool CheckArgumentForConstraintError(
   struct lhsParseNode *theLHS)
   {
    int theRestriction;
+   unsigned theRestriction2;
    CONSTRAINT_RECORD *constraint1, *constraint2, *constraint3, *constraint4;
    struct lhsParseNode *theVariable;
    struct expr *tmpPtr;
@@ -778,8 +779,16 @@ static bool CheckArgumentForConstraintError(
    /* convert them to a constraint record.      */
    /*===========================================*/
 
-   theRestriction = GetNthRestriction(theFunction,i);
-   constraint1 = ArgumentTypeToConstraintRecord(theEnv,theRestriction);
+   if (theFunction->returnValueType != 'z')
+     {
+      theRestriction = GetNthRestriction(theFunction,i);
+      constraint1 = ArgumentTypeToConstraintRecord(theEnv,theRestriction);
+     }
+   else
+     {
+      theRestriction2 = GetNthRestriction2(theFunction,i);
+      constraint1 = ArgumentTypeToConstraintRecord2(theEnv,theRestriction2);
+     }
 
    /*================================================*/
    /* Look for the constraint record associated with */

@@ -47,6 +47,7 @@
    struct expr                   *GenConstant(void *,unsigned short,void *);
 #if ! RUN_TIME
    bool                           CheckArgumentAgainstRestriction(void *,struct expr *,int);
+   bool                           CheckArgumentAgainstRestriction2(void *,struct expr *,unsigned);
 #endif
    bool                           ConstantType(int);
    struct expr                   *CombineExpressions(void *,struct expr *,struct expr *);

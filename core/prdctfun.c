@@ -67,18 +67,20 @@ void PredicateFunctionDefinitions(
    EnvDefineFunction2(theEnv,"<>", 'b', PTIEF NumericNotEqualFunction, "NumericNotEqualFunction", "2*n");
    EnvDefineFunction2(theEnv,"!=", 'b', PTIEF NumericNotEqualFunction, "NumericNotEqualFunction", "2*n");
 
-   EnvDefineFunction2(theEnv,"symbolp", 'b', PTIEF SymbolpFunction, "SymbolpFunction", "11");
-   EnvDefineFunction2(theEnv,"wordp", 'b', PTIEF SymbolpFunction, "SymbolpFunction", "11");
-   EnvDefineFunction2(theEnv,"stringp", 'b', PTIEF StringpFunction, "StringpFunction", "11");
-   EnvDefineFunction2(theEnv,"lexemep", 'b', PTIEF LexemepFunction, "LexemepFunction", "11");
-   EnvDefineFunction2(theEnv,"numberp", 'b', PTIEF NumberpFunction, "NumberpFunction", "11");
-   EnvDefineFunction2(theEnv,"integerp", 'b', PTIEF IntegerpFunction, "IntegerpFunction", "11");
-   EnvDefineFunction2(theEnv,"floatp", 'b', PTIEF FloatpFunction, "FloatpFunction", "11");
-   EnvDefineFunction2(theEnv,"oddp", 'b', PTIEF OddpFunction, "OddpFunction", "11i");
-   EnvDefineFunction2(theEnv,"evenp", 'b', PTIEF EvenpFunction, "EvenpFunction", "11i");
-   EnvDefineFunction2(theEnv,"multifieldp",'b', PTIEF MultifieldpFunction, "MultifieldpFunction", "11");
-   EnvDefineFunction2(theEnv,"sequencep",'b', PTIEF MultifieldpFunction, "MultifieldpFunction", "11");
-   EnvDefineFunction2(theEnv,"pointerp", 'b', PTIEF PointerpFunction, "PointerpFunction", "11");
+   EnvAddUDF(theEnv,"symbolp",     BOOLEAN_TYPE,  SymbolpFunction, "SymbolpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"wordp",       BOOLEAN_TYPE,  SymbolpFunction, "SymbolpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"stringp",     BOOLEAN_TYPE,  StringpFunction, "StringpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"lexemep",     BOOLEAN_TYPE,  LexemepFunction, "LexemepFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"numberp",     BOOLEAN_TYPE,  NumberpFunction, "NumberpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"integerp",    BOOLEAN_TYPE,  IntegerpFunction, "IntegerpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"floatp",      BOOLEAN_TYPE,  FloatpFunction,   "FloatpFunction", 1,1,NULL,NULL);
+   
+   EnvAddUDF(theEnv,"oddp",        BOOLEAN_TYPE,  OddpFunction,         "OddpFunction", 1,1,"l", NULL);
+   EnvAddUDF(theEnv,"evenp",       BOOLEAN_TYPE,  EvenpFunction,        "EvenpFunction",  1,1,"l", NULL);
+   
+   EnvAddUDF(theEnv,"multifieldp", BOOLEAN_TYPE,  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"sequencep",   BOOLEAN_TYPE,  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL); // TBD Remove?
+   EnvAddUDF(theEnv,"pointerp",    BOOLEAN_TYPE,  PointerpFunction,    "PointerpFunction", 1,1,NULL,NULL);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -203,149 +205,192 @@ bool NeqFunction(
 /* StringpFunction: H/L access routine   */
 /*   for the stringp function.           */
 /*****************************************/
-bool StringpFunction(
-  void *theEnv)
+void StringpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
 
-   if (EnvArgCountCheck(theEnv,"stringp",EXACTLY,1) == -1) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   EnvRtnUnknown(theEnv,1,&item);
+   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
-   if (GetType(item) == STRING)
-     { return(true); }
+   if (CVIsType(&item,STRING_TYPE))
+     { CVSetBoolean(returnValue,true); }
    else
-     { return(false); }
+     { CVSetBoolean(returnValue,false); }
   }
 
 /*****************************************/
 /* SymbolpFunction: H/L access routine   */
 /*   for the symbolp function.           */
 /*****************************************/
-bool SymbolpFunction(
-  void *theEnv)
+void SymbolpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
 
-   if (EnvArgCountCheck(theEnv,"symbolp",EXACTLY,1) == -1) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   EnvRtnUnknown(theEnv,1,&item);
+   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
-   if (GetType(item) == SYMBOL)
-     { return(true); }
+   if (CVIsType(&item,SYMBOL_TYPE))
+     { CVSetBoolean(returnValue,true); }
    else
-     { return(false); }
+     { CVSetBoolean(returnValue,false); }
   }
 
 /*****************************************/
 /* LexemepFunction: H/L access routine   */
 /*   for the lexemep function.           */
 /*****************************************/
-bool LexemepFunction(
-  void *theEnv)
+void LexemepFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
 
-   if (EnvArgCountCheck(theEnv,"lexemep",EXACTLY,1) == -1) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   EnvRtnUnknown(theEnv,1,&item);
+   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
-   if ((GetType(item) == SYMBOL) || (GetType(item) == STRING))
-     { return(true); }
+   if (CVIsType(&item,LEXEME_TYPES))
+     { CVSetBoolean(returnValue,true); }
    else
-     { return(false); }
+     { CVSetBoolean(returnValue,false); }
   }
 
 /*****************************************/
 /* NumberpFunction: H/L access routine   */
 /*   for the numberp function.           */
 /*****************************************/
-bool NumberpFunction(
-  void *theEnv)
+void NumberpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
 
-   if (EnvArgCountCheck(theEnv,"numberp",EXACTLY,1) == -1) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   EnvRtnUnknown(theEnv,1,&item);
+   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
-   if ((GetType(item) == FLOAT) || (GetType(item) == INTEGER))
-     { return(true); }
+   if (CVIsType(&item,NUMBER_TYPES))
+     { CVSetBoolean(returnValue,true); }
    else
-     { return(false); }
+     { CVSetBoolean(returnValue,false); }
   }
 
 /****************************************/
 /* FloatpFunction: H/L access routine   */
 /*   for the floatp function.           */
 /****************************************/
-bool FloatpFunction(
-  void *theEnv)
+void FloatpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
 
-   if (EnvArgCountCheck(theEnv,"floatp",EXACTLY,1) == -1) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   EnvRtnUnknown(theEnv,1,&item);
+   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
-   if (GetType(item) == FLOAT)
-     { return(true); }
+   if (CVIsType(&item,FLOAT_TYPE))
+     { CVSetBoolean(returnValue,true); }
    else
-     { return(false); }
+     { CVSetBoolean(returnValue,false); }
   }
 
 /******************************************/
 /* IntegerpFunction: H/L access routine   */
 /*   for the integerp function.           */
 /******************************************/
-bool IntegerpFunction(
-  void *theEnv)
+void IntegerpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
 
-   if (EnvArgCountCheck(theEnv,"integerp",EXACTLY,1) == -1) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   EnvRtnUnknown(theEnv,1,&item);
+   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
-   if (GetType(item) != INTEGER) return(false);
-
-   return(true);
+   if (CVIsType(&item,INTEGER_TYPE))
+     { CVSetBoolean(returnValue,true); }
+   else
+     { CVSetBoolean(returnValue,false); }
   }
 
 /*********************************************/
 /* MultifieldpFunction: H/L access routine   */
 /*   for the multifieldp function.           */
 /*********************************************/
-bool MultifieldpFunction(
-  void *theEnv)
+void MultifieldpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
 
-   if (EnvArgCountCheck(theEnv,"multifieldp",EXACTLY,1) == -1) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   EnvRtnUnknown(theEnv,1,&item);
+   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
-   if (GetType(item) != MULTIFIELD) return(false);
-
-   return(true);
+   if (CVIsType(&item,MULTIFIELD_TYPE))
+     { CVSetBoolean(returnValue,true); }
+   else
+     { CVSetBoolean(returnValue,false); }
   }
 
 /******************************************/
 /* PointerpFunction: H/L access routine   */
 /*   for the pointerp function.           */
 /******************************************/
-bool PointerpFunction(
-  void *theEnv)
+void PointerpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
 
-   if (EnvArgCountCheck(theEnv,"pointerp",EXACTLY,1) == -1) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   EnvRtnUnknown(theEnv,1,&item);
+   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
-   if (GetType(item) != EXTERNAL_ADDRESS) return(false);
-
-   return(true);
+   if (CVIsType(&item,EXTERNAL_ADDRESS_TYPE))
+     { CVSetBoolean(returnValue,true); }
+   else
+     { CVSetBoolean(returnValue,false); }
   }
 
 /*************************************/
@@ -829,42 +874,84 @@ bool NumericNotEqualFunction(
 /* OddpFunction: H/L access routine   */
 /*   for the oddp function.           */
 /**************************************/
-bool OddpFunction(
-  void *theEnv)
+void OddpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
-   long long num, halfnum;
+   CLIPSValue item;
+   CLIPSInteger num, halfnum;
+      
+   /*============================================*/
+   /* Check for the correct number of arguments. */
+   /*============================================*/
 
-   if (EnvArgCountCheck(theEnv,"oddp",EXACTLY,1) == -1) return(false);
-   if (EnvArgTypeCheck(theEnv,"oddp",1,INTEGER,&item) == false) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+     
+   /*===========================================*/
+   /* Check for the correct types of arguments. */
+   /*===========================================*/
+     
+   if (! UDFArgTypeCheck(context,1,INTEGER_TYPE,&item))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   num = DOToLong(item);
-
+   /*===========================*/
+   /* Compute the return value. */
+   /*===========================*/
+   
+   num = CVToInteger(&item);
    halfnum = (num / 2) * 2;
-   if (num == halfnum) return(false);
 
-   return(true);
+   if (num == halfnum) CVSetBoolean(returnValue,false);
+   else CVSetBoolean(returnValue,true);
   }
 
 /***************************************/
 /* EvenpFunction: H/L access routine   */
 /*   for the evenp function.           */
 /***************************************/
-bool EvenpFunction(
-  void *theEnv)
+void EvenpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
-   long long num, halfnum;
+   CLIPSValue item;
+   CLIPSInteger num, halfnum;
+   
+   /*============================================*/
+   /* Check for the correct number of arguments. */
+   /*============================================*/
 
-   if (EnvArgCountCheck(theEnv,"evenp",EXACTLY,1) == -1) return(false);
-   if (EnvArgTypeCheck(theEnv,"evenp",1,INTEGER,&item) == false) return(false);
+   if (UDFArgCountCheck(context) < 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+     
+   /*===========================================*/
+   /* Check for the correct types of arguments. */
+   /*===========================================*/
+     
+   if (! UDFArgTypeCheck(context,1,INTEGER_TYPE,&item))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   num = DOToLong(item);
-
+   /*===========================*/
+   /* Compute the return value. */
+   /*===========================*/
+   
+   num = CVToInteger(&item);
    halfnum = (num / 2) * 2;
-   if (num != halfnum) return(false);
-
-   return(true);
+   
+   if (num != halfnum) CVSetBoolean(returnValue,false);
+   else CVSetBoolean(returnValue,true);
   }
 
 

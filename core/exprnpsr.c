@@ -295,7 +295,7 @@ struct expr *Function2Parse(
 
    if ((top->type == FCALL) && EnvGetStaticConstraintChecking(theEnv))
      {
-      if (CheckExpressionAgainstRestrictions(theEnv,top,(theFunction->restrictions == NULL) ? NULL : theFunction->restrictions->contents,name))
+      if (CheckExpressionAgainstRestrictions(theEnv,top,theFunction,name))
         {
          ReturnExpression(theEnv,top);
          return(NULL);
@@ -433,6 +433,96 @@ void PopRtnBrkContexts(
    rtn_struct(theEnv,saved_contexts,svtmp);
   }
 
+/************************/
+/* PopulateRestriction: */
+/************************/
+void PopulateRestriction(
+   unsigned *restriction,
+   unsigned defaultRestriction,
+   const char *restrictionString,
+   int position)
+   {
+    int i = 0, currentPosition = 0, valuesRead = 0;
+    
+    *restriction = 0;
+    
+    while (restrictionString[i] != '\0')
+      {
+       char theChar = restrictionString[i];
+       
+       switch(theChar)
+         {
+          case ';':
+            if (currentPosition == position) return;
+            currentPosition++;
+            *restriction = 0;
+            valuesRead = 0;
+            break;
+            
+          case 'l':
+            *restriction |= INTEGER_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'd':
+            *restriction |= FLOAT_TYPE;
+            valuesRead++;
+            break;
+            
+          case 's':
+            *restriction |= STRING_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'y':
+            *restriction |= SYMBOL_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'n':
+            *restriction |= INSTANCE_NAME_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'm':
+            *restriction |= MULTIFIELD_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'f':
+            *restriction |= FACT_ADDRESS_TYPE;
+            valuesRead++;
+            break;
+
+          case 'i':
+            *restriction |= INSTANCE_ADDRESS_TYPE;
+            valuesRead++;
+            break;
+
+          case 'e':
+            *restriction |= EXTERNAL_ADDRESS_TYPE;
+            valuesRead++;
+            break;
+
+          case '*':
+            *restriction |= ANY_TYPE;
+            valuesRead++;
+            break;
+         }
+       
+       i++;
+      }
+      
+    if (position == currentPosition)
+      {
+       if (valuesRead == 0)
+         { *restriction = defaultRestriction; }
+       return;
+      }
+    
+    *restriction = defaultRestriction;
+   }
+
 /*****************************************************************/
 /* CheckExpressionAgainstRestrictions: Compares the arguments to */
 /*   a function to the set of restrictions for that function to  */
@@ -442,7 +532,7 @@ void PopRtnBrkContexts(
 bool CheckExpressionAgainstRestrictions(
   void *theEnv,
   struct expr *theExpression,
-  const char *restrictions,
+  struct FunctionDefinition *theFunction,
   const char *functionName)
   {
    char theChar[2];
@@ -452,6 +542,13 @@ bool CheckExpressionAgainstRestrictions(
    char defaultRestriction, argRestriction;
    struct expr *argPtr;
    int theRestriction;
+   const char *restrictions;
+   unsigned defaultRestriction2, argRestriction2;
+
+   if (theFunction->restrictions == NULL)
+     { restrictions = NULL; }
+   else
+     { restrictions = theFunction->restrictions->contents; }
 
    theChar[0] = '0';
    theChar[1] = '\0';
@@ -460,8 +557,9 @@ bool CheckExpressionAgainstRestrictions(
    /* If there are no restrictions, then there's */
    /* no need to check the function.             */
    /*============================================*/
-
-   if (restrictions == NULL) return(false);
+   
+   if (theFunction->returnValueType !='z')
+     { if (restrictions == NULL) return(false); }
 
    /*=========================================*/
    /* Count the number of function arguments. */
@@ -473,32 +571,44 @@ bool CheckExpressionAgainstRestrictions(
    /* Get the minimum number of arguments. */
    /*======================================*/
 
-   theChar[0] = restrictions[i++];
+   if (theFunction->returnValueType !='z')
+     {
+      theChar[0] = restrictions[i++];
 
-   if (isdigit(theChar[0]))
-     { number1 = atoi(theChar); }
-   else if (theChar[0] == '*')
-     { number1 = -1; }
+      if (isdigit(theChar[0]))
+        { number1 = atoi(theChar); }
+      else if (theChar[0] == '*')
+        { number1 = UNBOUNDED; }
+      else
+        { return(false); }
+     }
    else
-     { return(false); }
-
+     { number1 = theFunction->minArgs; }
+     
    /*======================================*/
    /* Get the maximum number of arguments. */
    /*======================================*/
 
-   theChar[0] = restrictions[i++];
-   if (isdigit(theChar[0]))
-     { number2 = atoi(theChar); }
-   else if (theChar[0] == '*')
-     { number2 = 10000; }
+   if (theFunction->returnValueType !='z')
+     {
+      theChar[0] = restrictions[i++];
+      if (isdigit(theChar[0]))
+        { number2 = atoi(theChar); }
+      else if (theChar[0] == '*')
+        { number2 = UNBOUNDED; }
+      else
+        { return(false); }
+     }
    else
-     { return(false); }
+     { number2 = theFunction->maxArgs; }
 
    /*============================================*/
    /* Check for the correct number of arguments. */
    /*============================================*/
 
-   if (number1 == number2)
+   if ((number1 == UNBOUNDED) && (number2 == UNBOUNDED))
+     { /* Any number of arguments allowed. */ }
+   else if (number1 == number2)
      {
       if (argCount != number1)
         {
@@ -511,55 +621,87 @@ bool CheckExpressionAgainstRestrictions(
       ExpectedCountError(theEnv,functionName,AT_LEAST,number1);
       return(true);
      }
-   else if (argCount > number2)
+   else if ((number2 != UNBOUNDED) && (argCount > number2))
      {
       ExpectedCountError(theEnv,functionName,NO_MORE_THAN,number2);
       return(true);
      }
 
+   /*===============================================*/
+   /* Return if there are no argument restrictions. */
+   /*===============================================*/
+   
+   if (restrictions == NULL) return(false);
+   
    /*=======================================*/
    /* Check for the default argument types. */
    /*=======================================*/
 
-   defaultRestriction = restrictions[i];
-   if (defaultRestriction == '\0')
-     { defaultRestriction = 'u'; }
-   else if (defaultRestriction == '*')
+   if (theFunction->returnValueType !='z')
      {
-      defaultRestriction = 'u';
-      i++;
+      defaultRestriction = restrictions[i];
+      if (defaultRestriction == '\0')
+        { defaultRestriction = 'u'; }
+      else if (defaultRestriction == '*')
+        {
+         defaultRestriction = 'u';
+         i++;
+        }
+      else
+        { i++; }
      }
    else
-     { i++; }
-
+     { PopulateRestriction(&defaultRestriction2,ANY_TYPE,restrictions,0); }
+     
    /*======================*/
    /* Check each argument. */
    /*======================*/
 
-   for (argPtr = theExpression->argList;
-        argPtr != NULL;
-        argPtr = argPtr->nextArg)
+   if (theFunction->returnValueType !='z')
      {
-      argRestriction = restrictions[i];
-      if (argRestriction == '\0')
-        { argRestriction = defaultRestriction; }
-      else
-        { i++; }
-
-      if (argRestriction != '*')
-        { theRestriction = (int) argRestriction; }
-      else
-        { theRestriction = (int) defaultRestriction; }
-
-      if (CheckArgumentAgainstRestriction(theEnv,argPtr,theRestriction))
+      for (argPtr = theExpression->argList;
+           argPtr != NULL;
+           argPtr = argPtr->nextArg)
         {
-         ExpectedTypeError1(theEnv,functionName,j,GetArgumentTypeName(theRestriction));
-         return(true);
+         argRestriction = restrictions[i];
+         if (argRestriction == '\0')
+           { argRestriction = defaultRestriction; }
+         else
+           { i++; }
+
+         if (argRestriction != '*')
+           { theRestriction = (int) argRestriction; }
+         else
+           { theRestriction = (int) defaultRestriction; }
+
+         if (CheckArgumentAgainstRestriction(theEnv,argPtr,theRestriction))
+           {
+            ExpectedTypeError1(theEnv,functionName,j,GetArgumentTypeName(theRestriction));
+            return(true);
+           }
+   
+         j++;
         }
-
-      j++;
      }
+   else
+     {
+      for (argPtr = theExpression->argList;
+           argPtr != NULL;
+           argPtr = argPtr->nextArg)
+        {
+         PopulateRestriction(&argRestriction2,defaultRestriction2,restrictions,j);
 
+         if (CheckArgumentAgainstRestriction2(theEnv,argPtr,argRestriction2))
+           {
+            ExpectedTypeError0(theEnv,functionName,j);
+            PrintTypesString(theEnv,WERROR,argRestriction2,true);
+            return(true);
+           }
+   
+         j++;
+        }
+      }
+     
    return(false);
   }
 

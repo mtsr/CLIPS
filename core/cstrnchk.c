@@ -67,6 +67,7 @@
 
    static bool                    CheckRangeAgainstCardinalityConstraint(void *,int,int,CONSTRAINT_RECORD *);
    static bool                    CheckFunctionReturnType(int,CONSTRAINT_RECORD *);
+   static bool                    CheckFunctionReturnType2(unsigned,CONSTRAINT_RECORD *);
    static bool                    CheckTypeConstraint(int,CONSTRAINT_RECORD *);
    static bool                    CheckRangeConstraint(void *,int,void *,CONSTRAINT_RECORD *);
    static void                    PrintRange(void *,const char *,CONSTRAINT_RECORD *);
@@ -144,11 +145,61 @@ static bool CheckFunctionReturnType(
       case 'u':
         return(true);
 
+      case 'z':
+        return(true);
+
       case 'v':
         if (constraints->voidAllowed) return(true);
      }
 
    return(true);
+  }
+
+/*******************************************************/
+/* CheckFunctionReturnType2: Checks a functions return */
+/*   type against a set of permissable return values.  */
+/*   Returns true if the return type is included       */
+/*   among the permissible values, otherwise false.    */
+/*******************************************************/
+static bool CheckFunctionReturnType2(
+  unsigned functionReturnType,
+  CONSTRAINT_RECORD *constraints)
+  {
+   if (constraints == NULL) return(true);
+
+   if (constraints->anyAllowed) return(true);
+
+   if (constraints->voidAllowed)
+     { if (functionReturnType & VOID_TYPE) return true; }
+
+   if (constraints->symbolsAllowed)
+     { if (functionReturnType & SYMBOL_TYPE) return true; }
+
+   if (constraints->stringsAllowed)
+     { if (functionReturnType & STRING_TYPE) return true; }
+
+   if (constraints->instanceNamesAllowed)
+     { if (functionReturnType & INSTANCE_NAME_TYPE) return true; }
+
+   if (constraints->floatsAllowed)
+     { if (functionReturnType & FLOAT_TYPE) return true; }
+
+   if (constraints->integersAllowed)
+     { if (functionReturnType & INTEGER_TYPE) return true; }
+
+   if (constraints->multifieldsAllowed)
+     { if (functionReturnType & MULTIFIELD_TYPE) return true; }
+
+   if (constraints->externalAddressesAllowed)
+     { if (functionReturnType & EXTERNAL_ADDRESS_TYPE) return true; }
+
+   if (constraints->factAddressesAllowed)
+     { if (functionReturnType & FACT_ADDRESS_TYPE) return true; }
+
+   if (constraints->instanceAddressesAllowed)
+     { if (functionReturnType & INSTANCE_ADDRESS_TYPE) return true; }
+
+   return(false);
   }
 
 /****************************************************/
@@ -728,8 +779,16 @@ int ConstraintCheckValue(
 
    else if (theType == FCALL)
      {
-      if (CheckFunctionReturnType((int) ValueFunctionType(theValue),theConstraints) == false)
-        { return(FUNCTION_RETURN_TYPE_VIOLATION); }
+      if (ValueFunctionType(theValue) != 'z')
+        {
+         if (CheckFunctionReturnType((int) ValueFunctionType(theValue),theConstraints) == false)
+           { return(FUNCTION_RETURN_TYPE_VIOLATION); }
+        }
+      else
+        {
+         if (CheckFunctionReturnType2((unsigned) UnknownFunctionType(theValue),theConstraints) == false)
+           { return(FUNCTION_RETURN_TYPE_VIOLATION); }
+        }
      }
 
    return(NO_VIOLATION);
@@ -758,9 +817,20 @@ int ConstraintCheckExpressionChain(
       if (ConstantType(theExp->type)) min++;
       else if (theExp->type == FCALL)
         {
-         if ((ExpressionFunctionType(theExp) != 'm') &&
-             (ExpressionFunctionType(theExp) != 'u')) min++;
-         else max = -1;
+         if (ExpressionFunctionType(theExp) == 'm')
+           { max = -1; }
+         else if (ExpressionFunctionType(theExp) == 'u')
+           { max = -1; }
+         else if (ExpressionFunctionType(theExp) == 'z')
+           {
+            unsigned restriction = ExpressionUnknownFunctionType(theExp);
+            if (restriction & MULTIFIELD_TYPE)
+              { max = -1; }
+            else
+              { min++; }
+           }
+         else
+           { min++; }
         }
       else max = -1;
      }
