@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*              DEFGLOBAL COMMANDS MODULE              */
    /*******************************************************/
@@ -29,8 +29,6 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*            Converted API macros to function calls.        */
-/*                                                           */
-/*      6.40: Reset globals behavior always enabled.         */
 /*                                                           */
 /*************************************************************/
 
@@ -62,6 +60,11 @@ void DefglobalCommandDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
+   EnvDefineFunction2(theEnv,"set-reset-globals",'b',
+                  PTIEF SetResetGlobalsCommand,"SetResetGlobalsCommand", "11");
+   EnvDefineFunction2(theEnv,"get-reset-globals",'b',
+                   PTIEF GetResetGlobalsCommand,"GetResetGlobalsCommand", "00");
+
 #if DEBUGGING_FUNCTIONS
    EnvDefineFunction2(theEnv,"show-defglobals",'v',
                    PTIEF ShowDefglobalsCommand,"ShowDefglobalsCommand", "01w");
@@ -72,6 +75,89 @@ void DefglobalCommandDefinitions(
 #pragma unused(theEnv)
 #endif
 #endif
+  }
+
+/************************************************/
+/* SetResetGlobalsCommand: H/L access routine   */
+/*   for the get-reset-globals command.         */
+/************************************************/
+bool SetResetGlobalsCommand(
+  void *theEnv)
+  {
+   bool oldValue;
+   DATA_OBJECT arg_ptr;
+
+   /*===========================================*/
+   /* Remember the old value of this attribute. */
+   /*===========================================*/
+
+   oldValue = EnvGetResetGlobals(theEnv);
+
+   /*============================================*/
+   /* Check for the correct number of arguments. */
+   /*============================================*/
+
+   if (EnvArgCountCheck(theEnv,"set-reset-globals",EXACTLY,1) == -1)
+     { return(oldValue); }
+
+   /*===========================================*/
+   /* Determine the new value of the attribute. */
+   /*===========================================*/
+
+   EnvRtnUnknown(theEnv,1,&arg_ptr);
+
+   if ((arg_ptr.value == EnvFalseSymbol(theEnv)) && (arg_ptr.type == SYMBOL))
+     { EnvSetResetGlobals(theEnv,false); }
+   else
+     { EnvSetResetGlobals(theEnv,true); }
+
+   /*========================================*/
+   /* Return the old value of the attribute. */
+   /*========================================*/
+
+   return(oldValue);
+  }
+
+/****************************************/
+/* EnvSetResetGlobals: C access routine */
+/*   for the set-reset-globals command. */
+/****************************************/
+bool EnvSetResetGlobals(
+  void *theEnv,
+  bool value)
+  {
+   bool ov;
+
+   ov = DefglobalData(theEnv)->ResetGlobals;
+   DefglobalData(theEnv)->ResetGlobals = value;
+   return(ov);
+  }
+
+/************************************************/
+/* GetResetGlobalsCommand: H/L access routine   */
+/*   for the get-reset-globals command.         */
+/************************************************/
+bool GetResetGlobalsCommand(
+  void *theEnv)
+  {
+   int oldValue;
+
+   oldValue = EnvGetResetGlobals(theEnv);
+
+   if (EnvArgCountCheck(theEnv,"get-reset-globals",EXACTLY,0) == -1)
+     { return(oldValue); }
+
+   return(oldValue);
+  }
+
+/****************************************/
+/* EnvGetResetGlobals: C access routine */
+/*   for the get-reset-globals command. */
+/****************************************/
+bool EnvGetResetGlobals(
+  void *theEnv)
+  {   
+   return(DefglobalData(theEnv)->ResetGlobals); 
   }
 
 #if DEBUGGING_FUNCTIONS

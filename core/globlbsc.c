@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*            CLIPS Version 6.40  01/06/16             */
    /*                                                     */
    /*         DEFGLOBAL BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -40,8 +40,6 @@
 /*            Moved WatchGlobals global to defglobalData.    */
 /*                                                           */
 /*            Converted API macros to function calls.        */
-/*                                                           */
-/*      6.40: Reset globals behavior always enabled.         */
 /*                                                           */
 /*************************************************************/
 
@@ -113,6 +111,7 @@ void DefglobalBasicCommands(
 void ResetDefglobals(
   void *theEnv)
   {
+   if (! EnvGetResetGlobals(theEnv)) return;
    DoForAllConstructs(theEnv,ResetDefglobalAction,DefglobalData(theEnv)->DefglobalModuleIndex,true,NULL);
   }
 

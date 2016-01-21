@@ -48,6 +48,7 @@
          [NSNumber numberWithInt: DEPTH_STRATEGY], @"strategy", 
          
          [NSNumber numberWithBool:NO],  @"dynamicConstraintChecking",
+         [NSNumber numberWithBool:YES], @"resetGlobalVariables",
          [NSNumber numberWithBool:NO],  @"sequenceExpansionOperatorRecognition",
          [NSNumber numberWithBool:NO],  @"factDuplication",
          

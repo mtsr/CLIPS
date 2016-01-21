@@ -1,5 +1,6 @@
 (set-dynamic-constraint-checking FALSE)
 (set-sequence-operator-recognition FALSE)
+(set-reset-globals TRUE)
 (set-fact-duplication FALSE)
 (set-salience-evaluation when-defined)
 (set-strategy depth)
