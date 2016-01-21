@@ -49,7 +49,6 @@
          
          [NSNumber numberWithBool:NO],  @"dynamicConstraintChecking",
          [NSNumber numberWithBool:NO],  @"sequenceExpansionOperatorRecognition",
-         [NSNumber numberWithBool:YES], @"autoFloatDividend",
          [NSNumber numberWithBool:NO],  @"factDuplication",
          
          [theFont fontName],                             @"editorTextFontName",

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*             BASIC MATH FUNCTIONS MODULE             */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
+/*            Auto-float-dividend always enabled.            */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -46,36 +48,19 @@
 
 #include "bmathfun.h"
 
-#define BMATHFUN_DATA 6
-
-struct basicMathFunctionData
-  { 
-   bool AutoFloatDividend;
-  };
-
-#define BasicMathFunctionData(theEnv) ((struct basicMathFunctionData *) GetEnvironmentData(theEnv,BMATHFUN_DATA))
-
 /***************************************************************/
 /* BasicMathFunctionDefinitions: Defines basic math functions. */
 /***************************************************************/
 void BasicMathFunctionDefinitions(
   void *theEnv)
-  {   
-   AllocateEnvironmentData(theEnv,BMATHFUN_DATA,sizeof(struct basicMathFunctionData),NULL);
-   
-   BasicMathFunctionData(theEnv)->AutoFloatDividend = true;
-
+  {
 #if ! RUN_TIME
    EnvDefineFunction2(theEnv,"+", 'n',PTIEF AdditionFunction, "AdditionFunction", "2*n");
    EnvDefineFunction2(theEnv,"*", 'n', PTIEF MultiplicationFunction, "MultiplicationFunction", "2*n");
    EnvDefineFunction2(theEnv,"-", 'n', PTIEF SubtractionFunction, "SubtractionFunction", "2*n");
-    
    EnvDefineFunction2(theEnv,"/", 'n', PTIEF DivisionFunction, "DivisionFunction", "2*n");
    EnvDefineFunction2(theEnv,"div", 'g', PTIEF DivFunction, "DivFunction", "2*n");
-   EnvAddUDF(theEnv,"set-auto-float-dividend",BOOLEAN_TYPE,SetAutoFloatDividendCommand,
-                    "SetAutoFloatDividendCommand",1,1,"",NULL);
-   EnvAddUDF(theEnv,"get-auto-float-dividend",BOOLEAN_TYPE,GetAutoFloatDividendCommand,
-                    "GetAutoFloatDividendCommand",0,0,"",NULL);
+   
    EnvAddUDF(theEnv,"integer",INTEGER_TYPE,IntegerFunction,"IntegerFunction",1,1,"ld",NULL);
    EnvAddUDF(theEnv,"float",FLOAT_TYPE,FloatFunction,"FloatFunction",1,1,"ld",NULL);
    EnvAddUDF(theEnv,"abs",NUMBER_TYPES,AbsFunction,"AbsFunction",1,1,"ld",NULL);
@@ -298,12 +283,9 @@ void DivisionFunction(
   {
    double ftotal = 1.0;
    long long ltotal = 1LL;
-   bool useFloatTotal;
    EXPRESSION *theExpression;
    DATA_OBJECT theArgument;
    int pos = 1;
-
-   useFloatTotal = BasicMathFunctionData(theEnv)->AutoFloatDividend;
    
    /*===================================================*/
    /* Get the first argument. This number which will be */
@@ -316,7 +298,7 @@ void DivisionFunction(
    theExpression = GetFirstArgument();
    if (theExpression != NULL)
      {
-      if (! GetNumericArgument(theEnv,theExpression,"/",&theArgument,useFloatTotal,pos)) theExpression = NULL;
+      if (! GetNumericArgument(theEnv,theExpression,"/",&theArgument,true,pos)) theExpression = NULL;
       else theExpression = GetNextArgument(theExpression);
 
       if (theArgument.type == INTEGER)
@@ -324,7 +306,6 @@ void DivisionFunction(
       else
         {
          ftotal = ValueToDouble(theArgument.value);
-         useFloatTotal = true;
         }
       pos++;
      }
@@ -339,7 +320,7 @@ void DivisionFunction(
 
    while (theExpression != NULL)
      {
-      if (! GetNumericArgument(theEnv,theExpression,"/",&theArgument,useFloatTotal,pos)) theExpression = NULL;
+      if (! GetNumericArgument(theEnv,theExpression,"/",&theArgument,true,pos)) theExpression = NULL;
       else theExpression = GetNextArgument(theExpression);
 
       if ((theArgument.type == INTEGER) ? (ValueToLong(theArgument.value) == 0L) :
@@ -352,18 +333,7 @@ void DivisionFunction(
          return;
         }
 
-      if (useFloatTotal)
-        { ftotal /= ValueToDouble(theArgument.value); }
-      else
-        {
-         if (theArgument.type == INTEGER)
-           { ltotal /= ValueToLong(theArgument.value); }
-         else
-           {
-            ftotal = (double) ltotal / ValueToDouble(theArgument.value);
-            useFloatTotal = true;
-           }
-        }
+      ftotal /= ValueToDouble(theArgument.value);
       pos++;
      }
 
@@ -372,16 +342,8 @@ void DivisionFunction(
    /* then return a float, otherwise return an integer.    */
    /*======================================================*/
 
-   if (useFloatTotal)
-     {
-      returnValue->type = FLOAT;
-      returnValue->value = (void *) EnvAddDouble(theEnv,ftotal);
-     }
-   else
-     {
-      returnValue->type = INTEGER;
-      returnValue->value = (void *) EnvAddLong(theEnv,ltotal);
-     }
+   returnValue->type = FLOAT;
+   returnValue->value = (void *) EnvAddDouble(theEnv,ftotal);
   }
 
 /*************************************/
@@ -452,89 +414,6 @@ long long DivFunction(
    /*======================================================*/
 
    return(total);
-  }
-
-/*****************************************************/
-/* SetAutoFloatDividendCommand: H/L access routine   */
-/*   for the set-auto-float-dividend command.        */
-/*****************************************************/
-void SetAutoFloatDividendCommand(
-  UDFContext *context,
-  CLIPSValue *returnValue)
-  {
-   DATA_OBJECT theArgument;
-   void *theEnv = UDFContextEnvironment(context);
-
-   /*====================================================*/
-   /* Set the return value which is the present setting. */
-   /*====================================================*/
-   
-   CVSetBoolean(returnValue,BasicMathFunctionData(theEnv)->AutoFloatDividend);
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0) return;
-
-   /*============================================================*/
-   /* The symbol FALSE disables the auto float dividend feature. */
-   /*============================================================*/
-
-   UDFArgTypeCheck(context,1,ANY_TYPE,&theArgument);
-   
-   if (CVIsFalseSymbol(&theArgument))
-     { BasicMathFunctionData(theEnv)->AutoFloatDividend = false; }
-   else
-     { BasicMathFunctionData(theEnv)->AutoFloatDividend = true; }
-  }
-
-/*****************************************************/
-/* GetAutoFloatDividendCommand: H/L access routine   */
-/*   for the get-auto-float-dividend command.        */
-/*****************************************************/
-void GetAutoFloatDividendCommand(
-  UDFContext *context,
-  CLIPSValue *returnValue)
-  {
-   void *theEnv = UDFContextEnvironment(context);
-
-   /*=======================*/
-   /* Set the return value. */
-   /*=======================*/
-   
-   CVSetBoolean(returnValue,BasicMathFunctionData(theEnv)->AutoFloatDividend);
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0) return;
-  }
-
-/*************************************************/
-/* EnvGetAutoFloatDividend: C access routine for */
-/*   the get-auto-float-dividend command.        */
-/*************************************************/
-bool EnvGetAutoFloatDividend(
-  void *theEnv)
-  {
-   return(BasicMathFunctionData(theEnv)->AutoFloatDividend);
-  }
-
-/*************************************************/
-/* EnvSetAutoFloatDividend: C access routine for */
-/*   the set-auto-float-dividend command.        */
-/*************************************************/
-bool EnvSetAutoFloatDividend(
-  void *theEnv,
-  bool value)
-  {
-   bool ov;
-
-   ov = BasicMathFunctionData(theEnv)->AutoFloatDividend;
-   BasicMathFunctionData(theEnv)->AutoFloatDividend = value;
-   return(ov);
   }
 
 /*****************************************/

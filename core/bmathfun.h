@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*             BASIC MATH FUNCTIONS MODULE             */
    /*******************************************************/
@@ -22,6 +22,8 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*      6.40: Auto-float-dividend always enabled.            */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_bmathfun
@@ -38,10 +40,6 @@
    void                    SubtractionFunction(void *,DATA_OBJECT_PTR);
    void                    DivisionFunction(void *,DATA_OBJECT_PTR);
    long long               DivFunction(void *);
-   void                    SetAutoFloatDividendCommand(UDFContext *,CLIPSValue *);
-   void                    GetAutoFloatDividendCommand(UDFContext *,CLIPSValue *);
-   bool                    EnvGetAutoFloatDividend(void *);
-   bool                    EnvSetAutoFloatDividend(void *,bool);
    void                    IntegerFunction(UDFContext *,CLIPSValue *);
    void                    FloatFunction(UDFContext *,CLIPSValue *);
    void                    AbsFunction(UDFContext *,CLIPSValue *);
