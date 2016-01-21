@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*                 RETE UTILITY MODULE                 */
    /*******************************************************/
@@ -44,6 +44,8 @@
 /*                                                           */
 /*      6.40: Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 
@@ -628,7 +630,7 @@ void InitializePatternHeader(
    theHeader->multifieldNode = false;
    theHeader->stopNode = false;
 #if (! RUN_TIME)
-   theHeader->initialize = EnvGetIncrementalReset(theEnv);
+   theHeader->initialize = true;
 #else
    theHeader->initialize = false;
 #endif

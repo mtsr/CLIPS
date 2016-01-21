@@ -237,17 +237,6 @@
                                                 <binding destination="101" name="value" keyPath="values.autoFloatDividend" id="133"/>
                                             </connections>
                                         </button>
-                                        <button id="31">
-                                            <rect key="frame" x="324" y="78" width="135" height="18"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <buttonCell key="cell" type="check" title="Incremental Reset" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="177">
-                                                <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <binding destination="101" name="value" keyPath="values.incrementalReset" id="132"/>
-                                            </connections>
-                                        </button>
                                         <button id="32">
                                             <rect key="frame" x="18" y="18" width="290" height="18"/>
                                             <autoresizingMask key="autoresizingMask"/>

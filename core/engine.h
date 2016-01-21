@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*                 ENGINE HEADER FILE                  */
    /*******************************************************/
@@ -57,6 +57,8 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*      6.40: Incremental reset is always enabled.           */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_engine
@@ -97,7 +99,6 @@ struct engineData
    unsigned WatchFocus;
 #endif
    bool IncrementalResetInProgress;
-   bool IncrementalResetFlag;
    bool JoinOperationInProgress;
    struct partialMatch *GlobalLHSBinds;
    struct partialMatch *GlobalRHSBinds;

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*                  RULE BUILD MODULE                  */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*      6.30: Changes to constructing join network.          */
 /*                                                           */
 /*            Added support for hashed memories.             */
+/*                                                           */
+/*      6.40: Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 
@@ -1174,7 +1176,7 @@ static struct joinNode *CreateNewJoin(
    newJoin->patternIsExists = existsRHSPattern;
 
    newJoin->marked = false;
-   newJoin->initialize = EnvGetIncrementalReset(theEnv);
+   newJoin->initialize = true;
    newJoin->logicalJoin = false;
    newJoin->ruleToActivate = NULL;
    newJoin->memoryLeftAdds = 0;

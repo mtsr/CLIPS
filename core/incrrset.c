@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*              INCREMENTAL RESET MODULE               */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*                                                           */
 /*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 
@@ -83,12 +85,6 @@ void IncrementalReset(
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    struct defrule *tempPtr;
    struct patternParser *theParser;
-
-   /*================================================*/
-   /* If incremental reset is disabled, then return. */
-   /*================================================*/
-
-   if (! EnvGetIncrementalReset(theEnv)) return;
 
    /*=====================================================*/
    /* Mark the pattern and join network data structures   */
@@ -517,136 +513,5 @@ static void MarkPatternForIncrementalReset(
   }
 
 #endif
-
-/********************************************/
-/* EnvGetIncrementalReset: C access routine */
-/*   for the get-incremental-reset command. */
-/********************************************/
-bool EnvGetIncrementalReset(
-  void *theEnv)
-  {   
-   return(EngineData(theEnv)->IncrementalResetFlag);
-  }
-
-/********************************************/
-/* EnvSetIncrementalReset: C access routine */
-/*   for the set-incremental-reset command. */
-/********************************************/
-int EnvSetIncrementalReset( // TBD bool?
-  void *theEnv,
-  bool value)
-  {
-   bool ov;
-   struct defmodule *theModule;
-
-   /*============================================*/
-   /* The incremental reset behavior can only be */
-   /* changed if there are no existing rules.    */
-   /*============================================*/
-   
-   SaveCurrentModule(theEnv);
-
-   for (theModule = (struct defmodule *) EnvGetNextDefmodule(theEnv,NULL);
-        theModule != NULL;
-        theModule = (struct defmodule *) EnvGetNextDefmodule(theEnv,theModule))
-     {
-      EnvSetCurrentModule(theEnv,(void *) theModule);
-      if (EnvGetNextDefrule(theEnv,NULL) != NULL)
-        {
-         RestoreCurrentModule(theEnv);
-         return(-1);
-        }
-     }
-     
-   RestoreCurrentModule(theEnv);
-
-   /*====================================*/
-   /* Change the incremental reset flag. */
-   /*====================================*/
-   
-   ov = EngineData(theEnv)->IncrementalResetFlag;
-   EngineData(theEnv)->IncrementalResetFlag = value;
-   return(ov);
-  }
-
-/****************************************************/
-/* SetIncrementalResetCommand: H/L access routine   */
-/*   for the set-incremental-reset command.         */
-/****************************************************/
-bool SetIncrementalResetCommand(
-  void *theEnv)
-  {
-   int oldValue;
-   DATA_OBJECT argPtr;
-   struct defmodule *theModule;
-
-   oldValue = EnvGetIncrementalReset(theEnv);
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (EnvArgCountCheck(theEnv,"set-incremental-reset",EXACTLY,1) == -1)
-     { return(oldValue); }
-
-   /*=========================================*/
-   /* The incremental reset behavior can't be */
-   /* changed when rules are loaded.          */
-   /*=========================================*/
-
-   SaveCurrentModule(theEnv);
-
-   for (theModule = (struct defmodule *) EnvGetNextDefmodule(theEnv,NULL);
-        theModule != NULL;
-        theModule = (struct defmodule *) EnvGetNextDefmodule(theEnv,theModule))
-     {
-      EnvSetCurrentModule(theEnv,(void *) theModule);
-      if (EnvGetNextDefrule(theEnv,NULL) != NULL)
-        {
-         RestoreCurrentModule(theEnv);
-         PrintErrorID(theEnv,"INCRRSET",1,false);
-         EnvPrintRouter(theEnv,WERROR,"The incremental reset behavior cannot be changed with rules loaded.\n");
-         EnvSetEvaluationError(theEnv,true);
-         return(oldValue);
-        }
-     }
-     
-   RestoreCurrentModule(theEnv);
-
-   /*==================================================*/
-   /* The symbol FALSE disables incremental reset. Any */
-   /* other value enables incremental reset.           */
-   /*==================================================*/
-
-   EnvRtnUnknown(theEnv,1,&argPtr);
-
-   if ((argPtr.value == EnvFalseSymbol(theEnv)) && (argPtr.type == SYMBOL))
-     { EnvSetIncrementalReset(theEnv,false); }
-   else
-     { EnvSetIncrementalReset(theEnv,true); }
-
-   /*=======================*/
-   /* Return the old value. */
-   /*=======================*/
-
-   return(oldValue);
-  }
-
-/****************************************************/
-/* GetIncrementalResetCommand: H/L access routine   */
-/*   for the get-incremental-reset command.         */
-/****************************************************/
-bool GetIncrementalResetCommand(
-  void *theEnv)
-  {
-   bool oldValue;
-
-   oldValue = EnvGetIncrementalReset(theEnv);
-
-   if (EnvArgCountCheck(theEnv,"get-incremental-reset",EXACTLY,0) == -1)
-     { return(oldValue); }
-
-   return(oldValue);
-  }
 
 #endif /* DEFRULE_CONSTRUCT */

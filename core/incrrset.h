@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  01/20/16             */
    /*                                                     */
    /*            INCREMENTAL RESET HEADER FILE            */
    /*******************************************************/
@@ -36,6 +36,8 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
+/*      6.40: Incremental reset is always enabled.           */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_incrrset
@@ -47,10 +49,6 @@
 #include "ruledef.h"
 
    void                           IncrementalReset(void *,struct defrule *);
-   bool                           EnvGetIncrementalReset(void *);
-   int                            EnvSetIncrementalReset(void *,bool);
-   bool                           GetIncrementalResetCommand(void *);
-   bool                           SetIncrementalResetCommand(void *);
 
 #endif /* _H_incrrset */
 
