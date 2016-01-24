@@ -60,14 +60,14 @@ void DefglobalCommandDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"set-reset-globals",'b',
-                  PTIEF SetResetGlobalsCommand,"SetResetGlobalsCommand", "11");
-   EnvDefineFunction2(theEnv,"get-reset-globals",'b',
-                   PTIEF GetResetGlobalsCommand,"GetResetGlobalsCommand", "00");
+   EnvAddUDF(theEnv,"set-reset-globals",BOOLEAN_TYPE,
+                   SetResetGlobalsCommand,"SetResetGlobalsCommand", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"get-reset-globals",BOOLEAN_TYPE,
+                    GetResetGlobalsCommand,"GetResetGlobalsCommand", 0,0,NULL,NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"show-defglobals",'v',
-                   PTIEF ShowDefglobalsCommand,"ShowDefglobalsCommand", "01w");
+   EnvAddUDF(theEnv,"show-defglobals",VOID_TYPE,
+                    ShowDefglobalsCommand,"ShowDefglobalsCommand", 0,1,"y",NULL);
 #endif
 
 #else
@@ -81,11 +81,13 @@ void DefglobalCommandDefinitions(
 /* SetResetGlobalsCommand: H/L access routine   */
 /*   for the get-reset-globals command.         */
 /************************************************/
-bool SetResetGlobalsCommand(
-  void *theEnv)
+void SetResetGlobalsCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    bool oldValue;
-   DATA_OBJECT arg_ptr;
+   DATA_OBJECT result;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*===========================================*/
    /* Remember the old value of this attribute. */
@@ -93,20 +95,13 @@ bool SetResetGlobalsCommand(
 
    oldValue = EnvGetResetGlobals(theEnv);
 
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (EnvArgCountCheck(theEnv,"set-reset-globals",EXACTLY,1) == -1)
-     { return(oldValue); }
-
    /*===========================================*/
    /* Determine the new value of the attribute. */
    /*===========================================*/
 
-   EnvRtnUnknown(theEnv,1,&arg_ptr);
-
-   if ((arg_ptr.value == EnvFalseSymbol(theEnv)) && (arg_ptr.type == SYMBOL))
+   UDFGetFirstArgument(context,ANY_TYPE,&result);
+   
+   if (CVIsFalseSymbol(&result))
      { EnvSetResetGlobals(theEnv,false); }
    else
      { EnvSetResetGlobals(theEnv,true); }
@@ -115,7 +110,7 @@ bool SetResetGlobalsCommand(
    /* Return the old value of the attribute. */
    /*========================================*/
 
-   return(oldValue);
+   CVSetBoolean(returnValue,oldValue);
   }
 
 /****************************************/
@@ -137,17 +132,11 @@ bool EnvSetResetGlobals(
 /* GetResetGlobalsCommand: H/L access routine   */
 /*   for the get-reset-globals command.         */
 /************************************************/
-bool GetResetGlobalsCommand(
-  void *theEnv)
+void GetResetGlobalsCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   int oldValue;
-
-   oldValue = EnvGetResetGlobals(theEnv);
-
-   if (EnvArgCountCheck(theEnv,"get-reset-globals",EXACTLY,0) == -1)
-     { return(oldValue); }
-
-   return(oldValue);
+   CVSetBoolean(returnValue,EnvGetResetGlobals(UDFContextEnvironment(context)));
   }
 
 /****************************************/
@@ -167,14 +156,15 @@ bool EnvGetResetGlobals(
 /*   for the show-defglobals command.          */
 /***********************************************/
 void ShowDefglobalsCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct defmodule *theModule;
    int numArgs;
    bool error;
+   void *theEnv = UDFContextEnvironment(context);
 
-   if ((numArgs = EnvArgCountCheck(theEnv,"show-defglobals",NO_MORE_THAN,1)) == -1) return;
-
+   numArgs = UDFArgumentCount(context);
    if (numArgs == 1)
      {
       theModule = GetModuleName(theEnv,"show-defglobals",1,&error);

@@ -601,20 +601,20 @@ static void SetupDefclasses(
    AddPortConstructItem(theEnv,"defclass",SYMBOL);
    AddAfterModuleDefinedFunction(theEnv,"defclass",UpdateDefclassesScope,0);
 #endif
-   EnvDefineFunction2(theEnv,"undefclass",'v',PTIEF UndefclassCommand,"UndefclassCommand","11w");
+   EnvAddUDF(theEnv,"undefclass",VOID_TYPE,UndefclassCommand,"UndefclassCommand",1,1,"y",NULL);
 
    AddSaveFunction(theEnv,"defclass",SaveDefclasses,10);
 #endif
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"list-defclasses",'v',PTIEF ListDefclassesCommand,"ListDefclassesCommand","01");
-   EnvDefineFunction2(theEnv,"ppdefclass",'v',PTIEF PPDefclassCommand,"PPDefclassCommand","11w");
+   EnvAddUDF(theEnv,"list-defclasses",VOID_TYPE,ListDefclassesCommand,"ListDefclassesCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdefclass",VOID_TYPE, PPDefclassCommand,"PPDefclassCommand",1,1,"y",NULL);
    EnvDefineFunction2(theEnv,"describe-class",'v',PTIEF DescribeClassCommand,"DescribeClassCommand","11w");
    EnvDefineFunction2(theEnv,"browse-classes",'v',PTIEF BrowseClassesCommand,"BrowseClassesCommand","01w");
 #endif
 
-   EnvDefineFunction2(theEnv,"get-defclass-list",'m',PTIEF GetDefclassListFunction,
-                   "GetDefclassListFunction","01");
+   EnvAddUDF(theEnv,"get-defclass-list",MULTIFIELD_TYPE,GetDefclassListFunction,
+                   "GetDefclassListFunction",0,1,"y",NULL);
    EnvDefineFunction2(theEnv,"superclassp",'b',PTIEF SuperclassPCommand,"SuperclassPCommand","22w");
    EnvDefineFunction2(theEnv,"subclassp",'b',PTIEF SubclassPCommand,"SubclassPCommand","22w");
    EnvDefineFunction2(theEnv,"class-existp",'b',PTIEF ClassExistPCommand,"ClassExistPCommand","11w");
@@ -646,8 +646,8 @@ static void SetupDefclasses(
                    "SlotDirectAccessPCommand","22w");
    EnvDefineFunction2(theEnv,"slot-default-value",'u',PTIEF SlotDefaultValueCommand,
                    "SlotDefaultValueCommand","22w");
-   EnvDefineFunction2(theEnv,"defclass-module",'w',PTIEF GetDefclassModuleCommand,
-                   "GetDefclassModuleCommand","11w");
+   EnvAddUDF(theEnv,"defclass-module",SYMBOL_TYPE, GetDefclassModuleCommand,
+                   "GetDefclassModuleCommand",1,1,"y",NULL);
    EnvDefineFunction2(theEnv,"get-class-defaults-mode", 'w', PTIEF GetClassDefaultsModeCommand,  "GetClassDefaultsModeCommand", "00");
    EnvDefineFunction2(theEnv,"set-class-defaults-mode", 'w', PTIEF SetClassDefaultsModeCommand,  "SetClassDefaultsModeCommand", "11w");
 #endif

@@ -306,11 +306,12 @@ void *FindNamedConstructInModule(
 /*   for the undef<construct> commands.  */
 /*****************************************/
 void UndefconstructCommand(
-  void *theEnv,
+  UDFContext *context,
   const char *command,
   struct construct *constructClass)
   {
    const char *constructName;
+   void *theEnv = UDFContextEnvironment(context);
    char buffer[80];
 
    /*==============================================*/
@@ -319,7 +320,7 @@ void UndefconstructCommand(
 
    gensprintf(buffer,"%s name",constructClass->constructName);
 
-   constructName = GetConstructName(theEnv,command,buffer);
+   constructName = GetConstructName(context,command,buffer);
    if (constructName == NULL) return;
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
@@ -362,11 +363,12 @@ void UndefconstructCommand(
 /*   the ppdef<construct> commands.       */
 /******************************************/
 void PPConstructCommand(
-  void *theEnv,
+  UDFContext *context,
   const char *command,
   struct construct *constructClass)
   {
    const char *constructName;
+   void *theEnv = UDFContextEnvironment(context);
    char buffer[80];
 
    /*===============================*/
@@ -376,7 +378,7 @@ void PPConstructCommand(
 
    gensprintf(buffer,"%s name",constructClass->constructName);
 
-   constructName = GetConstructName(theEnv,command,buffer);
+   constructName = GetConstructName(context,command,buffer);
    if (constructName == NULL) return;
 
    /*================================*/
@@ -438,11 +440,12 @@ bool PPConstruct(
 /*   for def<construct>-module routines      */
 /*********************************************/
 SYMBOL_HN *GetConstructModuleCommand(
-  void *theEnv,
+  UDFContext *context,
   const char *command,
   struct construct *constructClass)
   {
    const char *constructName;
+   void *theEnv = UDFContextEnvironment(context);
    char buffer[80];
    struct defmodule *constructModule;
 
@@ -453,7 +456,7 @@ SYMBOL_HN *GetConstructModuleCommand(
 
    gensprintf(buffer,"%s name",constructClass->constructName);
 
-   constructName = GetConstructName(theEnv,command,buffer);
+   constructName = GetConstructName(context,command,buffer);
    if (constructName == NULL) return((SYMBOL_HN *) EnvFalseSymbol(theEnv));
 
    /*==========================================*/
@@ -743,38 +746,29 @@ SYMBOL_HN *GetConstructNamePointer(
 /*   for retrieving the constructs in a module. */
 /************************************************/
 void GetConstructListFunction(
-  void *theEnv,
+  UDFContext *context,
   const char *functionName,
   DATA_OBJECT_PTR returnValue,
   struct construct *constructClass)
   {
    struct defmodule *theModule;
-   DATA_OBJECT result;
+   CLIPSValue result;
    int numArgs;
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if ((numArgs = EnvArgCountCheck(theEnv,functionName,NO_MORE_THAN,1)) == -1)
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+   void *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* If an argument was given, check to */
    /* see that it's a valid module name. */
    /*====================================*/
 
+   numArgs = UDFArgumentCount(context);
    if (numArgs == 1)
      {
       /*======================================*/
       /* Only symbols are valid module names. */
       /*======================================*/
 
-      EnvRtnUnknown(theEnv,1,&result);
-      if (GetType(result) != SYMBOL)
+      if (! UDFGetFirstArgument(context,SYMBOL_TYPE,&result))
         {
          EnvSetMultifieldErrorValue(theEnv,returnValue);
          ExpectedTypeError1(theEnv,functionName,1,"defmodule name");
@@ -998,33 +992,28 @@ void GetConstructList(
 /*   listing the constructs in a module.     */
 /*********************************************/
 void ListConstructCommand(
-  void *theEnv,
+  UDFContext *context,
   const char *functionName,
   struct construct *constructClass)
   {
    struct defmodule *theModule;
    DATA_OBJECT result;
    int numArgs;
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if ((numArgs = EnvArgCountCheck(theEnv,functionName,NO_MORE_THAN,1)) == -1) return;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* If an argument was given, check to */
    /* see that it's a valid module name. */
    /*====================================*/
 
+   numArgs = UDFArgumentCount(context);
    if (numArgs == 1)
      {
       /*======================================*/
       /* Only symbols are valid module names. */
       /*======================================*/
 
-      EnvRtnUnknown(theEnv,1,&result);
-      if (GetType(result) != SYMBOL)
+      if (! UDFGetFirstArgument(context,SYMBOL_TYPE,&result))
         {
          ExpectedTypeError1(theEnv,functionName,1,"defmodule name");
          return;

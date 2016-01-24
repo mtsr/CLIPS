@@ -397,8 +397,8 @@ void InitializeConstructs(
   void *theEnv)
   {
 #if (! RUN_TIME)
-   EnvDefineFunction2(theEnv,"clear",   'v', PTIEF ClearCommand,   "ClearCommand", "00");
-   EnvDefineFunction2(theEnv,"reset",   'v', PTIEF ResetCommand,   "ResetCommand", "00");
+   EnvAddUDF(theEnv,"clear",   VOID_TYPE,  ClearCommand,   "ClearCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"reset",   VOID_TYPE,  ResetCommand,   "ResetCommand", 0,0,NULL,NULL);
 
 #if DEBUGGING_FUNCTIONS && (! BLOAD_ONLY)
    AddWatchItem(theEnv,"compilations",0,&ConstructData(theEnv)->WatchCompilations,30,NULL,NULL);
@@ -415,10 +415,10 @@ void InitializeConstructs(
 /*   for the clear command.           */
 /**************************************/
 void ClearCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   if (EnvArgCountCheck(theEnv,"clear",EXACTLY,0) == -1) return;
-   EnvClear(theEnv);
+   EnvClear(UDFContextEnvironment(context));
    return;
   }
 
@@ -427,10 +427,10 @@ void ClearCommand(
 /*   for the reset command.           */
 /**************************************/
 void ResetCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   if (EnvArgCountCheck(theEnv,"reset",EXACTLY,0) == -1) return;
-   EnvReset(theEnv);
+   EnvReset(UDFContextEnvironment(context));
    return;
   }
 

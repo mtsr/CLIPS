@@ -96,8 +96,10 @@ struct externalFunctionData
 
 typedef struct UDFContext_t
   {
-   struct environmentData *environment;
+   Environment *environment;
    struct FunctionDefinition *theFunction;
+   int lastPosition;
+   struct expr *lastArg;
   } UDFContext;
 
 #define ExternalFunctionData(theEnv) ((struct externalFunctionData *) GetEnvironmentData(theEnv,EXTERNAL_FUNCTION_DATA))
@@ -140,13 +142,18 @@ struct FunctionHash
    int                            GetMinimumArgs(struct FunctionDefinition *);
    int                            GetMaximumArgs(struct FunctionDefinition *);
 
+   int                            UDFArgumentCount(UDFContext *);
    int                            UDFArgCountCheck(UDFContext *);
    bool                           UDFArgTypeCheck(UDFContext *,int,unsigned,struct dataObject *);
    void                           UDFInvalidArgumentMessage(UDFContext *,int,const char *);
-   void                          *UDFContextEnvironment(UDFContext *);
+   Environment                   *UDFContextEnvironment(UDFContext *);
    void                          *UDFContextUserContext(UDFContext *);
    const char                    *UDFContextFunctionName(UDFContext *);
    void                           PrintTypesString(void *,const char *,unsigned,bool);
+   bool                           UDFGetFirstArgument(UDFContext *,unsigned,CLIPSValue *);
+   bool                           UDFGetNextArgument(UDFContext *,unsigned,CLIPSValue *);
+
+#define UDFHasNextArg(context) (context->lastArg != NULL)
 
 #endif /* _H_extnfunc */
 

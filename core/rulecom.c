@@ -120,11 +120,11 @@ void DefruleCommands(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"run",'v', PTIEF RunCommand,"RunCommand", "*1i");
-   EnvDefineFunction2(theEnv,"halt",'v', PTIEF HaltCommand,"HaltCommand","00");
+   EnvAddUDF(theEnv,"run",VOID_TYPE, RunCommand,"RunCommand", 0,1,"l",NULL);
+   EnvAddUDF(theEnv,"halt",VOID_TYPE, HaltCommand,"HaltCommand",0,0,NULL,NULL);
    EnvDefineFunction2(theEnv,"focus",'b', PTIEF FocusCommand,"FocusCommand", "1*w");
-   EnvDefineFunction2(theEnv,"clear-focus-stack",'v',PTIEF ClearFocusStackCommand,
-                                       "ClearFocusStackCommand","00");
+   EnvAddUDF(theEnv,"clear-focus-stack",VOID_TYPE, ClearFocusStackCommand,
+                                       "ClearFocusStackCommand",0,0,NULL,NULL);
    EnvDefineFunction2(theEnv,"get-focus-stack",'m',PTIEF GetFocusStackFunction,
                                      "GetFocusStackFunction","00");
    EnvDefineFunction2(theEnv,"pop-focus",'w',PTIEF PopFocusFunction,
@@ -132,24 +132,25 @@ void DefruleCommands(
    EnvDefineFunction2(theEnv,"get-focus",'w',PTIEF GetFocusFunction,
                                "GetFocusFunction","00");
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"set-break",'v', PTIEF SetBreakCommand,
-                               "SetBreakCommand","11w");
+   EnvAddUDF(theEnv,"set-break",VOID_TYPE, SetBreakCommand,
+                               "SetBreakCommand",1,1,"y",NULL);
    EnvDefineFunction2(theEnv,"remove-break",'v', PTIEF RemoveBreakCommand,
                                   "RemoveBreakCommand", "*1w");
-   EnvDefineFunction2(theEnv,"show-breaks",'v', PTIEF ShowBreaksCommand,
-                                 "ShowBreaksCommand", "01w");
+   EnvAddUDF(theEnv,"show-breaks",'v', ShowBreaksCommand,
+                                 "ShowBreaksCommand", 0,1,"y",NULL);
    EnvDefineFunction2(theEnv,"matches",'u',PTIEF MatchesCommand,"MatchesCommand","12w");
    EnvDefineFunction2(theEnv,"join-activity",'u',PTIEF JoinActivityCommand,"JoinActivityCommand","12w");
-   EnvDefineFunction2(theEnv,"join-activity-reset",'v', PTIEF JoinActivityResetCommand,
-                                  "JoinActivityResetCommand", "00");
-   EnvDefineFunction2(theEnv,"list-focus-stack",'v', PTIEF ListFocusStackCommand,
-                                      "ListFocusStackCommand", "00");
-   EnvDefineFunction2(theEnv,"dependencies", 'v', PTIEF DependenciesCommand,
-                                   "DependenciesCommand", "11h");
-   EnvDefineFunction2(theEnv,"dependents",   'v', PTIEF DependentsCommand,
-                                   "DependentsCommand", "11h");
+   EnvAddUDF(theEnv,"join-activity-reset",VOID_TYPE,  JoinActivityResetCommand,
+                                  "JoinActivityResetCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"list-focus-stack",VOID_TYPE, ListFocusStackCommand,
+                                      "ListFocusStackCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"dependencies", VOID_TYPE, DependenciesCommand,
+                                   "DependenciesCommand", 1,1,"infly",NULL);
+   EnvAddUDF(theEnv,"dependents",  VOID_TYPE,  DependentsCommand,
+                                   "DependentsCommand", 1,1,"infly",NULL);
+      
    EnvDefineFunction2(theEnv,"timetag",   'g', PTIEF TimetagFunction,
-                                   "TimetagFunction", "11h");
+                                   "TimetagFunction", "11h"); // h = infly
 #endif /* DEBUGGING_FUNCTIONS */
 
    EnvDefineFunction2(theEnv,"get-beta-memory-resizing",'b',
@@ -161,8 +162,8 @@ void DefruleCommands(
    EnvDefineFunction2(theEnv,"set-strategy", 'w', PTIEF SetStrategyCommand,  "SetStrategyCommand", "11w");
 
 #if DEVELOPER && (! BLOAD_ONLY)
-   EnvDefineFunction2(theEnv,"rule-complexity",'l', PTIEF RuleComplexityCommand,"RuleComplexityCommand", "11w");
-   EnvDefineFunction2(theEnv,"show-joins",   'v', PTIEF ShowJoinsCommand,    "ShowJoinsCommand", "11w");
+   EnvAddUDF(theEnv,"rule-complexity",INTEGER_TYPE, RuleComplexityCommand,"RuleComplexityCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"show-joins",  VOID_TYPE, ShowJoinsCommand,    "ShowJoinsCommand", 1,1,"y",NULL);
    EnvDefineFunction2(theEnv,"show-aht",   'v', PTIEF ShowAlphaHashTable,    "ShowAlphaHashTable", "00");
 #if DEBUGGING_FUNCTIONS
    AddWatchItem(theEnv,"rule-analysis",0,&DefruleData(theEnv)->WatchRuleAnalysis,0,NULL,NULL);
@@ -1303,8 +1304,10 @@ static void JoinActivityReset(
 /*   for the reset-join-activity command.       */
 /************************************************/
 void JoinActivityResetCommand(
-  void *theEnv)
-  { 
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
    DoForAllConstructs(theEnv,JoinActivityReset,DefruleData(theEnv)->DefruleModuleIndex,true,NULL);
   }
 
@@ -1334,23 +1337,30 @@ long long TimetagFunction(
 /* RuleComplexityCommand: H/L access routine   */
 /*   for the rule-complexity function.         */
 /***********************************************/
-long RuleComplexityCommand(
-  void *theEnv)
+void RuleComplexityCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *ruleName;
    struct defrule *rulePtr;
+   void *theEnv = UDFContextEnvironment(context);
 
-   ruleName = GetConstructName(theEnv,"rule-complexity","rule name");
-   if (ruleName == NULL) return(-1);
+   ruleName = GetConstructName(context,"rule-complexity","rule name");
+   if (ruleName == NULL)
+     {
+      CVSetInteger(returnValue,-1);
+      return;
+     }
 
    rulePtr = (struct defrule *) EnvFindDefrule(theEnv,ruleName);
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
-      return(-1);
+      CVSetInteger(returnValue,-1);
+      return;
      }
 
-   return(rulePtr->complexity);
+   CVSetInteger(returnValue,rulePtr->complexity);
   }
 
 /******************************************/
@@ -1358,12 +1368,14 @@ long RuleComplexityCommand(
 /*   for the show-joins command.          */
 /******************************************/
 void ShowJoinsCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *ruleName;
    void *rulePtr;
+   void *theEnv = UDFContextEnvironment(context);
 
-   ruleName = GetConstructName(theEnv,"show-joins","rule name");
+   ruleName = GetConstructName(context,"show-joins","rule name");
    if (ruleName == NULL) return;
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);

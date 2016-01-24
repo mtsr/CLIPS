@@ -206,15 +206,9 @@ void SetgenFunction(
    CLIPSInteger theLong;
    void *theEnv = UDFContextEnvironment(context);
 
-   /*==========================================================*/
-   /* Check to see that a single integer argument is provided. */
-   /*==========================================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     {
-      CVSetInteger(returnValue,MiscFunctionData(theEnv)->GensymNumber);
-      return;
-     }
+   /*====================================================*/
+   /* Check to see that an integer argument is provided. */
+   /*====================================================*/
 
    if (! UDFArgTypeCheck(context,1,INTEGER_TYPE,returnValue))
      {
@@ -253,12 +247,6 @@ void GensymFunction(
    void *theEnv = UDFContextEnvironment(context);
    char genstring[128];
    
-   /*===========================================*/
-   /* The gensym function accepts no arguments. */
-   /*===========================================*/
-
-   UDFArgCountCheck(context);
-
    /*================================================*/
    /* Create a symbol using the current gensym index */
    /* as the postfix.                                */
@@ -282,12 +270,6 @@ void GensymStarFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   /*===========================================*/
-   /* The gensym function accepts no arguments. */
-   /*===========================================*/
-
-   UDFArgCountCheck(context);
-
    /*====================*/
    /* Return the symbol. */
    /*====================*/
@@ -323,7 +305,7 @@ void GensymStar(
    /* Return the symbol. */
    /*====================*/
 
-   CVInit(theEnv,returnValue);
+   CVInit(returnValue,theEnv);
    CVSetSymbol(returnValue,genstring);
   }
 
@@ -618,13 +600,6 @@ void OptionsCommand(
    
    CVSetVoid(returnValue);
    
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     { return; }
-
    /*=================================*/
    /* Print the state of the compiler */
    /* flags for this executable.      */
@@ -931,9 +906,7 @@ void ExpandFuncCall(
    if (fcallexp->type == FCALL)
      {
       func = (struct FunctionDefinition *) fcallexp->value;
-      if (CheckFunctionArgCount(theEnv,ValueToString(func->callFunctionName),
-                                (func->restrictions == NULL) ? NULL : func->restrictions->contents,
-                                CountArguments(newargexp)) == false)
+      if (CheckFunctionArgCount(theEnv,func,CountArguments(newargexp)) == false)
         {
          result->type = SYMBOL;
          result->value = EnvFalseSymbol(theEnv);

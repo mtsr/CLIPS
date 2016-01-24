@@ -67,7 +67,7 @@ struct environmentCleanupFunction
    struct environmentCleanupFunction *next;
   };
 
-struct environmentData
+typedef struct environmentData
   {   
    unsigned int initialized : 1;
    void *context;
@@ -78,7 +78,7 @@ struct environmentData
    void (**cleanupFunctions)(void *);
    struct environmentCleanupFunction *listOfCleanupEnvironmentFunctions;
    struct environmentData *next;
-  };
+  } Environment;
 
 typedef struct environmentData ENVIRONMENT_DATA;
 typedef struct environmentData * ENVIRONMENT_DATA_PTR;

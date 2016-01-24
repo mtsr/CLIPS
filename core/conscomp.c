@@ -141,7 +141,7 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   void                               ConstructsToCCommand(void *);
+   void                               ConstructsToCCommand(UDFContext *,CLIPSValue *);
    static int                         ConstructsToC(void *,const char *,const char *,char *,long long,long long);
    static void                        WriteFunctionExternDeclarations(void *,FILE *);
    static bool                        FunctionsToCode(void *theEnv,const char *,const char *,char *);
@@ -195,7 +195,8 @@ static void DeallocateConstructCompilerData(
 /*   for the constructs-to-c command.         */
 /**********************************************/
 void ConstructsToCCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *fileName;
    char *fileNameBuffer;
@@ -204,6 +205,7 @@ void ConstructsToCCommand(
    int argCount;
    long long id, max; 
    int nameLength, pathLength;
+   void *theEnv = UDFContextEnvironment(context);
 #if WIN_MVC
    int i;
 #endif
@@ -212,7 +214,7 @@ void ConstructsToCCommand(
    /* Check for appropriate number of arguments. */
    /*============================================*/
 
-   if ((argCount = EnvArgRangeCheck(theEnv,"constructs-to-c",2,4)) == -1) return;
+   argCount = UDFArgumentCount(context);
 
    /*====================================================*/
    /* Get the name of the file in which to place C code. */
@@ -1156,9 +1158,9 @@ static void DumpExpression(
 void ConstructsToCCommandDefinition(
   void *theEnv)
   {
-   EnvDefineFunction2(theEnv,"constructs-to-c",'v',
-                   PTIEF ConstructsToCCommand,
-                   "ConstructsToCCommand", "24*kiki");
+   EnvAddUDF(theEnv,"constructs-to-c",VOID_TYPE,
+                    ConstructsToCCommand,
+                   "ConstructsToCCommand", 2,4,"*;sy;l;sy;l", NULL);
   }
 
 /*********************************************************/
@@ -1610,14 +1612,15 @@ void ConstructModuleToCode(
 
 #else /* CONSTRUCT_COMPILER && (! RUN_TIME) */
 
-   void                               ConstructsToCCommand(void *);
+   void                               ConstructsToCCommand(UDFContext *,CLIPSValue *);
 
 /************************************/
 /* ConstructsToCCommand: Definition */
 /*   for rule compiler stub.        */
 /************************************/
 void ConstructsToCCommand(
-  void *theEnv) 
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
 #if MAC_XCD
 #pragma unused(theEnv)

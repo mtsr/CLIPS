@@ -55,15 +55,15 @@
 #include "evaluatn.h"
 
    void                           DefruleBasicCommands(void *);
-   void                           UndefruleCommand(void *);
+   void                           UndefruleCommand(UDFContext *,CLIPSValue *);
    bool                           EnvUndefrule(void *,void *);
-   void                           GetDefruleListFunction(void *,DATA_OBJECT_PTR);
+   void                           GetDefruleListFunction(UDFContext *,CLIPSValue *);
    void                           EnvGetDefruleList(void *,DATA_OBJECT_PTR,void *);
-   void                          *DefruleModuleFunction(void *);
+   void                           DefruleModuleFunction(UDFContext *,CLIPSValue *);
 #if DEBUGGING_FUNCTIONS
-   void                           PPDefruleCommand(void *);
+   void                           PPDefruleCommand(UDFContext *,CLIPSValue *);
    int                            PPDefrule(void *,const char *,const char *);
-   void                           ListDefrulesCommand(void *);
+   void                           ListDefrulesCommand(UDFContext *,CLIPSValue *);
    void                           EnvListDefrules(void *,const char *,void *);
    bool                           EnvGetDefruleWatchFirings(void *,void *);
    bool                           EnvGetDefruleWatchActivations(void *,void *);

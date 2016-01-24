@@ -727,6 +727,9 @@ int GetMinimumArgs(
    char theChar[2];
    const char *restrictions;
 
+   if (theFunction->returnValueType == 'z')
+     { return theFunction->minArgs; }
+     
    if (theFunction->restrictions == NULL) return(-1);
    restrictions = theFunction->restrictions->contents;
 
@@ -751,6 +754,9 @@ int GetMaximumArgs(
    char theChar[2];
    const char *restrictions;
 
+   if (theFunction->returnValueType == 'z')
+     { return theFunction->maxArgs; }
+
    if (theFunction->restrictions == NULL) return(-1);
    restrictions = theFunction->restrictions->contents;
    if (restrictions[0] == '\0') return(-1);
@@ -764,6 +770,23 @@ int GetMaximumArgs(
      { return(-1); }
    
    return(-1); 
+  }
+
+/*********************/
+/* UDFArgumentCount: */
+/*********************/
+int UDFArgumentCount(
+  UDFContext *context)
+  {
+   int count = 0;
+   struct expr *argPtr;
+
+   for (argPtr = EvaluationData(context->environment)->CurrentExpression->argList;
+        argPtr != NULL;
+        argPtr = argPtr->nextArg)
+     { count++; }
+
+   return(count);
   }
 
 /*********************/
@@ -793,60 +816,163 @@ int UDFArgCountCheck(
     
    return -1;
   }
-  
-/********************/
-/* UDFArgTypeCheck: */
-/********************/
-bool UDFArgTypeCheck(
+
+/************************/
+/* UDFGetFirstArgument: */
+/************************/
+bool UDFGetFirstArgument(
   UDFContext *context,
-  int argumentPosition,
   unsigned expectedType,
-  DATA_OBJECT_PTR returnValue)
+  CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
+   context->lastArg = EvaluationData(context->environment)->CurrentExpression->argList;
+   context->lastPosition = 1;
+   return UDFGetNextArgument(context,expectedType,returnValue);
+  }
+
+/***********************/
+/* UDFGetNextArgument: */
+/***********************/
+bool UDFGetNextArgument(
+  UDFContext *context,
+  unsigned expectedType,
+  CLIPSValue *returnValue)
+  {
+   struct expr *argPtr = context->lastArg;
+   int argumentPosition = context->lastPosition;
+   void *theEnv = context->environment;
+   returnValue->environment = theEnv;
    
-   EnvRtnUnknown(theEnv,argumentPosition,returnValue);
-   if (EvaluationData(theEnv)->EvaluationError) return false;
+   if (argPtr == NULL)
+     {
+      EnvSetHaltExecution(theEnv,true);
+      EnvSetEvaluationError(theEnv,true);
+      return false;
+     }
+     
+   context->lastPosition++;
+   context->lastArg = context->lastArg->nextArg;
+   
+   switch (argPtr->type)
+     {
+      case INTEGER:
+        returnValue->type = argPtr->type;
+        returnValue->bitType = INTEGER_TYPE;
+        returnValue->value = argPtr->value;
+        if (expectedType & INTEGER_TYPE) return(true);
+        ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
+        PrintTypesString(theEnv,WERROR,expectedType,true);
+        EnvSetHaltExecution(theEnv,true);
+        EnvSetEvaluationError(theEnv,true);
+        return false;
+        break;
+
+      case FLOAT:
+        returnValue->type = argPtr->type;
+        returnValue->bitType = FLOAT_TYPE;
+        returnValue->value = argPtr->value;
+        if (expectedType & FLOAT_TYPE) return(true);
+        ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
+        PrintTypesString(theEnv,WERROR,expectedType,true);
+        EnvSetHaltExecution(theEnv,true);
+        EnvSetEvaluationError(theEnv,true);
+        return false;
+        break;
+
+      case SYMBOL:
+        returnValue->type = argPtr->type;
+        returnValue->value = argPtr->value;
+        returnValue->bitType = SYMBOL_TYPE;
+        if (expectedType & SYMBOL_TYPE) return(true);
+        ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
+        PrintTypesString(theEnv,WERROR,expectedType,true);
+        EnvSetHaltExecution(theEnv,true);
+        EnvSetEvaluationError(theEnv,true);
+        return false;
+        break;
+
+      case STRING:
+        returnValue->type = argPtr->type;
+        returnValue->value = argPtr->value;
+        returnValue->bitType = STRING_TYPE;
+        if (expectedType & STRING_TYPE) return(true);
+        ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
+        PrintTypesString(theEnv,WERROR,expectedType,true);
+        EnvSetHaltExecution(theEnv,true);
+        EnvSetEvaluationError(theEnv,true);
+        return false;
+        break;
+
+      case INSTANCE_NAME:
+        returnValue->type = argPtr->type;
+        returnValue->value = argPtr->value;
+        returnValue->bitType = INSTANCE_NAME_TYPE;
+        if (expectedType & INSTANCE_NAME_TYPE) return(true);
+        ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
+        PrintTypesString(theEnv,WERROR,expectedType,true);
+        EnvSetHaltExecution(theEnv,true);
+        EnvSetEvaluationError(theEnv,true);
+        return false;
+        break;
+     }
+
+   EvaluateExpression(theEnv,argPtr,returnValue);
+   if (EvaluationData(theEnv)->EvaluationError)
+     {
+      ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
+      PrintTypesString(theEnv,WERROR,expectedType,true);
+      return false;
+     }
    
    switch (returnValue->type)
      {
       case RVOID:
+        returnValue->bitType = VOID_TYPE;
         if (expectedType & VOID_TYPE) return(true);
         break;
 
       case INTEGER:
+        returnValue->bitType = INTEGER_TYPE;
         if (expectedType & INTEGER_TYPE) return(true);
         break;
 
       case FLOAT:
+        returnValue->bitType = FLOAT_TYPE;
         if (expectedType & FLOAT_TYPE) return(true);
         break;
 
       case SYMBOL:
+        returnValue->bitType = SYMBOL_TYPE;
         if (expectedType & SYMBOL_TYPE) return(true);
         break;
 
       case STRING:
+        returnValue->bitType = STRING_TYPE;
         if (expectedType & STRING_TYPE) return(true);
         break;
 
       case INSTANCE_NAME:
+        returnValue->bitType = INSTANCE_NAME_TYPE;
         if (expectedType & INSTANCE_NAME_TYPE) return(true);
         break;
 
       case EXTERNAL_ADDRESS:
+        returnValue->bitType = EXTERNAL_ADDRESS_TYPE;
         if (expectedType & EXTERNAL_ADDRESS_TYPE) return(true);
         break;
 
       case FACT_ADDRESS:
+        returnValue->bitType = FACT_ADDRESS_TYPE;
         if (expectedType & FACT_ADDRESS_TYPE) return(true);
         break;
 
       case INSTANCE_ADDRESS:
+        returnValue->bitType = INSTANCE_ADDRESS_TYPE;
         if (expectedType & INSTANCE_ADDRESS_TYPE) return(true);
         break;
         
       case MULTIFIELD:
+        returnValue->bitType = MULTIFIELD_TYPE;
         if (expectedType & MULTIFIELD_TYPE) return(true);
         break;
      }
@@ -858,6 +984,30 @@ bool UDFArgTypeCheck(
    EnvSetEvaluationError(theEnv,true);
 
    return false;
+  }
+
+/********************/
+/* UDFArgTypeCheck: */
+/********************/
+bool UDFArgTypeCheck(
+  UDFContext *context,
+  int argumentPosition,
+  unsigned expectedType,
+  DATA_OBJECT_PTR returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   
+   if (argumentPosition < context->lastPosition)
+     {
+      context->lastArg = EvaluationData(theEnv)->CurrentExpression->argList;
+      context->lastPosition = 1;
+     }
+
+   for ( ; (context->lastArg != NULL) && (context->lastPosition < argumentPosition) ;
+           context->lastArg = context->lastArg->nextArg)
+     { context->lastPosition++; }
+      
+   return UDFGetNextArgument(context,expectedType,returnValue);
   }
 
 /******************************/
@@ -874,7 +1024,7 @@ void UDFInvalidArgumentMessage(
 /**************************/
 /* UDFContextEnvironment: */
 /**************************/
-void *UDFContextEnvironment(
+Environment *UDFContextEnvironment(
   UDFContext *context)
   {
    return context->environment;

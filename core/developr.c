@@ -85,9 +85,9 @@ void DeveloperCommands(
    EnvDefineFunction2(theEnv,"primitives-usage",'v', PTIEF PrimitiveTablesUsage,"PrimitiveTablesUsage","00");
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
-   EnvDefineFunction2(theEnv,"validate-fact-integrity", 'b', ValidateFactIntegrity, "ValidateFactIntegrity", "00");
+   EnvDefineFunction2(theEnv,"validate-fact-integrity", 'b', PTIEF ValidateFactIntegrity, "ValidateFactIntegrity", "00");
 
-   EnvDefineFunction2(theEnv,"show-fpn",'v', PTIEF ShowFactPatternNetwork,"ShowFactPatternNetwork","11w");
+   EnvAddUDF(theEnv,"show-fpn",VOID_TYPE, ShowFactPatternNetwork,"ShowFactPatternNetwork",1,1,"y",NULL);
    EnvDefineFunction2(theEnv,"show-fht",'v', PTIEF ShowFactHashTable,"ShowFactHashTable","00");
 #endif
 
@@ -343,8 +343,10 @@ bool ValidateFactIntegrity(
 /*   fact pattern network for a specified deftemplate. */
 /*******************************************************/
 void ShowFactPatternNetwork(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   void *theEnv = UDFContextEnvironment(context);
    struct factPatternNode *patternPtr;
    struct deftemplate *theDeftemplate;
    const char *theName;

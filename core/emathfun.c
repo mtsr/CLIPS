@@ -147,13 +147,6 @@ static bool SingleNumberCheck(
   const char *functionName,
   CLIPSValue *returnValue)
   {
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     { return false; }
-
    /*======================================*/
    /* Check that the argument is a number. */
    /*======================================*/
@@ -935,16 +928,6 @@ void PowFunction(
    CLIPSValue value1, value2;
    CLIPSFloat num1, num2;
 
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     {
-      CVSetFloat(returnValue,0.0);
-      return;
-     }
-
    /*==================================*/
    /* Check for two numeric arguments. */
    /*==================================*/
@@ -995,16 +978,6 @@ void ModFunction(
    CLIPSFloat fnum1, fnum2;
    CLIPSInteger lnum1, lnum2;
    void *theEnv = UDFContextEnvironment(context);
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     {
-      CVSetInteger(returnValue,0);
-      return;
-     }
 
    /*==================================*/
    /* Check for two numeric arguments. */
@@ -1062,7 +1035,6 @@ void PiFunction(
   CLIPSValue *returnValue)
   {
    CVSetFloat(returnValue,acos(-1.0));
-   UDFArgCountCheck(context);
   }
 
 /****************************************/
@@ -1140,17 +1112,7 @@ void GradDegFunction(
 void RoundFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
-  {
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     {
-      CVSetInteger(returnValue,0LL);
-      return;
-     }
-     
+  {     
    /*======================================*/
    /* Check that the argument is a number. */
    /*======================================*/

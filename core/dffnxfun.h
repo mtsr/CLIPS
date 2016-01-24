@@ -117,21 +117,21 @@ struct deffunctionData
    bool                           EnvIsDeffunctionDeletable(void *,void *);
    void                           EnvSetDeffunctionPPForm(void *,void *,const char *);
    bool                           EnvUndeffunction(void *,void *);
-   void                           GetDeffunctionListFunction(void *,DATA_OBJECT *);
-   void                          *GetDeffunctionModuleCommand(void *);
+   void                           GetDeffunctionListFunction(UDFContext *,CLIPSValue *);
+   void                           GetDeffunctionModuleCommand(UDFContext *,CLIPSValue *);
    DEFFUNCTION                   *LookupDeffunctionByMdlOrScope(void *,const char *);
    DEFFUNCTION                   *LookupDeffunctionInScope(void *,const char *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    void                           RemoveDeffunction(void *,void *);
 #endif
    void                           SetupDeffunctions(void *);
-   void                           UndeffunctionCommand(void *);
+   void                           UndeffunctionCommand(UDFContext *,CLIPSValue *);
 #if DEBUGGING_FUNCTIONS
    bool                           EnvGetDeffunctionWatch(void *,void *);
    void                           EnvListDeffunctions(void *,const char *,struct defmodule *);
    void                           EnvSetDeffunctionWatch(void *,bool,void *);
-   void                           ListDeffunctionsCommand(void *);
-   void                           PPDeffunctionCommand(void *);
+   void                           ListDeffunctionsCommand(UDFContext *,CLIPSValue *);
+   void                           PPDeffunctionCommand(UDFContext *,CLIPSValue *);
 #endif
 
 #endif /* _H_dffnxfun */

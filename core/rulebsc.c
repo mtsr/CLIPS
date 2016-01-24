@@ -103,14 +103,14 @@ void DefruleBasicCommands(
 #endif
 
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"get-defrule-list",'m',PTIEF GetDefruleListFunction,"GetDefruleListFunction","01w");
-   EnvDefineFunction2(theEnv,"undefrule",'v',PTIEF UndefruleCommand,"UndefruleCommand","11w");
-   EnvDefineFunction2(theEnv,"defrule-module",'w',PTIEF DefruleModuleFunction,"DefruleModuleFunction","11w");
+   EnvAddUDF(theEnv,"get-defrule-list",MULTIFIELD_TYPE, GetDefruleListFunction,"GetDefruleListFunction",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"undefrule",VOID_TYPE, UndefruleCommand,"UndefruleCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"defrule-module",SYMBOL_TYPE, DefruleModuleFunction,"DefruleModuleFunction",1,1,"y",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"rules",'v', PTIEF ListDefrulesCommand,"ListDefrulesCommand","01w");
-   EnvDefineFunction2(theEnv,"list-defrules",'v', PTIEF ListDefrulesCommand,"ListDefrulesCommand","01w");
-   EnvDefineFunction2(theEnv,"ppdefrule",'v',PTIEF PPDefruleCommand,"PPDefruleCommand","11w");
+   EnvAddUDF(theEnv,"rules",VOID_TYPE, ListDefrulesCommand,"ListDefrulesCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-defrules",VOID_TYPE,  ListDefrulesCommand,"ListDefrulesCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdefrule",VOID_TYPE, PPDefruleCommand,"PPDefruleCommand",1,1,"y",NULL);
 #endif
 
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)
@@ -263,9 +263,11 @@ static void SaveDefrules(
 /*   for the undefrule command.           */
 /******************************************/
 void UndefruleCommand(
-  void *theEnv)
-  { 
-   UndefconstructCommand(theEnv,"undefrule",DefruleData(theEnv)->DefruleConstruct); 
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   UndefconstructCommand(context,"undefrule",DefruleData(theEnv)->DefruleConstruct);
   }
 
 /**********************************/
@@ -284,10 +286,11 @@ bool EnvUndefrule(
 /*   for the get-defrule-list function.         */
 /************************************************/
 void GetDefruleListFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   GetConstructListFunction(theEnv,"get-defrule-list",returnValue,DefruleData(theEnv)->DefruleConstruct); 
+   void *theEnv = UDFContextEnvironment(context);
+   GetConstructListFunction(context,"get-defrule-list",returnValue,DefruleData(theEnv)->DefruleConstruct);
   }
 
 /****************************************/
@@ -306,10 +309,12 @@ void EnvGetDefruleList(
 /* DefruleModuleFunction: H/L access routine */
 /*   for the defrule-module function.        */
 /*********************************************/
-void *DefruleModuleFunction(
-  void *theEnv)
+void DefruleModuleFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   return(GetConstructModuleCommand(theEnv,"defrule-module",DefruleData(theEnv)->DefruleConstruct)); 
+   void *theEnv = UDFContextEnvironment(context);
+   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"defrule-module",DefruleData(theEnv)->DefruleConstruct));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -319,9 +324,11 @@ void *DefruleModuleFunction(
 /*   for the ppdefrule command.           */
 /******************************************/
 void PPDefruleCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   PPConstructCommand(theEnv,"ppdefrule",DefruleData(theEnv)->DefruleConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   PPConstructCommand(context,"ppdefrule",DefruleData(theEnv)->DefruleConstruct);
   }
 
 /***********************************/
@@ -341,9 +348,11 @@ int PPDefrule(
 /*   for the list-defrules command.          */
 /*********************************************/
 void ListDefrulesCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   ListConstructCommand(theEnv,"list-defrules",DefruleData(theEnv)->DefruleConstruct); 
+   void *theEnv = UDFContextEnvironment(context);
+   ListConstructCommand(context,"list-defrules",DefruleData(theEnv)->DefruleConstruct);
   }
 
 /*************************************/

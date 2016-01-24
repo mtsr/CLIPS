@@ -106,20 +106,17 @@ void InitializeAgenda(
    AddWatchItem(theEnv,"activations",1,&AgendaData(theEnv)->WatchActivations,40,DefruleWatchAccess,DefruleWatchPrint);
 #endif
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"refresh", 'v', PTIEF RefreshCommand, "RefreshCommand", "11w");
+   EnvAddUDF(theEnv,"refresh", VOID_TYPE, RefreshCommand, "RefreshCommand", 1,1,"y",NULL);
 
-   EnvDefineFunction2(theEnv,"refresh-agenda",'v',
-                   PTIEF RefreshAgendaCommand,"RefreshAgendaCommand", "01w");
-   EnvDefineFunction2(theEnv,"get-salience-evaluation",'w',
-                   PTIEF GetSalienceEvaluationCommand,
-                   "GetSalienceEvaluationCommand", "00");
-   EnvDefineFunction2(theEnv,"set-salience-evaluation",'w',
-                   PTIEF SetSalienceEvaluationCommand,
-                   "SetSalienceEvaluationCommand",
-                   "11w");
+   EnvAddUDF(theEnv,"refresh-agenda",VOID_TYPE,RefreshAgendaCommand,
+                    "RefreshAgendaCommand", 0,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-salience-evaluation",SYMBOL_TYPE,GetSalienceEvaluationCommand,
+                    "GetSalienceEvaluationCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"set-salience-evaluation",SYMBOL_TYPE,SetSalienceEvaluationCommand,
+                    "SetSalienceEvaluationCommand",1,1,"y",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"agenda", 'v', PTIEF AgendaCommand, "AgendaCommand", "01w");
+   EnvAddUDF(theEnv,"agenda", VOID_TYPE,  AgendaCommand, "AgendaCommand", 0,1,"y",NULL);
 #endif
 #endif
   }
@@ -900,16 +897,18 @@ unsigned long GetNumberOfActivations(
 /*   Syntax: (refresh <defrule-name>)                 */
 /******************************************************/
 void RefreshCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *ruleName;
    void *rulePtr;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*===========================*/
    /* Get the name of the rule. */
    /*===========================*/
 
-   ruleName = GetConstructName(theEnv,"refresh","rule name");
+   ruleName = GetConstructName(context,"refresh","rule name");
    if (ruleName == NULL) return;
 
    /*===============================*/
@@ -985,17 +984,19 @@ bool EnvRefresh(
 /*   for the refresh-agenda command.          */
 /**********************************************/
 void RefreshAgendaCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    int numArgs;
    bool error;
    struct defmodule *theModule;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*==============================================*/
    /* This function can have at most one argument. */
    /*==============================================*/
 
-   if ((numArgs = EnvArgCountCheck(theEnv,"refresh-agenda",NO_MORE_THAN,1)) == -1) return;
+   numArgs = UDFArgumentCount(context);
 
    /*===============================================================*/
    /* If a module name is specified, then the agenda of that module */
@@ -1117,12 +1118,14 @@ void EnvRefreshAgenda(
 /*   the salience evaluation behavior.                   */
 /*   Syntax: (set-salience-evaluation-behavior <symbol>) */
 /*********************************************************/
-void *SetSalienceEvaluationCommand(
-  void *theEnv)
+void SetSalienceEvaluationCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT argPtr;
+   CLIPSValue value;
    const char *argument;
    const char *oldValue;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*==================================================*/
    /* Get the current setting for salience evaluation. */
@@ -1135,18 +1138,18 @@ void *SetSalienceEvaluationCommand(
    /* which must be a symbol.                 */
    /*=========================================*/
 
-   if (EnvArgCountCheck(theEnv,"set-salience-evaluation",EXACTLY,1) == -1)
-     { return((SYMBOL_HN *) EnvAddSymbol(theEnv,oldValue)); }
-
-   if (EnvArgTypeCheck(theEnv,"set-salience-evaluation",1,SYMBOL,&argPtr) == false)
-     { return((SYMBOL_HN *) EnvAddSymbol(theEnv,oldValue)); }
-
+   if (! UDFGetFirstArgument(context,SYMBOL_TYPE,&value))
+     {
+      CVSetSymbol(returnValue,oldValue);
+      return;
+     }
+ 
    /*=============================================================*/
    /* The allowed symbols to pass as an argument to this function */
    /* are when-defined, when-activated, and every-cycle.          */
    /*=============================================================*/
 
-   argument = DOToString(argPtr);
+   argument = CVToString(&value);
 
    if (strcmp(argument,"when-defined") == 0)
      { EnvSetSalienceEvaluation(theEnv,WHEN_DEFINED); }
@@ -1156,16 +1159,17 @@ void *SetSalienceEvaluationCommand(
      { EnvSetSalienceEvaluation(theEnv,EVERY_CYCLE); }
    else
      {
-      ExpectedTypeError1(theEnv,"set-salience-evaluation",1,
-      "symbol with value when-defined, when-activated, or every-cycle");
-      return((SYMBOL_HN *) EnvAddSymbol(theEnv,oldValue));
+      UDFInvalidArgumentMessage(context,1,
+         "symbol with value when-defined, when-activated, or every-cycle");
+      CVSetSymbol(returnValue,oldValue);
+      return;
      }
 
    /*=================================================*/
    /* Return the old setting for salience evaluation. */
    /*=================================================*/
 
-   return((SYMBOL_HN *) EnvAddSymbol(theEnv,oldValue));
+   CVSetSymbol(returnValue,oldValue);
   }
 
 /*********************************************************/
@@ -1173,12 +1177,11 @@ void *SetSalienceEvaluationCommand(
 /*   the salience evaluation behavior.                   */
 /*   Syntax: (get-salience-evaluation-behavior)          */
 /*********************************************************/
-void *GetSalienceEvaluationCommand(
-  void *theEnv)
+void GetSalienceEvaluationCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EnvArgCountCheck(theEnv,"get-salience-evaluation",EXACTLY,0);
-
-   return((SYMBOL_HN *) EnvAddSymbol(theEnv,SalienceEvaluationName(EnvGetSalienceEvaluation(theEnv))));
+   CVSetSymbol(returnValue,SalienceEvaluationName(EnvGetSalienceEvaluation(UDFContextEnvironment(context))));
   }
 
 /*****************************************************************/
@@ -1326,17 +1329,13 @@ static int EvaluateSalience(
 /*   Syntax: (agenda)                          */
 /***********************************************/
 void AgendaCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    int numArgs;
    bool error;
    struct defmodule *theModule;
-
-   /*==============================================*/
-   /* This function can have at most one argument. */
-   /*==============================================*/
-
-   if ((numArgs = EnvArgCountCheck(theEnv,"agenda",NO_MORE_THAN,1)) == -1) return;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*===============================================================*/
    /* If a module name is specified, then the agenda of that module */
@@ -1344,6 +1343,7 @@ void AgendaCommand(
    /* displayed.                                                    */
    /*===============================================================*/
 
+   numArgs = UDFArgumentCount(context);
    if (numArgs == 1)
      {
       theModule = GetModuleName(theEnv,"agenda",1,&error);

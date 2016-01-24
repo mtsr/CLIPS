@@ -233,7 +233,7 @@ void SetupGenericFunctions(
      ================================================================ */
    AddSaveFunction(theEnv,"defgeneric",SaveDefgenerics,1000);
    AddSaveFunction(theEnv,"defmethod",SaveDefmethods,-1000);
-   EnvDefineFunction2(theEnv,"undefgeneric",'v',PTIEF UndefgenericCommand,"UndefgenericCommand","11w");
+   EnvAddUDF(theEnv,"undefgeneric",VOID_TYPE, UndefgenericCommand,"UndefgenericCommand",1,1,"y",NULL);
    EnvDefineFunction2(theEnv,"undefmethod",'v',PTIEF UndefmethodCommand,"UndefmethodCommand","22*wg");
 #endif
 
@@ -252,21 +252,21 @@ void SetupGenericFunctions(
                    "GetGenericCurrentArgument",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"ppdefgeneric",'v',PTIEF PPDefgenericCommand,"PPDefgenericCommand","11w");
-   EnvDefineFunction2(theEnv,"list-defgenerics",'v',PTIEF ListDefgenericsCommand,"ListDefgenericsCommand","01");
+   EnvAddUDF(theEnv,"ppdefgeneric",VOID_TYPE, PPDefgenericCommand,"PPDefgenericCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-defgenerics",VOID_TYPE, ListDefgenericsCommand,"ListDefgenericsCommand",0,1,"y",NULL);
    EnvDefineFunction2(theEnv,"ppdefmethod",'v',PTIEF PPDefmethodCommand,"PPDefmethodCommand","22*wi");
    EnvDefineFunction2(theEnv,"list-defmethods",'v',PTIEF ListDefmethodsCommand,"ListDefmethodsCommand","01w");
    EnvDefineFunction2(theEnv,"preview-generic",'v',PTIEF PreviewGeneric,"PreviewGeneric","1**w");
 #endif
 
-   EnvDefineFunction2(theEnv,"get-defgeneric-list",'m',PTIEF GetDefgenericListFunction,
-                   "GetDefgenericListFunction","01");
+   EnvAddUDF(theEnv,"get-defgeneric-list",MULTIFIELD_TYPE, GetDefgenericListFunction,
+                   "GetDefgenericListFunction",0,1,"y",NULL);
    EnvDefineFunction2(theEnv,"get-defmethod-list",'m',PTIEF GetDefmethodListCommand,
                    "GetDefmethodListCommand","01w");
    EnvDefineFunction2(theEnv,"get-method-restrictions",'m',PTIEF GetMethodRestrictionsCommand,
                    "GetMethodRestrictionsCommand","22iw");
-   EnvDefineFunction2(theEnv,"defgeneric-module",'w',PTIEF GetDefgenericModuleCommand,
-                   "GetDefgenericModuleCommand","11w");
+   EnvAddUDF(theEnv,"defgeneric-module",SYMBOL_TYPE, GetDefgenericModuleCommand,
+                   "GetDefgenericModuleCommand",1,1,"y",NULL);
 
 #if OBJECT_SYSTEM
    EnvDefineFunction2(theEnv,"type",'u',PTIEF ClassCommand,"ClassCommand","11u");
@@ -549,9 +549,11 @@ bool EnvIsDefmethodDeletable(
   NOTES        : H/L Syntax: (undefgeneric <name> | *)
  **********************************************************/
 void UndefgenericCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   UndefconstructCommand(theEnv,"undefgeneric",DefgenericData(theEnv)->DefgenericConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   UndefconstructCommand(context,"undefgeneric",DefgenericData(theEnv)->DefgenericConstruct);
   }
 
 /****************************************************************
@@ -562,10 +564,12 @@ void UndefgenericCommand(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax: (defgeneric-module <generic-name>)
  ****************************************************************/
-void *GetDefgenericModuleCommand(
-  void *theEnv)
+void GetDefgenericModuleCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   return(GetConstructModuleCommand(theEnv,"defgeneric-module",DefgenericData(theEnv)->DefgenericConstruct));
+   void *theEnv = UDFContextEnvironment(context);
+   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"defgeneric-module",DefgenericData(theEnv)->DefgenericConstruct));
   }
 
 /**************************************************************
@@ -887,9 +891,11 @@ void EnvSetDefmethodWatch(
   NOTES        : H/L Syntax: (ppdefgeneric <name>)
  ********************************************************/
 void PPDefgenericCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   PPConstructCommand(theEnv,"ppdefgeneric",DefgenericData(theEnv)->DefgenericConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   PPConstructCommand(context,"ppdefgeneric",DefgenericData(theEnv)->DefgenericConstruct);
   }
 
 /**********************************************************
@@ -985,9 +991,11 @@ const char *EnvGetDefmethodPPForm(
   NOTES        : H/L Interface
  ***************************************************/
 void ListDefgenericsCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   ListConstructCommand(theEnv,"list-defgenerics",DefgenericData(theEnv)->DefgenericConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   ListConstructCommand(context,"list-defgenerics",DefgenericData(theEnv)->DefgenericConstruct);
   }
 
 /***************************************************
@@ -1055,10 +1063,11 @@ void EnvListDefmethods(
   NOTES        : H/L Syntax: (get-defgeneric-list [<module>])
  ***************************************************************/
 void GetDefgenericListFunction(
-  void *theEnv,
-  DATA_OBJECT*returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   GetConstructListFunction(theEnv,"get-defgeneric-list",returnValue,DefgenericData(theEnv)->DefgenericConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   GetConstructListFunction(context,"get-defgeneric-list",returnValue,DefgenericData(theEnv)->DefgenericConstruct);
   }
 
 /***************************************************************

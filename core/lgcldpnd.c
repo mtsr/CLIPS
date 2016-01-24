@@ -588,12 +588,12 @@ void Dependents(
 /*   for the dependencies command.           */
 /*********************************************/
 void DependenciesCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
    void *ptr;
-
-   if (EnvArgCountCheck(theEnv,"dependencies",EXACTLY,1) == -1) return;
+   void *theEnv = UDFContextEnvironment(context);
 
    ptr = GetFactOrInstanceArgument(theEnv,1,&item,"dependencies");
 
@@ -611,12 +611,12 @@ void DependenciesCommand(
 /*   for the dependents command.           */
 /*******************************************/
 void DependentsCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue item;
    void *ptr;
-
-   if (EnvArgCountCheck(theEnv,"dependents",EXACTLY,1) == -1) return;
+   void *theEnv = UDFContextEnvironment(context);
 
    ptr = GetFactOrInstanceArgument(theEnv,1,&item,"dependents");
 

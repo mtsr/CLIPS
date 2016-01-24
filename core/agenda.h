@@ -130,13 +130,13 @@ struct agendaData
    void                    EnvRefreshAgenda(void *,void *);
    void                    EnvReorderAgenda(void *,void *);
    void                    InitializeAgenda(void *);
-   void                   *SetSalienceEvaluationCommand(void *);
-   void                   *GetSalienceEvaluationCommand(void *);
-   void                    RefreshAgendaCommand(void *);
-   void                    RefreshCommand(void *);
+   void                    SetSalienceEvaluationCommand(UDFContext *,CLIPSValue *);
+   void                    GetSalienceEvaluationCommand(UDFContext *,CLIPSValue *);
+   void                    RefreshAgendaCommand(UDFContext *,CLIPSValue *);
+   void                    RefreshCommand(UDFContext *,CLIPSValue *);
    bool                    EnvRefresh(void *,void *);
 #if DEBUGGING_FUNCTIONS
-   void                    AgendaCommand(void *);
+   void                    AgendaCommand(UDFContext *,CLIPSValue *);
 #endif
 
 #endif

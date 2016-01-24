@@ -73,6 +73,7 @@ struct dataObject
    void *environment;
    void *supplementalInfo;
    unsigned short type;
+   unsigned bitType;
    void *value;
    long begin;
    long end;
@@ -236,17 +237,52 @@ struct evaluationData
    bool                           DOsEqual(DATA_OBJECT_PTR,DATA_OBJECT_PTR);
    bool                           EvaluateAndStoreInDataObject(void *,bool,EXPRESSION *,DATA_OBJECT *,bool);
 
-   void                           CVInit(void *,CLIPSValue *);
-   CLIPSInteger                   CVToInteger(CLIPSValue *);
-   CLIPSFloat                     CVToFloat(CLIPSValue *);
-   bool                           CVIsType(CLIPSValue *,unsigned);
-   bool                           CVIsFalseSymbol(CLIPSValue *);
-   bool                           CVIsTrueSymbol(CLIPSValue *);
-   void                           CVSetVoid(CLIPSValue *);
-   void                           CVSetBoolean(CLIPSValue *,bool);
-   void                           CVSetSymbol(CLIPSValue *,const char *);
-   void                           CVSetInteger(CLIPSValue *,long long);
-   void                           CVSetFloat(CLIPSValue *,CLIPSFloat);
-   void                           CVSetCLIPSValue(CLIPSValue *,CLIPSValue *);
+#define CVIsType(cv,cvType) ((cv)->bitType & (cvType))
+#define CVType(cv) ((cv)->bitType)
+#define CVSetCLIPSValue(v1,v2) ((v1)->type = (v2)->type, (v1)->value = (v2)->value, (v1)->bitType = (v2)->bitType) 
+
+#define CVToFloat(cv) ((cv)->type == FLOAT ? (CLIPSFloat) (((struct floatHashNode *) ((cv)->value))->contents) : \
+                       ((cv)->type == INTEGER) ? (CLIPSFloat) (((struct integerHashNode *) ((cv)->value))->contents) : 0.0)
+
+#define CVToInteger(cv) ((cv)->type == INTEGER ? (CLIPSInteger) (((struct integerHashNode *) ((cv)->value))->contents) : \
+                       ((cv)->type == FLOAT) ? (CLIPSInteger) (((struct floatHashNode *) ((cv)->value))->contents) : 0LL)
+
+#define CVToString(cv) (((struct symbolHashNode *) ((cv)->value))->contents)
+
+#define CVInit(rv,env) ((rv)->environment = env)
+
+#define CVSetVoid(cv) \
+   ( (cv)->bitType = VOID_TYPE , \
+     (cv)->type = RVOID )
+
+#define CVSetInteger(cv,iv) \
+   ( (cv)->value = EnvAddLong((cv)->environment,(iv)) ,  \
+     (cv)->bitType = INTEGER_TYPE , \
+     (cv)->type = INTEGER )
+
+#define CVSetFloat(cv,fv) \
+   ( (cv)->value = EnvAddDouble((cv)->environment,(fv)) ,  \
+     (cv)->bitType = FLOAT_TYPE , \
+     (cv)->type = FLOAT )
+
+#define CVSetSymbol(cv,sv) \
+   ( (cv)->value = EnvAddSymbol(cv->environment,sv) , \
+     (cv)->bitType = SYMBOL_TYPE, \
+     (cv)->type = SYMBOL )
+
+#define CVSetCLIPSSymbol(cv,sv) \
+   ( (cv)->value = sv , \
+     (cv)->bitType = SYMBOL_TYPE, \
+     (cv)->type = SYMBOL )
+
+#define CVSetBoolean(cv,bv) \
+   ( (cv)->value = (bv ? SymbolData((cv)->environment)->TrueSymbolHN : \
+                         SymbolData((cv)->environment)->FalseSymbolHN ) , \
+     (cv)->bitType = (SYMBOL_TYPE | BOOLEAN_TYPE) , \
+     (cv)->type = SYMBOL )
+
+#define CVIsFalseSymbol(cv) (((cv)->type == SYMBOL) &&  ((cv)->value == SymbolData((cv)->environment)->FalseSymbolHN))
+
+#define CVIsTrueSymbol(cv) (((cv)->type == SYMBOL) &&  ((cv)->value == SymbolData((cv)->environment)->TrueSymbolHN))
 
 #endif /* _H_evaluatn */

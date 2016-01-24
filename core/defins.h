@@ -91,13 +91,13 @@ struct definstancesData
    bool                           EnvIsDefinstancesDeletable(void *,void *);
    void                           EnvSetDefinstancesPPForm(void *,void *,const char *);
    bool                           EnvUndefinstances(void *,void *);
-   void                           GetDefinstancesListFunction(void *,DATA_OBJECT *);
-   void                          *GetDefinstancesModuleCommand(void *);
+   void                           GetDefinstancesListFunction(UDFContext *,CLIPSValue *);
+   void                           GetDefinstancesModuleCommand(UDFContext *,CLIPSValue *);
    void                           SetupDefinstances(void *);
-   void                           UndefinstancesCommand(void *);
+   void                           UndefinstancesCommand(UDFContext *,CLIPSValue *);
 #if DEBUGGING_FUNCTIONS
-   void                           PPDefinstancesCommand(void *);
-   void                           ListDefinstancesCommand(void *);
+   void                           PPDefinstancesCommand(UDFContext *,CLIPSValue *);
+   void                           ListDefinstancesCommand(UDFContext *,CLIPSValue *);
    void                           EnvListDefinstances(void *,const char *,struct defmodule *);
 #endif
 

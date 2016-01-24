@@ -712,27 +712,22 @@ struct defmodule *GetModuleName(
 /*   etc... to retrieve the construct name on which to operate. */
 /****************************************************************/
 const char *GetConstructName(
-  void *theEnv,
+  UDFContext *context,
   const char *functionName,
   const char *constructType)
   {
-   DATA_OBJECT result;
+   CLIPSValue result;
 
-   if (EnvRtnArgCount(theEnv) != 1)
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&result))
+     { return(NULL); }
+
+   if (! CVIsType(&result,SYMBOL_TYPE))
      {
-      ExpectedCountError(theEnv,functionName,EXACTLY,1);
+      UDFInvalidArgumentMessage(context,1,constructType);
       return(NULL);
      }
 
-   EnvRtnUnknown(theEnv,1,&result);
-
-   if (GetType(result) != SYMBOL)
-     {
-      ExpectedTypeError1(theEnv,functionName,1,constructType);
-      return(NULL);
-     }
-
-   return(DOToString(result));
+   return(CVToString(&result));
   }
 
 /**************************************************************************/
@@ -797,48 +792,72 @@ void ExpectedCountError(
 /*************************************************************/
 bool CheckFunctionArgCount(
   void *theEnv,
-  const char *functionName,
-  const char *restrictions,
+  struct FunctionDefinition *func,
   int argumentCount)
   {
-   register int minArguments, maxArguments;
+   int minArguments, maxArguments;
+   const char *functionName;
+   const char *restrictions;
    char theChar[2];
 
    theChar[0] = '0';
    theChar[1] = EOS;
 
+   functionName = func->callFunctionName->contents;
+   if (func->restrictions == NULL) restrictions = NULL;
+   else restrictions = func->restrictions->contents;
+     
    /*=====================================================*/
    /* If there are no restrictions, then there is no need */
    /* to check for the correct number of arguments.       */
    /*=====================================================*/
 
-   if (restrictions == NULL) return(true);
+   if (func->returnValueType !='z')
+     { if (restrictions == NULL) return(true); }
 
    /*===========================================*/
    /* Determine the minimum number of arguments */
    /* required by the function.                 */
    /*===========================================*/
 
-   if (isdigit(restrictions[0]))
+   if (func->returnValueType !='z')
      {
-      theChar[0] = restrictions[0];
-      minArguments = atoi(theChar);
+      if (isdigit(restrictions[0]))
+        {
+         theChar[0] = restrictions[0];
+         minArguments = atoi(theChar);
+        }
+      else
+        { minArguments = UNBOUNDED; }
      }
    else
-     { minArguments = -1; }
-
+     { minArguments = func->minArgs; }
+   
    /*===========================================*/
    /* Determine the maximum number of arguments */
    /* required by the function.                 */
    /*===========================================*/
 
-   if (isdigit(restrictions[1]))
+   if (func->returnValueType !='z')
      {
-      theChar[0] = restrictions[1];
-      maxArguments = atoi(theChar);
+      if (isdigit(restrictions[1]))
+        {
+         theChar[0] = restrictions[1];
+         maxArguments = atoi(theChar);
+        }
+      else
+        { maxArguments = UNBOUNDED; }
      }
    else
-     { maxArguments = 10000; }
+     { maxArguments = func->maxArgs; }
+
+   /*=====================================*/
+   /* If the function has no restrictions */
+   /* on function arguments, return true. */
+   /*=====================================*/
+
+   if ((minArguments == UNBOUNDED) && (maxArguments == UNBOUNDED))
+     { return(true); }
 
    /*==============================================*/
    /* If the function expects exactly N arguments, */
@@ -873,7 +892,7 @@ bool CheckFunctionArgCount(
    /* arguments passed than expected. */
    /*=================================*/
 
-   if (argumentCount > maxArguments)
+   if ((maxArguments != UNBOUNDED) && (argumentCount > maxArguments))
      {
       ExpectedCountError(theEnv,functionName,NO_MORE_THAN,maxArguments);
       EnvSetEvaluationError(theEnv,true);

@@ -77,7 +77,7 @@
    void                           DeftemplateFunctions( void *);
    void                           ModifyCommand(void *,DATA_OBJECT_PTR);
    void                           DuplicateCommand(void *,DATA_OBJECT_PTR);
-   void                           DeftemplateSlotNamesFunction(void *,DATA_OBJECT *);
+   void                           DeftemplateSlotNamesFunction(UDFContext *,CLIPSValue *);
    void                           EnvDeftemplateSlotNames(void *,void *,DATA_OBJECT *);
    void                           DeftemplateSlotDefaultValueFunction(void *,DATA_OBJECT *);
    bool                           EnvDeftemplateSlotDefaultValue(void *,void *,const char *,DATA_OBJECT *);

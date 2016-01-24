@@ -52,32 +52,30 @@ void PredicateFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"not", 'b', PTIEF NotFunction, "NotFunction", "11");
-   EnvDefineFunction2(theEnv,"and", 'b', PTIEF AndFunction, "AndFunction", "2*");
-   EnvDefineFunction2(theEnv,"or", 'b', PTIEF OrFunction, "OrFunction", "2*");
+   EnvAddUDF(theEnv,"not", BOOLEAN_TYPE, NotFunction, "NotFunction",   1,1,          NULL,NULL);
+   EnvAddUDF(theEnv,"and", BOOLEAN_TYPE, AndFunction, "AndFunction",   2,UNBOUNDED , NULL,NULL);
+   EnvAddUDF(theEnv,"or",  BOOLEAN_TYPE, OrFunction,  "OrFunction",    2,UNBOUNDED , NULL,NULL);
 
    EnvDefineFunction2(theEnv,"eq", 'b', PTIEF EqFunction, "EqFunction", "2*");
    EnvDefineFunction2(theEnv,"neq", 'b', PTIEF NeqFunction, "NeqFunction", "2*");
 
-   EnvDefineFunction2(theEnv,"<=", 'b', PTIEF LessThanOrEqualFunction, "LessThanOrEqualFunction", "2*n");
-   EnvDefineFunction2(theEnv,">=", 'b', PTIEF GreaterThanOrEqualFunction, "GreaterThanOrEqualFunction", "2*n");
-   EnvDefineFunction2(theEnv,"<", 'b', PTIEF LessThanFunction, "LessThanFunction", "2*n");
-   EnvDefineFunction2(theEnv,">", 'b', PTIEF GreaterThanFunction, "GreaterThanFunction", "2*n");
-   EnvDefineFunction2(theEnv,"=", 'b', PTIEF NumericEqualFunction, "NumericEqualFunction", "2*n");
-   EnvDefineFunction2(theEnv,"<>", 'b', PTIEF NumericNotEqualFunction, "NumericNotEqualFunction", "2*n");
-   EnvDefineFunction2(theEnv,"!=", 'b', PTIEF NumericNotEqualFunction, "NumericNotEqualFunction", "2*n");
+   EnvAddUDF(theEnv,"<=", BOOLEAN_TYPE, LessThanOrEqualFunction,    "LessThanOrEqualFunction",    2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,">=", BOOLEAN_TYPE, GreaterThanOrEqualFunction, "GreaterThanOrEqualFunction", 2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"<",  BOOLEAN_TYPE, LessThanFunction,           "LessThanFunction",           2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,">",  BOOLEAN_TYPE, GreaterThanFunction,        "GreaterThanFunction",        2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"=",  BOOLEAN_TYPE, NumericEqualFunction,       "NumericEqualFunction",       2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"<>", BOOLEAN_TYPE, NumericNotEqualFunction,    "NumericNotEqualFunction",    2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"!=", BOOLEAN_TYPE, NumericNotEqualFunction,    "NumericNotEqualFunction",    2,UNBOUNDED , "ld",NULL);
 
-   EnvAddUDF(theEnv,"symbolp",     BOOLEAN_TYPE,  SymbolpFunction, "SymbolpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"wordp",       BOOLEAN_TYPE,  SymbolpFunction, "SymbolpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"stringp",     BOOLEAN_TYPE,  StringpFunction, "StringpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"lexemep",     BOOLEAN_TYPE,  LexemepFunction, "LexemepFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"numberp",     BOOLEAN_TYPE,  NumberpFunction, "NumberpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"integerp",    BOOLEAN_TYPE,  IntegerpFunction, "IntegerpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"floatp",      BOOLEAN_TYPE,  FloatpFunction,   "FloatpFunction", 1,1,NULL,NULL);
-   
-   EnvAddUDF(theEnv,"oddp",        BOOLEAN_TYPE,  OddpFunction,         "OddpFunction", 1,1,"l", NULL);
-   EnvAddUDF(theEnv,"evenp",       BOOLEAN_TYPE,  EvenpFunction,        "EvenpFunction",  1,1,"l", NULL);
-   
+   EnvAddUDF(theEnv,"symbolp",     BOOLEAN_TYPE,  SymbolpFunction,     "SymbolpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"wordp",       BOOLEAN_TYPE,  SymbolpFunction,     "SymbolpFunction", 1,1,NULL,NULL);  // TBD Remove?
+   EnvAddUDF(theEnv,"stringp",     BOOLEAN_TYPE,  StringpFunction,     "StringpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"lexemep",     BOOLEAN_TYPE,  LexemepFunction,     "LexemepFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"numberp",     BOOLEAN_TYPE,  NumberpFunction,     "NumberpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"integerp",    BOOLEAN_TYPE,  IntegerpFunction,    "IntegerpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"floatp",      BOOLEAN_TYPE,  FloatpFunction,      "FloatpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"oddp",        BOOLEAN_TYPE,  OddpFunction,        "OddpFunction", 1,1,"l", NULL);
+   EnvAddUDF(theEnv,"evenp",       BOOLEAN_TYPE,  EvenpFunction,       "EvenpFunction",  1,1,"l", NULL);
    EnvAddUDF(theEnv,"multifieldp", BOOLEAN_TYPE,  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL);
    EnvAddUDF(theEnv,"sequencep",   BOOLEAN_TYPE,  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL); // TBD Remove?
    EnvAddUDF(theEnv,"pointerp",    BOOLEAN_TYPE,  PointerpFunction,    "PointerpFunction", 1,1,NULL,NULL);
@@ -211,13 +209,11 @@ void StringpFunction(
   {
    CLIPSValue item;
 
-   if (UDFArgCountCheck(context) < 0)
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
      }
-
-   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
    if (CVIsType(&item,STRING_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -235,13 +231,11 @@ void SymbolpFunction(
   {
    CLIPSValue item;
 
-   if (UDFArgCountCheck(context) < 0)
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
      }
-
-   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
    if (CVIsType(&item,SYMBOL_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -259,13 +253,11 @@ void LexemepFunction(
   {
    CLIPSValue item;
 
-   if (UDFArgCountCheck(context) < 0)
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
      }
-
-   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
    if (CVIsType(&item,LEXEME_TYPES))
      { CVSetBoolean(returnValue,true); }
@@ -283,13 +275,11 @@ void NumberpFunction(
   {
    CLIPSValue item;
 
-   if (UDFArgCountCheck(context) < 0)
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
      }
-
-   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
    if (CVIsType(&item,NUMBER_TYPES))
      { CVSetBoolean(returnValue,true); }
@@ -307,13 +297,11 @@ void FloatpFunction(
   {
    CLIPSValue item;
 
-   if (UDFArgCountCheck(context) < 0)
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
      }
-
-   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
    if (CVIsType(&item,FLOAT_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -331,13 +319,11 @@ void IntegerpFunction(
   {
    CLIPSValue item;
 
-   if (UDFArgCountCheck(context) < 0)
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
      }
-
-   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
    if (CVIsType(&item,INTEGER_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -355,13 +341,11 @@ void MultifieldpFunction(
   {
    CLIPSValue item;
 
-   if (UDFArgCountCheck(context) < 0)
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
      }
-
-   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
    if (CVIsType(&item,MULTIFIELD_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -379,13 +363,11 @@ void PointerpFunction(
   {
    CLIPSValue item;
 
-   if (UDFArgCountCheck(context) < 0)
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
      }
-
-   UDFArgTypeCheck(context,1,ANY_TYPE,&item);
 
    if (CVIsType(&item,EXTERNAL_ADDRESS_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -393,200 +375,199 @@ void PointerpFunction(
      { CVSetBoolean(returnValue,false); }
   }
 
-/*************************************/
-/* NotFunction: H/L access routine   */
-/*   for the not function.           */
-/*************************************/
-bool NotFunction(
-  void *theEnv)
+/***********************************/
+/* NotFunction: H/L access routine */
+/*   for the not function.         */
+/***********************************/
+void NotFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
    DATA_OBJECT result;
 
-   theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(false); }
+   if (! UDFGetFirstArgument(context,ANY_TYPE,&result))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   if (EvaluateExpression(theEnv,theArgument,&result)) return(false);
+   if (CVIsFalseSymbol(&result))
+     {
+      CVSetBoolean(returnValue,true);
+      return;
+     }
 
-   if ((result.value == EnvFalseSymbol(theEnv)) && (result.type == SYMBOL))
-     { return(true); }
-   
-   return(false);
+   CVSetBoolean(returnValue,false);
   }
 
 /*************************************/
 /* AndFunction: H/L access routine   */
 /*   for the and function.           */
 /*************************************/
-bool AndFunction(
-  void *theEnv)
+void AndFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
    DATA_OBJECT result;
 
-   for (theArgument = GetFirstArgument();
-        theArgument != NULL;
-        theArgument = GetNextArgument(theArgument))
+   while (UDFHasNextArg(context))
      {
-      if (EvaluateExpression(theEnv,theArgument,&result)) return(false);
-      if ((result.value == EnvFalseSymbol(theEnv)) && (result.type == SYMBOL))
-        { return(false); }
+      if (! UDFGetNextArgument(context,ANY_TYPE,&result))
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+        
+      if (CVIsFalseSymbol(&result))
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
      }
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /************************************/
 /* OrFunction: H/L access routine   */
 /*   for the or function.           */
 /************************************/
-bool OrFunction(
-  void *theEnv)
+void OrFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
    DATA_OBJECT result;
 
-   for (theArgument = GetFirstArgument();
-        theArgument != NULL;
-        theArgument = GetNextArgument(theArgument))
+   while (UDFHasNextArg(context))
      {
-      if (EvaluateExpression(theEnv,theArgument,&result)) return(false);
-
-      if ((result.value != EnvFalseSymbol(theEnv)) || (result.type != SYMBOL))
-        { return(true); }
+      if (! UDFGetNextArgument(context,ANY_TYPE,&result))
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+        
+      if (! CVIsFalseSymbol(&result))
+        {
+         CVSetBoolean(returnValue,true);
+         return;
+        }
      }
 
-   return(false);
+   CVSetBoolean(returnValue,false);
   }
 
 /*****************************************/
 /* LessThanOrEqualFunction: H/L access   */
 /*   routine for the <= function.        */
 /*****************************************/
-bool LessThanOrEqualFunction(
-  void *theEnv)
+void LessThanOrEqualFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
    DATA_OBJECT rv1, rv2;
-   int pos = 1;
 
    /*=========================*/
    /* Get the first argument. */
    /*=========================*/
 
-   theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(true); }
-   if (! GetNumericArgument(theEnv,theArgument,"<=",&rv1,false,pos)) return(false);
-   pos++;
+   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*====================================================*/
    /* Compare each of the subsequent arguments to its    */
    /* predecessor. If any is greater, then return false. */
    /*====================================================*/
 
-   for (theArgument = GetNextArgument(theArgument);
-        theArgument != NULL;
-        theArgument = GetNextArgument(theArgument), pos++)
+   while (UDFHasNextArg(context))
      {
-      if (! GetNumericArgument(theEnv,theArgument,"<=",&rv2,false,pos)) return(false);
-      if (rv1.type == INTEGER)
+      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
         {
-         if (rv2.type == INTEGER)
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+
+      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+        {
+         if (CVToInteger(&rv1) > CVToInteger(&rv2))
            {
-            if (ValueToLong(rv1.value) > ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if ((double) ValueToLong(rv1.value) > ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
       else
         {
-         if (rv2.type == INTEGER)
+         if (CVToFloat(&rv1) > CVToFloat(&rv2))
            {
-            if (ValueToDouble(rv1.value) > (double) ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if (ValueToDouble(rv1.value) > ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
 
-      rv1.type = rv2.type;
-      rv1.value = rv2.value;
+      CVSetCLIPSValue(&rv1,&rv2);
      }
 
    /*======================================*/
    /* Each argument was less than or equal */
-   /* to it predecessor. Return true.      */
+   /* to its predecessor. Return true.     */
    /*======================================*/
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /********************************************/
 /* GreaterThanOrEqualFunction: H/L access   */
 /*   routine for the >= function.           */
 /********************************************/
-bool GreaterThanOrEqualFunction(
-  void *theEnv)
+void GreaterThanOrEqualFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
    DATA_OBJECT rv1, rv2;
-   int pos = 1;
 
    /*=========================*/
    /* Get the first argument. */
    /*=========================*/
 
-   theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(true); }
-   if (! GetNumericArgument(theEnv,theArgument,">=",&rv1,false,pos)) return(false);
-   pos++;
+   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*===================================================*/
    /* Compare each of the subsequent arguments to its   */
    /* predecessor. If any is lesser, then return false. */
    /*===================================================*/
 
-   for (theArgument = GetNextArgument(theArgument);
-        theArgument != NULL;
-        theArgument = GetNextArgument(theArgument), pos++)
+   while (UDFHasNextArg(context))
      {
-      if (! GetNumericArgument(theEnv,theArgument,">=",&rv2,false,pos)) return(false);
-      if (rv1.type == INTEGER)
+      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
         {
-         if (rv2.type == INTEGER)
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+
+      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+        {
+         if (CVToInteger(&rv1) < CVToInteger(&rv2))
            {
-            if (ValueToLong(rv1.value) < ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if ((double) ValueToLong(rv1.value) < ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
       else
         {
-         if (rv2.type == INTEGER)
+         if (CVToFloat(&rv1) < CVToFloat(&rv2))
            {
-            if (ValueToDouble(rv1.value) < (double) ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if (ValueToDouble(rv1.value) < ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
 
-      rv1.type = rv2.type;
-      rv1.value = rv2.value;
+      CVSetCLIPSValue(&rv1,&rv2);
      }
 
    /*=========================================*/
@@ -594,69 +575,61 @@ bool GreaterThanOrEqualFunction(
    /* to its predecessor. Return true.        */
    /*=========================================*/
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /**********************************/
 /* LessThanFunction: H/L access   */
 /*   routine for the < function.  */
 /**********************************/
-bool LessThanFunction(
-  void *theEnv)
+void LessThanFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
-   DATA_OBJECT rv1, rv2;
-   int pos = 1;
+   CLIPSValue rv1, rv2;
 
    /*=========================*/
    /* Get the first argument. */
    /*=========================*/
 
-   theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(true); }
-   if (! GetNumericArgument(theEnv,theArgument,"<",&rv1,false,pos)) return(false);
-   pos++;
-
+   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+   
    /*==========================================*/
    /* Compare each of the subsequent arguments */
    /* to its predecessor. If any is greater or */
    /* equal, then return false.                */
    /*==========================================*/
-
-   for (theArgument = GetNextArgument(theArgument);
-        theArgument != NULL;
-        theArgument = GetNextArgument(theArgument), pos++)
+   
+   while (UDFHasNextArg(context))
      {
-      if (! GetNumericArgument(theEnv,theArgument,"<",&rv2,false,pos)) return(false);
-      if (rv1.type == INTEGER)
+      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
         {
-         if (rv2.type == INTEGER)
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+        
+      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+        {
+         if (CVToInteger(&rv1) >= CVToInteger(&rv2))
            {
-            if (ValueToLong(rv1.value) >= ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if ((double) ValueToLong(rv1.value) >= ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
       else
         {
-         if (rv2.type == INTEGER)
+         if (CVToFloat(&rv1) >= CVToFloat(&rv2))
            {
-            if (ValueToDouble(rv1.value) >= (double) ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if (ValueToDouble(rv1.value) >= ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
-
-      rv1.type = rv2.type;
-      rv1.value = rv2.value;
+        
+      CVSetCLIPSValue(&rv1,&rv2);
      }
 
    /*=================================*/
@@ -664,210 +637,187 @@ bool LessThanFunction(
    /* predecessor. Return true.       */
    /*=================================*/
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /*************************************/
 /* GreaterThanFunction: H/L access   */
 /*   routine for the > function.     */
 /*************************************/
-bool GreaterThanFunction(
-  void *theEnv)
+void GreaterThanFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
-   DATA_OBJECT rv1, rv2;
-   int pos = 1;
+   CLIPSValue rv1, rv2;
 
    /*=========================*/
    /* Get the first argument. */
    /*=========================*/
 
-   theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(true); }
-   if (! GetNumericArgument(theEnv,theArgument,">",&rv1,false,pos)) return(false);
-   pos++;
-
+   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+   
    /*==========================================*/
    /* Compare each of the subsequent arguments */
    /* to its predecessor. If any is lesser or  */
    /* equal, then return false.                */
    /*==========================================*/
-
-   for (theArgument = GetNextArgument(theArgument);
-        theArgument != NULL;
-        theArgument = GetNextArgument(theArgument), pos++)
+   
+   while (UDFHasNextArg(context))
      {
-      if (! GetNumericArgument(theEnv,theArgument,">",&rv2,false,pos)) return(false);
-      if (rv1.type == INTEGER)
+      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
         {
-         if (rv2.type == INTEGER)
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+        
+      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+        {
+         if (CVToInteger(&rv1) <= CVToInteger(&rv2))
            {
-            if (ValueToLong(rv1.value) <= ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if ((double) ValueToLong(rv1.value) <= ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
       else
         {
-         if (rv2.type == INTEGER)
+         if (CVToFloat(&rv1) <= CVToFloat(&rv2))
            {
-            if (ValueToDouble(rv1.value) <= (double) ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if (ValueToDouble(rv1.value) <= ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
-
-      rv1.type = rv2.type;
-      rv1.value = rv2.value;
+        
+      CVSetCLIPSValue(&rv1,&rv2);
      }
 
-   /*================================*/
-   /* Each argument was greater than */
-   /* its predecessor. Return true.  */
-   /*================================*/
+   /*=================================*/
+   /* Each argument was less than its */
+   /* predecessor. Return true.       */
+   /*=================================*/
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /**************************************/
 /* NumericEqualFunction: H/L access   */
 /*   routine for the = function.      */
 /**************************************/
-bool NumericEqualFunction(
-  void *theEnv)
+void NumericEqualFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
-   DATA_OBJECT rv1, rv2;
-   int pos = 1;
+   CLIPSValue rv1, rv2;
 
    /*=========================*/
    /* Get the first argument. */
    /*=========================*/
 
-   theArgument = GetFirstArgument();
-
-   if (theArgument == NULL) { return(true); }
-   if (! GetNumericArgument(theEnv,theArgument,"=",&rv1,false,pos)) return(false);
-   pos++;
+   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*=================================================*/
    /* Compare each of the subsequent arguments to the */
    /* first. If any is unequal, then return false.    */
    /*=================================================*/
 
-   for (theArgument = GetNextArgument(theArgument);
-        theArgument != NULL;
-        theArgument = GetNextArgument(theArgument), pos++)
+   while (UDFHasNextArg(context))
      {
-      if (! GetNumericArgument(theEnv,theArgument,"=",&rv2,false,pos)) return(false);
-      if (rv1.type == INTEGER)
+      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
         {
-         if (rv2.type == INTEGER)
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+        
+      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+        {
+         if (CVToInteger(&rv1) != CVToInteger(&rv2))
            {
-            if (ValueToLong(rv1.value) != ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if ((double) ValueToLong(rv1.value) != ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
       else
         {
-         if (rv2.type == INTEGER)
+         if (CVToFloat(&rv1) != CVToFloat(&rv2))
            {
-            if (ValueToDouble(rv1.value) != (double) ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if (ValueToDouble(rv1.value) != ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
      }
-
+     
    /*=================================*/
    /* All arguments were equal to the */
    /* first argument. Return true.    */
    /*=================================*/
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /*****************************************/
 /* NumericNotEqualFunction: H/L access   */
 /*   routine for the <> function.        */
 /*****************************************/
-bool NumericNotEqualFunction(
-  void *theEnv)
+void NumericNotEqualFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
-   DATA_OBJECT rv1, rv2;
-   int pos = 1;
+   CLIPSValue rv1, rv2;
 
    /*=========================*/
    /* Get the first argument. */
    /*=========================*/
 
-   theArgument = GetFirstArgument();
-   if (theArgument == NULL) { return(true); }
-   if (! GetNumericArgument(theEnv,theArgument,"<>",&rv1,false,pos)) return(false);
-   pos++;
+   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*=================================================*/
    /* Compare each of the subsequent arguments to the */
    /* first. If any is equal, then return false.      */
    /*=================================================*/
 
-   for (theArgument = GetNextArgument(theArgument);
-        theArgument != NULL;
-        theArgument = GetNextArgument(theArgument), pos++)
+   while (UDFHasNextArg(context))
      {
-      if (! GetNumericArgument(theEnv,theArgument,"<>",&rv2,false,pos)) return(false);
-      if (rv1.type == INTEGER)
+      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
         {
-         if (rv2.type == INTEGER)
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+        
+      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+        {
+         if (CVToInteger(&rv1) == CVToInteger(&rv2))
            {
-            if (ValueToLong(rv1.value) == ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if ((double) ValueToLong(rv1.value) == ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
       else
         {
-         if (rv2.type == INTEGER)
+         if (CVToFloat(&rv1) == CVToFloat(&rv2))
            {
-            if (ValueToDouble(rv1.value) == (double) ValueToLong(rv2.value))
-              { return(false); }
-           }
-         else
-           {
-            if (ValueToDouble(rv1.value) == ValueToDouble(rv2.value))
-              { return(false); }
+            CVSetBoolean(returnValue,false);
+            return;
            }
         }
      }
-
+     
    /*===================================*/
    /* All arguments were unequal to the */
    /* first argument. Return true.      */
    /*===================================*/
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /**************************************/
@@ -881,26 +831,16 @@ void OddpFunction(
    CLIPSValue item;
    CLIPSInteger num, halfnum;
       
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
-     
    /*===========================================*/
    /* Check for the correct types of arguments. */
    /*===========================================*/
-     
-   if (! UDFArgTypeCheck(context,1,INTEGER_TYPE,&item))
+ 
+   if (! UDFGetFirstArgument(context,INTEGER_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
      }
-
+    
    /*===========================*/
    /* Compute the return value. */
    /*===========================*/
@@ -923,21 +863,11 @@ void EvenpFunction(
    CLIPSValue item;
    CLIPSInteger num, halfnum;
    
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
-     
    /*===========================================*/
    /* Check for the correct types of arguments. */
    /*===========================================*/
      
-   if (! UDFArgTypeCheck(context,1,INTEGER_TYPE,&item))
+   if (! UDFGetFirstArgument(context,INTEGER_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;

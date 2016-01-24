@@ -424,16 +424,6 @@ void IntegerFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     {
-      CVSetInteger(returnValue,0LL);
-      return;
-     }
-
    /*======================================*/
    /* Check that the argument is a number. */
    /*======================================*/
@@ -461,16 +451,6 @@ void FloatFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     {
-      CVSetFloat(returnValue,0.0);
-      return;
-     }
-
    /*======================================*/
    /* Check that the argument is a number. */
    /*======================================*/
@@ -498,16 +478,6 @@ void AbsFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (UDFArgCountCheck(context) < 0)
-     {
-      CVSetInteger(returnValue,0LL);
-      return;
-     }
-
    /*======================================*/
    /* Check that the argument is a number. */
    /*======================================*/
@@ -542,29 +512,18 @@ void MinFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   int numberOfArguments, i;
    CLIPSValue nextPossible;
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if ((numberOfArguments = UDFArgCountCheck(context)) < 0)
-     {
-      CVSetInteger(returnValue,0);
-      return;
-     }
 
    /*============================================*/
    /* Check that the first argument is a number. */
    /*============================================*/
-     
-   if (! UDFArgTypeCheck(context,1,NUMBER_TYPES,returnValue))
+
+   if (! UDFGetFirstArgument(context,NUMBER_TYPES,returnValue))
      {
       CVSetInteger(returnValue,0LL);
       return;
      }
-
+    
    /*===========================================================*/
    /* Loop through the remaining arguments, first checking each */
    /* argument to see that it is a number, and then determining */
@@ -572,9 +531,10 @@ void MinFunction(
    /* is thus the maximum value.                                */
    /*===========================================================*/
 
-   for (i = 2 ; i <= numberOfArguments ; i++)
+   while (UDFHasNextArg(context))
      {
-      if (! UDFArgTypeCheck(context,i,NUMBER_TYPES,&nextPossible)) return;
+      if (! UDFGetNextArgument(context,NUMBER_TYPES,&nextPossible))
+        { return; }
       
       /*=============================================*/
       /* If either argument is a float, convert both */
@@ -602,24 +562,13 @@ void MaxFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   int numberOfArguments, i;
    CLIPSValue nextPossible;
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if ((numberOfArguments = UDFArgCountCheck(context)) < 0)
-     {
-      CVSetInteger(returnValue,0LL);
-      return;
-     }
-
+   
    /*============================================*/
    /* Check that the first argument is a number. */
    /*============================================*/
-     
-   if (! UDFArgTypeCheck(context,1,NUMBER_TYPES,returnValue))
+
+   if (! UDFGetFirstArgument(context,NUMBER_TYPES,returnValue))
      {
       CVSetInteger(returnValue,0LL);
       return;
@@ -632,9 +581,10 @@ void MaxFunction(
    /* and is thus the maximum value.                            */
    /*===========================================================*/
 
-   for (i = 2 ; i <= numberOfArguments ; i++)
+   while (UDFHasNextArg(context))
      {
-      if (! UDFArgTypeCheck(context,i,NUMBER_TYPES,&nextPossible)) return;
+      if (! UDFGetNextArgument(context,NUMBER_TYPES,&nextPossible))
+        { return; }
       
       /*=============================================*/
       /* If either argument is a float, convert both */

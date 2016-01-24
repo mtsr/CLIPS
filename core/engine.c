@@ -882,11 +882,10 @@ void EnvFocus(
 /*   for the clear-focus-stack command.         */
 /************************************************/
 void ClearFocusStackCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   if (EnvArgCountCheck(theEnv,"list-focus-stack",EXACTLY,0) == -1) return;
-
-   EnvClearFocusStack(theEnv);
+   EnvClearFocusStack(UDFContextEnvironment(context));
   }
 
 /****************************************/
@@ -1007,23 +1006,23 @@ bool EnvRemoveBeforeRunFunction(
 /* RunCommand: H/L access routine for the run command.   */
 /*********************************************************/
 void RunCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    int numArgs;
-   long long runLimit = -1LL;
-   DATA_OBJECT argPtr;
+   CLIPSInteger runLimit = -1LL;
+   CLIPSValue argument;
 
-   if ((numArgs = EnvArgCountCheck(theEnv,"run",NO_MORE_THAN,1)) == -1) return;
-
+   numArgs = UDFArgumentCount(context);
    if (numArgs == 0)
      { runLimit = -1LL; }
    else if (numArgs == 1)
      {
-      if (EnvArgTypeCheck(theEnv,"run",1,INTEGER,&argPtr) == false) return;
-      runLimit = DOToLong(argPtr);
+      if (! UDFGetFirstArgument(context,INTEGER_TYPE,&argument)) return;
+      runLimit = CVToInteger(&argument);
      }
 
-   EnvRun(theEnv,runLimit);
+   EnvRun(UDFContextEnvironment(context),runLimit);
 
    return;
   }
@@ -1032,10 +1031,10 @@ void RunCommand(
 /* HaltCommand: Causes rule execution to halt. */
 /***********************************************/
 void HaltCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EnvArgCountCheck(theEnv,"halt",EXACTLY,0);
-   EnvHalt(theEnv);
+   EnvHalt(UDFContextEnvironment(context));
   }
 
 /*****************************/
@@ -1149,17 +1148,17 @@ bool EnvDefruleHasBreakpoint(
 /*   for the set-break command.          */
 /*****************************************/
 void SetBreakCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT argPtr;
+   CLIPSValue value;
    const char *argument;
    void *defrulePtr;
+   void *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgCountCheck(theEnv,"set-break",EXACTLY,1) == -1) return;
+   if (UDFGetFirstArgument(context,SYMBOL_TYPE,&value) == false) return;
 
-   if (EnvArgTypeCheck(theEnv,"set-break",1,SYMBOL,&argPtr) == false) return;
-
-   argument = DOToString(argPtr);
+   argument = CVToString(&value);
 
    if ((defrulePtr = EnvFindDefrule(theEnv,argument)) == NULL)
      {
@@ -1214,14 +1213,16 @@ void RemoveBreakCommand(
 /*   for the show-breaks command.          */
 /*******************************************/
 void ShowBreaksCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    int numArgs;
    bool error;
    struct defmodule *theModule;
+   void *theEnv = UDFContextEnvironment(context);
 
-   if ((numArgs = EnvArgCountCheck(theEnv,"show-breaks",NO_MORE_THAN,1)) == -1) return;
-
+   numArgs = UDFArgumentCount(context);
+   
    if (numArgs == 1)
      {
       theModule = GetModuleName(theEnv,"show-breaks",1,&error);
@@ -1238,11 +1239,10 @@ void ShowBreaksCommand(
 /*   for the list-focus-stack command.         */
 /***********************************************/
 void ListFocusStackCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   if (EnvArgCountCheck(theEnv,"list-focus-stack",EXACTLY,0) == -1) return;
-
-   EnvListFocusStack(theEnv,WDISPLAY);
+   EnvListFocusStack(UDFContextEnvironment(context),WDISPLAY);
   }
 
 /***************************************/

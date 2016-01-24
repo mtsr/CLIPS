@@ -44,14 +44,14 @@
 #include "evaluatn.h"
 
    void                           DeffactsBasicCommands(void *);
-   void                           UndeffactsCommand(void *);
+   void                           UndeffactsCommand(UDFContext *,CLIPSValue *);
    bool                           EnvUndeffacts(void *,void *);
-   void                           GetDeffactsListFunction(void *,DATA_OBJECT_PTR);
+   void                           GetDeffactsListFunction(UDFContext *,CLIPSValue *);
    void                           EnvGetDeffactsList(void *,DATA_OBJECT_PTR,void *);
-   void                          *DeffactsModuleFunction(void *);
-   void                           PPDeffactsCommand(void *);
+   void                           DeffactsModuleFunction(UDFContext *,CLIPSValue *);
+   void                           PPDeffactsCommand(UDFContext *,CLIPSValue *);
    int                            PPDeffacts(void *,const char *,const char *);
-   void                           ListDeffactsCommand(void *);
+   void                           ListDeffactsCommand(UDFContext *,CLIPSValue *);
    void                           EnvListDeffacts(void *,const char *,void *);
 
 #endif /* _H_dffctbsc */

@@ -40,7 +40,7 @@
    void                           PrimitiveTablesUsage(void *);
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
-   void                           ShowFactPatternNetwork(void *);
+   void                           ShowFactPatternNetwork(UDFContext *,CLIPSValue *);
    bool                           ValidateFactIntegrity(void *);
 #endif
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM

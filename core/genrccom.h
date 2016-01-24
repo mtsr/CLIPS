@@ -63,8 +63,8 @@
    long                           EnvGetNextDefmethod(void *,void *,long);
    bool                           EnvIsDefgenericDeletable(void *,void *);
    bool                           EnvIsDefmethodDeletable(void *,void *,long);
-   void                           UndefgenericCommand(void *);
-   void                          *GetDefgenericModuleCommand(void *);
+   void                           UndefgenericCommand(UDFContext *,CLIPSValue *);
+   void                           GetDefgenericModuleCommand(UDFContext *,CLIPSValue *);
    void                           UndefmethodCommand(void *);
    DEFMETHOD                     *GetDefmethodPointer(void *,long);
    bool                           EnvUndefgeneric(void *,void *);
@@ -80,15 +80,15 @@
    void                           EnvSetDefgenericWatch(void *,bool,void *);
    bool                           EnvGetDefmethodWatch(void *,void *,long);
    void                           EnvSetDefmethodWatch(void *,bool,void *,long);
-   void                           PPDefgenericCommand(void *);
+   void                           PPDefgenericCommand(UDFContext *,CLIPSValue *);
    void                           PPDefmethodCommand(void *);
    void                           ListDefmethodsCommand(void *);
    const char                    *EnvGetDefmethodPPForm(void *,void *,long);
-   void                           ListDefgenericsCommand(void *);
+   void                           ListDefgenericsCommand(UDFContext *,CLIPSValue *);
    void                           EnvListDefgenerics(void *,const char *,struct defmodule *);
    void                           EnvListDefmethods(void *,const char *,void *);
 #endif
-   void                           GetDefgenericListFunction(void *,DATA_OBJECT *);
+   void                           GetDefgenericListFunction(UDFContext *,CLIPSValue *);
    void                           EnvGetDefgenericList(void *,DATA_OBJECT *,struct defmodule *);
    void                           GetDefmethodListCommand(void *,DATA_OBJECT *);
    void                           EnvGetDefmethodList(void *,void *,DATA_OBJECT *);

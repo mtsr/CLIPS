@@ -44,9 +44,9 @@
    bool                           DeleteNamedConstruct(void *,const char *,struct construct *);
    void                          *FindNamedConstructInModule(void *,const char *,struct construct *);
    void                          *FindNamedConstructInModuleOrImports(void *,const char *,struct construct *);
-   void                           UndefconstructCommand(void *,const char *,struct construct *);
+   void                           UndefconstructCommand(UDFContext *,const char *,struct construct *);
    bool                           PPConstruct(void *,const char *,const char *,struct construct *);
-   SYMBOL_HN                     *GetConstructModuleCommand(void *,const char *,struct construct *);
+   SYMBOL_HN                     *GetConstructModuleCommand(UDFContext *,const char *,struct construct *);
    struct defmodule              *GetConstructModule(void *,const char *,struct construct *);
    bool                           Undefconstruct(void *,void *,struct construct *);
    void                           SaveConstruct(void *,void *,const char *,struct construct *);
@@ -54,16 +54,16 @@
    const char                    *EnvGetConstructNameString(void *,struct constructHeader *);
    const char                    *GetConstructModuleName(struct constructHeader *);
    SYMBOL_HN                     *GetConstructNamePointer(struct constructHeader *);
-   void                           GetConstructListFunction(void *,const char *,DATA_OBJECT_PTR,
+   void                           GetConstructListFunction(UDFContext *,const char *,DATA_OBJECT_PTR,
                                                                   struct construct *);
    void                           GetConstructList(void *,DATA_OBJECT_PTR,struct construct *,
                                                           struct defmodule *);
-   void                           ListConstructCommand(void *,const char *,struct construct *);
+   void                           ListConstructCommand(UDFContext *,const char *,struct construct *);
    void                           ListConstruct(void *,struct construct *,const char *,struct defmodule *);
    void                           SetNextConstruct(struct constructHeader *,struct constructHeader *);
    struct defmoduleItemHeader    *GetConstructModuleItem(struct constructHeader *);
    const char                    *GetConstructPPForm(void *,struct constructHeader *);
-   void                           PPConstructCommand(void *,const char *,struct construct *);
+   void                           PPConstructCommand(UDFContext *,const char *,struct construct *);
    struct constructHeader        *GetNextConstructItem(void *,struct constructHeader *,int);
    struct defmoduleItemHeader    *GetConstructModuleItemByIndex(void *,struct defmodule *,int);
    void                           FreeConstructHeaderModule(void *,struct defmoduleItemHeader *,

@@ -45,15 +45,15 @@
    void                           IntegerpFunction(UDFContext *,CLIPSValue *);
    void                           MultifieldpFunction(UDFContext *,CLIPSValue *);
    void                           PointerpFunction(UDFContext *,CLIPSValue *);
-   bool                           NotFunction(void *);
-   bool                           AndFunction(void *);
-   bool                           OrFunction(void *);
-   bool                           LessThanOrEqualFunction(void *);
-   bool                           GreaterThanOrEqualFunction(void *);
-   bool                           LessThanFunction(void *);
-   bool                           GreaterThanFunction(void *);
-   bool                           NumericEqualFunction(void *);
-   bool                           NumericNotEqualFunction(void *);
+   void                           NotFunction(UDFContext *,CLIPSValue *);
+   void                           AndFunction(UDFContext *,CLIPSValue *);
+   void                           OrFunction(UDFContext *,CLIPSValue *);
+   void                           LessThanOrEqualFunction(UDFContext *,CLIPSValue *);
+   void                           GreaterThanOrEqualFunction(UDFContext *,CLIPSValue *);
+   void                           LessThanFunction(UDFContext *,CLIPSValue *);
+   void                           GreaterThanFunction(UDFContext *,CLIPSValue *);
+   void                           NumericEqualFunction(UDFContext *,CLIPSValue *);
+   void                           NumericNotEqualFunction(UDFContext *,CLIPSValue *);
    void                           OddpFunction(UDFContext *,CLIPSValue *);
    void                           EvenpFunction(UDFContext *,CLIPSValue *);
 

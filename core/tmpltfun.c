@@ -125,8 +125,8 @@ void DeftemplateFunctions(
    EnvDefineFunction(theEnv,"modify",'u', PTIEF ModifyCommand,"ModifyCommand");
    EnvDefineFunction(theEnv,"duplicate",'u', PTIEF DuplicateCommand,"DuplicateCommand");
 
-   EnvDefineFunction2(theEnv,"deftemplate-slot-names",'u', PTIEF DeftemplateSlotNamesFunction,
-                   "DeftemplateSlotNamesFunction", "11z");
+   EnvAddUDF(theEnv,"deftemplate-slot-names",BOOLEAN_TYPE | MULTIFIELD_TYPE, DeftemplateSlotNamesFunction,
+                   "DeftemplateSlotNamesFunction", 1,1,"y",NULL);
    EnvDefineFunction2(theEnv,"deftemplate-slot-default-value",'u',PTIEF DeftemplateSlotDefaultValueFunction,
                    "DeftemplateSlotDefaultValueFunction","22w");
    EnvDefineFunction2(theEnv,"deftemplate-slot-cardinality",'u',PTIEF DeftemplateSlotCardinalityFunction,
@@ -851,11 +851,12 @@ void DuplicateCommand(
 /*   for the deftemplate-slot-names function.       */
 /****************************************************/
 void DeftemplateSlotNamesFunction(
-  void *theEnv,
+  UDFContext *context,
   DATA_OBJECT *returnValue)
   {
    const char *deftemplateName;
    struct deftemplate *theDeftemplate;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*=============================================*/
    /* Set up the default return value for errors. */
@@ -874,7 +875,7 @@ void DeftemplateSlotNamesFunction(
    /* Get the reference to the deftemplate. */
    /*=======================================*/
 
-   deftemplateName = GetConstructName(theEnv,"deftemplate-slot-names","deftemplate name");
+   deftemplateName = GetConstructName(context,"deftemplate-slot-names","deftemplate name");
    if (deftemplateName == NULL) return;
 
    theDeftemplate = (struct deftemplate *) EnvFindDeftemplate(theEnv,deftemplateName);

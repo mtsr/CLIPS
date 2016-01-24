@@ -178,8 +178,8 @@ struct constructData
    void                           SetExecutingConstruct(void *,bool);
    void                           InitializeConstructs(void *);
    int                          (*SetBeforeResetFunction(void *,int (*)(void *)))(void *);
-   void                           ResetCommand(void *);
-   void                           ClearCommand(void *);
+   void                           ResetCommand(UDFContext *,CLIPSValue *);
+   void                           ClearCommand(UDFContext *,CLIPSValue *);
    bool                           ClearReady(void *);
    struct construct              *FindConstruct(void *,const char *);
    void                           DeinstallConstructHeader(void *,struct constructHeader *);

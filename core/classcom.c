@@ -368,9 +368,11 @@ bool EnvIsDefclassDeletable(
   NOTES        : Syntax : (undefclass <class-name> | *)
  *************************************************************/
 void UndefclassCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   UndefconstructCommand(theEnv,"undefclass",DefclassData(theEnv)->DefclassConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   UndefconstructCommand(context,"undefclass",DefclassData(theEnv)->DefclassConstruct);
   }
 
 /********************************************************
@@ -414,9 +416,11 @@ bool EnvUndefclass(
   NOTES        : Syntax : (ppdefclass <class-name>)
  *********************************************************/
 void PPDefclassCommand(
-  void *theEnv)
-  {   
-   PPConstructCommand(theEnv,"ppdefclass",DefclassData(theEnv)->DefclassConstruct);
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   PPConstructCommand(context,"ppdefclass",DefclassData(theEnv)->DefclassConstruct);
   }
 
 /***************************************************
@@ -428,9 +432,11 @@ void PPDefclassCommand(
   NOTES        : H/L Interface
  ***************************************************/
 void ListDefclassesCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   ListConstructCommand(theEnv,"list-defclasses",DefclassData(theEnv)->DefclassConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   ListConstructCommand(context,"list-defclasses",DefclassData(theEnv)->DefclassConstruct);
   }
 
 /***************************************************
@@ -611,10 +617,11 @@ bool DefclassWatchPrint(
   NOTES        : None
  *********************************************************/
 void GetDefclassListFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   GetConstructListFunction(theEnv,"get-defclass-list",returnValue,DefclassData(theEnv)->DefclassConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   GetConstructListFunction(context,"get-defclass-list",returnValue,DefclassData(theEnv)->DefclassConstruct);
   }
 
 /***************************************************************

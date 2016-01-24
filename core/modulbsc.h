@@ -40,7 +40,7 @@
 
    void                           DefmoduleBasicCommands(void *);
    void                           EnvGetDefmoduleList(void *,DATA_OBJECT_PTR);
-   void                           PPDefmoduleCommand(void *);
+   void                           PPDefmoduleCommand(UDFContext *,CLIPSValue *);
    bool                           PPDefmodule(void *,const char *,const char *);
    void                           ListDefmodulesCommand(void *);
    void                           EnvListDefmodules(void *,const char *);

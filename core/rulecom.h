@@ -88,10 +88,10 @@ struct joinInformation
    void                           EnvFreeJoinArray(void *,struct joinInformation *,long);
    void                           EnvAlphaJoins(void *,void *,long,struct joinInformation *);
    void                           EnvBetaJoins(void *,void *,long,struct joinInformation *);
-   void                           JoinActivityResetCommand(void *);
+   void                           JoinActivityResetCommand(UDFContext *,CLIPSValue *);
 #if DEVELOPER
-   void                           ShowJoinsCommand(void *);
-   long                           RuleComplexityCommand(void *);
+   void                           ShowJoinsCommand(UDFContext *,CLIPSValue *);
+   void                           RuleComplexityCommand(UDFContext *,CLIPSValue *);
    void                           ShowAlphaHashTable(void *);
 #endif
 

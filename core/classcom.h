@@ -67,15 +67,15 @@
    void                   *EnvGetNextDefclass(void *,void *);
    bool                    EnvIsDefclassDeletable(void *,void *);
 
-   void                    UndefclassCommand(void *);
+   void                    UndefclassCommand(UDFContext *,CLIPSValue *);
    unsigned short          EnvSetClassDefaultsMode(void *,unsigned short);
    unsigned short          EnvGetClassDefaultsMode(void *);
    void                   *GetClassDefaultsModeCommand(void *);
    void                   *SetClassDefaultsModeCommand(void *);
 
 #if DEBUGGING_FUNCTIONS
-   void                    PPDefclassCommand(void *);
-   void                    ListDefclassesCommand(void *);
+   void                    PPDefclassCommand(UDFContext *,CLIPSValue *);
+   void                    ListDefclassesCommand(UDFContext *,CLIPSValue *);
    void                    EnvListDefclasses(void *,const char *,struct defmodule *);
    bool                    EnvGetDefclassWatchInstances(void *,void *);
    void                    EnvSetDefclassWatchInstances(void *,bool,void *);
@@ -85,7 +85,7 @@
    bool                    DefclassWatchPrint(void *,const char *,int,EXPRESSION *);
 #endif
 
-   void                    GetDefclassListFunction(void *,DATA_OBJECT *);
+   void                    GetDefclassListFunction(UDFContext *,CLIPSValue *);
    void                    EnvGetDefclassList(void *,DATA_OBJECT *,struct defmodule *);
    bool                    EnvUndefclass(void *,void *);
    bool                    HasSuperclass(DEFCLASS *,DEFCLASS *);

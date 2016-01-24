@@ -327,10 +327,12 @@ const char *GetCreateAccessorString(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax: (defclass-module <class-name>)
  ************************************************************/
-void *GetDefclassModuleCommand(
-  void *theEnv)
+void GetDefclassModuleCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   return(GetConstructModuleCommand(theEnv,"defclass-module",DefclassData(theEnv)->DefclassConstruct));
+   void *theEnv = UDFContextEnvironment(context);
+   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"defclass-module",DefclassData(theEnv)->DefclassConstruct));
   }
 
 /*********************************************************************

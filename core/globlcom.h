@@ -39,11 +39,11 @@
 #define _H_globlcom
 
    void                           DefglobalCommandDefinitions(void *);
-   bool                           SetResetGlobalsCommand(void *);
+   void                           SetResetGlobalsCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSetResetGlobals(void *,bool);
-   bool                           GetResetGlobalsCommand(void *);
+   void                           GetResetGlobalsCommand(UDFContext *,CLIPSValue *);
    bool                           EnvGetResetGlobals(void *);
-   void                           ShowDefglobalsCommand(void *);
+   void                           ShowDefglobalsCommand(UDFContext *,CLIPSValue *);
    void                           EnvShowDefglobals(void *,const char *,void *);
 
 #endif /* _H_globlcom */

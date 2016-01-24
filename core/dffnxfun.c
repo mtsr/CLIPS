@@ -205,19 +205,19 @@ void SetupDeffunctions(
 #endif
    AddSaveFunction(theEnv,"deffunction-headers",SaveDeffunctionHeaders,1000);
    AddSaveFunction(theEnv,"deffunctions",SaveDeffunctions,0);
-   EnvDefineFunction2(theEnv,"undeffunction",'v',PTIEF UndeffunctionCommand,"UndeffunctionCommand","11w");
+   EnvAddUDF(theEnv,"undeffunction",VOID_TYPE, UndeffunctionCommand,"UndeffunctionCommand",1,1,"y",NULL);
 #endif
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"list-deffunctions",'v',PTIEF ListDeffunctionsCommand,"ListDeffunctionsCommand","01");
-   EnvDefineFunction2(theEnv,"ppdeffunction",'v',PTIEF PPDeffunctionCommand,"PPDeffunctionCommand","11w");
+   EnvAddUDF(theEnv,"list-deffunctions",VOID_TYPE, ListDeffunctionsCommand,"ListDeffunctionsCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdeffunction",VOID_TYPE, PPDeffunctionCommand,"PPDeffunctionCommand",1,1,"y",NULL);
 #endif
 
-   EnvDefineFunction2(theEnv,"get-deffunction-list",'m',PTIEF GetDeffunctionListFunction,
-                   "GetDeffunctionListFunction","01");
+   EnvAddUDF(theEnv,"get-deffunction-list",MULTIFIELD_TYPE, GetDeffunctionListFunction,
+                   "GetDeffunctionListFunction",0,1,"y",NULL);
 
-   EnvDefineFunction2(theEnv,"deffunction-module",'w',PTIEF GetDeffunctionModuleCommand,
-                   "GetDeffunctionModuleCommand","11w");
+   EnvAddUDF(theEnv,"deffunction-module",SYMBOL_TYPE, GetDeffunctionModuleCommand,
+                   "GetDeffunctionModuleCommand",1,1,"y",NULL);
 
 #if BLOAD_AND_BSAVE || BLOAD || BLOAD_ONLY
    SetupDeffunctionsBload(theEnv);
@@ -481,9 +481,11 @@ void RemoveDeffunction(
   NOTES        : H/L Syntax: (undeffunction <name> | *)
  ********************************************************/
 void UndeffunctionCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   UndefconstructCommand(theEnv,"undeffunction",DeffunctionData(theEnv)->DeffunctionConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   UndefconstructCommand(context,"undeffunction",DeffunctionData(theEnv)->DeffunctionConstruct);
   }
 
 /****************************************************************
@@ -494,10 +496,12 @@ void UndeffunctionCommand(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax: (deffunction-module <dfnx-name>)
  ****************************************************************/
-void *GetDeffunctionModuleCommand(
-  void *theEnv)
+void GetDeffunctionModuleCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   return(GetConstructModuleCommand(theEnv,"deffunction-module",DeffunctionData(theEnv)->DeffunctionConstruct));
+   void *theEnv = UDFContextEnvironment(context);
+   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"deffunction-module",DeffunctionData(theEnv)->DeffunctionConstruct));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -513,9 +517,11 @@ void *GetDeffunctionModuleCommand(
   NOTES        : H/L Syntax: (ppdeffunction <name>)
  ****************************************************/
 void PPDeffunctionCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   PPConstructCommand(theEnv,"ppdeffunction",DeffunctionData(theEnv)->DeffunctionConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   PPConstructCommand(context,"ppdeffunction",DeffunctionData(theEnv)->DeffunctionConstruct);
   }
 
 /***************************************************
@@ -527,9 +533,11 @@ void PPDeffunctionCommand(
   NOTES        : H/L Interface
  ***************************************************/
 void ListDeffunctionsCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   ListConstructCommand(theEnv,"list-deffunctions",DeffunctionData(theEnv)->DeffunctionConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   ListConstructCommand(context,"list-deffunctions",DeffunctionData(theEnv)->DeffunctionConstruct);
   }
 
 /***************************************************
@@ -562,10 +570,11 @@ void EnvListDeffunctions(
   NOTES        : H/L Syntax: (get-deffunction-list [<module>])
  ***************************************************************/
 void GetDeffunctionListFunction(
-  void *theEnv,
-  DATA_OBJECT *returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   GetConstructListFunction(theEnv,"get-deffunction-list",returnValue,DeffunctionData(theEnv)->DeffunctionConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   GetConstructListFunction(context,"get-deffunction-list",returnValue,DeffunctionData(theEnv)->DeffunctionConstruct);
   }
 
 /***************************************************************

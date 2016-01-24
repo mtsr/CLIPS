@@ -57,7 +57,7 @@
 #endif /* DEBUGGING_FUNCTIONS */
 
    const char                    *GetCreateAccessorString(void *);
-   void                          *GetDefclassModuleCommand(void *);
+   void                           GetDefclassModuleCommand(UDFContext *,CLIPSValue *);
    bool                           SuperclassPCommand(void *);
    bool                           EnvSuperclassP(void *,void *,void *);
    bool                           SubclassPCommand(void *);

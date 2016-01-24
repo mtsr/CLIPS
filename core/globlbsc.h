@@ -49,14 +49,14 @@
 #include "evaluatn.h"
 
    void                           DefglobalBasicCommands(void *);
-   void                           UndefglobalCommand(void *);
+   void                           UndefglobalCommand(UDFContext *,CLIPSValue *);
    bool                           EnvUndefglobal(void *,void *);
-   void                           GetDefglobalListFunction(void *,DATA_OBJECT_PTR);
+   void                           GetDefglobalListFunction(UDFContext *,CLIPSValue *);
    void                           EnvGetDefglobalList(void *,DATA_OBJECT_PTR,void *);
-   void                          *DefglobalModuleFunction(void *);
-   void                           PPDefglobalCommand(void *);
+   void                           DefglobalModuleFunction(UDFContext *,CLIPSValue *);
+   void                           PPDefglobalCommand(UDFContext *,CLIPSValue *);
    int                            PPDefglobal(void *,const char *,const char *);
-   void                           ListDefglobalsCommand(void *);
+   void                           ListDefglobalsCommand(UDFContext *,CLIPSValue *);
 #if DEBUGGING_FUNCTIONS
    bool                           EnvGetDefglobalWatch(void *,void *);
    void                           EnvListDefglobals(void *,const char *,void *);

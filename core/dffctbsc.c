@@ -92,13 +92,13 @@ void DeffactsBasicCommands(
    AddSaveFunction(theEnv,"deffacts",SaveDeffacts,10);
 
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"get-deffacts-list",'m',PTIEF GetDeffactsListFunction,"GetDeffactsListFunction","01w");
-   EnvDefineFunction2(theEnv,"undeffacts",'v',PTIEF UndeffactsCommand,"UndeffactsCommand","11w");
-   EnvDefineFunction2(theEnv,"deffacts-module",'w',PTIEF DeffactsModuleFunction,"DeffactsModuleFunction","11w");
+   EnvAddUDF(theEnv,"get-deffacts-list",MULTIFIELD_TYPE, GetDeffactsListFunction,"GetDeffactsListFunction",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"undeffacts",VOID_TYPE, UndeffactsCommand,"UndeffactsCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"deffacts-module",SYMBOL_TYPE, DeffactsModuleFunction,"DeffactsModuleFunction",1,1,"y",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"list-deffacts",'v', PTIEF ListDeffactsCommand,"ListDeffactsCommand","01w");
-   EnvDefineFunction2(theEnv,"ppdeffacts",'v',PTIEF PPDeffactsCommand,"PPDeffactsCommand","11w");
+   EnvAddUDF(theEnv,"list-deffacts",VOID_TYPE,ListDeffactsCommand,"ListDeffactsCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdeffacts",VOID_TYPE, PPDeffactsCommand,"PPDeffactsCommand",1,1,"y",NULL);
 #endif
 
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)
@@ -162,9 +162,12 @@ static void SaveDeffacts(
 /*   for the undeffacts command.           */
 /*******************************************/
 void UndeffactsCommand(
-  void *theEnv)
-  { 
-   UndefconstructCommand(theEnv,"undeffacts",DeffactsData(theEnv)->DeffactsConstruct); 
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   
+   UndefconstructCommand(context,"undeffacts",DeffactsData(theEnv)->DeffactsConstruct);
   }
 
 /***********************************/
@@ -183,10 +186,11 @@ bool EnvUndeffacts(
 /*   for the get-deffacts-list function.         */
 /*************************************************/
 void GetDeffactsListFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
-  { 
-   GetConstructListFunction(theEnv,"get-deffacts-list",returnValue,DeffactsData(theEnv)->DeffactsConstruct); 
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   GetConstructListFunction(context,"get-deffacts-list",returnValue,DeffactsData(theEnv)->DeffactsConstruct);
   }
 
 /*****************************************/
@@ -205,10 +209,12 @@ void EnvGetDeffactsList(
 /* DeffactsModuleFunction: H/L access routine   */
 /*   for the deffacts-module function.          */
 /************************************************/
-void *DeffactsModuleFunction(
-  void *theEnv)
-  { 
-   return(GetConstructModuleCommand(theEnv,"deffacts-module",DeffactsData(theEnv)->DeffactsConstruct)); 
+void DeffactsModuleFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"deffacts-module",DeffactsData(theEnv)->DeffactsConstruct));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -218,9 +224,11 @@ void *DeffactsModuleFunction(
 /*   for the ppdeffacts command.           */
 /*******************************************/
 void PPDeffactsCommand(
-  void *theEnv)
-  { 
-   PPConstructCommand(theEnv,"ppdeffacts",DeffactsData(theEnv)->DeffactsConstruct); 
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   PPConstructCommand(context,"ppdeffacts",DeffactsData(theEnv)->DeffactsConstruct);
   }
 
 /************************************/
@@ -240,9 +248,11 @@ int PPDeffacts(
 /*   for the list-deffacts command.          */
 /*********************************************/
 void ListDeffactsCommand(
-  void *theEnv)
-  { 
-   ListConstructCommand(theEnv,"list-deffacts",DeffactsData(theEnv)->DeffactsConstruct); 
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   ListConstructCommand(context,"list-deffacts",DeffactsData(theEnv)->DeffactsConstruct);
   }
 
 /*************************************/

@@ -83,13 +83,13 @@ void DefglobalBasicCommands(
    EnvAddResetFunction(theEnv,"defglobal",ResetDefglobals,50);
 
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"get-defglobal-list",'m',PTIEF GetDefglobalListFunction,"GetDefglobalListFunction","01w");
-   EnvDefineFunction2(theEnv,"undefglobal",'v',PTIEF UndefglobalCommand,"UndefglobalCommand","11w");
-   EnvDefineFunction2(theEnv,"defglobal-module",'w',PTIEF DefglobalModuleFunction,"DefglobalModuleFunction","11w");
+   EnvAddUDF(theEnv,"get-defglobal-list",MULTIFIELD_TYPE, GetDefglobalListFunction,"GetDefglobalListFunction",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"undefglobal",VOID_TYPE, UndefglobalCommand,"UndefglobalCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"defglobal-module",SYMBOL_TYPE, DefglobalModuleFunction,"DefglobalModuleFunction",1,1,"y",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"list-defglobals",'v', PTIEF ListDefglobalsCommand,"ListDefglobalsCommand","01w");
-   EnvDefineFunction2(theEnv,"ppdefglobal",'v',PTIEF PPDefglobalCommand,"PPDefglobalCommand","11w");
+   EnvAddUDF(theEnv,"list-defglobals",VOID_TYPE, ListDefglobalsCommand,"ListDefglobalsCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdefglobal",VOID_TYPE, PPDefglobalCommand,"PPDefglobalCommand",1,1,"y",NULL);
    AddWatchItem(theEnv,"globals",0,&DefglobalData(theEnv)->WatchGlobals,0,DefglobalWatchAccess,DefglobalWatchPrint);
 #endif
 
@@ -156,9 +156,11 @@ static void SaveDefglobals(
 /*   for the undefglobal command.           */
 /********************************************/
 void UndefglobalCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   UndefconstructCommand(theEnv,"undefglobal",DefglobalData(theEnv)->DefglobalConstruct); 
+   void *theEnv = UDFContextEnvironment(context);
+   UndefconstructCommand(context,"undefglobal",DefglobalData(theEnv)->DefglobalConstruct);
   }
 
 /************************************/
@@ -177,10 +179,11 @@ bool EnvUndefglobal(
 /*   for the get-defglobal-list function.         */
 /**************************************************/
 void GetDefglobalListFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
-  { 
-   GetConstructListFunction(theEnv,"get-defglobal-list",returnValue,DefglobalData(theEnv)->DefglobalConstruct); 
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   GetConstructListFunction(context,"get-defglobal-list",returnValue,DefglobalData(theEnv)->DefglobalConstruct);
   }
 
 /******************************************/
@@ -199,10 +202,12 @@ void EnvGetDefglobalList(
 /* DefglobalModuleFunction: H/L access routine   */
 /*   for the defglobal-module function.          */
 /*************************************************/
-void *DefglobalModuleFunction(
-  void *theEnv)
-  { 
-   return(GetConstructModuleCommand(theEnv,"defglobal-module",DefglobalData(theEnv)->DefglobalConstruct)); 
+void DefglobalModuleFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   void *theEnv = UDFContextEnvironment(context);
+   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"defglobal-module",DefglobalData(theEnv)->DefglobalConstruct));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -212,9 +217,11 @@ void *DefglobalModuleFunction(
 /*   for the ppdefglobal command.           */
 /********************************************/
 void PPDefglobalCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   PPConstructCommand(theEnv,"ppdefglobal",DefglobalData(theEnv)->DefglobalConstruct); 
+   void *theEnv = UDFContextEnvironment(context);
+   PPConstructCommand(context,"ppdefglobal",DefglobalData(theEnv)->DefglobalConstruct);
   }
 
 /*************************************/
@@ -234,9 +241,11 @@ int PPDefglobal(
 /*   for the list-defglobals command.          */
 /***********************************************/
 void ListDefglobalsCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   ListConstructCommand(theEnv,"list-defglobals",DefglobalData(theEnv)->DefglobalConstruct);
+   void *theEnv = UDFContextEnvironment(context);
+   ListConstructCommand(context,"list-defglobals",DefglobalData(theEnv)->DefglobalConstruct);
   }
 
 /***************************************/

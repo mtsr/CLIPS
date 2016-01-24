@@ -73,7 +73,7 @@ void DefmoduleBasicCommands(
 
 #if DEBUGGING_FUNCTIONS
    EnvDefineFunction2(theEnv,"list-defmodules",'v', PTIEF ListDefmodulesCommand,"ListDefmodulesCommand","00");
-   EnvDefineFunction2(theEnv,"ppdefmodule",'v',PTIEF PPDefmoduleCommand,"PPDefmoduleCommand","11w");
+   EnvAddUDF(theEnv,"ppdefmodule",VOID_TYPE,PPDefmoduleCommand,"PPDefmoduleCommand",1,1,"y",NULL);
 #endif
 #endif
 #endif
@@ -188,11 +188,13 @@ void EnvGetDefmoduleList(
 /*   for the ppdefmodule command.           */
 /********************************************/
 void PPDefmoduleCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *defmoduleName;
+   void *theEnv = UDFContextEnvironment(context);
 
-   defmoduleName = GetConstructName(theEnv,"ppdefmodule","defmodule name");
+   defmoduleName = GetConstructName(context,"ppdefmodule","defmodule name");
    if (defmoduleName == NULL) return;
 
    PPDefmodule(theEnv,defmoduleName,WDISPLAY);
