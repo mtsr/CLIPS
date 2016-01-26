@@ -364,10 +364,10 @@
 (defrule PRINT-RESULTS::header ""
    (declare (salience 10))
    =>
-   (printout t t)
-   (printout t "        SELECTED WINES" t t)
-   (printout t " WINE                  CERTAINTY" t)
-   (printout t " -------------------------------" t)
+   (printout t crlf)
+   (printout t "        SELECTED WINES" crlf crlf)
+   (printout t " WINE                  CERTAINTY" crlf)
+   (printout t " -------------------------------" crlf)
    (assert (phase print-wines)))
 
 (defrule PRINT-RESULTS::print-wine ""
@@ -385,7 +385,7 @@
 (defrule PRINT-RESULTS::end-spaces ""
    (not (attribute (name wine)))
    =>
-   (printout t t))
+   (printout t crlf))
 
 
 
