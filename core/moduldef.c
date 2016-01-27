@@ -183,13 +183,13 @@ void InitializeDefmodules(
 #endif
 
 #if (! RUN_TIME) && DEFMODULE_CONSTRUCT
-   EnvDefineFunction2(theEnv,"get-current-module", 'w',
-                   PTIEF GetCurrentModuleCommand,
-                   "GetCurrentModuleCommand", "00");
+   EnvAddUDF(theEnv,"get-current-module", SYMBOL_TYPE,
+                    GetCurrentModuleCommand,
+                   "GetCurrentModuleCommand", 0,0,NULL,NULL);
 
-   EnvDefineFunction2(theEnv,"set-current-module", 'w',
-                   PTIEF SetCurrentModuleCommand,
-                   "SetCurrentModuleCommand", "11w");
+   EnvAddUDF(theEnv,"set-current-module", SYMBOL_TYPE,
+                    SetCurrentModuleCommand,
+                   "SetCurrentModuleCommand", 1,1,"y",NULL);
 #endif
   }
 
@@ -694,48 +694,60 @@ void *EnvFindDefmodule(
 /* GetCurrentModuleCommand: H/L access routine   */
 /*   for the get-current-module command.         */
 /*************************************************/
-void *GetCurrentModuleCommand(
-  void *theEnv)
+void GetCurrentModuleCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct defmodule *theModule;
-
-   EnvArgCountCheck(theEnv,"get-current-module",EXACTLY,0);
-
+   Environment *theEnv = UDFContextEnvironment(context);
+   
    theModule = (struct defmodule *) EnvGetCurrentModule(theEnv);
 
-   if (theModule == NULL) return((SYMBOL_HN *) EnvFalseSymbol(theEnv));
+   if (theModule == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   return((SYMBOL_HN *) EnvAddSymbol(theEnv,ValueToString(theModule->name)));
+   CVSetCLIPSSymbol(returnValue,theModule->name);
   }
 
 /*************************************************/
 /* SetCurrentModuleCommand: H/L access routine   */
 /*   for the set-current-module command.         */
 /*************************************************/
-void *SetCurrentModuleCommand(
-  void *theEnv)
+void SetCurrentModuleCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT argPtr;
+   CLIPSValue theArg;
    const char *argument;
    struct defmodule *theModule;
-   SYMBOL_HN *defaultReturn;
+   SYMBOL_HN *oldModuleName;
+   Environment *theEnv = UDFContextEnvironment(context);
+
+   /*=======================*/
+   /* Set the return value. */
+   /*=======================*/
+
+   theModule = ((struct defmodule *) EnvGetCurrentModule(theEnv));
+   if (theModule == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+   
+   oldModuleName = theModule->name;
+   CVSetCLIPSSymbol(returnValue,oldModuleName);
 
    /*=====================================================*/
    /* Check for the correct number and type of arguments. */
    /*=====================================================*/
 
-   theModule = ((struct defmodule *) EnvGetCurrentModule(theEnv));
-   if (theModule == NULL) return((SYMBOL_HN *) EnvFalseSymbol(theEnv));
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     { return; }
 
-   defaultReturn = (SYMBOL_HN *) EnvAddSymbol(theEnv,ValueToString(((struct defmodule *) EnvGetCurrentModule(theEnv))->name));
-
-   if (EnvArgCountCheck(theEnv,"set-current-module",EXACTLY,1) == -1)
-     { return(defaultReturn); }
-
-   if (EnvArgTypeCheck(theEnv,"set-current-module",1,SYMBOL,&argPtr) == false)
-     { return(defaultReturn); }
-
-   argument = DOToString(argPtr);
+   argument = CVToString(&theArg);
 
    /*================================================*/
    /* Set the current module to the specified value. */
@@ -746,16 +758,10 @@ void *SetCurrentModuleCommand(
    if (theModule == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defmodule",argument);
-      return(defaultReturn);
+      return;
      }
 
    EnvSetCurrentModule(theEnv,(void *) theModule);
-
-   /*================================*/
-   /* Return the new current module. */
-   /*================================*/
-
-   return((SYMBOL_HN *) defaultReturn);
   }
 
 /*************************************************/

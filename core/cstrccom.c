@@ -768,7 +768,7 @@ void GetConstructListFunction(
       /* Only symbols are valid module names. */
       /*======================================*/
 
-      if (! UDFGetFirstArgument(context,SYMBOL_TYPE,&result))
+      if (! UDFFirstArgument(context,SYMBOL_TYPE,&result))
         {
          EnvSetMultifieldErrorValue(theEnv,returnValue);
          ExpectedTypeError1(theEnv,functionName,1,"defmodule name");
@@ -1013,7 +1013,7 @@ void ListConstructCommand(
       /* Only symbols are valid module names. */
       /*======================================*/
 
-      if (! UDFGetFirstArgument(context,SYMBOL_TYPE,&result))
+      if (! UDFFirstArgument(context,SYMBOL_TYPE,&result))
         {
          ExpectedTypeError1(theEnv,functionName,1,"defmodule name");
          return;

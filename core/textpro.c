@@ -1019,17 +1019,19 @@ static FILE *FindTopicInEntries(void *,const char *,struct topics *,char **,int 
 /*          returns a (float) boolean flag indicating failure or success.  */
 /***************************************************************************/
 void FetchCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    int load_ct;          /*Number of entries loaded */
-   DATA_OBJECT arg_ptr;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
-   if (EnvArgTypeCheck(theEnv,"fetch",1,SYMBOL_OR_STRING,&arg_ptr) == false)
-      return;
-   load_ct = TextLookupFetch(theEnv,DOToString(arg_ptr));
+   CVSetBoolean(returnValue,false);
+ 
+   if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
+     { return; }
+     
+   load_ct = TextLookupFetch(theEnv,CVToString(&theArg));
    if (load_ct <= 0)
      {
       if (load_ct == 0)
@@ -1040,8 +1042,8 @@ void FetchCommand(
 
       return;
      }
-   result->type = INTEGER;
-   result->value = (void *) EnvAddLong(theEnv,(long long) load_ct);
+     
+   CVSetInteger(returnValue,load_ct);
   }
 
 /******************************************************************************/
@@ -1061,8 +1063,9 @@ void FetchCommand(
 /*                                                                            */
 /* For usage, see the external documentation.                                 */
 /******************************************************************************/
-bool PrintRegionCommand(
-  void *theEnv)
+void PrintRegionCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct topics *params,    /*Lookup file and list of topic requests  */
                  *tptr;      /*Used in deallocating the parameter list */
@@ -1071,6 +1074,7 @@ bool PrintRegionCommand(
    char *menu[1];            /*Buffer for the current menu name        */
    int status;               /*Lookup status return code               */
    bool com_code;            /*Completion flag                         */
+   Environment *theEnv = UDFContextEnvironment(context);
 
    params = GetCommandLineTopics(theEnv);
    fp = FindTopicInEntries(theEnv,params->next->name,params->next->next,menu,&status);
@@ -1105,14 +1109,16 @@ bool PrintRegionCommand(
       params = params->next;
       rm(theEnv,(void *) tptr,(int) sizeof(struct topics));
      }
-   return(com_code);
+     
+   CVSetBoolean(returnValue,com_code);
   }
 
 /******************************************************************************/
 /*FUNCTION GetRegionCommand : (H/L functionget-region)                 */
 /******************************************************************************/
-void *GetRegionCommand(
-  void *theEnv)
+void GetRegionCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct topics *params,    /*Lookup file and list of topic requests  */
                  *tptr;      /*Used in deallocating the parameter list */
@@ -1121,10 +1127,10 @@ void *GetRegionCommand(
    char *menu[1];            /*Buffer for the current menu name        */
    int status;               /*Lookup status return code               */
    char *theString = NULL;
-   void *theResult;
    size_t oldPos = 0;
    size_t oldMax = 0;
    size_t sLength;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    params = GetCommandLineTopics(theEnv);
    fp = FindTopicInEntries(theEnv,params->name,params->next,menu,&status);
@@ -1156,7 +1162,7 @@ void *GetRegionCommand(
      }
 
    if (theString == NULL)
-     { theResult = EnvAddSymbol(theEnv,""); }
+     { CVSetString(returnValue,""); }
    else
      {
       sLength = strlen(theString);
@@ -1165,13 +1171,11 @@ void *GetRegionCommand(
 		   ||
            ((theString[sLength-1] == '\n') && (theString[sLength-2] == '\r'))))
         { theString[sLength-2] = 0; }
-      theResult = EnvAddSymbol(theEnv,theString);
+      CVSetString(returnValue,theString);
      }
 
    if (theString != NULL)
      { genfree(theEnv,theString,oldMax); }
-
-   return(theResult);
   }
 
 /***************************************************************************/
@@ -1181,17 +1185,22 @@ void *GetRegionCommand(
 /* Output : This function deletes the named file from the lookup table and */
 /*          returns a (float) boolean flag indicating failure or success.  */
 /***************************************************************************/
-bool TossCommand(
-  void *theEnv)
+void TossCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *file;   /*Name of the file */
-   DATA_OBJECT arg_ptr;
+   CLIPSValue value;
 
-   if (EnvArgTypeCheck(theEnv,"toss",1,SYMBOL_OR_STRING,&arg_ptr) == false)
-     return (false);
-   file = DOToString(arg_ptr);
+   if (! UDFFirstArgument(context,LEXEME_TYPES,&value))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+   
+   file = CVToString(&value);
 
-   return(TextLookupToss(theEnv,file));
+   CVSetBoolean(returnValue,TextLookupToss(UDFContextEnvironment(context),file));
   }
 
 #endif
@@ -1325,10 +1334,10 @@ void HelpFunctionDefinitions(
    AllocateEnvironmentData(theEnv,TEXTPRO_DATA,sizeof(struct textProcessingData),DeallocateTextProcessingData);
 #if ! RUN_TIME
 #if TEXTPRO_FUNCTIONS
-   EnvDefineFunction2(theEnv,"fetch",'u', PTIEF FetchCommand,"FetchCommand","11k");
-   EnvDefineFunction2(theEnv,"toss",'b', PTIEF TossCommand,"TossCommand","11k");
-   EnvDefineFunction2(theEnv,"print-region",'b', PTIEF PrintRegionCommand,"PrintRegionCommand","2**wk");
-   EnvDefineFunction2(theEnv,"get-region",'s', PTIEF GetRegionCommand,"GetRegionCommand","1**k");
+   EnvAddUDF(theEnv,"fetch",BOOLEAN_TYPE | INTEGER_TYPE, FetchCommand,"FetchCommand",1,1,"sy" ,NULL);
+   EnvAddUDF(theEnv,"toss",BOOLEAN_TYPE,  TossCommand,"TossCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"print-region",BOOLEAN_TYPE,  PrintRegionCommand,"PrintRegionCommand",2,UNBOUNDED, "*;y;sy",NULL);
+   EnvAddUDF(theEnv,"get-region",STRING_TYPE, GetRegionCommand,"GetRegionCommand",1,UNBOUNDED, "*;sy", NULL);
 #endif
 #endif
   }

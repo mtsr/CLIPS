@@ -64,7 +64,7 @@
    bool                           EnvSaveFactsDriver(void *,const char *,int,struct expr *);
    bool                           EnvLoadFacts(void *,const char *);
    bool                           EnvLoadFactsFromString(void *,const char *,long);
-   long long                      FactIndexFunction(void *);
+   void                           FactIndexFunction(UDFContext *,CLIPSValue *);
 
 #endif /* _H_factcom */
 

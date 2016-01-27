@@ -189,15 +189,16 @@ void SetupMessageHandlers(
    EnvDefineFunction2(theEnv,"send",'u',PTIEF SendCommand,"SendCommand","2*uuw");
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"preview-send",'v',PTIEF PreviewSendCommand,"PreviewSendCommand","22w");
+   EnvAddUDF(theEnv,"preview-send",VOID_TYPE, PreviewSendCommand,"PreviewSendCommand",2,2,"y",NULL);
 
-   EnvDefineFunction2(theEnv,"ppdefmessage-handler",'v',PTIEF PPDefmessageHandlerCommand,
-                  "PPDefmessageHandlerCommand","23w");
-   EnvDefineFunction2(theEnv,"list-defmessage-handlers",'v',PTIEF ListDefmessageHandlersCommand,
-                  "ListDefmessageHandlersCommand","02w");
+   EnvAddUDF(theEnv,"ppdefmessage-handler",VOID_TYPE, PPDefmessageHandlerCommand,
+                  "PPDefmessageHandlerCommand",2,3,"y",NULL);
+   EnvAddUDF(theEnv,"list-defmessage-handlers",VOID_TYPE, ListDefmessageHandlersCommand,
+                  "ListDefmessageHandlersCommand",0,2,"y",NULL);
 #endif
 
-   EnvDefineFunction2(theEnv,"next-handlerp",'b',PTIEF NextHandlerAvailable,"NextHandlerAvailable","00");
+   EnvAddUDF(theEnv,"next-handlerp",BOOLEAN_TYPE, NextHandlerAvailableFunction,
+                    "NextHandlerAvailableFunction",0,0,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"next-handlerp",true,false);
    EnvDefineFunction2(theEnv,"call-next-handler",'u',
                   PTIEF CallNextHandler,"CallNextHandler","00");
@@ -572,26 +573,32 @@ bool EnvUndefmessageHandler(
   NOTES        : H/L Syntax: (ppdefmessage-handler <class> <message> [<type>])
  *******************************************************************************/
 void PPDefmessageHandlerCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    SYMBOL_HN *csym,*msym;
    const char *tname;
    DEFCLASS *cls = NULL;
    unsigned mtype;
    HANDLER *hnd;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgTypeCheck(theEnv,"ppdefmessage-handler",1,SYMBOL,&temp) == false)
-     return;
-   csym = FindSymbolHN(theEnv,DOToString(temp));
-   if (EnvArgTypeCheck(theEnv,"ppdefmessage-handler",2,SYMBOL,&temp) == false)
-     return;
-   msym = FindSymbolHN(theEnv,DOToString(temp));
-   if (EnvRtnArgCount(theEnv) == 3)
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     { return; }
+     
+   csym = FindSymbolHN(theEnv,CVToString(&theArg));
+   
+   if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
+     { return; }
+     
+   msym = FindSymbolHN(theEnv,CVToString(&theArg));
+   
+   if (UDFHasNextArgument(context))
      {
-      if (EnvArgTypeCheck(theEnv,"ppdefmessage-handler",3,SYMBOL,&temp) == false)
-        return;
-      tname = DOToString(temp);
+      if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
+        { return; }
+      tname = CVToString(&theArg);
      }
    else
      tname = MessageHandlerData(theEnv)->hndquals[MPRIMARY];
@@ -631,12 +638,14 @@ void PPDefmessageHandlerCommand(
   NOTES        : H/L Syntax: (list-defmessage-handlers [<class> [inherit]]))
  *****************************************************************************/
 void ListDefmessageHandlersCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    bool inhp;
    bool *clsptr;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if (EnvRtnArgCount(theEnv) == 0)
+   if (UDFArgumentCount(context) == 0)
      EnvListDefmessageHandlers(theEnv,WDISPLAY,NULL,0);
    else
      {
@@ -657,26 +666,32 @@ void ListDefmessageHandlersCommand(
   NOTES        : H/L Syntax: (preview-send <class> <msg>)
  ********************************************************************/
 void PreviewSendCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *cls;
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /* =============================
       Get the class for the message
       ============================= */
-   if (EnvArgTypeCheck(theEnv,"preview-send",1,SYMBOL,&temp) == false)
-     return;
-   cls = LookupDefclassByMdlOrScope(theEnv,DOToString(temp));
+   
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     { return; }
+
+   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   
    if (cls == NULL)
      {
-      ClassExistError(theEnv,"preview-send",ValueToString(temp.value));
+      ClassExistError(theEnv,"preview-send",CVToString(&theArg));
       return;
      }
 
-   if (EnvArgTypeCheck(theEnv,"preview-send",2,SYMBOL,&temp) == false)
-     return;
-   EnvPreviewSend(theEnv,WDISPLAY,(void *) cls,DOToString(temp));
+   if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
+     { return; }
+
+   EnvPreviewSend(theEnv,WDISPLAY,(void *) cls,CVToString(&theArg));
   }
 
 /********************************************************

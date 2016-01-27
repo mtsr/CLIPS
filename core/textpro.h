@@ -52,10 +52,10 @@
 #define _H_textpro
 
 #if TEXTPRO_FUNCTIONS
-   void                           FetchCommand(void *,DATA_OBJECT *);
-   bool                           PrintRegionCommand(void *);
-   void                          *GetRegionCommand(void *);
-   bool                           TossCommand(void *);
+   void                           FetchCommand(UDFContext *,CLIPSValue *);
+   void                           PrintRegionCommand(UDFContext *,CLIPSValue *);
+   void                           GetRegionCommand(UDFContext *,CLIPSValue *);
+   void                           TossCommand(UDFContext *,CLIPSValue *);
 #endif
 
    void                           HelpFunctionDefinitions(void *);

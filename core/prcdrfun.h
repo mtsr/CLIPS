@@ -68,7 +68,7 @@ struct procedureFunctionData
    void                           BindFunction(void *,DATA_OBJECT_PTR);
    void                           PrognFunction(void *,DATA_OBJECT_PTR);
    void                           ReturnFunction(void *,DATA_OBJECT_PTR);
-   void                           BreakFunction(void *);
+   void                           BreakFunction(UDFContext *,CLIPSValue *);
    void                           SwitchFunction(void *,DATA_OBJECT_PTR);
    bool                           GetBoundVariable(void *,struct dataObject *,struct symbolHashNode *);
    void                           FlushBindList(void *);

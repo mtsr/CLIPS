@@ -85,14 +85,14 @@ struct profileFunctionData
 #define ProfileFunctionData(theEnv) ((struct profileFunctionData *) GetEnvironmentData(theEnv,PROFLFUN_DATA))
 
    void                           ConstructProfilingFunctionDefinitions(void *);
-   void                           ProfileCommand(void *);
-   void                           ProfileInfoCommand(void *);
+   void                           ProfileCommand(UDFContext *,CLIPSValue *);
+   void                           ProfileInfoCommand(UDFContext *,CLIPSValue *);
    void                           StartProfile(void *,
                                                       struct profileFrameInfo *,
                                                       struct userData **,
                                                       bool);
    void                           EndProfile(void *,struct profileFrameInfo *);
-   void                           ProfileResetCommand(void *);
+   void                           ProfileResetCommand(UDFContext *,CLIPSValue *);
    void                           ResetProfileInfo(struct constructProfileInfo *);
 
    double                         SetProfilePercentThresholdCommand(void *);

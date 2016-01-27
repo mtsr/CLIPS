@@ -99,7 +99,7 @@ void SetResetGlobalsCommand(
    /* Determine the new value of the attribute. */
    /*===========================================*/
 
-   UDFGetFirstArgument(context,ANY_TYPE,&result);
+   UDFFirstArgument(context,ANY_TYPE,&result);
    
    if (CVIsFalseSymbol(&result))
      { EnvSetResetGlobals(theEnv,false); }

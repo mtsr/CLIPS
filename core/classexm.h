@@ -49,9 +49,9 @@
 
 #if DEBUGGING_FUNCTIONS
 
-   void                           BrowseClassesCommand(void *);
+   void                           BrowseClassesCommand(UDFContext *,CLIPSValue *);
    void                           EnvBrowseClasses(void *,const char *,void *);
-   void                           DescribeClassCommand(void *);
+   void                           DescribeClassCommand(UDFContext *,CLIPSValue *);
    void                           EnvDescribeClass(void *,const char *,void *);
 
 #endif /* DEBUGGING_FUNCTIONS */

@@ -718,7 +718,7 @@ const char *GetConstructName(
   {
    CLIPSValue result;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&result))
+   if (! UDFFirstArgument(context,ANY_TYPE,&result))
      { return(NULL); }
 
    if (! CVIsType(&result,SYMBOL_TYPE))

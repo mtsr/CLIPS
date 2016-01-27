@@ -64,6 +64,8 @@ typedef struct messageHandlerLink
    DATA_OBJECT     *GetNthMessageArgument(void *,int);
 
    bool             NextHandlerAvailable(void *);
+   void             NextHandlerAvailableFunction(UDFContext *,CLIPSValue *);
+
    void             CallNextHandler(void *,DATA_OBJECT *);
 
    void             FindApplicableOfName(void *,DEFCLASS *,HANDLER_LINK *[],

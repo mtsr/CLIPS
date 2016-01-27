@@ -117,25 +117,27 @@ static const char *ConstraintCode(CONSTRAINT_RECORD *,unsigned,unsigned);
   NOTES        : Syntax : (browse-classes [<class>])
  ****************************************************************/
 void BrowseClassesCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    register DEFCLASS *cls;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvRtnArgCount(theEnv) == 0)
+   if (UDFArgumentCount(context) == 0)
       /* ================================================
          Find the OBJECT root class (has no superclasses)
          ================================================ */
       cls = LookupDefclassByMdlOrScope(theEnv,OBJECT_TYPE_NAME);
    else
      {
-      DATA_OBJECT tmp;
+      CLIPSValue theArg;
 
-      if (EnvArgTypeCheck(theEnv,"browse-classes",1,SYMBOL,&tmp) == false)
+      if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
         return;
-      cls = LookupDefclassByMdlOrScope(theEnv,DOToString(tmp));
+      cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
       if (cls == NULL)
         {
-         ClassExistError(theEnv,"browse-classes",DOToString(tmp));
+         ClassExistError(theEnv,"browse-classes",CVToString(&theArg));
          return;
         }
      }
@@ -170,10 +172,12 @@ void EnvBrowseClasses(
   NOTES        : Syntax : (describe-class <class-name>)
  ****************************************************************/
 void DescribeClassCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *cname;
    DEFCLASS *cls;
+   Environment *theEnv = UDFContextEnvironment(context);
    
    cname = GetClassNameArgument(theEnv,"describe-class");
    if (cname == NULL)

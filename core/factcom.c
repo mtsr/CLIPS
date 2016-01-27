@@ -130,7 +130,7 @@ void FactCommandDefinitions(
 
    EnvDefineFunction2(theEnv,"save-facts", 'b', PTIEF SaveFactsCommand, "SaveFactsCommand", "1*wk");
    EnvDefineFunction2(theEnv,"load-facts", 'b', PTIEF LoadFactsCommand, "LoadFactsCommand", "11k");
-   EnvDefineFunction2(theEnv,"fact-index", 'g', PTIEF FactIndexFunction,"FactIndexFunction", "11y");
+   EnvAddUDF(theEnv,"fact-index", INTEGER_TYPE, FactIndexFunction,"FactIndexFunction", 1,1,"f",NULL);
 
    AddFunctionParser(theEnv,"assert",AssertParse);
    FuncSeqOvlFlags(theEnv,"assert",false,false);
@@ -456,31 +456,20 @@ bool GetFactDuplicationCommand(
 /* FactIndexFunction: H/L access routine   */
 /*   for the fact-index function.          */
 /*******************************************/
-long long FactIndexFunction(
-  void *theEnv)
+void FactIndexFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (EnvArgCountCheck(theEnv,"fact-index",EXACTLY,1) == -1) return(-1LL);
-
-   /*========================*/
-   /* Evaluate the argument. */
-   /*========================*/
-
-   EnvRtnUnknown(theEnv,1,&item);
+   CLIPSValue theArg;
 
    /*======================================*/
    /* The argument must be a fact address. */
    /*======================================*/
 
-   if (GetType(item) != FACT_ADDRESS)
+   if (! UDFFirstArgument(context,FACT_ADDRESS_TYPE,&theArg))
      {
-      ExpectedTypeError1(theEnv,"fact-index",1,"fact-address");
-      return(-1L);
+      CVSetInteger(returnValue,-1L);
+      return;
      }
 
    /*================================================*/
@@ -489,9 +478,13 @@ long long FactIndexFunction(
    /* return -1 for the fact index.                  */
    /*================================================*/
 
-   if (((struct fact *) GetValue(item))->garbage) return(-1LL);
+   if (((struct fact *) GetValue(theArg))->garbage)
+     {
+      CVSetInteger(returnValue,-1L);
+      return;
+     }
 
-   return (EnvFactIndex(theEnv,GetValue(item)));
+   CVSetInteger(returnValue,EnvFactIndex(UDFContextEnvironment(context),GetValue(theArg)));
   }
 
 #if DEBUGGING_FUNCTIONS

@@ -208,8 +208,8 @@ struct defmoduleData
    void                           SetModuleItem(void *,struct defmodule *,int,void *);
    void                          *EnvGetCurrentModule(void *);
    void                          *EnvSetCurrentModule(void *,void *);
-   void                          *GetCurrentModuleCommand(void *);
-   void                          *SetCurrentModuleCommand(void *);
+   void                           GetCurrentModuleCommand(UDFContext *,CLIPSValue *);
+   void                           SetCurrentModuleCommand(UDFContext *,CLIPSValue *);
    int                            GetNumberOfModuleItems(void *);
    void                           CreateMainModule(void *);
    void                           SetListOfDefmodules(void *,void *);

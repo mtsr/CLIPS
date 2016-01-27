@@ -82,7 +82,7 @@ void InitializeDefaultRouters(
    RouterData(theEnv)->AwaitingInput = true;
    
 #if (! RUN_TIME)
-   EnvDefineFunction2(theEnv,"exit",    'v', PTIEF ExitCommand,    "ExitCommand", "*1i");
+   EnvAddUDF(theEnv,"exit",    VOID_TYPE, ExitCommand,    "ExitCommand", 0,1,"l",NULL);
 #endif
    InitializeFileRouter(theEnv);
    InitializeStringRouter(theEnv);
@@ -327,17 +327,22 @@ int EnvUngetcRouter(
 /* ExitCommand: H/L command for exiting the program. */
 /*****************************************************/
 void ExitCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    int argCnt;
    int status;
+   CLIPSValue value;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if ((argCnt = EnvArgCountCheck(theEnv,"exit",NO_MORE_THAN,1)) == -1) return;
+   argCnt = UDFArgumentCount(context);
    if (argCnt == 0)
      { EnvExitRouter(theEnv,EXIT_SUCCESS); }
    else
     {
-     status = (int) EnvRtnLong(theEnv,1);
+     if (! UDFFirstArgument(context,INTEGER_TYPE,&value))
+       { EnvExitRouter(theEnv,EXIT_SUCCESS); }
+     status = (int) CVToInteger(&value);
      if (EnvGetEvaluationError(theEnv)) return;
      EnvExitRouter(theEnv,status);
     }

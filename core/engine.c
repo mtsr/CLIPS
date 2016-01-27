@@ -1018,7 +1018,7 @@ void RunCommand(
      { runLimit = -1LL; }
    else if (numArgs == 1)
      {
-      if (! UDFGetFirstArgument(context,INTEGER_TYPE,&argument)) return;
+      if (! UDFFirstArgument(context,INTEGER_TYPE,&argument)) return;
       runLimit = CVToInteger(&argument);
      }
 
@@ -1156,7 +1156,7 @@ void SetBreakCommand(
    void *defrulePtr;
    void *theEnv = UDFContextEnvironment(context);
 
-   if (UDFGetFirstArgument(context,SYMBOL_TYPE,&value) == false) return;
+   if (UDFFirstArgument(context,SYMBOL_TYPE,&value) == false) return;
 
    argument = CVToString(&value);
 
@@ -1174,25 +1174,23 @@ void SetBreakCommand(
 /*   for the remove-break command.          */
 /********************************************/
 void RemoveBreakCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT argPtr;
+   CLIPSValue value;
    const char *argument;
-   int nargs;
    void *defrulePtr;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if ((nargs = EnvArgCountCheck(theEnv,"remove-break",NO_MORE_THAN,1)) == -1)
-     { return; }
-
-   if (nargs == 0)
+   if (UDFArgumentCount(context) == 0)
      {
       RemoveAllBreakpoints(theEnv);
       return;
      }
 
-   if (EnvArgTypeCheck(theEnv,"remove-break",1,SYMBOL,&argPtr) == false) return;
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&value)) return;
 
-   argument = DOToString(argPtr);
+   argument = CVToString(&value);
 
    if ((defrulePtr = EnvFindDefrule(theEnv,argument)) == NULL)
      {
@@ -1340,31 +1338,42 @@ void EnvGetFocusStack(
 /* PopFocusFunction: H/L access routine   */
 /*   for the pop-focus function.          */
 /******************************************/
-void *PopFocusFunction(
-  void *theEnv)
+void PopFocusFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct defmodule *theModule;
-
-   EnvArgCountCheck(theEnv,"pop-focus",EXACTLY,0);
+   Environment *theEnv = UDFContextEnvironment(context);
 
    theModule = (struct defmodule *) EnvPopFocus(theEnv);
-   if (theModule == NULL) return((SYMBOL_HN *) EnvFalseSymbol(theEnv));
-   return(theModule->name);
+   if (theModule == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+     
+   CVSetCLIPSSymbol(returnValue,theModule->name);
   }
 
 /******************************************/
 /* GetFocusFunction: H/L access routine   */
 /*   for the get-focus function.          */
 /******************************************/
-void *GetFocusFunction(
-  void *theEnv)
+void GetFocusFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct defmodule *rv;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   EnvArgCountCheck(theEnv,"get-focus",EXACTLY,0);
    rv = (struct defmodule *) EnvGetFocus(theEnv);
-   if (rv == NULL) return((SYMBOL_HN *) EnvFalseSymbol(theEnv));
-   return(rv->name);
+   if (rv == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+
+   CVSetCLIPSSymbol(returnValue,rv->name);
   }
 
 /*********************************/
@@ -1383,37 +1392,38 @@ void *EnvGetFocus(
 /* FocusCommand: H/L access routine   */
 /*   for the focus function.          */
 /**************************************/
-bool FocusCommand(
-  void *theEnv)
+void FocusCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT argPtr;
+   CLIPSValue theArg;
    const char *argument;
    struct defmodule *theModule;
    int argCount, i;
-
-   /*=====================================================*/
-   /* Check for the correct number and type of arguments. */
-   /*=====================================================*/
-
-   if ((argCount = EnvArgCountCheck(theEnv,"focus",AT_LEAST,1)) == -1)
-     { return(false); }
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===========================================*/
    /* Focus on the specified defrule module(s). */
    /*===========================================*/
 
+   argCount = UDFArgumentCount(context);
+   
    for (i = argCount; i > 0; i--)
      {
-      if (EnvArgTypeCheck(theEnv,"focus",i,SYMBOL,&argPtr) == false)
-        { return(false); }
+      if (! UDFNthArgument(context,i,SYMBOL_TYPE,&theArg))
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
 
-      argument = DOToString(argPtr);
+      argument = CVToString(&theArg);
       theModule = (struct defmodule *) EnvFindDefmodule(theEnv,argument);
 
       if (theModule == NULL)
         {
          CantFindItemErrorMessage(theEnv,"defmodule",argument);
-         return(false);
+         CVSetBoolean(returnValue,false);
+         return;
         }
 
       EnvFocus(theEnv,(void *) theModule);
@@ -1423,7 +1433,7 @@ bool FocusCommand(
    /* Return true to indicate success of focus command. */
    /*===================================================*/
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /***********************************************************************/

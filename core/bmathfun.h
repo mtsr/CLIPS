@@ -35,11 +35,11 @@
 #include "evaluatn.h"
 
    void                    BasicMathFunctionDefinitions(void *);
-   void                    AdditionFunction(void *,DATA_OBJECT_PTR);
-   void                    MultiplicationFunction(void *,DATA_OBJECT_PTR);
-   void                    SubtractionFunction(void *,DATA_OBJECT_PTR);
-   void                    DivisionFunction(void *,DATA_OBJECT_PTR);
-   long long               DivFunction(void *);
+   void                    AdditionFunction(UDFContext *,CLIPSValue *);
+   void                    MultiplicationFunction(UDFContext *,CLIPSValue *);
+   void                    SubtractionFunction(UDFContext *,CLIPSValue *);
+   void                    DivisionFunction(UDFContext *,CLIPSValue *);
+   void                    DivFunction(UDFContext *,CLIPSValue *);
    void                    IntegerFunction(UDFContext *,CLIPSValue *);
    void                    FloatFunction(UDFContext *,CLIPSValue *);
    void                    AbsFunction(UDFContext *,CLIPSValue *);

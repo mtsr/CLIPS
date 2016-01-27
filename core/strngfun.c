@@ -110,7 +110,7 @@ void StringFunctionDefinitions(
    EnvDefineFunction2(theEnv,"sub-string", 's', PTIEF SubStringFunction, "SubStringFunction", "33*iij");
    EnvDefineFunction2(theEnv,"str-index", 'u', PTIEF StrIndexFunction, "StrIndexFunction", "22j");
    EnvDefineFunction2(theEnv,"eval", 'u', PTIEF EvalFunction, "EvalFunction", "11k");
-   EnvDefineFunction2(theEnv,"build", 'b', PTIEF BuildFunction, "BuildFunction", "11k");
+   EnvAddUDF(theEnv,"build", BOOLEAN_TYPE, BuildFunction, "BuildFunction", 1,1,"sy",NULL);
    EnvDefineFunction2(theEnv,"string-to-field", 'u', PTIEF StringToFieldFunction, "StringToFieldFunction", "11j");
 #else
 #if MAC_XCD
@@ -955,29 +955,27 @@ bool EnvEval(
 /* BuildFunction: H/L access routine   */
 /*   for the build function.           */
 /***************************************/
-bool BuildFunction(
-  void *theEnv)
+void BuildFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DATA_OBJECT theArg;
-
-   /*==============================================*/
-   /* Function build expects exactly one argument. */
-   /*==============================================*/
-
-   if (EnvArgCountCheck(theEnv,"build",EXACTLY,1) == -1) return(false);
 
    /*==================================================*/
    /* The argument should be of type SYMBOL or STRING. */
    /*==================================================*/
 
-   if (EnvArgTypeCheck(theEnv,"build",1,SYMBOL_OR_STRING,&theArg) == false)
-     { return(false); }
+   if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*======================*/
    /* Build the construct. */
    /*======================*/
 
-   return(EnvBuild(theEnv,DOToString(theArg)));
+   CVSetBoolean(returnValue,(EnvBuild(UDFContextEnvironment(context),CVToString(&theArg))));
   }
   
 /******************************/
@@ -1097,12 +1095,13 @@ bool EnvBuild(
 /* BuildFunction: This is the non-functional stub */
 /*   provided for use with a run-time version.    */
 /**************************************************/
-bool BuildFunction(
-  void *theEnv)
+void BuildFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function build does not work in run time modules.\n");
-   return(false);
+   CVSetBoolean(returnValue,false);
   }
 
 /******************************************************/

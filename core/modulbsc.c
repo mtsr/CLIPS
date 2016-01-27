@@ -72,7 +72,7 @@ void DefmoduleBasicCommands(
    EnvDefineFunction2(theEnv,"get-defmodule-list",'m',PTIEF EnvGetDefmoduleList,"EnvGetDefmoduleList","00");
 
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"list-defmodules",'v', PTIEF ListDefmodulesCommand,"ListDefmodulesCommand","00");
+   EnvAddUDF(theEnv,"list-defmodules",VOID_TYPE, ListDefmodulesCommand,"ListDefmodulesCommand",0,0,NULL,NULL);
    EnvAddUDF(theEnv,"ppdefmodule",VOID_TYPE,PPDefmoduleCommand,"PPDefmoduleCommand",1,1,"y",NULL);
 #endif
 #endif
@@ -230,11 +230,10 @@ bool PPDefmodule(
 /*   for the list-defmodules command.          */
 /***********************************************/
 void ListDefmodulesCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   if (EnvArgCountCheck(theEnv,"list-defmodules",EXACTLY,0) == -1) return;
-
-   EnvListDefmodules(theEnv,WDISPLAY);
+   EnvListDefmodules(UDFContextEnvironment(context),WDISPLAY);
   }
 
 /***************************************/

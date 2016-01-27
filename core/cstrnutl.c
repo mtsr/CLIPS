@@ -602,23 +602,7 @@ CONSTRAINT_RECORD *ArgumentTypeToConstraintRecord2(
      { rv->instanceNamesAllowed = true; }
    if (bitTypes & BOOLEAN_TYPE)
      { rv->symbolsAllowed = true; }
-   /*
-   if (bitTypes & NUMBER_TYPES)
-     {
-      rv->floatsAllowed = true;
-      rv->integersAllowed = true;
-     }
-   if (bitTypes & LEXEME_TYPES)
-     {
-      rv->symbolsAllowed = true;
-      rv->stringsAllowed = true;
-     }
-   if (bitTypes & INSTANCE_TYPES)
-     {
-      rv->instanceAddressesAllowed = true;
-      rv->instanceNamesAllowed = true;
-     }
-   */
+
    return(rv);
   }
 

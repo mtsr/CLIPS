@@ -266,6 +266,16 @@ DATA_OBJECT *GetNthMessageArgument(
    return(&ProceduralPrimitiveData(theEnv)->ProcParamArray[n]);
   }
 
+/********************************/
+/* NextHandlerAvailableFunction */
+/********************************/
+void NextHandlerAvailableFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CVSetBoolean(returnValue,NextHandlerAvailable(UDFContextEnvironment(context)));
+  }
+
 /*****************************************************
   NAME         : NextHandlerAvailable
   DESCRIPTION  : Determines if there the currently

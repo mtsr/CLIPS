@@ -525,6 +525,30 @@ void PopulateRestriction(
     *restriction = defaultRestriction;
    }
 
+/**********************/
+/* RestrictionExists: */
+/**********************/
+bool RestrictionExists(
+   const char *restrictionString,
+   int position)
+   {
+    int i = 0, currentPosition = 0;
+       
+    while (restrictionString[i] != '\0')
+      {
+       if (restrictionString[i] == ';')
+         {
+          if (currentPosition == position) return true;
+          currentPosition++;
+         }
+       i++;
+      }
+      
+    if (position == currentPosition) true;
+      
+    return false;
+   }
+
 /*****************************************************************/
 /* CheckExpressionAgainstRestrictions: Compares the arguments to */
 /*   a function to the set of restrictions for that function to  */

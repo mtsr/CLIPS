@@ -144,16 +144,16 @@ struct FunctionHash
 
    int                            UDFArgumentCount(UDFContext *);
    int                            UDFArgCountCheck(UDFContext *);
-   bool                           UDFArgTypeCheck(UDFContext *,int,unsigned,struct dataObject *);
+   bool                           UDFNthArgument(UDFContext *,int,unsigned,struct dataObject *);
    void                           UDFInvalidArgumentMessage(UDFContext *,int,const char *);
    Environment                   *UDFContextEnvironment(UDFContext *);
    void                          *UDFContextUserContext(UDFContext *);
    const char                    *UDFContextFunctionName(UDFContext *);
    void                           PrintTypesString(void *,const char *,unsigned,bool);
-   bool                           UDFGetFirstArgument(UDFContext *,unsigned,CLIPSValue *);
-   bool                           UDFGetNextArgument(UDFContext *,unsigned,CLIPSValue *);
+   bool                           UDFFirstArgument(UDFContext *,unsigned,CLIPSValue *);
+   bool                           UDFNextArgument(UDFContext *,unsigned,CLIPSValue *);
 
-#define UDFHasNextArg(context) (context->lastArg != NULL)
+#define UDFHasNextArgument(context) (context->lastArg != NULL)
 
 #endif /* _H_extnfunc */
 

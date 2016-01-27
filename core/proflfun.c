@@ -96,9 +96,9 @@ void ConstructProfilingFunctionDefinitions(
    ProfileFunctionData(theEnv)->OutputString = OUTPUT_STRING;
 
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"profile",'v', PTIEF ProfileCommand,"ProfileCommand","11w");
-   EnvDefineFunction2(theEnv,"profile-info",'v', PTIEF ProfileInfoCommand,"ProfileInfoCommand","01w");
-   EnvDefineFunction2(theEnv,"profile-reset",'v', PTIEF ProfileResetCommand,"ProfileResetCommand","00");
+   EnvAddUDF(theEnv,"profile",VOID_TYPE,  ProfileCommand,"ProfileCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"profile-info",VOID_TYPE,  ProfileInfoCommand,"ProfileInfoCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"profile-reset",VOID_TYPE,  ProfileResetCommand,"ProfileResetCommand",0,0,NULL,NULL);
 
    EnvDefineFunction2(theEnv,"set-profile-percent-threshold",'d',
                    PTIEF SetProfilePercentThresholdCommand,
@@ -149,19 +149,18 @@ void DeleteProfileData(
 /*   for the profile command.         */
 /**************************************/
 void ProfileCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *argument;
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
 
-   if (EnvArgCountCheck(theEnv,"profile",EXACTLY,1) == -1) return;
-   if (EnvArgTypeCheck(theEnv,"profile",1,SYMBOL,&theValue) == false) return;
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
+   argument = CVToString(&theValue);
 
-   argument = DOToString(theValue);
-
-   if (! Profile(theEnv,argument))
+   if (! Profile(UDFContextEnvironment(context),argument))
      {
-      ExpectedTypeError1(theEnv,"profile",1,"symbol with value constructs, user-functions, or off");
+      UDFInvalidArgumentMessage(context,1,"symbol with value constructs, user-functions, or off");
       return;
      }
 
@@ -229,29 +228,12 @@ bool Profile(
 /*   for the profile-info command.        */
 /******************************************/
 void ProfileInfoCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   int argCount;
-   DATA_OBJECT theValue;
+   Environment *theEnv = UDFContextEnvironment(context);
    char buffer[512];
    
-   /*===================================*/
-   /* The profile-info command expects  */
-   /* at most a single symbol argument. */
-   /*===================================*/
-
-   if ((argCount = EnvArgCountCheck(theEnv,"profile",NO_MORE_THAN,1)) == -1) return;
-
-   /*===========================================*/
-   /* The first profile-info argument indicates */
-   /* the field on which sorting is performed.  */
-   /*===========================================*/
-
-   if (argCount == 1)
-     {
-      if (EnvArgTypeCheck(theEnv,"profile",1,SYMBOL,&theValue) == false) return;
-     }
-
    /*==================================*/
    /* If code is still being profiled, */
    /* update the profile end time.     */
@@ -438,8 +420,10 @@ static bool OutputProfileInfo(
 /*   for the profile-reset command.        */
 /*******************************************/
 void ProfileResetCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = UDFContextEnvironment(context);
    struct FunctionDefinition *theFunction;
    int i;
 #if DEFFUNCTION_CONSTRUCT

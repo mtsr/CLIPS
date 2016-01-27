@@ -265,6 +265,11 @@ struct evaluationData
      (cv)->bitType = FLOAT_TYPE , \
      (cv)->type = FLOAT )
 
+#define CVSetString(cv,sv) \
+   ( (cv)->value = EnvAddSymbol(cv->environment,sv) , \
+     (cv)->bitType = STRING_TYPE, \
+     (cv)->type = STRING )
+
 #define CVSetSymbol(cv,sv) \
    ( (cv)->value = EnvAddSymbol(cv->environment,sv) , \
      (cv)->bitType = SYMBOL_TYPE, \
@@ -274,6 +279,8 @@ struct evaluationData
    ( (cv)->value = sv , \
      (cv)->bitType = SYMBOL_TYPE, \
      (cv)->type = SYMBOL )
+
+// TBD BOOLEAN_TYPE in CVSetBoolean?
 
 #define CVSetBoolean(cv,bv) \
    ( (cv)->value = (bv ? SymbolData((cv)->environment)->TrueSymbolHN : \

@@ -141,7 +141,7 @@ void MiscFunctionDefinitions(
    EnvAddUDF(theEnv,"gensym*",SYMBOL_TYPE, GensymStarFunction,"GensymStarFunction",0,0,NULL,NULL);
    EnvAddUDF(theEnv,"setgen", INTEGER_TYPE,SetgenFunction,    "SetgenFunction",    1,1,"l", NULL);
    
-   EnvDefineFunction2(theEnv,"system",           'v', PTIEF SystemCommand,       "SystemCommand", "1*k");
+   EnvAddUDF(theEnv,"system",     VOID_TYPE,  SystemCommand,       "SystemCommand", 1, UNBOUNDED , "sy" , NULL );
    EnvDefineFunction2(theEnv,"length",           'g', PTIEF LengthFunction,      "LengthFunction", "11q");
    EnvDefineFunction2(theEnv,"length$",          'g', PTIEF LengthFunction,      "LengthFunction", "11q");
    EnvDefineFunction2(theEnv,"time",             'd', PTIEF TimeFunction,        "TimeFunction", "00");
@@ -149,8 +149,8 @@ void MiscFunctionDefinitions(
    EnvDefineFunction2(theEnv,"gm-time",          'm', PTIEF GMTimeFunction,      "GMTimeFunction", "00");
 
    EnvDefineFunction2(theEnv,"random",           'g', PTIEF RandomFunction,      "RandomFunction", "02i");
-   EnvDefineFunction2(theEnv,"seed",             'v', PTIEF SeedFunction,        "SeedFunction", "11i");
-   EnvDefineFunction2(theEnv,"conserve-mem",     'v', PTIEF ConserveMemCommand,  "ConserveMemCommand", "11w");
+   EnvAddUDF(theEnv,"seed",          VOID_TYPE,  SeedFunction,        "SeedFunction", 1,1,"l", NULL);
+   EnvAddUDF(theEnv,"conserve-mem",     VOID_TYPE,  ConserveMemCommand,  "ConserveMemCommand", 1,1,"y",NULL);
    EnvDefineFunction2(theEnv,"release-mem",      'g', PTIEF ReleaseMemCommand,   "ReleaseMemCommand", "00");
 #if DEBUGGING_FUNCTIONS
    EnvDefineFunction2(theEnv,"mem-used",         'g', PTIEF MemUsedCommand,      "MemUsedCommand", "00");
@@ -159,7 +159,7 @@ void MiscFunctionDefinitions(
 
    EnvAddUDF(theEnv,"options", VOID_TYPE,OptionsCommand,    "OptionsCommand",    0,0,NULL, NULL);
 
-   EnvDefineFunction2(theEnv,"operating-system", 'w', PTIEF OperatingSystemFunction,"OperatingSystemFunction", "00");
+   EnvAddUDF(theEnv,"operating-system", SYMBOL_TYPE, OperatingSystemFunction,"OperatingSystemFunction", 0,0,NULL,NULL);
    EnvDefineFunction2(theEnv,"(expansion-call)", 'u', PTIEF ExpandFuncCall,      "ExpandFuncCall",NULL);
    EnvDefineFunction2(theEnv,"expand$",'u', PTIEF DummyExpandFuncMultifield,
                                            "DummyExpandFuncMultifield","11m");
@@ -174,12 +174,12 @@ void MiscFunctionDefinitions(
                    PTIEF GetFunctionRestrictions,"GetFunctionRestrictions","11w");
    EnvDefineFunction2(theEnv,"create$",     'm', PTIEF CreateFunction,  "CreateFunction", NULL);
    EnvDefineFunction2(theEnv,"mv-append",   'm', PTIEF CreateFunction,  "CreateFunction", NULL);
-   EnvDefineFunction2(theEnv,"apropos",   'v', PTIEF AproposCommand,  "AproposCommand", "11w");
+   EnvAddUDF(theEnv,"apropos",  VOID_TYPE, AproposCommand,  "AproposCommand", 1,1,"y",NULL);
    EnvDefineFunction2(theEnv,"get-function-list",   'm', PTIEF GetFunctionListFunction,  "GetFunctionListFunction", "00");
    EnvDefineFunction2(theEnv,"funcall",'u', PTIEF FuncallFunction,"FuncallFunction","1**k");
    EnvDefineFunction2(theEnv,"new",'u', PTIEF NewFunction,"NewFunction","1*uw");
    EnvDefineFunction2(theEnv,"call",'u', PTIEF CallFunction,"CallFunction","1*u");
-   EnvDefineFunction2(theEnv,"timer",'d', PTIEF TimerFunction,"TimerFunction","**");
+   EnvAddUDF(theEnv,"timer",FLOAT_TYPE,  TimerFunction,"TimerFunction",0,UNBOUNDED,NULL,NULL);
 #if DEFTEMPLATE_CONSTRUCT 
    EnvDefineFunction2(theEnv,"(slot-value)",'u', PTIEF SlotValueFunction,"SlotValueFunction", "22*zw");
 #endif
@@ -210,7 +210,7 @@ void SetgenFunction(
    /* Check to see that an integer argument is provided. */
    /*====================================================*/
 
-   if (! UDFArgTypeCheck(context,1,INTEGER_TYPE,returnValue))
+   if (! UDFNthArgument(context,1,INTEGER_TYPE,returnValue))
      {
       CVSetInteger(returnValue,MiscFunctionData(theEnv)->GensymNumber);
       return;
@@ -365,22 +365,23 @@ long long RandomFunction(
 /*   the seed function.                   */
 /******************************************/
 void SeedFunction(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
 
    /*==========================================================*/
    /* Check to see that a single integer argument is provided. */
    /*==========================================================*/
 
-   if (EnvArgCountCheck(theEnv,"seed",EXACTLY,1) == -1) return;
-   if (EnvArgTypeCheck(theEnv,"seed",1,INTEGER,&theValue) == false) return;
-
+   if (! UDFFirstArgument(context,INTEGER_TYPE,&theValue))
+     { return; }
+     
    /*=============================================================*/
    /* Seed the random number generator with the provided integer. */
    /*=============================================================*/
 
-   genseed((int) DOToLong(theValue));
+   genseed((int) CVToInteger(&theValue));
   }
 
 /********************************************/
@@ -451,20 +452,22 @@ long long ReleaseMemCommand(
 /*   for the conserve-mem command.        */
 /******************************************/
 void ConserveMemCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *argument;
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===================================*/
    /* The conserve-mem function expects */
    /* a single symbol argument.         */
    /*===================================*/
 
-   if (EnvArgCountCheck(theEnv,"conserve-mem",EXACTLY,1) == -1) return;
-   if (EnvArgTypeCheck(theEnv,"conserve-mem",1,SYMBOL,&theValue) == false) return;
-
-   argument = DOToString(theValue);
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue))
+     { return; }
+     
+   argument = CVToString(&theValue);
 
    /*====================================================*/
    /* If the argument is the symbol "on", then store the */
@@ -491,7 +494,7 @@ void ConserveMemCommand(
 
    else
      {
-      ExpectedTypeError1(theEnv,"conserve-mem",1,"symbol with value on or off");
+      UDFInvalidArgumentMessage(context,1,"symbol with value on or off");
       return;
      }
 
@@ -549,25 +552,27 @@ long long MemRequestsCommand(
 /*   for the apropos command.           */
 /****************************************/
 void AproposCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *argument;
    DATA_OBJECT argPtr;
    struct symbolHashNode *hashPtr = NULL;
    size_t theLength;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*=======================================================*/
    /* The apropos command expects a single symbol argument. */
    /*=======================================================*/
 
-   if (EnvArgCountCheck(theEnv,"apropos",EXACTLY,1) == -1) return;
-   if (EnvArgTypeCheck(theEnv,"apropos",1,SYMBOL,&argPtr) == false) return;
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&argPtr))
+     { return; }
 
    /*=======================================*/
    /* Determine the length of the argument. */
    /*=======================================*/
 
-   argument = DOToString(argPtr);
+   argument = CVToString(&argPtr);
    theLength = strlen(argument);
 
    /*====================================================================*/
@@ -822,44 +827,29 @@ EnvPrintRouter(theEnv,WDISPLAY,"Run time module is ");
 /* OperatingSystemFunction: H/L access routine */
 /*   for the operating system function.        */
 /***********************************************/
-void *OperatingSystemFunction(
-  void *theEnv)
+void OperatingSystemFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EnvArgCountCheck(theEnv,"operating-system",EXACTLY,0);
-
 #if GENERIC
-   return(EnvAddSymbol(theEnv,"UNKNOWN"));
+   CVSetSymbol(returnValue,"UNKNOWN");
+#elif UNIX_V
+   CVSetSymbol(returnValue,"UNIX-V");
+#elif UNIX_7
+   CVSetSymbol(returnValue,"UNIX-7");
+#elif LINUX
+   CVSetSymbol(returnValue,"LINUX");
+#elif DARWIN
+   CVSetSymbol(returnValue,"DARWIN");
+#elif MAC_XCD
+   CVSetSymbol(returnValue,"MAC-OS-X");
+#elif IBM && (! WINDOW_INTERFACE)
+   CVSetSymbol(returnValue,"DOS");
+#elif IBM && WINDOW_INTERFACE
+   CVSetSymbol(returnValue,"WINDOWS");
+#else
+   CVSetSymbol(returnValue,"UNKNOWN");
 #endif
-
-#if UNIX_V
-   return(EnvAddSymbol(theEnv,"UNIX-V"));
-#endif
-
-#if UNIX_7
-   return(EnvAddSymbol(theEnv,"UNIX-7"));
-#endif
-
-#if LINUX
-   return(EnvAddSymbol(theEnv,"LINUX"));
-#endif
-
-#if DARWIN
-   return(EnvAddSymbol(theEnv,"DARWIN"));
-#endif
-
-#if MAC_XCD
-   return(EnvAddSymbol(theEnv,"MAC-OS-X"));
-#endif
-
-#if IBM && (! WINDOW_INTERFACE)
-   return(EnvAddSymbol(theEnv,"DOS"));
-#endif
-
-#if IBM && WINDOW_INTERFACE
-   return(EnvAddSymbol(theEnv,"WINDOWS"));
-#endif
-
-   return(EnvAddSymbol(theEnv,"UNKNOWN"));
   }
   
 /********************************************************************
@@ -1095,9 +1085,14 @@ void *GetFunctionRestrictions(
   {
    DATA_OBJECT temp;
    struct FunctionDefinition *fptr;
+   SYMBOL_HN *returnString;
+   char *stringBuffer = NULL;
+   size_t bufferPosition = 0;
+   size_t bufferMaximum = 0;
 
    if (EnvArgTypeCheck(theEnv,"get-function-restrictions",1,SYMBOL,&temp) == false)
-     return((SYMBOL_HN *) EnvAddSymbol(theEnv,""));
+     { return((SYMBOL_HN *) EnvAddSymbol(theEnv,"")); }
+     
    fptr = FindFunction(theEnv,DOToString(temp));
    if (fptr == NULL)
      {
@@ -1105,9 +1100,48 @@ void *GetFunctionRestrictions(
       EnvSetEvaluationError(theEnv,true);
       return((SYMBOL_HN *) EnvAddSymbol(theEnv,""));
      }
-   if (fptr->restrictions == NULL)
-     return((SYMBOL_HN *) EnvAddSymbol(theEnv,"0**"));
-   return(fptr->restrictions);
+
+   if (fptr->returnValueType != 'z')
+     {
+      if (fptr->restrictions == NULL)
+        { return((SYMBOL_HN *) EnvAddSymbol(theEnv,"0**")); }
+     
+      return(fptr->restrictions);
+     }
+    
+   if (fptr->minArgs == UNBOUNDED)
+     {
+      stringBuffer = AppendToString(theEnv,"0",
+                                    stringBuffer,&bufferPosition,&bufferMaximum);
+     }
+   else
+     {
+      stringBuffer = AppendToString(theEnv,LongIntegerToString(theEnv,fptr->minArgs),
+                                    stringBuffer,&bufferPosition,&bufferMaximum);
+     }
+   
+   if (fptr->maxArgs == UNBOUNDED)
+     {
+      stringBuffer = AppendToString(theEnv,"*",
+                                    stringBuffer,&bufferPosition,&bufferMaximum);
+     }
+   else
+     {
+      stringBuffer = AppendToString(theEnv,LongIntegerToString(theEnv,fptr->maxArgs),
+                                    stringBuffer,&bufferPosition,&bufferMaximum);
+     }
+   
+   if (fptr->restrictions != NULL)
+     {
+      stringBuffer = AppendToString(theEnv,ValueToString(fptr->restrictions),
+                                    stringBuffer,&bufferPosition,&bufferMaximum);
+     }
+      
+   returnString = EnvAddSymbol(theEnv,stringBuffer);
+   
+   rm(theEnv,stringBuffer,bufferMaximum);
+   
+   return(returnString);
   }
 
 /*************************************************/
@@ -1607,25 +1641,20 @@ void GMTimeFunction(
 /* TimerFunction: H/L access routine   */
 /*   for the timer function.           */
 /***************************************/
-double TimerFunction(
-  void *theEnv)
+void TimerFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   int numa, i;
-   double startTime;
-   DATA_OBJECT returnValue;
+   CLIPSFloat startTime;
+   CLIPSValue theArg;
 
    startTime = gentime();
    
-   numa = EnvRtnArgCount(theEnv);
+   while (UDFHasNextArgument(context) &&
+          (! EnvGetHaltExecution(UDFContextEnvironment(context))))
+     { UDFNextArgument(context,ANY_TYPE,&theArg); }
 
-   i = 1;
-   while ((i <= numa) && (EnvGetHaltExecution(theEnv) != true))
-     {
-      EnvRtnUnknown(theEnv,i,&returnValue);
-      i++;
-     }
-
-   return(gentime() - startTime);
+   CVSetFloat(returnValue,gentime() - startTime);
   }
 
 /***************************************/
@@ -1633,39 +1662,27 @@ double TimerFunction(
 /*   for the system function.          */
 /***************************************/
 void SystemCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    char *commandBuffer = NULL;
    size_t bufferPosition = 0;
    size_t bufferMaximum = 0;
-   int numa, i;
-   DATA_OBJECT tempValue;
+   CLIPSValue tempValue;
    const char *theString;
-
-   /*===========================================*/
-   /* Check for the corret number of arguments. */
-   /*===========================================*/
-
-   if ((numa = EnvArgCountCheck(theEnv,"system",AT_LEAST,1)) == -1) return;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*============================================================*/
    /* Concatenate the arguments together to form a single string */
    /* containing the command to be sent to the operating system. */
    /*============================================================*/
 
-   for (i = 1 ; i <= numa; i++)
+   while (UDFHasNextArgument(context))
      {
-      EnvRtnUnknown(theEnv,i,&tempValue);
-      if ((GetType(tempValue) != STRING) &&
-          (GetType(tempValue) != SYMBOL))
-        {
-         EnvSetHaltExecution(theEnv,true);
-         EnvSetEvaluationError(theEnv,true);
-         ExpectedTypeError2(theEnv,"system",i);
-         return;
-        }
+      if (! UDFNextArgument(context,LEXEME_TYPES,&tempValue))
+        { return; }
 
-     theString = DOToString(tempValue);
+     theString = CVToString(&tempValue);
 
      commandBuffer = AppendToString(theEnv,theString,commandBuffer,&bufferPosition,&bufferMaximum);
     }
@@ -1683,8 +1700,6 @@ void SystemCommand(
    /*==================================================*/
 
    rm(theEnv,commandBuffer,bufferMaximum);
-
-   return;
   }
 
 /*****************************************/

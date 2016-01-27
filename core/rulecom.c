@@ -122,21 +122,21 @@ void DefruleCommands(
 #if ! RUN_TIME
    EnvAddUDF(theEnv,"run",VOID_TYPE, RunCommand,"RunCommand", 0,1,"l",NULL);
    EnvAddUDF(theEnv,"halt",VOID_TYPE, HaltCommand,"HaltCommand",0,0,NULL,NULL);
-   EnvDefineFunction2(theEnv,"focus",'b', PTIEF FocusCommand,"FocusCommand", "1*w");
+   EnvAddUDF(theEnv,"focus",BOOLEAN_TYPE,  FocusCommand,"FocusCommand",1,UNBOUNDED,"y", NULL);
    EnvAddUDF(theEnv,"clear-focus-stack",VOID_TYPE, ClearFocusStackCommand,
                                        "ClearFocusStackCommand",0,0,NULL,NULL);
    EnvDefineFunction2(theEnv,"get-focus-stack",'m',PTIEF GetFocusStackFunction,
                                      "GetFocusStackFunction","00");
-   EnvDefineFunction2(theEnv,"pop-focus",'w',PTIEF PopFocusFunction,
-                               "PopFocusFunction","00");
-   EnvDefineFunction2(theEnv,"get-focus",'w',PTIEF GetFocusFunction,
-                               "GetFocusFunction","00");
+   EnvAddUDF(theEnv,"pop-focus",SYMBOL_TYPE, PopFocusFunction,
+                               "PopFocusFunction",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"get-focus",SYMBOL_TYPE, GetFocusFunction,
+                               "GetFocusFunction",0,0,NULL,NULL);
 #if DEBUGGING_FUNCTIONS
    EnvAddUDF(theEnv,"set-break",VOID_TYPE, SetBreakCommand,
                                "SetBreakCommand",1,1,"y",NULL);
-   EnvDefineFunction2(theEnv,"remove-break",'v', PTIEF RemoveBreakCommand,
-                                  "RemoveBreakCommand", "*1w");
-   EnvAddUDF(theEnv,"show-breaks",'v', ShowBreaksCommand,
+   EnvAddUDF(theEnv,"remove-break",VOID_TYPE, RemoveBreakCommand,
+                                  "RemoveBreakCommand", 0,1,"y",NULL);
+   EnvAddUDF(theEnv,"show-breaks",VOID_TYPE, ShowBreaksCommand,
                                  "ShowBreaksCommand", 0,1,"y",NULL);
    EnvDefineFunction2(theEnv,"matches",'u',PTIEF MatchesCommand,"MatchesCommand","12w");
    EnvDefineFunction2(theEnv,"join-activity",'u',PTIEF JoinActivityCommand,"JoinActivityCommand","12w");
@@ -149,22 +149,22 @@ void DefruleCommands(
    EnvAddUDF(theEnv,"dependents",  VOID_TYPE,  DependentsCommand,
                                    "DependentsCommand", 1,1,"infly",NULL);
       
-   EnvDefineFunction2(theEnv,"timetag",   'g', PTIEF TimetagFunction,
-                                   "TimetagFunction", "11h"); // h = infly
+   EnvAddUDF(theEnv,"timetag",INTEGER_TYPE,TimetagFunction,
+                                   "TimetagFunction", 1,1,"infly" ,NULL);
 #endif /* DEBUGGING_FUNCTIONS */
 
-   EnvDefineFunction2(theEnv,"get-beta-memory-resizing",'b',
-                   PTIEF GetBetaMemoryResizingCommand,"GetBetaMemoryResizingCommand","00");
-   EnvDefineFunction2(theEnv,"set-beta-memory-resizing",'b',
-                   PTIEF SetBetaMemoryResizingCommand,"SetBetaMemoryResizingCommand","11");
+   EnvAddUDF(theEnv,"get-beta-memory-resizing",BOOLEAN_TYPE,
+                    GetBetaMemoryResizingCommand,"GetBetaMemoryResizingCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"set-beta-memory-resizing",BOOLEAN_TYPE,
+                    SetBetaMemoryResizingCommand,"SetBetaMemoryResizingCommand",1,1,NULL,NULL);
 
-   EnvDefineFunction2(theEnv,"get-strategy", 'w', PTIEF GetStrategyCommand,  "GetStrategyCommand", "00");
-   EnvDefineFunction2(theEnv,"set-strategy", 'w', PTIEF SetStrategyCommand,  "SetStrategyCommand", "11w");
+   EnvAddUDF(theEnv,"get-strategy", SYMBOL_TYPE, GetStrategyCommand,  "GetStrategyCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"set-strategy", SYMBOL_TYPE, SetStrategyCommand,  "SetStrategyCommand", 1,1,"y",NULL);
 
 #if DEVELOPER && (! BLOAD_ONLY)
    EnvAddUDF(theEnv,"rule-complexity",INTEGER_TYPE, RuleComplexityCommand,"RuleComplexityCommand", 1,1,"y",NULL);
    EnvAddUDF(theEnv,"show-joins",  VOID_TYPE, ShowJoinsCommand,    "ShowJoinsCommand", 1,1,"y",NULL);
-   EnvDefineFunction2(theEnv,"show-aht",   'v', PTIEF ShowAlphaHashTable,    "ShowAlphaHashTable", "00");
+   EnvAddUDF(theEnv,"show-aht",   VOID_TYPE, ShowAlphaHashTable,    "ShowAlphaHashTable", 0,0,NULL,NULL);
 #if DEBUGGING_FUNCTIONS
    AddWatchItem(theEnv,"rule-analysis",0,&DefruleData(theEnv)->WatchRuleAnalysis,0,NULL,NULL);
 #endif
@@ -208,55 +208,38 @@ bool EnvSetBetaMemoryResizing(
 /* SetBetaMemoryResizingCommand: H/L access routine */
 /*   for the set-beta-memory-resizing command.      */
 /****************************************************/
-bool SetBetaMemoryResizingCommand(
-  void *theEnv)
+void SetBetaMemoryResizingCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   bool oldValue;
-   DATA_OBJECT argPtr;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   oldValue = EnvGetBetaMemoryResizing(theEnv);
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (EnvArgCountCheck(theEnv,"set-beta-memory-resizing",EXACTLY,1) == -1)
-     { return(oldValue); }
+   CVSetBoolean(returnValue,EnvGetBetaMemoryResizing(theEnv));
 
    /*=================================================*/
    /* The symbol FALSE disables beta memory resizing. */
    /* Any other value enables beta memory resizing.   */
    /*=================================================*/
 
-   EnvRtnUnknown(theEnv,1,&argPtr);
-
-   if ((argPtr.value == EnvFalseSymbol(theEnv)) && (argPtr.type == SYMBOL))
+   if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
+     { return; }
+    
+   if (CVIsFalseSymbol(&theArg))
      { EnvSetBetaMemoryResizing(theEnv,false); }
    else
      { EnvSetBetaMemoryResizing(theEnv,true); }
-
-   /*=======================*/
-   /* Return the old value. */
-   /*=======================*/
-
-   return(oldValue);
   }
 
 /****************************************************/
 /* GetBetaMemoryResizingCommand: H/L access routine */
 /*   for the get-beta-memory-resizing command.      */
 /****************************************************/
-bool GetBetaMemoryResizingCommand(
-  void *theEnv)
+void GetBetaMemoryResizingCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   bool oldValue;
-
-   oldValue = EnvGetBetaMemoryResizing(theEnv);
-
-   if (EnvArgCountCheck(theEnv,"get-beta-memory-resizing",EXACTLY,0) == -1)
-     { return(oldValue); }
-
-   return(oldValue);
+   CVSetBoolean(returnValue,EnvGetBetaMemoryResizing(UDFContextEnvironment(context)));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -1315,19 +1298,22 @@ void JoinActivityResetCommand(
 /* TimetagFunction: H/L access routine */
 /*   for the timetag function.         */
 /***************************************/
-long long TimetagFunction(
-  void *theEnv)
+void TimetagFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT item;
+   CLIPSValue theArg;
    void *ptr;
 
-   if (EnvArgCountCheck(theEnv,"timetag",EXACTLY,1) == -1) return(-1LL);
+   ptr = GetFactOrInstanceArgument(UDFContextEnvironment(context),1,&theArg,"timetag");
 
-   ptr = GetFactOrInstanceArgument(theEnv,1,&item,"timetag");
+   if (ptr == NULL)
+     {
+      CVSetInteger(returnValue,-1LL);
+      return;
+     }
 
-   if (ptr == NULL) return(-1);
-
-   return ((struct patternEntity *) ptr)->timeTag;
+   CVSetInteger(returnValue,((struct patternEntity *) ptr)->timeTag);
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
@@ -1541,13 +1527,15 @@ static void ShowJoins(
 /*   in each slot of the alpha hash table.            */
 /******************************************************/
 void ShowAlphaHashTable(
-   void *theEnv)
+   UDFContext *context,
+   CLIPSValue *returnValue)
    {
     int i, count;
     long totalCount = 0;
     struct alphaMemoryHash *theEntry;
     struct partialMatch *theMatch;
     char buffer[40];
+    Environment *theEnv = UDFContextEnvironment(context);
 
     for (i = 0; i < ALPHA_MEMORY_HASH_SIZE; i++)
       {

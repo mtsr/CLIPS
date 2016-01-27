@@ -609,8 +609,8 @@ static void SetupDefclasses(
 #if DEBUGGING_FUNCTIONS
    EnvAddUDF(theEnv,"list-defclasses",VOID_TYPE,ListDefclassesCommand,"ListDefclassesCommand",0,1,"y",NULL);
    EnvAddUDF(theEnv,"ppdefclass",VOID_TYPE, PPDefclassCommand,"PPDefclassCommand",1,1,"y",NULL);
-   EnvDefineFunction2(theEnv,"describe-class",'v',PTIEF DescribeClassCommand,"DescribeClassCommand","11w");
-   EnvDefineFunction2(theEnv,"browse-classes",'v',PTIEF BrowseClassesCommand,"BrowseClassesCommand","01w");
+   EnvAddUDF(theEnv,"describe-class",VOID_TYPE, DescribeClassCommand,"DescribeClassCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"browse-classes",VOID_TYPE, BrowseClassesCommand,"BrowseClassesCommand",0,1,"y",NULL);
 #endif
 
    EnvAddUDF(theEnv,"get-defclass-list",MULTIFIELD_TYPE,GetDefclassListFunction,

@@ -36,7 +36,7 @@
    void                           SortFunctionDefinitions(void *);
    void                           MergeSort(void *,unsigned long,DATA_OBJECT *,
                                                    bool (*)(void *,DATA_OBJECT *,DATA_OBJECT *));
-   void                           SortFunction(void *,DATA_OBJECT *);
+   void                           SortFunction(UDFContext *,CLIPSValue *);
 
 #endif /* _H_sortfun */
 

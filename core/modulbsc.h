@@ -42,7 +42,7 @@
    void                           EnvGetDefmoduleList(void *,DATA_OBJECT_PTR);
    void                           PPDefmoduleCommand(UDFContext *,CLIPSValue *);
    bool                           PPDefmodule(void *,const char *,const char *);
-   void                           ListDefmodulesCommand(void *);
+   void                           ListDefmodulesCommand(UDFContext *,CLIPSValue *);
    void                           EnvListDefmodules(void *,const char *);
 
 #endif /* _H_modulbsc */

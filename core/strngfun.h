@@ -58,7 +58,7 @@
    void                          *SubStringFunction(void *);
    void                           StrIndexFunction(void *,DATA_OBJECT_PTR);
    void                           EvalFunction(void *,DATA_OBJECT_PTR);
-   bool                           BuildFunction(void *);
+   void                           BuildFunction(UDFContext *,CLIPSValue *);
    void                           StringToFieldFunction(void *,DATA_OBJECT *);
    void                           StringToField(void *,const char *,DATA_OBJECT *);
 

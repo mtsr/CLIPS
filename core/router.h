@@ -126,7 +126,7 @@ struct routerData
    FILE                          *GetFastLoad(void *);
    FILE                          *GetFastSave(void *);
    void                           UnrecognizedRouterMessage(void *,const char *);
-   void                           ExitCommand(void *);
+   void                           ExitCommand(UDFContext *,CLIPSValue *);
    int                            PrintNRouter(void *,const char *,const char *,unsigned long);
    size_t                         EnvInputBufferCount(void *);
    struct router                 *EnvFindRouter(void *,const char *);

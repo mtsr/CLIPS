@@ -144,10 +144,10 @@ struct engineData
    bool                    EnvDefruleHasBreakpoint(void *,void *);
    void                    RunCommand(UDFContext *,CLIPSValue *);
    void                    SetBreakCommand(UDFContext *,CLIPSValue *);
-   void                    RemoveBreakCommand(void *);
+   void                    RemoveBreakCommand(UDFContext *,CLIPSValue *);
    void                    ShowBreaksCommand(UDFContext *,CLIPSValue *);
    void                    HaltCommand(UDFContext *,CLIPSValue *);
-   bool                    FocusCommand(void *);
+   void                    FocusCommand(UDFContext *,CLIPSValue *);
    void                    ClearFocusStackCommand(UDFContext *,CLIPSValue *);
    void                    EnvClearFocusStack(void *);
    void                   *EnvGetNextFocus(void *,void *);
@@ -158,8 +158,8 @@ struct engineData
    void                    EnvListFocusStack(void *,const char *);
    void                    GetFocusStackFunction(void *,DATA_OBJECT_PTR);
    void                    EnvGetFocusStack(void *,DATA_OBJECT_PTR);
-   void                   *PopFocusFunction(void *);
-   void                   *GetFocusFunction(void *);
+   void                    PopFocusFunction(UDFContext *,CLIPSValue *);
+   void                    GetFocusFunction(UDFContext *,CLIPSValue *);
    void                   *EnvPopFocus(void *);
    void                   *EnvGetFocus(void *);
    bool                    EnvGetHaltRules(void *);

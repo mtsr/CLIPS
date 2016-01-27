@@ -95,9 +95,9 @@ struct messageHandlerData
    void             UndefmessageHandlerCommand(void *);
    bool             EnvUndefmessageHandler(void *,void *,int);
 #if DEBUGGING_FUNCTIONS
-   void             PPDefmessageHandlerCommand(void *);
-   void             ListDefmessageHandlersCommand(void *);
-   void             PreviewSendCommand(void *); 
+   void             PPDefmessageHandlerCommand(UDFContext *,CLIPSValue *);
+   void             ListDefmessageHandlersCommand(UDFContext *,CLIPSValue *);
+   void             PreviewSendCommand(UDFContext *,CLIPSValue *);
    const char      *EnvGetDefmessageHandlerPPForm(void *,void *,int);
    void             EnvListDefmessageHandlers(void *,const char *,void *,bool);
    void             EnvPreviewSend(void *,const char *,void *,const char *);

@@ -151,7 +151,7 @@ static bool SingleNumberCheck(
    /* Check that the argument is a number. */
    /*======================================*/
 
-   if (! UDFArgTypeCheck(context,1,NUMBER_TYPES,returnValue))
+   if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
      { return false; }
   
    return(true);
@@ -932,13 +932,13 @@ void PowFunction(
    /* Check for two numeric arguments. */
    /*==================================*/
 
-   if (! UDFArgTypeCheck(context,1,NUMBER_TYPES,&value1))
+   if (! UDFNthArgument(context,1,NUMBER_TYPES,&value1))
      {
       CVSetFloat(returnValue,0.0);
       return;
      }
 
-   if (! UDFArgTypeCheck(context,2,NUMBER_TYPES,&value2))
+   if (! UDFNthArgument(context,2,NUMBER_TYPES,&value2))
      {
       CVSetFloat(returnValue,0.0);
       return;
@@ -983,13 +983,13 @@ void ModFunction(
    /* Check for two numeric arguments. */
    /*==================================*/
    
-   if (! UDFArgTypeCheck(context,1,NUMBER_TYPES,&item1))
+   if (! UDFNthArgument(context,1,NUMBER_TYPES,&item1))
      {
       CVSetInteger(returnValue,0);
       return;
      }
 
-   if (! UDFArgTypeCheck(context,2,NUMBER_TYPES,&item2))
+   if (! UDFNthArgument(context,2,NUMBER_TYPES,&item2))
      {
       CVSetInteger(returnValue,0);
       return;
@@ -1117,7 +1117,7 @@ void RoundFunction(
    /* Check that the argument is a number. */
    /*======================================*/
 
-   if (! UDFArgTypeCheck(context,1,NUMBER_TYPES,returnValue))
+   if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
      {
       CVSetInteger(returnValue,0LL);
       return;

@@ -68,7 +68,7 @@ void SortFunctionDefinitions(
   {
    AllocateEnvironmentData(theEnv,SORTFUN_DATA,sizeof(struct sortFunctionData),DeallocateSortFunctionData);
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"sort",'u', PTIEF SortFunction,"SortFunction","1**w");
+   EnvAddUDF(theEnv,"sort",BOOLEAN_TYPE | MULTIFIELD_TYPE, SortFunction,"SortFunction",1,UNBOUNDED, "*;y",NULL);
 #endif
   }
 
@@ -112,8 +112,8 @@ static bool DefaultCompareSwapFunction(
 /*   for the rest$ function.        */
 /************************************/
 void SortFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    long argumentCount, i, j, k = 0;
    DATA_OBJECT *theArguments, *theArguments2;
@@ -123,6 +123,7 @@ void SortFunction(
    struct expr *functionReference;
    int argumentSize = 0;
    struct FunctionDefinition *fptr;
+   Environment *theEnv = UDFContextEnvironment(context);
 #if DEFFUNCTION_CONSTRUCT
    DEFFUNCTION *dptr;
 #endif
@@ -131,16 +132,8 @@ void SortFunction(
    /* Set up the default return value. */
    /*==================================*/
 
-   SetpType(returnValue,SYMBOL);
-   SetpValue(returnValue,EnvFalseSymbol(theEnv));
-
-   /*=============================================*/
-   /* The function expects at least one argument. */
-   /*=============================================*/
-
-   if ((argumentCount = EnvArgCountCheck(theEnv,"sort",AT_LEAST,1)) == -1)
-     { return; }
-
+   CVSetBoolean(returnValue,false);
+ 
    /*=============================================*/
    /* Verify that the comparison function exists. */
    /*=============================================*/
@@ -198,7 +191,9 @@ void SortFunction(
    /* If there are no items to be sorted, */
    /* then return an empty multifield.    */
    /*=====================================*/
-
+  
+   argumentCount = UDFArgumentCount(context);
+ 
    if (argumentCount == 1)
      {
       EnvSetMultifieldErrorValue(theEnv,returnValue);

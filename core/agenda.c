@@ -1138,7 +1138,7 @@ void SetSalienceEvaluationCommand(
    /* which must be a symbol.                 */
    /*=========================================*/
 
-   if (! UDFGetFirstArgument(context,SYMBOL_TYPE,&value))
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&value))
      {
       CVSetSymbol(returnValue,oldValue);
       return;

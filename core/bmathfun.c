@@ -55,17 +55,17 @@ void BasicMathFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"+", 'n',PTIEF AdditionFunction, "AdditionFunction", "2*n");
-   EnvDefineFunction2(theEnv,"*", 'n', PTIEF MultiplicationFunction, "MultiplicationFunction", "2*n");
-   EnvDefineFunction2(theEnv,"-", 'n', PTIEF SubtractionFunction, "SubtractionFunction", "2*n");
-   EnvDefineFunction2(theEnv,"/", 'n', PTIEF DivisionFunction, "DivisionFunction", "2*n");
-   EnvDefineFunction2(theEnv,"div", 'g', PTIEF DivFunction, "DivFunction", "2*n");
+   EnvAddUDF(theEnv, "+",       NUMBER_TYPES, AdditionFunction, "AdditionFunction", 2,UNBOUNDED, "ld" ,NULL);
+   EnvAddUDF(theEnv, "*",       NUMBER_TYPES, MultiplicationFunction, "MultiplicationFunction",  2,UNBOUNDED, "ld", NULL);
+   EnvAddUDF(theEnv, "-",       NUMBER_TYPES, SubtractionFunction, "SubtractionFunction",  2,UNBOUNDED, "ld", NULL);
+   EnvAddUDF(theEnv, "/",       FLOAT_TYPE,   DivisionFunction, "DivisionFunction", 2,UNBOUNDED, "ld", NULL);
+   EnvAddUDF(theEnv, "div",     INTEGER_TYPE, DivFunction, "DivFunction",  2,UNBOUNDED, "ld", NULL);
    
-   EnvAddUDF(theEnv,"integer",INTEGER_TYPE,IntegerFunction,"IntegerFunction",1,1,"ld",NULL);
-   EnvAddUDF(theEnv,"float",FLOAT_TYPE,FloatFunction,"FloatFunction",1,1,"ld",NULL);
-   EnvAddUDF(theEnv,"abs",NUMBER_TYPES,AbsFunction,"AbsFunction",1,1,"ld",NULL);
-   EnvAddUDF(theEnv,"min",NUMBER_TYPES,MinFunction,"MinFunction",1,UNBOUNDED,"ld",NULL);
-   EnvAddUDF(theEnv,"max",NUMBER_TYPES,MaxFunction,"MaxFunction",1,UNBOUNDED,"ld",NULL);
+   EnvAddUDF(theEnv, "integer", INTEGER_TYPE, IntegerFunction,"IntegerFunction",1,1,"ld",NULL);
+   EnvAddUDF(theEnv, "float",   FLOAT_TYPE,   FloatFunction,"FloatFunction",1,1,"ld",NULL);
+   EnvAddUDF(theEnv, "abs",     NUMBER_TYPES, AbsFunction,"AbsFunction",1,1,"ld",NULL);
+   EnvAddUDF(theEnv, "min",     NUMBER_TYPES, MinFunction,"MinFunction",1,UNBOUNDED,"ld",NULL);
+   EnvAddUDF(theEnv, "max",     NUMBER_TYPES, MaxFunction,"MaxFunction",1,UNBOUNDED,"ld",NULL);
 #endif
   }
 
@@ -74,15 +74,13 @@ void BasicMathFunctionDefinitions(
 /*   routine for the + function.  */
 /**********************************/
 void AdditionFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   double ftotal = 0.0;
-   long long ltotal = 0LL;
+   CLIPSFloat ftotal = 0.0;
+   CLIPSInteger ltotal = 0LL;
    bool useFloatTotal = false;
-   EXPRESSION *theExpression;
-   DATA_OBJECT theArgument;
-   int pos = 1;
+   CLIPSValue theArg;
 
    /*=================================================*/
    /* Loop through each of the arguments adding it to */
@@ -91,27 +89,29 @@ void AdditionFunction(
    /* using floating point values.                    */
    /*=================================================*/
 
-   theExpression = GetFirstArgument();
-
-   while (theExpression != NULL)
+   while (UDFHasNextArgument(context))
      {
-      if (! GetNumericArgument(theEnv,theExpression,"+",&theArgument,useFloatTotal,pos)) theExpression = NULL;
-      else theExpression = GetNextArgument(theExpression);
+      if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
+        {
+         if (useFloatTotal)
+           { CVSetFloat(returnValue,ftotal); }
+         else
+           { CVSetInteger(returnValue,ltotal); }
+         return;
+        }
 
       if (useFloatTotal)
-        { ftotal += ValueToDouble(theArgument.value); }
+        { ftotal += CVToFloat(&theArg); }
       else
         {
-         if (theArgument.type == INTEGER)
-           { ltotal += ValueToLong(theArgument.value); }
+         if (CVIsType(&theArg,INTEGER_TYPE))
+           { ltotal += CVToInteger(&theArg); }
          else
            {
-            ftotal = (double) ltotal + ValueToDouble(theArgument.value);
+            ftotal = ((CLIPSFloat) ltotal) + CVToFloat(&theArg);
             useFloatTotal = true;
            }
         }
-
-      pos++;
      }
 
    /*======================================================*/
@@ -120,15 +120,9 @@ void AdditionFunction(
    /*======================================================*/
 
    if (useFloatTotal)
-     {
-      returnValue->type = FLOAT;
-      returnValue->value = (void *) EnvAddDouble(theEnv,ftotal);
-     }
+     { CVSetFloat(returnValue,ftotal); }
    else
-     {
-      returnValue->type = INTEGER;
-      returnValue->value = (void *) EnvAddLong(theEnv,ltotal);
-     }
+     { CVSetInteger(returnValue,ltotal); }
   }
 
 /****************************************/
@@ -136,15 +130,13 @@ void AdditionFunction(
 /*   routine for the * function.        */
 /****************************************/
 void MultiplicationFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   double ftotal = 1.0;
-   long long ltotal = 1LL;
+   CLIPSFloat ftotal = 1.0;
+   CLIPSInteger ltotal = 1LL;
    bool useFloatTotal = false;
-   EXPRESSION *theExpression;
-   DATA_OBJECT theArgument;
-   int pos = 1;
+   CLIPSValue theArg;
 
    /*===================================================*/
    /* Loop through each of the arguments multiplying it */
@@ -153,26 +145,29 @@ void MultiplicationFunction(
    /* using floating point values.                      */
    /*===================================================*/
 
-   theExpression = GetFirstArgument();
-
-   while (theExpression != NULL)
+   while (UDFHasNextArgument(context))
      {
-      if (! GetNumericArgument(theEnv,theExpression,"*",&theArgument,useFloatTotal,pos)) theExpression = NULL;
-      else theExpression = GetNextArgument(theExpression);
+      if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
+        {
+         if (useFloatTotal)
+           { CVSetFloat(returnValue,ftotal); }
+         else
+           { CVSetInteger(returnValue,ltotal); }
+         return;
+        }
 
       if (useFloatTotal)
-        { ftotal *= ValueToDouble(theArgument.value); }
+        { ftotal *= CVToFloat(&theArg); }
       else
         {
-         if (theArgument.type == INTEGER)
-           { ltotal *= ValueToLong(theArgument.value); }
+         if (CVIsType(&theArg,INTEGER_TYPE))
+           { ltotal *= CVToInteger(&theArg); }
          else
            {
-            ftotal = (double) ltotal * ValueToDouble(theArgument.value);
+            ftotal = ((CLIPSFloat) ltotal) * CVToFloat(&theArg);
             useFloatTotal = true;
            }
         }
-      pos++;
      }
 
    /*======================================================*/
@@ -181,15 +176,9 @@ void MultiplicationFunction(
    /*======================================================*/
 
    if (useFloatTotal)
-     {
-      returnValue->type = FLOAT;
-      returnValue->value = (void *) EnvAddDouble(theEnv,ftotal);
-     }
+     { CVSetFloat(returnValue,ftotal); }
    else
-     {
-      returnValue->type = INTEGER;
-      returnValue->value = (void *) EnvAddLong(theEnv,ltotal);
-     }
+     { CVSetInteger(returnValue,ltotal); }
   }
 
 /*************************************/
@@ -197,15 +186,13 @@ void MultiplicationFunction(
 /*   routine for the - function.     */
 /*************************************/
 void SubtractionFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   double ftotal = 0.0;
-   long long ltotal = 0LL;
+   CLIPSFloat ftotal = 0.0;
+   CLIPSInteger ltotal = 0LL;
    bool useFloatTotal = false;
-   EXPRESSION *theExpression;
-   DATA_OBJECT theArgument;
-   int pos = 1;
+   CLIPSValue theArg;
 
    /*=================================================*/
    /* Get the first argument. This number which will  */
@@ -213,20 +200,18 @@ void SubtractionFunction(
    /* arguments will subtracted.                      */
    /*=================================================*/
 
-   theExpression = GetFirstArgument();
-   if (theExpression != NULL)
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      {
-      if (! GetNumericArgument(theEnv,theExpression,"-",&theArgument,useFloatTotal,pos)) theExpression = NULL;
-      else theExpression = GetNextArgument(theExpression);
+      CVSetInteger(returnValue,0L);
+      return;
+     }
 
-      if (theArgument.type == INTEGER)
-        { ltotal = ValueToLong(theArgument.value); }
-      else
-        {
-         ftotal = ValueToDouble(theArgument.value);
-         useFloatTotal = true;
-        }
-      pos++;
+   if (CVIsType(&theArg,INTEGER_TYPE))
+     { ltotal = CVToInteger(&theArg); }
+   else
+     {
+      ftotal = CVToFloat(&theArg);
+      useFloatTotal = true;
      }
 
    /*===================================================*/
@@ -236,24 +221,29 @@ void SubtractionFunction(
    /* using floating point values.                      */
    /*===================================================*/
 
-   while (theExpression != NULL)
+   while (UDFHasNextArgument(context))
      {
-      if (! GetNumericArgument(theEnv,theExpression,"-",&theArgument,useFloatTotal,pos)) theExpression = NULL;
-      else theExpression = GetNextArgument(theExpression);
+      if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
+        {
+         if (useFloatTotal)
+           { CVSetFloat(returnValue,ftotal); }
+         else
+           { CVSetInteger(returnValue,ltotal); }
+         return;
+        }
 
       if (useFloatTotal)
-        { ftotal -= ValueToDouble(theArgument.value); }
+        { ftotal -= CVToFloat(&theArg); }
       else
         {
-         if (theArgument.type == INTEGER)
-           { ltotal -= ValueToLong(theArgument.value); }
+         if (CVIsType(&theArg,INTEGER_TYPE))
+           { ltotal -= CVToInteger(&theArg); }
          else
            {
-            ftotal = (double) ltotal - ValueToDouble(theArgument.value);
+            ftotal = ((CLIPSFloat) ltotal) - CVToFloat(&theArg);
             useFloatTotal = true;
            }
         }
-      pos++;
      }
 
    /*======================================================*/
@@ -262,15 +252,9 @@ void SubtractionFunction(
    /*======================================================*/
 
    if (useFloatTotal)
-     {
-      returnValue->type = FLOAT;
-      returnValue->value = (void *) EnvAddDouble(theEnv,ftotal);
-     }
+     { CVSetFloat(returnValue,ftotal); }
    else
-     {
-      returnValue->type = INTEGER;
-      returnValue->value = (void *) EnvAddLong(theEnv,ltotal);
-     }
+     { CVSetInteger(returnValue,ltotal); }
   }
 
 /***********************************/
@@ -278,14 +262,13 @@ void SubtractionFunction(
 /*   routine for the / function.   */
 /***********************************/
 void DivisionFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   double ftotal = 1.0;
-   long long ltotal = 1LL;
-   EXPRESSION *theExpression;
-   DATA_OBJECT theArgument;
-   int pos = 1;
+   CLIPSFloat ftotal = 1.0;
+   CLIPSFloat theNumber;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
    
    /*===================================================*/
    /* Get the first argument. This number which will be */
@@ -295,20 +278,13 @@ void DivisionFunction(
    /* to a float if it is an integer.                   */
    /*===================================================*/
 
-   theExpression = GetFirstArgument();
-   if (theExpression != NULL)
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      {
-      if (! GetNumericArgument(theEnv,theExpression,"/",&theArgument,true,pos)) theExpression = NULL;
-      else theExpression = GetNextArgument(theExpression);
-
-      if (theArgument.type == INTEGER)
-        { ltotal = ValueToLong(theArgument.value); }
-      else
-        {
-         ftotal = ValueToDouble(theArgument.value);
-        }
-      pos++;
+      CVSetFloat(returnValue,ftotal);
+      return;
      }
+
+   ftotal = CVToFloat(&theArg);
 
    /*====================================================*/
    /* Loop through each of the arguments dividing it     */
@@ -318,23 +294,25 @@ void DivisionFunction(
    /* checked to prevent a divide by zero error.         */
    /*====================================================*/
 
-   while (theExpression != NULL)
+   while (UDFHasNextArgument(context))
      {
-      if (! GetNumericArgument(theEnv,theExpression,"/",&theArgument,true,pos)) theExpression = NULL;
-      else theExpression = GetNextArgument(theExpression);
-
-      if ((theArgument.type == INTEGER) ? (ValueToLong(theArgument.value) == 0L) :
-                                 ((theArgument.type == FLOAT) ? ValueToDouble(theArgument.value) == 0.0 : false))
+      if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
+        {
+         CVSetFloat(returnValue,ftotal);
+         return;
+        }
+        
+      theNumber = CVToFloat(&theArg);
+      
+      if (theNumber == 0.0)
         {
          DivideByZeroErrorMessage(theEnv,"/");
          EnvSetEvaluationError(theEnv,true);
-         returnValue->type = FLOAT;
-         returnValue->value = (void *) EnvAddDouble(theEnv,1.0);
+         CVSetFloat(returnValue,1.0);
          return;
         }
 
-      ftotal /= ValueToDouble(theArgument.value);
-      pos++;
+      ftotal /= theNumber;
      }
 
    /*======================================================*/
@@ -342,22 +320,21 @@ void DivisionFunction(
    /* then return a float, otherwise return an integer.    */
    /*======================================================*/
 
-   returnValue->type = FLOAT;
-   returnValue->value = (void *) EnvAddDouble(theEnv,ftotal);
+   CVSetFloat(returnValue,ftotal);
   }
 
 /*************************************/
 /* DivFunction: H/L access routine   */
 /*   for the div function.           */
 /*************************************/
-long long DivFunction(
-  void *theEnv)
+void DivFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   long long total = 1LL;
-   EXPRESSION *theExpression;
-   DATA_OBJECT theArgument;
-   int pos = 1;
-   long long theNumber;
+   CLIPSInteger total = 1LL;
+   DATA_OBJECT theArg;
+   CLIPSInteger theNumber;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*===================================================*/
    /* Get the first argument. This number which will be */
@@ -365,18 +342,12 @@ long long DivFunction(
    /* arguments will divide.                            */
    /*===================================================*/
 
-   theExpression = GetFirstArgument();
-   if (theExpression != NULL)
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      {
-      if (! GetNumericArgument(theEnv,theExpression,"div",&theArgument,false,pos)) theExpression = NULL;
-      else theExpression = GetNextArgument(theExpression);
-
-      if (theArgument.type == INTEGER)
-        { total = ValueToLong(theArgument.value); }
-      else
-        { total = (long long) ValueToDouble(theArgument.value); }
-      pos++;
+      CVSetInteger(returnValue,1L);
+      return;
      }
+   total = CVToInteger(&theArg);
 
    /*=====================================================*/
    /* Loop through each of the arguments dividing it into */
@@ -385,35 +356,32 @@ long long DivFunction(
    /* zero error.                                         */
    /*=====================================================*/
 
-   while (theExpression != NULL)
+   while (UDFHasNextArgument(context))
      {
-      if (! GetNumericArgument(theEnv,theExpression,"div",&theArgument,false,pos)) theExpression = NULL;
-      else theExpression = GetNextArgument(theExpression);
+      if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
+        {
+         CVSetInteger(returnValue,total);
+         return;
+        }
 
-      if (theArgument.type == INTEGER) theNumber = ValueToLong(theArgument.value);
-      else if (theArgument.type == FLOAT) theNumber = (long long) ValueToDouble(theArgument.value);
-      else theNumber = 1;
+      theNumber = CVToInteger(&theArg);
 
       if (theNumber == 0LL)
         {
          DivideByZeroErrorMessage(theEnv,"div");
          EnvSetEvaluationError(theEnv,true);
-         return(1L);
+         CVSetInteger(returnValue,1L);
+         return;
         }
-
-      if (theArgument.type == INTEGER)
-        { total /= ValueToLong(theArgument.value); }
-      else
-        { total = total / (long long) ValueToDouble(theArgument.value); }
-
-      pos++;
+        
+      total /= theNumber;
      }
 
    /*======================================================*/
    /* The result of the div function is always an integer. */
    /*======================================================*/
 
-   return(total);
+   CVSetInteger(returnValue,total);
   }
 
 /*****************************************/
@@ -428,7 +396,7 @@ void IntegerFunction(
    /* Check that the argument is a number. */
    /*======================================*/
 
-   if (! UDFArgTypeCheck(context,1,NUMBER_TYPES,returnValue))
+   if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
      {
       CVSetInteger(returnValue,0LL);
       return;
@@ -455,7 +423,7 @@ void FloatFunction(
    /* Check that the argument is a number. */
    /*======================================*/
 
-   if (! UDFArgTypeCheck(context,1,NUMBER_TYPES,returnValue))
+   if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
      {
       CVSetFloat(returnValue,0.0);
       return;
@@ -482,7 +450,7 @@ void AbsFunction(
    /* Check that the argument is a number. */
    /*======================================*/
 
-   if (! UDFArgTypeCheck(context,1,NUMBER_TYPES,returnValue))
+   if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
      {
       CVSetInteger(returnValue,0LL);
       return;
@@ -518,7 +486,7 @@ void MinFunction(
    /* Check that the first argument is a number. */
    /*============================================*/
 
-   if (! UDFGetFirstArgument(context,NUMBER_TYPES,returnValue))
+   if (! UDFFirstArgument(context,NUMBER_TYPES,returnValue))
      {
       CVSetInteger(returnValue,0LL);
       return;
@@ -531,9 +499,9 @@ void MinFunction(
    /* is thus the maximum value.                                */
    /*===========================================================*/
 
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,NUMBER_TYPES,&nextPossible))
+      if (! UDFNextArgument(context,NUMBER_TYPES,&nextPossible))
         { return; }
       
       /*=============================================*/
@@ -568,7 +536,7 @@ void MaxFunction(
    /* Check that the first argument is a number. */
    /*============================================*/
 
-   if (! UDFGetFirstArgument(context,NUMBER_TYPES,returnValue))
+   if (! UDFFirstArgument(context,NUMBER_TYPES,returnValue))
      {
       CVSetInteger(returnValue,0LL);
       return;
@@ -581,9 +549,9 @@ void MaxFunction(
    /* and is thus the maximum value.                            */
    /*===========================================================*/
 
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,NUMBER_TYPES,&nextPossible))
+      if (! UDFNextArgument(context,NUMBER_TYPES,&nextPossible))
         { return; }
       
       /*=============================================*/

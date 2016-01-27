@@ -74,14 +74,14 @@ struct joinInformation
 
    bool                           EnvGetBetaMemoryResizing(void *);
    bool                           EnvSetBetaMemoryResizing(void *,bool);
-   bool                           GetBetaMemoryResizingCommand(void *);
-   bool                           SetBetaMemoryResizingCommand(void *);
+   void                           GetBetaMemoryResizingCommand(UDFContext *,CLIPSValue *);
+   void                           SetBetaMemoryResizingCommand(UDFContext *,CLIPSValue *);
    void                           EnvMatches(void *,void *,int,DATA_OBJECT *);
    void                           EnvJoinActivity(void *,void *,int,DATA_OBJECT *);
    void                           DefruleCommands(void *);
    void                           MatchesCommand(void *,DATA_OBJECT *);
    void                           JoinActivityCommand(void *,DATA_OBJECT *);
-   long long                      TimetagFunction(void *);
+   void                           TimetagFunction(UDFContext *,CLIPSValue *);
    long                           EnvAlphaJoinCount(void *,void *);
    long                           EnvBetaJoinCount(void *,void *);
    struct joinInformation        *EnvCreateJoinArray(void *,long);
@@ -92,7 +92,7 @@ struct joinInformation
 #if DEVELOPER
    void                           ShowJoinsCommand(UDFContext *,CLIPSValue *);
    void                           RuleComplexityCommand(UDFContext *,CLIPSValue *);
-   void                           ShowAlphaHashTable(void *);
+   void                           ShowAlphaHashTable(UDFContext *,CLIPSValue *);
 #endif
 
 #endif /* _H_rulecom */

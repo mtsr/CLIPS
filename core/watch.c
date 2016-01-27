@@ -349,24 +349,29 @@ int GetNthWatchValue(
 /*   for the watch command.           */
 /**************************************/
 void WatchCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
    const char *argument;
    bool recognized;
    struct watchItem *wPtr;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*========================================*/
    /* Determine which item is to be watched. */
    /*========================================*/
 
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
+   
    if (EnvArgTypeCheck(theEnv,"watch",1,SYMBOL,&theValue) == false) return;
-   argument = DOToString(theValue);
+   
+   argument = CVToString(&theValue);
    wPtr = ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
      {
       EnvSetEvaluationError(theEnv,true);
-      ExpectedTypeError1(theEnv,"watch",1,"watchable symbol");
+      UDFInvalidArgumentMessage(context,1,"watchable symbol");
       return;
      }
 
@@ -396,24 +401,27 @@ void WatchCommand(
 /*   for the unwatch command.           */
 /****************************************/
 void UnwatchCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
    const char *argument;
    bool recognized;
    struct watchItem *wPtr;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*==========================================*/
    /* Determine which item is to be unwatched. */
    /*==========================================*/
 
-   if (EnvArgTypeCheck(theEnv,"unwatch",1,SYMBOL,&theValue) == false) return;
-   argument = DOToString(theValue);
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
+   
+   argument = CVToString(&theValue);
    wPtr = ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
      {
       EnvSetEvaluationError(theEnv,true);
-      ExpectedTypeError1(theEnv,"unwatch",1,"watchable symbol");
+      UDFInvalidArgumentMessage(context,1,"watchable symbol");
       return;
      }
 
@@ -443,11 +451,13 @@ void UnwatchCommand(
 /*   for the list-watch-items command.          */
 /************************************************/
 void ListWatchItemsCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct watchItem *wPtr;
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
    bool recognized;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*=======================*/
    /* List the watch items. */
@@ -468,8 +478,8 @@ void ListWatchItemsCommand(
    /* Determine which item is to be listed. */
    /*=======================================*/
 
-   if (EnvArgTypeCheck(theEnv,"list-watch-items",1,SYMBOL,&theValue) == false) return;
-   wPtr = ValidWatchItem(theEnv,DOToString(theValue),&recognized);
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
+   wPtr = ValidWatchItem(theEnv,CVToString(&theValue),&recognized);
    if ((recognized == false) || (wPtr == NULL))
      {
       EnvSetEvaluationError(theEnv,true);
@@ -513,34 +523,33 @@ void ListWatchItemsCommand(
 /* GetWatchItemCommand: H/L access routine */
 /*   for the get-watch-item command.       */
 /*******************************************/
-bool GetWatchItemCommand(
-  void *theEnv)
+void GetWatchItemCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
    const char *argument;
    bool recognized;
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (EnvArgCountCheck(theEnv,"get-watch-item",EXACTLY,1) == -1)
-     { return(false); }
+   void *theEnv = UDFContextEnvironment(context);
 
    /*========================================*/
    /* Determine which item is to be watched. */
    /*========================================*/
 
-   if (EnvArgTypeCheck(theEnv,"get-watch-item",1,SYMBOL,&theValue) == false)
-     { return(false); }
-
-   argument = DOToString(theValue);
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+     
+   argument = CVToString(&theValue);
    ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
      {
       EnvSetEvaluationError(theEnv,true);
       ExpectedTypeError1(theEnv,"get-watch-item",1,"watchable symbol");
-      return(false);
+      CVSetBoolean(returnValue,false);
+      return;
      }
 
    /*===========================*/
@@ -548,9 +557,9 @@ bool GetWatchItemCommand(
    /*===========================*/
 
    if (EnvGetWatchItem(theEnv,argument) == 1)
-     { return(true); }
+     { CVSetBoolean(returnValue,true); }
 
-   return(false);
+   CVSetBoolean(returnValue,false);
   }
 
 /*************************************************************/
@@ -560,11 +569,11 @@ void WatchFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"watch",   'v', PTIEF WatchCommand,   "WatchCommand", "1**w");
-   EnvDefineFunction2(theEnv,"unwatch", 'v', PTIEF UnwatchCommand, "UnwatchCommand", "1**w");
-   EnvDefineFunction2(theEnv,"get-watch-item", 'b', PTIEF GetWatchItemCommand,   "GetWatchItemCommand", "11w");
-   EnvDefineFunction2(theEnv,"list-watch-items", 'v', PTIEF ListWatchItemsCommand,
-                   "ListWatchItemsCommand", "0**w");
+   EnvAddUDF(theEnv,"watch",  VOID_TYPE, WatchCommand,   "WatchCommand", 1,UNBOUNDED,"*;y" ,NULL);
+   EnvAddUDF(theEnv,"unwatch",VOID_TYPE, UnwatchCommand, "UnwatchCommand",  1,UNBOUNDED,"*;y" ,NULL);
+   EnvAddUDF(theEnv,"get-watch-item", BOOLEAN_TYPE,  GetWatchItemCommand,   "GetWatchItemCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-watch-items", VOID_TYPE,  ListWatchItemsCommand,
+                   "ListWatchItemsCommand", 0,UNBOUNDED, "*;y",NULL);
 #endif
 
    EnvAddRouter(theEnv,WTRACE,1000,RecognizeWatchRouters,CaptureWatchPrints,NULL,NULL,NULL);

@@ -969,42 +969,47 @@ int EnvGetStrategy(
 /* GetStrategyCommand: H/L access routine   */
 /*   for the get-strategy command.          */
 /********************************************/
-void *GetStrategyCommand(
-  void *theEnv)
+void GetStrategyCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EnvArgCountCheck(theEnv,"get-strategy",EXACTLY,0);
-
-   return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetStrategyName(EnvGetStrategy(theEnv))));
+   Environment *theEnv = UDFContextEnvironment(context);
+   
+   CVSetSymbol(returnValue,GetStrategyName(EnvGetStrategy(theEnv)));
   }
 
 /********************************************/
 /* SetStrategyCommand: H/L access routine   */
 /*   for the set-strategy command.          */
 /********************************************/
-void *SetStrategyCommand(
-  void *theEnv)
+void SetStrategyCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT argPtr;
+   CLIPSValue theArg;
    const char *argument;
    int oldStrategy;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   oldStrategy = AgendaData(theEnv)->Strategy;
+   /*=======================*/
+   /* Set the return value. */
+   /*=======================*/
+   
+   oldStrategy = EnvGetStrategy(theEnv);
+   CVSetSymbol(returnValue,GetStrategyName(oldStrategy));
 
-   /*=====================================================*/
-   /* Check for the correct number and type of arguments. */
-   /*=====================================================*/
+   /*=========================================*/
+   /* Check for the correct type of argument. */
+   /*=========================================*/
 
-   if (EnvArgCountCheck(theEnv,"set-strategy",EXACTLY,1) == -1)
-     { return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetStrategyName(EnvGetStrategy(theEnv)))); }
-
-   if (EnvArgTypeCheck(theEnv,"set-strategy",1,SYMBOL,&argPtr) == false)
-     { return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetStrategyName(EnvGetStrategy(theEnv)))); }
-
-   argument = DOToString(argPtr);
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     { return; }
 
    /*=============================================*/
    /* Set the strategy to the specified strategy. */
    /*=============================================*/
+
+   argument = CVToString(&theArg);
 
    if (strcmp(argument,"depth") == 0)
      { EnvSetStrategy(theEnv,DEPTH_STRATEGY); }
@@ -1022,16 +1027,9 @@ void *SetStrategyCommand(
      { EnvSetStrategy(theEnv,RANDOM_STRATEGY); }
    else
      {
-      ExpectedTypeError1(theEnv,"set-strategy",1,
-      "symbol with value depth, breadth, lex, mea, complexity, simplicity, or random");
-      return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetStrategyName(EnvGetStrategy(theEnv))));
+      UDFInvalidArgumentMessage(context,1,
+         "symbol with value depth, breadth, lex, mea, complexity, simplicity, or random");
      }
-
-   /*=======================================*/
-   /* Return the old value of the strategy. */
-   /*=======================================*/
-
-   return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetStrategyName(oldStrategy)));
   }
 
 /**********************************************************/

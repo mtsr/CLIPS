@@ -73,11 +73,11 @@ struct watchData
                                                       bool (*)(void *,const char *,int,struct expr *));
    const char                    *GetNthWatchName(void *,int);
    int                            GetNthWatchValue(void *,int);
-   void                           WatchCommand(void *);
-   void                           UnwatchCommand(void *);
-   void                           ListWatchItemsCommand(void *);
+   void                           WatchCommand(UDFContext *,CLIPSValue *);
+   void                           UnwatchCommand(UDFContext *,CLIPSValue *);
+   void                           ListWatchItemsCommand(UDFContext *,CLIPSValue *);
    void                           WatchFunctionDefinitions(void *);
-   bool                           GetWatchItemCommand(void *);
+   void                           GetWatchItemCommand(UDFContext *,CLIPSValue *);
 
 #endif /* _H_watch */
 

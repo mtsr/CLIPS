@@ -63,8 +63,8 @@
    void                           PlaceActivation(void *,ACTIVATION **,ACTIVATION *,struct salienceGroup *);
    int                            EnvSetStrategy(void *,int);
    int                            EnvGetStrategy(void *);
-   void                          *SetStrategyCommand(void *);
-   void                          *GetStrategyCommand(void *);
+   void                           SetStrategyCommand(UDFContext *,CLIPSValue *);
+   void                           GetStrategyCommand(UDFContext *,CLIPSValue *);
 
 #endif /* _H_crstrtgy */
 

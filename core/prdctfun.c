@@ -209,7 +209,7 @@ void StringpFunction(
   {
    CLIPSValue item;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
+   if (! UDFFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -231,7 +231,7 @@ void SymbolpFunction(
   {
    CLIPSValue item;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
+   if (! UDFFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -253,7 +253,7 @@ void LexemepFunction(
   {
    CLIPSValue item;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
+   if (! UDFFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -275,7 +275,7 @@ void NumberpFunction(
   {
    CLIPSValue item;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
+   if (! UDFFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -297,7 +297,7 @@ void FloatpFunction(
   {
    CLIPSValue item;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
+   if (! UDFFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -319,7 +319,7 @@ void IntegerpFunction(
   {
    CLIPSValue item;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
+   if (! UDFFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -341,7 +341,7 @@ void MultifieldpFunction(
   {
    CLIPSValue item;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
+   if (! UDFFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -363,7 +363,7 @@ void PointerpFunction(
   {
    CLIPSValue item;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&item))
+   if (! UDFFirstArgument(context,ANY_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -385,7 +385,7 @@ void NotFunction(
   {
    DATA_OBJECT result;
 
-   if (! UDFGetFirstArgument(context,ANY_TYPE,&result))
+   if (! UDFFirstArgument(context,ANY_TYPE,&result))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -410,9 +410,9 @@ void AndFunction(
   {
    DATA_OBJECT result;
 
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,ANY_TYPE,&result))
+      if (! UDFNextArgument(context,ANY_TYPE,&result))
         {
          CVSetBoolean(returnValue,false);
          return;
@@ -438,9 +438,9 @@ void OrFunction(
   {
    DATA_OBJECT result;
 
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,ANY_TYPE,&result))
+      if (! UDFNextArgument(context,ANY_TYPE,&result))
         {
          CVSetBoolean(returnValue,false);
          return;
@@ -470,7 +470,7 @@ void LessThanOrEqualFunction(
    /* Get the first argument. */
    /*=========================*/
 
-   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -481,9 +481,9 @@ void LessThanOrEqualFunction(
    /* predecessor. If any is greater, then return false. */
    /*====================================================*/
 
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
+      if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         {
          CVSetBoolean(returnValue,false);
          return;
@@ -531,7 +531,7 @@ void GreaterThanOrEqualFunction(
    /* Get the first argument. */
    /*=========================*/
 
-   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -542,9 +542,9 @@ void GreaterThanOrEqualFunction(
    /* predecessor. If any is lesser, then return false. */
    /*===================================================*/
 
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
+      if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         {
          CVSetBoolean(returnValue,false);
          return;
@@ -592,7 +592,7 @@ void LessThanFunction(
    /* Get the first argument. */
    /*=========================*/
 
-   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -604,9 +604,9 @@ void LessThanFunction(
    /* equal, then return false.                */
    /*==========================================*/
    
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
+      if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         {
          CVSetBoolean(returnValue,false);
          return;
@@ -654,7 +654,7 @@ void GreaterThanFunction(
    /* Get the first argument. */
    /*=========================*/
 
-   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -666,9 +666,9 @@ void GreaterThanFunction(
    /* equal, then return false.                */
    /*==========================================*/
    
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
+      if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         {
          CVSetBoolean(returnValue,false);
          return;
@@ -716,7 +716,7 @@ void NumericEqualFunction(
    /* Get the first argument. */
    /*=========================*/
 
-   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -727,9 +727,9 @@ void NumericEqualFunction(
    /* first. If any is unequal, then return false.    */
    /*=================================================*/
 
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
+      if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         {
          CVSetBoolean(returnValue,false);
          return;
@@ -775,7 +775,7 @@ void NumericNotEqualFunction(
    /* Get the first argument. */
    /*=========================*/
 
-   if (! UDFGetFirstArgument(context,NUMBER_TYPES,&rv1))
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -786,9 +786,9 @@ void NumericNotEqualFunction(
    /* first. If any is equal, then return false.      */
    /*=================================================*/
 
-   while (UDFHasNextArg(context))
+   while (UDFHasNextArgument(context))
      {
-      if (! UDFGetNextArgument(context,NUMBER_TYPES,&rv2))
+      if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         {
          CVSetBoolean(returnValue,false);
          return;
@@ -835,7 +835,7 @@ void OddpFunction(
    /* Check for the correct types of arguments. */
    /*===========================================*/
  
-   if (! UDFGetFirstArgument(context,INTEGER_TYPE,&item))
+   if (! UDFFirstArgument(context,INTEGER_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;
@@ -867,7 +867,7 @@ void EvenpFunction(
    /* Check for the correct types of arguments. */
    /*===========================================*/
      
-   if (! UDFGetFirstArgument(context,INTEGER_TYPE,&item))
+   if (! UDFFirstArgument(context,INTEGER_TYPE,&item))
      {
       CVSetBoolean(returnValue,false);
       return;

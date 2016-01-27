@@ -85,7 +85,7 @@ void ProceduralFunctionDefinitions(
    EnvDefineFunction2(theEnv,"bind", 'u', PTIEF BindFunction, "BindFunction", NULL);
    EnvDefineFunction2(theEnv,"progn", 'u', PTIEF PrognFunction, "PrognFunction", NULL);
    EnvDefineFunction2(theEnv,"return", 'u', PTIEF ReturnFunction, "ReturnFunction",NULL);
-   EnvDefineFunction2(theEnv,"break", 'v', PTIEF BreakFunction, "BreakFunction",NULL);
+   EnvAddUDF(theEnv,"break", VOID_TYPE,BreakFunction, "BreakFunction",0,0,NULL,NULL);
    EnvDefineFunction2(theEnv,"switch", 'u', PTIEF SwitchFunction, "SwitchFunction",NULL);
 
    ProceduralFunctionParsers(theEnv);
@@ -626,9 +626,10 @@ void ReturnFunction(
 /* BreakFunction: H/L access routine for the break function.   */
 /***************************************************************/
 void BreakFunction(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   ProcedureFunctionData(theEnv)->BreakFlag = true;
+   ProcedureFunctionData(UDFContextEnvironment(context))->BreakFlag = true;
   }
 
 /*****************************************************************/

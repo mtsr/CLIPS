@@ -817,23 +817,23 @@ int UDFArgCountCheck(
    return -1;
   }
 
-/************************/
-/* UDFGetFirstArgument: */
-/************************/
-bool UDFGetFirstArgument(
+/*********************/
+/* UDFFirstArgument: */
+/*********************/
+bool UDFFirstArgument(
   UDFContext *context,
   unsigned expectedType,
   CLIPSValue *returnValue)
   {
    context->lastArg = EvaluationData(context->environment)->CurrentExpression->argList;
    context->lastPosition = 1;
-   return UDFGetNextArgument(context,expectedType,returnValue);
+   return UDFNextArgument(context,expectedType,returnValue);
   }
 
-/***********************/
-/* UDFGetNextArgument: */
-/***********************/
-bool UDFGetNextArgument(
+/********************/
+/* UDFNextArgument: */
+/********************/
+bool UDFNextArgument(
   UDFContext *context,
   unsigned expectedType,
   CLIPSValue *returnValue)
@@ -986,10 +986,10 @@ bool UDFGetNextArgument(
    return false;
   }
 
-/********************/
-/* UDFArgTypeCheck: */
-/********************/
-bool UDFArgTypeCheck(
+/*******************/
+/* UDFNthArgument: */
+/*******************/
+bool UDFNthArgument(
   UDFContext *context,
   int argumentPosition,
   unsigned expectedType,
@@ -1007,7 +1007,7 @@ bool UDFArgTypeCheck(
            context->lastArg = context->lastArg->nextArg)
      { context->lastPosition++; }
       
-   return UDFGetNextArgument(context,expectedType,returnValue);
+   return UDFNextArgument(context,expectedType,returnValue);
   }
 
 /******************************/
