@@ -234,44 +234,44 @@ void SetupGenericFunctions(
    AddSaveFunction(theEnv,"defgeneric",SaveDefgenerics,1000);
    AddSaveFunction(theEnv,"defmethod",SaveDefmethods,-1000);
    EnvAddUDF(theEnv,"undefgeneric",VOID_TYPE, UndefgenericCommand,"UndefgenericCommand",1,1,"y",NULL);
-   EnvDefineFunction2(theEnv,"undefmethod",'v',PTIEF UndefmethodCommand,"UndefmethodCommand","22*wg");
+   EnvAddUDF(theEnv,"undefmethod",VOID_TYPE, UndefmethodCommand,"UndefmethodCommand",2,2,"*;y;ly",NULL);
 #endif
 
-   EnvDefineFunction2(theEnv,"call-next-method",'u',PTIEF CallNextMethod,"CallNextMethod","00");
+   EnvAddUDF(theEnv,"call-next-method",ANY_TYPE,CallNextMethod,"CallNextMethod",0,0,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"call-next-method",true,false);
-   EnvDefineFunction2(theEnv,"call-specific-method",'u',PTIEF CallSpecificMethod,
-                   "CallSpecificMethod","2**wi");
+   EnvAddUDF(theEnv,"call-specific-method",ANY_TYPE, CallSpecificMethod,
+                   "CallSpecificMethod",2,UNBOUNDED,"*;y;l",NULL);
    FuncSeqOvlFlags(theEnv,"call-specific-method",true,false);
-   EnvDefineFunction2(theEnv,"override-next-method",'u',PTIEF OverrideNextMethod,
-                   "OverrideNextMethod",NULL);
+   EnvAddUDF(theEnv,"override-next-method",ANY_TYPE, OverrideNextMethod,
+                   "OverrideNextMethod",0,UNBOUNDED,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"override-next-method",true,false);
-   EnvDefineFunction2(theEnv,"next-methodp",'b',PTIEF NextMethodP,"NextMethodP","00");
+   EnvAddUDF(theEnv,"next-methodp",BOOLEAN_TYPE, NextMethodPCommand,"NextMethodP",0,0,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"next-methodp",true,false);
 
-   EnvDefineFunction2(theEnv,"(gnrc-current-arg)",'u',PTIEF GetGenericCurrentArgument,
-                   "GetGenericCurrentArgument",NULL);
+   EnvAddUDF(theEnv,"(gnrc-current-arg)",ANY_TYPE, GetGenericCurrentArgument,
+                   "GetGenericCurrentArgument",0,UNBOUNDED,NULL,NULL);
 
 #if DEBUGGING_FUNCTIONS
    EnvAddUDF(theEnv,"ppdefgeneric",VOID_TYPE, PPDefgenericCommand,"PPDefgenericCommand",1,1,"y",NULL);
    EnvAddUDF(theEnv,"list-defgenerics",VOID_TYPE, ListDefgenericsCommand,"ListDefgenericsCommand",0,1,"y",NULL);
-   EnvDefineFunction2(theEnv,"ppdefmethod",'v',PTIEF PPDefmethodCommand,"PPDefmethodCommand","22*wi");
-   EnvDefineFunction2(theEnv,"list-defmethods",'v',PTIEF ListDefmethodsCommand,"ListDefmethodsCommand","01w");
-   EnvDefineFunction2(theEnv,"preview-generic",'v',PTIEF PreviewGeneric,"PreviewGeneric","1**w");
+   EnvAddUDF(theEnv,"ppdefmethod",VOID_TYPE, PPDefmethodCommand,"PPDefmethodCommand",2,2,"*;y;l",NULL);
+   EnvAddUDF(theEnv,"list-defmethods",VOID_TYPE, ListDefmethodsCommand,"ListDefmethodsCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"preview-generic",VOID_TYPE, PreviewGeneric,"PreviewGeneric",1,UNBOUNDED,"*;w",NULL);
 #endif
 
    EnvAddUDF(theEnv,"get-defgeneric-list",MULTIFIELD_TYPE, GetDefgenericListFunction,
                    "GetDefgenericListFunction",0,1,"y",NULL);
-   EnvDefineFunction2(theEnv,"get-defmethod-list",'m',PTIEF GetDefmethodListCommand,
-                   "GetDefmethodListCommand","01w");
-   EnvDefineFunction2(theEnv,"get-method-restrictions",'m',PTIEF GetMethodRestrictionsCommand,
-                   "GetMethodRestrictionsCommand","22iw");
+   EnvAddUDF(theEnv,"get-defmethod-list",MULTIFIELD_TYPE, GetDefmethodListCommand,
+                   "GetDefmethodListCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-method-restrictions",'m', GetMethodRestrictionsCommand,
+                   "GetMethodRestrictionsCommand",2,2, "l;y", NULL);
    EnvAddUDF(theEnv,"defgeneric-module",SYMBOL_TYPE, GetDefgenericModuleCommand,
                    "GetDefgenericModuleCommand",1,1,"y",NULL);
 
 #if OBJECT_SYSTEM
-   EnvDefineFunction2(theEnv,"type",'u',PTIEF ClassCommand,"ClassCommand","11u");
+   EnvAddUDF(theEnv,"type",ANY_TYPE,ClassCommand,"ClassCommand",1,1,"*",NULL);
 #else
-   EnvDefineFunction2(theEnv,"type",'u',PTIEF TypeCommand,"TypeCommand","11u");
+   EnvAddUDF(theEnv,"type",ANY_TYPE,TypeCommand,"TypeCommand",1,1,"*",NULL);
 #endif
 
 #endif
@@ -581,27 +581,31 @@ void GetDefgenericModuleCommand(
   NOTES        : H/L Syntax: (undefmethod <name> <index> | *)
  **************************************************************/
 void UndefmethodCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    DEFGENERIC *gfunc;
    long mi;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgTypeCheck(theEnv,"undefmethod",1,SYMBOL,&temp) == false)
-     return;
-   gfunc = LookupDefgenericByMdlOrScope(theEnv,DOToString(temp));
-   if ((gfunc == NULL) ? (strcmp(DOToString(temp),"*") != 0) : false)
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
+
+   gfunc = LookupDefgenericByMdlOrScope(theEnv,CVToString(&theArg));
+   if ((gfunc == NULL) ? (strcmp(CVToString(&theArg),"*") != 0) : false)
      {
       PrintErrorID(theEnv,"GENRCCOM",1,false);
       EnvPrintRouter(theEnv,WERROR,"No such generic function ");
-      EnvPrintRouter(theEnv,WERROR,DOToString(temp));
+      EnvPrintRouter(theEnv,WERROR,CVToString(&theArg));
       EnvPrintRouter(theEnv,WERROR," in function undefmethod.\n");
       return;
      }
-   EnvRtnUnknown(theEnv,2,&temp);
-   if (temp.type == SYMBOL)
+     
+   if (! UDFNextArgument(context,ANY_TYPE,&theArg)) return;
+   
+   if (CVIsType(&theArg,SYMBOL_TYPE))
      {
-      if (strcmp(DOToString(temp),"*") != 0)
+      if (strcmp(CVToString(&theArg),"*") != 0)
         {
          PrintErrorID(theEnv,"GENRCCOM",2,false);
          EnvPrintRouter(theEnv,WERROR,"Expected a valid method index in function undefmethod.\n");
@@ -609,9 +613,9 @@ void UndefmethodCommand(
         }
       mi = 0;
      }
-   else if (temp.type == INTEGER)
+   else if (CVIsType(&theArg,INTEGER_TYPE))
      {
-      mi = (long) DOToLong(temp);
+      mi = (long) CVToInteger(&theArg);
       if (mi == 0)
         {
          PrintErrorID(theEnv,"GENRCCOM",2,false);
@@ -908,22 +912,24 @@ void PPDefgenericCommand(
   NOTES        : H/L Syntax: (ppdefmethod <name> <index>)
  **********************************************************/
 void PPDefmethodCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    const char *gname;
    DEFGENERIC *gfunc;
    int gi;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvArgTypeCheck(theEnv,"ppdefmethod",1,SYMBOL,&temp) == false)
-     return;
-   gname = DOToString(temp);
-   if (EnvArgTypeCheck(theEnv,"ppdefmethod",2,INTEGER,&temp) == false)
-     return;
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
+   gname = CVToString(&theArg);
+   
+   if (! UDFNextArgument(context,INTEGER_TYPE,&theArg)) return;
+ 
    gfunc = CheckGenericExists(theEnv,"ppdefmethod",gname);
    if (gfunc == NULL)
      return;
-   gi = CheckMethodExists(theEnv,"ppdefmethod",gfunc,(long) DOToLong(temp));
+   gi = CheckMethodExists(theEnv,"ppdefmethod",gfunc,(long) CVToInteger(&theArg));
    if (gi == -1)
      return;
    if (gfunc->methods[gi].ppForm != NULL)
@@ -940,18 +946,19 @@ void PPDefmethodCommand(
   NOTES        : H/L Syntax: (list-defmethods <name>)
  ******************************************************/
 void ListDefmethodsCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    DEFGENERIC *gfunc;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvRtnArgCount(theEnv) == 0)
+   if (! UDFHasNextArgument(context))
      EnvListDefmethods(theEnv,WDISPLAY,NULL);
    else
      {
-      if (EnvArgTypeCheck(theEnv,"list-defmethods",1,SYMBOL,&temp) == false)
-        return;
-      gfunc = CheckGenericExists(theEnv,"list-defmethods",DOToString(temp));
+      if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
+      gfunc = CheckGenericExists(theEnv,"list-defmethods",CVToString(&theArg));
       if (gfunc != NULL)
         EnvListDefmethods(theEnv,WDISPLAY,(void *) gfunc);
      }
@@ -1100,26 +1107,27 @@ void EnvGetDefgenericList(
   NOTES        : None
  ***********************************************************/
 void GetDefmethodListCommand(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    DEFGENERIC *gfunc;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvRtnArgCount(theEnv) == 0)
-     EnvGetDefmethodList(theEnv,NULL,returnValue);
+   if (! UDFHasNextArgument(context))
+     { EnvGetDefmethodList(theEnv,NULL,returnValue); }
    else
      {
-      if (EnvArgTypeCheck(theEnv,"get-defmethod-list",1,SYMBOL,&temp) == false)
+      if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
         {
          EnvSetMultifieldErrorValue(theEnv,returnValue);
          return;
         }
-      gfunc = CheckGenericExists(theEnv,"get-defmethod-list",DOToString(temp));
+      gfunc = CheckGenericExists(theEnv,"get-defmethod-list",CVToString(&theArg));
       if (gfunc != NULL)
-        EnvGetDefmethodList(theEnv,(void *) gfunc,returnValue);
+        { EnvGetDefmethodList(theEnv,(void *) gfunc,returnValue); }
       else
-        EnvSetMultifieldErrorValue(theEnv,returnValue);
+        { EnvSetMultifieldErrorValue(theEnv,returnValue); }
      }
   }
 
@@ -1191,34 +1199,37 @@ void EnvGetDefmethodList(
   NOTES        : Syntax: (get-method-restrictions <generic-function> <method-index>)
  ***********************************************************************************/
 void GetMethodRestrictionsCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    DEFGENERIC *gfunc;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgTypeCheck(theEnv,"get-method-restrictions",1,SYMBOL,&temp) == false)
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      {
-      EnvSetMultifieldErrorValue(theEnv,result);
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
       return;
      }
-   gfunc = CheckGenericExists(theEnv,"get-method-restrictions",DOToString(temp));
+   gfunc = CheckGenericExists(theEnv,"get-method-restrictions",CVToString(&theArg));
    if (gfunc == NULL)
      {
-      EnvSetMultifieldErrorValue(theEnv,result);
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
       return;
      }
-   if (EnvArgTypeCheck(theEnv,"get-method-restrictions",2,INTEGER,&temp) == false)
+
+   if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      {
-      EnvSetMultifieldErrorValue(theEnv,result);
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
       return;
      }
-   if (CheckMethodExists(theEnv,"get-method-restrictions",gfunc,(long) DOToLong(temp)) == -1)
+     
+   if (CheckMethodExists(theEnv,"get-method-restrictions",gfunc,(long) CVToInteger(&theArg)) == -1)
      {
-      EnvSetMultifieldErrorValue(theEnv,result);
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
       return;
      }
-   EnvGetMethodRestrictions(theEnv,(void *) gfunc,(unsigned) DOToLong(temp),result);
+   EnvGetMethodRestrictions(theEnv,(void *) gfunc,(unsigned) CVToInteger(&theArg),returnValue);
   }
 
 /***********************************************************************
@@ -1848,12 +1859,14 @@ static void PrintMethodWatchFlag(
   NOTES        : H/L Syntax: (type <primitive>)
  ***************************************************/
 void TypeCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = UDFContextEnvironment(context);
+   
    EvaluateExpression(theEnv,GetFirstArgument(),result);
-   result->value = (void *) EnvAddSymbol(theEnv,TypeName(theEnv,result->type));
-   result->type = SYMBOL;
+   
+   CVSetSymbol(returnValue,TypeName(theEnv,result->type));
   }
 
 #endif

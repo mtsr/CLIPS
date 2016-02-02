@@ -79,8 +79,8 @@ struct joinInformation
    void                           EnvMatches(void *,void *,int,DATA_OBJECT *);
    void                           EnvJoinActivity(void *,void *,int,DATA_OBJECT *);
    void                           DefruleCommands(void *);
-   void                           MatchesCommand(void *,DATA_OBJECT *);
-   void                           JoinActivityCommand(void *,DATA_OBJECT *);
+   void                           MatchesCommand(UDFContext *,CLIPSValue *);
+   void                           JoinActivityCommand(UDFContext *,CLIPSValue *);
    void                           TimetagFunction(UDFContext *,CLIPSValue *);
    long                           EnvAlphaJoinCount(void *,void *);
    long                           EnvBetaJoinCount(void *,void *);

@@ -1269,12 +1269,10 @@ void EnvListFocusStack(
 /*   for the get-focus-stack function.         */
 /***********************************************/
 void GetFocusStackFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   if (EnvArgCountCheck(theEnv,"get-focus-stack",EXACTLY,0) == -1) return;
-
-   EnvGetFocusStack(theEnv,returnValue);
+   EnvGetFocusStack(UDFContextEnvironment(context),returnValue);
   }
 
 /***************************************/
@@ -1283,7 +1281,7 @@ void GetFocusStackFunction(
 /***************************************/
 void EnvGetFocusStack(
   void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  CLIPSValue *returnValue)
   {
    struct focus *theFocus;
    struct multifield *theList;

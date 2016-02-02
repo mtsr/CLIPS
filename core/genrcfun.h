@@ -161,7 +161,7 @@ struct defgenericData
    void                           PrintMethod(void *,char *,size_t,DEFMETHOD *);
 #endif
 #if DEBUGGING_FUNCTIONS
-   void                           PreviewGeneric(void *);
+   void                           PreviewGeneric(UDFContext *,CLIPSValue *);
 #endif
    DEFGENERIC                    *CheckGenericExists(void *,const char *,const char *);
    long                           CheckMethodExists(void *,const char *,DEFGENERIC *,long);

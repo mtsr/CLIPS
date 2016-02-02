@@ -49,17 +49,17 @@
    bool                           EnvBuild(void *,const char *);
    bool                           EnvEval(void *,const char *,DATA_OBJECT_PTR);
    void                           StringFunctionDefinitions(void *);
-   void                           StrCatFunction(void *,DATA_OBJECT_PTR);
-   void                           SymCatFunction(void *,DATA_OBJECT_PTR);
-   long long                      StrLengthFunction(void *);
-   void                           UpcaseFunction(void *,DATA_OBJECT_PTR);
-   void                           LowcaseFunction(void *,DATA_OBJECT_PTR);
-   long long                      StrCompareFunction(void *);
-   void                          *SubStringFunction(void *);
-   void                           StrIndexFunction(void *,DATA_OBJECT_PTR);
-   void                           EvalFunction(void *,DATA_OBJECT_PTR);
+   void                           StrCatFunction(UDFContext *,CLIPSValue *);
+   void                           SymCatFunction(UDFContext *,CLIPSValue *);
+   void                           StrLengthFunction(UDFContext *,CLIPSValue *);
+   void                           UpcaseFunction(UDFContext *,CLIPSValue *);
+   void                           LowcaseFunction(UDFContext *,CLIPSValue *);
+   void                           StrCompareFunction(UDFContext *,CLIPSValue *);
+   void                           SubStringFunction(UDFContext *,CLIPSValue *);
+   void                           StrIndexFunction(UDFContext *,CLIPSValue *);
+   void                           EvalFunction(UDFContext *,CLIPSValue *);
    void                           BuildFunction(UDFContext *,CLIPSValue *);
-   void                           StringToFieldFunction(void *,DATA_OBJECT *);
+   void                           StringToFieldFunction(UDFContext *,CLIPSValue *);
    void                           StringToField(void *,const char *,DATA_OBJECT *);
 
 #endif /* _H_strngfun */

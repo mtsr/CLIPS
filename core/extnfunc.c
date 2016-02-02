@@ -128,7 +128,9 @@ bool EnvDefineFunction(
   int (*pointer)(void *),
   const char *actualName)
   {
-   return(DefineFunction3(theEnv,name,returnType,0,pointer,actualName,UNBOUNDED,UNBOUNDED,NULL,NULL));
+   return(DefineFunction3(theEnv,name,returnType,0,
+                          (void (*)(UDFContext *,CLIPSValue *)) pointer,
+                          actualName,UNBOUNDED,UNBOUNDED,NULL,NULL));
   }
   
 /************************************************************/
@@ -143,7 +145,9 @@ bool EnvDefineFunctionWithContext(
   const char *actualName,
   void *context)
   {
-   return(DefineFunction3(theEnv,name,returnType,0,pointer,actualName,UNBOUNDED,UNBOUNDED,NULL,context));
+   return(DefineFunction3(theEnv,name,returnType,0,
+                          (void (*)(UDFContext *,CLIPSValue *))pointer,
+                          actualName,UNBOUNDED,UNBOUNDED,NULL,context));
   }
   
 /*******************************************************/
@@ -158,7 +162,9 @@ bool EnvDefineFunction2(
   const char *actualName,
   const char *restrictions)
   {
-   return(DefineFunction3(theEnv,name,returnType,0,pointer,actualName,UNBOUNDED,UNBOUNDED,restrictions,NULL));
+   return(DefineFunction3(theEnv,name,returnType,0,
+                          (void (*)(UDFContext *,CLIPSValue *)) pointer,
+                          actualName,UNBOUNDED,UNBOUNDED,restrictions,NULL));
   }
 
 /*************************************************************/
@@ -174,7 +180,9 @@ bool EnvDefineFunction2WithContext(
   const char *restrictions,
   void *context)
   {
-   return(DefineFunction3(theEnv,name,returnType,0,pointer,actualName,UNBOUNDED,UNBOUNDED,restrictions,context));
+   return(DefineFunction3(theEnv,name,returnType,0,
+                          (void (*)(UDFContext *,CLIPSValue *)) pointer,
+                          actualName,UNBOUNDED,UNBOUNDED,restrictions,context));
   }
 
 /*******************************************************/
@@ -192,7 +200,8 @@ bool EnvAddUDF(
   const char *restrictions,
   void *context)
   {
-   return(DefineFunction3(theEnv,name,'z',returnTypeBits,PTIEF pointer,actualName,minArgs,maxArgs,restrictions,context));
+   return(DefineFunction3(theEnv,name,'z',returnTypeBits,pointer,
+                          actualName,minArgs,maxArgs,restrictions,context));
   }
 
 /*************************************************************/
@@ -226,7 +235,7 @@ bool DefineFunction3(
   const char *name,
   int returnType,
   unsigned returnTypeBits,
-  int (*pointer)(void *), // TBD New UDF Cast void (*pointer)(void *,DATA_OBJECT_PTR)
+  void (*pointer)(UDFContext *,CLIPSValue *),
   const char *actualName,
   int minArgs,
   int maxArgs,
@@ -276,7 +285,7 @@ bool DefineFunction3(
      
    newFunction->returnValueType = (char) returnType;
    newFunction->unknownReturnValueType = returnTypeBits;
-   newFunction->functionPointer = (int (*)(void)) pointer;
+   newFunction->functionPointer = pointer;
    newFunction->actualFunctionName = actualName;
    
    newFunction->minArgs = minArgs;
@@ -917,63 +926,97 @@ bool UDFNextArgument(
      }
 
    EvaluateExpression(theEnv,argPtr,returnValue);
-   if (EvaluationData(theEnv)->EvaluationError)
-     {
-      ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
-      PrintTypesString(theEnv,WERROR,expectedType,true);
-      return false;
-     }
-   
+
    switch (returnValue->type)
      {
       case RVOID:
         returnValue->bitType = VOID_TYPE;
-        if (expectedType & VOID_TYPE) return(true);
+        if (expectedType & VOID_TYPE)
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
 
       case INTEGER:
         returnValue->bitType = INTEGER_TYPE;
-        if (expectedType & INTEGER_TYPE) return(true);
+        if (expectedType & INTEGER_TYPE)
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
 
       case FLOAT:
         returnValue->bitType = FLOAT_TYPE;
-        if (expectedType & FLOAT_TYPE) return(true);
+        if (expectedType & FLOAT_TYPE)
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
 
       case SYMBOL:
         returnValue->bitType = SYMBOL_TYPE;
-        if (expectedType & SYMBOL_TYPE) return(true);
+        if (expectedType & SYMBOL_TYPE) 
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
 
       case STRING:
         returnValue->bitType = STRING_TYPE;
-        if (expectedType & STRING_TYPE) return(true);
+        if (expectedType & STRING_TYPE) 
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
 
       case INSTANCE_NAME:
         returnValue->bitType = INSTANCE_NAME_TYPE;
-        if (expectedType & INSTANCE_NAME_TYPE) return(true);
+        if (expectedType & INSTANCE_NAME_TYPE) 
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
 
       case EXTERNAL_ADDRESS:
         returnValue->bitType = EXTERNAL_ADDRESS_TYPE;
-        if (expectedType & EXTERNAL_ADDRESS_TYPE) return(true);
+        if (expectedType & EXTERNAL_ADDRESS_TYPE)
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
 
       case FACT_ADDRESS:
         returnValue->bitType = FACT_ADDRESS_TYPE;
-        if (expectedType & FACT_ADDRESS_TYPE) return(true);
+        if (expectedType & FACT_ADDRESS_TYPE) 
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
 
       case INSTANCE_ADDRESS:
         returnValue->bitType = INSTANCE_ADDRESS_TYPE;
-        if (expectedType & INSTANCE_ADDRESS_TYPE) return(true);
+        if (expectedType & INSTANCE_ADDRESS_TYPE) 
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
         
       case MULTIFIELD:
         returnValue->bitType = MULTIFIELD_TYPE;
-        if (expectedType & MULTIFIELD_TYPE) return(true);
+        if (expectedType & MULTIFIELD_TYPE) 
+          {
+           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           else return true;
+          }
         break;
      }
 
@@ -1015,10 +1058,23 @@ bool UDFNthArgument(
 /******************************/
 void UDFInvalidArgumentMessage(
   UDFContext *context,
-  int argumentPosition,
   const char *typeString)
   {
-   ExpectedTypeError1(UDFContextEnvironment(context),UDFContextFunctionName(context),argumentPosition,typeString);
+   ExpectedTypeError1(UDFContextEnvironment(context),
+                      UDFContextFunctionName(context),
+                      context->lastPosition-1,typeString);
+  }
+
+/******************/
+/* UDFThrowError: */
+/******************/
+void UDFThrowError(
+  UDFContext *context)
+  {
+   Environment *theEnv = UDFContextEnvironment(context);
+   
+   EnvSetHaltExecution(theEnv,true);
+   EnvSetEvaluationError(theEnv,true);
   }
 
 /**************************/

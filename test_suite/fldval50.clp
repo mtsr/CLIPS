@@ -1473,9 +1473,9 @@ y)))
  (assert (multifield3 ?mult3))                            ;CR0008
  (bind ?mult3.5 (create$ ?mult3 (create$ cww)  a (create$) b));CR0014
  (assert (multifield3 ?mult3.5))                                         ;CR0008 CR0014 
- (bind ?mult4 (str-explode "1 two"))             ;CR0008 DR0093
+ (bind ?mult4 (explode$ "1 two"))                         ;CR0008 DR0093
  (assert (multifield4 ?mult4))                                           ;CR0008 DR0093
- (bind ?string (str-implode ?mult4))                         ;CR0008
+ (bind ?string (implode$ ?mult4))                         ;CR0008
  (assert (multifield4 ?string))                                           ;CR0008
  (assert (multifield5 =(subseq$ ?mult3.5 3 33))))
 

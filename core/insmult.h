@@ -39,12 +39,12 @@
    void                           SetupInstanceMultifieldCommands(void *);
 #endif
 
-   void                           MVSlotReplaceCommand(void *,DATA_OBJECT *);
-   void                           MVSlotInsertCommand(void *,DATA_OBJECT *);
-   void                           MVSlotDeleteCommand(void *,DATA_OBJECT *);
-   bool                           DirectMVReplaceCommand(void *);
-   bool                           DirectMVInsertCommand(void *);
-   bool                           DirectMVDeleteCommand(void *);
+   void                           MVSlotReplaceCommand(UDFContext *,CLIPSValue *);
+   void                           MVSlotInsertCommand(UDFContext *,CLIPSValue *);
+   void                           MVSlotDeleteCommand(UDFContext *,CLIPSValue *);
+   void                           DirectMVReplaceCommand(UDFContext *,CLIPSValue *);
+   void                           DirectMVInsertCommand(UDFContext *,CLIPSValue *);
+   void                           DirectMVDeleteCommand(UDFContext *,CLIPSValue *);
 
 #endif /* _H_insmult */
 

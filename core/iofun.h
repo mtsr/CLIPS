@@ -69,20 +69,20 @@
    void                           IOFunctionDefinitions(void *);
 #if IO_FUNCTIONS
    bool                           SetFullCRLF(void *,bool);
-   void                           PrintoutFunction(void *);
-   void                           PrintFunction(void *);
-   void                           PrintlnFunction(void *);
-   void                           ReadFunction(void *,DATA_OBJECT_PTR);
-   bool                           OpenFunction(void *);
-   bool                           CloseFunction(void *);
-   int                            GetCharFunction(void *);
-   void                           PutCharFunction(void *);
-   void                           ReadlineFunction(void *,DATA_OBJECT_PTR);
-   void                          *FormatFunction(void *);
-   bool                           RemoveFunction(void *);
-   bool                           RenameFunction(void *);
-   void                           SetLocaleFunction(void *,DATA_OBJECT_PTR);
-   void                           ReadNumberFunction(void *,DATA_OBJECT_PTR);
+   void                           PrintoutFunction(UDFContext *,CLIPSValue *);
+   void                           PrintFunction(UDFContext *,CLIPSValue *);
+   void                           PrintlnFunction(UDFContext *,CLIPSValue *);
+   void                           ReadFunction(UDFContext *,CLIPSValue *);
+   void                           OpenFunction(UDFContext *,CLIPSValue *);
+   void                           CloseFunction(UDFContext *,CLIPSValue *);
+   void                           GetCharFunction(UDFContext *,CLIPSValue *);
+   void                           PutCharFunction(UDFContext *,CLIPSValue *);
+   void                           ReadlineFunction(UDFContext *,CLIPSValue *);
+   void                           FormatFunction(UDFContext *,CLIPSValue *);
+   void                           RemoveFunction(UDFContext *,CLIPSValue *);
+   void                           RenameFunction(UDFContext *,CLIPSValue *);
+   void                           SetLocaleFunction(UDFContext *,CLIPSValue *);
+   void                           ReadNumberFunction(UDFContext *,CLIPSValue *);
 #endif
 
 #endif /* _H_iofun */

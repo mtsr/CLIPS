@@ -127,21 +127,18 @@ static void PrintInstanceWatch(void *,const char *,INSTANCE_TYPE *);
                     <slot-override>*)
  ***********************************************************/
 void InitializeInstanceCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    INSTANCE_TYPE *ins;
-
-   SetpType(result,SYMBOL);
-   SetpValue(result,EnvFalseSymbol(theEnv));
+   Environment *theEnv = UDFContextEnvironment(context);
+   
+   CVSetBoolean(returnValue,false);
    ins = CheckInstance(theEnv,"initialize-instance");
    if (ins == NULL)
      return;
    if (CoreInitializeInstance(theEnv,ins,GetFirstArgument()->nextArg) == true)
-     {
-      SetpType(result,INSTANCE_NAME);
-      SetpValue(result,(void *) ins->name);
-     }
+     { CVSetCLIPSInstanceName(returnValue,ins->name); }
   }
 
 /****************************************************************
@@ -158,16 +155,16 @@ void InitializeInstanceCommand(
                  is specified.
  ****************************************************************/
 void MakeInstanceCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    SYMBOL_HN *iname;
    INSTANCE_TYPE *ins;
    DATA_OBJECT temp;
    DEFCLASS *cls;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   SetpType(result,SYMBOL);
-   SetpValue(result,EnvFalseSymbol(theEnv));
+   CVSetBoolean(returnValue,false);
    EvaluateExpression(theEnv,GetFirstArgument(),&temp);
    if ((GetType(temp) != SYMBOL) &&
        (GetType(temp) != INSTANCE_NAME))
@@ -209,10 +206,7 @@ void MakeInstanceCommand(
      return;
      
    if (CoreInitializeInstance(theEnv,ins,GetFirstArgument()->nextArg->nextArg) == true)
-     {
-      result->type = INSTANCE_NAME;
-      result->value = (void *) GetFullInstanceName(theEnv,ins);
-     }
+     { CVSetCLIPSInstanceName(returnValue,GetFullInstanceName(theEnv,ins)); }
    else
      QuashInstance(theEnv,ins);
   }
@@ -481,20 +475,25 @@ INSTANCE_TYPE *BuildInstance(
   NOTES        : H/L Syntax: (init-slots <instance>)
  *****************************************************************************/
 void InitSlotsCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   SetpType(result,SYMBOL);
-   SetpValue(result,EnvFalseSymbol(theEnv));
+   Environment *theEnv = UDFContextEnvironment(context);
+   
    EvaluationData(theEnv)->EvaluationError = false;
+   
    if (CheckCurrentMessage(theEnv,"init-slots",true) == false)
-     return;
-   EvaluateClassDefaults(theEnv,GetActiveInstance(theEnv));
-   if (! EvaluationData(theEnv)->EvaluationError)
      {
-      SetpType(result,INSTANCE_ADDRESS);
-      SetpValue(result,(void *) GetActiveInstance(theEnv));
+      CVSetBoolean(returnValue,false);
+      return;
      }
+     
+   EvaluateClassDefaults(theEnv,GetActiveInstance(theEnv));
+   
+   if (! EvaluationData(theEnv)->EvaluationError)
+     { CVSetInstanceAddress(returnValue,GetActiveInstance(theEnv)); }
+   else
+     { CVSetBoolean(returnValue,false); }
   }
 
 /******************************************************
@@ -634,13 +633,14 @@ bool QuashInstance(
                     <slot-override>*)
  ****************************************************/
 void InactiveInitializeInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   int ov;
-
+   bool ov;
+   Environment *theEnv = UDFContextEnvironment(context);
+   
    ov = SetDelayObjectPatternMatching(theEnv,true);
-   InitializeInstanceCommand(theEnv,result);
+   InitializeInstanceCommand(context,returnValue);
    SetDelayObjectPatternMatching(theEnv,ov);
   }
 
@@ -658,13 +658,14 @@ void InactiveInitializeInstance(
                     <slot-override>*)
  **************************************************************/
 void InactiveMakeInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    bool ov;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    ov = SetDelayObjectPatternMatching(theEnv,true);
-   MakeInstanceCommand(theEnv,result);
+   MakeInstanceCommand(context,returnValue);
    SetDelayObjectPatternMatching(theEnv,ov);
   }
 

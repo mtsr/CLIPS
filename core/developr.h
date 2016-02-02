@@ -36,18 +36,18 @@
 #define _H_developr
 
    void                           DeveloperCommands(void *);
-   void                           PrimitiveTablesInfo(void *);
-   void                           PrimitiveTablesUsage(void *);
+   void                           PrimitiveTablesInfo(UDFContext *,CLIPSValue *);
+   void                           PrimitiveTablesUsage(UDFContext *,CLIPSValue *);
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
    void                           ShowFactPatternNetwork(UDFContext *,CLIPSValue *);
-   bool                           ValidateFactIntegrity(void *);
+   void                           ValidateFactIntegrity(UDFContext *,CLIPSValue *);
 #endif
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-   void                           PrintObjectPatternNetwork(void *);
+   void                           PrintObjectPatternNetwork(UDFContext *,CLIPSValue *);
 #endif
 #if OBJECT_SYSTEM
-   void                           InstanceTableUsage(void *);
+   void                           InstanceTableUsage(UDFContext *,CLIPSValue *);
 #endif
 #if DEFRULE_CONSTRUCT
    void                           ValidateBetaMemories(void *);

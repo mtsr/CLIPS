@@ -44,16 +44,16 @@
 
 #include "object.h"
 
-   void                           InitializeInstanceCommand(void *,DATA_OBJECT *);
-   void                           MakeInstanceCommand(void *,DATA_OBJECT *);
+   void                           InitializeInstanceCommand(UDFContext *,CLIPSValue *);
+   void                           MakeInstanceCommand(UDFContext *,CLIPSValue *);
    SYMBOL_HN                     *GetFullInstanceName(void *,INSTANCE_TYPE *);
    INSTANCE_TYPE                 *BuildInstance(void *,SYMBOL_HN *,DEFCLASS *,bool);
-   void                           InitSlotsCommand(void *,DATA_OBJECT *);
+   void                           InitSlotsCommand(UDFContext *,CLIPSValue *);
    bool                           QuashInstance(void *,INSTANCE_TYPE *);
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-   void                           InactiveInitializeInstance(void *,DATA_OBJECT *);
-   void                           InactiveMakeInstance(void *,DATA_OBJECT *);
+   void                           InactiveInitializeInstance(UDFContext *,CLIPSValue *);
+   void                           InactiveMakeInstance(UDFContext *,CLIPSValue *);
 #endif
 
 #endif /* _H_insmngr */

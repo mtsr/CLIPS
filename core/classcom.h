@@ -70,8 +70,8 @@
    void                    UndefclassCommand(UDFContext *,CLIPSValue *);
    unsigned short          EnvSetClassDefaultsMode(void *,unsigned short);
    unsigned short          EnvGetClassDefaultsMode(void *);
-   void                   *GetClassDefaultsModeCommand(void *);
-   void                   *SetClassDefaultsModeCommand(void *);
+   void                    GetClassDefaultsModeCommand(UDFContext *,CLIPSValue *);
+   void                    SetClassDefaultsModeCommand(UDFContext *,CLIPSValue *);
 
 #if DEBUGGING_FUNCTIONS
    void                    PPDefclassCommand(UDFContext *,CLIPSValue *);
@@ -90,7 +90,7 @@
    bool                    EnvUndefclass(void *,void *);
    bool                    HasSuperclass(DEFCLASS *,DEFCLASS *);
 
-   SYMBOL_HN              *CheckClassAndSlot(void *,const char *,DEFCLASS **);
+   SYMBOL_HN              *CheckClassAndSlot(UDFContext *,const char *,DEFCLASS **);
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    void                    SaveDefclasses(void *,void *,const char *);

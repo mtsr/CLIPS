@@ -676,23 +676,27 @@ bool HasSuperclass(
   NOTES        : None
  ********************************************************************/
 SYMBOL_HN *CheckClassAndSlot(
-   void *theEnv,
+   UDFContext *context,
    const char *func,
    DEFCLASS **cls)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgTypeCheck(theEnv,func,1,SYMBOL,&temp) == false)
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      return(NULL);
-   *cls = LookupDefclassByMdlOrScope(theEnv,DOToString(temp));
+     
+   *cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (*cls == NULL)
      {
-      ClassExistError(theEnv,func,DOToString(temp));
+      ClassExistError(theEnv,func,CVToString(&theArg));
       return(NULL);
      }
-   if (EnvArgTypeCheck(theEnv,func,2,SYMBOL,&temp) == false)
+
+   if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
      return(NULL);
-   return((SYMBOL_HN *) GetValue(temp));
+
+   return (SYMBOL_HN *) CVToRawValue(&theArg);
   }
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -799,24 +803,26 @@ unsigned short EnvGetClassDefaultsMode(
 /* GetClassDefaultsModeCommand: H/L access routine */
 /*   for the get-class-defaults-mode command.      */
 /***************************************************/
-void *GetClassDefaultsModeCommand(
-  void *theEnv)
+void GetClassDefaultsModeCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   EnvArgCountCheck(theEnv,"get-class-defaults-mode",EXACTLY,0);
-
-   return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv))));
+   Environment *theEnv = UDFContextEnvironment(context);
+   CVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
   }
 
 /***************************************************/
 /* SetClassDefaultsModeCommand: H/L access routine */
 /*   for the set-class-defaults-mode command.      */
 /***************************************************/
-void *SetClassDefaultsModeCommand( // TBD enum?
-  void *theEnv)
+void SetClassDefaultsModeCommand( // TBD enum?
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT argPtr;
+   CLIPSValue theArg;
    const char *argument;
    unsigned short oldMode;
+   Environment *theEnv = UDFContextEnvironment(context);
    
    oldMode = DefclassData(theEnv)->ClassDefaultsMode;
 
@@ -824,13 +830,10 @@ void *SetClassDefaultsModeCommand( // TBD enum?
    /* Check for the correct number and type of arguments. */
    /*=====================================================*/
 
-   if (EnvArgCountCheck(theEnv,"set-class-defaults-mode",EXACTLY,1) == -1)
-     { return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)))); }
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     { CVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv))); }
 
-   if (EnvArgTypeCheck(theEnv,"set-class-defaults-mode",1,SYMBOL,&argPtr) == false)
-     { return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)))); }
-
-   argument = DOToString(argPtr);
+   argument = CVToString(&theArg);
 
    /*=============================================*/
    /* Set the strategy to the specified strategy. */
@@ -842,16 +845,16 @@ void *SetClassDefaultsModeCommand( // TBD enum?
      { EnvSetClassDefaultsMode(theEnv,CONVENIENCE_MODE); }
    else
      {
-      ExpectedTypeError1(theEnv,"set-class-defaults-mode",1,
-      "symbol with value conservation or convenience");
-      return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv))));
+      UDFInvalidArgumentMessage(context,"symbol with value conservation or convenience");
+      CVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
+      return;
      }
 
    /*===================================*/
    /* Return the old value of the mode. */
    /*===================================*/
 
-   return((SYMBOL_HN *) EnvAddSymbol(theEnv,GetClassDefaultsModeName(oldMode)));
+   CVSetSymbol(returnValue,GetClassDefaultsModeName(oldMode));
   }
 
 /*******************************************************************/

@@ -88,7 +88,7 @@ struct bsaveData
 #define BsaveData(theEnv) ((struct bsaveData *) GetEnvironmentData(theEnv,BSAVE_DATA))
 
    void                    InitializeBsaveData(void *);
-   bool                    BsaveCommand(void *);
+   void                    BsaveCommand(UDFContext *,CLIPSValue *);
 #if BLOAD_AND_BSAVE
    bool                    EnvBsave(void *,const char *);
    void                    MarkNeededItems(void *,struct expr *);

@@ -77,7 +77,7 @@
    =========================================
    ***************************************** */
 
-static void SlotInfoSupportFunction(void *,DATA_OBJECT *,const char *,void (*)(void *,void *,const char *,DATA_OBJECT *));
+static void SlotInfoSupportFunction(UDFContext *,DATA_OBJECT *,const char *,void (*)(void *,void *,const char *,DATA_OBJECT *));
 static unsigned CountSubclasses(DEFCLASS *,bool,int);
 static unsigned StoreSubclasses(void *,unsigned,DEFCLASS *,int,int,bool);
 static SLOT_DESC *SlotInfoSlot(void *,DATA_OBJECT *,DEFCLASS *,const char *,const char *);
@@ -90,21 +90,29 @@ static SLOT_DESC *SlotInfoSlot(void *,DATA_OBJECT *,DEFCLASS *,const char *,cons
   SIDE EFFECTS : None
   NOTES        : Syntax: (class-abstractp <class>)
  *********************************************************************/
-bool ClassAbstractPCommand(
-  void *theEnv)
+void ClassAbstractPCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT tmp;
+   CLIPSValue theArg;
    DEFCLASS *cls;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvArgTypeCheck(theEnv,"class-abstractp",1,SYMBOL,&tmp) == false)
-     return(false);
-   cls = LookupDefclassByMdlOrScope(theEnv,DOToString(tmp));
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+     
+   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (cls == NULL)
      {
-      ClassExistError(theEnv,"class-abstractp",ValueToString(tmp.value));
-      return(false);
+      ClassExistError(theEnv,"class-abstractp",CVToString(&theArg));
+      CVSetBoolean(returnValue,false);
+      return;
      }
-   return(EnvClassAbstractP(theEnv,(void *) cls));
+     
+   CVSetBoolean(returnValue,(EnvClassAbstractP(theEnv,(void *) cls)));
   }
 
 #if DEFRULE_CONSTRUCT
@@ -119,21 +127,29 @@ bool ClassAbstractPCommand(
   SIDE EFFECTS : None
   NOTES        : Syntax: (class-reactivep <class>)
  *****************************************************************/
-bool ClassReactivePCommand(
-  void *theEnv)
+void ClassReactivePCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT tmp;
+   CLIPSValue theArg;
    DEFCLASS *cls;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvArgTypeCheck(theEnv,"class-reactivep",1,SYMBOL,&tmp) == false)
-     return(false);
-   cls = LookupDefclassByMdlOrScope(theEnv,DOToString(tmp));
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+
+   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (cls == NULL)
      {
-      ClassExistError(theEnv,"class-reactivep",ValueToString(tmp.value));
-      return(false);
+      ClassExistError(theEnv,"class-reactivep",CVToString(&theArg));
+      CVSetBoolean(returnValue,false);
+      return;
      }
-   return(EnvClassReactiveP(theEnv,(void *) cls));
+     
+   CVSetBoolean(returnValue,EnvClassReactiveP(theEnv,(void *) cls));
   }
 
 #endif
@@ -153,33 +169,31 @@ bool ClassReactivePCommand(
   NOTES        : None
  ***********************************************************/
 void *ClassInfoFnxArgs(
-  void *theEnv,
+  UDFContext *context,
   const char *fnx,
   bool *inhp)
   {
    void *clsptr;
-   DATA_OBJECT tmp;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    *inhp = false;
-   if (EnvRtnArgCount(theEnv) == 0)
-     {
-      ExpectedCountError(theEnv,fnx,AT_LEAST,1);
-      EnvSetEvaluationError(theEnv,true);
-      return(NULL);
-     }
-   if (EnvArgTypeCheck(theEnv,fnx,1,SYMBOL,&tmp) == false)
-     return(NULL);
-   clsptr = (void *) LookupDefclassByMdlOrScope(theEnv,DOToString(tmp));
+
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     { return NULL; }
+     
+   clsptr = (void *) LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (clsptr == NULL)
      {
-      ClassExistError(theEnv,fnx,ValueToString(tmp.value));
+      ClassExistError(theEnv,fnx,CVToString(&theArg));
       return(NULL);
      }
-   if (EnvRtnArgCount(theEnv) == 2)
+   if (UDFHasNextArgument(context))
      {
-      if (EnvArgTypeCheck(theEnv,fnx,2,SYMBOL,&tmp) == false)
-        return(NULL);
-      if (strcmp(ValueToString(tmp.value),"inherit") == 0)
+      if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
+        { return(NULL); }
+        
+      if (strcmp(CVToString(&theArg),"inherit") == 0)
         *inhp = true;
       else
         {
@@ -202,19 +216,20 @@ void *ClassInfoFnxArgs(
   NOTES        : Syntax: (class-slots <class> [inherit])
  ********************************************************************/
 void ClassSlotsCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    bool inhp;
    void *clsptr;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   clsptr = ClassInfoFnxArgs(theEnv,"class-slots",&inhp);
+   clsptr = ClassInfoFnxArgs(context,"class-slots",&inhp);
    if (clsptr == NULL)
      {
-      EnvSetMultifieldErrorValue(theEnv,result);
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
       return;
      }
-   EnvClassSlots(theEnv,clsptr,result,inhp);
+   EnvClassSlots(theEnv,clsptr,returnValue,inhp);
   }
 
 /************************************************************************
@@ -228,19 +243,20 @@ void ClassSlotsCommand(
   NOTES        : Syntax: (class-superclasses <class> [inherit])
  ************************************************************************/
 void ClassSuperclassesCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    bool inhp;
    void *clsptr;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   clsptr = ClassInfoFnxArgs(theEnv,"class-superclasses",&inhp);
+   clsptr = ClassInfoFnxArgs(context,"class-superclasses",&inhp);
    if (clsptr == NULL)
      {
-      EnvSetMultifieldErrorValue(theEnv,result);
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
       return;
      }
-   EnvClassSuperclasses(theEnv,clsptr,result,inhp);
+   EnvClassSuperclasses(theEnv,clsptr,returnValue,inhp);
   }
 
 /************************************************************************
@@ -254,19 +270,20 @@ void ClassSuperclassesCommand(
   NOTES        : Syntax: (class-subclasses <class> [inherit])
  ************************************************************************/
 void ClassSubclassesCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    bool inhp;
    void *clsptr;
+   Environment *theEnv = UDFContextEnvironment(context);
      
-   clsptr = ClassInfoFnxArgs(theEnv,"class-subclasses",&inhp);
+   clsptr = ClassInfoFnxArgs(context,"class-subclasses",&inhp);
    if (clsptr == NULL)
      {
-      EnvSetMultifieldErrorValue(theEnv,result);
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
       return;
      }
-   EnvClassSubclasses(theEnv,clsptr,result,inhp);
+   EnvClassSubclasses(theEnv,clsptr,returnValue,inhp);
   }
 
 /***********************************************************************
@@ -280,23 +297,24 @@ void ClassSubclassesCommand(
   NOTES        : Syntax: (get-defmessage-handler-list <class> [inherit])
  ***********************************************************************/
 void GetDefmessageHandlersListCmd(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    bool inhp;
    void *clsptr;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvRtnArgCount(theEnv) == 0)
-      EnvGetDefmessageHandlerList(theEnv,NULL,result,false);
+   if (! UDFHasNextArgument(context))
+      EnvGetDefmessageHandlerList(theEnv,NULL,returnValue,false);
    else
      {
-      clsptr = ClassInfoFnxArgs(theEnv,"get-defmessage-handler-list",&inhp);
+      clsptr = ClassInfoFnxArgs(context,"get-defmessage-handler-list",&inhp);
       if (clsptr == NULL)
         {
-         EnvSetMultifieldErrorValue(theEnv,result);
+         EnvSetMultifieldErrorValue(theEnv,returnValue);
          return;
         }
-      EnvGetDefmessageHandlerList(theEnv,clsptr,result,inhp);
+      EnvGetDefmessageHandlerList(theEnv,clsptr,returnValue,inhp);
      }
   }
 
@@ -304,52 +322,52 @@ void GetDefmessageHandlersListCmd(
  Slot Information Access Functions
  *********************************/
 void SlotFacetsCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   SlotInfoSupportFunction(theEnv,result,"slot-facets",EnvSlotFacets);
+   SlotInfoSupportFunction(context,returnValue,"slot-facets",EnvSlotFacets);
   }
 
 void SlotSourcesCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
-  {   
-   SlotInfoSupportFunction(theEnv,result,"slot-sources",EnvSlotSources);
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   SlotInfoSupportFunction(context,returnValue,"slot-sources",EnvSlotSources);
   }
 
 void SlotTypesCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   SlotInfoSupportFunction(theEnv,result,"slot-types",EnvSlotTypes);
+   SlotInfoSupportFunction(context,returnValue,"slot-types",EnvSlotTypes);
   }
 
 void SlotAllowedValuesCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   SlotInfoSupportFunction(theEnv,result,"slot-allowed-values",EnvSlotAllowedValues);
+   SlotInfoSupportFunction(context,returnValue,"slot-allowed-values",EnvSlotAllowedValues);
   }
 
 void SlotAllowedClassesCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   SlotInfoSupportFunction(theEnv,result,"slot-allowed-classes",EnvSlotAllowedClasses);
+   SlotInfoSupportFunction(context,returnValue,"slot-allowed-classes",EnvSlotAllowedClasses);
   }
 
 void SlotRangeCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   SlotInfoSupportFunction(theEnv,result,"slot-range",EnvSlotRange);
+   SlotInfoSupportFunction(context,returnValue,"slot-range",EnvSlotRange);
   }
 
 void SlotCardinalityCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   SlotInfoSupportFunction(theEnv,result,"slot-cardinality",EnvSlotCardinality);
+   SlotInfoSupportFunction(context,returnValue,"slot-cardinality",EnvSlotCardinality);
   }
 
 /********************************************************************
@@ -1010,21 +1028,22 @@ void EnvSlotCardinality(
   NOTES        : None
  *****************************************************/
 static void SlotInfoSupportFunction(
-  void *theEnv,
-  DATA_OBJECT *result,
+  UDFContext *context,
+  CLIPSValue *returnValue,
   const char *fnxname,
   void (*fnx)(void *,void *,const char *,DATA_OBJECT *))
   {
    SYMBOL_HN *ssym;
    DEFCLASS *cls;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   ssym = CheckClassAndSlot(theEnv,fnxname,&cls);
+   ssym = CheckClassAndSlot(context,fnxname,&cls);
    if (ssym == NULL)
      {
-      EnvSetMultifieldErrorValue(theEnv,result);
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
       return;
      }
-   (*fnx)(theEnv,(void *) cls,ValueToString(ssym),result);
+   (*fnx)(theEnv,(void *) cls,ValueToString(ssym),returnValue);
   }
 
 /*****************************************************************

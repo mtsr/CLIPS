@@ -576,30 +576,30 @@ bool GetNumericArgument(
 /*   NULL is returned.                                               */
 /*********************************************************************/
 const char *GetLogicalName(
-  void *theEnv,
-  int whichArgument,
+  UDFContext *context,
   const char *defaultLogicalName)
   {
    const char *logicalName;
-   DATA_OBJECT result;
+   CLIPSValue theArg;
+   void *theEnv = UDFContextEnvironment(context);
 
-   EnvRtnUnknown(theEnv,whichArgument,&result);
+   if (! UDFNextArgument(context,ANY_TYPE,&theArg))
+     { return(NULL); }
 
-   if ((GetType(result) == SYMBOL) ||
-       (GetType(result) == STRING) ||
-       (GetType(result) == INSTANCE_NAME))
+   if (CVIsType(&theArg,LEXEME_TYPES) ||
+       CVIsType(&theArg,INSTANCE_NAME_TYPE))
      {
-      logicalName = ValueToString(result.value);
+      logicalName = CVToString(&theArg);
       if ((strcmp(logicalName,"t") == 0) || (strcmp(logicalName,"T") == 0))
         { logicalName = defaultLogicalName; }
      }
-   else if (GetType(result) == FLOAT)
+   else if (CVIsType(&theArg,FLOAT_TYPE))
      {
-      logicalName = ValueToString(EnvAddSymbol(theEnv,FloatToString(theEnv,DOToDouble(result))));
+      logicalName = ValueToString(EnvAddSymbol(theEnv,FloatToString(theEnv,CVToFloat(&theArg))));
      }
-   else if (GetType(result) == INTEGER)
+   else if (CVIsType(&theArg,INTEGER_TYPE))
      {
-      logicalName = ValueToString(EnvAddSymbol(theEnv,LongIntegerToString(theEnv,DOToLong(result))));
+      logicalName = ValueToString(EnvAddSymbol(theEnv,LongIntegerToString(theEnv,CVToInteger(&theArg))));
      }
    else
      { logicalName = NULL; }
@@ -614,20 +614,17 @@ const char *GetLogicalName(
 /*   returned, otherwise NULL is returned.                  */
 /************************************************************/
 const char *GetFileName(
-  void *theEnv,
-  const char *functionName,
-  int whichArgument)
+  UDFContext *context)
   {
-   DATA_OBJECT result;
-
-   EnvRtnUnknown(theEnv,whichArgument,&result);
-   if ((GetType(result) != STRING) && (GetType(result) != SYMBOL))
+   CLIPSValue theArg;
+   
+   if (! UDFNextArgument(context,LEXEME_TYPES,&theArg))
      {
-      ExpectedTypeError1(theEnv,functionName,whichArgument,"file name");
+      UDFInvalidArgumentMessage(context,"file name");
       return(NULL);
      }
 
-   return(DOToString(result));
+   return(CVToString(&theArg));
   }
 
 /******************************************************************/
@@ -723,7 +720,7 @@ const char *GetConstructName(
 
    if (! CVIsType(&result,SYMBOL_TYPE))
      {
-      UDFInvalidArgumentMessage(context,1,constructType);
+      UDFInvalidArgumentMessage(context,constructType);
       return(NULL);
      }
 

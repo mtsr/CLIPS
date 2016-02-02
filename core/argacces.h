@@ -51,8 +51,8 @@
    struct dataObject             *EnvRtnUnknown(void *,int,struct dataObject *);
    bool                           EnvArgTypeCheck(void *,const char *,int,int,struct dataObject *);
    bool                           GetNumericArgument(void *,struct expr *,const char *,struct dataObject *,bool,int);
-   const char                    *GetLogicalName(void *,int,const char *);
-   const char                    *GetFileName(void *,const char *,int);
+   const char                    *GetLogicalName(UDFContext *,const char *);
+   const char                    *GetFileName(UDFContext *);
    const char                    *GetConstructName(UDFContext *,const char *,const char *);
    void                           ExpectedCountError(void *,const char *,int,int);
    void                           OpenErrorMessage(void *,const char *,const char *);

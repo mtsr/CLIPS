@@ -1027,7 +1027,7 @@ void SetStrategyCommand(
      { EnvSetStrategy(theEnv,RANDOM_STRATEGY); }
    else
      {
-      UDFInvalidArgumentMessage(context,1,
+      UDFInvalidArgumentMessage(context,
          "symbol with value depth, breadth, lex, mea, complexity, simplicity, or random");
      }
   }

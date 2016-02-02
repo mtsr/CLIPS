@@ -60,13 +60,13 @@ typedef struct messageHandlerLink
                                          DATA_OBJECT *,EXPRESSION *);
    void             EnvSend(void *,DATA_OBJECT *,const char *,const char *,DATA_OBJECT *);
    void             DestroyHandlerLinks(void *,HANDLER_LINK *);
-   void             SendCommand(void *,DATA_OBJECT *);
+   void             SendCommand(UDFContext *,CLIPSValue *);
    DATA_OBJECT     *GetNthMessageArgument(void *,int);
 
    bool             NextHandlerAvailable(void *);
    void             NextHandlerAvailableFunction(UDFContext *,CLIPSValue *);
 
-   void             CallNextHandler(void *,DATA_OBJECT *);
+   void             CallNextHandler(UDFContext *,CLIPSValue *);
 
    void             FindApplicableOfName(void *,DEFCLASS *,HANDLER_LINK *[],
                                                 HANDLER_LINK *[],SYMBOL_HN *);
@@ -76,8 +76,8 @@ typedef struct messageHandlerLink
    bool             HandlerSlotGetFunction(void *,void *,DATA_OBJECT *);
    void             PrintHandlerSlotPutFunction(void *,const char *,void *);
    bool             HandlerSlotPutFunction(void *,void *,DATA_OBJECT *);
-   void             DynamicHandlerGetSlot(void *,DATA_OBJECT *);
-   void             DynamicHandlerPutSlot(void *,DATA_OBJECT *);
+   void             DynamicHandlerGetSlot(UDFContext *,CLIPSValue *);
+   void             DynamicHandlerPutSlot(UDFContext *,CLIPSValue *);
 
 #endif /* _H_object */
 

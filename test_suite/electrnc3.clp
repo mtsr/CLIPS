@@ -325,7 +325,7 @@
    ;; Set all of the sources to zero.
    (do-for-all-instances ((?source SOURCE)) TRUE (send ?source put-output-1 0))
    ;; Determine the initial LED response.
-   (assert (result ?*gray-code* =(str-implode (LED-response))))
+   (assert (result ?*gray-code* =(implode$ (LED-response))))
    ;; Begin the iteration process of looping through the gray code combinations.
    (retract ?f)
    (assert (current-iteration 1)))
@@ -340,7 +340,7 @@
    ;; Change the single changed source
    (send (nth ?pos ?*sources*) put-output-1 ?nv)   
    ;; Determine the LED response to the input.
-   (assert (result ?*gray-code* =(str-implode (LED-response))))
+   (assert (result ?*gray-code* =(implode$ (LED-response))))
    ;; Assert the new iteration fact
    (retract ?f)
    (assert (current-iteration =(+ ?n 1))))
@@ -378,7 +378,7 @@
       (bind ?input (rest$ ?input)))
    ;; Print the output from the LEDs.
    (printout t " | ")
-   (bind ?response (str-explode ?response))
+   (bind ?response (explode$ ?response))
    (while (neq ?response (create$)) do
       (printout t "  " (nth 1 ?response) "  ")
       (bind ?response (rest$ ?response)))

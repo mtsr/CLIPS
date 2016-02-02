@@ -98,12 +98,12 @@ void FactFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"fact-existp",  'b', PTIEF FactExistpFunction,  "FactExistpFunction", "11z");
-   EnvDefineFunction2(theEnv,"fact-relation",'w', PTIEF FactRelationFunction,"FactRelationFunction", "11z");
-   EnvDefineFunction2(theEnv,"fact-slot-value",'u', PTIEF FactSlotValueFunction,"FactSlotValueFunction", "22*zw");
-   EnvDefineFunction2(theEnv,"fact-slot-names",'u', PTIEF FactSlotNamesFunction,"FactSlotNamesFunction", "11z");
-   EnvDefineFunction2(theEnv,"get-fact-list",'m',PTIEF GetFactListFunction,"GetFactListFunction","01w");
-   EnvDefineFunction2(theEnv,"ppfact",'v',PTIEF PPFactFunction,"PPFactFunction","13*z");
+   EnvAddUDF(theEnv,"fact-existp",  BOOLEAN_TYPE,  FactExistpFunction,  "FactExistpFunction", 1,1,"lf",NULL);
+   EnvAddUDF(theEnv,"fact-relation",SYMBOL_TYPE,  FactRelationFunction,"FactRelationFunction",  1,1,"lf",NULL);
+   EnvAddUDF(theEnv,"fact-slot-value",ANY_TYPE,  FactSlotValueFunction,"FactSlotValueFunction",2,2 ,";lf;y", NULL);
+   EnvAddUDF(theEnv,"fact-slot-names",ANY_TYPE,  FactSlotNamesFunction,"FactSlotNamesFunction",  1,1,"lf",NULL);
+   EnvAddUDF(theEnv,"get-fact-list",MULTIFIELD_TYPE, GetFactListFunction,"GetFactListFunction",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppfact",VOID_TYPE, PPFactFunction,"PPFactFunction",1,3, "*;lf" , NULL);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -115,18 +115,21 @@ void FactFunctionDefinitions(
 /* FactRelationFunction: H/L access routine   */
 /*   for the fact-relation function.          */
 /**********************************************/
-void *FactRelationFunction(
-  void *theEnv)
+void FactRelationFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct fact *theFact;
 
-   if (EnvArgCountCheck(theEnv,"fact-relation",EXACTLY,1) == -1) return(EnvFalseSymbol(theEnv));
+   theFact = GetFactAddressOrIndexArgument(context,false);
 
-   theFact = GetFactAddressOrIndexArgument(theEnv,"fact-relation",1,false);
+   if (theFact == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   if (theFact == NULL) return(EnvFalseSymbol(theEnv));
-
-   return(FactRelation(theFact));
+   CVSetCLIPSSymbol(returnValue,FactRelation(theFact));
   }
 
 /**************************************/
@@ -162,16 +165,15 @@ void *EnvFactDeftemplate(
 /* FactExistpFunction: H/L access routine   */
 /*   for the fact-existp function.          */
 /********************************************/
-bool FactExistpFunction(
-  void *theEnv)
+void FactExistpFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct fact *theFact;
 
-   if (EnvArgCountCheck(theEnv,"fact-existp",EXACTLY,1) == -1) return(false);
+   theFact = GetFactAddressOrIndexArgument(context,false);
 
-   theFact = GetFactAddressOrIndexArgument(theEnv,"fact-existp",1,false);
-
-   return(EnvFactExistp(theEnv,theFact));
+   CVSetBoolean(returnValue,EnvFactExistp(UDFContextEnvironment(context),theFact));
   }
 
 /***********************************/
@@ -199,44 +201,38 @@ bool EnvFactExistp(
 /*   for the fact-slot-value function.         */
 /***********************************************/
 void FactSlotValueFunction(
-  void *theEnv,
-  DATA_OBJECT *returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct fact *theFact;
-   DATA_OBJECT theValue;
-
-   /*=============================================*/
-   /* Set up the default return value for errors. */
-   /*=============================================*/
-
-   returnValue->type = SYMBOL;
-   returnValue->value = EnvFalseSymbol(theEnv);
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (EnvArgCountCheck(theEnv,"fact-slot-value",EXACTLY,2) == -1) return;
+   CLIPSValue theArg;
 
    /*================================*/
    /* Get the reference to the fact. */
    /*================================*/
 
-   theFact = GetFactAddressOrIndexArgument(theEnv,"fact-slot-value",1,true);
-   if (theFact == NULL) return;
+   theFact = GetFactAddressOrIndexArgument(context,true);
+   if (theFact == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*===========================*/
    /* Get the name of the slot. */
    /*===========================*/
 
-   if (EnvArgTypeCheck(theEnv,"fact-slot-value",2,SYMBOL,&theValue) == false)
-     { return; }
+   if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*=======================*/
    /* Get the slot's value. */
    /*=======================*/
 
-   FactSlotValue(theEnv,theFact,DOToString(theValue),returnValue);
+   FactSlotValue(UDFContextEnvironment(context),theFact,CVToString(&theArg),returnValue);
   }
 
 /***************************************/
@@ -247,7 +243,7 @@ void FactSlotValue(
   void *theEnv,
   void *vTheFact,
   const char *theSlotName,
-  DATA_OBJECT *returnValue)
+  CLIPSValue *returnValue)
   {
    struct fact *theFact = (struct fact *) vTheFact;
    short position;
@@ -264,6 +260,7 @@ void FactSlotValue(
          EnvSetEvaluationError(theEnv,true);
          InvalidDeftemplateSlotMessage(theEnv,theSlotName,
                                        ValueToString(theFact->whichDeftemplate->header.name),false);
+         CVSetBoolean(returnValue,false);
          return;
         }
      }
@@ -273,6 +270,7 @@ void FactSlotValue(
       EnvSetEvaluationError(theEnv,true);
       InvalidDeftemplateSlotMessage(theEnv,theSlotName,
                                     ValueToString(theFact->whichDeftemplate->header.name),false);
+      CVSetBoolean(returnValue,false);
       return;
      }
 
@@ -291,36 +289,27 @@ void FactSlotValue(
 /*   for the fact-slot-names function.         */
 /***********************************************/
 void FactSlotNamesFunction(
-  void *theEnv,
-  DATA_OBJECT *returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct fact *theFact;
-
-   /*=============================================*/
-   /* Set up the default return value for errors. */
-   /*=============================================*/
-
-   returnValue->type = SYMBOL;
-   returnValue->value = EnvFalseSymbol(theEnv);
-
-   /*============================================*/
-   /* Check for the correct number of arguments. */
-   /*============================================*/
-
-   if (EnvArgCountCheck(theEnv,"fact-slot-names",EXACTLY,1) == -1) return;
 
    /*================================*/
    /* Get the reference to the fact. */
    /*================================*/
 
-   theFact = GetFactAddressOrIndexArgument(theEnv,"fact-slot-names",1,true);
-   if (theFact == NULL) return;
+   theFact = GetFactAddressOrIndexArgument(context,true);
+   if (theFact == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*=====================*/
    /* Get the slot names. */
    /*=====================*/
 
-   EnvFactSlotNames(theEnv,theFact,returnValue);
+   EnvFactSlotNames(UDFContextEnvironment(context),theFact,returnValue);
   }
 
 /***************************************/
@@ -391,40 +380,31 @@ void EnvFactSlotNames(
 /*   for the get-fact-list function.         */
 /*********************************************/
 void GetFactListFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct defmodule *theModule;
-   DATA_OBJECT result;
-   int numArgs;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===========================================*/
    /* Determine if a module name was specified. */
    /*===========================================*/
 
-   if ((numArgs = EnvArgCountCheck(theEnv,"get-fact-list",NO_MORE_THAN,1)) == -1)
+   if (UDFHasNextArgument(context))
      {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
-
-   if (numArgs == 1)
-     {
-      EnvRtnUnknown(theEnv,1,&result);
-
-      if (GetType(result) != SYMBOL)
+      if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
         {
          EnvSetMultifieldErrorValue(theEnv,returnValue);
-         ExpectedTypeError1(theEnv,"get-fact-list",1,"defmodule name");
          return;
         }
 
-      if ((theModule = (struct defmodule *) EnvFindDefmodule(theEnv,DOToString(result))) == NULL)
+      if ((theModule = (struct defmodule *) EnvFindDefmodule(theEnv,CVToString(&theArg))) == NULL)
         {
-         if (strcmp("*",DOToString(result)) != 0)
+         if (strcmp("*",CVToString(&theArg)) != 0)
            {
             EnvSetMultifieldErrorValue(theEnv,returnValue);
-            ExpectedTypeError1(theEnv,"get-fact-list",1,"defmodule name");
+            UDFInvalidArgumentMessage(context,"defmodule name");
             return;
            }
 
@@ -530,17 +510,19 @@ void EnvGetFactList(
 /*   for the ppfact function.         */
 /**************************************/
 void PPFactFunction(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct fact *theFact;
    int numberOfArguments;
    const char *logicalName = NULL;      /* Avoids warning */
    bool ignoreDefaults = false;
    DATA_OBJECT theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if ((numberOfArguments = EnvArgRangeCheck(theEnv,"ppfact",1,3)) == -1) return;
+   numberOfArguments = UDFArgumentCount(context);
 
-   theFact = GetFactAddressOrIndexArgument(theEnv,"ppfact",1,true);
+   theFact = GetFactAddressOrIndexArgument(context,true);
    if (theFact == NULL) return;
 
    /*===============================================================*/
@@ -551,7 +533,7 @@ void PPFactFunction(
      { logicalName = STDOUT; }
    else
      {
-      logicalName = GetLogicalName(theEnv,2,STDOUT);
+      logicalName = GetLogicalName(context,STDOUT);
       if (logicalName == NULL)
         {
          IllegalLogicalNameMessage(theEnv,"ppfact");
@@ -620,29 +602,29 @@ void EnvPPFact(
 /*   function which should be a reference to a valid fact.    */
 /**************************************************************/
 struct fact *GetFactAddressOrIndexArgument(
-  void *theEnv,
-  const char *theFunction,
-  int position,
+  UDFContext *context,
   bool noFactError)
   {
-   DATA_OBJECT item;
+   CLIPSValue theArg;
    long long factIndex;
    struct fact *theFact;
+   Environment *theEnv = UDFContextEnvironment(context);
    char tempBuffer[20];
 
-   EnvRtnUnknown(theEnv,position,&item);
+   if (! UDFNextArgument(context,ANY_TYPE,&theArg))
+     { return(NULL); }
 
-   if (GetType(item) == FACT_ADDRESS)
+   if (GetType(theArg) == FACT_ADDRESS)
      {
-      if (((struct fact *) GetValue(item))->garbage) return(NULL);
-      else return (((struct fact *) GetValue(item)));
+      if (((struct fact *) GetValue(theArg))->garbage) return(NULL);
+      else return (((struct fact *) GetValue(theArg)));
      }
-   else if (GetType(item) == INTEGER)
+   else if (GetType(theArg) == INTEGER)
      {
-      factIndex = ValueToLong(item.value);
+      factIndex = ValueToLong(theArg.value);
       if (factIndex < 0)
         {
-         ExpectedTypeError1(theEnv,theFunction,position,"fact-address or fact-index");
+         UDFInvalidArgumentMessage(context,"fact-address or fact-index");
          return(NULL);
         }
 
@@ -657,7 +639,7 @@ struct fact *GetFactAddressOrIndexArgument(
       return(theFact);
      }
 
-   ExpectedTypeError1(theEnv,theFunction,position,"fact-address or fact-index");
+   UDFInvalidArgumentMessage(context,"fact-address or fact-index");
    return(NULL);
   }
 

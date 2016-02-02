@@ -92,7 +92,7 @@ struct messageHandlerData
 #endif
    unsigned         EnvFindDefmessageHandler(void *,void *,const char *,const char *);
    bool             EnvIsDefmessageHandlerDeletable(void *,void *,int);
-   void             UndefmessageHandlerCommand(void *);
+   void             UndefmessageHandlerCommand(UDFContext *,CLIPSValue *);
    bool             EnvUndefmessageHandler(void *,void *,int);
 #if DEBUGGING_FUNCTIONS
    void             PPDefmessageHandlerCommand(UDFContext *,CLIPSValue *);

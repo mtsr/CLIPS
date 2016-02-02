@@ -104,37 +104,37 @@ void SetupInstanceModDupCommands(
   void *theEnv)
   {
 #if DEFRULE_CONSTRUCT
-   EnvDefineFunction2(theEnv,"modify-instance",'u',PTIEF InactiveModifyInstance,"InactiveModifyInstance",NULL);
-   EnvDefineFunction2(theEnv,"active-modify-instance",'u',PTIEF ModifyInstance,"ModifyInstance",NULL);
+   EnvAddUDF(theEnv,"modify-instance",ANY_TYPE, InactiveModifyInstance,"InactiveModifyInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"active-modify-instance",ANY_TYPE, ModifyInstance,"ModifyInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-modify-instance",ParseInitializeInstance);
-   EnvDefineFunction2(theEnv,"message-modify-instance",'u',PTIEF InactiveMsgModifyInstance,
-                   "InactiveMsgModifyInstance",NULL);
-   EnvDefineFunction2(theEnv,"active-message-modify-instance",'u',PTIEF MsgModifyInstance,
-                   "MsgModifyInstance",NULL);
+   EnvAddUDF(theEnv,"message-modify-instance",ANY_TYPE, InactiveMsgModifyInstance,
+                   "InactiveMsgModifyInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"active-message-modify-instance",ANY_TYPE, MsgModifyInstance,
+                   "MsgModifyInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-message-modify-instance",ParseInitializeInstance);
 
-   EnvDefineFunction2(theEnv,"duplicate-instance",'u',
-                    PTIEF InactiveDuplicateInstance,"InactiveDuplicateInstance",NULL);
-   EnvDefineFunction2(theEnv,"active-duplicate-instance",'u',PTIEF DuplicateInstance,"DuplicateInstance",NULL);
+   EnvAddUDF(theEnv,"duplicate-instance",ANY_TYPE,
+                    InactiveDuplicateInstance,"InactiveDuplicateInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"active-duplicate-instance",ANY_TYPE, DuplicateInstance,"DuplicateInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-duplicate-instance",ParseInitializeInstance);
-   EnvDefineFunction2(theEnv,"message-duplicate-instance",'u',PTIEF InactiveMsgDuplicateInstance,
-                   "InactiveMsgDuplicateInstance",NULL);
-   EnvDefineFunction2(theEnv,"active-message-duplicate-instance",'u',PTIEF MsgDuplicateInstance,
-                   "MsgDuplicateInstance",NULL);
+   EnvAddUDF(theEnv,"message-duplicate-instance",ANY_TYPE, InactiveMsgDuplicateInstance,
+                   "InactiveMsgDuplicateInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"active-message-duplicate-instance",ANY_TYPE, MsgDuplicateInstance,
+                   "MsgDuplicateInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-message-duplicate-instance",ParseInitializeInstance);
 #else
-   EnvDefineFunction2(theEnv,"modify-instance",'u',PTIEF ModifyInstance,"ModifyInstance",NULL);
-   EnvDefineFunction2(theEnv,"message-modify-instance",'u',PTIEF MsgModifyInstance,
-                   "MsgModifyInstance",NULL);
-   EnvDefineFunction2(theEnv,"duplicate-instance",'u',PTIEF DuplicateInstance,"DuplicateInstance",NULL);
-   EnvDefineFunction2(theEnv,"message-duplicate-instance",'u',PTIEF MsgDuplicateInstance,
-                   "MsgDuplicateInstance",NULL);
+   EnvAddUDF(theEnv,"modify-instance",ANY_TYPE, ModifyInstance,"ModifyInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"message-modify-instance",ANY_TYPE, MsgModifyInstance,
+                   "MsgModifyInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"duplicate-instance",ANY_TYPE, DuplicateInstance,"DuplicateInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"message-duplicate-instance",ANY_TYPE, MsgDuplicateInstance,
+                   "MsgDuplicateInstance",0,UNBOUNDED,NULL,NULL);
 #endif
 
-   EnvDefineFunction2(theEnv,"(direct-modify)",'u',PTIEF DirectModifyMsgHandler,"DirectModifyMsgHandler",NULL);
-   EnvDefineFunction2(theEnv,"(message-modify)",'u',PTIEF MsgModifyMsgHandler,"MsgModifyMsgHandler",NULL);
-   EnvDefineFunction2(theEnv,"(direct-duplicate)",'u',PTIEF DirectDuplicateMsgHandler,"DirectDuplicateMsgHandler",NULL);
-   EnvDefineFunction2(theEnv,"(message-duplicate)",'u',PTIEF MsgDuplicateMsgHandler,"MsgDuplicateMsgHandler",NULL);
+   EnvAddUDF(theEnv,"(direct-modify)",ANY_TYPE, DirectModifyMsgHandler,"DirectModifyMsgHandler",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(message-modify)",ANY_TYPE, MsgModifyMsgHandler,"MsgModifyMsgHandler",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(direct-duplicate)",ANY_TYPE, DirectDuplicateMsgHandler,"DirectDuplicateMsgHandler",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(message-duplicate)",ANY_TYPE, MsgDuplicateMsgHandler,"MsgDuplicateMsgHandler",0,UNBOUNDED,NULL,NULL);
 
    AddFunctionParser(theEnv,"modify-instance",ParseInitializeInstance);
    AddFunctionParser(theEnv,"message-modify-instance",ParseInitializeInstance);
@@ -155,8 +155,8 @@ void SetupInstanceModDupCommands(
                  (modify-instance <instance> <slot-override>*)
  *************************************************************/
 void ModifyInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    INSTANCE_TYPE *ins;
    EXPRESSION theExp;
@@ -164,6 +164,7 @@ void ModifyInstance(
    bool oldOMDMV;
    int overrideCount;
    bool error;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /* ===========================================
       The slot-overrides need to be evaluated now
@@ -176,8 +177,7 @@ void ModifyInstance(
                                      &overrideCount,&error);
    if (error)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       return;
      }
 
@@ -188,8 +188,7 @@ void ModifyInstance(
    ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
    if (ins == NULL)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
@@ -207,7 +206,7 @@ void ModifyInstance(
 
    oldOMDMV = InstanceData(theEnv)->ObjectModDupMsgValid;
    InstanceData(theEnv)->ObjectModDupMsgValid = true;
-   DirectMessage(theEnv,FindSymbolHN(theEnv,DIRECT_MODIFY_STRING),ins,result,&theExp);
+   DirectMessage(theEnv,FindSymbolHN(theEnv,DIRECT_MODIFY_STRING),ins,returnValue,&theExp);
    InstanceData(theEnv)->ObjectModDupMsgValid = oldOMDMV;
 
    DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
@@ -225,8 +224,8 @@ void ModifyInstance(
                     <slot-override>*)
  *************************************************************/
 void MsgModifyInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    INSTANCE_TYPE *ins;
    EXPRESSION theExp;
@@ -234,6 +233,7 @@ void MsgModifyInstance(
    bool oldOMDMV;
    int overrideCount;
    bool error;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /* ===========================================
       The slot-overrides need to be evaluated now
@@ -245,8 +245,7 @@ void MsgModifyInstance(
                                      &overrideCount,&error);
    if (error)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       return;
      }
 
@@ -257,8 +256,7 @@ void MsgModifyInstance(
    ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
    if (ins == NULL)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
@@ -276,7 +274,7 @@ void MsgModifyInstance(
 
    oldOMDMV = InstanceData(theEnv)->ObjectModDupMsgValid;
    InstanceData(theEnv)->ObjectModDupMsgValid = true;
-   DirectMessage(theEnv,FindSymbolHN(theEnv,MSG_MODIFY_STRING),ins,result,&theExp);
+   DirectMessage(theEnv,FindSymbolHN(theEnv,MSG_MODIFY_STRING),ins,returnValue,&theExp);
    InstanceData(theEnv)->ObjectModDupMsgValid = oldOMDMV;
 
    DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
@@ -294,8 +292,8 @@ void MsgModifyInstance(
                    [to <instance-name>] <slot-override>*)
  *************************************************************/
 void DuplicateInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    INSTANCE_TYPE *ins;
    DATA_OBJECT newName;
@@ -304,6 +302,7 @@ void DuplicateInstance(
    bool oldOMDMV;
    int overrideCount;
    bool error;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /* ===========================================
       The slot-overrides need to be evaluated now
@@ -315,8 +314,7 @@ void DuplicateInstance(
                                      &overrideCount,&error);
    if (error)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       return;
      }
 
@@ -327,16 +325,14 @@ void DuplicateInstance(
    ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
    if (ins == NULL)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
    if (EnvArgTypeCheck(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)),
                     2,INSTANCE_NAME,&newName) == false)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
@@ -358,7 +354,7 @@ void DuplicateInstance(
 
    oldOMDMV = InstanceData(theEnv)->ObjectModDupMsgValid;
    InstanceData(theEnv)->ObjectModDupMsgValid = true;
-   DirectMessage(theEnv,FindSymbolHN(theEnv,DIRECT_DUPLICATE_STRING),ins,result,&theExp[0]);
+   DirectMessage(theEnv,FindSymbolHN(theEnv,DIRECT_DUPLICATE_STRING),ins,returnValue,&theExp[0]);
    InstanceData(theEnv)->ObjectModDupMsgValid = oldOMDMV;
 
    DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
@@ -376,8 +372,8 @@ void DuplicateInstance(
                    [to <instance-name>] <slot-override>*)
  *************************************************************/
 void MsgDuplicateInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    INSTANCE_TYPE *ins;
    DATA_OBJECT newName;
@@ -386,6 +382,7 @@ void MsgDuplicateInstance(
    bool oldOMDMV;
    int overrideCount;
    bool error;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /* ===========================================
       The slot-overrides need to be evaluated now
@@ -397,8 +394,7 @@ void MsgDuplicateInstance(
                                      &overrideCount,&error);
    if (error)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       return;
      }
 
@@ -409,16 +405,14 @@ void MsgDuplicateInstance(
    ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
    if (ins == NULL)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
    if (EnvArgTypeCheck(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)),
                     2,INSTANCE_NAME,&newName) == false)
      {
-      SetpType(result,SYMBOL);
-      SetpValue(result,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
@@ -440,7 +434,7 @@ void MsgDuplicateInstance(
 
    oldOMDMV = InstanceData(theEnv)->ObjectModDupMsgValid;
    InstanceData(theEnv)->ObjectModDupMsgValid = true;
-   DirectMessage(theEnv,FindSymbolHN(theEnv,MSG_DUPLICATE_STRING),ins,result,&theExp[0]);
+   DirectMessage(theEnv,FindSymbolHN(theEnv,MSG_DUPLICATE_STRING),ins,returnValue,&theExp[0]);
    InstanceData(theEnv)->ObjectModDupMsgValid = oldOMDMV;
 
    DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
@@ -461,13 +455,14 @@ void MsgDuplicateInstance(
                    <slot-override>*)
  **************************************************************/
 void InactiveModifyInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   int ov;
+   bool ov;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    ov = SetDelayObjectPatternMatching(theEnv,true);
-   ModifyInstance(theEnv,result);
+   ModifyInstance(context,returnValue);
    SetDelayObjectPatternMatching(theEnv,ov);
   }
 
@@ -484,13 +479,14 @@ void InactiveModifyInstance(
                    <slot-override>*)
  **************************************************************/
 void InactiveMsgModifyInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   int ov;
+   bool ov;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    ov = SetDelayObjectPatternMatching(theEnv,true);
-   MsgModifyInstance(theEnv,result);
+   MsgModifyInstance(context,returnValue);
    SetDelayObjectPatternMatching(theEnv,ov);
   }
 
@@ -507,13 +503,14 @@ void InactiveMsgModifyInstance(
                    <slot-override>*)
  *******************************************************************/
 void InactiveDuplicateInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   int ov;
+   bool ov;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    ov = SetDelayObjectPatternMatching(theEnv,true);
-   DuplicateInstance(theEnv,result);
+   DuplicateInstance(context,returnValue);
    SetDelayObjectPatternMatching(theEnv,ov);
   }
 
@@ -531,13 +528,14 @@ void InactiveDuplicateInstance(
                    <slot-override>*)
  **************************************************************/
 void InactiveMsgDuplicateInstance(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   int ov;
+   bool ov;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    ov = SetDelayObjectPatternMatching(theEnv,true);
-   MsgDuplicateInstance(theEnv,result);
+   MsgDuplicateInstance(context,returnValue);
    SetDelayObjectPatternMatching(theEnv,ov);
   }
 
@@ -558,10 +556,10 @@ void InactiveMsgDuplicateInstance(
   NOTES        : None
  *****************************************************/
 void DirectDuplicateMsgHandler(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DuplicateMsgHandlerSupport(theEnv,result,false);
+   DuplicateMsgHandlerSupport(UDFContextEnvironment(context),returnValue,false);
   }
 
 /*****************************************************
@@ -578,10 +576,10 @@ void DirectDuplicateMsgHandler(
   NOTES        : None
  *****************************************************/
 void MsgDuplicateMsgHandler(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DuplicateMsgHandlerSupport(theEnv,result,true);
+   DuplicateMsgHandlerSupport(UDFContextEnvironment(context),returnValue,true);
   }
 
 /***************************************************
@@ -599,10 +597,10 @@ void MsgDuplicateMsgHandler(
   NOTES        : None
  ***************************************************/
 void DirectModifyMsgHandler(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   ModifyMsgHandlerSupport(theEnv,result,false);
+   ModifyMsgHandlerSupport(UDFContextEnvironment(context),returnValue,false);
   }
 
 /***************************************************
@@ -619,10 +617,10 @@ void DirectModifyMsgHandler(
   NOTES        : None
  ***************************************************/
 void MsgModifyMsgHandler(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   ModifyMsgHandlerSupport(theEnv,result,true);
+   ModifyMsgHandlerSupport(UDFContextEnvironment(context),returnValue,true);
   }
 
 /* =========================================

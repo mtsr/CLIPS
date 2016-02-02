@@ -155,7 +155,6 @@ CLIPS> (run)                             ; DR0063
 here
 CLIPS> (retract ?f)                      ; DR0067
 [EVALUATN1] Variable f is unbound
-[ARGACCES5] Function retract expected argument #1 to be of type fact-address, fact-index, or the symbol *
 CLIPS> (clear)                           ; DR0068
 CLIPS> (defrule foo =>)                  ; DR0068
 CLIPS> (reset)                           ; DR0068
@@ -224,13 +223,13 @@ CLIPS> (facts)                           ; DR0087
 f-1     (x q)
 f-2     (z q)
 For a total of 2 facts.
-CLIPS> (subseq$ a 2 4)                 ; DR0090
+CLIPS> (subseq$ a 2 4)                   ; DR0090
 [ARGACCES5] Function subseq$ expected argument #1 to be of type multifield
 CLIPS> (sub-string)                      ; DR0092
 [ARGACCES4] Function sub-string expected exactly 3 argument(s)
-CLIPS> (str-explode "a b c")             ; DR0093
+CLIPS> (explode$ "a b c")                ; DR0093
 (a b c)
-CLIPS> (length (str-explode "a b c"))    ; DR0093
+CLIPS> (length (explode$ "a b c"))       ; DR0093
 3
 CLIPS> (tan 0)                           ; DR0096
 0.0

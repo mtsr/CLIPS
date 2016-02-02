@@ -391,26 +391,28 @@ static void ResetFactHashTable(
 /*   in each slot of the fact hash table.            */
 /*****************************************************/
 void ShowFactHashTable(
-   void *theEnv)
-   {
-    int i, count;
-    struct factHashEntry *theEntry;
-    char buffer[20];
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   int i, count;
+   struct factHashEntry *theEntry;
+   Environment *theEnv = UDFContextEnvironment(context);
+   char buffer[20];
 
-    for (i = 0; i < FactData(theEnv)->FactHashTableSize; i++)
-      {
-       for (theEntry =  FactData(theEnv)->FactHashTable[i], count = 0;
-            theEntry != NULL;
-            theEntry = theEntry->next)
-         { count++; }
+   for (i = 0; i < FactData(theEnv)->FactHashTableSize; i++)
+     {
+      for (theEntry =  FactData(theEnv)->FactHashTable[i], count = 0;
+           theEntry != NULL;
+           theEntry = theEntry->next)
+        { count++; }
 
-       if (count != 0)
-         {
-          gensprintf(buffer,"%4d: %4d\n",i,count);
-          EnvPrintRouter(theEnv,WDISPLAY,buffer);
-         }
-      }
-   }
+      if (count != 0)
+        {
+         gensprintf(buffer,"%4d: %4d\n",i,count);
+         EnvPrintRouter(theEnv,WDISPLAY,buffer);
+        }
+     }
+  }
 
 #endif /* DEVELOPER */
 

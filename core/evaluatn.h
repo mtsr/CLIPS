@@ -249,10 +249,17 @@ struct evaluationData
 
 #define CVToString(cv) (((struct symbolHashNode *) ((cv)->value))->contents)
 
+//#define CVToCLIPSString(cv) ((cv)->value)
+//#define CVToCLIPSSymbol(cv) ((cv)->value)
+#define CVToRawValue(cv) ((cv)->value)
+
 #define CVInit(rv,env) ((rv)->environment = env)
 
+#define CVLength(cv)   ((cv)->type == MULTIFIELD ? (((cv)->end - (cv)->begin) + 1) : 0)
+
 #define CVSetVoid(cv) \
-   ( (cv)->bitType = VOID_TYPE , \
+   ( (cv)->value = NULL ,  \
+     (cv)->bitType = VOID_TYPE , \
      (cv)->type = RVOID )
 
 #define CVSetInteger(cv,iv) \
@@ -266,25 +273,53 @@ struct evaluationData
      (cv)->type = FLOAT )
 
 #define CVSetString(cv,sv) \
-   ( (cv)->value = EnvAddSymbol(cv->environment,sv) , \
+   ( (cv)->value = EnvAddSymbol((cv)->environment,(sv)) , \
+     (cv)->bitType = STRING_TYPE, \
+     (cv)->type = STRING )
+
+#define CVSetCLIPSString(cv,sv) \
+   ( (cv)->value = (sv) , \
      (cv)->bitType = STRING_TYPE, \
      (cv)->type = STRING )
 
 #define CVSetSymbol(cv,sv) \
-   ( (cv)->value = EnvAddSymbol(cv->environment,sv) , \
+   ( (cv)->value = EnvAddSymbol((cv)->environment,(sv)) , \
      (cv)->bitType = SYMBOL_TYPE, \
      (cv)->type = SYMBOL )
 
 #define CVSetCLIPSSymbol(cv,sv) \
-   ( (cv)->value = sv , \
+   ( (cv)->value = (sv) , \
      (cv)->bitType = SYMBOL_TYPE, \
      (cv)->type = SYMBOL )
+
+#define CVSetFactAddress(cv,fv) \
+   ( (cv)->value = (fv) , \
+     (cv)->bitType = FACT_ADDRESS_TYPE, \
+     (cv)->type = FACT_ADDRESS )
+
+#define CVSetInstanceAddress(cv,iv) \
+   ( (cv)->value = (iv) , \
+     (cv)->bitType = INSTANCE_ADDRESS_TYPE, \
+     (cv)->type = INSTANCE_ADDRESS )
+
+#define CVSetInstanceName(cv,iv) \
+   ( (cv)->value = EnvAddSymbol((cv)->environment,(iv)) , \
+     (cv)->bitType = INSTANCE_NAME_TYPE, \
+     (cv)->type = INSTANCE_NAME )
+
+#define CVSetCLIPSInstanceName(cv,iv) \
+   ( (cv)->value = (iv) , \
+     (cv)->bitType = INSTANCE_NAME_TYPE, \
+     (cv)->type = INSTANCE_NAME )
+
+#define CVSetRawValue(cv,rv) \
+   ( (cv)->value = (rv)  )
 
 // TBD BOOLEAN_TYPE in CVSetBoolean?
 
 #define CVSetBoolean(cv,bv) \
-   ( (cv)->value = (bv ? SymbolData((cv)->environment)->TrueSymbolHN : \
-                         SymbolData((cv)->environment)->FalseSymbolHN ) , \
+   ( (cv)->value = ((bv) ? SymbolData((cv)->environment)->TrueSymbolHN : \
+                           SymbolData((cv)->environment)->FalseSymbolHN ) , \
      (cv)->bitType = (SYMBOL_TYPE | BOOLEAN_TYPE) , \
      (cv)->type = SYMBOL )
 

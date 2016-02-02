@@ -95,9 +95,9 @@ struct profileFunctionData
    void                           ProfileResetCommand(UDFContext *,CLIPSValue *);
    void                           ResetProfileInfo(struct constructProfileInfo *);
 
-   double                         SetProfilePercentThresholdCommand(void *);
+   void                           SetProfilePercentThresholdCommand(UDFContext *,CLIPSValue *);
    double                         SetProfilePercentThreshold(void *,double);
-   double                         GetProfilePercentThresholdCommand(void *);
+   void                           GetProfilePercentThresholdCommand(UDFContext *,CLIPSValue *);
    double                         GetProfilePercentThreshold(void *);
    bool                           Profile(void *,const char *);
    void                           DeleteProfileData(void *,void *);

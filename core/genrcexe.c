@@ -388,6 +388,13 @@ bool NextMethodP(
    return(false);
   }
 
+void NextMethodPCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CVSetBoolean(returnValue,NextMethodP(UDFContextEnvironment(context)));
+  }
+
 /****************************************************
   NAME         : CallNextMethod
   DESCRIPTION  : Executes the next available method
@@ -400,16 +407,17 @@ bool NextMethodP(
   NOTES        : H/L Syntax: (call-next-method)
  ****************************************************/
 void CallNextMethod(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFMETHOD *oldMethod;
+   Environment *theEnv = UDFContextEnvironment(context);
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
 
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
+   CVSetBoolean(returnValue,false);
+   
    if (EvaluationData(theEnv)->HaltExecution)
      return;
    oldMethod = DefgenericData(theEnv)->CurrentMethod;
@@ -436,7 +444,7 @@ void CallNextMethod(
       fcall.value = DefgenericData(theEnv)->CurrentMethod->actions->value;
       fcall.nextArg = NULL;
       fcall.argList = GetProcParamExpressions(theEnv);
-      EvaluateExpression(theEnv,&fcall,result);
+      EvaluateExpression(theEnv,&fcall,returnValue);
      }
    else
      {
@@ -448,7 +456,7 @@ void CallNextMethod(
 
       EvaluateProcActions(theEnv,DefgenericData(theEnv)->CurrentGeneric->header.whichModule->theModule,
                          DefgenericData(theEnv)->CurrentMethod->actions,DefgenericData(theEnv)->CurrentMethod->localVarCount,
-                         result,UnboundMethodErr);
+                         returnValue,UnboundMethodErr);
 
 #if PROFILING_FUNCTIONS
       EndProfile(theEnv,&profileFrame);
@@ -477,28 +485,29 @@ void CallNextMethod(
                                 <generic-function> <method-index> <args>)
  **************************************************************************/
 void CallSpecificMethod(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    DEFGENERIC *gfunc;
    int mi;
+   Environment *theEnv = UDFContextEnvironment(context);
+   
+   CVSetBoolean(returnValue,false);
+   
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
+     
+   gfunc = CheckGenericExists(theEnv,"call-specific-method",CVToString(&theArg));
+   if (gfunc == NULL) return;
+   
+   if (! UDFNextArgument(context,INTEGER_TYPE,&theArg)) return;
 
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
-   if (EnvArgTypeCheck(theEnv,"call-specific-method",1,SYMBOL,&temp) == false)
-     return;
-   gfunc = CheckGenericExists(theEnv,"call-specific-method",DOToString(temp));
-   if (gfunc == NULL)
-     return;
-   if (EnvArgTypeCheck(theEnv,"call-specific-method",2,INTEGER,&temp) == false)
-     return;
-   mi = CheckMethodExists(theEnv,"call-specific-method",gfunc,(long) DOToLong(temp));
+   mi = CheckMethodExists(theEnv,"call-specific-method",gfunc,(long) CVToInteger(&theArg));
    if (mi == -1)
      return;
    gfunc->methods[mi].busy++;
    GenericDispatch(theEnv,gfunc,NULL,&gfunc->methods[mi],
-                   GetFirstArgument()->nextArg->nextArg,result);
+                   GetFirstArgument()->nextArg->nextArg,returnValue);
    gfunc->methods[mi].busy--;
   }
 
@@ -512,11 +521,12 @@ void CallSpecificMethod(
   NOTES        : H/L Syntax: (override-next-method <args>)
  ***********************************************************************/
 void OverrideNextMethod(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
+   Environment *theEnv = UDFContextEnvironment(context);
+   
+   CVSetBoolean(returnValue,false);
    if (EvaluationData(theEnv)->HaltExecution)
      return;
    if (DefgenericData(theEnv)->CurrentMethod == NULL)
@@ -527,7 +537,7 @@ void OverrideNextMethod(
       return;
      }
    GenericDispatch(theEnv,DefgenericData(theEnv)->CurrentGeneric,DefgenericData(theEnv)->CurrentMethod,NULL,
-                   GetFirstArgument(),result);
+                   GetFirstArgument(),returnValue);
   }
 
 /***********************************************************
@@ -541,13 +551,15 @@ void OverrideNextMethod(
   NOTES        : Useful for queries in wildcard restrictions
  ***********************************************************/
 void GetGenericCurrentArgument(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   result->type = DefgenericData(theEnv)->GenericCurrentArgument->type;
-   result->value = DefgenericData(theEnv)->GenericCurrentArgument->value;
-   result->begin = DefgenericData(theEnv)->GenericCurrentArgument->begin;
-   result->end = DefgenericData(theEnv)->GenericCurrentArgument->end;
+   Environment *theEnv = UDFContextEnvironment(context);
+   
+   returnValue->type = DefgenericData(theEnv)->GenericCurrentArgument->type;
+   returnValue->value = DefgenericData(theEnv)->GenericCurrentArgument->value;
+   returnValue->begin = DefgenericData(theEnv)->GenericCurrentArgument->begin;
+   returnValue->end = DefgenericData(theEnv)->GenericCurrentArgument->end;
   }
 
 /* =========================================

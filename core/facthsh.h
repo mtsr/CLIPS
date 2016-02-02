@@ -56,7 +56,7 @@ struct factHashEntry
    bool                           EnvGetFactDuplication(void *);
    bool                           EnvSetFactDuplication(void *,bool);
    void                           InitializeFactHashTable(void *);
-   void                           ShowFactHashTable(void *);
+   void                           ShowFactHashTable(UDFContext *,CLIPSValue *);
    unsigned long                  HashFact(struct fact *);
    bool                           FactWillBeAsserted(void *,void *);
 

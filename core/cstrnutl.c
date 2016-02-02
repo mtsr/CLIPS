@@ -602,6 +602,9 @@ CONSTRAINT_RECORD *ArgumentTypeToConstraintRecord2(
      { rv->instanceNamesAllowed = true; }
    if (bitTypes & BOOLEAN_TYPE)
      { rv->symbolsAllowed = true; }
+     
+   if (bitTypes == ANY_TYPE)
+     { rv->anyAllowed = true; }
 
    return(rv);
   }

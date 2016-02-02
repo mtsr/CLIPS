@@ -63,7 +63,7 @@ struct bloadData
 #define FunctionPointer(i) ((struct FunctionDefinition *) (((i) == -1L) ? NULL : BloadData(theEnv)->FunctionArray[i]))
 
    void                    InitializeBloadData(void *);
-   bool                    BloadCommand(void *);
+   void                    BloadCommand(UDFContext *,CLIPSValue *);
    bool                    EnvBload(void *,const char *);
    void                    BloadandRefresh(void *,long,size_t,void (*)(void *,void *,long));
    bool                    Bloaded(void *);

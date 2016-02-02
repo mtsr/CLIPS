@@ -85,14 +85,14 @@ struct instanceQueryData
 #define QUERY_DELIMETER_STRING     "(QDS)"
 
    void                           SetupQuery(void *);
-   void                          *GetQueryInstance(void *);
-   void                           GetQueryInstanceSlot(void *,DATA_OBJECT *);
-   bool                           AnyInstances(void *);
-   void                           QueryFindInstance(void *,DATA_OBJECT *);
-   void                           QueryFindAllInstances(void *,DATA_OBJECT *);
-   void                           QueryDoForInstance(void *,DATA_OBJECT *);
-   void                           QueryDoForAllInstances(void *,DATA_OBJECT *);
-   void                           DelayedQueryDoForAllInstances(void *,DATA_OBJECT *);
+   void                           GetQueryInstance(UDFContext *,CLIPSValue *);
+   void                           GetQueryInstanceSlot(UDFContext *,CLIPSValue *);
+   void                           AnyInstances(UDFContext *,CLIPSValue *);
+   void                           QueryFindInstance(UDFContext *,CLIPSValue *);
+   void                           QueryFindAllInstances(UDFContext *,CLIPSValue *);
+   void                           QueryDoForInstance(UDFContext *,CLIPSValue *);
+   void                           QueryDoForAllInstances(UDFContext *,CLIPSValue *);
+   void                           DelayedQueryDoForAllInstances(UDFContext *,CLIPSValue *);
 
 #endif /* INSTANCE_SET_QUERIES */
 

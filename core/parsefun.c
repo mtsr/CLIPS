@@ -91,7 +91,7 @@ void ParseFunctionDefinitions(
    AllocateEnvironmentData(theEnv,PARSEFUN_DATA,sizeof(struct parseFunctionData),NULL);
 
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"check-syntax",'u',PTIEF CheckSyntaxFunction,"CheckSyntaxFunction","11s");
+   EnvAddUDF(theEnv,"check-syntax",SYMBOL_TYPE | MULTIFIELD_TYPE, CheckSyntaxFunction,"CheckSyntaxFunction",1,1,"s",NULL);
 #endif
   }
 
@@ -101,37 +101,26 @@ void ParseFunctionDefinitions(
 /*   for the check-syntax function.        */
 /*******************************************/
 void CheckSyntaxFunction(
-  void *theEnv,
-  DATA_OBJECT *returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArg;
-
-   /*===============================*/
-   /* Set up a default return value */
-   /* (TRUE for problems found).    */
-   /*===============================*/
-
-   SetpType(returnValue,SYMBOL);
-   SetpValue(returnValue,EnvTrueSymbol(theEnv));
-
-   /*=====================================================*/
-   /* Function check-syntax expects exactly one argument. */
-   /*=====================================================*/
-
-   if (EnvArgCountCheck(theEnv,"check-syntax",EXACTLY,1) == -1) return;
+   CLIPSValue theArg;
 
    /*========================================*/
    /* The argument should be of type STRING. */
    /*========================================*/
 
-   if (EnvArgTypeCheck(theEnv,"check-syntax",1,STRING,&theArg) == false)
-     { return; }
+   if (! UDFFirstArgument(context,STRING_TYPE,&theArg))
+     {
+      CVSetBoolean(returnValue,true);
+      return;
+     }
 
    /*===================*/
    /* Check the syntax. */
    /*===================*/
 
-   CheckSyntax(theEnv,DOToString(theArg),returnValue);
+   CheckSyntax(UDFContextEnvironment(context),CVToString(&theArg),returnValue);
   }
 
 /*********************************/
@@ -153,8 +142,7 @@ bool CheckSyntax(
    /* (TRUE for problems found).   */
    /*==============================*/
 
-   SetpType(returnValue,SYMBOL);
-   SetpValue(returnValue,EnvTrueSymbol(theEnv));
+   CVSetBoolean(returnValue,true);
 
    /*===========================================*/
    /* Create a string source router so that the */
@@ -174,7 +162,7 @@ bool CheckSyntax(
    if (theToken.type != LPAREN)
      {
       CloseStringSource(theEnv,"check-syntax");
-      SetpValue(returnValue,EnvAddSymbol(theEnv,"MISSING-LEFT-PARENTHESIS"));
+      CVSetSymbol(returnValue,"MISSING-LEFT-PARENTHESIS");
       return(true);
      }
 
@@ -187,7 +175,7 @@ bool CheckSyntax(
    if (theToken.type != SYMBOL)
      {
       CloseStringSource(theEnv,"check-syntax");
-      SetpValue(returnValue,EnvAddSymbol(theEnv,"EXPECTED-SYMBOL-AFTER-LEFT-PARENTHESIS"));
+      CVSetSymbol(returnValue,"EXPECTED-SYMBOL-AFTER-LEFT-PARENTHESIS");
       return(true);
      }
 
@@ -237,8 +225,7 @@ bool CheckSyntax(
          return(true);
         }
 
-      SetpType(returnValue,SYMBOL);
-      SetpValue(returnValue,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       DeactivateErrorCapture(theEnv);
       return(false);
      }
@@ -261,7 +248,7 @@ bool CheckSyntax(
 
    if (theToken.type != STOP)
      {
-      SetpValue(returnValue,EnvAddSymbol(theEnv,"EXTRANEOUS-INPUT-AFTER-LAST-PARENTHESIS"));
+      CVSetSymbol(returnValue,"EXTRANEOUS-INPUT-AFTER-LAST-PARENTHESIS");
       DeactivateErrorCapture(theEnv);
       ReturnExpression(theEnv,top);
       return(true);
@@ -270,8 +257,7 @@ bool CheckSyntax(
    DeactivateErrorCapture(theEnv);
 
    ReturnExpression(theEnv,top);
-   SetpType(returnValue,SYMBOL);
-   SetpValue(returnValue,EnvFalseSymbol(theEnv));
+   CVSetBoolean(returnValue,false);
    return(false);
   }
 

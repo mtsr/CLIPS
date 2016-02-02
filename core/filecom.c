@@ -152,21 +152,21 @@ void FileCommandDefinitions(
 
 #if ! RUN_TIME
 #if DEBUGGING_FUNCTIONS
-   EnvDefineFunction2(theEnv,"batch",'b',PTIEF BatchCommand,"BatchCommand","11k");
-   EnvDefineFunction2(theEnv,"batch*",'b',PTIEF BatchStarCommand,"BatchStarCommand","11k");
-   EnvDefineFunction2(theEnv,"dribble-on",'b',PTIEF DribbleOnCommand,"DribbleOnCommand","11k");
-   EnvDefineFunction2(theEnv,"dribble-off",'b',PTIEF DribbleOffCommand,"DribbleOffCommand","00");
-   EnvDefineFunction2(theEnv,"save",'b',PTIEF SaveCommand,"SaveCommand","11k");
+   EnvAddUDF(theEnv,"batch",BOOLEAN_TYPE, BatchCommand,"BatchCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"batch*",BOOLEAN_TYPE, BatchStarCommand,"BatchStarCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"dribble-on",BOOLEAN_TYPE, DribbleOnCommand,"DribbleOnCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"dribble-off",BOOLEAN_TYPE, DribbleOffCommand,"DribbleOffCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"save",BOOLEAN_TYPE, SaveCommand,"SaveCommand",1,1,"sy",NULL);
 #endif
-   EnvDefineFunction2(theEnv,"load",'b',PTIEF LoadCommand,"LoadCommand","11k");
-   EnvDefineFunction2(theEnv,"load*",'b',PTIEF LoadStarCommand,"LoadStarCommand","11k");
+   EnvAddUDF(theEnv,"load",BOOLEAN_TYPE, LoadCommand,"LoadCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"load*",BOOLEAN_TYPE, LoadStarCommand,"LoadStarCommand",1,1,"sy",NULL);
 #if BLOAD_AND_BSAVE
-   EnvDefineFunction2(theEnv,"bsave",'b', PTIEF BsaveCommand,"BsaveCommand","11k");
+   EnvAddUDF(theEnv,"bsave",BOOLEAN_TYPE, BsaveCommand,"BsaveCommand",1,1,"sy",NULL);
 #endif
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
    InitializeBsaveData(theEnv);
    InitializeBloadData(theEnv);
-   EnvDefineFunction2(theEnv,"bload",'b',PTIEF BloadCommand,"BloadCommand","11k");
+   EnvAddUDF(theEnv,"bload",BOOLEAN_TYPE, BloadCommand,"BloadCommand",1,1,"sy",NULL);
 #endif
 #endif
   }
@@ -407,15 +407,19 @@ static int ExitDribble(
 /* DribbleOnCommand: H/L access routine   */
 /*   for the dribble-on command.          */
 /******************************************/
-bool DribbleOnCommand(
-  void *theEnv)
+void DribbleOnCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *fileName;
 
-   if (EnvArgCountCheck(theEnv,"dribble-on",EXACTLY,1) == -1) return(false);
-   if ((fileName = GetFileName(theEnv,"dribble-on",1)) == NULL) return(false);
+   if ((fileName = GetFileName(context)) == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   return (EnvDribbleOn(theEnv,fileName));
+   CVSetBoolean(returnValue,EnvDribbleOn(UDFContextEnvironment(context),fileName));
   }
 
 /**********************************/
@@ -491,11 +495,11 @@ bool EnvDribbleActive(
 /* DribbleOffCommand: H/L access  routine  */
 /*   for the dribble-off command.          */
 /*******************************************/
-bool DribbleOffCommand(
-  void *theEnv)
+void DribbleOffCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   if (EnvArgCountCheck(theEnv,"dribble-off",EXACTLY,0) == -1) return(false);
-   return(EnvDribbleOff(theEnv));
+   CVSetBoolean(returnValue,EnvDribbleOff(UDFContextEnvironment(context)));
   }
 
 /***********************************/
@@ -720,15 +724,19 @@ static int ExitBatch(
 /* BatchCommand: H/L access routine   */
 /*   for the batch command.           */
 /**************************************/
-bool BatchCommand(
-  void *theEnv)
+void BatchCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *fileName;
 
-   if (EnvArgCountCheck(theEnv,"batch",EXACTLY,1) == -1) return(false);
-   if ((fileName = GetFileName(theEnv,"batch",1)) == NULL) return(false);
+   if ((fileName = GetFileName(context)) == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
-   return(OpenBatch(theEnv,fileName,false));
+   CVSetBoolean(returnValue,OpenBatch(UDFContextEnvironment(context),fileName,false));
   }
 
 /**************************************************/
@@ -1042,15 +1050,19 @@ void CloseAllBatchSources(
 /* BatchStarCommand: H/L access routine   */
 /*   for the batch* command.              */
 /******************************************/
-bool BatchStarCommand(
-  void *theEnv)
+void BatchStarCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *fileName;
 
-   if (EnvArgCountCheck(theEnv,"batch*",EXACTLY,1) == -1) return(false);
-   if ((fileName = GetFileName(theEnv,"batch*",1)) == NULL) return(false);
-
-   return(EnvBatchStar(theEnv,fileName));
+   if ((fileName = GetFileName(context)) == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+     
+   CVSetBoolean(returnValue,EnvBatchStar(UDFContextEnvironment(context),fileName));
   }
 
 #if ! RUN_TIME
@@ -1180,15 +1192,20 @@ bool EnvBatchStar(
 /***********************************************************/
 /* LoadCommand: H/L access routine for the load command.   */
 /***********************************************************/
-bool LoadCommand(
-  void *theEnv)
+void LoadCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = UDFContextEnvironment(context);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    const char *theFileName;
    int rv;
 
-   if (EnvArgCountCheck(theEnv,"load",EXACTLY,1) == -1) return(false);
-   if ((theFileName = GetFileName(theEnv,"load",1)) == NULL) return(false);
+   if ((theFileName = GetFileName(context)) == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    SetPrintWhileLoading(theEnv,true);
 
@@ -1196,42 +1213,50 @@ bool LoadCommand(
      {
       SetPrintWhileLoading(theEnv,false);
       OpenErrorMessage(theEnv,"load",theFileName);
-      return(false);
+      CVSetBoolean(returnValue,false);
+      return;
      }
 
    SetPrintWhileLoading(theEnv,false);
-   if (rv == -1) return(false);
-   return(true);
+   
+   if (rv == -1) CVSetBoolean(returnValue,false);
+   else CVSetBoolean(returnValue,true);
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Load is not available in this environment\n");
-   return(false);
+   CVSetBoolean(returnValue,false);
 #endif
   }
 
 /****************************************************************/
 /* LoadStarCommand: H/L access routine for the load* command.   */
 /****************************************************************/
-bool LoadStarCommand(
-  void *theEnv)
+void LoadStarCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = UDFContextEnvironment(context);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    const char *theFileName;
    int rv;
 
-   if (EnvArgCountCheck(theEnv,"load*",EXACTLY,1) == -1) return(false);
-   if ((theFileName = GetFileName(theEnv,"load*",1)) == NULL) return(false);
+   if ((theFileName = GetFileName(context)) == NULL)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    if ((rv = EnvLoad(theEnv,theFileName)) == 0) // TBD Load Code
      {
       OpenErrorMessage(theEnv,"load*",theFileName);
-      return(false);
+      CVSetBoolean(returnValue,false);
+      return;
      }
 
-   if (rv == -1) return(false);
-   return(true);
+   if (rv == -1) CVSetBoolean(returnValue,false);
+   else CVSetBoolean(returnValue,true);
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Load* is not available in this environment\n");
-   return(false);
+   CVSetBoolean(returnValue,false);
 #endif
   }
 
@@ -1239,25 +1264,31 @@ bool LoadStarCommand(
 /*********************************************************/
 /* SaveCommand: H/L access routine for the save command. */
 /*********************************************************/
-bool SaveCommand(
-  void *theEnv)
+void SaveCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = UDFContextEnvironment(context);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    const char *theFileName;
 
-   if (EnvArgCountCheck(theEnv,"save",EXACTLY,1) == -1) return(false);
-   if ((theFileName = GetFileName(theEnv,"save",1)) == NULL) return(false);
+   if ((theFileName = GetFileName(context)) == NULL) 
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    if (EnvSave(theEnv,theFileName) == false)
      {
       OpenErrorMessage(theEnv,"save",theFileName);
-      return(false);
+      CVSetBoolean(returnValue,false);
+      return;
      }
 
-   return(true);
+   CVSetBoolean(returnValue,true);
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Save is not available in this environment\n");
-   return(false);
+   CVSetBoolean(returnValue,false);
 #endif
   }
 #endif

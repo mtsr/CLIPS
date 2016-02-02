@@ -116,13 +116,16 @@ static void TraceErrorToObjectPattern(void *,bool,OBJECT_PATTERN_NODE *);
   NOTES        : H/L Syntax: (object-pattern-match-delay <action>*)
  ***************************************************************************/
 void ObjectMatchDelay(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  DATA_OBJECT *returnValue)
   {
    bool ov;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    ov = SetDelayObjectPatternMatching(theEnv,true);
-   EvaluateExpression(theEnv,GetFirstArgument(),result);
+   
+   UDFFirstArgument(context,ANY_TYPE,returnValue);   
+   
    if (EvaluationData(theEnv)->EvaluationError)
      {
       EnvSetHaltExecution(theEnv,false);

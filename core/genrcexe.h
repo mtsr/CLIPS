@@ -46,11 +46,13 @@
    bool                           IsMethodApplicable(void *,DEFMETHOD *);
 
    bool                           NextMethodP(void *);
-   void                           CallNextMethod(void *,DATA_OBJECT *);
-   void                           CallSpecificMethod(void *,DATA_OBJECT *);
-   void                           OverrideNextMethod(void *,DATA_OBJECT *);
+   void                           NextMethodPCommand(UDFContext *,CLIPSValue *);
 
-   void                           GetGenericCurrentArgument(void *,DATA_OBJECT *);
+   void                           CallNextMethod(UDFContext *,CLIPSValue *);
+   void                           CallSpecificMethod(UDFContext *,CLIPSValue *);
+   void                           OverrideNextMethod(UDFContext *,CLIPSValue *);
+
+   void                           GetGenericCurrentArgument(UDFContext *,CLIPSValue *);
 
 #endif /* DEFGENERIC_CONSTRUCT */
 

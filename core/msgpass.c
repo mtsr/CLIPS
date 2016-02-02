@@ -222,18 +222,18 @@ void DestroyHandlerLinks(
   NOTES        : H/L Syntax : (send <instance> <hnd> <args>*)
  ***********************************************************************/
 void SendCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    EXPRESSION args;
    SYMBOL_HN *msg;
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
-   if (EnvArgTypeCheck(theEnv,"send",2,SYMBOL,&temp) == false)
-     return;
-   msg = (SYMBOL_HN *) temp.value;
+   CVSetBoolean(returnValue,false);
+
+   if (! UDFNthArgument(context,2,SYMBOL_TYPE,&theArg)) return;
+   msg = (SYMBOL_HN *) theArg.value;
 
    /* =============================================
       Get the instance or primitive for the message
@@ -243,7 +243,7 @@ void SendCommand(
    args.argList = GetFirstArgument()->argList;
    args.nextArg = GetFirstArgument()->nextArg->nextArg;
 
-   PerformMessage(theEnv,result,&args,msg);
+   PerformMessage(theEnv,returnValue,&args,msg);
   }
 
 /***************************************************
@@ -323,8 +323,8 @@ bool NextHandlerAvailable(
                     (override-next-handler <arg> ...)
  ********************************************************/
 void CallNextHandler(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    EXPRESSION args;
    int overridep;
@@ -332,9 +332,10 @@ void CallNextHandler(
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   SetpType(result,SYMBOL);
-   SetpValue(result,EnvFalseSymbol(theEnv));
+   CVSetBoolean(returnValue,false);
+   
    EvaluationData(theEnv)->EvaluationError = false;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
@@ -389,7 +390,7 @@ void CallNextHandler(
             EvaluateProcActions(theEnv,MessageHandlerData(theEnv)->CurrentCore->hnd->cls->header.whichModule->theModule,
                                MessageHandlerData(theEnv)->CurrentCore->hnd->actions,
                                MessageHandlerData(theEnv)->CurrentCore->hnd->localVarCount,
-                               result,UnboundHandlerErr);
+                               returnValue,UnboundHandlerErr);
 #if PROFILING_FUNCTIONS
             EndProfile(theEnv,&profileFrame);
 #endif
@@ -400,7 +401,7 @@ void CallNextHandler(
 #endif
         }
       else
-        CallHandlers(theEnv,result);
+        CallHandlers(theEnv,returnValue);
      }
    else
      {
@@ -421,7 +422,7 @@ void CallNextHandler(
         EvaluateProcActions(theEnv,MessageHandlerData(theEnv)->CurrentCore->hnd->cls->header.whichModule->theModule,
                             MessageHandlerData(theEnv)->CurrentCore->hnd->actions,
                             MessageHandlerData(theEnv)->CurrentCore->hnd->localVarCount,
-                            result,UnboundHandlerErr);
+                            returnValue,UnboundHandlerErr);
 #if PROFILING_FUNCTIONS
          EndProfile(theEnv,&profileFrame);
 #endif
@@ -836,15 +837,16 @@ HandlerPutError2:
   NOTES        : H/L Syntax: (get <slot>)
  *****************************************************/
 void DynamicHandlerGetSlot(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    INSTANCE_SLOT *sp;
    INSTANCE_TYPE *ins;
    DATA_OBJECT temp;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
+   returnValue->type = SYMBOL;
+   returnValue->value = EnvFalseSymbol(theEnv);
    if (CheckCurrentMessage(theEnv,"dynamic-get",true) == false)
      return;
    EvaluateExpression(theEnv,GetFirstArgument(),&temp);
@@ -868,12 +870,12 @@ void DynamicHandlerGetSlot(
       EnvSetEvaluationError(theEnv,true);
       return;
      }
-   result->type = (unsigned short) sp->type;
-   result->value = sp->value;
+   returnValue->type = (unsigned short) sp->type;
+   returnValue->value = sp->value;
    if (sp->type == MULTIFIELD)
      {
-      result->begin = 0;
-      SetpDOEnd(result,GetInstanceSlotLength(sp));
+      returnValue->begin = 0;
+      SetpDOEnd(returnValue,GetInstanceSlotLength(sp));
      }
   }
 
@@ -888,15 +890,16 @@ void DynamicHandlerGetSlot(
   NOTES        : H/L Syntax: (put <slot> <value>*)
  ***********************************************************/
 void DynamicHandlerPutSlot(
-  void *theEnv,
-  DATA_OBJECT *theResult)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    INSTANCE_SLOT *sp;
    INSTANCE_TYPE *ins;
    DATA_OBJECT temp;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   theResult->type = SYMBOL;
-   theResult->value = EnvFalseSymbol(theEnv);
+   returnValue->type = SYMBOL;
+   returnValue->value = EnvFalseSymbol(theEnv);
    if (CheckCurrentMessage(theEnv,"dynamic-put",true) == false)
      return;
    EvaluateExpression(theEnv,GetFirstArgument(),&temp);
@@ -941,7 +944,7 @@ void DynamicHandlerPutSlot(
       SetpType(&temp,MULTIFIELD);
       SetpValue(&temp,ProceduralPrimitiveData(theEnv)->NoParamValue);
      }
-   PutSlotValue(theEnv,ins,sp,&temp,theResult,NULL);
+   PutSlotValue(theEnv,ins,sp,&temp,returnValue,NULL);
   }
 
 /* =========================================

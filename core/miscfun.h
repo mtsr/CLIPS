@@ -73,36 +73,37 @@
 #define _H_miscfun
 
    void                           MiscFunctionDefinitions(void *);
-   void                           CreateFunction(void *,DATA_OBJECT_PTR);
+   void                           CreateFunction(UDFContext *,CLIPSValue *);
    void                           SetgenFunction(UDFContext *,CLIPSValue *);
    void                           GensymFunction(UDFContext *,CLIPSValue *);
    void                           GensymStarFunction(UDFContext *,CLIPSValue *);
-   long long                      RandomFunction(void *);
+   void                           RandomFunction(UDFContext *,CLIPSValue *);
    void                           SeedFunction(UDFContext *,CLIPSValue *);
-   long long                      LengthFunction(void *);
+   void                           LengthFunction(UDFContext *,CLIPSValue *);
    void                           ConserveMemCommand(UDFContext *,CLIPSValue *);
-   long long                      ReleaseMemCommand(void *);
-   long long                      MemUsedCommand(void *);
-   long long                      MemRequestsCommand(void *);
+   void                           ReleaseMemCommand(UDFContext *,CLIPSValue *);
+   void                           MemUsedCommand(UDFContext *,CLIPSValue *);
+   void                           MemRequestsCommand(UDFContext *,CLIPSValue *);
    void                           OptionsCommand(UDFContext *,CLIPSValue *);
    void                           OperatingSystemFunction(UDFContext *,CLIPSValue *);
-   void                           ExpandFuncCall(void *,DATA_OBJECT *);
-   void                           DummyExpandFuncMultifield(void *,DATA_OBJECT *);
-   void                          *CauseEvaluationError(void *);
-   bool                           SetSORCommand(void *);
-   void                          *GetFunctionRestrictions(void *);
+   void                           ExpandFuncCall(UDFContext *,CLIPSValue *);
+   void                           DummyExpandFuncMultifield(UDFContext *,CLIPSValue *);
+   void                           CauseEvaluationError(UDFContext *,CLIPSValue *);
+   void                           SetSORCommand(UDFContext *,CLIPSValue *);
+   void                           GetSORCommand(UDFContext *,CLIPSValue *);
+   void                           GetFunctionRestrictions(UDFContext *,CLIPSValue *);
    void                           AproposCommand(UDFContext *,CLIPSValue *);
    void                           GensymStar(void *,CLIPSValue *);
-   void                           GetFunctionListFunction(void *,DATA_OBJECT *);
-   void                           FuncallFunction(void *,DATA_OBJECT *);
-   void                           NewFunction(void *,DATA_OBJECT *);
-   void                           CallFunction(void *,DATA_OBJECT *);
+   void                           GetFunctionListFunction(UDFContext *,CLIPSValue *);
+   void                           FuncallFunction(UDFContext *,CLIPSValue *);
+   void                           NewFunction(UDFContext *,CLIPSValue *);
+   void                           CallFunction(UDFContext *,CLIPSValue *);
    void                           TimerFunction(UDFContext *,CLIPSValue *);
-   double                         TimeFunction(void *);
+   void                           TimeFunction(UDFContext *,CLIPSValue *);
    void                           SystemCommand(UDFContext *,CLIPSValue *);
-   void                           SlotValueFunction(void *,DATA_OBJECT *);
-   void                           LocalTimeFunction(void *,DATA_OBJECT *);
-   void                           GMTimeFunction(void *,DATA_OBJECT *);
+   void                           SlotValueFunction(UDFContext *,CLIPSValue *);
+   void                           LocalTimeFunction(UDFContext *,CLIPSValue *);
+   void                           GMTimeFunction(UDFContext *,CLIPSValue *);
 
 #endif /* _H_miscfun */
 

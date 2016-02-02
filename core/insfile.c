@@ -107,7 +107,7 @@ struct bsaveSlotValueAtom
    =========================================
    ***************************************** */
 
-static long InstancesSaveCommandParser(void *,const char *,long (*)(void *,const char *,int,
+static long InstancesSaveCommandParser(UDFContext *,const char *,long (*)(void *,const char *,int,
                                                    EXPRESSION *,bool));
 static DATA_OBJECT *ProcessSaveClassList(void *,const char *,EXPRESSION *,int,bool);
 static void ReturnSaveClassList(void *,DATA_OBJECT *);
@@ -163,20 +163,20 @@ void SetupInstanceFileCommands(
 #endif
 
 #if (! RUN_TIME)
-   EnvDefineFunction2(theEnv,"save-instances",'l',PTIEF SaveInstancesCommand,
-                   "SaveInstancesCommand","1*wk");
-   EnvDefineFunction2(theEnv,"load-instances",'l',PTIEF LoadInstancesCommand,
-                   "LoadInstancesCommand","11k");
-   EnvDefineFunction2(theEnv,"restore-instances",'l',PTIEF RestoreInstancesCommand,
-                   "RestoreInstancesCommand","11k");
+   EnvAddUDF(theEnv,"save-instances",INTEGER_TYPE, SaveInstancesCommand,
+                    "SaveInstancesCommand",1,UNBOUNDED,"y;sy",NULL);
+   EnvAddUDF(theEnv,"load-instances",INTEGER_TYPE, LoadInstancesCommand,
+                    "LoadInstancesCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"restore-instances",INTEGER_TYPE, RestoreInstancesCommand,
+                    "RestoreInstancesCommand",1,1,"sy",NULL);
 
 #if BSAVE_INSTANCES
-   EnvDefineFunction2(theEnv,"bsave-instances",'l',PTIEF BinarySaveInstancesCommand,
-                   "BinarySaveInstancesCommand","1*wk");
+   EnvAddUDF(theEnv,"bsave-instances",INTEGER_TYPE, BinarySaveInstancesCommand,
+                    "BinarySaveInstancesCommand",1,UNBOUNDED,"y;sy",NULL);
 #endif
 #if BLOAD_INSTANCES
-   EnvDefineFunction2(theEnv,"bload-instances",'l',PTIEF BinaryLoadInstancesCommand,
-                   "BinaryLoadInstancesCommand","11k");
+   EnvAddUDF(theEnv,"bload-instances",INTEGER_TYPE, BinaryLoadInstancesCommand,
+                    "BinaryLoadInstancesCommand",1,1,"sy",NULL);
 #endif
 
 #endif
@@ -193,10 +193,11 @@ void SetupInstanceFileCommands(
   NOTES        : H/L Syntax :
                  (save-instances <file> [local|visible [[inherit] <class>+]])
  ****************************************************************************/
-long SaveInstancesCommand(
-  void *theEnv)
+void SaveInstancesCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   return(InstancesSaveCommandParser(theEnv,"save-instances",EnvSaveInstancesDriver));
+   CVSetInteger(returnValue,InstancesSaveCommandParser(context,"save-instances",EnvSaveInstancesDriver));
   }
 
 /******************************************************
@@ -208,22 +209,28 @@ long SaveInstancesCommand(
   SIDE EFFECTS : Instances loaded from named file
   NOTES        : H/L Syntax : (load-instances <file>)
  ******************************************************/
-long LoadInstancesCommand(
-  void *theEnv)
+void LoadInstancesCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *fileFound;
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    long instanceCount;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgTypeCheck(theEnv,"load-instances",1,SYMBOL_OR_STRING,&temp) == false)
-     return(0L);
+   if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
+     {
+      CVSetInteger(returnValue,0L);
+      return;
+     }
 
-   fileFound = DOToString(temp);
+   fileFound = CVToString(&theArg);
 
    instanceCount = EnvLoadInstances(theEnv,fileFound);
    if (EvaluationData(theEnv)->EvaluationError)
-     ProcessFileErrorMessage(theEnv,"load-instances",fileFound);
-   return(instanceCount);
+     { ProcessFileErrorMessage(theEnv,"load-instances",fileFound); }
+     
+   CVSetInteger(returnValue,instanceCount);
   }
 
 /***************************************************
@@ -276,22 +283,29 @@ long EnvLoadInstancesFromString(
   SIDE EFFECTS : Instances loaded from named file
   NOTES        : H/L Syntax : (restore-instances <file>)
  *********************************************************/
-long RestoreInstancesCommand(
-  void *theEnv)
+void RestoreInstancesCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *fileFound;
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    long instanceCount;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgTypeCheck(theEnv,"restore-instances",1,SYMBOL_OR_STRING,&temp) == false)
-     return(0L);
-
-   fileFound = DOToString(temp);
+   if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
+     {
+      CVSetInteger(returnValue,0L);
+      return;
+     }
+     
+   fileFound = CVToString(&theArg);
 
    instanceCount = EnvRestoreInstances(theEnv,fileFound);
+   
    if (EvaluationData(theEnv)->EvaluationError)
-     ProcessFileErrorMessage(theEnv,"restore-instances",fileFound);
-   return(instanceCount);
+     { ProcessFileErrorMessage(theEnv,"restore-instances",fileFound); }
+   
+   CVSetInteger(returnValue,instanceCount);
   }
 
 /***************************************************
@@ -346,22 +360,27 @@ long EnvRestoreInstancesFromString(
   SIDE EFFECTS : Instances loaded from named binary file
   NOTES        : H/L Syntax : (bload-instances <file>)
  *******************************************************/
-long BinaryLoadInstancesCommand(
-  void *theEnv)
+void BinaryLoadInstancesCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *fileFound;
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
    long instanceCount;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgTypeCheck(theEnv,"bload-instances",1,SYMBOL_OR_STRING,&temp) == false)
-     return(0L);
-
-   fileFound = DOToString(temp);
+   if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
+     {
+      CVSetInteger(returnValue,0L);
+      return;
+     }
+     
+   fileFound = CVToString(&theArg);
 
    instanceCount = EnvBinaryLoadInstances(theEnv,fileFound);
    if (EvaluationData(theEnv)->EvaluationError)
-     ProcessFileErrorMessage(theEnv,"bload-instances",fileFound);
-   return(instanceCount);
+     { ProcessFileErrorMessage(theEnv,"bload-instances",fileFound); }
+   CVSetInteger(returnValue,instanceCount);
   }
 
 /****************************************************
@@ -527,10 +546,11 @@ long EnvSaveInstancesDriver(
   NOTES        : H/L Syntax :
                  (bsave-instances <file> [local|visible [[inherit] <class>+]])
  *****************************************************************************/
-long BinarySaveInstancesCommand(
-  void *theEnv)
+void BinarySaveInstancesCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   return(InstancesSaveCommandParser(theEnv,"bsave-instances",EnvBinarySaveInstancesDriver));
+   CVSetInteger(returnValue,InstancesSaveCommandParser(context,"bsave-instances",EnvBinarySaveInstancesDriver));
   }
 
 /*******************************************************
@@ -634,7 +654,7 @@ long EnvBinarySaveInstancesDriver(
   NOTES        : None
  ******************************************************/
 static long InstancesSaveCommandParser(
-  void *theEnv,
+  UDFContext *context,
   const char *functionName,
   long (*saveFunction)(void *,const char *,int,EXPRESSION *,bool))
   {
@@ -643,9 +663,11 @@ static long InstancesSaveCommandParser(
    int argCount,saveCode = LOCAL_SAVE;
    EXPRESSION *classList = NULL;
    bool inheritFlag = false;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    if (EnvArgTypeCheck(theEnv,functionName,1,SYMBOL_OR_STRING,&temp) == false)
      return(0L);
+     
    fileFound = DOToString(temp);
 
    argCount = EnvRtnArgCount(theEnv);

@@ -93,9 +93,9 @@ struct procedureParserData
 #endif
 
 #if ! RUN_TIME
-/*******************************************/
-/* ProceduralFunctionParsers        */
-/*******************************************/
+/*****************************/
+/* ProceduralFunctionParsers */
+/*****************************/
 void ProceduralFunctionParsers(
   void *theEnv)
   {

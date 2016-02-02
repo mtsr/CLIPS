@@ -2,7 +2,7 @@
    (printout t ?a " " ?b " and " (length ?c) " extras: " ?c crlf))
 (print-args 1 2)
 (print-args 1 2 3 4)
-(print-args 1 2 (mv-append a b c) (mv-append d e f) 1 2 3 4)
+(print-args 1 2 (create$ a b c) (create$ d e f) 1 2 3 4)
 (deffunction test-return ()
    (+ (eval "(gensym)") 2)
    TRUE)

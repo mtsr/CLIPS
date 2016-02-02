@@ -52,26 +52,26 @@
 
    void                    MultifieldFunctionDefinitions(void *);
 #if MULTIFIELD_FUNCTIONS
-   void                    DeleteFunction(void *,DATA_OBJECT_PTR);
+   void                    DeleteFunction(UDFContext *,CLIPSValue *);
    void                    MVDeleteFunction(void *,DATA_OBJECT_PTR);
-   void                    ReplaceFunction(void *,DATA_OBJECT_PTR);
+   void                    ReplaceFunction(UDFContext *,CLIPSValue *);
    void                    MVReplaceFunction(void *,DATA_OBJECT_PTR);
-   void                    DeleteMemberFunction(void *,DATA_OBJECT_PTR);
-   void                    ReplaceMemberFunction(void *,DATA_OBJECT_PTR);
-   void                    InsertFunction(void *,DATA_OBJECT_PTR);
-   void                    ExplodeFunction(void *,DATA_OBJECT_PTR);
-   void                   *ImplodeFunction(void *);
-   void                    SubseqFunction(void *,DATA_OBJECT_PTR);
+   void                    DeleteMemberFunction(UDFContext *,CLIPSValue *);
+   void                    ReplaceMemberFunction(UDFContext *,CLIPSValue *);
+   void                    InsertFunction(UDFContext *,CLIPSValue *);
+   void                    ExplodeFunction(UDFContext *,CLIPSValue *);
+   void                    ImplodeFunction(UDFContext *,CLIPSValue *);
+   void                    SubseqFunction(UDFContext *,CLIPSValue *);
    void                    MVSubseqFunction(void *,DATA_OBJECT_PTR);
-   void                    FirstFunction(void *,DATA_OBJECT_PTR);
-   void                    RestFunction(void *,DATA_OBJECT_PTR);
-   void                    NthFunction(void *,DATA_OBJECT_PTR);
-   bool                    SubsetpFunction(void *);
-   void                    MemberFunction(void *,DATA_OBJECT_PTR);
-   void                    MultifieldPrognFunction(void *,DATA_OBJECT_PTR);
-   void                    ForeachFunction(void *,DATA_OBJECT_PTR);
-   void                    GetMvPrognField(void *,DATA_OBJECT_PTR);
-   long                    GetMvPrognIndex(void *);
+   void                    FirstFunction(UDFContext *,CLIPSValue *);
+   void                    RestFunction(UDFContext *,CLIPSValue *);
+   void                    NthFunction(UDFContext *,CLIPSValue *);
+   void                    SubsetpFunction(UDFContext *,CLIPSValue *);
+   void                    MemberFunction(UDFContext *,CLIPSValue *);
+   void                    MultifieldPrognFunction(UDFContext *,CLIPSValue *);
+   void                    ForeachFunction(UDFContext *,CLIPSValue *);
+   void                    GetMvPrognField(UDFContext *,CLIPSValue *);
+   void                    GetMvPrognIndex(UDFContext *,CLIPSValue *);
    bool                    FindDOsInSegment(DATA_OBJECT_PTR,int,DATA_OBJECT_PTR,
                                                    long *,long *,long *,int);
 #endif

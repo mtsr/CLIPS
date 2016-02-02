@@ -39,6 +39,7 @@
 #include "evaluatn.h"
 
    void                           DefmoduleBasicCommands(void *);
+   void                           EnvGetDefmoduleListFunction(UDFContext *,CLIPSValue *);
    void                           EnvGetDefmoduleList(void *,DATA_OBJECT_PTR);
    void                           PPDefmoduleCommand(UDFContext *,CLIPSValue *);
    bool                           PPDefmodule(void *,const char *,const char *);

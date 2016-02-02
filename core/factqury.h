@@ -84,14 +84,14 @@ struct factQueryData
 #define QUERY_DELIMETER_STRING     "(QDS)"
 
    void                           SetupFactQuery(void *);
-   void                           GetQueryFact(void *,DATA_OBJECT *);
-   void                           GetQueryFactSlot(void *,DATA_OBJECT *);
-   bool                           AnyFacts(void *);
-   void                           QueryFindFact(void *,DATA_OBJECT *);
-   void                           QueryFindAllFacts(void *,DATA_OBJECT *);
-   void                           QueryDoForFact(void *,DATA_OBJECT *);
-   void                           QueryDoForAllFacts(void *,DATA_OBJECT *);
-   void                           DelayedQueryDoForAllFacts(void *,DATA_OBJECT *);
+   void                           GetQueryFact(UDFContext *,CLIPSValue *);
+   void                           GetQueryFactSlot(UDFContext *,CLIPSValue *);
+   void                           AnyFacts(UDFContext *,CLIPSValue *);
+   void                           QueryFindFact(UDFContext *,CLIPSValue *);
+   void                           QueryFindAllFacts(UDFContext *,CLIPSValue *);
+   void                           QueryDoForFact(UDFContext *,CLIPSValue *);
+   void                           QueryDoForAllFacts(UDFContext *,CLIPSValue *);
+   void                           DelayedQueryDoForAllFacts(UDFContext *,CLIPSValue *);
 
 #endif /* FACT_SET_QUERIES */
 

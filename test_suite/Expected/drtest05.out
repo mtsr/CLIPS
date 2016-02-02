@@ -24,7 +24,7 @@ CLIPS> (clear)                            ; DR0411
 CLIPS> (defrule foo                       ; DR0411
    (fact ?x)
    (fact $?y)
-   (test (eq ?y (str-explode ?x)))
+   (test (eq ?y (explode$ ?x)))
    =>)
 CLIPS> (reset)                            ; DR0411
 CLIPS> (assert (fact "a b c"))            ; DR0411
@@ -61,8 +61,7 @@ ERROR:
 CLIPS> (list-deftemplates)                ; DR0427
 CLIPS> (eval (str-cat                     ; DR0435
       (printout t " fact-list "))) ; DR0435
- fact-list [ARGACCES5] Function str-cat expected argument #1 to be of type string, instance name, symbol, float, or integer
-FALSE
+[ARGACCES5] Function str-cat expected argument #1 to be of type integer, float, symbol, string, or instance name
 CLIPS> (clear)                            ; DR0441
 CLIPS> (deftemplate a)                    ; DR0441
 CLIPS> (assert (a))                       ; DR0441
@@ -179,7 +178,6 @@ CLIPS> (assert (fact 1))                  ; DR0466
 <Fact-1>
 CLIPS> (run)                              ; DR0466
 [EVALUATN1] Variable f1 is unbound
-[ARGACCES5] Function retract expected argument #1 to be of type fact-address, fact-index, or the symbol *
 [PRCCODE4] Execution halted during the actions of defrule a.
 CLIPS> (facts)                            ; DR0466
 f-1     (fact 1)
@@ -200,7 +198,7 @@ CLIPS> (make-instance foo of FOO)         ; DR0479 - [foo]
 CLIPS> (send [foo] put-BAR a b c)         ; DR0479 - TRUE
 (a b c)
 CLIPS> (find-instance ((?x FOO))          ; DR0479
-    (member d (send ?x get-BAR)))  ; DR0479 - ()
+    (member$ d (send ?x get-BAR))) ; DR0479 - ()
 ()
 CLIPS> (clear)                            ; DR0480
 CLIPS> (defclass mineral (is-a USER)      ; DR0480

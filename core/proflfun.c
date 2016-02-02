@@ -100,12 +100,10 @@ void ConstructProfilingFunctionDefinitions(
    EnvAddUDF(theEnv,"profile-info",VOID_TYPE,  ProfileInfoCommand,"ProfileInfoCommand",0,0,NULL,NULL);
    EnvAddUDF(theEnv,"profile-reset",VOID_TYPE,  ProfileResetCommand,"ProfileResetCommand",0,0,NULL,NULL);
 
-   EnvDefineFunction2(theEnv,"set-profile-percent-threshold",'d',
-                   PTIEF SetProfilePercentThresholdCommand,
-                   "SetProfilePercentThresholdCommand","11n");
-   EnvDefineFunction2(theEnv,"get-profile-percent-threshold",'d',
-                   PTIEF GetProfilePercentThresholdCommand,
-                   "GetProfilePercentThresholdCommand","00");
+   EnvAddUDF(theEnv,"set-profile-percent-threshold",FLOAT_TYPE,SetProfilePercentThresholdCommand,
+                   "SetProfilePercentThresholdCommand",1,1,"ld",NULL);
+   EnvAddUDF(theEnv,"get-profile-percent-threshold",FLOAT_TYPE,
+                    GetProfilePercentThresholdCommand,"GetProfilePercentThresholdCommand",0,0,NULL,NULL);
                    
    ProfileFunctionData(theEnv)->ProfileDataID = InstallUserDataRecord(theEnv,&ProfileFunctionData(theEnv)->ProfileDataInfo);
    
@@ -160,7 +158,7 @@ void ProfileCommand(
 
    if (! Profile(UDFContextEnvironment(context),argument))
      {
-      UDFInvalidArgumentMessage(context,1,"symbol with value constructs, user-functions, or off");
+      UDFInvalidArgumentMessage(context,"symbol with value constructs, user-functions, or off");
       return;
      }
 
@@ -698,31 +696,29 @@ static void OutputConstructsCodeInfo(
 /* SetProfilePercentThresholdCommand: H/L access routine */
 /*   for the set-profile-percent-threshold command.      */
 /*********************************************************/
-double SetProfilePercentThresholdCommand(
-  void *theEnv)
+void SetProfilePercentThresholdCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
    double newThreshold;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvArgCountCheck(theEnv,"set-profile-percent-threshold",EXACTLY,1) == -1)
-     { return(ProfileFunctionData(theEnv)->PercentThreshold); }
-
-   if (EnvArgTypeCheck(theEnv,"set-profile-percent-threshold",1,INTEGER_OR_FLOAT,&theValue) == false)
-      { return(ProfileFunctionData(theEnv)->PercentThreshold); }
-
-   if (GetType(theValue) == INTEGER)
-     { newThreshold = (double) DOToLong(theValue); }
-   else
-     { newThreshold = (double) DOToDouble(theValue); }
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&theValue))
+     {
+      CVSetFloat(returnValue,ProfileFunctionData(theEnv)->PercentThreshold);
+      return;
+     }
+     
+   newThreshold = CVToFloat(&theValue);
      
    if ((newThreshold < 0.0) || (newThreshold > 100.0))
      { 
-      ExpectedTypeError1(theEnv,"set-profile-percent-threshold",1,
-                         "number in the range 0 to 100");
-      return(-1.0); 
+      UDFInvalidArgumentMessage(context,"number in the range 0 to 100");
+      CVSetFloat(returnValue,-1.0);
      }
 
-   return(SetProfilePercentThreshold(theEnv,newThreshold));
+   CVSetFloat(returnValue,SetProfilePercentThreshold(theEnv,newThreshold));
   }
 
 /****************************************************/
@@ -749,12 +745,11 @@ double SetProfilePercentThreshold(
 /* GetProfilePercentThresholdCommand: H/L access routine */
 /*   for the get-profile-percent-threshold command.      */
 /*********************************************************/
-double GetProfilePercentThresholdCommand(
-  void *theEnv)
-  {   
-   EnvArgCountCheck(theEnv,"get-profile-percent-threshold",EXACTLY,0);
-
-   return(ProfileFunctionData(theEnv)->PercentThreshold);
+void GetProfilePercentThresholdCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CVSetFloat(returnValue,ProfileFunctionData(UDFContextEnvironment(context))->PercentThreshold);
   }
 
 /****************************************************/

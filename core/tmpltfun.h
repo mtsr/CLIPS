@@ -75,8 +75,8 @@
    struct expr                   *ModifyParse(void *,struct expr *,const char *);
    struct expr                   *DuplicateParse(void *,struct expr *,const char *);
    void                           DeftemplateFunctions( void *);
-   void                           ModifyCommand(void *,DATA_OBJECT_PTR);
-   void                           DuplicateCommand(void *,DATA_OBJECT_PTR);
+   void                           ModifyCommand(UDFContext *,CLIPSValue *);
+   void                           DuplicateCommand(UDFContext *,CLIPSValue *);
    void                           DeftemplateSlotNamesFunction(UDFContext *,CLIPSValue *);
    void                           EnvDeftemplateSlotNames(void *,void *,DATA_OBJECT *);
    void                           DeftemplateSlotDefaultValueFunction(UDFContext *,CLIPSValue *);

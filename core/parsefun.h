@@ -45,8 +45,8 @@
 #include "evaluatn.h"
 
    void                           ParseFunctionDefinitions(void *);
-   void                           CheckSyntaxFunction(void *,DATA_OBJECT *);
-   bool                           CheckSyntax(void *,const char *,DATA_OBJECT_PTR);
+   void                           CheckSyntaxFunction(UDFContext *,CLIPSValue *);
+   bool                           CheckSyntax(void *,const char *,CLIPSValue *);
 
 #endif /* _H_parsefun */
 

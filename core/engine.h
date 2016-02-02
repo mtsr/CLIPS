@@ -156,8 +156,8 @@ struct engineData
    void                    EnvSetFocusChanged(void *,bool);
    void                    ListFocusStackCommand(UDFContext *,CLIPSValue *);
    void                    EnvListFocusStack(void *,const char *);
-   void                    GetFocusStackFunction(void *,DATA_OBJECT_PTR);
-   void                    EnvGetFocusStack(void *,DATA_OBJECT_PTR);
+   void                    GetFocusStackFunction(UDFContext *,CLIPSValue *);
+   void                    EnvGetFocusStack(void *,CLIPSValue *);
    void                    PopFocusFunction(UDFContext *,CLIPSValue *);
    void                    GetFocusFunction(UDFContext *,CLIPSValue *);
    void                   *EnvPopFocus(void *);

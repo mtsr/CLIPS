@@ -371,7 +371,7 @@ void WatchCommand(
    if (recognized == false)
      {
       EnvSetEvaluationError(theEnv,true);
-      UDFInvalidArgumentMessage(context,1,"watchable symbol");
+      UDFInvalidArgumentMessage(context,"watchable symbol");
       return;
      }
 
@@ -421,7 +421,7 @@ void UnwatchCommand(
    if (recognized == false)
      {
       EnvSetEvaluationError(theEnv,true);
-      UDFInvalidArgumentMessage(context,1,"watchable symbol");
+      UDFInvalidArgumentMessage(context,"watchable symbol");
       return;
      }
 

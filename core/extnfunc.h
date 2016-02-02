@@ -46,6 +46,8 @@
 #define _H_extnfunc
 
 struct FunctionDefinition;
+struct UDFContext_t;
+typedef struct UDFContext_t UDFContext;
 
 #include "evaluatn.h"
 #include "expressn.h"
@@ -58,7 +60,8 @@ struct FunctionDefinition
    const char *actualFunctionName;
    char returnValueType;
    unsigned unknownReturnValueType;
-   int (*functionPointer)(void);
+   //int (*functionPointer)(void);
+   void (*functionPointer)(UDFContext *,CLIPSValue *);
    struct expr *(*parser)(void *,struct expr *,const char *);
    struct symbolHashNode *restrictions;
    int minArgs;
@@ -94,13 +97,13 @@ struct externalFunctionData
    struct FunctionHash **FunctionHashtable;
   };
 
-typedef struct UDFContext_t
+struct UDFContext_t
   {
    Environment *environment;
    struct FunctionDefinition *theFunction;
    int lastPosition;
    struct expr *lastArg;
-  } UDFContext;
+  };
 
 #define ExternalFunctionData(theEnv) ((struct externalFunctionData *) GetEnvironmentData(theEnv,EXTERNAL_FUNCTION_DATA))
 
@@ -122,8 +125,8 @@ struct FunctionHash
    bool                           EnvDefineFunction2WithContext(void *,const char *,int,
                                                             int (*)(void *),const char *,const char *,void *);
    bool                           DefineFunction3(void *,const char *,int,unsigned,
-                                                         int (*)(void *),const char *,int,int,const char *,void *);
-
+                                                  void (*)(UDFContext *,CLIPSValue *),
+                                                  const char *,int,int,const char *,void *);
    bool                           EnvAddUDF(void *,const char *,unsigned,
                                             void (*)(UDFContext *,struct dataObject *),
                                             const char *,int,int,const char *,void *);
@@ -145,13 +148,14 @@ struct FunctionHash
    int                            UDFArgumentCount(UDFContext *);
    int                            UDFArgCountCheck(UDFContext *);
    bool                           UDFNthArgument(UDFContext *,int,unsigned,struct dataObject *);
-   void                           UDFInvalidArgumentMessage(UDFContext *,int,const char *);
+   void                           UDFInvalidArgumentMessage(UDFContext *,const char *);
    Environment                   *UDFContextEnvironment(UDFContext *);
    void                          *UDFContextUserContext(UDFContext *);
    const char                    *UDFContextFunctionName(UDFContext *);
    void                           PrintTypesString(void *,const char *,unsigned,bool);
    bool                           UDFFirstArgument(UDFContext *,unsigned,CLIPSValue *);
    bool                           UDFNextArgument(UDFContext *,unsigned,CLIPSValue *);
+   void                           UDFThrowError(UDFContext *);
 
 #define UDFHasNextArgument(context) (context->lastArg != NULL)
 

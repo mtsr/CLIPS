@@ -122,8 +122,8 @@ void DeftemplateFunctions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction(theEnv,"modify",'u', PTIEF ModifyCommand,"ModifyCommand");
-   EnvDefineFunction(theEnv,"duplicate",'u', PTIEF DuplicateCommand,"DuplicateCommand");
+   EnvAddUDF(theEnv,"modify",BOOLEAN_TYPE | FACT_ADDRESS_TYPE,  ModifyCommand,"ModifyCommand",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"duplicate",BOOLEAN_TYPE | FACT_ADDRESS_TYPE,  DuplicateCommand,"DuplicateCommand",0,UNBOUNDED,NULL,NULL);
 
    EnvAddUDF(theEnv,"deftemplate-slot-names",BOOLEAN_TYPE | MULTIFIELD_TYPE, DeftemplateSlotNamesFunction,
                    "DeftemplateSlotNamesFunction", 1,1,"y",NULL);
@@ -192,8 +192,8 @@ static void FreeTemplateDataObjectArray(
 /*   the DuplicateModifyCommand function to perform the actual work. */
 /*********************************************************************/
 void ModifyCommand(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    long long factNum, factIndex;
    struct fact *oldFact, *theFact;
@@ -205,14 +205,14 @@ void ModifyCommand(
    bool found;
    DATA_OBJECT_PTR theDOArray;
    char *changeMap;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===================================================*/
    /* Set the default return value to the symbol FALSE. */
    /*===================================================*/
 
-   SetpType(returnValue,SYMBOL);
-   SetpValue(returnValue,EnvFalseSymbol(theEnv));
-
+   CVSetBoolean(returnValue,false);
+   
    /*==================================================*/
    /* Evaluate the first argument which is used to get */
    /* a pointer to the fact to be modified/duplicated. */
@@ -579,8 +579,8 @@ void ModifyCommand(
 /*   the DuplicateModifyCommand function to perform the actual work.       */
 /***************************************************************************/
 void DuplicateCommand(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    long long factNum;
    struct fact *oldFact, *newFact, *theFact;
@@ -590,13 +590,13 @@ void DuplicateCommand(
    struct templateSlot *slotPtr;
    int i, position;
    bool found;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===================================================*/
    /* Set the default return value to the symbol FALSE. */
    /*===================================================*/
 
-   SetpType(returnValue,SYMBOL);
-   SetpValue(returnValue,EnvFalseSymbol(theEnv));
+   CVSetBoolean(returnValue,false);
 
    /*==================================================*/
    /* Evaluate the first argument which is used to get */
@@ -2241,10 +2241,17 @@ bool UpdateModifyDuplicate(
             SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
             return(false);
            }
-         else if ((tempArg->argList->type == MF_VARIABLE) ||
-                  ((tempArg->argList->type == FCALL) ?
-                   (((struct FunctionDefinition *) tempArg->argList->value)->returnValueType == 'm') :
-                      false))
+         else if (tempArg->argList->type == FCALL)
+           {
+            if ((ExpressionFunctionType(tempArg->argList) == 'm') ||
+                ((ExpressionFunctionType(tempArg->argList) == 'z') &&
+                 (ExpressionUnknownFunctionType(tempArg->argList) & MULTIFIELD_TYPE)))
+              {
+               SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
+               return(false);
+              }
+           }
+         else if (tempArg->argList->type == MF_VARIABLE)
            {
             SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
             return(false);

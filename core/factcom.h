@@ -51,15 +51,15 @@
 #include "evaluatn.h"
 
    void                           FactCommandDefinitions(void *);
-   void                           AssertCommand(void *,DATA_OBJECT_PTR);
-   void                           RetractCommand(void *);
-   void                           AssertStringFunction(void *,DATA_OBJECT_PTR);
-   void                           FactsCommand(void *);
+   void                           AssertCommand(UDFContext *,CLIPSValue *);
+   void                           RetractCommand(UDFContext *,CLIPSValue *);
+   void                           AssertStringFunction(UDFContext *,CLIPSValue *);
+   void                           FactsCommand(UDFContext *,CLIPSValue *);
    void                           EnvFacts(void *,const char *,void *,long long,long long,long long);
-   bool                           SetFactDuplicationCommand(void *);
-   bool                           GetFactDuplicationCommand(void *);
-   bool                           SaveFactsCommand(void *);
-   bool                           LoadFactsCommand(void *);
+   void                           SetFactDuplicationCommand(UDFContext *,CLIPSValue *);
+   void                           GetFactDuplicationCommand(UDFContext *,CLIPSValue *);
+   void                           SaveFactsCommand(UDFContext *,CLIPSValue *);
+   void                           LoadFactsCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSaveFacts(void *,const char *,int);
    bool                           EnvSaveFactsDriver(void *,const char *,int,struct expr *);
    bool                           EnvLoadFacts(void *,const char *);

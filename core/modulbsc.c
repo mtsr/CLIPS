@@ -69,7 +69,7 @@ void DefmoduleBasicCommands(
    AddSaveFunction(theEnv,"defmodule",SaveDefmodules,1100);
 
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"get-defmodule-list",'m',PTIEF EnvGetDefmoduleList,"EnvGetDefmoduleList","00");
+   EnvAddUDF(theEnv,"get-defmodule-list",MULTIFIELD_TYPE, EnvGetDefmoduleListFunction,"EnvGetDefmoduleListFunction",0,0,NULL,NULL);
 
 #if DEBUGGING_FUNCTIONS
    EnvAddUDF(theEnv,"list-defmodules",VOID_TYPE, ListDefmodulesCommand,"ListDefmodulesCommand",0,0,NULL,NULL);
@@ -129,6 +129,17 @@ static void SaveDefmodules(
       EnvPrintRouter(theEnv,logicalName,"\n");
      }
   }
+  
+/***************************************************/
+/* EnvGetDefmoduleListFunction: H/L access routine */
+/*   for the get-defmodule-list function.          */
+/***************************************************/
+void EnvGetDefmoduleListFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   EnvGetDefmoduleList(UDFContextEnvironment(context),returnValue);
+  }
 
 /*************************************************/
 /* EnvGetDefmoduleList: H/L and C access routine */
@@ -136,7 +147,7 @@ static void SaveDefmodules(
 /*************************************************/
 void EnvGetDefmoduleList(
   void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  CLIPSValue *returnValue)
   {
    void *theConstruct;
    unsigned long count = 0;

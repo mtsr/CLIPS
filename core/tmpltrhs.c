@@ -296,13 +296,24 @@ static struct expr *ParseAssertSlotValues(
       /* not be called to get the value for the slot. */
       /*==============================================*/
 
-      if ((newField->type == FCALL) ? (ExpressionFunctionType(newField) == 'm') :
-                                      (newField->type == MF_VARIABLE))
+      if (newField->type == MF_VARIABLE)
+        {
+         *error = true;
+         SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
+         ReturnExpression(theEnv,newField);
+         return(NULL);
+        }
+      else if (newField->type == FCALL)
        {
-        *error = true;
-        SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
-        ReturnExpression(theEnv,newField);
-        return(NULL);
+        if ((ExpressionFunctionType(newField) == 'm') ||
+            ((ExpressionFunctionType(newField) == 'z') &&
+             (ExpressionUnknownFunctionType(newField) & MULTIFIELD_TYPE)))
+          {
+           *error = true;
+           SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
+           ReturnExpression(theEnv,newField);
+           return(NULL);
+          }
        }
 
       /*============================*/

@@ -588,22 +588,24 @@ void PrintMethod(
   NOTES        : H/L Syntax: (preview-generic <func> <args>)
  *************************************************************/
 void PreviewGeneric(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFGENERIC *gfunc;
    DEFGENERIC *previousGeneric;
    int oldce;
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    EvaluationData(theEnv)->EvaluationError = false;
-   if (EnvArgTypeCheck(theEnv,"preview-generic",1,SYMBOL,&temp) == false)
-     return;
-   gfunc = LookupDefgenericByMdlOrScope(theEnv,DOToString(temp));
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
+
+   gfunc = LookupDefgenericByMdlOrScope(theEnv,CVToString(&theArg));
    if (gfunc == NULL)
      {
       PrintErrorID(theEnv,"GENRCFUN",3,false);
       EnvPrintRouter(theEnv,WERROR,"Unable to find generic function ");
-      EnvPrintRouter(theEnv,WERROR,DOToString(temp));
+      EnvPrintRouter(theEnv,WERROR,CVToString(&theArg));
       EnvPrintRouter(theEnv,WERROR," in function preview-generic.\n");
       return;
      }

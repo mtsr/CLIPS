@@ -85,8 +85,8 @@
    =========================================
    ***************************************** */
 
-static bool CheckTwoClasses(void *,const char *,DEFCLASS **,DEFCLASS **);
-static SLOT_DESC *CheckSlotExists(void *,const char *,DEFCLASS **,bool,bool);
+static bool CheckTwoClasses(UDFContext *,const char *,DEFCLASS **,DEFCLASS **);
+static SLOT_DESC *CheckSlotExists(UDFContext *,const char *,DEFCLASS **,bool,bool);
 static SLOT_DESC *LookupSlot(void *,DEFCLASS *,const char *,bool);
 
 #if DEBUGGING_FUNCTIONS
@@ -347,14 +347,19 @@ void GetDefclassModuleCommand(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (superclassp <class-1> <class-2>)
  *********************************************************************/
-bool SuperclassPCommand(
-  void *theEnv)
+void SuperclassPCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *c1,*c2;
    
-   if (CheckTwoClasses(theEnv,"superclassp",&c1,&c2) == false)
-     return(false);
-   return(EnvSuperclassP(theEnv,(void *) c1,(void *) c2));
+   if (CheckTwoClasses(context,"superclassp",&c1,&c2) == false)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+     
+   CVSetBoolean(returnValue,EnvSuperclassP(UDFContextEnvironment(context),(void *) c1,(void *) c2));
   }
 
 /***************************************************
@@ -389,14 +394,19 @@ bool EnvSuperclassP(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (subclassp <class-1> <class-2>)
  *********************************************************************/
-bool SubclassPCommand(
-  void *theEnv)
+void SubclassPCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *c1,*c2;
    
-   if (CheckTwoClasses(theEnv,"subclassp",&c1,&c2) == false)
-     return(false);
-   return(EnvSubclassP(theEnv,(void *) c1,(void *) c2));
+   if (CheckTwoClasses(context,"subclassp",&c1,&c2) == false)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+     
+   CVSetBoolean(returnValue,EnvSubclassP(UDFContextEnvironment(context),(void *) c1,(void *) c2));
   }
 
 /***************************************************
@@ -431,30 +441,41 @@ bool EnvSubclassP(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-existp <class> <slot> [inherit])
  *********************************************************************/
-bool SlotExistPCommand(
-  void *theEnv)
+void SlotExistPCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *cls;
    SLOT_DESC *sd;
    bool inheritFlag = false;
-   DATA_OBJECT dobj;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   sd = CheckSlotExists(theEnv,"slot-existp",&cls,false,true);
+   sd = CheckSlotExists(context,"slot-existp",&cls,false,true);
    if (sd == NULL)
-     return(false);
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
    if (EnvRtnArgCount(theEnv) == 3)
      {
-      if (EnvArgTypeCheck(theEnv,"slot-existp",3,SYMBOL,&dobj) == false)
-        return(false);
-      if (strcmp(DOToString(dobj),"inherit") != 0)
+      if (! UDFNthArgument(context,3,SYMBOL_TYPE,&theArg))
         {
-         ExpectedTypeError1(theEnv,"slot-existp",3,"keyword \"inherit\"");
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+        
+      if (strcmp(CVToString(&theArg),"inherit") != 0)
+        {
+         UDFInvalidArgumentMessage(context,"keyword \"inherit\"");
          EnvSetEvaluationError(theEnv,true);
-         return(false);
+         CVSetBoolean(returnValue,false);
+         return;
         }
       inheritFlag = true;
      }
-   return((sd->cls == cls) ? true : inheritFlag);
+     
+   CVSetBoolean(returnValue,((sd->cls == cls) ? true : inheritFlag));
   }
 
 /***************************************************
@@ -487,39 +508,57 @@ bool EnvSlotExistP(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (message-handler-existp <class> <hnd> [<type>])
  ************************************************************************************/
-bool MessageHandlerExistPCommand(
-  void *theEnv)
+void MessageHandlerExistPCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *cls;
    SYMBOL_HN *mname;
-   DATA_OBJECT temp;
+   DATA_OBJECT theArg;
    unsigned mtype = MPRIMARY;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvArgTypeCheck(theEnv,"message-handler-existp",1,SYMBOL,&temp) == false)
-     return(false);
-   cls = LookupDefclassByMdlOrScope(theEnv,DOToString(temp));
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (cls == NULL)
      {
-      ClassExistError(theEnv,"message-handler-existp",DOToString(temp));
-      return(false);
+      ClassExistError(theEnv,"message-handler-existp",CVToString(&theArg));
+      CVSetBoolean(returnValue,false);
+      return;
      }
-   if (EnvArgTypeCheck(theEnv,"message-handler-existp",2,SYMBOL,&temp) == false)
-     return(false);
-   mname = (SYMBOL_HN *) GetValue(temp);
-   if (EnvRtnArgCount(theEnv) == 3)
+     
+   if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
      {
-      if (EnvArgTypeCheck(theEnv,"message-handler-existp",3,SYMBOL,&temp) == false)
-        return(false);
-      mtype = HandlerType(theEnv,"message-handler-existp",DOToString(temp));
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+
+   mname = (SYMBOL_HN *) CVToRawValue(&theArg);
+   if (UDFHasNextArgument(context))
+     {
+      if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
+        
+      mtype = HandlerType(theEnv,"message-handler-existp",CVToString(&theArg));
       if (mtype == MERROR)
         {
          EnvSetEvaluationError(theEnv,true);
-         return(false);
+         CVSetBoolean(returnValue,false);
+         return;
         }
      }
+
    if (FindHandlerByAddress(cls,mname,mtype) != NULL)
-     return(true);
-   return(false);
+     { CVSetBoolean(returnValue,true); }
+   else
+     { CVSetBoolean(returnValue,false); }
   }
 
 /**********************************************************************
@@ -530,16 +569,18 @@ bool MessageHandlerExistPCommand(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-writablep <class> <slot>)
  **********************************************************************/
-bool SlotWritablePCommand(
-  void *theEnv)
+void SlotWritablePCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *theDefclass;
    SLOT_DESC *sd;
    
-   sd = CheckSlotExists(theEnv,"slot-writablep",&theDefclass,true,true);
+   sd = CheckSlotExists(context,"slot-writablep",&theDefclass,true,true);
    if (sd == NULL)
-     return(false);
-   return((sd->noWrite || sd->initializeOnly) ? false : true);
+     { CVSetBoolean(returnValue,false); }
+   else
+     { CVSetBoolean(returnValue,(sd->noWrite || sd->initializeOnly) ? false : true); }
   }
 
 /***************************************************
@@ -573,16 +614,18 @@ bool EnvSlotWritableP(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-initablep <class> <slot>)
  **********************************************************************/
-bool SlotInitablePCommand(
-  void *theEnv)
+void SlotInitablePCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *theDefclass;
    SLOT_DESC *sd;
    
-   sd = CheckSlotExists(theEnv,"slot-initablep",&theDefclass,true,true);
+   sd = CheckSlotExists(context,"slot-initablep",&theDefclass,true,true);
    if (sd == NULL)
-     return(false);
-   return((sd->noWrite && (sd->initializeOnly == 0)) ? false : true);
+     { CVSetBoolean(returnValue,false); }
+   else
+     { CVSetBoolean(returnValue,(sd->noWrite && (sd->initializeOnly == 0)) ? false : true); }
   }
 
 /***************************************************
@@ -616,16 +659,18 @@ bool EnvSlotInitableP(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-publicp <class> <slot>)
  **********************************************************************/
-bool SlotPublicPCommand(
-  void *theEnv)
+void SlotPublicPCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *theDefclass;
    SLOT_DESC *sd;
    
-   sd = CheckSlotExists(theEnv,"slot-publicp",&theDefclass,true,false);
+   sd = CheckSlotExists(context,"slot-publicp",&theDefclass,true,false);
    if (sd == NULL)
-     return(false);
-   return(sd->publicVisibility ? true : false);
+     { CVSetBoolean(returnValue,false); }
+   else
+     { CVSetBoolean(returnValue,(sd->publicVisibility ? true : false)); }
   }
 
 /***************************************************
@@ -690,16 +735,18 @@ int EnvSlotDefaultP(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-direct-accessp <class> <slot>)
  **********************************************************************/
-bool SlotDirectAccessPCommand(
-  void *theEnv)
+void SlotDirectAccessPCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *theDefclass;
    SLOT_DESC *sd;
    
-   sd = CheckSlotExists(theEnv,"slot-direct-accessp",&theDefclass,true,true);
+   sd = CheckSlotExists(context,"slot-direct-accessp",&theDefclass,true,true);
    if (sd == NULL)
-     return(false);
-   return((sd->publicVisibility || (sd->cls == theDefclass)) ? true : false);
+     { CVSetBoolean(returnValue,false); }
+   else
+     { CVSetBoolean(returnValue,((sd->publicVisibility || (sd->cls == theDefclass)) ? true : false)); }
   }
 
 /***************************************************
@@ -737,31 +784,30 @@ bool EnvSlotDirectAccessP(
   NOTES        : H/L Syntax : (slot-default-value <class> <slot>)
  **********************************************************************/
 void SlotDefaultValueCommand(
-  void *theEnv,
-  DATA_OBJECT_PTR theValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DEFCLASS *theDefclass;
    SLOT_DESC *sd;
 
-   SetpType(theValue,SYMBOL);
-   SetpValue(theValue,EnvFalseSymbol(theEnv));
-   sd = CheckSlotExists(theEnv,"slot-default-value",&theDefclass,true,true);
+   CVSetBoolean(returnValue,false);
+   
+   sd = CheckSlotExists(context,"slot-default-value",&theDefclass,true,true);
    if (sd == NULL)
      return;
    
    if (sd->noDefault)
      {
-      SetpType(theValue,SYMBOL);
-      SetpValue(theValue,EnvAddSymbol(theEnv,"?NONE"));
-      return; 
+      CVSetSymbol(returnValue,"?NONE");
+      return;
      }
      
    if (sd->dynamicDefault)
-     EvaluateAndStoreInDataObject(theEnv,(int) sd->multiple,
+     EvaluateAndStoreInDataObject(UDFContextEnvironment(context),(int) sd->multiple,
                                   (EXPRESSION *) sd->defaultValue,
-                                  theValue,true);
+                                  returnValue,true);
    else
-     GenCopyMemory(DATA_OBJECT,1,theValue,sd->defaultValue);
+     GenCopyMemory(DATA_OBJECT,1,returnValue,sd->defaultValue);
   }
 
 /*********************************************************
@@ -812,14 +858,20 @@ bool EnvSlotDefaultValue(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (class-existp <arg>)
  ********************************************************/
-bool ClassExistPCommand(
-  void *theEnv)
+void ClassExistPCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
    
-   if (EnvArgTypeCheck(theEnv,"class-existp",1,SYMBOL,&temp) == false)
-     return(false);
-   return((LookupDefclassByMdlOrScope(theEnv,DOToString(temp)) != NULL) ? true : false);
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+      
+   CVSetBoolean(returnValue,((LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg)) != NULL) ? true : false));
   }
 
 /* =========================================
@@ -840,29 +892,34 @@ bool ClassExistPCommand(
   NOTES        : Assumes exactly 2 arguments
  ******************************************************/
 static bool CheckTwoClasses(
-  void *theEnv,
+  UDFContext *context,
   const char *func,
   DEFCLASS **c1,
   DEFCLASS **c2)
   {
-   DATA_OBJECT temp;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   if (EnvArgTypeCheck(theEnv,func,1,SYMBOL,&temp) == false)
-     return(false);
-   *c1 = LookupDefclassByMdlOrScope(theEnv,DOToString(temp));
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     { return(false); }
+     
+   *c1 = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (*c1 == NULL)
      {
-      ClassExistError(theEnv,func,ValueToString(temp.value));
+      ClassExistError(theEnv,func,CVToString(&theArg));
       return(false);
      }
-   if (EnvArgTypeCheck(theEnv,func,2,SYMBOL,&temp) == false)
-     return(false);
-   *c2 = LookupDefclassByMdlOrScope(theEnv,DOToString(temp));
+     
+   if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
+     { return(false); }
+     
+   *c2 = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (*c2 == NULL)
      {
-      ClassExistError(theEnv,func,ValueToString(temp.value));
+      ClassExistError(theEnv,func,CVToString(&theArg));
       return(false);
      }
+     
    return(true);
   }
 
@@ -885,7 +942,7 @@ static bool CheckTwoClasses(
   NOTES        : None
  ***************************************************/
 static SLOT_DESC *CheckSlotExists(
-  void *theEnv,
+  UDFContext *context,
   const char *func,
   DEFCLASS **classBuffer,
   bool existsErrorFlag,
@@ -894,8 +951,9 @@ static SLOT_DESC *CheckSlotExists(
    SYMBOL_HN *ssym;
    int slotIndex;
    SLOT_DESC *sd;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   ssym = CheckClassAndSlot(theEnv,func,classBuffer);
+   ssym = CheckClassAndSlot(context,func,classBuffer);
    if (ssym == NULL)
      return(NULL);
    slotIndex = FindInstanceTemplateSlot(theEnv,*classBuffer,ssym);

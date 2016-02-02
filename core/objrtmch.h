@@ -120,7 +120,7 @@ typedef struct objectMatchAction
    struct objectMatchAction *nxt;
   } OBJECT_MATCH_ACTION;
 
-   void                  ObjectMatchDelay(void *,DATA_OBJECT *);
+   void                  ObjectMatchDelay(UDFContext *,CLIPSValue *);
    bool                  SetDelayObjectPatternMatching(void *,bool);
    bool                  GetDelayObjectPatternMatching(void *);
    OBJECT_PATTERN_NODE  *ObjectNetworkPointer(void *);

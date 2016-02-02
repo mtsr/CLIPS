@@ -81,23 +81,23 @@ void DeveloperCommands(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"primitives-info",'v', PTIEF PrimitiveTablesInfo,"PrimitiveTablesInfo","00");
-   EnvDefineFunction2(theEnv,"primitives-usage",'v', PTIEF PrimitiveTablesUsage,"PrimitiveTablesUsage","00");
+   EnvAddUDF(theEnv,"primitives-info",VOID_TYPE,  PrimitiveTablesInfo,"PrimitiveTablesInfo",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"primitives-usage",VOID_TYPE,  PrimitiveTablesUsage,"PrimitiveTablesUsage",0,0,NULL,NULL);
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
-   EnvDefineFunction2(theEnv,"validate-fact-integrity", 'b', PTIEF ValidateFactIntegrity, "ValidateFactIntegrity", "00");
+   EnvAddUDF(theEnv,"validate-fact-integrity", BOOLEAN_TYPE, ValidateFactIntegrity, "ValidateFactIntegrity", 0,0,NULL,NULL);
 
    EnvAddUDF(theEnv,"show-fpn",VOID_TYPE, ShowFactPatternNetwork,"ShowFactPatternNetwork",1,1,"y",NULL);
-   EnvDefineFunction2(theEnv,"show-fht",'v', PTIEF ShowFactHashTable,"ShowFactHashTable","00");
+   EnvAddUDF(theEnv,"show-fht",VOID_TYPE, ShowFactHashTable,"ShowFactHashTable",0,0,NULL,NULL);
 #endif
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-   EnvDefineFunction2(theEnv,"show-opn",'v',PTIEF PrintObjectPatternNetwork,
-                   "PrintObjectPatternNetwork","00");
+   EnvAddUDF(theEnv,"show-opn",VOID_TYPE, PrintObjectPatternNetwork,
+                   "PrintObjectPatternNetwork",0,0,NULL,NULL);
 #endif
 
 #if OBJECT_SYSTEM
-   EnvDefineFunction2(theEnv,"instance-table-usage",'v', PTIEF InstanceTableUsage,"InstanceTableUsage","00");
+   EnvAddUDF(theEnv,"instance-table-usage",VOID_TYPE,  InstanceTableUsage,"InstanceTableUsage",0,0,NULL,NULL);
 #endif
 
 #endif
@@ -108,7 +108,8 @@ void DeveloperCommands(
 /*   symbol, float, integer, and bitmap tables.       */
 /******************************************************/
 void PrimitiveTablesInfo(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    unsigned long i;
    SYMBOL_HN **symbolArray, *symbolPtr;
@@ -117,8 +118,7 @@ void PrimitiveTablesInfo(
    BITMAP_HN **bitMapArray, *bitMapPtr;
    unsigned long int symbolCount = 0, integerCount = 0;
    unsigned long int floatCount = 0, bitMapCount = 0;
-
-   EnvArgCountCheck(theEnv,"primitives-info",EXACTLY,0);
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* Count entries in the symbol table. */
@@ -194,7 +194,8 @@ void PrimitiveTablesInfo(
 /*   symbol, float, integer, and bitmap tables.       */
 /******************************************************/
 void PrimitiveTablesUsage(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    unsigned long i;
    int symbolCounts[COUNT_SIZE], floatCounts[COUNT_SIZE];
@@ -202,8 +203,7 @@ void PrimitiveTablesUsage(
    FLOAT_HN **floatArray, *floatPtr;
    unsigned long int symbolCount, totalSymbolCount = 0;
    unsigned long int floatCount, totalFloatCount = 0;
-
-   EnvArgCountCheck(theEnv,"primitives-usage",EXACTLY,0);
+   Environment *theEnv = UDFContextEnvironment(context);
 
    for (i = 0; i < 21; i++)
      {
@@ -286,8 +286,9 @@ void PrimitiveTablesUsage(
 /* ValidateFactIntegrity: Command for checking */
 /*   the facts for atom value integrity.       */
 /***********************************************/
-bool ValidateFactIntegrity(
-  void *theEnv)
+void ValidateFactIntegrity(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    struct fact *theFact;
    struct multifield *theSegment;
@@ -295,16 +296,23 @@ bool ValidateFactIntegrity(
    SYMBOL_HN *theSymbol;
    FLOAT_HN *theFloat;
    INTEGER_HN *theInteger;
+   Environment *theEnv = UDFContextEnvironment(context);
      
-   if (((struct environmentData *) theEnv)->initialized == false)
-     { return true; }
+   if (theEnv->initialized == false)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    for (theFact = (struct fact *) EnvGetNextFact(theEnv,NULL);
         theFact != NULL;
         theFact = (struct fact *) EnvGetNextFact(theEnv,theFact))
      {
       if (theFact->factHeader.busyCount <= 0)
-        { return false; }
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
       
       theSegment = &theFact->theProposition;
       
@@ -316,26 +324,35 @@ bool ValidateFactIntegrity(
            {
             theSymbol = (SYMBOL_HN *) theSegment->theFields[i].value;
             if (theSymbol->count <= 0)
-              { return false; }
+              {
+               CVSetBoolean(returnValue,false);
+               return;
+              }
            }
 
          if (theSegment->theFields[i].type == INTEGER)
            {
             theInteger = (INTEGER_HN *) theSegment->theFields[i].value;
             if (theInteger->count <= 0)
-              { return false; }
+              {
+               CVSetBoolean(returnValue,false);
+               return;
+              }
            }
 
          if (theSegment->theFields[i].type == FLOAT)
            {
             theFloat = (FLOAT_HN *) theSegment->theFields[i].value;
             if (theFloat->count <= 0)
-              { return false; }
+              {
+               CVSetBoolean(returnValue,false);
+               return;
+              }
            }
         }
      }
      
-   return true;
+   CVSetBoolean(returnValue,true);
   }
   
 /*******************************************************/
@@ -417,8 +434,10 @@ void ShowFactPatternNetwork(
   NOTES        : None
  ***************************************************/
 void PrintObjectPatternNetwork(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = UDFContextEnvironment(context);
    char indentbuf[80];
 
    indentbuf[0] = '\0';
@@ -522,14 +541,14 @@ static void PrintOPNLevel(
 /*   instances in the instance hash table.       */
 /******************************************************/
 void InstanceTableUsage(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    unsigned long i;
    int instanceCounts[COUNT_SIZE];
    INSTANCE_TYPE *ins;
    unsigned long int instanceCount, totalInstanceCount = 0;
-
-   EnvArgCountCheck(theEnv,"instance-table-usage",EXACTLY,0);
+   Environment *theEnv = UDFContextEnvironment(context);
 
    for (i = 0; i < COUNT_SIZE; i++)
      { instanceCounts[i] = 0; }

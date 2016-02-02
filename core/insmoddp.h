@@ -53,22 +53,22 @@
    void                           SetupInstanceModDupCommands(void *);
 #endif
 
-   void                           ModifyInstance(void *,DATA_OBJECT *);
-   void                           MsgModifyInstance(void *,DATA_OBJECT *);
-   void                           DuplicateInstance(void *,DATA_OBJECT *);
-   void                           MsgDuplicateInstance(void *,DATA_OBJECT *);
+   void                           ModifyInstance(UDFContext *,CLIPSValue *);
+   void                           MsgModifyInstance(UDFContext *,CLIPSValue *);
+   void                           DuplicateInstance(UDFContext *,CLIPSValue *);
+   void                           MsgDuplicateInstance(UDFContext *,CLIPSValue *);
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-   void                           InactiveModifyInstance(void *,DATA_OBJECT *);
-   void                           InactiveMsgModifyInstance(void *,DATA_OBJECT *);
-   void                           InactiveDuplicateInstance(void *,DATA_OBJECT *);
-   void                           InactiveMsgDuplicateInstance(void *,DATA_OBJECT *);
+   void                           InactiveModifyInstance(UDFContext *,CLIPSValue *);
+   void                           InactiveMsgModifyInstance(UDFContext *,CLIPSValue *);
+   void                           InactiveDuplicateInstance(UDFContext *,CLIPSValue *);
+   void                           InactiveMsgDuplicateInstance(UDFContext *,CLIPSValue *);
 #endif
 
-   void                           DirectModifyMsgHandler(void *,DATA_OBJECT *);
-   void                           MsgModifyMsgHandler(void *,DATA_OBJECT *);
-   void                           DirectDuplicateMsgHandler(void *,DATA_OBJECT *);
-   void                           MsgDuplicateMsgHandler(void *,DATA_OBJECT *);
+   void                           DirectModifyMsgHandler(UDFContext *,CLIPSValue *);
+   void                           MsgModifyMsgHandler(UDFContext *,CLIPSValue *);
+   void                           DirectDuplicateMsgHandler(UDFContext *,CLIPSValue *);
+   void                           MsgDuplicateMsgHandler(UDFContext *,CLIPSValue *);
 
 #endif /* _H_insmoddp */
 

@@ -1105,9 +1105,9 @@ EXPRESSION *ParseConstantArguments(
    return(top);
   }
 
-/*********************************************/
-/* RemoveUnneededProgn:  */
-/*********************************************/
+/************************/
+/* RemoveUnneededProgn: */
+/************************/
 struct expr *RemoveUnneededProgn(
   void *theEnv,
   struct expr *theExpression)
@@ -1121,7 +1121,7 @@ struct expr *RemoveUnneededProgn(
 
    fptr = (struct FunctionDefinition *) theExpression->value;
 
-   if (fptr->functionPointer != PTIF PrognFunction)
+   if (fptr->functionPointer != PrognFunction)
      { return(theExpression); }
 
    if ((theExpression->argList != NULL) &&

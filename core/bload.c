@@ -804,19 +804,23 @@ void CannotLoadWithBloadMessage(
 /* BloadCommand: H/L access routine   */
 /*   for the bload command.           */
 /**************************************/
-bool BloadCommand(
-  void *theEnv)
+void BloadCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
 #if (! RUN_TIME) && (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)
    const char *fileName;
 
-   if (EnvArgCountCheck(theEnv,"bload",EXACTLY,1) == -1) return(false);
-   fileName = GetFileName(theEnv,"bload",1);
-   if (fileName != NULL) return(EnvBload(theEnv,fileName));
+   fileName = GetFileName(context);
+   if (fileName != NULL)
+     {
+      CVSetBoolean(returnValue,EnvBload(UDFContextEnvironment(context),fileName));
+      return;
+     }
 #else
 #if MAC_XCD
-#pragma unused(theEnv)
+#pragma unused(size,context)
 #endif
 #endif
-   return(false);
+   CVSetBoolean(returnValue,false);
   }

@@ -94,8 +94,8 @@ void InitializeConstraints(
 #endif
 
 #if (! RUN_TIME)
-   EnvDefineFunction2(theEnv,"get-dynamic-constraint-checking",'b', PTIEF GDCCommand,"GDCCommand", "00");
-   EnvDefineFunction2(theEnv,"set-dynamic-constraint-checking",'b', PTIEF SDCCommand,"SDCCommand", "11");
+   EnvAddUDF(theEnv,"get-dynamic-constraint-checking",BOOLEAN_TYPE, GDCCommand,"GDCCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"set-dynamic-constraint-checking",BOOLEAN_TYPE, SDCCommand,"SDCCommand", 1,1,NULL,NULL);
 #endif
   }
   
@@ -493,42 +493,31 @@ static void InstallConstraintRecord(
 /* SDCCommand: H/L access routine for the     */
 /*   set-dynamic-constraint-checking command. */
 /**********************************************/
-bool SDCCommand(
-  void *theEnv)
+void SDCCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   bool oldValue;
-   DATA_OBJECT arg_ptr;
+   CLIPSValue theArg;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   oldValue = EnvGetDynamicConstraintChecking(theEnv);
+   CVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
 
-   if (EnvArgCountCheck(theEnv,"set-dynamic-constraint-checking",EXACTLY,1) == -1)
-     { return(oldValue); }
+   if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
+     { return; }
 
-   EnvRtnUnknown(theEnv,1,&arg_ptr);
-
-   if ((arg_ptr.value == EnvFalseSymbol(theEnv)) && (arg_ptr.type == SYMBOL))
-     { EnvSetDynamicConstraintChecking(theEnv,false); }
-   else
-     { EnvSetDynamicConstraintChecking(theEnv,true); }
-
-   return(oldValue);
+   EnvSetDynamicConstraintChecking(theEnv,! CVIsFalseSymbol(&theArg));
   }
 
 /**********************************************/
 /* GDCCommand: H/L access routine for the     */
 /*   get-dynamic-constraint-checking command. */
 /**********************************************/
-bool GDCCommand(
-  void *theEnv)
+void GDCCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   bool oldValue;
-
-   oldValue = EnvGetDynamicConstraintChecking(theEnv);
-
-   if (EnvArgCountCheck(theEnv,"get-dynamic-constraint-checking",EXACTLY,0) == -1)
-     { return(oldValue); }
-
-   return(oldValue);
+   Environment *theEnv = UDFContextEnvironment(context);
+   CVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
   }
 
 /******************************************************/

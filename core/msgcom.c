@@ -181,12 +181,12 @@ void SetupMessageHandlers(
 
    AddConstruct(theEnv,"defmessage-handler","defmessage-handlers",
                 ParseDefmessageHandler,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-   EnvDefineFunction2(theEnv,"undefmessage-handler",'v',PTIEF UndefmessageHandlerCommand,
-                  "UndefmessageHandlerCommand","23w");
+   EnvAddUDF(theEnv,"undefmessage-handler",VOID_TYPE, UndefmessageHandlerCommand,
+                  "UndefmessageHandlerCommand",2,3,"y",NULL);
 
 #endif
 
-   EnvDefineFunction2(theEnv,"send",'u',PTIEF SendCommand,"SendCommand","2*uuw");
+   EnvAddUDF(theEnv,"send",ANY_TYPE, SendCommand,"SendCommand",2,UNBOUNDED,"*;*;y",NULL);
 
 #if DEBUGGING_FUNCTIONS
    EnvAddUDF(theEnv,"preview-send",VOID_TYPE, PreviewSendCommand,"PreviewSendCommand",2,2,"y",NULL);
@@ -200,17 +200,17 @@ void SetupMessageHandlers(
    EnvAddUDF(theEnv,"next-handlerp",BOOLEAN_TYPE, NextHandlerAvailableFunction,
                     "NextHandlerAvailableFunction",0,0,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"next-handlerp",true,false);
-   EnvDefineFunction2(theEnv,"call-next-handler",'u',
-                  PTIEF CallNextHandler,"CallNextHandler","00");
+   EnvAddUDF(theEnv,"call-next-handler",ANY_TYPE,
+                   CallNextHandler,"CallNextHandler",0,0,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"call-next-handler",true,false);
-   EnvDefineFunction2(theEnv,"override-next-handler",'u',
-                  PTIEF CallNextHandler,"CallNextHandler",NULL);
+   EnvAddUDF(theEnv,"override-next-handler",ANY_TYPE,
+                   CallNextHandler,"CallNextHandler",0,UNBOUNDED,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"override-next-handler",true,false);
 
-   EnvDefineFunction2(theEnv,"dynamic-get",'u',PTIEF DynamicHandlerGetSlot,"DynamicHandlerGetSlot","11w");
-   EnvDefineFunction2(theEnv,"dynamic-put",'u',PTIEF DynamicHandlerPutSlot,"DynamicHandlerPutSlot","1**w");
-   EnvDefineFunction2(theEnv,"get",'u',PTIEF DynamicHandlerGetSlot,"DynamicHandlerGetSlot","11w");
-   EnvDefineFunction2(theEnv,"put",'u',PTIEF DynamicHandlerPutSlot,"DynamicHandlerPutSlot","1**w");
+   EnvAddUDF(theEnv,"dynamic-get", ANY_TYPE, DynamicHandlerGetSlot,"DynamicHandlerGetSlot",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"dynamic-put", ANY_TYPE, DynamicHandlerPutSlot,"DynamicHandlerPutSlot",1,UNBOUNDED,"*;y",NULL);
+   EnvAddUDF(theEnv,"get",         ANY_TYPE, DynamicHandlerGetSlot,"DynamicHandlerGetSlot",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"put",         ANY_TYPE, DynamicHandlerPutSlot,"DynamicHandlerPutSlot",1,UNBOUNDED,"*;y",NULL);
 #endif
 
 #if DEBUGGING_FUNCTIONS
@@ -465,15 +465,17 @@ bool EnvIsDefmessageHandlerDeletable(
   NOTES        : H/L Syntax: (undefmessage-handler <class> <handler> [<type>])
  ******************************************************************************/
 void UndefmessageHandlerCommand(
-  void *theEnv)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = UDFContextEnvironment(context);
 #if RUN_TIME || BLOAD_ONLY
    PrintErrorID(theEnv,"MSGCOM",3,false);
    EnvPrintRouter(theEnv,WERROR,"Unable to delete message-handlers.\n");
 #else
    SYMBOL_HN *mname;
    const char *tname;
-   DATA_OBJECT tmp;
+   CLIPSValue theArg;
    DEFCLASS *cls;
 
 #if BLOAD || BLOAD_AND_BSAVE
@@ -484,22 +486,22 @@ void UndefmessageHandlerCommand(
       return;
      }
 #endif
-   if (EnvArgTypeCheck(theEnv,"undefmessage-handler",1,SYMBOL,&tmp) == false)
-     return;
-   cls = LookupDefclassByMdlOrScope(theEnv,DOToString(tmp));
-   if ((cls == NULL) ? (strcmp(DOToString(tmp),"*") != 0) : false)
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
+     
+   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   if ((cls == NULL) ? (strcmp(CVToString(&theArg),"*") != 0) : false)
      {
-      ClassExistError(theEnv,"undefmessage-handler",DOToString(tmp));
+      ClassExistError(theEnv,"undefmessage-handler",CVToString(&theArg));
       return;
      }
-   if (EnvArgTypeCheck(theEnv,"undefmessage-handler",2,SYMBOL,&tmp) == false)
-     return;
-   mname = (SYMBOL_HN *) tmp.value;
-   if (EnvRtnArgCount(theEnv) == 3)
+   if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg)) return;
+
+   mname = (SYMBOL_HN *) CVToRawValue(&theArg);
+   if (UDFHasNextArgument(context))
      {
-      if (EnvArgTypeCheck(theEnv,"undefmessage-handler",3,SYMBOL,&tmp) == false)
-        return;
-      tname = DOToString(tmp);
+      if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg)) return;
+
+      tname = CVToString(&theArg);
       if (strcmp(tname,"*") == 0)
         tname = NULL;
      }
@@ -649,7 +651,7 @@ void ListDefmessageHandlersCommand(
      EnvListDefmessageHandlers(theEnv,WDISPLAY,NULL,0);
    else
      {
-      clsptr = ClassInfoFnxArgs(theEnv,"list-defmessage-handlers",&inhp);
+      clsptr = ClassInfoFnxArgs(context,"list-defmessage-handlers",&inhp);
       if (clsptr == NULL)
         return;
       EnvListDefmessageHandlers(theEnv,WDISPLAY,clsptr,inhp);

@@ -1159,7 +1159,7 @@ void SetSalienceEvaluationCommand(
      { EnvSetSalienceEvaluation(theEnv,EVERY_CYCLE); }
    else
      {
-      UDFInvalidArgumentMessage(context,1,
+      UDFInvalidArgumentMessage(context,
          "symbol with value when-defined, when-activated, or every-cycle");
       CVSetSymbol(returnValue,oldValue);
       return;

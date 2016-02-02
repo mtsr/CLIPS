@@ -61,15 +61,15 @@ struct procedureFunctionData
 #define ProcedureFunctionData(theEnv) ((struct procedureFunctionData *) GetEnvironmentData(theEnv,PRCDRFUN_DATA))
 
    void                           ProceduralFunctionDefinitions(void *);
-   void                           WhileFunction(void *,DATA_OBJECT_PTR);
-   void                           LoopForCountFunction(void *,DATA_OBJECT_PTR);
-   long long                      GetLoopCount(void *);
-   void                           IfFunction(void *,DATA_OBJECT_PTR);
-   void                           BindFunction(void *,DATA_OBJECT_PTR);
-   void                           PrognFunction(void *,DATA_OBJECT_PTR);
-   void                           ReturnFunction(void *,DATA_OBJECT_PTR);
+   void                           WhileFunction(UDFContext *,CLIPSValue *);
+   void                           LoopForCountFunction(UDFContext *,CLIPSValue *);
+   void                           GetLoopCount(UDFContext *,CLIPSValue *);
+   void                           IfFunction(UDFContext *,CLIPSValue *);
+   void                           BindFunction(UDFContext *,CLIPSValue *);
+   void                           PrognFunction(UDFContext *,CLIPSValue *);
+   void                           ReturnFunction(UDFContext *,CLIPSValue *);
    void                           BreakFunction(UDFContext *,CLIPSValue *);
-   void                           SwitchFunction(void *,DATA_OBJECT_PTR);
+   void                           SwitchFunction(UDFContext *,CLIPSValue *);
    bool                           GetBoundVariable(void *,struct dataObject *,struct symbolHashNode *);
    void                           FlushBindList(void *);
 

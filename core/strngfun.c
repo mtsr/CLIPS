@@ -91,7 +91,7 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    StrOrSymCatFunction(void *,DATA_OBJECT_PTR,unsigned short);
+   static void                    StrOrSymCatFunction(UDFContext *,CLIPSValue *,unsigned short);
 
 /******************************************/
 /* StringFunctionDefinitions: Initializes */
@@ -101,17 +101,17 @@ void StringFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvDefineFunction2(theEnv,"str-cat", 'k', PTIEF StrCatFunction, "StrCatFunction", "1*");
-   EnvDefineFunction2(theEnv,"sym-cat", 'k', PTIEF SymCatFunction, "SymCatFunction", "1*");
-   EnvDefineFunction2(theEnv,"str-length", 'g', PTIEF StrLengthFunction, "StrLengthFunction", "11j");
-   EnvDefineFunction2(theEnv,"str-compare", 'g', PTIEF StrCompareFunction, "StrCompareFunction", "23*jji");
-   EnvDefineFunction2(theEnv,"upcase", 'j', PTIEF UpcaseFunction, "UpcaseFunction", "11j");
-   EnvDefineFunction2(theEnv,"lowcase", 'j', PTIEF LowcaseFunction, "LowcaseFunction", "11j");
-   EnvDefineFunction2(theEnv,"sub-string", 's', PTIEF SubStringFunction, "SubStringFunction", "33*iij");
-   EnvDefineFunction2(theEnv,"str-index", 'u', PTIEF StrIndexFunction, "StrIndexFunction", "22j");
-   EnvDefineFunction2(theEnv,"eval", 'u', PTIEF EvalFunction, "EvalFunction", "11k");
+   EnvAddUDF(theEnv,"str-cat", LEXEME_TYPES, StrCatFunction, "StrCatFunction", 1, UNBOUNDED, "synld" ,NULL);
+   EnvAddUDF(theEnv,"sym-cat", LEXEME_TYPES, SymCatFunction, "SymCatFunction",  1, UNBOUNDED, "synld" ,NULL);
+   EnvAddUDF(theEnv,"str-length", INTEGER_TYPE, StrLengthFunction, "StrLengthFunction", 1,1,"syn",NULL);
+   EnvAddUDF(theEnv,"str-compare", INTEGER_TYPE, StrCompareFunction, "StrCompareFunction", 2,3, "*;syn;syn;l" ,NULL);
+   EnvAddUDF(theEnv,"upcase", LEXEME_TYPES | INSTANCE_NAME_TYPE, UpcaseFunction, "UpcaseFunction", 1,1,"syn",NULL);
+   EnvAddUDF(theEnv,"lowcase", LEXEME_TYPES | INSTANCE_NAME_TYPE,  LowcaseFunction, "LowcaseFunction", 1,1,"syn",NULL);
+   EnvAddUDF(theEnv,"sub-string", STRING_TYPE, SubStringFunction, "SubStringFunction",3,3, "*;l;l;syn",NULL);
+   EnvAddUDF(theEnv,"str-index", BOOLEAN_TYPE | INTEGER_TYPE, StrIndexFunction, "StrIndexFunction", 2,2,"syn",NULL);
+   EnvAddUDF(theEnv,"eval", ANY_TYPE, EvalFunction, "EvalFunction", 1,1,"sy",NULL);
    EnvAddUDF(theEnv,"build", BOOLEAN_TYPE, BuildFunction, "BuildFunction", 1,1,"sy",NULL);
-   EnvDefineFunction2(theEnv,"string-to-field", 'u', PTIEF StringToFieldFunction, "StringToFieldFunction", "11j");
+   EnvAddUDF(theEnv,"string-to-field", ANY_TYPE,  StringToFieldFunction, "StringToFieldFunction", 1,1,"syn",NULL);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -124,10 +124,10 @@ void StringFunctionDefinitions(
 /*   for the str-cat function.          */
 /****************************************/
 void StrCatFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {   
-   StrOrSymCatFunction(theEnv,returnValue,STRING);
+   StrOrSymCatFunction(context,returnValue,STRING);
   }
 
 /****************************************/
@@ -135,10 +135,10 @@ void StrCatFunction(
 /*   for the sym-cat function.          */
 /****************************************/
 void SymCatFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   StrOrSymCatFunction(theEnv,returnValue,SYMBOL);
+   StrOrSymCatFunction(context,returnValue,SYMBOL);
   }
 
 /********************************************************/
@@ -146,8 +146,8 @@ void SymCatFunction(
 /*   the str-cat and sym-cat functions.                 */
 /********************************************************/
 static void StrOrSymCatFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue,
+  UDFContext *context,
+  CLIPSValue *returnValue,
   unsigned short returnType)
   {
    DATA_OBJECT theArg;
@@ -156,6 +156,7 @@ static void StrOrSymCatFunction(
    SYMBOL_HN **arrayOfStrings;
    SYMBOL_HN *hashPtr;
    const char *functionName;
+   void *theEnv = UDFContextEnvironment(context);
 
    /*============================================*/
    /* Determine the calling function name.       */
@@ -279,30 +280,27 @@ static void StrOrSymCatFunction(
 /* StrLengthFunction: H/L access routine   */
 /*   for the str-length function.          */
 /*******************************************/
-long long StrLengthFunction(
-  void *theEnv)
+void StrLengthFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArg;
+   CLIPSValue theArg;
 
-   /*===================================================*/
-   /* Function str-length expects exactly one argument. */
-   /*===================================================*/
+   /*==================================================================*/
+   /* The argument should be of type symbol, string, or instance name. */
+   /*==================================================================*/
 
-   if (EnvArgCountCheck(theEnv,"str-length",EXACTLY,1) == -1)
-     { return(-1LL); }
-
-   /*==================================================*/
-   /* The argument should be of type symbol or string. */
-   /*==================================================*/
-
-   if (EnvArgTypeCheck(theEnv,"str-length",1,SYMBOL_OR_STRING,&theArg) == false)
-     { return(-1LL); }
-
+   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
+     {
+      CVSetInteger(returnValue,-1LL);
+      return;
+     }
+     
    /*============================================*/
    /* Return the length of the string or symbol. */
    /*============================================*/
    
-   return(UTF8Length(DOToString(theArg)));
+   CVSetInteger(returnValue,UTF8Length(CVToString(&theArg)));
   }
 
 /****************************************/
@@ -310,34 +308,22 @@ long long StrLengthFunction(
 /*   for the upcase function.           */
 /****************************************/
 void UpcaseFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArg;
    unsigned i;
    size_t slen;
    const char *osptr;
    char *nsptr;
-
-   /*===============================================*/
-   /* Function upcase expects exactly one argument. */
-   /*===============================================*/
-
-   if (EnvArgCountCheck(theEnv,"upcase",EXACTLY,1) == -1)
-     {
-      SetpType(returnValue,STRING);
-      SetpValue(returnValue,(void *) EnvAddSymbol(theEnv,""));
-      return;
-     }
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*==================================================*/
    /* The argument should be of type symbol or string. */
    /*==================================================*/
 
-   if (EnvArgTypeCheck(theEnv,"upcase",1,SYMBOL_OR_STRING,&theArg) == false)
+   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,returnValue))
      {
-      SetpType(returnValue,STRING);
-      SetpValue(returnValue,(void *) EnvAddSymbol(theEnv,""));
+      CVSetString(returnValue,"");
       return;
      }
 
@@ -347,7 +333,7 @@ void UpcaseFunction(
    /* lower case alphabetic characters.                    */
    /*======================================================*/
 
-   osptr = DOToString(theArg);
+   osptr = CVToString(returnValue);
    slen = strlen(osptr) + 1;
    nsptr = (char *) gm2(theEnv,slen);
 
@@ -364,8 +350,7 @@ void UpcaseFunction(
    /* up the temporary memory used.          */
    /*========================================*/
 
-   SetpType(returnValue,GetType(theArg));
-   SetpValue(returnValue,(void *) EnvAddSymbol(theEnv,nsptr));
+   CVSetRawValue(returnValue,(void *) EnvAddSymbol(theEnv,nsptr));
    rm(theEnv,nsptr,slen);
   }
 
@@ -374,34 +359,22 @@ void UpcaseFunction(
 /*   for the lowcase function.           */
 /*****************************************/
 void LowcaseFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArg;
    unsigned i;
    size_t slen;
    const char *osptr;
    char *nsptr;
-
-   /*================================================*/
-   /* Function lowcase expects exactly one argument. */
-   /*================================================*/
-
-   if (EnvArgCountCheck(theEnv,"lowcase",EXACTLY,1) == -1)
-     {
-      SetpType(returnValue,STRING);
-      SetpValue(returnValue,(void *) EnvAddSymbol(theEnv,""));
-      return;
-     }
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*==================================================*/
    /* The argument should be of type symbol or string. */
    /*==================================================*/
 
-   if (EnvArgTypeCheck(theEnv,"lowcase",1,SYMBOL_OR_STRING,&theArg) == false)
+   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,returnValue))
      {
-      SetpType(returnValue,STRING);
-      SetpValue(returnValue,(void *) EnvAddSymbol(theEnv,""));
+      CVSetString(returnValue,"");
       return;
      }
 
@@ -411,7 +384,7 @@ void LowcaseFunction(
    /* upper case alphabetic characters.                    */
    /*======================================================*/
 
-   osptr = DOToString(theArg);
+   osptr = CVToString(returnValue);
    slen = strlen(osptr) + 1;
    nsptr = (char *) gm2(theEnv,slen);
 
@@ -428,8 +401,7 @@ void LowcaseFunction(
    /* up the temporary memory used.          */
    /*========================================*/
 
-   SetpType(returnValue,GetType(theArg));
-   SetpValue(returnValue,(void *) EnvAddSymbol(theEnv,nsptr));
+   CVSetRawValue(returnValue,(void *) EnvAddSymbol(theEnv,nsptr));
    rm(theEnv,nsptr,slen);
   }
 
@@ -437,45 +409,47 @@ void LowcaseFunction(
 /* StrCompareFunction: H/L access routine   */
 /*   for the str-compare function.          */
 /********************************************/
-long long StrCompareFunction(
-  void *theEnv)
+void StrCompareFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   int numArgs, length;
    DATA_OBJECT arg1, arg2, arg3;
-   long long returnValue;
-
-   /*=======================================================*/
-   /* Function str-compare expects either 2 or 3 arguments. */
-   /*=======================================================*/
-
-   if ((numArgs = EnvArgRangeCheck(theEnv,"str-compare",2,3)) == -1) return(0L);
+   int compareResult;
 
    /*=============================================================*/
    /* The first two arguments should be of type symbol or string. */
    /*=============================================================*/
 
-   if (EnvArgTypeCheck(theEnv,"str-compare",1,SYMBOL_OR_STRING,&arg1) == false)
-     { return(0L); }
+   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&arg1))
+     {
+      CVSetInteger(returnValue,0L);
+      return;
+     }
 
-   if (EnvArgTypeCheck(theEnv,"str-compare",2,SYMBOL_OR_STRING,&arg2) == false)
-     { return(0L); }
+   if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&arg2))
+     {
+      CVSetInteger(returnValue,0L);
+      return;
+     }
 
    /*===================================================*/
    /* Compare the strings. Use the 3rd argument for the */
    /* maximum length of comparison, if it is provided.  */
    /*===================================================*/
 
-   if (numArgs == 3)
+   if (UDFHasNextArgument(context))
      {
-      if (EnvArgTypeCheck(theEnv,"str-compare",3,INTEGER,&arg3) == false)
-        { return(0L); }
+      if (! UDFNextArgument(context,INTEGER_TYPE,&arg3))
+        {
+         CVSetInteger(returnValue,0L);
+         return;
+        }
 
-      length = CoerceToInteger(GetType(arg3),GetValue(arg3));
-      returnValue = strncmp(DOToString(arg1),DOToString(arg2),
-                            (STD_SIZE) length);
+      compareResult = strncmp(CVToString(&arg1),CVToString(&arg2),
+                            (STD_SIZE) CVToInteger(&arg3));
      }
    else
-     { returnValue = strcmp(DOToString(arg1),DOToString(arg2)); }
+     { compareResult = strcmp(CVToString(&arg1),CVToString(&arg2)); }
 
    /*========================================================*/
    /* Return Values are as follows:                          */
@@ -484,51 +458,64 @@ long long StrCompareFunction(
    /*  0 is returned if <string-1> is equal to <string-2>.   */
    /*========================================================*/
 
-   if (returnValue < 0) returnValue = -1;
-   else if (returnValue > 0) returnValue = 1;
-   return(returnValue);
+   if (compareResult < 0)
+     { CVSetInteger(returnValue,-1L); }
+   else if (compareResult > 0)
+     { CVSetInteger(returnValue,1L); }
+   else
+     { CVSetInteger(returnValue,0L); }
   }
 
 /*******************************************/
 /* SubStringFunction: H/L access routine   */
 /*   for the sub-string function.          */
 /*******************************************/
-void *SubStringFunction(
-  void *theEnv)
+void SubStringFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArgument;
+   CLIPSValue theArg;
    const char *tempString;
    char *returnString;
    size_t start, end, i, j, length;
-   void *returnValue;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===================================*/
    /* Check and retrieve the arguments. */
    /*===================================*/
 
-   if (EnvArgCountCheck(theEnv,"sub-string",EXACTLY,3) == -1)
-     { return((void *) EnvAddSymbol(theEnv,"")); }
+   if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
+     {
+      CVSetString(returnValue,"");
+      return;
+     }
 
-   if (EnvArgTypeCheck(theEnv,"sub-string",1,INTEGER,&theArgument) == false)
-     { return((void *) EnvAddSymbol(theEnv,"")); }
-
-   if (CoerceToLongInteger(theArgument.type,theArgument.value) < 1)
+   if (CVToInteger(&theArg) < 1)
      { start = 0; }
    else
-     { start = (size_t) CoerceToLongInteger(theArgument.type,theArgument.value) - 1; }
+     { start = (size_t) CVToInteger(&theArg) - 1; }
 
-   if (EnvArgTypeCheck(theEnv,"sub-string",2,INTEGER,&theArgument) == false)
-     {  return((void *) EnvAddSymbol(theEnv,"")); }
+   if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
+     {
+      CVSetString(returnValue,"");
+      return;
+     }
 
-   if (CoerceToLongInteger(theArgument.type,theArgument.value) < 1)
-     { return((void *) EnvAddSymbol(theEnv,"")); }
+   if (CVToInteger(&theArg) < 1)
+     {
+      CVSetString(returnValue,"");
+      return;
+     }
    else
-     { end = (size_t) CoerceToLongInteger(theArgument.type,theArgument.value) - 1; }
+     { end = (size_t) CVToInteger(&theArg) - 1; }
 
-   if (EnvArgTypeCheck(theEnv,"sub-string",3,SYMBOL_OR_STRING,&theArgument) == false)
-     { return((void *) EnvAddSymbol(theEnv,"")); }
+   if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
+     {
+      CVSetString(returnValue,"");
+      return;
+     }
    
-   tempString = DOToString(theArgument);
+   tempString = CVToString(&theArg);
    
    /*================================================*/
    /* If parameters are out of range return an error */
@@ -545,7 +532,10 @@ void *SubStringFunction(
    /*==================================*/
 
    if ((start > end) || (length == 0))
-     { return((void *) EnvAddSymbol(theEnv,"")); }
+     {
+      CVSetString(returnValue,"");
+      return;
+     }
 
    /*=============================================*/
    /* Otherwise, allocate the string and copy the */
@@ -568,9 +558,8 @@ void *SubStringFunction(
    /* Return the new string. */
    /*========================*/
 
-   returnValue = (void *) EnvAddSymbol(theEnv,returnString);
+   CVSetString(returnValue,returnString);
    rm(theEnv,returnString,(unsigned) (end - start + 2));
-   return(returnValue);
   }
 
 /******************************************/
@@ -578,28 +567,27 @@ void *SubStringFunction(
 /*   for the sub-index function.          */
 /******************************************/
 void StrIndexFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArgument1, theArgument2;
+   CLIPSValue theArg1, theArg2;
    const char *strg1, *strg2, *strg3;
    size_t i, j;
 
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
+   CVSetBoolean(returnValue,false);
 
    /*===================================*/
    /* Check and retrieve the arguments. */
    /*===================================*/
 
-   if (EnvArgCountCheck(theEnv,"str-index",EXACTLY,2) == -1) return;
+   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg1))
+     { return; }
 
-   if (EnvArgTypeCheck(theEnv,"str-index",1,SYMBOL_OR_STRING,&theArgument1) == false) return;
+   if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg2))
+     { return; }
 
-   if (EnvArgTypeCheck(theEnv,"str-index",2,SYMBOL_OR_STRING,&theArgument2) == false) return;
-
-   strg1 = DOToString(theArgument1);
-   strg2 = DOToString(theArgument2);
+   strg1 = CVToString(&theArg1);
+   strg2 = CVToString(&theArg2);
 
    /*=================================*/
    /* Find the position in string2 of */
@@ -608,8 +596,7 @@ void StrIndexFunction(
 
    if (strlen(strg1) == 0)
      {
-      result->type = INTEGER;
-      result->value = (void *) EnvAddLong(theEnv,(long long) UTF8Length(strg2) + 1LL);
+      CVSetInteger(returnValue,(long long) UTF8Length(strg2) + 1LL);
       return;
      }
      
@@ -621,8 +608,7 @@ void StrIndexFunction(
 
       if (*(strg1+j) == '\0')
         {
-         result->type = INTEGER;
-         result->value = (void *) EnvAddLong(theEnv,(long long) UTF8CharNum(strg3,i));
+         CVSetInteger(returnValue,(long long) UTF8CharNum(strg3,i));
          return;
         }
      }
@@ -635,30 +621,18 @@ void StrIndexFunction(
 /*   for the string-to-field function.       */
 /********************************************/
 void StringToFieldFunction(
-  void *theEnv,
-  DATA_OBJECT *returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArg;
-
-   /*========================================================*/
-   /* Function string-to-field expects exactly one argument. */
-   /*========================================================*/
-
-   if (EnvArgCountCheck(theEnv,"string-to-field",EXACTLY,1) == -1)
-     {
-      returnValue->type = STRING;
-      returnValue->value = (void *) EnvAddSymbol(theEnv,"*** ERROR ***");
-      return;
-     }
+   CLIPSValue theArg;
 
    /*==================================================*/
    /* The argument should be of type symbol or string. */
    /*==================================================*/
 
-   if (EnvArgTypeCheck(theEnv,"string-to-field",1,SYMBOL_OR_STRING,&theArg) == false)
+   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
      {
-      returnValue->type = STRING;
-      returnValue->value = (void *) EnvAddSymbol(theEnv,"*** ERROR ***");
+      CVSetSymbol(returnValue,"*** ERROR ***");
       return;
      }
 
@@ -666,7 +640,7 @@ void StringToFieldFunction(
    /* Convert the string to an atom. */
    /*================================*/
 
-   StringToField(theEnv,DOToString(theArg),returnValue);
+   StringToField(UDFContextEnvironment(context),CVToString(&theArg),returnValue);
   }
 
 /*************************************************************/
@@ -723,30 +697,18 @@ void StringToField(
 /*   for the eval function.           */
 /**************************************/
 void EvalFunction(
-  void *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArg;
-
-   /*=============================================*/
-   /* Function eval expects exactly one argument. */
-   /*=============================================*/
-
-   if (EnvArgCountCheck(theEnv,"eval",EXACTLY,1) == -1)
-     {
-      SetpType(returnValue,SYMBOL);
-      SetpValue(returnValue,EnvFalseSymbol(theEnv));
-      return;
-     }
+   CLIPSValue theArg;
 
    /*==================================================*/
    /* The argument should be of type SYMBOL or STRING. */
    /*==================================================*/
 
-   if (EnvArgTypeCheck(theEnv,"eval",1,SYMBOL_OR_STRING,&theArg) == false)
+   if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
      {
-      SetpType(returnValue,SYMBOL);
-      SetpValue(returnValue,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       return;
      }
 
@@ -754,7 +716,7 @@ void EvalFunction(
    /* Evaluate the string. */
    /*======================*/
 
-   EnvEval(theEnv,DOToString(theArg),returnValue);
+   EnvEval(UDFContextEnvironment(context),CVToString(&theArg),returnValue);
   }
   
 /*****************************/
@@ -795,8 +757,7 @@ bool EnvEval(
    gensprintf(logicalNameBuffer,"Eval-%d",depth);
    if (OpenStringSource(theEnv,logicalNameBuffer,theString,0) == 0)
      {
-      SetpType(returnValue,SYMBOL);
-      SetpValue(returnValue,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       depth--;
       return(false);
      }
@@ -834,8 +795,7 @@ bool EnvEval(
      {
       EnvSetEvaluationError(theEnv,true);
       CloseStringSource(theEnv,logicalNameBuffer);
-      SetpType(returnValue,SYMBOL);
-      SetpValue(returnValue,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       depth--;
       ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
       return(false);
@@ -852,33 +812,13 @@ bool EnvEval(
       EnvPrintRouter(theEnv,WERROR,"expand$ must be used in the argument list of a function call.\n");
       EnvSetEvaluationError(theEnv,true);
       CloseStringSource(theEnv,logicalNameBuffer);
-      SetpType(returnValue,SYMBOL);
-      SetpValue(returnValue,EnvFalseSymbol(theEnv));
+      CVSetBoolean(returnValue,false);
       ReturnExpression(theEnv,top);
       depth--;
       ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
       return(false);
      }
 
-   /*=======================================*/
-   /* The expression to be evaluated cannot */
-   /* contain any local variables.          */
-   /*=======================================*/
-/*
-   if (ExpressionContainsVariables(top,false))
-     {
-      PrintErrorID(theEnv,"STRNGFUN",2,false);
-      EnvPrintRouter(theEnv,WERROR,"Some variables could not be accessed by the eval function.\n");
-      EnvSetEvaluationError(theEnv,true);
-      CloseStringSource(theEnv,logicalNameBuffer);
-      SetpType(returnValue,SYMBOL);
-      SetpValue(returnValue,EnvFalseSymbol(theEnv));
-      ReturnExpression(theEnv,top);
-      depth--;
-      ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
-      return(false);
-     }
-*/
    /*====================================*/
    /* Evaluate the expression and return */
    /* the memory used to parse it.       */
@@ -926,10 +866,10 @@ void EvalFunction(
   void *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
+   returnValue->environment = theEnv;
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function eval does not work in run time modules.\n");
-   SetpType(returnValue,SYMBOL);
-   SetpValue(returnValue,EnvFalseSymbol(theEnv));
+   CVSetBoolean(returnValue,false);
   }
 
 /*****************************************************/
@@ -941,10 +881,10 @@ bool EnvEval(
   const char *theString,
   DATA_OBJECT_PTR returnValue)
   {
+   returnValue->environment = theEnv;
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function eval does not work in run time modules.\n");
-   SetpType(returnValue,SYMBOL);
-   SetpValue(returnValue,EnvFalseSymbol(theEnv));
+   CVSetBoolean(returnValue,false);
    return(false);
   }
 

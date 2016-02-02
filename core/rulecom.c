@@ -125,8 +125,8 @@ void DefruleCommands(
    EnvAddUDF(theEnv,"focus",BOOLEAN_TYPE,  FocusCommand,"FocusCommand",1,UNBOUNDED,"y", NULL);
    EnvAddUDF(theEnv,"clear-focus-stack",VOID_TYPE, ClearFocusStackCommand,
                                        "ClearFocusStackCommand",0,0,NULL,NULL);
-   EnvDefineFunction2(theEnv,"get-focus-stack",'m',PTIEF GetFocusStackFunction,
-                                     "GetFocusStackFunction","00");
+   EnvAddUDF(theEnv,"get-focus-stack",MULTIFIELD_TYPE, GetFocusStackFunction,
+                                     "GetFocusStackFunction",0,0,NULL,NULL);
    EnvAddUDF(theEnv,"pop-focus",SYMBOL_TYPE, PopFocusFunction,
                                "PopFocusFunction",0,0,NULL,NULL);
    EnvAddUDF(theEnv,"get-focus",SYMBOL_TYPE, GetFocusFunction,
@@ -138,8 +138,8 @@ void DefruleCommands(
                                   "RemoveBreakCommand", 0,1,"y",NULL);
    EnvAddUDF(theEnv,"show-breaks",VOID_TYPE, ShowBreaksCommand,
                                  "ShowBreaksCommand", 0,1,"y",NULL);
-   EnvDefineFunction2(theEnv,"matches",'u',PTIEF MatchesCommand,"MatchesCommand","12w");
-   EnvDefineFunction2(theEnv,"join-activity",'u',PTIEF JoinActivityCommand,"JoinActivityCommand","12w");
+   EnvAddUDF(theEnv,"matches",BOOLEAN_TYPE | MULTIFIELD_TYPE, MatchesCommand,"MatchesCommand",1,2,"y",NULL);
+   EnvAddUDF(theEnv,"join-activity",BOOLEAN_TYPE | MULTIFIELD_TYPE, JoinActivityCommand,"JoinActivityCommand",1,2,"y",NULL);
    EnvAddUDF(theEnv,"join-activity-reset",VOID_TYPE,  JoinActivityResetCommand,
                                   "JoinActivityResetCommand", 0,0,NULL,NULL);
    EnvAddUDF(theEnv,"list-focus-stack",VOID_TYPE, ListFocusStackCommand,
@@ -249,43 +249,40 @@ void GetBetaMemoryResizingCommand(
 /*   for the matches command.           */
 /****************************************/
 void MatchesCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *ruleName, *argument;
    void *rulePtr;
-   int numberOfArguments;
-   DATA_OBJECT argPtr;
+   CLIPSValue theArg;
    int output;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
-
-   if ((numberOfArguments = EnvArgRangeCheck(theEnv,"matches",1,2)) == -1) return;
-
-   if (EnvArgTypeCheck(theEnv,"matches",1,SYMBOL,&argPtr) == false) return;
-
-   if (GetType(argPtr) != SYMBOL)
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      {
-      ExpectedTypeError1(theEnv,"matches",1,"rule name");
+      CVSetBoolean(returnValue,false);
       return;
      }
-
-   ruleName = DOToString(argPtr);
+     
+   ruleName = CVToString(&theArg);
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
+      CVSetBoolean(returnValue,false);
       return;
      }
 
-   if (numberOfArguments == 2)
+   if (UDFHasNextArgument(context))
      {
-      if (EnvArgTypeCheck(theEnv,"matches",2,SYMBOL,&argPtr) == false)
-        { return; }
+      if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
 
-      argument = DOToString(argPtr);
+      argument = CVToString(&theArg);
       if (strcmp(argument,"verbose") == 0)
         { output = VERBOSE; }
       else if (strcmp(argument,"succinct") == 0)
@@ -294,14 +291,15 @@ void MatchesCommand(
         { output = TERSE; }
       else
         {
-         ExpectedTypeError1(theEnv,"matches",2,"symbol with value verbose, succinct, or terse");
+         UDFInvalidArgumentMessage(context,"symbol with value verbose, succinct, or terse");
+         CVSetBoolean(returnValue,false);
          return;
         }
      }
    else
      { output = VERBOSE; }
 
-   EnvMatches(theEnv,rulePtr,output,result);
+   EnvMatches(theEnv,rulePtr,output,returnValue);
   }
 
 /********************************/
@@ -978,43 +976,40 @@ static int CountPatterns(
 /*   for the join-activity command.        */
 /*******************************************/
 void JoinActivityCommand(
-  void *theEnv,
-  DATA_OBJECT *result)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    const char *ruleName, *argument;
    void *rulePtr;
-   int numberOfArguments;
-   DATA_OBJECT argPtr;
+   CLIPSValue theArg;
    int output;
+   Environment *theEnv = UDFContextEnvironment(context);
 
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
-
-   if ((numberOfArguments = EnvArgRangeCheck(theEnv,"join-activity",1,2)) == -1) return;
-
-   if (EnvArgTypeCheck(theEnv,"join-activity",1,SYMBOL,&argPtr) == false) return;
-
-   if (GetType(argPtr) != SYMBOL)
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      {
-      ExpectedTypeError1(theEnv,"join-activity",1,"rule name");
+      CVSetBoolean(returnValue,false);
       return;
      }
-
-   ruleName = DOToString(argPtr);
+     
+   ruleName = CVToString(&theArg);
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
+      CVSetBoolean(returnValue,false);
       return;
      }
 
-   if (numberOfArguments == 2)
+   if (UDFHasNextArgument(context))
      {
-      if (EnvArgTypeCheck(theEnv,"join-activity",2,SYMBOL,&argPtr) == false)
-        { return; }
+      if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
 
-      argument = DOToString(argPtr);
+      argument = CVToString(&theArg);
       if (strcmp(argument,"verbose") == 0)
         { output = VERBOSE; }
       else if (strcmp(argument,"succinct") == 0)
@@ -1023,14 +1018,15 @@ void JoinActivityCommand(
         { output = TERSE; }
       else
         {
-         ExpectedTypeError1(theEnv,"join-activity",2,"symbol with value verbose, succinct, or terse");
+         UDFInvalidArgumentMessage(context,"symbol with value verbose, succinct, or terse");
+         CVSetBoolean(returnValue,false);
          return;
         }
      }
    else
      { output = VERBOSE; }
 
-   EnvJoinActivity(theEnv,rulePtr,output,result);
+   EnvJoinActivity(theEnv,rulePtr,output,returnValue);
   }
 
 /*************************************/

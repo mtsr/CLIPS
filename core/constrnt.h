@@ -100,8 +100,8 @@ struct constraintData
 #define ConstraintData(theEnv) ((struct constraintData *) GetEnvironmentData(theEnv,CONSTRAINT_DATA))
 
    void                           InitializeConstraints(void *);
-   bool                           GDCCommand(void *);
-   bool                           SDCCommand(void *d);
+   void                           GDCCommand(UDFContext *,CLIPSValue *);
+   void                           SDCCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSetDynamicConstraintChecking(void *,bool);
    bool                           EnvGetDynamicConstraintChecking(void *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)

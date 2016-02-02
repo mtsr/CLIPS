@@ -45,20 +45,20 @@
 #include "factmngr.h"
 
    void                           FactFunctionDefinitions(void *);
-   void                          *FactRelationFunction(void *);
+   void                           FactRelationFunction(UDFContext *,CLIPSValue *);
    void                          *FactRelation(void *);
    void                          *EnvFactDeftemplate(void *,void *);
-   bool                           FactExistpFunction(void *);
+   void                           FactExistpFunction(UDFContext *,CLIPSValue *);
    bool                           EnvFactExistp(void *,void *);
-   void                           FactSlotValueFunction(void *,DATA_OBJECT *);
-   void                           FactSlotValue(void *,void *,const char *,DATA_OBJECT *);
-   void                           FactSlotNamesFunction(void *,DATA_OBJECT *);
+   void                           FactSlotValueFunction(UDFContext *,CLIPSValue *);
+   void                           FactSlotValue(void *,void *,const char *,CLIPSValue *);
+   void                           FactSlotNamesFunction(UDFContext *,CLIPSValue *);
    void                           EnvFactSlotNames(void *,void *,DATA_OBJECT *);
-   void                           GetFactListFunction(void *,DATA_OBJECT *);
+   void                           GetFactListFunction(UDFContext *,CLIPSValue *);
    void                           EnvGetFactList(void *,DATA_OBJECT *,void *);
-   void                           PPFactFunction(void *);
+   void                           PPFactFunction(UDFContext *,CLIPSValue *);
    void                           EnvPPFact(void *,void *,const char *,bool);
-   struct fact                   *GetFactAddressOrIndexArgument(void *,const char *,int,bool);
+   struct fact                   *GetFactAddressOrIndexArgument(UDFContext *,bool);
 
 #endif /* _H_factfun */
 

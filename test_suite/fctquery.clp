@@ -86,7 +86,7 @@
 (deftemplate B) ; (is-a A))
 (deftemplate C) ; (is-a A))
 (deftemplate D (slot name)) ; (is-a B C))
-(defglobal ?*list* = (mv-append V W))
+(defglobal ?*list* = (create$ V W))
 (deftemplate V (slot name))
 (deftemplate W (slot name))
 (deftemplate X (slot name))

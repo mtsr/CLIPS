@@ -113,10 +113,10 @@ a b
 (assert (x q))                    ; DR0087
 (run)                             ; DR0087
 (facts)                           ; DR0087
-(subseq$ a 2 4)                 ; DR0090
+(subseq$ a 2 4)                   ; DR0090
 (sub-string)                      ; DR0092
-(str-explode "a b c")             ; DR0093
-(length (str-explode "a b c"))    ; DR0093
+(explode$ "a b c")                ; DR0093
+(length (explode$ "a b c"))       ; DR0093
 (tan 0)                           ; DR0096
 (sec 0)                           ; DR0096
 (/ 1 0)                           ; DR0097

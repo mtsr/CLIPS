@@ -53,7 +53,7 @@
 (defclass B (is-a A) (role concrete))
 (defclass C (is-a A) (role concrete))
 (defclass D (is-a B C) (role concrete))
-(defglobal ?*list* = (mv-append V W))
+(defglobal ?*list* = (create$ V W))
 (defclass V (is-a USER) (role concrete))
 (defclass W (is-a USER) (role concrete))
 (defclass X (is-a USER) (role concrete))

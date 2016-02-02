@@ -97,22 +97,28 @@ static void DeallocateBsaveData(
 /* BsaveCommand: H/L access routine   */
 /*   for the bsave command.           */
 /**************************************/
-bool BsaveCommand(
-  void *theEnv)
+void BsaveCommand(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
 #if (! RUN_TIME) && BLOAD_AND_BSAVE
    const char *fileName;
 
-   if (EnvArgCountCheck(theEnv,"bsave",EXACTLY,1) == -1) return(false);
-   fileName = GetFileName(theEnv,"bsave",1);
+   fileName = GetFileName(context);
    if (fileName != NULL)
-     { if (EnvBsave(theEnv,fileName)) return(true); }
+     {
+      if (EnvBsave(UDFContextEnvironment(context),fileName))
+        {
+         CVSetBoolean(returnValue,true);
+         return;
+        }
+     }
 #else
 #if MAC_XCD
-#pragma unused(theEnv)
+#pragma unused(context)
 #endif
 #endif
-   return(false);
+   CVSetBoolean(returnValue,false);
   }
 
 #if BLOAD_AND_BSAVE

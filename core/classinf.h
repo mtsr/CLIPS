@@ -40,22 +40,22 @@
 
 #include "evaluatn.h"
 
-   bool                           ClassAbstractPCommand(void *);
+   void                           ClassAbstractPCommand(UDFContext *,CLIPSValue *);
 #if DEFRULE_CONSTRUCT
-   bool                           ClassReactivePCommand(void *);
+   void                           ClassReactivePCommand(UDFContext *,CLIPSValue *);
 #endif
-   void                          *ClassInfoFnxArgs(void *,const char *,bool *);
-   void                           ClassSlotsCommand(void *,DATA_OBJECT *);
-   void                           ClassSuperclassesCommand(void *,DATA_OBJECT *);
-   void                           ClassSubclassesCommand(void *,DATA_OBJECT *);
-   void                           GetDefmessageHandlersListCmd(void *,DATA_OBJECT *);
-   void                           SlotFacetsCommand(void *,DATA_OBJECT *);
-   void                           SlotSourcesCommand(void *,DATA_OBJECT *);
-   void                           SlotTypesCommand(void *,DATA_OBJECT *);
-   void                           SlotAllowedValuesCommand(void *,DATA_OBJECT *);
-   void                           SlotAllowedClassesCommand(void *,DATA_OBJECT *);
-   void                           SlotRangeCommand(void *,DATA_OBJECT *);
-   void                           SlotCardinalityCommand(void *,DATA_OBJECT *);
+   void                          *ClassInfoFnxArgs(UDFContext *,const char *,bool *);
+   void                           ClassSlotsCommand(UDFContext *,CLIPSValue *);
+   void                           ClassSuperclassesCommand(UDFContext *,CLIPSValue *);
+   void                           ClassSubclassesCommand(UDFContext *,CLIPSValue *);
+   void                           GetDefmessageHandlersListCmd(UDFContext *,CLIPSValue *);
+   void                           SlotFacetsCommand(UDFContext *,CLIPSValue *);
+   void                           SlotSourcesCommand(UDFContext *,CLIPSValue *);
+   void                           SlotTypesCommand(UDFContext *,CLIPSValue *);
+   void                           SlotAllowedValuesCommand(UDFContext *,CLIPSValue *);
+   void                           SlotAllowedClassesCommand(UDFContext *,CLIPSValue *);
+   void                           SlotRangeCommand(UDFContext *,CLIPSValue *);
+   void                           SlotCardinalityCommand(UDFContext *,CLIPSValue *);
    bool                           EnvClassAbstractP(void *,void *);
 #if DEFRULE_CONSTRUCT
    bool                           EnvClassReactiveP(void *,void *);

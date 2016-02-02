@@ -66,18 +66,18 @@ struct instanceFileData
 #endif /* BLOAD_INSTANCES || BSAVE_INSTANCES */
 
    void                           SetupInstanceFileCommands(void *);
-   long                           SaveInstancesCommand(void *);
-   long                           LoadInstancesCommand(void *);
-   long                           RestoreInstancesCommand(void *);
+   void                           SaveInstancesCommand(UDFContext *,CLIPSValue *);
+   void                           LoadInstancesCommand(UDFContext *,CLIPSValue *);
+   void                           RestoreInstancesCommand(UDFContext *,CLIPSValue *);
    long                           EnvSaveInstancesDriver(void *,const char *,int,EXPRESSION *,bool);
    long                           EnvSaveInstances(void *,const char *,int);
 #if BSAVE_INSTANCES
-   long                           BinarySaveInstancesCommand(void *);
+   void                           BinarySaveInstancesCommand(UDFContext *,CLIPSValue *);
    long                           EnvBinarySaveInstancesDriver(void *,const char *,int,EXPRESSION *,bool);
    long                           EnvBinarySaveInstances(void *,const char *,int);
 #endif
 #if BLOAD_INSTANCES
-   long                           BinaryLoadInstancesCommand(void *);
+   void                           BinaryLoadInstancesCommand(UDFContext *,CLIPSValue *);
    long                           EnvBinaryLoadInstances(void *,const char *);
 #endif
    long                           EnvLoadInstances(void *,const char *);

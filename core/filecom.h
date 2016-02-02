@@ -59,14 +59,14 @@
    bool                           RemoveBatch(void *);
    bool                           BatchActive(void *);
    void                           CloseAllBatchSources(void *);
-   bool                           BatchCommand(void *);
-   bool                           BatchStarCommand(void *);
+   void                           BatchCommand(UDFContext *,CLIPSValue *);
+   void                           BatchStarCommand(UDFContext *,CLIPSValue *);
    bool                           EnvBatchStar(void *,const char *);
-   bool                           LoadCommand(void *);
-   bool                           LoadStarCommand(void *);
-   bool                           SaveCommand(void *);
-   bool                           DribbleOnCommand(void *);
-   bool                           DribbleOffCommand(void *);
+   void                           LoadCommand(UDFContext *,CLIPSValue *);
+   void                           LoadStarCommand(UDFContext *,CLIPSValue *);
+   void                           SaveCommand(UDFContext *,CLIPSValue *);
+   void                           DribbleOnCommand(UDFContext *,CLIPSValue *);
+   void                           DribbleOffCommand(UDFContext *,CLIPSValue *);
 
 #endif /* _H_filecom */
 

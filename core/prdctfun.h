@@ -35,8 +35,8 @@
 #define _H_prdctfun
 
    void                           PredicateFunctionDefinitions(void *);
-   bool                           EqFunction(void *);
-   bool                           NeqFunction(void *);
+   void                           EqFunction(UDFContext *,CLIPSValue *);
+   void                           NeqFunction(UDFContext *,CLIPSValue *);
    void                           StringpFunction(UDFContext *,CLIPSValue *);
    void                           SymbolpFunction(UDFContext *,CLIPSValue *);
    void                           LexemepFunction(UDFContext *,CLIPSValue *);

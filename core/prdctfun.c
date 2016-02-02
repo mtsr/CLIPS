@@ -56,8 +56,8 @@ void PredicateFunctionDefinitions(
    EnvAddUDF(theEnv,"and", BOOLEAN_TYPE, AndFunction, "AndFunction",   2,UNBOUNDED , NULL,NULL);
    EnvAddUDF(theEnv,"or",  BOOLEAN_TYPE, OrFunction,  "OrFunction",    2,UNBOUNDED , NULL,NULL);
 
-   EnvDefineFunction2(theEnv,"eq", 'b', PTIEF EqFunction, "EqFunction", "2*");
-   EnvDefineFunction2(theEnv,"neq", 'b', PTIEF NeqFunction, "NeqFunction", "2*");
+   EnvAddUDF(theEnv,"eq",  BOOLEAN_TYPE, EqFunction,  "EqFunction",  2, UNBOUNDED, NULL, NULL);
+   EnvAddUDF(theEnv,"neq", BOOLEAN_TYPE, NeqFunction, "NeqFunction", 2, UNBOUNDED, NULL, NULL);
 
    EnvAddUDF(theEnv,"<=", BOOLEAN_TYPE, LessThanOrEqualFunction,    "LessThanOrEqualFunction",    2,UNBOUNDED , "ld",NULL);
    EnvAddUDF(theEnv,">=", BOOLEAN_TYPE, GreaterThanOrEqualFunction, "GreaterThanOrEqualFunction", 2,UNBOUNDED , "ld",NULL);
@@ -90,19 +90,25 @@ void PredicateFunctionDefinitions(
 /* EqFunction: H/L access routine   */
 /*   for the eq function.           */
 /************************************/
-bool EqFunction(
-  void *theEnv)
+void EqFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DATA_OBJECT item, nextItem;
    int numArgs, i;
    struct expr *theExpression;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* Determine the number of arguments. */
    /*====================================*/
 
    numArgs = EnvRtnArgCount(theEnv);
-   if (numArgs == 0) return(false);
+   if (numArgs == 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*==============================================*/
    /* Get the value of the first argument against  */
@@ -123,15 +129,24 @@ bool EqFunction(
       EvaluateExpression(theEnv,theExpression,&nextItem);
 
       if (GetType(nextItem) != GetType(item))
-        { return(false); }
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
 
       if (GetType(nextItem) == MULTIFIELD)
         {
          if (MultifieldDOsEqual(&nextItem,&item) == false)
-           { return(false); }
+           {
+            CVSetBoolean(returnValue,false);
+            return;
+           }
         }
       else if (nextItem.value != item.value)
-        { return(false); }
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
 
       theExpression = GetNextArgument(theExpression);
      }
@@ -141,26 +156,32 @@ bool EqFunction(
    /* from the first. Return true.        */
    /*=====================================*/
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /*************************************/
 /* NeqFunction: H/L access routine   */
 /*   for the neq function.           */
 /*************************************/
-bool NeqFunction(
-  void *theEnv)
+void NeqFunction(
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    DATA_OBJECT item, nextItem;
    int numArgs, i;
    struct expr *theExpression;
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* Determine the number of arguments. */
    /*====================================*/
 
    numArgs = EnvRtnArgCount(theEnv);
-   if (numArgs == 0) return(false);
+   if (numArgs == 0)
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
 
    /*==============================================*/
    /* Get the value of the first argument against  */
@@ -185,10 +206,16 @@ bool NeqFunction(
       else if (nextItem.type == MULTIFIELD)
         {
          if (MultifieldDOsEqual(&nextItem,&item) == true)
-           { return(false); }
+           {
+            CVSetBoolean(returnValue,false);
+            return;
+           }
         }
       else if (nextItem.value == item.value)
-        { return(false); }
+        {
+         CVSetBoolean(returnValue,false);
+         return;
+        }
      }
 
    /*=====================================*/
@@ -196,7 +223,7 @@ bool NeqFunction(
    /* to the first. Return true.          */
    /*=====================================*/
 
-   return(true);
+   CVSetBoolean(returnValue,true);
   }
 
 /*****************************************/

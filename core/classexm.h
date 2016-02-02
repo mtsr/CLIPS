@@ -58,24 +58,24 @@
 
    const char                    *GetCreateAccessorString(void *);
    void                           GetDefclassModuleCommand(UDFContext *,CLIPSValue *);
-   bool                           SuperclassPCommand(void *);
+   void                           SuperclassPCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSuperclassP(void *,void *,void *);
-   bool                           SubclassPCommand(void *);
+   void                           SubclassPCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSubclassP(void *,void *,void *);
-   bool                           SlotExistPCommand(void *);
+   void                           SlotExistPCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSlotExistP(void *,void *,const char *,bool);
-   bool                           MessageHandlerExistPCommand(void *);
-   bool                           SlotWritablePCommand(void *);
+   void                           MessageHandlerExistPCommand(UDFContext *,CLIPSValue *);
+   void                           SlotWritablePCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSlotWritableP(void *,void *,const char *);
-   bool                           SlotInitablePCommand(void *);
+   void                           SlotInitablePCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSlotInitableP(void *,void *,const char *);
-   bool                           SlotPublicPCommand(void *);
+   void                           SlotPublicPCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSlotPublicP(void *,void *,const char *);
-   bool                           SlotDirectAccessPCommand(void *);
+   void                           SlotDirectAccessPCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSlotDirectAccessP(void *,void *,const char *);
-   void                           SlotDefaultValueCommand(void *,DATA_OBJECT_PTR);
+   void                           SlotDefaultValueCommand(UDFContext *,CLIPSValue *);
    bool                           EnvSlotDefaultValue(void *,void *,const char *,DATA_OBJECT_PTR);
-   bool                           ClassExistPCommand(void *);
+   void                           ClassExistPCommand(UDFContext *,CLIPSValue *);
    int                            EnvSlotDefaultP(void *,void *,const char *);
   
 #endif /* _H_classexm */
