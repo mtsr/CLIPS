@@ -103,6 +103,7 @@ struct UDFContext_t
    struct FunctionDefinition *theFunction;
    int lastPosition;
    struct expr *lastArg;
+   CLIPSValue *returnValue;
   };
 
 #define ExternalFunctionData(theEnv) ((struct externalFunctionData *) GetEnvironmentData(theEnv,EXTERNAL_FUNCTION_DATA))
@@ -146,7 +147,6 @@ struct FunctionHash
    int                            GetMaximumArgs(struct FunctionDefinition *);
 
    int                            UDFArgumentCount(UDFContext *);
-   int                            UDFArgCountCheck(UDFContext *);
    bool                           UDFNthArgument(UDFContext *,int,unsigned,struct dataObject *);
    void                           UDFInvalidArgumentMessage(UDFContext *,const char *);
    Environment                   *UDFContextEnvironment(UDFContext *);

@@ -51,6 +51,14 @@
 #include "memalloc.h"
 #include "router.h"
 
+#if DEFTEMPLATE_CONSTRUCT
+#include "factmngr.h"
+#endif
+
+#if OBJECT_SYSTEM
+#include "inscom.h"
+#endif
+
 #include "extnfunc.h"
 
 /***************************************/
@@ -64,6 +72,7 @@
    static bool                    RemoveHashFunction(void *,struct FunctionDefinition *);
 #endif
    static void                    PrintType(void *,const char *,int,int *,const char *);
+   static void                    AssignErrorValue(UDFContext *);
 
 /*********************************************************/
 /* InitializeExternalFunctionData: Allocates environment */
@@ -781,6 +790,36 @@ int GetMaximumArgs(
    return(-1); 
   }
 
+/********************/
+/* AssignErrorValue */
+/********************/
+void AssignErrorValue(
+  UDFContext *context)
+  {
+   if (context->theFunction->unknownReturnValueType & BOOLEAN_TYPE)
+     { CVSetBoolean(context->returnValue,false); }
+   else if (context->theFunction->unknownReturnValueType & STRING_TYPE)
+     { CVSetString(context->returnValue,""); }
+   else if (context->theFunction->unknownReturnValueType & SYMBOL_TYPE)
+     { CVSetSymbol(context->returnValue,"nil"); }
+   else if (context->theFunction->unknownReturnValueType & INTEGER_TYPE)
+     { CVSetInteger(context->returnValue,0); }
+   else if (context->theFunction->unknownReturnValueType & FLOAT_TYPE)
+     { CVSetFloat(context->returnValue,0.0); }
+   else if (context->theFunction->unknownReturnValueType & MULTIFIELD_TYPE)
+     { EnvSetMultifieldErrorValue(context->environment,context->returnValue); }
+   else if (context->theFunction->unknownReturnValueType & INSTANCE_NAME_TYPE)
+     { CVSetInstanceName(context->returnValue,"nil"); }
+   else if (context->theFunction->unknownReturnValueType & FACT_ADDRESS_TYPE)
+     { CVSetFactAddress(context->returnValue,&FactData(context->environment)->DummyFact); }
+   else if (context->theFunction->unknownReturnValueType & INSTANCE_ADDRESS_TYPE)
+     { CVSetInstanceAddress(context->returnValue,&InstanceData(context->environment)->DummyInstance); }
+   else if (context->theFunction->unknownReturnValueType & EXTERNAL_ADDRESS_TYPE)
+     { CVSetExternalAddress(context->returnValue,NULL,0); }
+   else
+     { CVSetVoid(context->returnValue); }
+  }
+
 /*********************/
 /* UDFArgumentCount: */
 /*********************/
@@ -796,34 +835,6 @@ int UDFArgumentCount(
      { count++; }
 
    return(count);
-  }
-
-/*********************/
-/* UDFArgCountCheck: */
-/*********************/
-int UDFArgCountCheck(
-  UDFContext *context) // TBD can this be removed with static constraint checking always enabled?
-  {
-   struct FunctionDefinition *theFunction = context->theFunction;
-   const char *functionName = theFunction->callFunctionName->contents;
-   void *theEnv = UDFContextEnvironment(context);
-      
-   if ((theFunction->minArgs == UNBOUNDED) && (theFunction->maxArgs == UNBOUNDED))
-     { return EnvRtnArgCount(theEnv); }
-     
-   if ((theFunction->minArgs != UNBOUNDED) && (theFunction->maxArgs == UNBOUNDED))
-     { return EnvArgCountCheck(theEnv,functionName,AT_LEAST,theFunction->minArgs); }
-
-   if ((theFunction->minArgs == UNBOUNDED) && (theFunction->maxArgs != UNBOUNDED))
-     { return EnvArgCountCheck(theEnv,functionName,NO_MORE_THAN,theFunction->maxArgs); }
-
-   if (theFunction->minArgs == theFunction->maxArgs)
-     { return EnvArgCountCheck(theEnv,functionName,EXACTLY,theFunction->maxArgs); }
-
-   if (theFunction->minArgs < theFunction->maxArgs)
-     { return EnvArgCountCheck(theEnv,functionName,EXACTLY,theFunction->maxArgs); }
-    
-   return -1;
   }
 
 /*********************/
@@ -873,6 +884,7 @@ bool UDFNextArgument(
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);
         EnvSetEvaluationError(theEnv,true);
+        AssignErrorValue(context);
         return false;
         break;
 
@@ -885,6 +897,7 @@ bool UDFNextArgument(
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);
         EnvSetEvaluationError(theEnv,true);
+        AssignErrorValue(context);
         return false;
         break;
 
@@ -897,6 +910,7 @@ bool UDFNextArgument(
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);
         EnvSetEvaluationError(theEnv,true);
+        AssignErrorValue(context);
         return false;
         break;
 
@@ -909,6 +923,7 @@ bool UDFNextArgument(
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);
         EnvSetEvaluationError(theEnv,true);
+        AssignErrorValue(context);
         return false;
         break;
 
@@ -921,6 +936,7 @@ bool UDFNextArgument(
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);
         EnvSetEvaluationError(theEnv,true);
+        AssignErrorValue(context);
         return false;
         break;
      }
@@ -933,7 +949,11 @@ bool UDFNextArgument(
         returnValue->bitType = VOID_TYPE;
         if (expectedType & VOID_TYPE)
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -942,7 +962,11 @@ bool UDFNextArgument(
         returnValue->bitType = INTEGER_TYPE;
         if (expectedType & INTEGER_TYPE)
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -951,7 +975,11 @@ bool UDFNextArgument(
         returnValue->bitType = FLOAT_TYPE;
         if (expectedType & FLOAT_TYPE)
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -960,7 +988,11 @@ bool UDFNextArgument(
         returnValue->bitType = SYMBOL_TYPE;
         if (expectedType & SYMBOL_TYPE) 
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -969,7 +1001,11 @@ bool UDFNextArgument(
         returnValue->bitType = STRING_TYPE;
         if (expectedType & STRING_TYPE) 
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -978,7 +1014,11 @@ bool UDFNextArgument(
         returnValue->bitType = INSTANCE_NAME_TYPE;
         if (expectedType & INSTANCE_NAME_TYPE) 
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -987,7 +1027,11 @@ bool UDFNextArgument(
         returnValue->bitType = EXTERNAL_ADDRESS_TYPE;
         if (expectedType & EXTERNAL_ADDRESS_TYPE)
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -996,7 +1040,11 @@ bool UDFNextArgument(
         returnValue->bitType = FACT_ADDRESS_TYPE;
         if (expectedType & FACT_ADDRESS_TYPE) 
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -1005,7 +1053,11 @@ bool UDFNextArgument(
         returnValue->bitType = INSTANCE_ADDRESS_TYPE;
         if (expectedType & INSTANCE_ADDRESS_TYPE) 
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -1014,7 +1066,11 @@ bool UDFNextArgument(
         returnValue->bitType = MULTIFIELD_TYPE;
         if (expectedType & MULTIFIELD_TYPE) 
           {
-           if  (EvaluationData(theEnv)->EvaluationError) return false;
+           if (EvaluationData(theEnv)->EvaluationError)
+             {
+              AssignErrorValue(context);
+              return false;
+             }
            else return true;
           }
         break;
@@ -1025,6 +1081,7 @@ bool UDFNextArgument(
 
    EnvSetHaltExecution(theEnv,true);
    EnvSetEvaluationError(theEnv,true);
+   AssignErrorValue(context);
 
    return false;
   }

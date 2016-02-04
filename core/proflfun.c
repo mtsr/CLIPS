@@ -705,10 +705,7 @@ void SetProfilePercentThresholdCommand(
    Environment *theEnv = UDFContextEnvironment(context);
    
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theValue))
-     {
-      CVSetFloat(returnValue,ProfileFunctionData(theEnv)->PercentThreshold);
-      return;
-     }
+     { return; }
      
    newThreshold = CVToFloat(&theValue);
      

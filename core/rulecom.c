@@ -259,10 +259,7 @@ void MatchesCommand(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
      
    ruleName = CVToString(&theArg);
 
@@ -277,10 +274,7 @@ void MatchesCommand(
    if (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
 
       argument = CVToString(&theArg);
       if (strcmp(argument,"verbose") == 0)
@@ -986,10 +980,7 @@ void JoinActivityCommand(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
      
    ruleName = CVToString(&theArg);
 
@@ -1004,10 +995,7 @@ void JoinActivityCommand(
    if (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
 
       argument = CVToString(&theArg);
       if (strcmp(argument,"verbose") == 0)

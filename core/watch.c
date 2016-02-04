@@ -537,10 +537,7 @@ void GetWatchItemCommand(
    /*========================================*/
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
      
    argument = CVToString(&theValue);
    ValidWatchItem(theEnv,argument,&recognized);

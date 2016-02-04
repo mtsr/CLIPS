@@ -146,6 +146,8 @@ bool EvaluateExpression(
 
    returnValue->environment = theEnv;
    returnValue->type = RVOID;
+   returnValue->bitType = VOID_TYPE;
+   
    if (problem == NULL)
      {
       returnValue->type = SYMBOL;
@@ -291,6 +293,7 @@ bool EvaluateExpression(
               theUDFContext.theFunction = fptr;
               theUDFContext.lastArg = problem->argList;
               theUDFContext.lastPosition = 1;
+              theUDFContext.returnValue = returnValue;
               (* (void (*)(UDFContext *,DATA_OBJECT_PTR)) fptr->functionPointer)(&theUDFContext,returnValue);
               break;
 
@@ -541,6 +544,7 @@ void EnvSetMultifieldErrorValue(
   DATA_OBJECT_PTR returnValue)
   {
    returnValue->type = MULTIFIELD;
+   returnValue->bitType = MULTIFIELD_TYPE;
    returnValue->value = EnvCreateMultifield(theEnv,0L);
    returnValue->begin = 1;
    returnValue->end = 0;

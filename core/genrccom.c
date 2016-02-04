@@ -1119,10 +1119,7 @@ void GetDefmethodListCommand(
    else
      {
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-        {
-         EnvSetMultifieldErrorValue(theEnv,returnValue);
-         return;
-        }
+        { return; }
       gfunc = CheckGenericExists(theEnv,"get-defmethod-list",CVToString(&theArg));
       if (gfunc != NULL)
         { EnvGetDefmethodList(theEnv,(void *) gfunc,returnValue); }
@@ -1207,10 +1204,7 @@ void GetMethodRestrictionsCommand(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
    gfunc = CheckGenericExists(theEnv,"get-method-restrictions",CVToString(&theArg));
    if (gfunc == NULL)
      {
@@ -1219,10 +1213,7 @@ void GetMethodRestrictionsCommand(
      }
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
      
    if (CheckMethodExists(theEnv,"get-method-restrictions",gfunc,(long) CVToInteger(&theArg)) == -1)
      {

@@ -212,10 +212,7 @@ void SetgenFunction(
    /*====================================================*/
 
    if (! UDFNthArgument(context,1,INTEGER_TYPE,returnValue))
-     {
-      CVSetInteger(returnValue,MiscFunctionData(theEnv)->GensymNumber);
-      return;
-     }
+     { return; }
 
    /*========================================*/
    /* The integer must be greater than zero. */
@@ -346,17 +343,11 @@ void RandomFunction(
    if (argCount == 2)
      {
       if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
-        {
-         CVSetInteger(returnValue,rv);
-         return;
-        }
+        { return; }
       begin = CVToInteger(&theArg);
       
       if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
-        {
-         CVSetInteger(returnValue,rv);
-         return;
-        }
+        { return; }
       end = CVToInteger(&theArg);
       
       if (end < begin)
@@ -413,10 +404,7 @@ void LengthFunction(
    /*====================================================*/
 
    if (! UDFFirstArgument(context, LEXEME_TYPES | MULTIFIELD_TYPE, &theArg))
-     {
-      CVSetInteger(returnValue,-1L);
-      return;
-     }
+     { return; }
 
    /*====================================================*/
    /* If the argument is a string or symbol, then return */
@@ -1079,10 +1067,8 @@ void SetSORCommand(
    DATA_OBJECT theArg;
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,ExpressionData(theEnv)->SequenceOpMode);
-      return;
-     }
+     { return; }
+     
    CVSetBoolean(returnValue,EnvSetSequenceOperatorRecognition(theEnv,(CVIsFalseSymbol(&theArg) ?
                                                                       false : true)));
 #else
@@ -1110,10 +1096,7 @@ void GetFunctionRestrictions(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetString(returnValue,"");
-      return;
-     }
+     { return; }
      
    fptr = FindFunction(theEnv,CVToString(&theArg));
    if (fptr == NULL)

@@ -831,7 +831,7 @@ void SetClassDefaultsModeCommand( // TBD enum?
    /*=====================================================*/
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     { CVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv))); }
+     { return; }
 
    argument = CVToString(&theArg);
 

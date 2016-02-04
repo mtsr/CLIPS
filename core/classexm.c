@@ -460,10 +460,7 @@ void SlotExistPCommand(
    if (EnvRtnArgCount(theEnv) == 3)
      {
       if (! UDFNthArgument(context,3,SYMBOL_TYPE,&theArg))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
         
       if (strcmp(CVToString(&theArg),"inherit") != 0)
         {
@@ -519,10 +516,7 @@ void MessageHandlerExistPCommand(
    Environment *theEnv = UDFContextEnvironment(context);
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
    cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (cls == NULL)
      {
@@ -532,19 +526,13 @@ void MessageHandlerExistPCommand(
      }
      
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+        { return; }
 
    mname = (SYMBOL_HN *) CVToRawValue(&theArg);
    if (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
         
       mtype = HandlerType(theEnv,"message-handler-existp",CVToString(&theArg));
       if (mtype == MERROR)
@@ -866,10 +854,7 @@ void ClassExistPCommand(
    Environment *theEnv = UDFContextEnvironment(context);
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
       
    CVSetBoolean(returnValue,((LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg)) != NULL) ? true : false));
   }

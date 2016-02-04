@@ -186,11 +186,7 @@ void DeleteFunction(
    if ((! UDFFirstArgument(context,MULTIFIELD_TYPE,&value1)) ||
        (! UDFNextArgument(context,INTEGER_TYPE,&value2)) ||
        (! UDFNextArgument(context,INTEGER_TYPE,&value3)))
-     {
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
 
    /*=================================================*/
    /* Delete the section out of the multifield value. */
@@ -223,11 +219,7 @@ void ReplaceFunction(
    if ((! UDFFirstArgument(context,MULTIFIELD_TYPE,&value1)) ||
        (! UDFNextArgument(context,INTEGER_TYPE,&value2)) ||
        (! UDFNextArgument(context,INTEGER_TYPE,&value3)))
-     {
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
 
    /*===============================*/
    /* Create the replacement value. */
@@ -420,11 +412,7 @@ void InsertFunction(
 
    if ((! UDFFirstArgument(context,MULTIFIELD_TYPE,&value1)) ||
        (! UDFNextArgument(context,INTEGER_TYPE,&value2)))
-     {
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
 
    /*=============================*/
    /* Create the insertion value. */
@@ -525,10 +513,7 @@ void ImplodeFunction(
    /*======================================*/
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
-     {
-      CVSetString(returnValue,"");
-      return;
-     }
+     { return; }
 
    /*====================*/
    /* Return the string. */
@@ -555,10 +540,8 @@ void SubseqFunction(
    /*===================================*/
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
+     
    theList = (struct multifield *) DOToPointer(theArg);
    offset = GetDOBegin(theArg);
    length = GetDOLength(theArg);
@@ -569,17 +552,12 @@ void SubseqFunction(
    /*=============================================*/
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
+     
    start = DOToLong(theArg);
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
    end = DOToLong(theArg);
 
    if ((end < 1) || (end < start))
@@ -620,17 +598,13 @@ void FirstFunction(
   {
    CLIPSValue theArg;
    struct multifield *theList;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===================================*/
    /* Get the segment to be subdivided. */
    /*===================================*/
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
 
    theList = (struct multifield *) DOToPointer(theArg);
 
@@ -657,17 +631,13 @@ void RestFunction(
   {
    CLIPSValue theArg;
    struct multifield *theList;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===================================*/
    /* Get the segment to be subdivided. */
    /*===================================*/
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+     { return; }
 
    theList = (struct multifield *) DOToPointer(theArg);
 
@@ -698,10 +668,7 @@ void NthFunction(
 
    if ((! UDFFirstArgument(context,INTEGER_TYPE,&value1)) ||
 	   (! UDFNextArgument(context,MULTIFIELD_TYPE,&value2)))
-	 {
-      CVSetSymbol(returnValue,"nil");
-	  return;
-	 }
+     { return; }
 
    n = DOToLong(value1); /* 6.04 Bug Fix */
    if ((n > GetDOLength(value2)) || (n < 1))
@@ -742,16 +709,10 @@ void SubsetpFunction(
    long i,j,k; 
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&item1))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (! UDFNextArgument(context,MULTIFIELD_TYPE,&item2))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
  
    if (CVLength(&item1) == 0)
      {

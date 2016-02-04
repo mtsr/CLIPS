@@ -430,10 +430,7 @@ void FactIndexFunction(
    /*======================================*/
 
    if (! UDFFirstArgument(context,FACT_ADDRESS_TYPE,&theArg))
-     {
-      CVSetInteger(returnValue,-1L);
-      return;
-     }
+     { return; }
 
    /*================================================*/
    /* Return the fact index associated with the fact */
@@ -709,10 +706,7 @@ void AssertStringFunction(
    /*=====================================================*/
 
    if (! UDFFirstArgument(context,STRING_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    /*==========================================*/
    /* Call the driver routine for converting a */

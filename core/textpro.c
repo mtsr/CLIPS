@@ -1193,10 +1193,7 @@ void TossCommand(
    CLIPSValue value;
 
    if (! UDFFirstArgument(context,LEXEME_TYPES,&value))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
    
    file = CVToString(&value);
 

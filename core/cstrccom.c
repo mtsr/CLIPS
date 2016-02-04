@@ -769,11 +769,7 @@ void GetConstructListFunction(
       /*======================================*/
 
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&result))
-        {
-         EnvSetMultifieldErrorValue(theEnv,returnValue);
-         ExpectedTypeError1(theEnv,functionName,1,"defmodule name");
-         return;
-        }
+        { return; }
 
       /*===========================================*/
       /* Verify that the named module exists or is */
@@ -1014,10 +1010,7 @@ void ListConstructCommand(
       /*======================================*/
 
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&result))
-        {
-         ExpectedTypeError1(theEnv,functionName,1,"defmodule name");
-         return;
-        }
+        { return; }
 
       /*===========================================*/
       /* Verify that the named module exists or is */

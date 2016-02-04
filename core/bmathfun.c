@@ -92,13 +92,7 @@ void AdditionFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
-        {
-         if (useFloatTotal)
-           { CVSetFloat(returnValue,ftotal); }
-         else
-           { CVSetInteger(returnValue,ltotal); }
-         return;
-        }
+        { return; }
 
       if (useFloatTotal)
         { ftotal += CVToFloat(&theArg); }
@@ -148,13 +142,7 @@ void MultiplicationFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
-        {
-         if (useFloatTotal)
-           { CVSetFloat(returnValue,ftotal); }
-         else
-           { CVSetInteger(returnValue,ltotal); }
-         return;
-        }
+        { return; }
 
       if (useFloatTotal)
         { ftotal *= CVToFloat(&theArg); }
@@ -201,10 +189,7 @@ void SubtractionFunction(
    /*=================================================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
-     {
-      CVSetInteger(returnValue,0L);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&theArg,INTEGER_TYPE))
      { ltotal = CVToInteger(&theArg); }
@@ -224,13 +209,7 @@ void SubtractionFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
-        {
-         if (useFloatTotal)
-           { CVSetFloat(returnValue,ftotal); }
-         else
-           { CVSetInteger(returnValue,ltotal); }
-         return;
-        }
+        { return; }
 
       if (useFloatTotal)
         { ftotal -= CVToFloat(&theArg); }
@@ -279,10 +258,7 @@ void DivisionFunction(
    /*===================================================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
-     {
-      CVSetFloat(returnValue,ftotal);
-      return;
-     }
+     { return; }
 
    ftotal = CVToFloat(&theArg);
 
@@ -297,10 +273,7 @@ void DivisionFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
-        {
-         CVSetFloat(returnValue,ftotal);
-         return;
-        }
+        { return; }
         
       theNumber = CVToFloat(&theArg);
       
@@ -343,10 +316,7 @@ void DivFunction(
    /*===================================================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
-     {
-      CVSetInteger(returnValue,1L);
-      return;
-     }
+     { return; }
    total = CVToInteger(&theArg);
 
    /*=====================================================*/
@@ -359,10 +329,7 @@ void DivFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
-        {
-         CVSetInteger(returnValue,total);
-         return;
-        }
+        { return; }
 
       theNumber = CVToInteger(&theArg);
 
@@ -397,10 +364,7 @@ void IntegerFunction(
    /*======================================*/
 
    if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
-     {
-      CVSetInteger(returnValue,0LL);
-      return;
-     }
+     { return; }
 
    /*============================================*/
    /* Convert a float type to integer, otherwise */
@@ -424,10 +388,7 @@ void FloatFunction(
    /*======================================*/
 
    if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
-     {
-      CVSetFloat(returnValue,0.0);
-      return;
-     }
+     { return; }
 
    /*=============================================*/
    /* Convert an integer type to float, otherwise */
@@ -451,10 +412,7 @@ void AbsFunction(
    /*======================================*/
 
    if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
-     {
-      CVSetInteger(returnValue,0LL);
-      return;
-     }
+     { return; }
 
    /*==========================================*/
    /* Return the absolute value of the number. */
@@ -487,10 +445,7 @@ void MinFunction(
    /*============================================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,returnValue))
-     {
-      CVSetInteger(returnValue,0LL);
-      return;
-     }
+     { return; }
     
    /*===========================================================*/
    /* Loop through the remaining arguments, first checking each */
@@ -537,10 +492,7 @@ void MaxFunction(
    /*============================================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,returnValue))
-     {
-      CVSetInteger(returnValue,0LL);
-      return;
-     }
+     { return; }
 
    /*===========================================================*/
    /* Loop through the remaining arguments, first checking each */

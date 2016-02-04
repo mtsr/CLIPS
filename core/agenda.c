@@ -1139,10 +1139,7 @@ void SetSalienceEvaluationCommand(
    /*=========================================*/
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&value))
-     {
-      CVSetSymbol(returnValue,oldValue);
-      return;
-     }
+     { return; }
  
    /*=============================================================*/
    /* The allowed symbols to pass as an argument to this function */

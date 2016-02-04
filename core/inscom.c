@@ -1134,11 +1134,7 @@ void UnmakeInstanceCommand(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,INSTANCE_TYPES | SYMBOL_TYPE,&theArg))
-        {
-         EnvSetEvaluationError(theEnv,true);
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
         
       if (CVIsType(&theArg,INSTANCE_NAME_TYPE | SYMBOL_TYPE))
         {
@@ -1196,10 +1192,7 @@ void SymbolToInstanceName(
   CLIPSValue *returnValue)
   {
    if (! UDFFirstArgument(context,SYMBOL_TYPE,returnValue))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
      
    CVSetCLIPSInstanceName(returnValue,CVToRawValue(returnValue));
   }
@@ -1220,10 +1213,7 @@ void InstanceNameToSymbol(
    CLIPSValue theArg;
 
    if (! UDFFirstArgument(context,INSTANCE_NAME_TYPE | SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    CVSetCLIPSSymbol(returnValue,CVToRawValue(&theArg));
   }
@@ -1357,9 +1347,9 @@ void InstanceAddressPCommand(
    CLIPSValue theArg;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
-     { CVSetBoolean(returnValue,false); }
-   else
-     { CVSetBoolean(returnValue,CVIsType(&theArg,INSTANCE_ADDRESS_TYPE)); }
+     { return; }
+
+   CVSetBoolean(returnValue,CVIsType(&theArg,INSTANCE_ADDRESS_TYPE));
   }
 
 /**************************************************************
@@ -1377,9 +1367,9 @@ void InstanceNamePCommand(
    CLIPSValue theArg;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
-     { CVSetBoolean(returnValue,false); }
-   else
-     { CVSetBoolean(returnValue,CVIsType(&theArg,INSTANCE_NAME_TYPE)); }
+     { return; }
+   
+   CVSetBoolean(returnValue,CVIsType(&theArg,INSTANCE_NAME_TYPE));
   }
 
 /*****************************************************************
@@ -1399,9 +1389,9 @@ void InstancePCommand(
    CLIPSValue theArg;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
-     { CVSetBoolean(returnValue,false); }
-   else
-     { CVSetBoolean(returnValue,CVIsType(&theArg,INSTANCE_ADDRESS_TYPE | INSTANCE_NAME_TYPE)); }
+     { return; }
+
+   CVSetBoolean(returnValue,CVIsType(&theArg,INSTANCE_ADDRESS_TYPE | INSTANCE_NAME_TYPE));
   }
 
 /********************************************************
@@ -1420,10 +1410,7 @@ void InstanceExistPCommand(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&theArg,INSTANCE_ADDRESS_TYPE))
      {

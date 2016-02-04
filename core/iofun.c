@@ -566,10 +566,7 @@ void OpenFunction(
    else
      {
       if (! UDFNextArgument(context,STRING_TYPE,&theArg))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
       accessMode = CVToString(&theArg);
      }
 
@@ -1337,10 +1334,7 @@ void SetLocaleFunction(
    /*=================*/
    
    if (! UDFFirstArgument(context,STRING_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
      
    /*=====================================*/
    /* Return the old value of the locale. */

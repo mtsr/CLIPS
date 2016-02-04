@@ -291,10 +291,7 @@ void StrLengthFunction(
    /*==================================================================*/
 
    if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
-     {
-      CVSetInteger(returnValue,-1LL);
-      return;
-     }
+     { return; }
      
    /*============================================*/
    /* Return the length of the string or symbol. */
@@ -322,10 +319,7 @@ void UpcaseFunction(
    /*==================================================*/
 
    if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,returnValue))
-     {
-      CVSetString(returnValue,"");
-      return;
-     }
+     { return; }
 
    /*======================================================*/
    /* Allocate temporary memory and then copy the original */
@@ -373,10 +367,7 @@ void LowcaseFunction(
    /*==================================================*/
 
    if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,returnValue))
-     {
-      CVSetString(returnValue,"");
-      return;
-     }
+     { return; }
 
    /*======================================================*/
    /* Allocate temporary memory and then copy the original */
@@ -421,16 +412,10 @@ void StrCompareFunction(
    /*=============================================================*/
 
    if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&arg1))
-     {
-      CVSetInteger(returnValue,0L);
-      return;
-     }
+     { return; }
 
    if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&arg2))
-     {
-      CVSetInteger(returnValue,0L);
-      return;
-     }
+     { return; }
 
    /*===================================================*/
    /* Compare the strings. Use the 3rd argument for the */
@@ -440,10 +425,7 @@ void StrCompareFunction(
    if (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,INTEGER_TYPE,&arg3))
-        {
-         CVSetInteger(returnValue,0L);
-         return;
-        }
+        { return; }
 
       compareResult = strncmp(CVToString(&arg1),CVToString(&arg2),
                             (STD_SIZE) CVToInteger(&arg3));
@@ -485,10 +467,7 @@ void SubStringFunction(
    /*===================================*/
 
    if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
-     {
-      CVSetString(returnValue,"");
-      return;
-     }
+     { return; }
 
    if (CVToInteger(&theArg) < 1)
      { start = 0; }
@@ -496,10 +475,7 @@ void SubStringFunction(
      { start = (size_t) CVToInteger(&theArg) - 1; }
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
-     {
-      CVSetString(returnValue,"");
-      return;
-     }
+     { return; }
 
    if (CVToInteger(&theArg) < 1)
      {
@@ -510,10 +486,7 @@ void SubStringFunction(
      { end = (size_t) CVToInteger(&theArg) - 1; }
 
    if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
-     {
-      CVSetString(returnValue,"");
-      return;
-     }
+     { return; }
    
    tempString = CVToString(&theArg);
    
@@ -707,10 +680,7 @@ void EvalFunction(
    /*==================================================*/
 
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    /*======================*/
    /* Evaluate the string. */
@@ -906,10 +876,7 @@ void BuildFunction(
    /*==================================================*/
 
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    /*======================*/
    /* Build the construct. */

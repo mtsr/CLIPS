@@ -619,10 +619,7 @@ const char *GetFileName(
    CLIPSValue theArg;
    
    if (! UDFNextArgument(context,LEXEME_TYPES,&theArg))
-     {
-      UDFInvalidArgumentMessage(context,"file name");
-      return(NULL);
-     }
+     { return(NULL); }
 
    return(CVToString(&theArg));
   }

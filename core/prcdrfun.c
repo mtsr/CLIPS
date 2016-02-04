@@ -278,7 +278,8 @@ void GetLoopCount(
    LOOP_COUNTER_STACK *tmpCounter;
    Environment *theEnv = UDFContextEnvironment(context);
    
-   UDFFirstArgument(context,INTEGER_TYPE,&theArg);
+   if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
+     { return; }
    depth = CVToInteger(&theArg);
    tmpCounter = ProcedureFunctionData(theEnv)->LoopCounterStack;
    while (depth > 0)

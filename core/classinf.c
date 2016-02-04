@@ -99,10 +99,7 @@ void ClassAbstractPCommand(
    Environment *theEnv = UDFContextEnvironment(context);
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
      
    cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (cls == NULL)
@@ -136,10 +133,7 @@ void ClassReactivePCommand(
    Environment *theEnv = UDFContextEnvironment(context);
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
    if (cls == NULL)

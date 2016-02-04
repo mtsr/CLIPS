@@ -1409,10 +1409,7 @@ void FocusCommand(
    for (i = argCount; i > 0; i--)
      {
       if (! UDFNthArgument(context,i,SYMBOL_TYPE,&theArg))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
 
       argument = CVToString(&theArg);
       theModule = (struct defmodule *) EnvFindDefmodule(theEnv,argument);

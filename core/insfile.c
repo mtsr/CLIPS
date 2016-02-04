@@ -219,10 +219,7 @@ void LoadInstancesCommand(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
-     {
-      CVSetInteger(returnValue,0L);
-      return;
-     }
+     { return; }
 
    fileFound = CVToString(&theArg);
 
@@ -293,10 +290,7 @@ void RestoreInstancesCommand(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
-     {
-      CVSetInteger(returnValue,0L);
-      return;
-     }
+     { return; }
      
    fileFound = CVToString(&theArg);
 
@@ -370,10 +364,7 @@ void BinaryLoadInstancesCommand(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
-     {
-      CVSetInteger(returnValue,0L);
-      return;
-     }
+     { return; }
      
    fileFound = CVToString(&theArg);
 

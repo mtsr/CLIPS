@@ -933,16 +933,10 @@ void PowFunction(
    /*==================================*/
 
    if (! UDFNthArgument(context,1,NUMBER_TYPES,&value1))
-     {
-      CVSetFloat(returnValue,0.0);
-      return;
-     }
+     { return; }
 
    if (! UDFNthArgument(context,2,NUMBER_TYPES,&value2))
-     {
-      CVSetFloat(returnValue,0.0);
-      return;
-     }
+     { return; }
 
     /*=====================*/
     /* Domain error check. */
@@ -984,16 +978,10 @@ void ModFunction(
    /*==================================*/
    
    if (! UDFNthArgument(context,1,NUMBER_TYPES,&item1))
-     {
-      CVSetInteger(returnValue,0);
-      return;
-     }
+     { return; }
 
    if (! UDFNthArgument(context,2,NUMBER_TYPES,&item2))
-     {
-      CVSetInteger(returnValue,0);
-      return;
-     }
+     { return; }
 
    /*===========================*/
    /* Check for divide by zero. */
@@ -1118,10 +1106,7 @@ void RoundFunction(
    /*======================================*/
 
    if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
-     {
-      CVSetInteger(returnValue,0LL);
-      return;
-     }
+     { return; }
 
    /*==============================*/
    /* Round float type to integer. */

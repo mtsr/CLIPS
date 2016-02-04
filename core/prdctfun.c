@@ -237,10 +237,7 @@ void StringpFunction(
    CLIPSValue item;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&item,STRING_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -259,10 +256,7 @@ void SymbolpFunction(
    CLIPSValue item;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&item,SYMBOL_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -281,10 +275,7 @@ void LexemepFunction(
    CLIPSValue item;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&item,LEXEME_TYPES))
      { CVSetBoolean(returnValue,true); }
@@ -303,10 +294,7 @@ void NumberpFunction(
    CLIPSValue item;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&item,NUMBER_TYPES))
      { CVSetBoolean(returnValue,true); }
@@ -325,10 +313,7 @@ void FloatpFunction(
    CLIPSValue item;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&item,FLOAT_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -347,10 +332,7 @@ void IntegerpFunction(
    CLIPSValue item;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&item,INTEGER_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -369,10 +351,7 @@ void MultifieldpFunction(
    CLIPSValue item;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&item,MULTIFIELD_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -391,10 +370,7 @@ void PointerpFunction(
    CLIPSValue item;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsType(&item,EXTERNAL_ADDRESS_TYPE))
      { CVSetBoolean(returnValue,true); }
@@ -413,10 +389,7 @@ void NotFunction(
    DATA_OBJECT result;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&result))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    if (CVIsFalseSymbol(&result))
      {
@@ -440,10 +413,7 @@ void AndFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,ANY_TYPE,&result))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
         
       if (CVIsFalseSymbol(&result))
         {
@@ -468,10 +438,7 @@ void OrFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,ANY_TYPE,&result))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
         
       if (! CVIsFalseSymbol(&result))
         {
@@ -498,10 +465,7 @@ void LessThanOrEqualFunction(
    /*=========================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    /*====================================================*/
    /* Compare each of the subsequent arguments to its    */
@@ -511,10 +475,7 @@ void LessThanOrEqualFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
 
       if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
         {
@@ -559,10 +520,7 @@ void GreaterThanOrEqualFunction(
    /*=========================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    /*===================================================*/
    /* Compare each of the subsequent arguments to its   */
@@ -572,10 +530,7 @@ void GreaterThanOrEqualFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
 
       if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
         {
@@ -620,10 +575,7 @@ void LessThanFunction(
    /*=========================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
    
    /*==========================================*/
    /* Compare each of the subsequent arguments */
@@ -634,10 +586,7 @@ void LessThanFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
         
       if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
         {
@@ -682,10 +631,7 @@ void GreaterThanFunction(
    /*=========================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
    
    /*==========================================*/
    /* Compare each of the subsequent arguments */
@@ -696,10 +642,7 @@ void GreaterThanFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
         
       if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
         {
@@ -744,10 +687,7 @@ void NumericEqualFunction(
    /*=========================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    /*=================================================*/
    /* Compare each of the subsequent arguments to the */
@@ -757,10 +697,7 @@ void NumericEqualFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
         
       if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
         {
@@ -803,10 +740,7 @@ void NumericNotEqualFunction(
    /*=========================*/
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    /*=================================================*/
    /* Compare each of the subsequent arguments to the */
@@ -816,10 +750,7 @@ void NumericNotEqualFunction(
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
-        {
-         CVSetBoolean(returnValue,false);
-         return;
-        }
+        { return; }
         
       if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
         {
@@ -863,10 +794,7 @@ void OddpFunction(
    /*===========================================*/
  
    if (! UDFFirstArgument(context,INTEGER_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
     
    /*===========================*/
    /* Compute the return value. */
@@ -895,10 +823,7 @@ void EvenpFunction(
    /*===========================================*/
      
    if (! UDFFirstArgument(context,INTEGER_TYPE,&item))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    /*===========================*/
    /* Compute the return value. */

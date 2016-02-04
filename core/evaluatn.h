@@ -312,6 +312,11 @@ struct evaluationData
      (cv)->bitType = INSTANCE_NAME_TYPE, \
      (cv)->type = INSTANCE_NAME )
 
+#define CVSetExternalAddress(cv,iv,ivt) \
+   ( (cv)->value = EnvAddExternalAddress((cv)->environment,iv,ivt) , \
+     (cv)->bitType = EXTERNAL_ADDRESS_TYPE, \
+     (cv)->type = EXTERNAL_ADDRESS )
+
 #define CVSetRawValue(cv,rv) \
    ( (cv)->value = (rv)  )
 

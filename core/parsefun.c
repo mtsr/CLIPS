@@ -111,10 +111,7 @@ void CheckSyntaxFunction(
    /*========================================*/
 
    if (! UDFFirstArgument(context,STRING_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,true);
-      return;
-     }
+     { return; }
 
    /*===================*/
    /* Check the syntax. */

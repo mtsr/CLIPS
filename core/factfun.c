@@ -223,10 +223,7 @@ void FactSlotValueFunction(
    /*===========================*/
 
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
-     {
-      CVSetBoolean(returnValue,false);
-      return;
-     }
+     { return; }
 
    /*=======================*/
    /* Get the slot's value. */
@@ -394,10 +391,7 @@ void GetFactListFunction(
    if (UDFHasNextArgument(context))
      {
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-        {
-         EnvSetMultifieldErrorValue(theEnv,returnValue);
-         return;
-        }
+        { return; }
 
       if ((theModule = (struct defmodule *) EnvFindDefmodule(theEnv,CVToString(&theArg))) == NULL)
         {
