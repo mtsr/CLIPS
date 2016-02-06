@@ -78,15 +78,15 @@ void ProceduralFunctionDefinitions(
    AllocateEnvironmentData(theEnv,PRCDRFUN_DATA,sizeof(struct procedureFunctionData),DeallocateProceduralFunctionData);
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"if",    ANY_TYPE,  IfFunction, "IfFunction", 0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"while", ANY_TYPE,  WhileFunction, "WhileFunction", 0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"loop-for-count",   ANY_TYPE,  LoopForCountFunction, "LoopForCountFunction", 0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"(get-loop-count)", INTEGER_TYPE,  GetLoopCount, "GetLoopCount", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"bind",   ANY_TYPE,  BindFunction, "BindFunction", 0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"progn",  ANY_TYPE,  PrognFunction, "PrognFunction", 0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"return", ANY_TYPE,  ReturnFunction, "ReturnFunction",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"break",  VOID_TYPE,BreakFunction, "BreakFunction",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"switch", ANY_TYPE,  SwitchFunction, "SwitchFunction",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"if",    "*",  IfFunction, "IfFunction", 0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"while", "*",  WhileFunction, "WhileFunction", 0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"loop-for-count",   "*",  LoopForCountFunction, "LoopForCountFunction", 0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(get-loop-count)", "l",  GetLoopCount, "GetLoopCount", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"bind",   "*",  BindFunction, "BindFunction", 0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"progn",  "*",  PrognFunction, "PrognFunction", 0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"return", "*",  ReturnFunction, "ReturnFunction",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"break",  "v",BreakFunction, "BreakFunction",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"switch", "*",  SwitchFunction, "SwitchFunction",0,UNBOUNDED,NULL,NULL);
 
    ProceduralFunctionParsers(theEnv);
 

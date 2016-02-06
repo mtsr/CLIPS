@@ -106,17 +106,17 @@ void InitializeAgenda(
    AddWatchItem(theEnv,"activations",1,&AgendaData(theEnv)->WatchActivations,40,DefruleWatchAccess,DefruleWatchPrint);
 #endif
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"refresh", VOID_TYPE, RefreshCommand, "RefreshCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"refresh", "v'", RefreshCommand, "RefreshCommand", 1,1,"y",NULL);
 
-   EnvAddUDF(theEnv,"refresh-agenda",VOID_TYPE,RefreshAgendaCommand,
+   EnvAddUDF(theEnv,"refresh-agenda","v",RefreshAgendaCommand,
                     "RefreshAgendaCommand", 0,1,"y",NULL);
-   EnvAddUDF(theEnv,"get-salience-evaluation",SYMBOL_TYPE,GetSalienceEvaluationCommand,
+   EnvAddUDF(theEnv,"get-salience-evaluation","y",GetSalienceEvaluationCommand,
                     "GetSalienceEvaluationCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-salience-evaluation",SYMBOL_TYPE,SetSalienceEvaluationCommand,
+   EnvAddUDF(theEnv,"set-salience-evaluation","y",SetSalienceEvaluationCommand,
                     "SetSalienceEvaluationCommand",1,1,"y",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"agenda", VOID_TYPE,  AgendaCommand, "AgendaCommand", 0,1,"y",NULL);
+   EnvAddUDF(theEnv,"agenda", "v",  AgendaCommand, "AgendaCommand", 0,1,"y",NULL);
 #endif
 #endif
   }

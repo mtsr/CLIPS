@@ -99,32 +99,32 @@ void SetupFactQuery(
    FactQueryData(theEnv)->QUERY_DELIMETER_SYMBOL = (SYMBOL_HN *) EnvAddSymbol(theEnv,QUERY_DELIMETER_STRING);
    IncrementSymbolCount(FactQueryData(theEnv)->QUERY_DELIMETER_SYMBOL);
 
-   EnvAddUDF(theEnv,"(query-fact)",ANY_TYPE,
+   EnvAddUDF(theEnv,"(query-fact)","f",
                    GetQueryFact,"GetQueryFact",0,UNBOUNDED,NULL,NULL);
 
-   EnvAddUDF(theEnv,"(query-fact-slot)",ANY_TYPE,
+   EnvAddUDF(theEnv,"(query-fact-slot)","*",
                    GetQueryFactSlot,"GetQueryFactSlot",0,UNBOUNDED,NULL,NULL);
 
-   EnvAddUDF(theEnv,"any-factp",BOOLEAN_TYPE, AnyFacts,"AnyFacts",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"any-factp","b", AnyFacts,"AnyFacts",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"any-factp",FactParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"find-fact",MULTIFIELD_TYPE,
+   EnvAddUDF(theEnv,"find-fact","m",
                   QueryFindFact,"QueryFindFact",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"find-fact",FactParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"find-all-facts",MULTIFIELD_TYPE,
+   EnvAddUDF(theEnv,"find-all-facts","m",
                   QueryFindAllFacts,"QueryFindAllFacts",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"find-all-facts",FactParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"do-for-fact",ANY_TYPE,
+   EnvAddUDF(theEnv,"do-for-fact","*",
                   QueryDoForFact,"QueryDoForFact",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"do-for-fact",FactParseQueryAction);
 
-   EnvAddUDF(theEnv,"do-for-all-facts",ANY_TYPE,
+   EnvAddUDF(theEnv,"do-for-all-facts","*",
                   QueryDoForAllFacts,"QueryDoForAllFacts",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"do-for-all-facts",FactParseQueryAction);
 
-   EnvAddUDF(theEnv,"delayed-do-for-all-facts",ANY_TYPE,
+   EnvAddUDF(theEnv,"delayed-do-for-all-facts","*",
                   DelayedQueryDoForAllFacts,
                   "DelayedQueryDoForAllFacts",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"delayed-do-for-all-facts",FactParseQueryAction);

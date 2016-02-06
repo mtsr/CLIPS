@@ -166,54 +166,54 @@ void SetupInstances(
 #if ! RUN_TIME
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-   EnvAddUDF(theEnv,"initialize-instance",BOOLEAN_TYPE | INSTANCE_NAME_TYPE,
+   EnvAddUDF(theEnv,"initialize-instance","bn",
                 InactiveInitializeInstance,"InactiveInitializeInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"active-initialize-instance",BOOLEAN_TYPE | INSTANCE_NAME_TYPE,
+   EnvAddUDF(theEnv,"active-initialize-instance","bn",
                    InitializeInstanceCommand,"InitializeInstanceCommand",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-initialize-instance",ParseInitializeInstance);
 
-   EnvAddUDF(theEnv,"make-instance",BOOLEAN_TYPE | INSTANCE_NAME_TYPE, InactiveMakeInstance,"InactiveMakeInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"active-make-instance",BOOLEAN_TYPE | INSTANCE_NAME_TYPE, MakeInstanceCommand,"MakeInstanceCommand",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"make-instance","bn", InactiveMakeInstance,"InactiveMakeInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"active-make-instance","bn", MakeInstanceCommand,"MakeInstanceCommand",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-make-instance",ParseInitializeInstance);
 
 #else
-   EnvAddUDF(theEnv,"initialize-instance",BOOLEAN_TYPE | INSTANCE_NAME_TYPE,
+   EnvAddUDF(theEnv,"initialize-instance","bn",
                    InitializeInstanceCommand,"InitializeInstanceCommand",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"make-instance",BOOLEAN_TYPE | INSTANCE_NAME_TYPE, MakeInstanceCommand,"MakeInstanceCommand",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"make-instance","bn", MakeInstanceCommand,"MakeInstanceCommand",0,UNBOUNDED,NULL,NULL);
 #endif
    AddFunctionParser(theEnv,"initialize-instance",ParseInitializeInstance);
    AddFunctionParser(theEnv,"make-instance",ParseInitializeInstance);
 
-   EnvAddUDF(theEnv,"init-slots",ANY_TYPE, InitSlotsCommand,"InitSlotsCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"init-slots","*", InitSlotsCommand,"InitSlotsCommand",0,0,NULL,NULL);
 
-   EnvAddUDF(theEnv,"delete-instance",BOOLEAN_TYPE, DeleteInstanceCommand,
+   EnvAddUDF(theEnv,"delete-instance","b", DeleteInstanceCommand,
                    "DeleteInstanceCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"(create-instance)",BOOLEAN_TYPE, CreateInstanceHandler,
+   EnvAddUDF(theEnv,"(create-instance)","b", CreateInstanceHandler,
                    "CreateInstanceHandler",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"unmake-instance",BOOLEAN_TYPE, UnmakeInstanceCommand,
+   EnvAddUDF(theEnv,"unmake-instance","b", UnmakeInstanceCommand,
                    "UnmakeInstanceCommand",1,UNBOUNDED,"iny",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"instances",VOID_TYPE, InstancesCommand,"InstancesCommand",0,3,"y",NULL);
-   EnvAddUDF(theEnv,"ppinstance",VOID_TYPE, PPInstanceCommand,"PPInstanceCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"instances","v", InstancesCommand,"InstancesCommand",0,3,"y",NULL);
+   EnvAddUDF(theEnv,"ppinstance","v", PPInstanceCommand,"PPInstanceCommand",0,0,NULL,NULL);
 #endif
 
-   EnvAddUDF(theEnv,"symbol-to-instance-name",ANY_TYPE,
+   EnvAddUDF(theEnv,"symbol-to-instance-name","*",
                    SymbolToInstanceName,"SymbolToInstanceName",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"instance-name-to-symbol",SYMBOL_TYPE,
+   EnvAddUDF(theEnv,"instance-name-to-symbol","y",
                    InstanceNameToSymbol,"InstanceNameToSymbol",1,1,"ny",NULL);
-   EnvAddUDF(theEnv,"instance-address",BOOLEAN_TYPE | INSTANCE_NAME_TYPE, InstanceAddressCommand,
+   EnvAddUDF(theEnv,"instance-address","bn", InstanceAddressCommand,
                    "InstanceAddressCommand",1,2,";iyn;yn",NULL);
-   EnvAddUDF(theEnv,"instance-addressp",BOOLEAN_TYPE, InstanceAddressPCommand,
+   EnvAddUDF(theEnv,"instance-addressp","b", InstanceAddressPCommand,
                    "InstanceAddressPCommand",1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"instance-namep",BOOLEAN_TYPE, InstanceNamePCommand,
+   EnvAddUDF(theEnv,"instance-namep","b", InstanceNamePCommand,
                    "InstanceNamePCommand",1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"instance-name",BOOLEAN_TYPE | INSTANCE_NAME_TYPE, InstanceNameCommand,
+   EnvAddUDF(theEnv,"instance-name","bn", InstanceNameCommand,
                    "InstanceNameCommand",1,1,"yin",NULL);
-   EnvAddUDF(theEnv,"instancep",BOOLEAN_TYPE, InstancePCommand,"InstancePCommand",1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"instance-existp",BOOLEAN_TYPE, InstanceExistPCommand,
+   EnvAddUDF(theEnv,"instancep","b", InstancePCommand,"InstancePCommand",1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"instance-existp","b", InstanceExistPCommand,
                    "InstanceExistPCommand",1,1,"niy",NULL);
-   EnvAddUDF(theEnv,"class",ANY_TYPE, ClassCommand,"ClassCommand",1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"class","*", ClassCommand,"ClassCommand",1,1,NULL,NULL);
 
    SetupInstanceModDupCommands(theEnv);
    /* SetupInstanceFileCommands(theEnv); DR0866 */

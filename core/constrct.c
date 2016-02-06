@@ -397,8 +397,8 @@ void InitializeConstructs(
   void *theEnv)
   {
 #if (! RUN_TIME)
-   EnvAddUDF(theEnv,"clear",   VOID_TYPE,  ClearCommand,   "ClearCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"reset",   VOID_TYPE,  ResetCommand,   "ResetCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"clear",   "v",  ClearCommand,   "ClearCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"reset",   "v",  ResetCommand,   "ResetCommand", 0,0,NULL,NULL);
 
 #if DEBUGGING_FUNCTIONS && (! BLOAD_ONLY)
    AddWatchItem(theEnv,"compilations",0,&ConstructData(theEnv)->WatchCompilations,30,NULL,NULL);

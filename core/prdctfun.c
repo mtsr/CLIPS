@@ -52,33 +52,33 @@ void PredicateFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"not", BOOLEAN_TYPE, NotFunction, "NotFunction",   1,1,          NULL,NULL);
-   EnvAddUDF(theEnv,"and", BOOLEAN_TYPE, AndFunction, "AndFunction",   2,UNBOUNDED , NULL,NULL);
-   EnvAddUDF(theEnv,"or",  BOOLEAN_TYPE, OrFunction,  "OrFunction",    2,UNBOUNDED , NULL,NULL);
+   EnvAddUDF(theEnv,"not", "b", NotFunction, "NotFunction",   1,1,          NULL,NULL);
+   EnvAddUDF(theEnv,"and", "b", AndFunction, "AndFunction",   2,UNBOUNDED , NULL,NULL);
+   EnvAddUDF(theEnv,"or",  "b", OrFunction,  "OrFunction",    2,UNBOUNDED , NULL,NULL);
 
-   EnvAddUDF(theEnv,"eq",  BOOLEAN_TYPE, EqFunction,  "EqFunction",  2, UNBOUNDED, NULL, NULL);
-   EnvAddUDF(theEnv,"neq", BOOLEAN_TYPE, NeqFunction, "NeqFunction", 2, UNBOUNDED, NULL, NULL);
+   EnvAddUDF(theEnv,"eq",  "b", EqFunction,  "EqFunction",  2, UNBOUNDED, NULL, NULL);
+   EnvAddUDF(theEnv,"neq", "b", NeqFunction, "NeqFunction", 2, UNBOUNDED, NULL, NULL);
 
-   EnvAddUDF(theEnv,"<=", BOOLEAN_TYPE, LessThanOrEqualFunction,    "LessThanOrEqualFunction",    2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,">=", BOOLEAN_TYPE, GreaterThanOrEqualFunction, "GreaterThanOrEqualFunction", 2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,"<",  BOOLEAN_TYPE, LessThanFunction,           "LessThanFunction",           2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,">",  BOOLEAN_TYPE, GreaterThanFunction,        "GreaterThanFunction",        2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,"=",  BOOLEAN_TYPE, NumericEqualFunction,       "NumericEqualFunction",       2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,"<>", BOOLEAN_TYPE, NumericNotEqualFunction,    "NumericNotEqualFunction",    2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,"!=", BOOLEAN_TYPE, NumericNotEqualFunction,    "NumericNotEqualFunction",    2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"<=", "b", LessThanOrEqualFunction,    "LessThanOrEqualFunction",    2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,">=", "b", GreaterThanOrEqualFunction, "GreaterThanOrEqualFunction", 2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"<",  "b", LessThanFunction,           "LessThanFunction",           2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,">",  "b", GreaterThanFunction,        "GreaterThanFunction",        2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"=",  "b", NumericEqualFunction,       "NumericEqualFunction",       2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"<>", "b", NumericNotEqualFunction,    "NumericNotEqualFunction",    2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"!=", "b", NumericNotEqualFunction,    "NumericNotEqualFunction",    2,UNBOUNDED , "ld",NULL);
 
-   EnvAddUDF(theEnv,"symbolp",     BOOLEAN_TYPE,  SymbolpFunction,     "SymbolpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"wordp",       BOOLEAN_TYPE,  SymbolpFunction,     "SymbolpFunction", 1,1,NULL,NULL);  // TBD Remove?
-   EnvAddUDF(theEnv,"stringp",     BOOLEAN_TYPE,  StringpFunction,     "StringpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"lexemep",     BOOLEAN_TYPE,  LexemepFunction,     "LexemepFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"numberp",     BOOLEAN_TYPE,  NumberpFunction,     "NumberpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"integerp",    BOOLEAN_TYPE,  IntegerpFunction,    "IntegerpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"floatp",      BOOLEAN_TYPE,  FloatpFunction,      "FloatpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"oddp",        BOOLEAN_TYPE,  OddpFunction,        "OddpFunction", 1,1,"l", NULL);
-   EnvAddUDF(theEnv,"evenp",       BOOLEAN_TYPE,  EvenpFunction,       "EvenpFunction",  1,1,"l", NULL);
-   EnvAddUDF(theEnv,"multifieldp", BOOLEAN_TYPE,  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"sequencep",   BOOLEAN_TYPE,  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL); // TBD Remove?
-   EnvAddUDF(theEnv,"pointerp",    BOOLEAN_TYPE,  PointerpFunction,    "PointerpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"symbolp",     "b",  SymbolpFunction,     "SymbolpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"wordp",       "b",  SymbolpFunction,     "SymbolpFunction", 1,1,NULL,NULL);  // TBD Remove?
+   EnvAddUDF(theEnv,"stringp",     "b",  StringpFunction,     "StringpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"lexemep",     "b",  LexemepFunction,     "LexemepFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"numberp",     "b",  NumberpFunction,     "NumberpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"integerp",    "b",  IntegerpFunction,    "IntegerpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"floatp",      "b",  FloatpFunction,      "FloatpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"oddp",        "b",  OddpFunction,        "OddpFunction", 1,1,"l", NULL);
+   EnvAddUDF(theEnv,"evenp",       "b",  EvenpFunction,       "EvenpFunction",  1,1,"l", NULL);
+   EnvAddUDF(theEnv,"multifieldp", "b",  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"sequencep",   "b",  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL); // TBD Remove?
+   EnvAddUDF(theEnv,"pointerp",    "b",  PointerpFunction,    "PointerpFunction", 1,1,NULL,NULL);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)

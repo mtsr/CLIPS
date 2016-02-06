@@ -233,45 +233,45 @@ void SetupGenericFunctions(
      ================================================================ */
    AddSaveFunction(theEnv,"defgeneric",SaveDefgenerics,1000);
    AddSaveFunction(theEnv,"defmethod",SaveDefmethods,-1000);
-   EnvAddUDF(theEnv,"undefgeneric",VOID_TYPE, UndefgenericCommand,"UndefgenericCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"undefmethod",VOID_TYPE, UndefmethodCommand,"UndefmethodCommand",2,2,"*;y;ly",NULL);
+   EnvAddUDF(theEnv,"undefgeneric","v", UndefgenericCommand,"UndefgenericCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"undefmethod","v", UndefmethodCommand,"UndefmethodCommand",2,2,"*;y;ly",NULL);
 #endif
 
-   EnvAddUDF(theEnv,"call-next-method",ANY_TYPE,CallNextMethod,"CallNextMethod",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"call-next-method","*",CallNextMethod,"CallNextMethod",0,0,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"call-next-method",true,false);
-   EnvAddUDF(theEnv,"call-specific-method",ANY_TYPE, CallSpecificMethod,
+   EnvAddUDF(theEnv,"call-specific-method","*", CallSpecificMethod,
                    "CallSpecificMethod",2,UNBOUNDED,"*;y;l",NULL);
    FuncSeqOvlFlags(theEnv,"call-specific-method",true,false);
-   EnvAddUDF(theEnv,"override-next-method",ANY_TYPE, OverrideNextMethod,
+   EnvAddUDF(theEnv,"override-next-method","*", OverrideNextMethod,
                    "OverrideNextMethod",0,UNBOUNDED,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"override-next-method",true,false);
-   EnvAddUDF(theEnv,"next-methodp",BOOLEAN_TYPE, NextMethodPCommand,"NextMethodP",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"next-methodp","b", NextMethodPCommand,"NextMethodP",0,0,NULL,NULL);
    FuncSeqOvlFlags(theEnv,"next-methodp",true,false);
 
-   EnvAddUDF(theEnv,"(gnrc-current-arg)",ANY_TYPE, GetGenericCurrentArgument,
+   EnvAddUDF(theEnv,"(gnrc-current-arg)","*", GetGenericCurrentArgument,
                    "GetGenericCurrentArgument",0,UNBOUNDED,NULL,NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"ppdefgeneric",VOID_TYPE, PPDefgenericCommand,"PPDefgenericCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"list-defgenerics",VOID_TYPE, ListDefgenericsCommand,"ListDefgenericsCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"ppdefmethod",VOID_TYPE, PPDefmethodCommand,"PPDefmethodCommand",2,2,"*;y;l",NULL);
-   EnvAddUDF(theEnv,"list-defmethods",VOID_TYPE, ListDefmethodsCommand,"ListDefmethodsCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"preview-generic",VOID_TYPE, PreviewGeneric,"PreviewGeneric",1,UNBOUNDED,"*;w",NULL);
+   EnvAddUDF(theEnv,"ppdefgeneric","v", PPDefgenericCommand,"PPDefgenericCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-defgenerics","v", ListDefgenericsCommand,"ListDefgenericsCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdefmethod","v", PPDefmethodCommand,"PPDefmethodCommand",2,2,"*;y;l",NULL);
+   EnvAddUDF(theEnv,"list-defmethods","v", ListDefmethodsCommand,"ListDefmethodsCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"preview-generic","v", PreviewGeneric,"PreviewGeneric",1,UNBOUNDED,"*;w",NULL);
 #endif
 
-   EnvAddUDF(theEnv,"get-defgeneric-list",MULTIFIELD_TYPE, GetDefgenericListFunction,
+   EnvAddUDF(theEnv,"get-defgeneric-list","m", GetDefgenericListFunction,
                    "GetDefgenericListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"get-defmethod-list",MULTIFIELD_TYPE, GetDefmethodListCommand,
+   EnvAddUDF(theEnv,"get-defmethod-list","m", GetDefmethodListCommand,
                    "GetDefmethodListCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"get-method-restrictions",'m', GetMethodRestrictionsCommand,
+   EnvAddUDF(theEnv,"get-method-restrictions","m", GetMethodRestrictionsCommand,
                    "GetMethodRestrictionsCommand",2,2, "l;y", NULL);
-   EnvAddUDF(theEnv,"defgeneric-module",SYMBOL_TYPE, GetDefgenericModuleCommand,
+   EnvAddUDF(theEnv,"defgeneric-module","y", GetDefgenericModuleCommand,
                    "GetDefgenericModuleCommand",1,1,"y",NULL);
 
 #if OBJECT_SYSTEM
-   EnvAddUDF(theEnv,"type",ANY_TYPE,ClassCommand,"ClassCommand",1,1,"*",NULL);
+   EnvAddUDF(theEnv,"type","*",ClassCommand,"ClassCommand",1,1,"*",NULL);
 #else
-   EnvAddUDF(theEnv,"type",ANY_TYPE,TypeCommand,"TypeCommand",1,1,"*",NULL);
+   EnvAddUDF(theEnv,"type","*",TypeCommand,"TypeCommand",1,1,"*",NULL);
 #endif
 
 #endif

@@ -101,17 +101,17 @@ void StringFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"str-cat", LEXEME_TYPES, StrCatFunction, "StrCatFunction", 1, UNBOUNDED, "synld" ,NULL);
-   EnvAddUDF(theEnv,"sym-cat", LEXEME_TYPES, SymCatFunction, "SymCatFunction",  1, UNBOUNDED, "synld" ,NULL);
-   EnvAddUDF(theEnv,"str-length", INTEGER_TYPE, StrLengthFunction, "StrLengthFunction", 1,1,"syn",NULL);
-   EnvAddUDF(theEnv,"str-compare", INTEGER_TYPE, StrCompareFunction, "StrCompareFunction", 2,3, "*;syn;syn;l" ,NULL);
-   EnvAddUDF(theEnv,"upcase", LEXEME_TYPES | INSTANCE_NAME_TYPE, UpcaseFunction, "UpcaseFunction", 1,1,"syn",NULL);
-   EnvAddUDF(theEnv,"lowcase", LEXEME_TYPES | INSTANCE_NAME_TYPE,  LowcaseFunction, "LowcaseFunction", 1,1,"syn",NULL);
-   EnvAddUDF(theEnv,"sub-string", STRING_TYPE, SubStringFunction, "SubStringFunction",3,3, "*;l;l;syn",NULL);
-   EnvAddUDF(theEnv,"str-index", BOOLEAN_TYPE | INTEGER_TYPE, StrIndexFunction, "StrIndexFunction", 2,2,"syn",NULL);
-   EnvAddUDF(theEnv,"eval", ANY_TYPE, EvalFunction, "EvalFunction", 1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"build", BOOLEAN_TYPE, BuildFunction, "BuildFunction", 1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"string-to-field", ANY_TYPE,  StringToFieldFunction, "StringToFieldFunction", 1,1,"syn",NULL);
+   EnvAddUDF(theEnv,"str-cat",        "sy", StrCatFunction, "StrCatFunction", 1, UNBOUNDED, "synld" ,NULL);
+   EnvAddUDF(theEnv,"sym-cat",        "sy", SymCatFunction, "SymCatFunction",  1, UNBOUNDED, "synld" ,NULL);
+   EnvAddUDF(theEnv,"str-length",      "l", StrLengthFunction, "StrLengthFunction", 1,1,"syn",NULL);
+   EnvAddUDF(theEnv,"str-compare",     "l", StrCompareFunction, "StrCompareFunction", 2,3, "*;syn;syn;l" ,NULL);
+   EnvAddUDF(theEnv,"upcase",        "syn", UpcaseFunction, "UpcaseFunction", 1,1,"syn",NULL);
+   EnvAddUDF(theEnv,"lowcase",       "syn",  LowcaseFunction, "LowcaseFunction", 1,1,"syn",NULL);
+   EnvAddUDF(theEnv,"sub-string",      "s", SubStringFunction, "SubStringFunction",3,3, "*;l;l;syn",NULL);
+   EnvAddUDF(theEnv,"str-index",      "bl", StrIndexFunction, "StrIndexFunction", 2,2,"syn",NULL);
+   EnvAddUDF(theEnv,"eval",            "*", EvalFunction, "EvalFunction", 1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"build",           "b", BuildFunction, "BuildFunction", 1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"string-to-field", "*",  StringToFieldFunction, "StringToFieldFunction", 1,1,"syn",NULL);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)

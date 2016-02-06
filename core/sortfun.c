@@ -68,7 +68,7 @@ void SortFunctionDefinitions(
   {
    AllocateEnvironmentData(theEnv,SORTFUN_DATA,sizeof(struct sortFunctionData),DeallocateSortFunctionData);
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"sort",BOOLEAN_TYPE | MULTIFIELD_TYPE, SortFunction,"SortFunction",1,UNBOUNDED, "*;y",NULL);
+   EnvAddUDF(theEnv,"sort","bm", SortFunction,"SortFunction",1,UNBOUNDED, "*;y",NULL);
 #endif
   }
 

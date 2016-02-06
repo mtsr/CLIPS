@@ -128,9 +128,10 @@ struct FunctionHash
    bool                           DefineFunction3(void *,const char *,int,unsigned,
                                                   void (*)(UDFContext *,CLIPSValue *),
                                                   const char *,int,int,const char *,void *);
-   bool                           EnvAddUDF(void *,const char *,unsigned,
+   bool                           EnvAddUDF(void *,const char *,const char *,
                                             void (*)(UDFContext *,struct dataObject *),
                                             const char *,int,int,const char *,void *);
+
 
    int                            AddFunctionParser(void *,const char *,
                                                            struct expr *(*)( void *,struct expr *,const char *));

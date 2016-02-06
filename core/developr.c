@@ -81,23 +81,23 @@ void DeveloperCommands(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"primitives-info",VOID_TYPE,  PrimitiveTablesInfo,"PrimitiveTablesInfo",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"primitives-usage",VOID_TYPE,  PrimitiveTablesUsage,"PrimitiveTablesUsage",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"primitives-info","v",  PrimitiveTablesInfo,"PrimitiveTablesInfo",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"primitives-usage","v",  PrimitiveTablesUsage,"PrimitiveTablesUsage",0,0,NULL,NULL);
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
-   EnvAddUDF(theEnv,"validate-fact-integrity", BOOLEAN_TYPE, ValidateFactIntegrity, "ValidateFactIntegrity", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"validate-fact-integrity", "b", ValidateFactIntegrity, "ValidateFactIntegrity", 0,0,NULL,NULL);
 
-   EnvAddUDF(theEnv,"show-fpn",VOID_TYPE, ShowFactPatternNetwork,"ShowFactPatternNetwork",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"show-fht",VOID_TYPE, ShowFactHashTable,"ShowFactHashTable",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"show-fpn","v", ShowFactPatternNetwork,"ShowFactPatternNetwork",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"show-fht","v", ShowFactHashTable,"ShowFactHashTable",0,0,NULL,NULL);
 #endif
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-   EnvAddUDF(theEnv,"show-opn",VOID_TYPE, PrintObjectPatternNetwork,
+   EnvAddUDF(theEnv,"show-opn","v", PrintObjectPatternNetwork,
                    "PrintObjectPatternNetwork",0,0,NULL,NULL);
 #endif
 
 #if OBJECT_SYSTEM
-   EnvAddUDF(theEnv,"instance-table-usage",VOID_TYPE,  InstanceTableUsage,"InstanceTableUsage",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"instance-table-usage","v",  InstanceTableUsage,"InstanceTableUsage",0,0,NULL,NULL);
 #endif
 
 #endif

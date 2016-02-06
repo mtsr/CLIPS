@@ -201,7 +201,7 @@ bool EnvDefineFunction2WithContext(
 bool EnvAddUDF(
   void *theEnv,
   const char *name,
-  unsigned returnTypeBits,
+  const char *returnTypeChars,
   void (*pointer)(UDFContext *,struct dataObject *),
   const char *actualName,
   int minArgs,
@@ -209,6 +209,10 @@ bool EnvAddUDF(
   const char *restrictions,
   void *context)
   {
+   unsigned returnTypeBits;
+   
+   PopulateRestriction(&returnTypeBits,ANY_TYPE,returnTypeChars,0);
+   
    return(DefineFunction3(theEnv,name,'z',returnTypeBits,pointer,
                           actualName,minArgs,maxArgs,restrictions,context));
   }

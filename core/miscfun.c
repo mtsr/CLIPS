@@ -137,50 +137,50 @@ void MiscFunctionDefinitions(
    MiscFunctionData(theEnv)->GensymNumber = 1;
    
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"gensym",       SYMBOL_TYPE,     GensymFunction,     "GensymFunction",    0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"gensym*",      SYMBOL_TYPE,     GensymStarFunction, "GensymStarFunction",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"setgen",       INTEGER_TYPE,    SetgenFunction,     "SetgenFunction",    1,1,"l", NULL);
+   EnvAddUDF(theEnv,"gensym",       "y", GensymFunction,     "GensymFunction",    0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"gensym*",      "y", GensymStarFunction, "GensymStarFunction",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"setgen",       "l", SetgenFunction,     "SetgenFunction",    1,1,"l", NULL);
    
-   EnvAddUDF(theEnv,"system",       VOID_TYPE,       SystemCommand,      "SystemCommand", 1, UNBOUNDED , "sy" , NULL );
-   EnvAddUDF(theEnv,"length",       INTEGER_TYPE,    LengthFunction,     "LengthFunction", 1,1, "sym" ,NULL);
-   EnvAddUDF(theEnv,"length$",      INTEGER_TYPE,    LengthFunction,     "LengthFunction", 1,1, "sym", NULL);
-   EnvAddUDF(theEnv,"time",         FLOAT_TYPE,      TimeFunction,       "TimeFunction", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"local-time",   MULTIFIELD_TYPE, LocalTimeFunction,  "LocalTimeFunction", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"gm-time",      MULTIFIELD_TYPE, GMTimeFunction,     "GMTimeFunction", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"system",       "v", SystemCommand,      "SystemCommand", 1, UNBOUNDED , "sy" , NULL );
+   EnvAddUDF(theEnv,"length",       "l", LengthFunction,     "LengthFunction", 1,1, "sym" ,NULL);
+   EnvAddUDF(theEnv,"length$",      "l", LengthFunction,     "LengthFunction", 1,1, "sym", NULL);
+   EnvAddUDF(theEnv,"time",         "d", TimeFunction,       "TimeFunction", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"local-time",   "m", LocalTimeFunction,  "LocalTimeFunction", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"gm-time",      "m", GMTimeFunction,     "GMTimeFunction", 0,0,NULL,NULL);
 
-   EnvAddUDF(theEnv,"random",       INTEGER_TYPE,    RandomFunction,     "RandomFunction", 0,2, "l" ,NULL);
-   EnvAddUDF(theEnv,"seed",         VOID_TYPE,       SeedFunction,       "SeedFunction", 1,1,"l", NULL);
-   EnvAddUDF(theEnv,"conserve-mem", VOID_TYPE,       ConserveMemCommand, "ConserveMemCommand", 1,1,"y",NULL);
-   EnvAddUDF(theEnv,"release-mem",  INTEGER_TYPE,    ReleaseMemCommand,  "ReleaseMemCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"random",       "l", RandomFunction,     "RandomFunction", 0,2, "l" ,NULL);
+   EnvAddUDF(theEnv,"seed",         "v", SeedFunction,       "SeedFunction", 1,1,"l", NULL);
+   EnvAddUDF(theEnv,"conserve-mem", "v", ConserveMemCommand, "ConserveMemCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"release-mem",  "l", ReleaseMemCommand,  "ReleaseMemCommand", 0,0,NULL,NULL);
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"mem-used",     INTEGER_TYPE,    MemUsedCommand,     "MemUsedCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"mem-requests", INTEGER_TYPE,    MemRequestsCommand, "MemRequestsCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"mem-used",     "l", MemUsedCommand,     "MemUsedCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"mem-requests", "l", MemRequestsCommand, "MemRequestsCommand", 0,0,NULL,NULL);
 #endif
 
-   EnvAddUDF(theEnv,"options",          VOID_TYPE,     OptionsCommand,    "OptionsCommand",    0,0,NULL, NULL);
+   EnvAddUDF(theEnv,"options",      "v", OptionsCommand,    "OptionsCommand",    0,0,NULL, NULL);
 
-   EnvAddUDF(theEnv,"operating-system", SYMBOL_TYPE, OperatingSystemFunction,"OperatingSystemFunction", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"(expansion-call)", ANY_TYPE, ExpandFuncCall,      "ExpandFuncCall", 0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"expand$",ANY_TYPE,  DummyExpandFuncMultifield,
+   EnvAddUDF(theEnv,"operating-system", "y", OperatingSystemFunction,"OperatingSystemFunction", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"(expansion-call)", "*", ExpandFuncCall,      "ExpandFuncCall", 0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"expand$","*",  DummyExpandFuncMultifield,
                                            "DummyExpandFuncMultifield",1,1,"m",NULL);
    FuncSeqOvlFlags(theEnv,"expand$",false,false);
    EnvAddUDF(theEnv,"(set-evaluation-error)",
-                                       SYMBOL_TYPE, CauseEvaluationError,"CauseEvaluationError",0,0,NULL,NULL);
+                                       "y", CauseEvaluationError,"CauseEvaluationError",0,0,NULL,NULL);
    EnvAddUDF(theEnv,"set-sequence-operator-recognition",
-                                       BOOLEAN_TYPE,  SetSORCommand,"SetSORCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"get-sequence-operator-recognition",BOOLEAN_TYPE,
+                                       "b",  SetSORCommand,"SetSORCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-sequence-operator-recognition","b",
                      GetSORCommand,"GetSORCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"get-function-restrictions",STRING_TYPE,
+   EnvAddUDF(theEnv,"get-function-restrictions","s",
                     GetFunctionRestrictions,"GetFunctionRestrictions",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"create$",     MULTIFIELD_TYPE,  CreateFunction,  "CreateFunction", 0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"apropos",  VOID_TYPE, AproposCommand,  "AproposCommand", 1,1,"y",NULL);
-   EnvAddUDF(theEnv,"get-function-list",   MULTIFIELD_TYPE, GetFunctionListFunction,  "GetFunctionListFunction",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"funcall",ANY_TYPE,  FuncallFunction,"FuncallFunction",1,UNBOUNDED,"*;sy",NULL);
-   EnvAddUDF(theEnv,"new",ANY_TYPE,  NewFunction,"NewFunction",1,UNBOUNDED,"*;y",NULL);
-   EnvAddUDF(theEnv,"call",ANY_TYPE,  CallFunction,"CallFunction",1,UNBOUNDED,"*",NULL);
-   EnvAddUDF(theEnv,"timer",FLOAT_TYPE,  TimerFunction,"TimerFunction",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"create$",           "m",  CreateFunction,  "CreateFunction", 0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"apropos",           "v", AproposCommand,  "AproposCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-function-list", "m", GetFunctionListFunction,  "GetFunctionListFunction",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"funcall",           "*",  FuncallFunction,"FuncallFunction",1,UNBOUNDED,"*;sy",NULL);
+   EnvAddUDF(theEnv,"new",               "*",  NewFunction,"NewFunction",1,UNBOUNDED,"*;y",NULL);
+   EnvAddUDF(theEnv,"call",              "*",  CallFunction,"CallFunction",1,UNBOUNDED,"*",NULL);
+   EnvAddUDF(theEnv,"timer",             "d",  TimerFunction,"TimerFunction",0,UNBOUNDED,NULL,NULL);
 #if DEFTEMPLATE_CONSTRUCT 
-   EnvAddUDF(theEnv,"(slot-value)",ANY_TYPE, SlotValueFunction,"SlotValueFunction", 3,3,"y;z",NULL);
+   EnvAddUDF(theEnv,"(slot-value)",      "*", SlotValueFunction,"SlotValueFunction", 3,3,"y;z",NULL);
 #endif
 #endif
   }

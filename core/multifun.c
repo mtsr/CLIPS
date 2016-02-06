@@ -135,36 +135,36 @@ void MultifieldFunctionDefinitions(
    AllocateEnvironmentData(theEnv,MULTIFUN_DATA,sizeof(struct multiFunctionData),NULL);
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"first$", MULTIFIELD_TYPE,  FirstFunction, "FirstFunction", 1,1,"m",NULL);
-   EnvAddUDF(theEnv,"rest$", MULTIFIELD_TYPE,  RestFunction, "RestFunction",1,1,"m",NULL);
-   EnvAddUDF(theEnv,"subseq$", MULTIFIELD_TYPE,  SubseqFunction, "SubseqFunction", 3,3,"l;m",NULL);
-   EnvAddUDF(theEnv,"delete-member$", MULTIFIELD_TYPE,  DeleteMemberFunction, "DeleteMemberFunction", 2,UNBOUNDED,"*;m",NULL);
-   EnvAddUDF(theEnv,"replace-member$", MULTIFIELD_TYPE,  ReplaceMemberFunction, "x",3,UNBOUNDED,"*;m",NULL);
-   EnvAddUDF(theEnv,"delete$", MULTIFIELD_TYPE,  DeleteFunction, "DeleteFunction", 3,3,"l;m",NULL);
-   EnvAddUDF(theEnv,"replace$", MULTIFIELD_TYPE,  ReplaceFunction, "ReplaceFunction",4,UNBOUNDED,"*;m;l;l",NULL);
-   EnvAddUDF(theEnv,"insert$", MULTIFIELD_TYPE,  InsertFunction, "InsertFunction", 3,UNBOUNDED,"*;m;l",NULL);
-   EnvAddUDF(theEnv,"explode$", MULTIFIELD_TYPE, ExplodeFunction, "ExplodeFunction", 1,1,"s",NULL);
-   EnvAddUDF(theEnv,"implode$", STRING_TYPE, ImplodeFunction, "ImplodeFunction", 1,1,"m",NULL);
-   EnvAddUDF(theEnv,"nth$", SINGLEFIELD_TYPE, NthFunction, "NthFunction", 2,2,";l;m",NULL);
-   EnvAddUDF(theEnv,"member$", BOOLEAN_TYPE | INTEGER_TYPE | MULTIFIELD_TYPE,
+   EnvAddUDF(theEnv,"first$",          "m",  FirstFunction, "FirstFunction", 1,1,"m",NULL);
+   EnvAddUDF(theEnv,"rest$",           "m",  RestFunction, "RestFunction",1,1,"m",NULL);
+   EnvAddUDF(theEnv,"subseq$",         "m",  SubseqFunction, "SubseqFunction", 3,3,"l;m",NULL);
+   EnvAddUDF(theEnv,"delete-member$",  "m",  DeleteMemberFunction, "DeleteMemberFunction", 2,UNBOUNDED,"*;m",NULL);
+   EnvAddUDF(theEnv,"replace-member$", "m",  ReplaceMemberFunction, "x",3,UNBOUNDED,"*;m",NULL);
+   EnvAddUDF(theEnv,"delete$",         "m",  DeleteFunction, "DeleteFunction", 3,3,"l;m",NULL);
+   EnvAddUDF(theEnv,"replace$",        "m",  ReplaceFunction, "ReplaceFunction",4,UNBOUNDED,"*;m;l;l",NULL);
+   EnvAddUDF(theEnv,"insert$",         "m",  InsertFunction, "InsertFunction", 3,UNBOUNDED,"*;m;l",NULL);
+   EnvAddUDF(theEnv,"explode$",        "m", ExplodeFunction, "ExplodeFunction", 1,1,"s",NULL);
+   EnvAddUDF(theEnv,"implode$",        "s", ImplodeFunction, "ImplodeFunction", 1,1,"m",NULL);
+   EnvAddUDF(theEnv,"nth$",     "synldife", NthFunction, "NthFunction", 2,2,";l;m",NULL);
+   EnvAddUDF(theEnv,"member$",       "blm",
                     MemberFunction, "MemberFunction", 2,2," ;*;m",NULL);
-   EnvAddUDF(theEnv,"member", BOOLEAN_TYPE | INTEGER_TYPE | MULTIFIELD_TYPE,
+   EnvAddUDF(theEnv,"member", "blm",
                     MemberFunction, "MemberFunction", 2,2, ";*;m",NULL);
-   EnvAddUDF(theEnv,"subsetp", BOOLEAN_TYPE,  SubsetpFunction, "SubsetpFunction", 2,2,";m;m",NULL);
-   EnvAddUDF(theEnv,"progn$", ANY_TYPE, MultifieldPrognFunction, "MultifieldPrognFunction",  0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"foreach", ANY_TYPE, ForeachFunction, "ForeachFunction", 0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"str-implode", STRING_TYPE,  ImplodeFunction, "ImplodeFunction",1,1,"m",NULL);
-   EnvAddUDF(theEnv,"str-explode", MULTIFIELD_TYPE,  ExplodeFunction, "ExplodeFunction",1,1,"s",NULL);
-   EnvAddUDF(theEnv,"subset", BOOLEAN_TYPE,  SubsetpFunction, "SubsetpFunction", 2,2,";m;m",NULL);
-   EnvAddUDF(theEnv,"nth", SINGLEFIELD_TYPE,  NthFunction, "NthFunction", 2,2,";l;m",NULL);
+   EnvAddUDF(theEnv,"subsetp",     "b",  SubsetpFunction, "SubsetpFunction", 2,2,";m;m",NULL);
+   EnvAddUDF(theEnv,"progn$",      "*", MultifieldPrognFunction, "MultifieldPrognFunction",  0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"foreach",     "*", ForeachFunction, "ForeachFunction", 0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"str-implode", "s",  ImplodeFunction, "ImplodeFunction",1,1,"m",NULL);
+   EnvAddUDF(theEnv,"str-explode", "m",  ExplodeFunction, "ExplodeFunction",1,1,"s",NULL);
+   EnvAddUDF(theEnv,"subset",      "b",  SubsetpFunction, "SubsetpFunction", 2,2,";m;m",NULL);
+   EnvAddUDF(theEnv,"nth", "synldife",  NthFunction, "NthFunction", 2,2,";l;m",NULL);
 #if ! BLOAD_ONLY
    AddFunctionParser(theEnv,"progn$",MultifieldPrognParser);
    AddFunctionParser(theEnv,"foreach",ForeachParser);
 #endif
    FuncSeqOvlFlags(theEnv,"progn$",false,false);
    FuncSeqOvlFlags(theEnv,"foreach",false,false);
-   EnvAddUDF(theEnv,"(get-progn$-field)", ANY_TYPE,  GetMvPrognField, "GetMvPrognField", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"(get-progn$-index)", INTEGER_TYPE, GetMvPrognIndex, "GetMvPrognIndex", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"(get-progn$-field)", "*",  GetMvPrognField, "GetMvPrognField", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"(get-progn$-index)", "l", GetMvPrognIndex, "GetMvPrognIndex", 0,0,NULL,NULL);
 #endif
   }
 

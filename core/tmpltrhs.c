@@ -307,7 +307,7 @@ static struct expr *ParseAssertSlotValues(
        {
         if ((ExpressionFunctionType(newField) == 'm') ||
             ((ExpressionFunctionType(newField) == 'z') &&
-             (ExpressionUnknownFunctionType(newField) & MULTIFIELD_TYPE)))
+             ((ExpressionUnknownFunctionType(newField) & SINGLEFIELD_TYPES) == 0)))
           {
            *error = true;
            SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);

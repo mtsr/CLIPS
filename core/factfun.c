@@ -98,12 +98,12 @@ void FactFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"fact-existp",  BOOLEAN_TYPE,  FactExistpFunction,  "FactExistpFunction", 1,1,"lf",NULL);
-   EnvAddUDF(theEnv,"fact-relation",SYMBOL_TYPE,  FactRelationFunction,"FactRelationFunction",  1,1,"lf",NULL);
-   EnvAddUDF(theEnv,"fact-slot-value",ANY_TYPE,  FactSlotValueFunction,"FactSlotValueFunction",2,2 ,";lf;y", NULL);
-   EnvAddUDF(theEnv,"fact-slot-names",ANY_TYPE,  FactSlotNamesFunction,"FactSlotNamesFunction",  1,1,"lf",NULL);
-   EnvAddUDF(theEnv,"get-fact-list",MULTIFIELD_TYPE, GetFactListFunction,"GetFactListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"ppfact",VOID_TYPE, PPFactFunction,"PPFactFunction",1,3, "*;lf" , NULL);
+   EnvAddUDF(theEnv,"fact-existp",  "b",  FactExistpFunction,  "FactExistpFunction", 1,1,"lf",NULL);
+   EnvAddUDF(theEnv,"fact-relation","y",  FactRelationFunction,"FactRelationFunction",  1,1,"lf",NULL);
+   EnvAddUDF(theEnv,"fact-slot-value","*",  FactSlotValueFunction,"FactSlotValueFunction",2,2 ,";lf;y", NULL);
+   EnvAddUDF(theEnv,"fact-slot-names","*",  FactSlotNamesFunction,"FactSlotNamesFunction",  1,1,"lf",NULL);
+   EnvAddUDF(theEnv,"get-fact-list","m", GetFactListFunction,"GetFactListFunction",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppfact","v", PPFactFunction,"PPFactFunction",1,3, "*;lf" , NULL);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)

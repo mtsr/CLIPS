@@ -89,13 +89,13 @@ void DeftemplateBasicCommands(
    AddSaveFunction(theEnv,"deftemplate",SaveDeftemplates,10);
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"get-deftemplate-list",MULTIFIELD_TYPE, GetDeftemplateListFunction,"GetDeftemplateListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"undeftemplate",VOID_TYPE, UndeftemplateCommand,"UndeftemplateCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"deftemplate-module",SYMBOL_TYPE, DeftemplateModuleFunction,"DeftemplateModuleFunction",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-deftemplate-list", "m", GetDeftemplateListFunction,"GetDeftemplateListFunction",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"undeftemplate",        "v", UndeftemplateCommand,"UndeftemplateCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"deftemplate-module",   "y", DeftemplateModuleFunction,"DeftemplateModuleFunction",1,1,"y",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"list-deftemplates",VOID_TYPE,  ListDeftemplatesCommand,"ListDeftemplatesCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"ppdeftemplate",VOID_TYPE, PPDeftemplateCommand,"PPDeftemplateCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-deftemplates",    "v",  ListDeftemplatesCommand,"ListDeftemplatesCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdeftemplate",        "v", PPDeftemplateCommand,"PPDeftemplateCommand",1,1,"y",NULL);
 #endif
 
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)

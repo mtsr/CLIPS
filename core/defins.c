@@ -185,19 +185,19 @@ void SetupDefinstances(
    AddClearReadyFunction(theEnv,"definstances",ClearDefinstancesReady,0);
 
 #if ! BLOAD_ONLY
-   EnvAddUDF(theEnv,"undefinstances",VOID_TYPE, UndefinstancesCommand,"UndefinstancesCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"undefinstances","v", UndefinstancesCommand,"UndefinstancesCommand",1,1,"y",NULL);
    AddSaveFunction(theEnv,"definstances",SaveDefinstances,0);
 
 #endif
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"ppdefinstances",VOID_TYPE, PPDefinstancesCommand ,"PPDefinstancesCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"list-definstances",VOID_TYPE, ListDefinstancesCommand,"ListDefinstancesCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdefinstances","v", PPDefinstancesCommand ,"PPDefinstancesCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-definstances","v", ListDefinstancesCommand,"ListDefinstancesCommand",0,1,"y",NULL);
 #endif
 
-   EnvAddUDF(theEnv,"get-definstances-list",MULTIFIELD_TYPE,GetDefinstancesListFunction,
+   EnvAddUDF(theEnv,"get-definstances-list","m",GetDefinstancesListFunction,
                    "GetDefinstancesListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"definstances-module",SYMBOL_TYPE, GetDefinstancesModuleCommand,
+   EnvAddUDF(theEnv,"definstances-module","y", GetDefinstancesModuleCommand,
                    "GetDefinstancesModuleCommand",1,1,"y",NULL);
 
 #endif

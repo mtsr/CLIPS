@@ -92,13 +92,13 @@ void DeffactsBasicCommands(
    AddSaveFunction(theEnv,"deffacts",SaveDeffacts,10);
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"get-deffacts-list",MULTIFIELD_TYPE, GetDeffactsListFunction,"GetDeffactsListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"undeffacts",VOID_TYPE, UndeffactsCommand,"UndeffactsCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"deffacts-module",SYMBOL_TYPE, DeffactsModuleFunction,"DeffactsModuleFunction",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-deffacts-list","m", GetDeffactsListFunction,"GetDeffactsListFunction",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"undeffacts","v", UndeffactsCommand,"UndeffactsCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"deffacts-module","y", DeffactsModuleFunction,"DeffactsModuleFunction",1,1,"y",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"list-deffacts",VOID_TYPE,ListDeffactsCommand,"ListDeffactsCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"ppdeffacts",VOID_TYPE, PPDeffactsCommand,"PPDeffactsCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-deffacts","v",ListDeffactsCommand,"ListDeffactsCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdeffacts","v", PPDeffactsCommand,"PPDeffactsCommand",1,1,"y",NULL);
 #endif
 
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)

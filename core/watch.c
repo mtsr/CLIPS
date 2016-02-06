@@ -566,10 +566,10 @@ void WatchFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"watch",  VOID_TYPE, WatchCommand,   "WatchCommand", 1,UNBOUNDED,"*;y" ,NULL);
-   EnvAddUDF(theEnv,"unwatch",VOID_TYPE, UnwatchCommand, "UnwatchCommand",  1,UNBOUNDED,"*;y" ,NULL);
-   EnvAddUDF(theEnv,"get-watch-item", BOOLEAN_TYPE,  GetWatchItemCommand,   "GetWatchItemCommand", 1,1,"y",NULL);
-   EnvAddUDF(theEnv,"list-watch-items", VOID_TYPE,  ListWatchItemsCommand,
+   EnvAddUDF(theEnv,"watch",  "v", WatchCommand,   "WatchCommand", 1,UNBOUNDED,"*;y" ,NULL);
+   EnvAddUDF(theEnv,"unwatch","v", UnwatchCommand, "UnwatchCommand",  1,UNBOUNDED,"*;y" ,NULL);
+   EnvAddUDF(theEnv,"get-watch-item", "b",  GetWatchItemCommand,   "GetWatchItemCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-watch-items", "v",  ListWatchItemsCommand,
                    "ListWatchItemsCommand", 0,UNBOUNDED, "*;y",NULL);
 #endif
 

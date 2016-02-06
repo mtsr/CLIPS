@@ -82,7 +82,7 @@ void InitializeDefaultRouters(
    RouterData(theEnv)->AwaitingInput = true;
    
 #if (! RUN_TIME)
-   EnvAddUDF(theEnv,"exit",    VOID_TYPE, ExitCommand,    "ExitCommand", 0,1,"l",NULL);
+   EnvAddUDF(theEnv,"exit",   "v", ExitCommand,    "ExitCommand", 0,1,"l",NULL);
 #endif
    InitializeFileRouter(theEnv);
    InitializeStringRouter(theEnv);

@@ -60,13 +60,13 @@ void DefglobalCommandDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"set-reset-globals",BOOLEAN_TYPE,
+   EnvAddUDF(theEnv,"set-reset-globals","b",
                    SetResetGlobalsCommand,"SetResetGlobalsCommand", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"get-reset-globals",BOOLEAN_TYPE,
+   EnvAddUDF(theEnv,"get-reset-globals","b",
                     GetResetGlobalsCommand,"GetResetGlobalsCommand", 0,0,NULL,NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"show-defglobals",VOID_TYPE,
+   EnvAddUDF(theEnv,"show-defglobals","v",
                     ShowDefglobalsCommand,"ShowDefglobalsCommand", 0,1,"y",NULL);
 #endif
 

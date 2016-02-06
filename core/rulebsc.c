@@ -103,14 +103,14 @@ void DefruleBasicCommands(
 #endif
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"get-defrule-list",MULTIFIELD_TYPE, GetDefruleListFunction,"GetDefruleListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"undefrule",VOID_TYPE, UndefruleCommand,"UndefruleCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"defrule-module",SYMBOL_TYPE, DefruleModuleFunction,"DefruleModuleFunction",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-defrule-list","m", GetDefruleListFunction,"GetDefruleListFunction",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"undefrule","v", UndefruleCommand,"UndefruleCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"defrule-module","y", DefruleModuleFunction,"DefruleModuleFunction",1,1,"y",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"rules",VOID_TYPE, ListDefrulesCommand,"ListDefrulesCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"list-defrules",VOID_TYPE,  ListDefrulesCommand,"ListDefrulesCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"ppdefrule",VOID_TYPE, PPDefruleCommand,"PPDefruleCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"rules","v", ListDefrulesCommand,"ListDefrulesCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-defrules","v",  ListDefrulesCommand,"ListDefrulesCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdefrule","v", PPDefruleCommand,"PPDefruleCommand",1,1,"y",NULL);
 #endif
 
 #if (BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE)

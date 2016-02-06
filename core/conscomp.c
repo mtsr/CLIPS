@@ -1158,7 +1158,7 @@ static void DumpExpression(
 void ConstructsToCCommandDefinition(
   void *theEnv)
   {
-   EnvAddUDF(theEnv,"constructs-to-c",VOID_TYPE,
+   EnvAddUDF(theEnv,"constructs-to-c","v",
                     ConstructsToCCommand,
                    "ConstructsToCCommand", 2,4,"*;sy;l;sy;l", NULL);
   }

@@ -96,13 +96,13 @@ void ConstructProfilingFunctionDefinitions(
    ProfileFunctionData(theEnv)->OutputString = OUTPUT_STRING;
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"profile",VOID_TYPE,  ProfileCommand,"ProfileCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"profile-info",VOID_TYPE,  ProfileInfoCommand,"ProfileInfoCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"profile-reset",VOID_TYPE,  ProfileResetCommand,"ProfileResetCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"profile","v",  ProfileCommand,"ProfileCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"profile-info","v",  ProfileInfoCommand,"ProfileInfoCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"profile-reset","v",  ProfileResetCommand,"ProfileResetCommand",0,0,NULL,NULL);
 
-   EnvAddUDF(theEnv,"set-profile-percent-threshold",FLOAT_TYPE,SetProfilePercentThresholdCommand,
+   EnvAddUDF(theEnv,"set-profile-percent-threshold","d",SetProfilePercentThresholdCommand,
                    "SetProfilePercentThresholdCommand",1,1,"ld",NULL);
-   EnvAddUDF(theEnv,"get-profile-percent-threshold",FLOAT_TYPE,
+   EnvAddUDF(theEnv,"get-profile-percent-threshold","d",
                     GetProfilePercentThresholdCommand,"GetProfilePercentThresholdCommand",0,0,NULL,NULL);
                    
    ProfileFunctionData(theEnv)->ProfileDataID = InstallUserDataRecord(theEnv,&ProfileFunctionData(theEnv)->ProfileDataInfo);

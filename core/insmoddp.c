@@ -104,37 +104,37 @@ void SetupInstanceModDupCommands(
   void *theEnv)
   {
 #if DEFRULE_CONSTRUCT
-   EnvAddUDF(theEnv,"modify-instance",ANY_TYPE, InactiveModifyInstance,"InactiveModifyInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"active-modify-instance",ANY_TYPE, ModifyInstance,"ModifyInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"modify-instance","*", InactiveModifyInstance,"InactiveModifyInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"active-modify-instance","*", ModifyInstance,"ModifyInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-modify-instance",ParseInitializeInstance);
-   EnvAddUDF(theEnv,"message-modify-instance",ANY_TYPE, InactiveMsgModifyInstance,
+   EnvAddUDF(theEnv,"message-modify-instance","*", InactiveMsgModifyInstance,
                    "InactiveMsgModifyInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"active-message-modify-instance",ANY_TYPE, MsgModifyInstance,
+   EnvAddUDF(theEnv,"active-message-modify-instance","*", MsgModifyInstance,
                    "MsgModifyInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-message-modify-instance",ParseInitializeInstance);
 
-   EnvAddUDF(theEnv,"duplicate-instance",ANY_TYPE,
+   EnvAddUDF(theEnv,"duplicate-instance","*",
                     InactiveDuplicateInstance,"InactiveDuplicateInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"active-duplicate-instance",ANY_TYPE, DuplicateInstance,"DuplicateInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"active-duplicate-instance","*", DuplicateInstance,"DuplicateInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-duplicate-instance",ParseInitializeInstance);
-   EnvAddUDF(theEnv,"message-duplicate-instance",ANY_TYPE, InactiveMsgDuplicateInstance,
+   EnvAddUDF(theEnv,"message-duplicate-instance","*", InactiveMsgDuplicateInstance,
                    "InactiveMsgDuplicateInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"active-message-duplicate-instance",ANY_TYPE, MsgDuplicateInstance,
+   EnvAddUDF(theEnv,"active-message-duplicate-instance","*", MsgDuplicateInstance,
                    "MsgDuplicateInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"active-message-duplicate-instance",ParseInitializeInstance);
 #else
-   EnvAddUDF(theEnv,"modify-instance",ANY_TYPE, ModifyInstance,"ModifyInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"message-modify-instance",ANY_TYPE, MsgModifyInstance,
+   EnvAddUDF(theEnv,"modify-instance","*", ModifyInstance,"ModifyInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"message-modify-instance","*", MsgModifyInstance,
                    "MsgModifyInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"duplicate-instance",ANY_TYPE, DuplicateInstance,"DuplicateInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"message-duplicate-instance",ANY_TYPE, MsgDuplicateInstance,
+   EnvAddUDF(theEnv,"duplicate-instance","*", DuplicateInstance,"DuplicateInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"message-duplicate-instance","*", MsgDuplicateInstance,
                    "MsgDuplicateInstance",0,UNBOUNDED,NULL,NULL);
 #endif
 
-   EnvAddUDF(theEnv,"(direct-modify)",ANY_TYPE, DirectModifyMsgHandler,"DirectModifyMsgHandler",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"(message-modify)",ANY_TYPE, MsgModifyMsgHandler,"MsgModifyMsgHandler",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"(direct-duplicate)",ANY_TYPE, DirectDuplicateMsgHandler,"DirectDuplicateMsgHandler",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"(message-duplicate)",ANY_TYPE, MsgDuplicateMsgHandler,"MsgDuplicateMsgHandler",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(direct-modify)","*", DirectModifyMsgHandler,"DirectModifyMsgHandler",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(message-modify)","*", MsgModifyMsgHandler,"MsgModifyMsgHandler",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(direct-duplicate)","*", DirectDuplicateMsgHandler,"DirectDuplicateMsgHandler",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(message-duplicate)","*", MsgDuplicateMsgHandler,"MsgDuplicateMsgHandler",0,UNBOUNDED,NULL,NULL);
 
    AddFunctionParser(theEnv,"modify-instance",ParseInitializeInstance);
    AddFunctionParser(theEnv,"message-modify-instance",ParseInitializeInstance);

@@ -1331,10 +1331,10 @@ void HelpFunctionDefinitions(
    AllocateEnvironmentData(theEnv,TEXTPRO_DATA,sizeof(struct textProcessingData),DeallocateTextProcessingData);
 #if ! RUN_TIME
 #if TEXTPRO_FUNCTIONS
-   EnvAddUDF(theEnv,"fetch",BOOLEAN_TYPE | INTEGER_TYPE, FetchCommand,"FetchCommand",1,1,"sy" ,NULL);
-   EnvAddUDF(theEnv,"toss",BOOLEAN_TYPE,  TossCommand,"TossCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"print-region",BOOLEAN_TYPE,  PrintRegionCommand,"PrintRegionCommand",2,UNBOUNDED, "*;y;sy",NULL);
-   EnvAddUDF(theEnv,"get-region",STRING_TYPE, GetRegionCommand,"GetRegionCommand",1,UNBOUNDED, "*;sy", NULL);
+   EnvAddUDF(theEnv,"fetch",      "bl", FetchCommand,"FetchCommand",1,1,"sy" ,NULL);
+   EnvAddUDF(theEnv,"toss",        "b",  TossCommand,"TossCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"print-region","b",  PrintRegionCommand,"PrintRegionCommand",2,UNBOUNDED, "*;y;sy",NULL);
+   EnvAddUDF(theEnv,"get-region",  "s", GetRegionCommand,"GetRegionCommand",1,UNBOUNDED, "*;sy", NULL);
 #endif
 #endif
   }

@@ -97,32 +97,32 @@ void SetupQuery(
    InstanceQueryData(theEnv)->QUERY_DELIMETER_SYMBOL = (SYMBOL_HN *) EnvAddSymbol(theEnv,QUERY_DELIMETER_STRING);
    IncrementSymbolCount(InstanceQueryData(theEnv)->QUERY_DELIMETER_SYMBOL);
 
-   EnvAddUDF(theEnv,"(query-instance)",INSTANCE_NAME_TYPE,
+   EnvAddUDF(theEnv,"(query-instance)","n",
                    GetQueryInstance,"GetQueryInstance",0,UNBOUNDED,NULL,NULL);
 
-   EnvAddUDF(theEnv,"(query-instance-slot)",ANY_TYPE,
+   EnvAddUDF(theEnv,"(query-instance-slot)","*",
                    GetQueryInstanceSlot,"GetQueryInstanceSlot",0,UNBOUNDED,NULL,NULL);
 
-   EnvAddUDF(theEnv,"any-instancep",BOOLEAN_TYPE, AnyInstances,"AnyInstances",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"any-instancep","b", AnyInstances,"AnyInstances",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"any-instancep",ParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"find-instance",MULTIFIELD_TYPE,
+   EnvAddUDF(theEnv,"find-instance","m",
                    QueryFindInstance,"QueryFindInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"find-instance",ParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"find-all-instances",MULTIFIELD_TYPE,
+   EnvAddUDF(theEnv,"find-all-instances","m",
                    QueryFindAllInstances,"QueryFindAllInstances",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"find-all-instances",ParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"do-for-instance",ANY_TYPE,
+   EnvAddUDF(theEnv,"do-for-instance","*",
                    QueryDoForInstance,"QueryDoForInstance",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"do-for-instance",ParseQueryAction);
 
-   EnvAddUDF(theEnv,"do-for-all-instances",ANY_TYPE,
+   EnvAddUDF(theEnv,"do-for-all-instances","*",
                    QueryDoForAllInstances,"QueryDoForAllInstances",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"do-for-all-instances",ParseQueryAction);
 
-   EnvAddUDF(theEnv,"delayed-do-for-all-instances",ANY_TYPE,
+   EnvAddUDF(theEnv,"delayed-do-for-all-instances","*",
                    DelayedQueryDoForAllInstances,
                   "DelayedQueryDoForAllInstances",0,UNBOUNDED,NULL,NULL);
    AddFunctionParser(theEnv,"delayed-do-for-all-instances",ParseQueryAction);

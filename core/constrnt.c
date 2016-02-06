@@ -94,8 +94,8 @@ void InitializeConstraints(
 #endif
 
 #if (! RUN_TIME)
-   EnvAddUDF(theEnv,"get-dynamic-constraint-checking",BOOLEAN_TYPE, GDCCommand,"GDCCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-dynamic-constraint-checking",BOOLEAN_TYPE, SDCCommand,"SDCCommand", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"get-dynamic-constraint-checking","b", GDCCommand,"GDCCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"set-dynamic-constraint-checking","b", SDCCommand,"SDCCommand", 1,1,NULL,NULL);
 #endif
   }
   

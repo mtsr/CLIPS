@@ -152,21 +152,21 @@ void FileCommandDefinitions(
 
 #if ! RUN_TIME
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"batch",BOOLEAN_TYPE, BatchCommand,"BatchCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"batch*",BOOLEAN_TYPE, BatchStarCommand,"BatchStarCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"dribble-on",BOOLEAN_TYPE, DribbleOnCommand,"DribbleOnCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"dribble-off",BOOLEAN_TYPE, DribbleOffCommand,"DribbleOffCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"save",BOOLEAN_TYPE, SaveCommand,"SaveCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"batch","b", BatchCommand,"BatchCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"batch*","b", BatchStarCommand,"BatchStarCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"dribble-on","b", DribbleOnCommand,"DribbleOnCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"dribble-off","b", DribbleOffCommand,"DribbleOffCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"save","b", SaveCommand,"SaveCommand",1,1,"sy",NULL);
 #endif
-   EnvAddUDF(theEnv,"load",BOOLEAN_TYPE, LoadCommand,"LoadCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"load*",BOOLEAN_TYPE, LoadStarCommand,"LoadStarCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"load","b", LoadCommand,"LoadCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"load*","b", LoadStarCommand,"LoadStarCommand",1,1,"sy",NULL);
 #if BLOAD_AND_BSAVE
-   EnvAddUDF(theEnv,"bsave",BOOLEAN_TYPE, BsaveCommand,"BsaveCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"bsave","b", BsaveCommand,"BsaveCommand",1,1,"sy",NULL);
 #endif
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
    InitializeBsaveData(theEnv);
    InitializeBloadData(theEnv);
-   EnvAddUDF(theEnv,"bload",BOOLEAN_TYPE, BloadCommand,"BloadCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"bload","b", BloadCommand,"BloadCommand",1,1,"sy",NULL);
 #endif
 #endif
   }

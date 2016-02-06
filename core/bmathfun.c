@@ -55,17 +55,17 @@ void BasicMathFunctionDefinitions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv, "+",       NUMBER_TYPES, AdditionFunction, "AdditionFunction", 2,UNBOUNDED, "ld" ,NULL);
-   EnvAddUDF(theEnv, "*",       NUMBER_TYPES, MultiplicationFunction, "MultiplicationFunction",  2,UNBOUNDED, "ld", NULL);
-   EnvAddUDF(theEnv, "-",       NUMBER_TYPES, SubtractionFunction, "SubtractionFunction",  2,UNBOUNDED, "ld", NULL);
-   EnvAddUDF(theEnv, "/",       FLOAT_TYPE,   DivisionFunction, "DivisionFunction", 2,UNBOUNDED, "ld", NULL);
-   EnvAddUDF(theEnv, "div",     INTEGER_TYPE, DivFunction, "DivFunction",  2,UNBOUNDED, "ld", NULL);
+   EnvAddUDF(theEnv,"+",        "ld", AdditionFunction, "AdditionFunction", 2,UNBOUNDED, "ld" ,NULL);
+   EnvAddUDF(theEnv, "*",       "ld", MultiplicationFunction, "MultiplicationFunction",  2,UNBOUNDED, "ld", NULL);
+   EnvAddUDF(theEnv, "-",       "ld", SubtractionFunction, "SubtractionFunction",  2,UNBOUNDED, "ld", NULL);
+   EnvAddUDF(theEnv, "/",       "d",  DivisionFunction, "DivisionFunction", 2,UNBOUNDED, "ld", NULL);
+   EnvAddUDF(theEnv, "div",     "l",  DivFunction, "DivFunction",  2,UNBOUNDED, "ld", NULL);
    
-   EnvAddUDF(theEnv, "integer", INTEGER_TYPE, IntegerFunction,"IntegerFunction",1,1,"ld",NULL);
-   EnvAddUDF(theEnv, "float",   FLOAT_TYPE,   FloatFunction,"FloatFunction",1,1,"ld",NULL);
-   EnvAddUDF(theEnv, "abs",     NUMBER_TYPES, AbsFunction,"AbsFunction",1,1,"ld",NULL);
-   EnvAddUDF(theEnv, "min",     NUMBER_TYPES, MinFunction,"MinFunction",1,UNBOUNDED,"ld",NULL);
-   EnvAddUDF(theEnv, "max",     NUMBER_TYPES, MaxFunction,"MaxFunction",1,UNBOUNDED,"ld",NULL);
+   EnvAddUDF(theEnv, "integer", "l",  IntegerFunction,"IntegerFunction",1,1,"ld",NULL);
+   EnvAddUDF(theEnv, "float",   "d",  FloatFunction,"FloatFunction",1,1,"ld",NULL);
+   EnvAddUDF(theEnv, "abs",     "ld", AbsFunction,"AbsFunction",1,1,"ld",NULL);
+   EnvAddUDF(theEnv, "min",     "ld", MinFunction,"MinFunction",1,UNBOUNDED,"ld",NULL);
+   EnvAddUDF(theEnv, "max",     "ld", MaxFunction,"MaxFunction",1,UNBOUNDED,"ld",NULL);
 #endif
   }
 

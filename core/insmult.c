@@ -90,17 +90,17 @@ static void AssignSlotToDataObject(DATA_OBJECT *,INSTANCE_SLOT *);
 void SetupInstanceMultifieldCommands(
   void *theEnv)
   {
-   EnvAddUDF(theEnv,"slot-direct-replace$",BOOLEAN_TYPE, DirectMVReplaceCommand,
+   EnvAddUDF(theEnv,"slot-direct-replace$","b", DirectMVReplaceCommand,
                     "DirectMVReplaceCommand",4,UNBOUNDED,"*;y;l;l",NULL);
-   EnvAddUDF(theEnv,"slot-direct-insert$",BOOLEAN_TYPE, DirectMVInsertCommand,
+   EnvAddUDF(theEnv,"slot-direct-insert$","b", DirectMVInsertCommand,
                     "DirectMVInsertCommand",3,UNBOUNDED,"*;y;l",NULL);
-   EnvAddUDF(theEnv,"slot-direct-delete$",BOOLEAN_TYPE, DirectMVDeleteCommand,
+   EnvAddUDF(theEnv,"slot-direct-delete$","b", DirectMVDeleteCommand,
                     "DirectMVDeleteCommand",3,3,"l;y",NULL);
-   EnvAddUDF(theEnv,"slot-replace$",ANY_TYPE, MVSlotReplaceCommand,
+   EnvAddUDF(theEnv,"slot-replace$","*", MVSlotReplaceCommand,
                     "MVSlotReplaceCommand",5, UNBOUNDED, "*;iny;y;l;l",NULL);
-   EnvAddUDF(theEnv,"slot-insert$",ANY_TYPE, MVSlotInsertCommand,
+   EnvAddUDF(theEnv,"slot-insert$","*", MVSlotInsertCommand,
                     "MVSlotInsertCommand",4,UNBOUNDED,"*;iny;y;l",NULL);
-   EnvAddUDF(theEnv,"slot-delete$",ANY_TYPE, MVSlotDeleteCommand,
+   EnvAddUDF(theEnv,"slot-delete$","*", MVSlotDeleteCommand,
                     "MVSlotDeleteCommand",4,4, "l;iny;y" ,NULL);
   }
 

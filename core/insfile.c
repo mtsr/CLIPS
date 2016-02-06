@@ -163,19 +163,19 @@ void SetupInstanceFileCommands(
 #endif
 
 #if (! RUN_TIME)
-   EnvAddUDF(theEnv,"save-instances",INTEGER_TYPE, SaveInstancesCommand,
+   EnvAddUDF(theEnv,"save-instances","l", SaveInstancesCommand,
                     "SaveInstancesCommand",1,UNBOUNDED,"y;sy",NULL);
-   EnvAddUDF(theEnv,"load-instances",INTEGER_TYPE, LoadInstancesCommand,
+   EnvAddUDF(theEnv,"load-instances","l", LoadInstancesCommand,
                     "LoadInstancesCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"restore-instances",INTEGER_TYPE, RestoreInstancesCommand,
+   EnvAddUDF(theEnv,"restore-instances","l", RestoreInstancesCommand,
                     "RestoreInstancesCommand",1,1,"sy",NULL);
 
 #if BSAVE_INSTANCES
-   EnvAddUDF(theEnv,"bsave-instances",INTEGER_TYPE, BinarySaveInstancesCommand,
+   EnvAddUDF(theEnv,"bsave-instances","l", BinarySaveInstancesCommand,
                     "BinarySaveInstancesCommand",1,UNBOUNDED,"y;sy",NULL);
 #endif
 #if BLOAD_INSTANCES
-   EnvAddUDF(theEnv,"bload-instances",INTEGER_TYPE, BinaryLoadInstancesCommand,
+   EnvAddUDF(theEnv,"bload-instances","l", BinaryLoadInstancesCommand,
                     "BinaryLoadInstancesCommand",1,1,"sy",NULL);
 #endif
 

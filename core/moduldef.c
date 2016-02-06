@@ -183,11 +183,11 @@ void InitializeDefmodules(
 #endif
 
 #if (! RUN_TIME) && DEFMODULE_CONSTRUCT
-   EnvAddUDF(theEnv,"get-current-module", SYMBOL_TYPE,
+   EnvAddUDF(theEnv,"get-current-module", "y",
                     GetCurrentModuleCommand,
                    "GetCurrentModuleCommand", 0,0,NULL,NULL);
 
-   EnvAddUDF(theEnv,"set-current-module", SYMBOL_TYPE,
+   EnvAddUDF(theEnv,"set-current-module", "y",
                     SetCurrentModuleCommand,
                    "SetCurrentModuleCommand", 1,1,"y",NULL);
 #endif

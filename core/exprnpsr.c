@@ -505,6 +505,16 @@ void PopulateRestriction(
             *restriction |= EXTERNAL_ADDRESS_TYPE;
             valuesRead++;
             break;
+            
+          case 'v':
+            *restriction |= VOID_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'b':
+            *restriction |= BOOLEAN_TYPE;
+            valuesRead++;
+            break;
 
           case '*':
             *restriction |= ANY_TYPE;

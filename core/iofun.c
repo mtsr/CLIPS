@@ -158,20 +158,20 @@ void IOFunctionDefinitions(
 
 #if ! RUN_TIME
 #if IO_FUNCTIONS
-   EnvAddUDF(theEnv,"printout",    VOID_TYPE,        PrintoutFunction,  "PrintoutFunction",  1,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"print",       VOID_TYPE,        PrintFunction,     "PrintFunction",     0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"println",     VOID_TYPE,        PrintlnFunction,   "PrintlnFunction",   0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"read",        SINGLEFIELD_TYPE, ReadFunction,      "ReadFunction",      0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"open",        BOOLEAN_TYPE,     OpenFunction,      "OpenFunction",      2,3,"*;sy",NULL);
-   EnvAddUDF(theEnv,"close",       BOOLEAN_TYPE,     CloseFunction,     "CloseFunction",     0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"get-char",    INTEGER_TYPE,     GetCharFunction,   "GetCharFunction",   0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"put-char",    VOID_TYPE,        PutCharFunction,   "PutCharFunction",   1,2,NULL,NULL);
-   EnvAddUDF(theEnv,"remove",      BOOLEAN_TYPE,     RemoveFunction,    "RemoveFunction",    1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"rename",      BOOLEAN_TYPE,     RenameFunction,    "RenameFunction",    2,2,"sy",NULL);
-   EnvAddUDF(theEnv,"format",      STRING_TYPE,      FormatFunction,    "FormatFunction",    2,UNBOUNDED, "*;*;s",NULL);
-   EnvAddUDF(theEnv,"readline",    LEXEME_TYPES,     ReadlineFunction,  "ReadlineFunction",  0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"set-locale",  LEXEME_TYPES,     SetLocaleFunction, "SetLocaleFunction", 0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"read-number", LEXEME_TYPES | NUMBER_TYPES,  ReadNumberFunction, "ReadNumberFunction", 0,1,NULL,NULL);
+   EnvAddUDF(theEnv,"printout",    "v",        PrintoutFunction,  "PrintoutFunction",  1,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"print",       "v",        PrintFunction,     "PrintFunction",     0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"println",     "v",        PrintlnFunction,   "PrintlnFunction",   0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"read",        "synldfie", ReadFunction,      "ReadFunction",      0,1,NULL,NULL);
+   EnvAddUDF(theEnv,"open",        "b",        OpenFunction,      "OpenFunction",      2,3,"*;sy",NULL);
+   EnvAddUDF(theEnv,"close",       "b",        CloseFunction,     "CloseFunction",     0,1,NULL,NULL);
+   EnvAddUDF(theEnv,"get-char",    "l",        GetCharFunction,   "GetCharFunction",   0,1,NULL,NULL);
+   EnvAddUDF(theEnv,"put-char",    "v",        PutCharFunction,   "PutCharFunction",   1,2,NULL,NULL);
+   EnvAddUDF(theEnv,"remove",      "b",        RemoveFunction,    "RemoveFunction",    1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"rename",      "b",        RenameFunction,    "RenameFunction",    2,2,"sy",NULL);
+   EnvAddUDF(theEnv,"format",      "s",        FormatFunction,    "FormatFunction",    2,UNBOUNDED, "*;*;s",NULL);
+   EnvAddUDF(theEnv,"readline",    "sy",       ReadlineFunction,  "ReadlineFunction",  0,1,NULL,NULL);
+   EnvAddUDF(theEnv,"set-locale",  "sy",       SetLocaleFunction, "SetLocaleFunction", 0,1,NULL,NULL);
+   EnvAddUDF(theEnv,"read-number", "syld",     ReadNumberFunction, "ReadNumberFunction", 0,1,NULL,NULL);
 #endif
 #else
 #if MAC_XCD

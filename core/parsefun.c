@@ -91,7 +91,7 @@ void ParseFunctionDefinitions(
    AllocateEnvironmentData(theEnv,PARSEFUN_DATA,sizeof(struct parseFunctionData),NULL);
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"check-syntax",SYMBOL_TYPE | MULTIFIELD_TYPE, CheckSyntaxFunction,"CheckSyntaxFunction",1,1,"s",NULL);
+   EnvAddUDF(theEnv,"check-syntax","ym", CheckSyntaxFunction,"CheckSyntaxFunction",1,1,"s",NULL);
 #endif
   }
 

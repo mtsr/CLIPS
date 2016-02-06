@@ -232,7 +232,7 @@ void SetupObjectPatternStuff(
 
    AddPatternParser(theEnv,newPtr);
    
-   EnvAddUDF(theEnv,"object-pattern-match-delay",ANY_TYPE,
+   EnvAddUDF(theEnv,"object-pattern-match-delay","*",
                      ObjectMatchDelay,"ObjectMatchDelay",0,UNBOUNDED,NULL,NULL);
 
    AddFunctionParser(theEnv,"object-pattern-match-delay",ObjectMatchDelayParse);

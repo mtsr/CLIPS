@@ -205,18 +205,18 @@ void SetupDeffunctions(
 #endif
    AddSaveFunction(theEnv,"deffunction-headers",SaveDeffunctionHeaders,1000);
    AddSaveFunction(theEnv,"deffunctions",SaveDeffunctions,0);
-   EnvAddUDF(theEnv,"undeffunction",VOID_TYPE, UndeffunctionCommand,"UndeffunctionCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"undeffunction","v", UndeffunctionCommand,"UndeffunctionCommand",1,1,"y",NULL);
 #endif
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"list-deffunctions",VOID_TYPE, ListDeffunctionsCommand,"ListDeffunctionsCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"ppdeffunction",VOID_TYPE, PPDeffunctionCommand,"PPDeffunctionCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-deffunctions","v", ListDeffunctionsCommand,"ListDeffunctionsCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdeffunction","v", PPDeffunctionCommand,"PPDeffunctionCommand",1,1,"y",NULL);
 #endif
 
-   EnvAddUDF(theEnv,"get-deffunction-list",MULTIFIELD_TYPE, GetDeffunctionListFunction,
+   EnvAddUDF(theEnv,"get-deffunction-list","m", GetDeffunctionListFunction,
                    "GetDeffunctionListFunction",0,1,"y",NULL);
 
-   EnvAddUDF(theEnv,"deffunction-module",SYMBOL_TYPE, GetDeffunctionModuleCommand,
+   EnvAddUDF(theEnv,"deffunction-module","y", GetDeffunctionModuleCommand,
                    "GetDeffunctionModuleCommand",1,1,"y",NULL);
 
 #if BLOAD_AND_BSAVE || BLOAD || BLOAD_ONLY

@@ -83,13 +83,13 @@ void DefglobalBasicCommands(
    EnvAddResetFunction(theEnv,"defglobal",ResetDefglobals,50);
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"get-defglobal-list",MULTIFIELD_TYPE, GetDefglobalListFunction,"GetDefglobalListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"undefglobal",VOID_TYPE, UndefglobalCommand,"UndefglobalCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"defglobal-module",SYMBOL_TYPE, DefglobalModuleFunction,"DefglobalModuleFunction",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-defglobal-list","m", GetDefglobalListFunction,"GetDefglobalListFunction",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"undefglobal","v", UndefglobalCommand,"UndefglobalCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"defglobal-module","y", DefglobalModuleFunction,"DefglobalModuleFunction",1,1,"y",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"list-defglobals",VOID_TYPE, ListDefglobalsCommand,"ListDefglobalsCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"ppdefglobal",VOID_TYPE, PPDefglobalCommand,"PPDefglobalCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-defglobals","v", ListDefglobalsCommand,"ListDefglobalsCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdefglobal","v", PPDefglobalCommand,"PPDefglobalCommand",1,1,"y",NULL);
    AddWatchItem(theEnv,"globals",0,&DefglobalData(theEnv)->WatchGlobals,0,DefglobalWatchAccess,DefglobalWatchPrint);
 #endif
 

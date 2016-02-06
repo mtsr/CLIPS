@@ -115,22 +115,22 @@ void FactCommandDefinitions(
   {
 #if ! RUN_TIME
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"facts", VOID_TYPE,  FactsCommand,        "FactsCommand",0,4,"l;*" ,NULL);
+   EnvAddUDF(theEnv,"facts", "v",  FactsCommand,        "FactsCommand",0,4,"l;*" ,NULL);
 #endif
 
-   EnvAddUDF(theEnv,"assert", BOOLEAN_TYPE | FACT_ADDRESS_TYPE, AssertCommand,  "AssertCommand",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"retract", VOID_TYPE, RetractCommand, "RetractCommand",1,UNBOUNDED,"fly",NULL);
-   EnvAddUDF(theEnv,"assert-string", BOOLEAN_TYPE | FACT_ADDRESS_TYPE,  AssertStringFunction,   "AssertStringFunction", 1,1,"s",NULL);
-   EnvAddUDF(theEnv,"str-assert", BOOLEAN_TYPE | FACT_ADDRESS_TYPE,  AssertStringFunction,   "AssertStringFunction", 1,1,"s",NULL);
+   EnvAddUDF(theEnv,"assert", "bf", AssertCommand,  "AssertCommand",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"retract", "v", RetractCommand, "RetractCommand",1,UNBOUNDED,"fly",NULL);
+   EnvAddUDF(theEnv,"assert-string", "bf",  AssertStringFunction,   "AssertStringFunction", 1,1,"s",NULL);
+   EnvAddUDF(theEnv,"str-assert", "bf",  AssertStringFunction,   "AssertStringFunction", 1,1,"s",NULL);
 
-   EnvAddUDF(theEnv,"get-fact-duplication",BOOLEAN_TYPE,
+   EnvAddUDF(theEnv,"get-fact-duplication","b",
                     GetFactDuplicationCommand,"GetFactDuplicationCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-fact-duplication",BOOLEAN_TYPE,
+   EnvAddUDF(theEnv,"set-fact-duplication","b",
                     SetFactDuplicationCommand,"SetFactDuplicationCommand", 1,1,NULL,NULL);
 
-   EnvAddUDF(theEnv,"save-facts", BOOLEAN_TYPE,  SaveFactsCommand, "SaveFactsCommand", 1,UNBOUNDED, "y;sy" , NULL);
-   EnvAddUDF(theEnv,"load-facts", BOOLEAN_TYPE,  LoadFactsCommand, "LoadFactsCommand", 1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"fact-index", INTEGER_TYPE, FactIndexFunction,"FactIndexFunction", 1,1,"f",NULL);
+   EnvAddUDF(theEnv,"save-facts", "b",  SaveFactsCommand, "SaveFactsCommand", 1,UNBOUNDED, "y;sy" , NULL);
+   EnvAddUDF(theEnv,"load-facts", "b",  LoadFactsCommand, "LoadFactsCommand", 1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"fact-index", "l", FactIndexFunction,"FactIndexFunction", 1,1,"f",NULL);
 
    AddFunctionParser(theEnv,"assert",AssertParse);
    FuncSeqOvlFlags(theEnv,"assert",false,false);

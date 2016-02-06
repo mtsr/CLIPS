@@ -122,35 +122,35 @@ void DeftemplateFunctions(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"modify",BOOLEAN_TYPE | FACT_ADDRESS_TYPE,  ModifyCommand,"ModifyCommand",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"duplicate",BOOLEAN_TYPE | FACT_ADDRESS_TYPE,  DuplicateCommand,"DuplicateCommand",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"modify","bf",  ModifyCommand,"ModifyCommand",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"duplicate","bf",  DuplicateCommand,"DuplicateCommand",0,UNBOUNDED,NULL,NULL);
 
-   EnvAddUDF(theEnv,"deftemplate-slot-names",BOOLEAN_TYPE | MULTIFIELD_TYPE, DeftemplateSlotNamesFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-names","bm", DeftemplateSlotNamesFunction,
                    "DeftemplateSlotNamesFunction", 1,1,"y",NULL);
-   EnvAddUDF(theEnv,"deftemplate-slot-default-value",ANY_TYPE, DeftemplateSlotDefaultValueFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-default-value","*", DeftemplateSlotDefaultValueFunction,
                     "DeftemplateSlotDefaultValueFunction",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"deftemplate-slot-cardinality",ANY_TYPE, DeftemplateSlotCardinalityFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-cardinality","*", DeftemplateSlotCardinalityFunction,
                    "DeftemplateSlotCardinalityFunction",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"deftemplate-slot-allowed-values",ANY_TYPE,DeftemplateSlotAllowedValuesFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-allowed-values","*",DeftemplateSlotAllowedValuesFunction,
                    "DeftemplateSlotAllowedValuesFunction",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"deftemplate-slot-range",ANY_TYPE, DeftemplateSlotRangeFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-range","*", DeftemplateSlotRangeFunction,
                    "DeftemplateSlotRangeFunction",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"deftemplate-slot-types",ANY_TYPE,DeftemplateSlotTypesFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-types","*",DeftemplateSlotTypesFunction,
                    "DeftemplateSlotTypesFunction",2,2,"y",NULL);
 
-   EnvAddUDF(theEnv,"deftemplate-slot-multip",BOOLEAN_TYPE, DeftemplateSlotMultiPFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-multip","b", DeftemplateSlotMultiPFunction,
                    "DeftemplateSlotMultiPFunction",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"deftemplate-slot-singlep",BOOLEAN_TYPE, DeftemplateSlotSinglePFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-singlep","b", DeftemplateSlotSinglePFunction,
                    "DeftemplateSlotSinglePFunction",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"deftemplate-slot-existp",BOOLEAN_TYPE, DeftemplateSlotExistPFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-existp","b", DeftemplateSlotExistPFunction,
                    "DeftemplateSlotExistPFunction",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"deftemplate-slot-defaultp",SYMBOL_TYPE, DeftemplateSlotDefaultPFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-defaultp","y", DeftemplateSlotDefaultPFunction,
                    "DeftemplateSlotDefaultPFunction",2,2,"y",NULL);
 
-   EnvAddUDF(theEnv,"deftemplate-slot-facet-existp",BOOLEAN_TYPE, DeftemplateSlotFacetExistPFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-facet-existp","b", DeftemplateSlotFacetExistPFunction,
                    "DeftemplateSlotFacetExistPFunction",3,3,"y",NULL);
 
-   EnvAddUDF(theEnv,"deftemplate-slot-facet-value",ANY_TYPE, DeftemplateSlotFacetValueFunction,
+   EnvAddUDF(theEnv,"deftemplate-slot-facet-value","*", DeftemplateSlotFacetValueFunction,
                    "DeftemplateSlotFacetValueFunction",3,3,"y",NULL);
 
 #if (! BLOAD_ONLY)
@@ -2245,7 +2245,7 @@ bool UpdateModifyDuplicate(
            {
             if ((ExpressionFunctionType(tempArg->argList) == 'm') ||
                 ((ExpressionFunctionType(tempArg->argList) == 'z') &&
-                 (ExpressionUnknownFunctionType(tempArg->argList) & MULTIFIELD_TYPE)))
+                 ((ExpressionUnknownFunctionType(tempArg->argList) & SINGLEFIELD_TYPES) == 0)))
               {
                SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
                return(false);

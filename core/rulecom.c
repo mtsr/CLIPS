@@ -120,51 +120,51 @@ void DefruleCommands(
   void *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"run",VOID_TYPE, RunCommand,"RunCommand", 0,1,"l",NULL);
-   EnvAddUDF(theEnv,"halt",VOID_TYPE, HaltCommand,"HaltCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"focus",BOOLEAN_TYPE,  FocusCommand,"FocusCommand",1,UNBOUNDED,"y", NULL);
-   EnvAddUDF(theEnv,"clear-focus-stack",VOID_TYPE, ClearFocusStackCommand,
+   EnvAddUDF(theEnv,"run","v", RunCommand,"RunCommand", 0,1,"l",NULL);
+   EnvAddUDF(theEnv,"halt","v", HaltCommand,"HaltCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"focus","b",  FocusCommand,"FocusCommand",1,UNBOUNDED,"y", NULL);
+   EnvAddUDF(theEnv,"clear-focus-stack","v", ClearFocusStackCommand,
                                        "ClearFocusStackCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"get-focus-stack",MULTIFIELD_TYPE, GetFocusStackFunction,
+   EnvAddUDF(theEnv,"get-focus-stack","m", GetFocusStackFunction,
                                      "GetFocusStackFunction",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"pop-focus",SYMBOL_TYPE, PopFocusFunction,
+   EnvAddUDF(theEnv,"pop-focus","y", PopFocusFunction,
                                "PopFocusFunction",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"get-focus",SYMBOL_TYPE, GetFocusFunction,
+   EnvAddUDF(theEnv,"get-focus","y", GetFocusFunction,
                                "GetFocusFunction",0,0,NULL,NULL);
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"set-break",VOID_TYPE, SetBreakCommand,
+   EnvAddUDF(theEnv,"set-break","v", SetBreakCommand,
                                "SetBreakCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"remove-break",VOID_TYPE, RemoveBreakCommand,
+   EnvAddUDF(theEnv,"remove-break","v", RemoveBreakCommand,
                                   "RemoveBreakCommand", 0,1,"y",NULL);
-   EnvAddUDF(theEnv,"show-breaks",VOID_TYPE, ShowBreaksCommand,
+   EnvAddUDF(theEnv,"show-breaks","v", ShowBreaksCommand,
                                  "ShowBreaksCommand", 0,1,"y",NULL);
-   EnvAddUDF(theEnv,"matches",BOOLEAN_TYPE | MULTIFIELD_TYPE, MatchesCommand,"MatchesCommand",1,2,"y",NULL);
-   EnvAddUDF(theEnv,"join-activity",BOOLEAN_TYPE | MULTIFIELD_TYPE, JoinActivityCommand,"JoinActivityCommand",1,2,"y",NULL);
-   EnvAddUDF(theEnv,"join-activity-reset",VOID_TYPE,  JoinActivityResetCommand,
+   EnvAddUDF(theEnv,"matches","bm", MatchesCommand,"MatchesCommand",1,2,"y",NULL);
+   EnvAddUDF(theEnv,"join-activity","bm", JoinActivityCommand,"JoinActivityCommand",1,2,"y",NULL);
+   EnvAddUDF(theEnv,"join-activity-reset","v",  JoinActivityResetCommand,
                                   "JoinActivityResetCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"list-focus-stack",VOID_TYPE, ListFocusStackCommand,
+   EnvAddUDF(theEnv,"list-focus-stack","v", ListFocusStackCommand,
                                       "ListFocusStackCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"dependencies", VOID_TYPE, DependenciesCommand,
+   EnvAddUDF(theEnv,"dependencies", "v", DependenciesCommand,
                                    "DependenciesCommand", 1,1,"infly",NULL);
-   EnvAddUDF(theEnv,"dependents",  VOID_TYPE,  DependentsCommand,
+   EnvAddUDF(theEnv,"dependents",  "v",  DependentsCommand,
                                    "DependentsCommand", 1,1,"infly",NULL);
       
-   EnvAddUDF(theEnv,"timetag",INTEGER_TYPE,TimetagFunction,
+   EnvAddUDF(theEnv,"timetag","l",TimetagFunction,
                                    "TimetagFunction", 1,1,"infly" ,NULL);
 #endif /* DEBUGGING_FUNCTIONS */
 
-   EnvAddUDF(theEnv,"get-beta-memory-resizing",BOOLEAN_TYPE,
+   EnvAddUDF(theEnv,"get-beta-memory-resizing","b",
                     GetBetaMemoryResizingCommand,"GetBetaMemoryResizingCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-beta-memory-resizing",BOOLEAN_TYPE,
+   EnvAddUDF(theEnv,"set-beta-memory-resizing","b",
                     SetBetaMemoryResizingCommand,"SetBetaMemoryResizingCommand",1,1,NULL,NULL);
 
-   EnvAddUDF(theEnv,"get-strategy", SYMBOL_TYPE, GetStrategyCommand,  "GetStrategyCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-strategy", SYMBOL_TYPE, SetStrategyCommand,  "SetStrategyCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-strategy", "y", GetStrategyCommand,  "GetStrategyCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"set-strategy", "y", SetStrategyCommand,  "SetStrategyCommand", 1,1,"y",NULL);
 
 #if DEVELOPER && (! BLOAD_ONLY)
-   EnvAddUDF(theEnv,"rule-complexity",INTEGER_TYPE, RuleComplexityCommand,"RuleComplexityCommand", 1,1,"y",NULL);
-   EnvAddUDF(theEnv,"show-joins",  VOID_TYPE, ShowJoinsCommand,    "ShowJoinsCommand", 1,1,"y",NULL);
-   EnvAddUDF(theEnv,"show-aht",   VOID_TYPE, ShowAlphaHashTable,    "ShowAlphaHashTable", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"rule-complexity","l", RuleComplexityCommand,"RuleComplexityCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"show-joins",  "v", ShowJoinsCommand,    "ShowJoinsCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"show-aht",   "v", ShowAlphaHashTable,    "ShowAlphaHashTable", 0,0,NULL,NULL);
 #if DEBUGGING_FUNCTIONS
    AddWatchItem(theEnv,"rule-analysis",0,&DefruleData(theEnv)->WatchRuleAnalysis,0,NULL,NULL);
 #endif
