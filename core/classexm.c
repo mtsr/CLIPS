@@ -134,10 +134,10 @@ void BrowseClassesCommand(
 
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
         return;
-      cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+      cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
       if (cls == NULL)
         {
-         ClassExistError(theEnv,"browse-classes",CVToString(&theArg));
+         ClassExistError(theEnv,"browse-classes",mCVToString(&theArg));
          return;
         }
      }
@@ -355,11 +355,11 @@ void SuperclassPCommand(
    
    if (CheckTwoClasses(context,"superclassp",&c1,&c2) == false)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
-   CVSetBoolean(returnValue,EnvSuperclassP(UDFContextEnvironment(context),(void *) c1,(void *) c2));
+   mCVSetBoolean(returnValue,EnvSuperclassP(UDFContextEnvironment(context),(void *) c1,(void *) c2));
   }
 
 /***************************************************
@@ -402,11 +402,11 @@ void SubclassPCommand(
    
    if (CheckTwoClasses(context,"subclassp",&c1,&c2) == false)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
-   CVSetBoolean(returnValue,EnvSubclassP(UDFContextEnvironment(context),(void *) c1,(void *) c2));
+   mCVSetBoolean(returnValue,EnvSubclassP(UDFContextEnvironment(context),(void *) c1,(void *) c2));
   }
 
 /***************************************************
@@ -454,7 +454,7 @@ void SlotExistPCommand(
    sd = CheckSlotExists(context,"slot-existp",&cls,false,true);
    if (sd == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
    if (EnvRtnArgCount(theEnv) == 3)
@@ -462,17 +462,17 @@ void SlotExistPCommand(
       if (! UDFNthArgument(context,3,SYMBOL_TYPE,&theArg))
         { return; }
         
-      if (strcmp(CVToString(&theArg),"inherit") != 0)
+      if (strcmp(mCVToString(&theArg),"inherit") != 0)
         {
          UDFInvalidArgumentMessage(context,"keyword \"inherit\"");
          EnvSetEvaluationError(theEnv,true);
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
       inheritFlag = true;
      }
      
-   CVSetBoolean(returnValue,((sd->cls == cls) ? true : inheritFlag));
+   mCVSetBoolean(returnValue,((sd->cls == cls) ? true : inheritFlag));
   }
 
 /***************************************************
@@ -517,11 +517,11 @@ void MessageHandlerExistPCommand(
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
-   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (cls == NULL)
      {
-      ClassExistError(theEnv,"message-handler-existp",CVToString(&theArg));
-      CVSetBoolean(returnValue,false);
+      ClassExistError(theEnv,"message-handler-existp",mCVToString(&theArg));
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
@@ -534,19 +534,19 @@ void MessageHandlerExistPCommand(
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
         
-      mtype = HandlerType(theEnv,"message-handler-existp",CVToString(&theArg));
+      mtype = HandlerType(theEnv,"message-handler-existp",mCVToString(&theArg));
       if (mtype == MERROR)
         {
          EnvSetEvaluationError(theEnv,true);
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
      }
 
    if (FindHandlerByAddress(cls,mname,mtype) != NULL)
-     { CVSetBoolean(returnValue,true); }
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /**********************************************************************
@@ -566,9 +566,9 @@ void SlotWritablePCommand(
    
    sd = CheckSlotExists(context,"slot-writablep",&theDefclass,true,true);
    if (sd == NULL)
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
    else
-     { CVSetBoolean(returnValue,(sd->noWrite || sd->initializeOnly) ? false : true); }
+     { mCVSetBoolean(returnValue,(sd->noWrite || sd->initializeOnly) ? false : true); }
   }
 
 /***************************************************
@@ -611,9 +611,9 @@ void SlotInitablePCommand(
    
    sd = CheckSlotExists(context,"slot-initablep",&theDefclass,true,true);
    if (sd == NULL)
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
    else
-     { CVSetBoolean(returnValue,(sd->noWrite && (sd->initializeOnly == 0)) ? false : true); }
+     { mCVSetBoolean(returnValue,(sd->noWrite && (sd->initializeOnly == 0)) ? false : true); }
   }
 
 /***************************************************
@@ -656,9 +656,9 @@ void SlotPublicPCommand(
    
    sd = CheckSlotExists(context,"slot-publicp",&theDefclass,true,false);
    if (sd == NULL)
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
    else
-     { CVSetBoolean(returnValue,(sd->publicVisibility ? true : false)); }
+     { mCVSetBoolean(returnValue,(sd->publicVisibility ? true : false)); }
   }
 
 /***************************************************
@@ -732,9 +732,9 @@ void SlotDirectAccessPCommand(
    
    sd = CheckSlotExists(context,"slot-direct-accessp",&theDefclass,true,true);
    if (sd == NULL)
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
    else
-     { CVSetBoolean(returnValue,((sd->publicVisibility || (sd->cls == theDefclass)) ? true : false)); }
+     { mCVSetBoolean(returnValue,((sd->publicVisibility || (sd->cls == theDefclass)) ? true : false)); }
   }
 
 /***************************************************
@@ -778,7 +778,7 @@ void SlotDefaultValueCommand(
    DEFCLASS *theDefclass;
    SLOT_DESC *sd;
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    
    sd = CheckSlotExists(context,"slot-default-value",&theDefclass,true,true);
    if (sd == NULL)
@@ -786,7 +786,7 @@ void SlotDefaultValueCommand(
    
    if (sd->noDefault)
      {
-      CVSetSymbol(returnValue,"?NONE");
+      mCVSetSymbol(returnValue,"?NONE");
       return;
      }
      
@@ -856,7 +856,7 @@ void ClassExistPCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
       
-   CVSetBoolean(returnValue,((LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg)) != NULL) ? true : false));
+   mCVSetBoolean(returnValue,((LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg)) != NULL) ? true : false));
   }
 
 /* =========================================
@@ -888,20 +888,20 @@ static bool CheckTwoClasses(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return(false); }
      
-   *c1 = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   *c1 = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (*c1 == NULL)
      {
-      ClassExistError(theEnv,func,CVToString(&theArg));
+      ClassExistError(theEnv,func,mCVToString(&theArg));
       return(false);
      }
      
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
      { return(false); }
      
-   *c2 = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   *c2 = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (*c2 == NULL)
      {
-      ClassExistError(theEnv,func,CVToString(&theArg));
+      ClassExistError(theEnv,func,mCVToString(&theArg));
       return(false);
      }
      

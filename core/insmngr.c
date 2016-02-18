@@ -133,7 +133,7 @@ void InitializeInstanceCommand(
    INSTANCE_TYPE *ins;
    Environment *theEnv = UDFContextEnvironment(context);
    
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    ins = CheckInstance(theEnv,"initialize-instance");
    if (ins == NULL)
      return;
@@ -164,7 +164,7 @@ void MakeInstanceCommand(
    DEFCLASS *cls;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    EvaluateExpression(theEnv,GetFirstArgument(),&temp);
    if ((GetType(temp) != SYMBOL) &&
        (GetType(temp) != INSTANCE_NAME))
@@ -484,16 +484,16 @@ void InitSlotsCommand(
    
    if (CheckCurrentMessage(theEnv,"init-slots",true) == false)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
    EvaluateClassDefaults(theEnv,GetActiveInstance(theEnv));
    
    if (! EvaluationData(theEnv)->EvaluationError)
-     { CVSetInstanceAddress(returnValue,GetActiveInstance(theEnv)); }
+     { mCVSetInstanceAddress(returnValue,GetActiveInstance(theEnv)); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /******************************************************

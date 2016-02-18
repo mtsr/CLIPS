@@ -109,7 +109,7 @@ void BsaveCommand(
      {
       if (EnvBsave(UDFContextEnvironment(context),fileName))
         {
-         CVSetBoolean(returnValue,true);
+         mCVSetBoolean(returnValue,true);
          return;
         }
      }
@@ -118,7 +118,7 @@ void BsaveCommand(
 #pragma unused(context)
 #endif
 #endif
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
   }
 
 #if BLOAD_AND_BSAVE

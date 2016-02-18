@@ -37,6 +37,7 @@ typedef struct slotName SLOT_NAME;
 typedef struct slotDescriptor SLOT_DESC;
 typedef struct messageHandler HANDLER;
 typedef struct instance INSTANCE_TYPE;
+typedef struct instance Instance;
 typedef struct instanceSlot INSTANCE_SLOT;
 
 /* Maximum # of simultaneous class hierarchy traversals

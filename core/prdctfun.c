@@ -106,7 +106,7 @@ void EqFunction(
    numArgs = EnvRtnArgCount(theEnv);
    if (numArgs == 0)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -130,7 +130,7 @@ void EqFunction(
 
       if (GetType(nextItem) != GetType(item))
         {
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
 
@@ -138,13 +138,13 @@ void EqFunction(
         {
          if (MultifieldDOsEqual(&nextItem,&item) == false)
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
       else if (nextItem.value != item.value)
         {
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
 
@@ -156,7 +156,7 @@ void EqFunction(
    /* from the first. Return true.        */
    /*=====================================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /*************************************/
@@ -179,7 +179,7 @@ void NeqFunction(
    numArgs = EnvRtnArgCount(theEnv);
    if (numArgs == 0)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -207,13 +207,13 @@ void NeqFunction(
         {
          if (MultifieldDOsEqual(&nextItem,&item) == true)
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
       else if (nextItem.value == item.value)
         {
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
      }
@@ -223,7 +223,7 @@ void NeqFunction(
    /* to the first. Return true.          */
    /*=====================================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /*****************************************/
@@ -239,10 +239,10 @@ void StringpFunction(
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
      { return; }
 
-   if (CVIsType(&item,STRING_TYPE))
-     { CVSetBoolean(returnValue,true); }
+   if (mCVIsType(&item,STRING_TYPE))
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /*****************************************/
@@ -258,10 +258,10 @@ void SymbolpFunction(
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
      { return; }
 
-   if (CVIsType(&item,SYMBOL_TYPE))
-     { CVSetBoolean(returnValue,true); }
+   if (mCVIsType(&item,SYMBOL_TYPE))
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /*****************************************/
@@ -277,10 +277,10 @@ void LexemepFunction(
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
      { return; }
 
-   if (CVIsType(&item,LEXEME_TYPES))
-     { CVSetBoolean(returnValue,true); }
+   if (mCVIsType(&item,LEXEME_TYPES))
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /*****************************************/
@@ -296,10 +296,10 @@ void NumberpFunction(
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
      { return; }
 
-   if (CVIsType(&item,NUMBER_TYPES))
-     { CVSetBoolean(returnValue,true); }
+   if (mCVIsType(&item,NUMBER_TYPES))
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /****************************************/
@@ -315,10 +315,10 @@ void FloatpFunction(
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
      { return; }
 
-   if (CVIsType(&item,FLOAT_TYPE))
-     { CVSetBoolean(returnValue,true); }
+   if (mCVIsType(&item,FLOAT_TYPE))
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /******************************************/
@@ -334,10 +334,10 @@ void IntegerpFunction(
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
      { return; }
 
-   if (CVIsType(&item,INTEGER_TYPE))
-     { CVSetBoolean(returnValue,true); }
+   if (mCVIsType(&item,INTEGER_TYPE))
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /*********************************************/
@@ -353,10 +353,10 @@ void MultifieldpFunction(
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
      { return; }
 
-   if (CVIsType(&item,MULTIFIELD_TYPE))
-     { CVSetBoolean(returnValue,true); }
+   if (mCVIsType(&item,MULTIFIELD_TYPE))
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /******************************************/
@@ -372,10 +372,10 @@ void PointerpFunction(
    if (! UDFFirstArgument(context,ANY_TYPE,&item))
      { return; }
 
-   if (CVIsType(&item,EXTERNAL_ADDRESS_TYPE))
-     { CVSetBoolean(returnValue,true); }
+   if (mCVIsType(&item,EXTERNAL_ADDRESS_TYPE))
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /***********************************/
@@ -393,11 +393,11 @@ void NotFunction(
 
    if (CVIsFalseSymbol(&result))
      {
-      CVSetBoolean(returnValue,true);
+      mCVSetBoolean(returnValue,true);
       return;
      }
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
   }
 
 /*************************************/
@@ -417,12 +417,12 @@ void AndFunction(
         
       if (CVIsFalseSymbol(&result))
         {
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
      }
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /************************************/
@@ -442,12 +442,12 @@ void OrFunction(
         
       if (! CVIsFalseSymbol(&result))
         {
-         CVSetBoolean(returnValue,true);
+         mCVSetBoolean(returnValue,true);
          return;
         }
      }
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
   }
 
 /*****************************************/
@@ -477,19 +477,19 @@ void LessThanOrEqualFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
 
-      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+      if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
-         if (CVToInteger(&rv1) > CVToInteger(&rv2))
+         if (mCVToInteger(&rv1) > mCVToInteger(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
       else
         {
-         if (CVToFloat(&rv1) > CVToFloat(&rv2))
+         if (mCVToFloat(&rv1) > mCVToFloat(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
@@ -502,7 +502,7 @@ void LessThanOrEqualFunction(
    /* to its predecessor. Return true.     */
    /*======================================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /********************************************/
@@ -532,19 +532,19 @@ void GreaterThanOrEqualFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
 
-      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+      if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
-         if (CVToInteger(&rv1) < CVToInteger(&rv2))
+         if (mCVToInteger(&rv1) < mCVToInteger(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
       else
         {
-         if (CVToFloat(&rv1) < CVToFloat(&rv2))
+         if (mCVToFloat(&rv1) < mCVToFloat(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
@@ -557,7 +557,7 @@ void GreaterThanOrEqualFunction(
    /* to its predecessor. Return true.        */
    /*=========================================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /**********************************/
@@ -588,19 +588,19 @@ void LessThanFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
         
-      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+      if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
-         if (CVToInteger(&rv1) >= CVToInteger(&rv2))
+         if (mCVToInteger(&rv1) >= mCVToInteger(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
       else
         {
-         if (CVToFloat(&rv1) >= CVToFloat(&rv2))
+         if (mCVToFloat(&rv1) >= mCVToFloat(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
@@ -613,7 +613,7 @@ void LessThanFunction(
    /* predecessor. Return true.       */
    /*=================================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /*************************************/
@@ -644,19 +644,19 @@ void GreaterThanFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
         
-      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+      if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
-         if (CVToInteger(&rv1) <= CVToInteger(&rv2))
+         if (mCVToInteger(&rv1) <= mCVToInteger(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
       else
         {
-         if (CVToFloat(&rv1) <= CVToFloat(&rv2))
+         if (mCVToFloat(&rv1) <= mCVToFloat(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
@@ -669,7 +669,7 @@ void GreaterThanFunction(
    /* predecessor. Return true.       */
    /*=================================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /**************************************/
@@ -699,19 +699,19 @@ void NumericEqualFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
         
-      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+      if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
-         if (CVToInteger(&rv1) != CVToInteger(&rv2))
+         if (mCVToInteger(&rv1) != mCVToInteger(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
       else
         {
-         if (CVToFloat(&rv1) != CVToFloat(&rv2))
+         if (mCVToFloat(&rv1) != mCVToFloat(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
@@ -722,7 +722,7 @@ void NumericEqualFunction(
    /* first argument. Return true.    */
    /*=================================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /*****************************************/
@@ -752,19 +752,19 @@ void NumericNotEqualFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
         
-      if (CVIsType(&rv1,INTEGER_TYPE) && CVIsType(&rv2,INTEGER_TYPE))
+      if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
-         if (CVToInteger(&rv1) == CVToInteger(&rv2))
+         if (mCVToInteger(&rv1) == mCVToInteger(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
       else
         {
-         if (CVToFloat(&rv1) == CVToFloat(&rv2))
+         if (mCVToFloat(&rv1) == mCVToFloat(&rv2))
            {
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
@@ -775,7 +775,7 @@ void NumericNotEqualFunction(
    /* first argument. Return true.      */
    /*===================================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /**************************************/
@@ -800,11 +800,11 @@ void OddpFunction(
    /* Compute the return value. */
    /*===========================*/
    
-   num = CVToInteger(&item);
+   num = mCVToInteger(&item);
    halfnum = (num / 2) * 2;
 
-   if (num == halfnum) CVSetBoolean(returnValue,false);
-   else CVSetBoolean(returnValue,true);
+   if (num == halfnum) mCVSetBoolean(returnValue,false);
+   else mCVSetBoolean(returnValue,true);
   }
 
 /***************************************/
@@ -829,11 +829,11 @@ void EvenpFunction(
    /* Compute the return value. */
    /*===========================*/
    
-   num = CVToInteger(&item);
+   num = mCVToInteger(&item);
    halfnum = (num / 2) * 2;
    
-   if (num != halfnum) CVSetBoolean(returnValue,false);
-   else CVSetBoolean(returnValue,true);
+   if (num != halfnum) mCVSetBoolean(returnValue,false);
+   else mCVSetBoolean(returnValue,true);
   }
 
 

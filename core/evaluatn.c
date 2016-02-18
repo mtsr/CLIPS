@@ -67,7 +67,6 @@
 #include "router.h"
 #include "prcdrfun.h"
 #include "multifld.h"
-#include "factmngr.h"
 #include "prntutil.h"
 #include "exprnpsr.h"
 #include "utility.h"
@@ -1093,6 +1092,202 @@ bool EvaluateAndStoreInDataObject(
      StoreInMultifield(theEnv,val,theExp,garbageSegment);
    
    return(EvaluationData(theEnv)->EvaluationError ? false : true);
+  }
+
+/******************/
+/* MFSetNthValueF */
+/******************/
+void MFSetNthValueF(
+  CLIPSValue *mf,
+  CLIPSInteger n,
+  CLIPSValue *nv)
+  {
+   ((struct field *) ((struct multifield *) (mf->value))->theFields)[(mf->begin + n) - 1].type = nv->type;
+   ((struct field *) ((struct multifield *) (mf->value))->theFields)[(mf->begin + n) - 1].value = nv->value;
+  }
+
+/***********************/
+/* CVCreateMultifieldF */
+/***********************/
+void CVCreateMultifieldF(
+  CLIPSValue *mf,
+  CLIPSInteger size)
+  {
+   mf->value = EnvCreateMultifield(mf->environment,size);
+   mf->bitType = MULTIFIELD_TYPE;
+   mf->type = MULTIFIELD;
+   mf->begin = 0;
+   mf->end = size - 1;
+  }
+
+/************/
+/* CVIsType */
+/************/
+bool CVIsType(
+  CLIPSValue *theValue,
+  unsigned expectedType)
+  {
+   return (theValue->bitType & expectedType);
+  }
+
+/*************/
+/* EnvCVInit */
+/*************/
+void EnvCVInit(
+  Environment *theEnv,
+  CLIPSValue *theValue)
+  {
+   theValue->environment = theEnv;
+  }
+
+/**************/
+/* CVToString */
+/**************/
+CLIPSString CVToString(
+  CLIPSValue *theValue)
+  {
+   if (mCVIsType(theValue,LEXEME_TYPES | INSTANCE_NAME_TYPE))
+     { return ((struct symbolHashNode *) theValue->value)->contents; }
+   else
+     { return NULL; }
+  }
+
+/***************/
+/* CVToInteger */
+/***************/
+CLIPSInteger CVToInteger(
+  CLIPSValue *theValue)
+  {
+   if (mCVIsType(theValue,INTEGER_TYPE))
+     { return ((struct integerHashNode *) theValue->value)->contents; }
+   else if (mCVIsType(theValue,FLOAT_TYPE))
+     { return (CLIPSInteger) ((struct floatHashNode *) theValue->value)->contents; }
+   else
+     { return 0LL; }
+  }
+
+/*************/
+/* CVToFloat */
+/*************/
+CLIPSFloat CVToFloat(
+  CLIPSValue *theValue)
+  {
+   if (mCVIsType(theValue,FLOAT_TYPE))
+     { return ((struct floatHashNode *) theValue->value)->contents; }
+   else if (mCVIsType(theValue,INTEGER_TYPE))
+     { return (CLIPSFloat) ((struct integerHashNode *) theValue->value)->contents; }
+   else
+     { return 0.0; }
+  }
+
+/*************/
+/* CVSetVoid */
+/*************/
+void CVSetVoid(
+  CLIPSValue *theValue)
+  {
+   theValue->value = NULL;
+   theValue->bitType = VOID_TYPE;
+   theValue->type = RVOID;
+  }
+
+/****************/
+/* CVSetInteger */
+/****************/
+void CVSetInteger(
+  CLIPSValue *theValue,
+  CLIPSInteger iv)
+  {
+   theValue->value = EnvAddLong(theValue->environment,iv);
+   theValue->bitType = INTEGER_TYPE;
+   theValue->type = INTEGER;
+  }
+
+/**************/
+/* CVSetFloat */
+/**************/
+void CVSetFloat(
+  CLIPSValue *theValue,
+  CLIPSFloat fv)
+  {
+   theValue->value = EnvAddDouble(theValue->environment,fv);
+   theValue->bitType = FLOAT_TYPE;
+   theValue->type = FLOAT;
+  }
+
+/***************/
+/* CVSetString */
+/***************/
+void CVSetString(
+  CLIPSValue *theValue,
+  CLIPSString sv)
+  {
+   theValue->value = EnvAddSymbol(theValue->environment,sv);
+   theValue->bitType = STRING_TYPE;
+   theValue->type = STRING;
+  }
+
+/***************/
+/* CVSetSymbol */
+/***************/
+void CVSetSymbol(
+  CLIPSValue *theValue,
+  CLIPSString sv)
+  {
+   theValue->value = EnvAddSymbol(theValue->environment,sv);
+   theValue->bitType = SYMBOL_TYPE;
+   theValue->type = SYMBOL;
+  }
+
+/*********************/
+/* CVSetInstanceName */
+/*********************/
+void CVSetInstanceName(
+  CLIPSValue *theValue,
+  CLIPSString sv)
+  {
+   theValue->value = EnvAddSymbol(theValue->environment,sv);
+   theValue->bitType = INSTANCE_NAME_TYPE;
+   theValue->type = INSTANCE_NAME;
+  }
+
+/********************/
+/* CVSetFactAddress */
+/********************/
+void CVSetFactAddress(
+  CLIPSValue *theValue,
+  Fact *fv)
+  {
+   theValue->value = fv;
+   theValue->bitType = FACT_ADDRESS_TYPE;
+   theValue->type = FACT_ADDRESS;
+  }
+
+/************************/
+/* CVSetInstanceAddress */
+/************************/
+void CVSetInstanceAddress(
+  CLIPSValue *theValue,
+  Instance *iv)
+  {
+   theValue->value = iv;
+   theValue->bitType = INSTANCE_ADDRESS_TYPE;
+   theValue->type = INSTANCE_ADDRESS;
+  }
+
+/****************/
+/* CVSetBoolean */
+/****************/
+void CVSetBoolean(
+  CLIPSValue *theValue,
+  bool bv)
+  {
+   if (bv)
+     { theValue->value = SymbolData(theValue->environment)->TrueSymbolHN; }
+   else
+     { theValue->value = SymbolData(theValue->environment)->FalseSymbolHN; }
+   theValue->bitType = (SYMBOL_TYPE | BOOLEAN_TYPE);
+   theValue->type = SYMBOL;
   }
 
 /******************/

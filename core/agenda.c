@@ -106,7 +106,7 @@ void InitializeAgenda(
    AddWatchItem(theEnv,"activations",1,&AgendaData(theEnv)->WatchActivations,40,DefruleWatchAccess,DefruleWatchPrint);
 #endif
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"refresh", "v'", RefreshCommand, "RefreshCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"refresh", "v", RefreshCommand, "RefreshCommand", 1,1,"y",NULL);
 
    EnvAddUDF(theEnv,"refresh-agenda","v",RefreshAgendaCommand,
                     "RefreshAgendaCommand", 0,1,"y",NULL);
@@ -1146,7 +1146,7 @@ void SetSalienceEvaluationCommand(
    /* are when-defined, when-activated, and every-cycle.          */
    /*=============================================================*/
 
-   argument = CVToString(&value);
+   argument = mCVToString(&value);
 
    if (strcmp(argument,"when-defined") == 0)
      { EnvSetSalienceEvaluation(theEnv,WHEN_DEFINED); }
@@ -1158,7 +1158,7 @@ void SetSalienceEvaluationCommand(
      {
       UDFInvalidArgumentMessage(context,
          "symbol with value when-defined, when-activated, or every-cycle");
-      CVSetSymbol(returnValue,oldValue);
+      mCVSetSymbol(returnValue,oldValue);
       return;
      }
 
@@ -1166,7 +1166,7 @@ void SetSalienceEvaluationCommand(
    /* Return the old setting for salience evaluation. */
    /*=================================================*/
 
-   CVSetSymbol(returnValue,oldValue);
+   mCVSetSymbol(returnValue,oldValue);
   }
 
 /*********************************************************/
@@ -1178,7 +1178,7 @@ void GetSalienceEvaluationCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetSymbol(returnValue,SalienceEvaluationName(EnvGetSalienceEvaluation(UDFContextEnvironment(context))));
+   mCVSetSymbol(returnValue,SalienceEvaluationName(EnvGetSalienceEvaluation(UDFContextEnvironment(context))));
   }
 
 /*****************************************************************/

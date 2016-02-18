@@ -215,7 +215,7 @@ void SetBetaMemoryResizingCommand(
    CLIPSValue theArg;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,EnvGetBetaMemoryResizing(theEnv));
+   mCVSetBoolean(returnValue,EnvGetBetaMemoryResizing(theEnv));
 
    /*=================================================*/
    /* The symbol FALSE disables beta memory resizing. */
@@ -239,7 +239,7 @@ void GetBetaMemoryResizingCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetBoolean(returnValue,EnvGetBetaMemoryResizing(UDFContextEnvironment(context)));
+   mCVSetBoolean(returnValue,EnvGetBetaMemoryResizing(UDFContextEnvironment(context)));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -261,13 +261,13 @@ void MatchesCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
      
-   ruleName = CVToString(&theArg);
+   ruleName = mCVToString(&theArg);
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -276,7 +276,7 @@ void MatchesCommand(
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
 
-      argument = CVToString(&theArg);
+      argument = mCVToString(&theArg);
       if (strcmp(argument,"verbose") == 0)
         { output = VERBOSE; }
       else if (strcmp(argument,"succinct") == 0)
@@ -286,7 +286,7 @@ void MatchesCommand(
       else
         {
          UDFInvalidArgumentMessage(context,"symbol with value verbose, succinct, or terse");
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
      }
@@ -982,13 +982,13 @@ void JoinActivityCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
      
-   ruleName = CVToString(&theArg);
+   ruleName = mCVToString(&theArg);
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -997,7 +997,7 @@ void JoinActivityCommand(
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
 
-      argument = CVToString(&theArg);
+      argument = mCVToString(&theArg);
       if (strcmp(argument,"verbose") == 0)
         { output = VERBOSE; }
       else if (strcmp(argument,"succinct") == 0)
@@ -1007,7 +1007,7 @@ void JoinActivityCommand(
       else
         {
          UDFInvalidArgumentMessage(context,"symbol with value verbose, succinct, or terse");
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
      }
@@ -1293,11 +1293,11 @@ void TimetagFunction(
 
    if (ptr == NULL)
      {
-      CVSetInteger(returnValue,-1LL);
+      mCVSetInteger(returnValue,-1LL);
       return;
      }
 
-   CVSetInteger(returnValue,((struct patternEntity *) ptr)->timeTag);
+   mCVSetInteger(returnValue,((struct patternEntity *) ptr)->timeTag);
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
@@ -1318,7 +1318,7 @@ void RuleComplexityCommand(
    ruleName = GetConstructName(context,"rule-complexity","rule name");
    if (ruleName == NULL)
      {
-      CVSetInteger(returnValue,-1);
+      mCVSetInteger(returnValue,-1);
       return;
      }
 
@@ -1326,11 +1326,11 @@ void RuleComplexityCommand(
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
-      CVSetInteger(returnValue,-1);
+      mCVSetInteger(returnValue,-1);
       return;
      }
 
-   CVSetInteger(returnValue,rulePtr->complexity);
+   mCVSetInteger(returnValue,rulePtr->complexity);
   }
 
 /******************************************/

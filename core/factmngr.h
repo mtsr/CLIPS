@@ -68,6 +68,8 @@
 
 struct fact;
 
+typedef struct fact Fact;
+
 #include "conscomp.h"
 #include "evaluatn.h"
 #include "facthsh.h"

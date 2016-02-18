@@ -439,12 +439,14 @@ void PopRtnBrkContexts(
 /* PopulateRestriction: */
 /************************/
 void PopulateRestriction(
+   Environment *theEnv,
    unsigned *restriction,
    unsigned defaultRestriction,
    const char *restrictionString,
    int position)
    {
     int i = 0, currentPosition = 0, valuesRead = 0;
+    char buffer[2];
     
     *restriction = 0;
     
@@ -518,6 +520,15 @@ void PopulateRestriction(
 
           case '*':
             *restriction |= ANY_TYPE;
+            valuesRead++;
+            break;
+
+          default:
+            buffer[0] = theChar;
+            buffer[1] = 0;
+            EnvPrintRouter(theEnv,WERROR,"Invalid argument type character ");
+            EnvPrintRouter(theEnv,WERROR,buffer);
+            EnvPrintRouter(theEnv,WERROR,"\n");
             valuesRead++;
             break;
          }
@@ -687,7 +698,7 @@ bool CheckExpressionAgainstRestrictions(
         { i++; }
      }
    else
-     { PopulateRestriction(&defaultRestriction2,ANY_TYPE,restrictions,0); }
+     { PopulateRestriction(theEnv,&defaultRestriction2,ANY_TYPE,restrictions,0); }
      
    /*======================*/
    /* Check each argument. */
@@ -725,7 +736,7 @@ bool CheckExpressionAgainstRestrictions(
            argPtr != NULL;
            argPtr = argPtr->nextArg)
         {
-         PopulateRestriction(&argRestriction2,defaultRestriction2,restrictions,j);
+         PopulateRestriction(theEnv,&argRestriction2,defaultRestriction2,restrictions,j);
 
          if (CheckArgumentAgainstRestriction2(theEnv,argPtr,argRestriction2))
            {

@@ -199,22 +199,22 @@ bool EnvDefineFunction2WithContext(
 /*   function so that the KB can access it.            */
 /*******************************************************/
 bool EnvAddUDF(
-  void *theEnv,
-  const char *name,
-  const char *returnTypeChars,
-  void (*pointer)(UDFContext *,struct dataObject *),
-  const char *actualName,
+  Environment *theEnv,
+  const char *clipsFunctionName,
+  const char *returnTypes,
+  void (*cFunctionPointer)(UDFContext *,CLIPSValue *),
+  const char *cFunctionName,
   int minArgs,
   int maxArgs,
-  const char *restrictions,
+  const char *argumentTypes,
   void *context)
   {
    unsigned returnTypeBits;
    
-   PopulateRestriction(&returnTypeBits,ANY_TYPE,returnTypeChars,0);
+   PopulateRestriction(theEnv,&returnTypeBits,ANY_TYPE,returnTypes,0);
    
-   return(DefineFunction3(theEnv,name,'z',returnTypeBits,pointer,
-                          actualName,minArgs,maxArgs,restrictions,context));
+   return(DefineFunction3(theEnv,clipsFunctionName,'z',returnTypeBits,cFunctionPointer,
+                          cFunctionName,minArgs,maxArgs,argumentTypes,context));
   }
 
 /*************************************************************/
@@ -610,6 +610,7 @@ int GetNthRestriction(
 /*   for the nth parameter of a function.          */
 /***************************************************/
 unsigned GetNthRestriction2(
+  Environment *theEnv,
   struct FunctionDefinition *theFunction,
   int position)
   {
@@ -621,8 +622,8 @@ unsigned GetNthRestriction2(
    if (theFunction->restrictions == NULL) return(ANY_TYPE);
    restrictions = theFunction->restrictions->contents;
    
-   PopulateRestriction(&df,ANY_TYPE,restrictions,0);
-   PopulateRestriction(&rv,df,restrictions,position);
+   PopulateRestriction(theEnv,&df,ANY_TYPE,restrictions,0);
+   PopulateRestriction(theEnv,&rv,df,restrictions,position);
 
    return rv;
   }
@@ -801,27 +802,27 @@ void AssignErrorValue(
   UDFContext *context)
   {
    if (context->theFunction->unknownReturnValueType & BOOLEAN_TYPE)
-     { CVSetBoolean(context->returnValue,false); }
+     { mCVSetBoolean(context->returnValue,false); }
    else if (context->theFunction->unknownReturnValueType & STRING_TYPE)
-     { CVSetString(context->returnValue,""); }
+     { mCVSetString(context->returnValue,""); }
    else if (context->theFunction->unknownReturnValueType & SYMBOL_TYPE)
-     { CVSetSymbol(context->returnValue,"nil"); }
+     { mCVSetSymbol(context->returnValue,"nil"); }
    else if (context->theFunction->unknownReturnValueType & INTEGER_TYPE)
-     { CVSetInteger(context->returnValue,0); }
+     { mCVSetInteger(context->returnValue,0); }
    else if (context->theFunction->unknownReturnValueType & FLOAT_TYPE)
-     { CVSetFloat(context->returnValue,0.0); }
+     { mCVSetFloat(context->returnValue,0.0); }
    else if (context->theFunction->unknownReturnValueType & MULTIFIELD_TYPE)
      { EnvSetMultifieldErrorValue(context->environment,context->returnValue); }
    else if (context->theFunction->unknownReturnValueType & INSTANCE_NAME_TYPE)
-     { CVSetInstanceName(context->returnValue,"nil"); }
+     { mCVSetInstanceName(context->returnValue,"nil"); }
    else if (context->theFunction->unknownReturnValueType & FACT_ADDRESS_TYPE)
-     { CVSetFactAddress(context->returnValue,&FactData(context->environment)->DummyFact); }
+     { mCVSetFactAddress(context->returnValue,&FactData(context->environment)->DummyFact); }
    else if (context->theFunction->unknownReturnValueType & INSTANCE_ADDRESS_TYPE)
-     { CVSetInstanceAddress(context->returnValue,&InstanceData(context->environment)->DummyInstance); }
+     { mCVSetInstanceAddress(context->returnValue,&InstanceData(context->environment)->DummyInstance); }
    else if (context->theFunction->unknownReturnValueType & EXTERNAL_ADDRESS_TYPE)
      { CVSetExternalAddress(context->returnValue,NULL,0); }
    else
-     { CVSetVoid(context->returnValue); }
+     { mCVSetVoid(context->returnValue); }
   }
 
 /*********************/
@@ -1163,6 +1164,16 @@ void *UDFContextUserContext(
   UDFContext *context)
   {
    return context->theFunction->context;
+  }
+
+/*************/
+/* UDFCVInit */
+/*************/
+void UDFCVInit(
+  UDFContext *context,
+  CLIPSValue *theValue)
+  {
+   theValue->environment = context->environment;
   }
 
 /**************/

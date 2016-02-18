@@ -149,7 +149,7 @@ void GetQueryFact(
 
    core = FindQueryCore(theEnv,ValueToInteger(GetpValue(GetFirstArgument())));
    
-   CVSetFactAddress(returnValue,core->solns[ValueToInteger(GetpValue(GetFirstArgument()->nextArg))]);
+   mCVSetFactAddress(returnValue,core->solns[ValueToInteger(GetpValue(GetFirstArgument()->nextArg))]);
   }
 
 /***************************************************************************
@@ -171,7 +171,7 @@ void GetQueryFactSlot(
    short position;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 
    core = FindQueryCore(theEnv,ValueToInteger(GetpValue(GetFirstArgument())));
    theFact = core->solns[ValueToInteger(GetpValue(GetFirstArgument()->nextArg))];
@@ -286,7 +286,7 @@ void AnyFacts(
                                       "any-factp",&rcnt);
    if (qtemplates == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
@@ -300,7 +300,7 @@ void AnyFacts(
    rtn_struct(theEnv,query_core,FactQueryData(theEnv)->QueryCore);
    PopQueryCore(theEnv);
    DeleteQueryTemplates(theEnv,qtemplates);
-   CVSetBoolean(returnValue,testResult);
+   mCVSetBoolean(returnValue,testResult);
   }
 
 /******************************************************************************
@@ -485,7 +485,7 @@ void QueryDoForAllFacts(
    unsigned rcnt;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    
    qtemplates = DetermineQueryTemplates(theEnv,GetFirstArgument()->nextArg->nextArg,
                                       "do-for-all-facts",&rcnt);

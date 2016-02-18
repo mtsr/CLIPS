@@ -366,7 +366,7 @@ void WatchCommand(
    
    if (EnvArgTypeCheck(theEnv,"watch",1,SYMBOL,&theValue) == false) return;
    
-   argument = CVToString(&theValue);
+   argument = mCVToString(&theValue);
    wPtr = ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
      {
@@ -416,7 +416,7 @@ void UnwatchCommand(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
    
-   argument = CVToString(&theValue);
+   argument = mCVToString(&theValue);
    wPtr = ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
      {
@@ -479,7 +479,7 @@ void ListWatchItemsCommand(
    /*=======================================*/
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
-   wPtr = ValidWatchItem(theEnv,CVToString(&theValue),&recognized);
+   wPtr = ValidWatchItem(theEnv,mCVToString(&theValue),&recognized);
    if ((recognized == false) || (wPtr == NULL))
      {
       EnvSetEvaluationError(theEnv,true);
@@ -539,13 +539,13 @@ void GetWatchItemCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue))
      { return; }
      
-   argument = CVToString(&theValue);
+   argument = mCVToString(&theValue);
    ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
      {
       EnvSetEvaluationError(theEnv,true);
       ExpectedTypeError1(theEnv,"get-watch-item",1,"watchable symbol");
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -554,9 +554,9 @@ void GetWatchItemCommand(
    /*===========================*/
 
    if (EnvGetWatchItem(theEnv,argument) == 1)
-     { CVSetBoolean(returnValue,true); }
+     { mCVSetBoolean(returnValue,true); }
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
   }
 
 /*************************************************************/

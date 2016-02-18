@@ -500,7 +500,7 @@ void SDCCommand(
    CLIPSValue theArg;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
+   mCVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
 
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
@@ -517,7 +517,7 @@ void GDCCommand(
   CLIPSValue *returnValue)
   {
    Environment *theEnv = UDFContextEnvironment(context);
-   CVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
+   mCVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
   }
 
 /******************************************************/

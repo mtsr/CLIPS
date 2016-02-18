@@ -297,7 +297,7 @@ void StrLengthFunction(
    /* Return the length of the string or symbol. */
    /*============================================*/
    
-   CVSetInteger(returnValue,UTF8Length(CVToString(&theArg)));
+   mCVSetInteger(returnValue,UTF8Length(mCVToString(&theArg)));
   }
 
 /****************************************/
@@ -327,7 +327,7 @@ void UpcaseFunction(
    /* lower case alphabetic characters.                    */
    /*======================================================*/
 
-   osptr = CVToString(returnValue);
+   osptr = mCVToString(returnValue);
    slen = strlen(osptr) + 1;
    nsptr = (char *) gm2(theEnv,slen);
 
@@ -375,7 +375,7 @@ void LowcaseFunction(
    /* upper case alphabetic characters.                    */
    /*======================================================*/
 
-   osptr = CVToString(returnValue);
+   osptr = mCVToString(returnValue);
    slen = strlen(osptr) + 1;
    nsptr = (char *) gm2(theEnv,slen);
 
@@ -427,11 +427,11 @@ void StrCompareFunction(
       if (! UDFNextArgument(context,INTEGER_TYPE,&arg3))
         { return; }
 
-      compareResult = strncmp(CVToString(&arg1),CVToString(&arg2),
-                            (STD_SIZE) CVToInteger(&arg3));
+      compareResult = strncmp(mCVToString(&arg1),mCVToString(&arg2),
+                            (STD_SIZE) mCVToInteger(&arg3));
      }
    else
-     { compareResult = strcmp(CVToString(&arg1),CVToString(&arg2)); }
+     { compareResult = strcmp(mCVToString(&arg1),mCVToString(&arg2)); }
 
    /*========================================================*/
    /* Return Values are as follows:                          */
@@ -441,11 +441,11 @@ void StrCompareFunction(
    /*========================================================*/
 
    if (compareResult < 0)
-     { CVSetInteger(returnValue,-1L); }
+     { mCVSetInteger(returnValue,-1L); }
    else if (compareResult > 0)
-     { CVSetInteger(returnValue,1L); }
+     { mCVSetInteger(returnValue,1L); }
    else
-     { CVSetInteger(returnValue,0L); }
+     { mCVSetInteger(returnValue,0L); }
   }
 
 /*******************************************/
@@ -469,26 +469,26 @@ void SubStringFunction(
    if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
      { return; }
 
-   if (CVToInteger(&theArg) < 1)
+   if (mCVToInteger(&theArg) < 1)
      { start = 0; }
    else
-     { start = (size_t) CVToInteger(&theArg) - 1; }
+     { start = (size_t) mCVToInteger(&theArg) - 1; }
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return; }
 
-   if (CVToInteger(&theArg) < 1)
+   if (mCVToInteger(&theArg) < 1)
      {
-      CVSetString(returnValue,"");
+      mCVSetString(returnValue,"");
       return;
      }
    else
-     { end = (size_t) CVToInteger(&theArg) - 1; }
+     { end = (size_t) mCVToInteger(&theArg) - 1; }
 
    if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
      { return; }
    
-   tempString = CVToString(&theArg);
+   tempString = mCVToString(&theArg);
    
    /*================================================*/
    /* If parameters are out of range return an error */
@@ -506,7 +506,7 @@ void SubStringFunction(
 
    if ((start > end) || (length == 0))
      {
-      CVSetString(returnValue,"");
+      mCVSetString(returnValue,"");
       return;
      }
 
@@ -531,7 +531,7 @@ void SubStringFunction(
    /* Return the new string. */
    /*========================*/
 
-   CVSetString(returnValue,returnString);
+   mCVSetString(returnValue,returnString);
    rm(theEnv,returnString,(unsigned) (end - start + 2));
   }
 
@@ -547,7 +547,7 @@ void StrIndexFunction(
    const char *strg1, *strg2, *strg3;
    size_t i, j;
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 
    /*===================================*/
    /* Check and retrieve the arguments. */
@@ -559,8 +559,8 @@ void StrIndexFunction(
    if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg2))
      { return; }
 
-   strg1 = CVToString(&theArg1);
-   strg2 = CVToString(&theArg2);
+   strg1 = mCVToString(&theArg1);
+   strg2 = mCVToString(&theArg2);
 
    /*=================================*/
    /* Find the position in string2 of */
@@ -569,7 +569,7 @@ void StrIndexFunction(
 
    if (strlen(strg1) == 0)
      {
-      CVSetInteger(returnValue,(long long) UTF8Length(strg2) + 1LL);
+      mCVSetInteger(returnValue,(long long) UTF8Length(strg2) + 1LL);
       return;
      }
      
@@ -581,7 +581,7 @@ void StrIndexFunction(
 
       if (*(strg1+j) == '\0')
         {
-         CVSetInteger(returnValue,(long long) UTF8CharNum(strg3,i));
+         mCVSetInteger(returnValue,(long long) UTF8CharNum(strg3,i));
          return;
         }
      }
@@ -605,7 +605,7 @@ void StringToFieldFunction(
 
    if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
      {
-      CVSetSymbol(returnValue,"*** ERROR ***");
+      mCVSetSymbol(returnValue,"*** ERROR ***");
       return;
      }
 
@@ -613,7 +613,7 @@ void StringToFieldFunction(
    /* Convert the string to an atom. */
    /*================================*/
 
-   StringToField(UDFContextEnvironment(context),CVToString(&theArg),returnValue);
+   StringToField(UDFContextEnvironment(context),mCVToString(&theArg),returnValue);
   }
 
 /*************************************************************/
@@ -686,7 +686,7 @@ void EvalFunction(
    /* Evaluate the string. */
    /*======================*/
 
-   EnvEval(UDFContextEnvironment(context),CVToString(&theArg),returnValue);
+   EnvEval(UDFContextEnvironment(context),mCVToString(&theArg),returnValue);
   }
   
 /*****************************/
@@ -727,7 +727,7 @@ bool EnvEval(
    gensprintf(logicalNameBuffer,"Eval-%d",depth);
    if (OpenStringSource(theEnv,logicalNameBuffer,theString,0) == 0)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       depth--;
       return(false);
      }
@@ -765,7 +765,7 @@ bool EnvEval(
      {
       EnvSetEvaluationError(theEnv,true);
       CloseStringSource(theEnv,logicalNameBuffer);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       depth--;
       ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
       return(false);
@@ -782,7 +782,7 @@ bool EnvEval(
       EnvPrintRouter(theEnv,WERROR,"expand$ must be used in the argument list of a function call.\n");
       EnvSetEvaluationError(theEnv,true);
       CloseStringSource(theEnv,logicalNameBuffer);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       ReturnExpression(theEnv,top);
       depth--;
       ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
@@ -839,7 +839,7 @@ void EvalFunction(
    returnValue->environment = theEnv;
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function eval does not work in run time modules.\n");
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
   }
 
 /*****************************************************/
@@ -854,7 +854,7 @@ bool EnvEval(
    returnValue->environment = theEnv;
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function eval does not work in run time modules.\n");
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    return(false);
   }
 
@@ -882,7 +882,7 @@ void BuildFunction(
    /* Build the construct. */
    /*======================*/
 
-   CVSetBoolean(returnValue,(EnvBuild(UDFContextEnvironment(context),CVToString(&theArg))));
+   mCVSetBoolean(returnValue,(EnvBuild(UDFContextEnvironment(context),mCVToString(&theArg))));
   }
   
 /******************************/
@@ -1008,7 +1008,7 @@ void BuildFunction(
   {
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function build does not work in run time modules.\n");
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
   }
 
 /******************************************************/

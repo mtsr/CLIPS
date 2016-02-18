@@ -256,7 +256,7 @@ void SetupGenericFunctions(
    EnvAddUDF(theEnv,"list-defgenerics","v", ListDefgenericsCommand,"ListDefgenericsCommand",0,1,"y",NULL);
    EnvAddUDF(theEnv,"ppdefmethod","v", PPDefmethodCommand,"PPDefmethodCommand",2,2,"*;y;l",NULL);
    EnvAddUDF(theEnv,"list-defmethods","v", ListDefmethodsCommand,"ListDefmethodsCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"preview-generic","v", PreviewGeneric,"PreviewGeneric",1,UNBOUNDED,"*;w",NULL);
+   EnvAddUDF(theEnv,"preview-generic","v", PreviewGeneric,"PreviewGeneric",1,UNBOUNDED,"*;y",NULL);
 #endif
 
    EnvAddUDF(theEnv,"get-defgeneric-list","m", GetDefgenericListFunction,
@@ -591,21 +591,21 @@ void UndefmethodCommand(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
 
-   gfunc = LookupDefgenericByMdlOrScope(theEnv,CVToString(&theArg));
-   if ((gfunc == NULL) ? (strcmp(CVToString(&theArg),"*") != 0) : false)
+   gfunc = LookupDefgenericByMdlOrScope(theEnv,mCVToString(&theArg));
+   if ((gfunc == NULL) ? (strcmp(mCVToString(&theArg),"*") != 0) : false)
      {
       PrintErrorID(theEnv,"GENRCCOM",1,false);
       EnvPrintRouter(theEnv,WERROR,"No such generic function ");
-      EnvPrintRouter(theEnv,WERROR,CVToString(&theArg));
+      EnvPrintRouter(theEnv,WERROR,mCVToString(&theArg));
       EnvPrintRouter(theEnv,WERROR," in function undefmethod.\n");
       return;
      }
      
    if (! UDFNextArgument(context,ANY_TYPE,&theArg)) return;
    
-   if (CVIsType(&theArg,SYMBOL_TYPE))
+   if (mCVIsType(&theArg,SYMBOL_TYPE))
      {
-      if (strcmp(CVToString(&theArg),"*") != 0)
+      if (strcmp(mCVToString(&theArg),"*") != 0)
         {
          PrintErrorID(theEnv,"GENRCCOM",2,false);
          EnvPrintRouter(theEnv,WERROR,"Expected a valid method index in function undefmethod.\n");
@@ -613,9 +613,9 @@ void UndefmethodCommand(
         }
       mi = 0;
      }
-   else if (CVIsType(&theArg,INTEGER_TYPE))
+   else if (mCVIsType(&theArg,INTEGER_TYPE))
      {
-      mi = (long) CVToInteger(&theArg);
+      mi = (long) mCVToInteger(&theArg);
       if (mi == 0)
         {
          PrintErrorID(theEnv,"GENRCCOM",2,false);
@@ -922,14 +922,14 @@ void PPDefmethodCommand(
    Environment *theEnv = UDFContextEnvironment(context);
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
-   gname = CVToString(&theArg);
+   gname = mCVToString(&theArg);
    
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg)) return;
  
    gfunc = CheckGenericExists(theEnv,"ppdefmethod",gname);
    if (gfunc == NULL)
      return;
-   gi = CheckMethodExists(theEnv,"ppdefmethod",gfunc,(long) CVToInteger(&theArg));
+   gi = CheckMethodExists(theEnv,"ppdefmethod",gfunc,(long) mCVToInteger(&theArg));
    if (gi == -1)
      return;
    if (gfunc->methods[gi].ppForm != NULL)
@@ -958,7 +958,7 @@ void ListDefmethodsCommand(
    else
      {
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
-      gfunc = CheckGenericExists(theEnv,"list-defmethods",CVToString(&theArg));
+      gfunc = CheckGenericExists(theEnv,"list-defmethods",mCVToString(&theArg));
       if (gfunc != NULL)
         EnvListDefmethods(theEnv,WDISPLAY,(void *) gfunc);
      }
@@ -1120,7 +1120,7 @@ void GetDefmethodListCommand(
      {
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
-      gfunc = CheckGenericExists(theEnv,"get-defmethod-list",CVToString(&theArg));
+      gfunc = CheckGenericExists(theEnv,"get-defmethod-list",mCVToString(&theArg));
       if (gfunc != NULL)
         { EnvGetDefmethodList(theEnv,(void *) gfunc,returnValue); }
       else
@@ -1205,7 +1205,7 @@ void GetMethodRestrictionsCommand(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
-   gfunc = CheckGenericExists(theEnv,"get-method-restrictions",CVToString(&theArg));
+   gfunc = CheckGenericExists(theEnv,"get-method-restrictions",mCVToString(&theArg));
    if (gfunc == NULL)
      {
       EnvSetMultifieldErrorValue(theEnv,returnValue);
@@ -1215,12 +1215,12 @@ void GetMethodRestrictionsCommand(
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return; }
      
-   if (CheckMethodExists(theEnv,"get-method-restrictions",gfunc,(long) CVToInteger(&theArg)) == -1)
+   if (CheckMethodExists(theEnv,"get-method-restrictions",gfunc,(long) mCVToInteger(&theArg)) == -1)
      {
       EnvSetMultifieldErrorValue(theEnv,returnValue);
       return;
      }
-   EnvGetMethodRestrictions(theEnv,(void *) gfunc,(unsigned) CVToInteger(&theArg),returnValue);
+   EnvGetMethodRestrictions(theEnv,(void *) gfunc,(unsigned) mCVToInteger(&theArg),returnValue);
   }
 
 /***********************************************************************
@@ -1857,7 +1857,7 @@ void TypeCommand(
    
    EvaluateExpression(theEnv,GetFirstArgument(),result);
    
-   CVSetSymbol(returnValue,TypeName(theEnv,result->type));
+   mCVSetSymbol(returnValue,TypeName(theEnv,result->type));
   }
 
 #endif

@@ -125,7 +125,7 @@ void FactRelationFunction(
 
    if (theFact == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -173,7 +173,7 @@ void FactExistpFunction(
 
    theFact = GetFactAddressOrIndexArgument(context,false);
 
-   CVSetBoolean(returnValue,EnvFactExistp(UDFContextEnvironment(context),theFact));
+   mCVSetBoolean(returnValue,EnvFactExistp(UDFContextEnvironment(context),theFact));
   }
 
 /***********************************/
@@ -214,7 +214,7 @@ void FactSlotValueFunction(
    theFact = GetFactAddressOrIndexArgument(context,true);
    if (theFact == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -229,7 +229,7 @@ void FactSlotValueFunction(
    /* Get the slot's value. */
    /*=======================*/
 
-   FactSlotValue(UDFContextEnvironment(context),theFact,CVToString(&theArg),returnValue);
+   FactSlotValue(UDFContextEnvironment(context),theFact,mCVToString(&theArg),returnValue);
   }
 
 /***************************************/
@@ -257,7 +257,7 @@ void FactSlotValue(
          EnvSetEvaluationError(theEnv,true);
          InvalidDeftemplateSlotMessage(theEnv,theSlotName,
                                        ValueToString(theFact->whichDeftemplate->header.name),false);
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
      }
@@ -267,7 +267,7 @@ void FactSlotValue(
       EnvSetEvaluationError(theEnv,true);
       InvalidDeftemplateSlotMessage(theEnv,theSlotName,
                                     ValueToString(theFact->whichDeftemplate->header.name),false);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -298,7 +298,7 @@ void FactSlotNamesFunction(
    theFact = GetFactAddressOrIndexArgument(context,true);
    if (theFact == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -393,9 +393,9 @@ void GetFactListFunction(
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
 
-      if ((theModule = (struct defmodule *) EnvFindDefmodule(theEnv,CVToString(&theArg))) == NULL)
+      if ((theModule = (struct defmodule *) EnvFindDefmodule(theEnv,mCVToString(&theArg))) == NULL)
         {
-         if (strcmp("*",CVToString(&theArg)) != 0)
+         if (strcmp("*",mCVToString(&theArg)) != 0)
            {
             EnvSetMultifieldErrorValue(theEnv,returnValue);
             UDFInvalidArgumentMessage(context,"defmodule name");

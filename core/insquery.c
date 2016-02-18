@@ -168,7 +168,7 @@ void GetQueryInstanceSlot(
    QUERY_CORE *core;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 
    core = FindQueryCore(theEnv,ValueToInteger(GetpValue(GetFirstArgument())));
    ins = core->solns[ValueToInteger(GetpValue(GetFirstArgument()->nextArg))];
@@ -271,7 +271,7 @@ void AnyInstances(
                                       "any-instancep",&rcnt);
    if (qclasses == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
@@ -286,7 +286,7 @@ void AnyInstances(
    PopQueryCore(theEnv);
    DeleteQueryClasses(theEnv,qclasses);
    
-   CVSetBoolean(returnValue,testResult);
+   mCVSetBoolean(returnValue,testResult);
   }
 
 /******************************************************************************
@@ -429,7 +429,7 @@ void QueryDoForInstance(
    unsigned rcnt;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    qclasses = DetermineQueryClasses(theEnv,GetFirstArgument()->nextArg->nextArg,
                                       "do-for-instance",&rcnt);
    if (qclasses == NULL)
@@ -470,7 +470,7 @@ void QueryDoForAllInstances(
    unsigned rcnt;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    qclasses = DetermineQueryClasses(theEnv,GetFirstArgument()->nextArg->nextArg,
                                       "do-for-all-instances",&rcnt);
    if (qclasses == NULL)
@@ -521,7 +521,7 @@ void DelayedQueryDoForAllInstances(
    struct CLIPSBlock gcBlock;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    qclasses = DetermineQueryClasses(theEnv,GetFirstArgument()->nextArg->nextArg,
                                       "delayed-do-for-all-instances",&rcnt);
    if (qclasses == NULL)

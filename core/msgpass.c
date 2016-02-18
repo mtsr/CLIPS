@@ -230,7 +230,7 @@ void SendCommand(
    CLIPSValue theArg;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 
    if (! UDFNthArgument(context,2,SYMBOL_TYPE,&theArg)) return;
    msg = (SYMBOL_HN *) theArg.value;
@@ -273,7 +273,7 @@ void NextHandlerAvailableFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetBoolean(returnValue,NextHandlerAvailable(UDFContextEnvironment(context)));
+   mCVSetBoolean(returnValue,NextHandlerAvailable(UDFContextEnvironment(context)));
   }
 
 /*****************************************************
@@ -334,7 +334,7 @@ void CallNextHandler(
 #endif
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    
    EvaluationData(theEnv)->EvaluationError = false;
    if (EvaluationData(theEnv)->HaltExecution)

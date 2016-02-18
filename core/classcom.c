@@ -686,10 +686,10 @@ SYMBOL_HN *CheckClassAndSlot(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      return(NULL);
      
-   *cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   *cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (*cls == NULL)
      {
-      ClassExistError(theEnv,func,CVToString(&theArg));
+      ClassExistError(theEnv,func,mCVToString(&theArg));
       return(NULL);
      }
 
@@ -808,7 +808,7 @@ void GetClassDefaultsModeCommand(
   CLIPSValue *returnValue)
   {
    Environment *theEnv = UDFContextEnvironment(context);
-   CVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
+   mCVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
   }
 
 /***************************************************/
@@ -833,7 +833,7 @@ void SetClassDefaultsModeCommand( // TBD enum?
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
-   argument = CVToString(&theArg);
+   argument = mCVToString(&theArg);
 
    /*=============================================*/
    /* Set the strategy to the specified strategy. */
@@ -846,7 +846,7 @@ void SetClassDefaultsModeCommand( // TBD enum?
    else
      {
       UDFInvalidArgumentMessage(context,"symbol with value conservation or convenience");
-      CVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
+      mCVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
       return;
      }
 
@@ -854,7 +854,7 @@ void SetClassDefaultsModeCommand( // TBD enum?
    /* Return the old value of the mode. */
    /*===================================*/
 
-   CVSetSymbol(returnValue,GetClassDefaultsModeName(oldMode));
+   mCVSetSymbol(returnValue,GetClassDefaultsModeName(oldMode));
   }
 
 /*******************************************************************/

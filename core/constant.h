@@ -88,11 +88,11 @@
 #endif
 
 #ifndef CREATION_DATE_STRING
-#define CREATION_DATE_STRING "2/02/16"
+#define CREATION_DATE_STRING "2/17/16"
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (Cypher Alpha 2/02/16)\n"
+#define BANNER_STRING "         CLIPS (Cypher Alpha 2/17/16)\n"
 #endif
 
 /*************************/
@@ -132,16 +132,16 @@
 
 typedef enum
   {
-   VOID_TYPE = (1 << 0),
-   FLOAT_TYPE = (1 << 1),
-   INTEGER_TYPE = (1 << 2),
-   SYMBOL_TYPE = (1 << 3),
-   STRING_TYPE = (1 << 4),
-   MULTIFIELD_TYPE = (1 << 5),
-   EXTERNAL_ADDRESS_TYPE = (1 << 6),
-   FACT_ADDRESS_TYPE = (1 << 7),
-   INSTANCE_ADDRESS_TYPE = (1 << 8),
-   INSTANCE_NAME_TYPE = (1 << 9),
+   FLOAT_TYPE = (1 << 0),
+   INTEGER_TYPE = (1 << 1),
+   SYMBOL_TYPE = (1 << 2),
+   STRING_TYPE = (1 << 3),
+   MULTIFIELD_TYPE = (1 << 4),
+   EXTERNAL_ADDRESS_TYPE = (1 << 5),
+   FACT_ADDRESS_TYPE = (1 << 6),
+   INSTANCE_ADDRESS_TYPE = (1 << 7),
+   INSTANCE_NAME_TYPE = (1 << 8),
+   VOID_TYPE = (1 << 9),
    BOOLEAN_TYPE = (1 << 10),
    NUMBER_TYPES = INTEGER_TYPE | FLOAT_TYPE,
    LEXEME_TYPES = SYMBOL_TYPE | STRING_TYPE,
@@ -153,6 +153,7 @@ typedef enum
 
 typedef long long CLIPSInteger;
 typedef double CLIPSFloat;
+typedef const char * CLIPSString;
 
 /****************************************************/
 /* The first 9 primitive types need to retain their */
@@ -168,6 +169,8 @@ typedef double CLIPSFloat;
 #define FACT_ADDRESS                    6
 #define INSTANCE_ADDRESS                7
 #define INSTANCE_NAME                   8
+
+#define RVOID                           9
 
 #define FCALL                          30
 #define GCALL                          31
@@ -239,8 +242,6 @@ typedef double CLIPSFloat;
 #define RPAREN                        171
 #define STOP                          172
 #define UNKNOWN_VALUE                 173
-
-#define RVOID                         175
 
 #define INTEGER_OR_FLOAT              180
 #define SYMBOL_OR_STRING              181

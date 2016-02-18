@@ -117,7 +117,7 @@ void CheckSyntaxFunction(
    /* Check the syntax. */
    /*===================*/
 
-   CheckSyntax(UDFContextEnvironment(context),CVToString(&theArg),returnValue);
+   CheckSyntax(UDFContextEnvironment(context),mCVToString(&theArg),returnValue);
   }
 
 /*********************************/
@@ -139,7 +139,7 @@ bool CheckSyntax(
    /* (TRUE for problems found).   */
    /*==============================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
 
    /*===========================================*/
    /* Create a string source router so that the */
@@ -159,7 +159,7 @@ bool CheckSyntax(
    if (theToken.type != LPAREN)
      {
       CloseStringSource(theEnv,"check-syntax");
-      CVSetSymbol(returnValue,"MISSING-LEFT-PARENTHESIS");
+      mCVSetSymbol(returnValue,"MISSING-LEFT-PARENTHESIS");
       return(true);
      }
 
@@ -172,7 +172,7 @@ bool CheckSyntax(
    if (theToken.type != SYMBOL)
      {
       CloseStringSource(theEnv,"check-syntax");
-      CVSetSymbol(returnValue,"EXPECTED-SYMBOL-AFTER-LEFT-PARENTHESIS");
+      mCVSetSymbol(returnValue,"EXPECTED-SYMBOL-AFTER-LEFT-PARENTHESIS");
       return(true);
      }
 
@@ -222,7 +222,7 @@ bool CheckSyntax(
          return(true);
         }
 
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       DeactivateErrorCapture(theEnv);
       return(false);
      }
@@ -245,7 +245,7 @@ bool CheckSyntax(
 
    if (theToken.type != STOP)
      {
-      CVSetSymbol(returnValue,"EXTRANEOUS-INPUT-AFTER-LAST-PARENTHESIS");
+      mCVSetSymbol(returnValue,"EXTRANEOUS-INPUT-AFTER-LAST-PARENTHESIS");
       DeactivateErrorCapture(theEnv);
       ReturnExpression(theEnv,top);
       return(true);
@@ -254,7 +254,7 @@ bool CheckSyntax(
    DeactivateErrorCapture(theEnv);
 
    ReturnExpression(theEnv,top);
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    return(false);
   }
 

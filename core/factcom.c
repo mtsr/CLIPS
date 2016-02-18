@@ -249,7 +249,7 @@ void AssertCommand(
    if (error)
      {
       ReturnFact(theEnv,newFact);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -264,9 +264,9 @@ void AssertCommand(
    /*========================================*/
 
    if (theFact != NULL)
-     { CVSetFactAddress(returnValue,theFact); }
+     { mCVSetFactAddress(returnValue,theFact); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
 
    return;
   }
@@ -302,7 +302,7 @@ void RetractCommand(
       /* address, we can directly retract it. */
       /*======================================*/
 
-      if (CVIsType(&theArg,FACT_ADDRESS_TYPE))
+      if (mCVIsType(&theArg,FACT_ADDRESS_TYPE))
         { EnvRetract(theEnv,CVToRawValue(&theArg)); }
 
       /*===============================================*/
@@ -311,13 +311,13 @@ void RetractCommand(
       /* to be retracted.                              */
       /*===============================================*/
 
-      else if (CVIsType(&theArg,INTEGER_TYPE))
+      else if (mCVIsType(&theArg,INTEGER_TYPE))
         {
          /*==========================================*/
          /* A fact index must be a positive integer. */
          /*==========================================*/
 
-         factIndex = CVToInteger(&theArg);
+         factIndex = mCVToInteger(&theArg);
          if (factIndex < 0)
            {
             UDFInvalidArgumentMessage(context,"fact-address, fact-index, or the symbol *");
@@ -350,8 +350,8 @@ void RetractCommand(
       /* symbol *, then all facts are retracted.    */
       /*============================================*/
 
-      else if ((CVIsType(&theArg,SYMBOL_TYPE)) ?
-               (strcmp(CVToString(&theArg),"*") == 0) : false)
+      else if ((mCVIsType(&theArg,SYMBOL_TYPE)) ?
+               (strcmp(mCVToString(&theArg),"*") == 0) : false)
         {
          RemoveAllFacts(theEnv);
          return;
@@ -385,7 +385,7 @@ void SetFactDuplicationCommand(
    /* Get the old value of the fact duplication behavior. */
    /*=====================================================*/
 
-   CVSetBoolean(returnValue,EnvGetFactDuplication(theEnv));
+   mCVSetBoolean(returnValue,EnvGetFactDuplication(theEnv));
 
    /*========================*/
    /* Evaluate the argument. */
@@ -412,7 +412,7 @@ void GetFactDuplicationCommand(
   {
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,EnvGetFactDuplication(theEnv));
+   mCVSetBoolean(returnValue,EnvGetFactDuplication(theEnv));
   }
 
 /*******************************************/
@@ -440,11 +440,11 @@ void FactIndexFunction(
 
    if (((struct fact *) GetValue(theArg))->garbage)
      {
-      CVSetInteger(returnValue,-1L);
+      mCVSetInteger(returnValue,-1L);
       return;
      }
 
-   CVSetInteger(returnValue,EnvFactIndex(UDFContextEnvironment(context),GetValue(theArg)));
+   mCVSetInteger(returnValue,EnvFactIndex(UDFContextEnvironment(context),GetValue(theArg)));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -492,13 +492,13 @@ void FactsCommand(
    /* to see that a valid module was specified.     */
    /*===============================================*/
 
-   if (CVIsType(&theArg,SYMBOL_TYPE))
+   if (mCVIsType(&theArg,SYMBOL_TYPE))
      {
-      theModule = (struct defmodule *) EnvFindDefmodule(theEnv,CVToString(&theArg));
-      if ((theModule == NULL) && (strcmp(CVToString(&theArg),"*") != 0))
+      theModule = (struct defmodule *) EnvFindDefmodule(theEnv,mCVToString(&theArg));
+      if ((theModule == NULL) && (strcmp(mCVToString(&theArg),"*") != 0))
         {
          EnvSetEvaluationError(theEnv,true);
-         CantFindItemErrorMessage(theEnv,"defmodule",CVToString(&theArg));
+         CantFindItemErrorMessage(theEnv,"defmodule",mCVToString(&theArg));
          return;
         }
 
@@ -510,9 +510,9 @@ void FactsCommand(
    /* check to see that a valid index was specified. */
    /*================================================*/
 
-   else if (CVIsType(&theArg,INTEGER_TYPE))
+   else if (mCVIsType(&theArg,INTEGER_TYPE))
      {
-      start = CVToInteger(&theArg);
+      start = mCVToInteger(&theArg);
       if (start < 0)
         {
          ExpectedTypeError1(theEnv,"facts",1,"symbol or positive number");
@@ -676,7 +676,7 @@ static long long GetFactsArgument(
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return(INVALID); }
      
-   factIndex = CVToInteger(&theArg);
+   factIndex = mCVToInteger(&theArg);
 
    if (factIndex < 0)
      {
@@ -713,11 +713,11 @@ void AssertStringFunction(
    /* string to a fact and then assert it.     */
    /*==========================================*/
 
-   theFact = (struct fact *) EnvAssertString(UDFContextEnvironment(context),CVToString(&theArg));
+   theFact = (struct fact *) EnvAssertString(UDFContextEnvironment(context),mCVToString(&theArg));
    if (theFact != NULL)
-     { CVSetFactAddress(returnValue,theFact); }
+     { mCVSetFactAddress(returnValue,theFact); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /******************************************/
@@ -747,7 +747,7 @@ void SaveFactsCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
@@ -761,7 +761,7 @@ void SaveFactsCommand(
      {
       if (EnvArgTypeCheck(theEnv,"save-facts",2,SYMBOL,&theValue) == false)
         {
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
 
@@ -774,7 +774,7 @@ void SaveFactsCommand(
       else
         {
          ExpectedTypeError1(theEnv,"save-facts",2,"symbol with value local or visible");
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
      }
@@ -792,9 +792,9 @@ void SaveFactsCommand(
    /*====================================*/
 
    if (EnvSaveFactsDriver(theEnv,fileName,saveCode,theList) == false)
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
    else
-     { CVSetBoolean(returnValue,true); }
+     { mCVSetBoolean(returnValue,true); }
   }
 
 /******************************************/
@@ -813,7 +813,7 @@ void LoadFactsCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -823,11 +823,11 @@ void LoadFactsCommand(
 
    if (EnvLoadFacts(UDFContextEnvironment(context),fileName) == false)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /**************************************************************/

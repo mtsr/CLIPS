@@ -147,7 +147,7 @@ void MultifieldFunctionDefinitions(
    EnvAddUDF(theEnv,"implode$",        "s", ImplodeFunction, "ImplodeFunction", 1,1,"m",NULL);
    EnvAddUDF(theEnv,"nth$",     "synldife", NthFunction, "NthFunction", 2,2,";l;m",NULL);
    EnvAddUDF(theEnv,"member$",       "blm",
-                    MemberFunction, "MemberFunction", 2,2," ;*;m",NULL);
+                    MemberFunction, "MemberFunction", 2,2,";*;m",NULL);
    EnvAddUDF(theEnv,"member", "blm",
                     MemberFunction, "MemberFunction", 2,2, ";*;m",NULL);
    EnvAddUDF(theEnv,"subsetp",     "b",  SubsetpFunction, "SubsetpFunction", 2,2,";m;m",NULL);
@@ -193,7 +193,7 @@ void DeleteFunction(
    /*=================================================*/
 
    if (DeleteMultiValueField(theEnv,returnValue,&value1,
-            CVToInteger(&value2),CVToInteger(&value3),"delete$") == false)/* TBD */
+            mCVToInteger(&value2),mCVToInteger(&value3),"delete$") == false)/* TBD */
      {
       EnvSetEvaluationError(theEnv,true);
       EnvSetMultifieldErrorValue(theEnv,returnValue);
@@ -673,7 +673,7 @@ void NthFunction(
    n = DOToLong(value1); /* 6.04 Bug Fix */
    if ((n > GetDOLength(value2)) || (n < 1))
 	 {
-      CVSetSymbol(returnValue,"nil");
+      mCVSetSymbol(returnValue,"nil");
 	  return;
 	 }
 
@@ -714,15 +714,15 @@ void SubsetpFunction(
    if (! UDFNextArgument(context,MULTIFIELD_TYPE,&item2))
      { return; }
  
-   if (CVLength(&item1) == 0)
+   if (MFLength(&item1) == 0)
      {
-      CVSetBoolean(returnValue,true);
+      mCVSetBoolean(returnValue,true);
       return;
      }
      
-   if (CVLength(&item2) == 0)
+   if (MFLength(&item2) == 0)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -734,12 +734,12 @@ void SubsetpFunction(
 
       if (! FindDOsInSegment(&tmpItem,1,&item2,&j,&k,NULL,0))
         {
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
      }
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /****************************************/
@@ -754,7 +754,7 @@ void MemberFunction(
    long j, k;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 
    if (! UDFFirstArgument(context,ANY_TYPE,&item1)) return;
    
@@ -764,7 +764,7 @@ void MemberFunction(
      {
       if (j == k)
         {
-         CVSetInteger(returnValue,j);
+         mCVSetInteger(returnValue,j);
         }
       else
         {
@@ -1245,7 +1245,7 @@ void GetMvPrognIndex(
       tmpField = tmpField->nxt;
       depth--;
      }
-   CVSetInteger(returnValue,tmpField->index);
+   mCVSetInteger(returnValue,tmpField->index);
   }
 
 #endif /* MULTIFIELD_FUNCTIONS */

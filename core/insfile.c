@@ -197,7 +197,7 @@ void SaveInstancesCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetInteger(returnValue,InstancesSaveCommandParser(context,"save-instances",EnvSaveInstancesDriver));
+   mCVSetInteger(returnValue,InstancesSaveCommandParser(context,"save-instances",EnvSaveInstancesDriver));
   }
 
 /******************************************************
@@ -221,13 +221,13 @@ void LoadInstancesCommand(
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
      { return; }
 
-   fileFound = CVToString(&theArg);
+   fileFound = mCVToString(&theArg);
 
    instanceCount = EnvLoadInstances(theEnv,fileFound);
    if (EvaluationData(theEnv)->EvaluationError)
      { ProcessFileErrorMessage(theEnv,"load-instances",fileFound); }
      
-   CVSetInteger(returnValue,instanceCount);
+   mCVSetInteger(returnValue,instanceCount);
   }
 
 /***************************************************
@@ -292,14 +292,14 @@ void RestoreInstancesCommand(
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
      { return; }
      
-   fileFound = CVToString(&theArg);
+   fileFound = mCVToString(&theArg);
 
    instanceCount = EnvRestoreInstances(theEnv,fileFound);
    
    if (EvaluationData(theEnv)->EvaluationError)
      { ProcessFileErrorMessage(theEnv,"restore-instances",fileFound); }
    
-   CVSetInteger(returnValue,instanceCount);
+   mCVSetInteger(returnValue,instanceCount);
   }
 
 /***************************************************
@@ -366,12 +366,12 @@ void BinaryLoadInstancesCommand(
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
      { return; }
      
-   fileFound = CVToString(&theArg);
+   fileFound = mCVToString(&theArg);
 
    instanceCount = EnvBinaryLoadInstances(theEnv,fileFound);
    if (EvaluationData(theEnv)->EvaluationError)
      { ProcessFileErrorMessage(theEnv,"bload-instances",fileFound); }
-   CVSetInteger(returnValue,instanceCount);
+   mCVSetInteger(returnValue,instanceCount);
   }
 
 /****************************************************
@@ -541,7 +541,7 @@ void BinarySaveInstancesCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetInteger(returnValue,InstancesSaveCommandParser(context,"bsave-instances",EnvBinarySaveInstancesDriver));
+   mCVSetInteger(returnValue,InstancesSaveCommandParser(context,"bsave-instances",EnvBinarySaveInstancesDriver));
   }
 
 /*******************************************************

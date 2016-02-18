@@ -209,6 +209,9 @@ struct evaluationData
 
 #define EvaluationData(theEnv) ((struct evaluationData *) GetEnvironmentData(theEnv,EVALUATION_DATA))
 
+#include "factmngr.h"
+#include "object.h"
+
    void                           InitializeEvaluationData(void *);
    bool                           EvaluateExpression(void *,struct expr *,struct dataObject *);
    void                           EnvSetEvaluationError(void *,bool);
@@ -236,76 +239,103 @@ struct evaluationData
    bool                           GetFunctionReference(void *,const char *,FUNCTION_REFERENCE *);
    bool                           DOsEqual(DATA_OBJECT_PTR,DATA_OBJECT_PTR);
    bool                           EvaluateAndStoreInDataObject(void *,bool,EXPRESSION *,DATA_OBJECT *,bool);
+   void                           MFSetNthValueF(CLIPSValue *,CLIPSInteger,CLIPSValue *);
+   void                           CVCreateMultifieldF(CLIPSValue *,CLIPSInteger);
+   CLIPSString                    CVToString(CLIPSValue *);
+   CLIPSInteger                   CVToInteger(CLIPSValue *);
+   CLIPSFloat                     CVToFloat(CLIPSValue *);
+   void                           CVSetVoid(CLIPSValue *);
+   void                           CVSetInteger(CLIPSValue *,CLIPSInteger);
+   void                           CVSetFloat(CLIPSValue *,CLIPSFloat);
+   void                           CVSetSymbol(CLIPSValue *,CLIPSString);
+   void                           CVSetString(CLIPSValue *,CLIPSString);
+   void                           CVSetInstanceName(CLIPSValue *,CLIPSString);
+   void                           CVSetInstanceAddress(CLIPSValue *,Instance *);
+   void                           CVSetFactAddress(CLIPSValue *,Fact *);
+   void                           CVSetBoolean(CLIPSValue *,bool);
+   bool                           CVIsType(CLIPSValue *,unsigned);
+   void                           EnvCVInit(Environment *,CLIPSValue *);
+   void                           UDFCVInit(UDFContext *,CLIPSValue *);
 
-#define CVIsType(cv,cvType) ((cv)->bitType & (cvType))
-#define CVType(cv) ((cv)->bitType)
-#define CVSetCLIPSValue(v1,v2) ((v1)->type = (v2)->type, (v1)->value = (v2)->value, (v1)->bitType = (v2)->bitType) 
+#define mCVIsType(cv,cvType) ((cv)->bitType & (cvType))
 
-#define CVToFloat(cv) ((cv)->type == FLOAT ? (CLIPSFloat) (((struct floatHashNode *) ((cv)->value))->contents) : \
+#define mCVToFloat(cv) ((cv)->type == FLOAT ? (CLIPSFloat) (((struct floatHashNode *) ((cv)->value))->contents) : \
                        ((cv)->type == INTEGER) ? (CLIPSFloat) (((struct integerHashNode *) ((cv)->value))->contents) : 0.0)
 
-#define CVToInteger(cv) ((cv)->type == INTEGER ? (CLIPSInteger) (((struct integerHashNode *) ((cv)->value))->contents) : \
+#define mCVToInteger(cv) ((cv)->type == INTEGER ? (CLIPSInteger) (((struct integerHashNode *) ((cv)->value))->contents) : \
                        ((cv)->type == FLOAT) ? (CLIPSInteger) (((struct floatHashNode *) ((cv)->value))->contents) : 0LL)
 
-#define CVToString(cv) (((struct symbolHashNode *) ((cv)->value))->contents)
+#define mCVToString(cv) (((struct symbolHashNode *) ((cv)->value))->contents)
 
-//#define CVToCLIPSString(cv) ((cv)->value)
-//#define CVToCLIPSSymbol(cv) ((cv)->value)
-#define CVToRawValue(cv) ((cv)->value)
-
-#define CVInit(rv,env) ((rv)->environment = env)
-
-#define CVLength(cv)   ((cv)->type == MULTIFIELD ? (((cv)->end - (cv)->begin) + 1) : 0)
-
-#define CVSetVoid(cv) \
+#define mCVSetVoid(cv) \
    ( (cv)->value = NULL ,  \
      (cv)->bitType = VOID_TYPE , \
      (cv)->type = RVOID )
 
-#define CVSetInteger(cv,iv) \
+#define mCVSetInteger(cv,iv) \
    ( (cv)->value = EnvAddLong((cv)->environment,(iv)) ,  \
      (cv)->bitType = INTEGER_TYPE , \
      (cv)->type = INTEGER )
 
-#define CVSetFloat(cv,fv) \
+#define mCVSetFloat(cv,fv) \
    ( (cv)->value = EnvAddDouble((cv)->environment,(fv)) ,  \
      (cv)->bitType = FLOAT_TYPE , \
      (cv)->type = FLOAT )
 
-#define CVSetString(cv,sv) \
+#define mCVSetString(cv,sv) \
    ( (cv)->value = EnvAddSymbol((cv)->environment,(sv)) , \
      (cv)->bitType = STRING_TYPE, \
      (cv)->type = STRING )
 
-#define CVSetCLIPSString(cv,sv) \
-   ( (cv)->value = (sv) , \
-     (cv)->bitType = STRING_TYPE, \
-     (cv)->type = STRING )
-
-#define CVSetSymbol(cv,sv) \
+#define mCVSetSymbol(cv,sv) \
    ( (cv)->value = EnvAddSymbol((cv)->environment,(sv)) , \
      (cv)->bitType = SYMBOL_TYPE, \
      (cv)->type = SYMBOL )
+
+#define mCVSetInstanceName(cv,iv) \
+   ( (cv)->value = EnvAddSymbol((cv)->environment,(iv)) , \
+     (cv)->bitType = INSTANCE_NAME_TYPE, \
+     (cv)->type = INSTANCE_NAME )
+
+#define mCVSetFactAddress(cv,fv) \
+   ( (cv)->value = (fv) , \
+     (cv)->bitType = FACT_ADDRESS_TYPE, \
+     (cv)->type = FACT_ADDRESS )
+
+#define mCVSetInstanceAddress(cv,iv) \
+   ( (cv)->value = (iv) , \
+     (cv)->bitType = INSTANCE_ADDRESS_TYPE, \
+     (cv)->type = INSTANCE_ADDRESS )
+
+#define mCVSetBoolean(cv,bv) \
+   ( (cv)->value = ((bv) ? SymbolData((cv)->environment)->TrueSymbolHN : \
+                           SymbolData((cv)->environment)->FalseSymbolHN ) , \
+     (cv)->bitType = (SYMBOL_TYPE | BOOLEAN_TYPE) , \
+     (cv)->type = SYMBOL )
+
+#define mEnvCVInit(env,rv) ((rv)->environment = env)
+
+#define mUDFCVInit(context,rv) ((rv)->environment = (context)->environment)
+
+/******/
+
+#define CVType(cv) ((cv)->bitType)
+#define CVSetCLIPSValue(v1,v2) ((v1)->type = (v2)->type, (v1)->value = (v2)->value, (v1)->bitType = (v2)->bitType) 
+
+
+#define CVToRawValue(cv) ((cv)->value)
+
+#define MFLength(cv)   ((cv)->type == MULTIFIELD ? (((cv)->end - (cv)->begin) + 1) : 0)
 
 #define CVSetCLIPSSymbol(cv,sv) \
    ( (cv)->value = (sv) , \
      (cv)->bitType = SYMBOL_TYPE, \
      (cv)->type = SYMBOL )
 
-#define CVSetFactAddress(cv,fv) \
-   ( (cv)->value = (fv) , \
-     (cv)->bitType = FACT_ADDRESS_TYPE, \
-     (cv)->type = FACT_ADDRESS )
-
-#define CVSetInstanceAddress(cv,iv) \
-   ( (cv)->value = (iv) , \
-     (cv)->bitType = INSTANCE_ADDRESS_TYPE, \
-     (cv)->type = INSTANCE_ADDRESS )
-
-#define CVSetInstanceName(cv,iv) \
-   ( (cv)->value = EnvAddSymbol((cv)->environment,(iv)) , \
-     (cv)->bitType = INSTANCE_NAME_TYPE, \
-     (cv)->type = INSTANCE_NAME )
+#define CVSetCLIPSString(cv,sv) \
+   ( (cv)->value = (sv) , \
+     (cv)->bitType = STRING_TYPE, \
+     (cv)->type = STRING )
 
 #define CVSetCLIPSInstanceName(cv,iv) \
    ( (cv)->value = (iv) , \
@@ -320,13 +350,35 @@ struct evaluationData
 #define CVSetRawValue(cv,rv) \
    ( (cv)->value = (rv)  )
 
-// TBD BOOLEAN_TYPE in CVSetBoolean?
+#define MFNthValue(mf,n,rv) \
+   ( (rv)->type = (((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].type) , \
+     (rv)->value = (((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value) , \
+     (rv)->bitType = (1 << (rv)->type) , \
+     (rv)->environment = (mf)->environment )
 
-#define CVSetBoolean(cv,bv) \
-   ( (cv)->value = ((bv) ? SymbolData((cv)->environment)->TrueSymbolHN : \
-                           SymbolData((cv)->environment)->FalseSymbolHN ) , \
-     (cv)->bitType = (SYMBOL_TYPE | BOOLEAN_TYPE) , \
-     (cv)->type = SYMBOL )
+#define MFSetNthValue(mf,n,nv) \
+   ( \
+     ((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].type = (nv)->type , \
+     ((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value = (nv)->value \
+   )
+
+#define CVCreateMultifield(mf,size) \
+   ( (mf)->value = EnvCreateMultifield((mf)->environment,size) , \
+     (mf)->bitType = MULTIFIELD_TYPE, \
+     (mf)->type = MULTIFIELD, \
+     (mf)->begin = 0, \
+     (mf)->end = ((size) - 1) )
+
+#define MFSetRange(mf,b,e) \
+   ( (mf)->end = (mf)->begin + (e) - 1, \
+     (mf)->begin = (mf)->begin + (b) - 1 )
+
+#define CVSetValue(tv,sv) \
+   ( (tv)->type = (sv)->type , \
+     (tv)->value = (sv)->value , \
+     (tv)->bitType = (sv)->bitType , \
+     (tv)->begin = (sv)->begin , \
+     (tv)->end = (sv)->end )
 
 #define CVIsFalseSymbol(cv) (((cv)->type == SYMBOL) &&  ((cv)->value == SymbolData((cv)->environment)->FalseSymbolHN))
 

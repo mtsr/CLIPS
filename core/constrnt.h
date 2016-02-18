@@ -44,6 +44,7 @@
 #define _H_constrnt
 
 struct constraintRecord;
+typedef struct constraintRecord CONSTRAINT_RECORD;
 
 #include "evaluatn.h"
 
@@ -80,8 +81,6 @@ struct constraintRecord
    int bucket;
    int count;
   };
-
-typedef struct constraintRecord CONSTRAINT_RECORD;
 
 #define SIZE_CONSTRAINT_HASH  167
 

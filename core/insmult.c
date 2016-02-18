@@ -130,7 +130,7 @@ void MVSlotReplaceCommand(
    EXPRESSION arg;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    ins = CheckMultifieldSlotInstance(theEnv,"slot-replace$");
    if (ins == NULL)
      return;
@@ -170,7 +170,7 @@ void MVSlotInsertCommand(
    EXPRESSION arg;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    ins = CheckMultifieldSlotInstance(theEnv,"slot-insert$");
    if (ins == NULL)
      return;
@@ -211,7 +211,7 @@ void MVSlotDeleteCommand(
    EXPRESSION arg;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    ins = CheckMultifieldSlotInstance(theEnv,"slot-delete$");
    if (ins == NULL)
      return;
@@ -250,7 +250,7 @@ void DirectMVReplaceCommand(
 
    if (CheckCurrentMessage(theEnv,"direct-slot-replace$",true) == false)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
@@ -259,21 +259,21 @@ void DirectMVReplaceCommand(
                             GetFirstArgument(),&rb,&re,&newval);
    if (sp == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
    AssignSlotToDataObject(&oldseg,sp);
    if (! ReplaceMultiValueField(theEnv,&newseg,&oldseg,rb,re,&newval,"direct-slot-replace$"))
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
    if (PutSlotValue(theEnv,ins,sp,&newseg,&newval,"function direct-slot-replace$"))
-     { CVSetBoolean(returnValue,true); }
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /************************************************************************
@@ -295,21 +295,21 @@ void DirectMVInsertCommand(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (CheckCurrentMessage(theEnv,"direct-slot-insert$",true) == false)
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
      
    ins = GetActiveInstance(theEnv);
    sp = CheckMultifieldSlotModify(theEnv,INSERT,"direct-slot-insert$",ins,
                             GetFirstArgument(),&theIndex,NULL,&newval);
    if (sp == NULL)
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
    AssignSlotToDataObject(&oldseg,sp);
    if (! InsertMultiValueField(theEnv,&newseg,&oldseg,theIndex,&newval,"direct-slot-insert$"))
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
      
    if (PutSlotValue(theEnv,ins,sp,&newseg,&newval,"function direct-slot-insert$"))
-     { CVSetBoolean(returnValue,true); }
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /*****************************************************************
@@ -332,22 +332,22 @@ void DirectMVDeleteCommand(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (CheckCurrentMessage(theEnv,"direct-slot-delete$",true) == false)
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
 
    ins = GetActiveInstance(theEnv);
    sp = CheckMultifieldSlotModify(theEnv,DELETE_OP,"direct-slot-delete$",ins,
                                   GetFirstArgument(),&rb,&re,NULL);
    if (sp == NULL)
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
      
    AssignSlotToDataObject(&oldseg,sp);
    if (! DeleteMultiValueField(theEnv,&newseg,&oldseg,rb,re,"direct-slot-delete$"))
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
 
    if (PutSlotValue(theEnv,ins,sp,&newseg,&oldseg,"function direct-slot-delete$"))
-     { CVSetBoolean(returnValue,true); }
+     { mCVSetBoolean(returnValue,true); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /* =========================================

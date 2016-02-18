@@ -1026,12 +1026,12 @@ void FetchCommand(
    CLIPSValue theArg;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
  
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
      { return; }
      
-   load_ct = TextLookupFetch(theEnv,CVToString(&theArg));
+   load_ct = TextLookupFetch(theEnv,mCVToString(&theArg));
    if (load_ct <= 0)
      {
       if (load_ct == 0)
@@ -1043,7 +1043,7 @@ void FetchCommand(
       return;
      }
      
-   CVSetInteger(returnValue,load_ct);
+   mCVSetInteger(returnValue,load_ct);
   }
 
 /******************************************************************************/
@@ -1110,7 +1110,7 @@ void PrintRegionCommand(
       rm(theEnv,(void *) tptr,(int) sizeof(struct topics));
      }
      
-   CVSetBoolean(returnValue,com_code);
+   mCVSetBoolean(returnValue,com_code);
   }
 
 /******************************************************************************/
@@ -1162,7 +1162,7 @@ void GetRegionCommand(
      }
 
    if (theString == NULL)
-     { CVSetString(returnValue,""); }
+     { mCVSetString(returnValue,""); }
    else
      {
       sLength = strlen(theString);
@@ -1171,7 +1171,7 @@ void GetRegionCommand(
 		   ||
            ((theString[sLength-1] == '\n') && (theString[sLength-2] == '\r'))))
         { theString[sLength-2] = 0; }
-      CVSetString(returnValue,theString);
+      mCVSetString(returnValue,theString);
      }
 
    if (theString != NULL)
@@ -1195,9 +1195,9 @@ void TossCommand(
    if (! UDFFirstArgument(context,LEXEME_TYPES,&value))
      { return; }
    
-   file = CVToString(&value);
+   file = mCVToString(&value);
 
-   CVSetBoolean(returnValue,TextLookupToss(UDFContextEnvironment(context),file));
+   mCVSetBoolean(returnValue,TextLookupToss(UDFContextEnvironment(context),file));
   }
 
 #endif

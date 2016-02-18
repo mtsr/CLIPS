@@ -101,15 +101,15 @@ void ClassAbstractPCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
      
-   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (cls == NULL)
      {
-      ClassExistError(theEnv,"class-abstractp",CVToString(&theArg));
-      CVSetBoolean(returnValue,false);
+      ClassExistError(theEnv,"class-abstractp",mCVToString(&theArg));
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
-   CVSetBoolean(returnValue,(EnvClassAbstractP(theEnv,(void *) cls)));
+   mCVSetBoolean(returnValue,(EnvClassAbstractP(theEnv,(void *) cls)));
   }
 
 #if DEFRULE_CONSTRUCT
@@ -135,15 +135,15 @@ void ClassReactivePCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
-   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (cls == NULL)
      {
-      ClassExistError(theEnv,"class-reactivep",CVToString(&theArg));
-      CVSetBoolean(returnValue,false);
+      ClassExistError(theEnv,"class-reactivep",mCVToString(&theArg));
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
-   CVSetBoolean(returnValue,EnvClassReactiveP(theEnv,(void *) cls));
+   mCVSetBoolean(returnValue,EnvClassReactiveP(theEnv,(void *) cls));
   }
 
 #endif
@@ -176,10 +176,10 @@ void *ClassInfoFnxArgs(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return NULL; }
      
-   clsptr = (void *) LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   clsptr = (void *) LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (clsptr == NULL)
      {
-      ClassExistError(theEnv,fnx,CVToString(&theArg));
+      ClassExistError(theEnv,fnx,mCVToString(&theArg));
       return(NULL);
      }
    if (UDFHasNextArgument(context))
@@ -187,7 +187,7 @@ void *ClassInfoFnxArgs(
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return(NULL); }
         
-      if (strcmp(CVToString(&theArg),"inherit") == 0)
+      if (strcmp(mCVToString(&theArg),"inherit") == 0)
         *inhp = true;
       else
         {

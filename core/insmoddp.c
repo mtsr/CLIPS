@@ -177,7 +177,7 @@ void ModifyInstance(
                                      &overrideCount,&error);
    if (error)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -188,7 +188,7 @@ void ModifyInstance(
    ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
    if (ins == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
@@ -245,7 +245,7 @@ void MsgModifyInstance(
                                      &overrideCount,&error);
    if (error)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -256,7 +256,7 @@ void MsgModifyInstance(
    ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
    if (ins == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
@@ -314,7 +314,7 @@ void DuplicateInstance(
                                      &overrideCount,&error);
    if (error)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -325,14 +325,14 @@ void DuplicateInstance(
    ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
    if (ins == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
    if (EnvArgTypeCheck(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)),
                     2,INSTANCE_NAME,&newName) == false)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
@@ -394,7 +394,7 @@ void MsgDuplicateInstance(
                                      &overrideCount,&error);
    if (error)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -405,14 +405,14 @@ void MsgDuplicateInstance(
    ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
    if (ins == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
    if (EnvArgTypeCheck(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)),
                     2,INSTANCE_NAME,&newName) == false)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }

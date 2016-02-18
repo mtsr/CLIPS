@@ -154,7 +154,7 @@ void ProfileCommand(
    CLIPSValue theValue;
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
-   argument = CVToString(&theValue);
+   argument = mCVToString(&theValue);
 
    if (! Profile(UDFContextEnvironment(context),argument))
      {
@@ -707,15 +707,15 @@ void SetProfilePercentThresholdCommand(
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theValue))
      { return; }
      
-   newThreshold = CVToFloat(&theValue);
+   newThreshold = mCVToFloat(&theValue);
      
    if ((newThreshold < 0.0) || (newThreshold > 100.0))
      { 
       UDFInvalidArgumentMessage(context,"number in the range 0 to 100");
-      CVSetFloat(returnValue,-1.0);
+      mCVSetFloat(returnValue,-1.0);
      }
 
-   CVSetFloat(returnValue,SetProfilePercentThreshold(theEnv,newThreshold));
+   mCVSetFloat(returnValue,SetProfilePercentThreshold(theEnv,newThreshold));
   }
 
 /****************************************************/
@@ -746,7 +746,7 @@ void GetProfilePercentThresholdCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetFloat(returnValue,ProfileFunctionData(UDFContextEnvironment(context))->PercentThreshold);
+   mCVSetFloat(returnValue,ProfileFunctionData(UDFContextEnvironment(context))->PercentThreshold);
   }
 
 /****************************************************/

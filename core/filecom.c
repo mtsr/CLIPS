@@ -415,11 +415,11 @@ void DribbleOnCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
-   CVSetBoolean(returnValue,EnvDribbleOn(UDFContextEnvironment(context),fileName));
+   mCVSetBoolean(returnValue,EnvDribbleOn(UDFContextEnvironment(context),fileName));
   }
 
 /**********************************/
@@ -499,7 +499,7 @@ void DribbleOffCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetBoolean(returnValue,EnvDribbleOff(UDFContextEnvironment(context)));
+   mCVSetBoolean(returnValue,EnvDribbleOff(UDFContextEnvironment(context)));
   }
 
 /***********************************/
@@ -732,11 +732,11 @@ void BatchCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
-   CVSetBoolean(returnValue,OpenBatch(UDFContextEnvironment(context),fileName,false));
+   mCVSetBoolean(returnValue,OpenBatch(UDFContextEnvironment(context),fileName,false));
   }
 
 /**************************************************/
@@ -1058,11 +1058,11 @@ void BatchStarCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
-   CVSetBoolean(returnValue,EnvBatchStar(UDFContextEnvironment(context),fileName));
+   mCVSetBoolean(returnValue,EnvBatchStar(UDFContextEnvironment(context),fileName));
   }
 
 #if ! RUN_TIME
@@ -1203,7 +1203,7 @@ void LoadCommand(
 
    if ((theFileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -1213,17 +1213,17 @@ void LoadCommand(
      {
       SetPrintWhileLoading(theEnv,false);
       OpenErrorMessage(theEnv,"load",theFileName);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
    SetPrintWhileLoading(theEnv,false);
    
-   if (rv == -1) CVSetBoolean(returnValue,false);
-   else CVSetBoolean(returnValue,true);
+   if (rv == -1) mCVSetBoolean(returnValue,false);
+   else mCVSetBoolean(returnValue,true);
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Load is not available in this environment\n");
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 #endif
   }
 
@@ -1241,22 +1241,22 @@ void LoadStarCommand(
 
    if ((theFileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
    if ((rv = EnvLoad(theEnv,theFileName)) == 0) // TBD Load Code
      {
       OpenErrorMessage(theEnv,"load*",theFileName);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
-   if (rv == -1) CVSetBoolean(returnValue,false);
-   else CVSetBoolean(returnValue,true);
+   if (rv == -1) mCVSetBoolean(returnValue,false);
+   else mCVSetBoolean(returnValue,true);
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Load* is not available in this environment\n");
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 #endif
   }
 
@@ -1274,21 +1274,21 @@ void SaveCommand(
 
    if ((theFileName = GetFileName(context)) == NULL) 
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
    if (EnvSave(theEnv,theFileName) == false)
      {
       OpenErrorMessage(theEnv,"save",theFileName);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Save is not available in this environment\n");
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 #endif
   }
 #endif

@@ -128,8 +128,8 @@ struct FunctionHash
    bool                           DefineFunction3(void *,const char *,int,unsigned,
                                                   void (*)(UDFContext *,CLIPSValue *),
                                                   const char *,int,int,const char *,void *);
-   bool                           EnvAddUDF(void *,const char *,const char *,
-                                            void (*)(UDFContext *,struct dataObject *),
+   bool                           EnvAddUDF(Environment *,const char *,const char *,
+                                            void (*)(UDFContext *,CLIPSValue *),
                                             const char *,int,int,const char *,void *);
 
 
@@ -141,7 +141,7 @@ struct FunctionHash
    void                           InstallFunctionList(void *,struct FunctionDefinition *);
    struct FunctionDefinition     *FindFunction(void *,const char *);
    int                            GetNthRestriction(struct FunctionDefinition *,int);
-   unsigned                       GetNthRestriction2(struct FunctionDefinition *,int);
+   unsigned                       GetNthRestriction2(Environment *,struct FunctionDefinition *,int);
    const char                    *GetArgumentTypeName(int);
    bool                           UndefineFunction(void *,const char *);
    int                            GetMinimumArgs(struct FunctionDefinition *);

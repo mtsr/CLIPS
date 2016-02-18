@@ -26,12 +26,13 @@
 
 #define _H_network
 
-struct patternNodeHeader;
-struct joinNode;
 struct alphaMemoryHash;
-
-#include "expressn.h"
-#include "match.h"
+struct betaMemory;
+struct joinLink;
+struct joinNode;
+struct patternNodeHashEntry;
+struct patternNodeHeader;
+struct expr; // TBD Can this be removed
 
 struct patternNodeHeader
   {
@@ -48,6 +49,9 @@ struct patternNodeHeader
    unsigned int endSlot : 1;
    unsigned int selector : 1;
   };
+
+#include "expressn.h"
+#include "match.h"
 
 struct patternNodeHashEntry
   {

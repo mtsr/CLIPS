@@ -300,7 +300,7 @@ void ValidateFactIntegrity(
      
    if (theEnv->initialized == false)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -310,7 +310,7 @@ void ValidateFactIntegrity(
      {
       if (theFact->factHeader.busyCount <= 0)
         {
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
       
@@ -325,7 +325,7 @@ void ValidateFactIntegrity(
             theSymbol = (SYMBOL_HN *) theSegment->theFields[i].value;
             if (theSymbol->count <= 0)
               {
-               CVSetBoolean(returnValue,false);
+               mCVSetBoolean(returnValue,false);
                return;
               }
            }
@@ -335,7 +335,7 @@ void ValidateFactIntegrity(
             theInteger = (INTEGER_HN *) theSegment->theFields[i].value;
             if (theInteger->count <= 0)
               {
-               CVSetBoolean(returnValue,false);
+               mCVSetBoolean(returnValue,false);
                return;
               }
            }
@@ -345,14 +345,14 @@ void ValidateFactIntegrity(
             theFloat = (FLOAT_HN *) theSegment->theFields[i].value;
             if (theFloat->count <= 0)
               {
-               CVSetBoolean(returnValue,false);
+               mCVSetBoolean(returnValue,false);
                return;
               }
            }
         }
      }
      
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
   
 /*******************************************************/

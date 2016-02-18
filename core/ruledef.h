@@ -68,16 +68,10 @@
 struct defrule;
 struct defruleModule;
 
-#include "agenda.h"
-#include "conscomp.h"
 #include "constrct.h"
-#include "constrnt.h"
-#include "cstrccom.h"
-#include "evaluatn.h"
 #include "expressn.h"
-#include "moduldef.h"
 #include "network.h"
-#include "symbol.h"
+#include "ruledef.h"
 
 struct defrule
   {
@@ -96,6 +90,14 @@ struct defrule
    struct joinNode *lastJoin;
    struct defrule *disjunct;
   };
+
+#include "agenda.h"
+#include "conscomp.h"
+#include "constrnt.h"
+#include "cstrccom.h"
+#include "evaluatn.h"
+#include "moduldef.h"
+#include "symbol.h"
 
 struct defruleModule
   {

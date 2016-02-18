@@ -111,7 +111,7 @@ void SetResetGlobalsCommand(
    /* Return the old value of the attribute. */
    /*========================================*/
 
-   CVSetBoolean(returnValue,oldValue);
+   mCVSetBoolean(returnValue,oldValue);
   }
 
 /****************************************/
@@ -137,7 +137,7 @@ void GetResetGlobalsCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetBoolean(returnValue,EnvGetResetGlobals(UDFContextEnvironment(context)));
+   mCVSetBoolean(returnValue,EnvGetResetGlobals(UDFContextEnvironment(context)));
   }
 
 /****************************************/

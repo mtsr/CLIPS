@@ -56,14 +56,15 @@ struct deftemplate;
 struct templateSlot;
 struct deftemplateModule;
 
-#include "conscomp.h"
 #include "constrct.h"
+#include "factbld.h"
+#include "factmngr.h"
+#include "expressn.h"
+
+#include "conscomp.h"
 #include "constrnt.h"
 #include "cstrccom.h"
 #include "evaluatn.h"
-#include "expressn.h"
-#include "factbld.h"
-#include "factmngr.h"
 #include "moduldef.h"
 #include "symbol.h"
 

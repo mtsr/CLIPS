@@ -814,7 +814,7 @@ void BloadCommand(
    fileName = GetFileName(context);
    if (fileName != NULL)
      {
-      CVSetBoolean(returnValue,EnvBload(UDFContextEnvironment(context),fileName));
+      mCVSetBoolean(returnValue,EnvBload(UDFContextEnvironment(context),fileName));
       return;
      }
 #else
@@ -822,5 +822,5 @@ void BloadCommand(
 #pragma unused(size,context)
 #endif
 #endif
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
   }

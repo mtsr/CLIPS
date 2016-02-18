@@ -280,7 +280,7 @@ void GetLoopCount(
    
    if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
      { return; }
-   depth = CVToInteger(&theArg);
+   depth = mCVToInteger(&theArg);
    tmpCounter = ProcedureFunctionData(theEnv)->LoopCounterStack;
    while (depth > 0)
      {
@@ -288,7 +288,7 @@ void GetLoopCount(
       depth--;
      }
    
-   CVSetInteger(returnValue,tmpCounter->loopCounter);
+   mCVSetInteger(returnValue,tmpCounter->loopCounter);
   }
 
 /************************************/
@@ -626,7 +626,7 @@ void ReturnFunction(
    Environment *theEnv = UDFContextEnvironment(context);
    
    if (EnvRtnArgCount(theEnv) == 0)
-     { CVSetVoid(returnValue); }
+     { mCVSetVoid(returnValue); }
    else
      { EnvRtnUnknown(theEnv,1,returnValue); }
    ProcedureFunctionData(theEnv)->ReturnFlag = true;
@@ -653,7 +653,7 @@ void SwitchFunction(
    EXPRESSION *theExp;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 
    /* ==========================
       Get the value to switch on

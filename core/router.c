@@ -342,7 +342,7 @@ void ExitCommand(
     {
      if (! UDFFirstArgument(context,INTEGER_TYPE,&value))
        { EnvExitRouter(theEnv,EXIT_SUCCESS); }
-     status = (int) CVToInteger(&value);
+     status = (int) mCVToInteger(&value);
      if (EnvGetEvaluationError(theEnv)) return;
      EnvExitRouter(theEnv,status);
     }

@@ -975,7 +975,7 @@ void GetStrategyCommand(
   {
    Environment *theEnv = UDFContextEnvironment(context);
    
-   CVSetSymbol(returnValue,GetStrategyName(EnvGetStrategy(theEnv)));
+   mCVSetSymbol(returnValue,GetStrategyName(EnvGetStrategy(theEnv)));
   }
 
 /********************************************/
@@ -996,7 +996,7 @@ void SetStrategyCommand(
    /*=======================*/
    
    oldStrategy = EnvGetStrategy(theEnv);
-   CVSetSymbol(returnValue,GetStrategyName(oldStrategy));
+   mCVSetSymbol(returnValue,GetStrategyName(oldStrategy));
 
    /*=========================================*/
    /* Check for the correct type of argument. */
@@ -1009,7 +1009,7 @@ void SetStrategyCommand(
    /* Set the strategy to the specified strategy. */
    /*=============================================*/
 
-   argument = CVToString(&theArg);
+   argument = mCVToString(&theArg);
 
    if (strcmp(argument,"depth") == 0)
      { EnvSetStrategy(theEnv,DEPTH_STRATEGY); }

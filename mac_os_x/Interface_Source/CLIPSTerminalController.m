@@ -222,9 +222,9 @@
    /* Define the clear-window function. */
    /*===================================*/
    
-   EnvDefineFunction2(theEnvironment,"clear-window",'v',
-                      PTIEF ClearEnvironmentWindowCommand,
-                      "ClearEnvironmentWindowCommand", "00");
+   EnvAddUDF(theEnvironment,"clear-window","v",
+             ClearEnvironmentWindowCommand,"ClearEnvironmentWindowCommand",
+             0,0,NULL,(__bridge void *)(self));
 
    EnvAddPeriodicFunction(theEnvironment,"mac-pf",MacPeriodicFunction,0);
 

@@ -488,10 +488,10 @@ void UndefmessageHandlerCommand(
 #endif
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
      
-   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
-   if ((cls == NULL) ? (strcmp(CVToString(&theArg),"*") != 0) : false)
+   cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
+   if ((cls == NULL) ? (strcmp(mCVToString(&theArg),"*") != 0) : false)
      {
-      ClassExistError(theEnv,"undefmessage-handler",CVToString(&theArg));
+      ClassExistError(theEnv,"undefmessage-handler",mCVToString(&theArg));
       return;
      }
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg)) return;
@@ -501,7 +501,7 @@ void UndefmessageHandlerCommand(
      {
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg)) return;
 
-      tname = CVToString(&theArg);
+      tname = mCVToString(&theArg);
       if (strcmp(tname,"*") == 0)
         tname = NULL;
      }
@@ -589,18 +589,18 @@ void PPDefmessageHandlerCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
      
-   csym = FindSymbolHN(theEnv,CVToString(&theArg));
+   csym = FindSymbolHN(theEnv,mCVToString(&theArg));
    
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
      
-   msym = FindSymbolHN(theEnv,CVToString(&theArg));
+   msym = FindSymbolHN(theEnv,mCVToString(&theArg));
    
    if (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
-      tname = CVToString(&theArg);
+      tname = mCVToString(&theArg);
      }
    else
      tname = MessageHandlerData(theEnv)->hndquals[MPRIMARY];
@@ -682,18 +682,18 @@ void PreviewSendCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
-   cls = LookupDefclassByMdlOrScope(theEnv,CVToString(&theArg));
+   cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    
    if (cls == NULL)
      {
-      ClassExistError(theEnv,"preview-send",CVToString(&theArg));
+      ClassExistError(theEnv,"preview-send",mCVToString(&theArg));
       return;
      }
 
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
-   EnvPreviewSend(theEnv,WDISPLAY,(void *) cls,CVToString(&theArg));
+   EnvPreviewSend(theEnv,WDISPLAY,(void *) cls,mCVToString(&theArg));
   }
 
 /********************************************************

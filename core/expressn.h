@@ -39,6 +39,8 @@
 struct expr;
 struct exprHashNode;
 
+typedef struct expr EXPRESSION;
+
 #include "exprnops.h"
 
 /******************************/
@@ -55,8 +57,6 @@ struct expr
 
 #define arg_list argList
 #define next_arg nextArg
-
-typedef struct expr EXPRESSION;
 
 typedef struct exprHashNode
   {

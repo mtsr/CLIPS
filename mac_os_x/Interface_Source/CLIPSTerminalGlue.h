@@ -14,6 +14,6 @@
    int                     GetcInterfaceRouter(void *,const char *);
    int                     ExitInterfaceRouter(void *,int);
    void                    MacPeriodicFunction(void *);
-   void                    ClearEnvironmentWindowCommand(void *);
+   void                    ClearEnvironmentWindowCommand(UDFContext *,CLIPSValue *);
    int                     MacBeforeOpenFunction(void *);   
    int                     MacAfterOpenFunction(void *);

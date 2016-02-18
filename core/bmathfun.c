@@ -95,14 +95,14 @@ void AdditionFunction(
         { return; }
 
       if (useFloatTotal)
-        { ftotal += CVToFloat(&theArg); }
+        { ftotal += mCVToFloat(&theArg); }
       else
         {
-         if (CVIsType(&theArg,INTEGER_TYPE))
-           { ltotal += CVToInteger(&theArg); }
+         if (mCVIsType(&theArg,INTEGER_TYPE))
+           { ltotal += mCVToInteger(&theArg); }
          else
            {
-            ftotal = ((CLIPSFloat) ltotal) + CVToFloat(&theArg);
+            ftotal = ((CLIPSFloat) ltotal) + mCVToFloat(&theArg);
             useFloatTotal = true;
            }
         }
@@ -114,9 +114,9 @@ void AdditionFunction(
    /*======================================================*/
 
    if (useFloatTotal)
-     { CVSetFloat(returnValue,ftotal); }
+     { mCVSetFloat(returnValue,ftotal); }
    else
-     { CVSetInteger(returnValue,ltotal); }
+     { mCVSetInteger(returnValue,ltotal); }
   }
 
 /****************************************/
@@ -145,14 +145,14 @@ void MultiplicationFunction(
         { return; }
 
       if (useFloatTotal)
-        { ftotal *= CVToFloat(&theArg); }
+        { ftotal *= mCVToFloat(&theArg); }
       else
         {
-         if (CVIsType(&theArg,INTEGER_TYPE))
-           { ltotal *= CVToInteger(&theArg); }
+         if (mCVIsType(&theArg,INTEGER_TYPE))
+           { ltotal *= mCVToInteger(&theArg); }
          else
            {
-            ftotal = ((CLIPSFloat) ltotal) * CVToFloat(&theArg);
+            ftotal = ((CLIPSFloat) ltotal) * mCVToFloat(&theArg);
             useFloatTotal = true;
            }
         }
@@ -164,9 +164,9 @@ void MultiplicationFunction(
    /*======================================================*/
 
    if (useFloatTotal)
-     { CVSetFloat(returnValue,ftotal); }
+     { mCVSetFloat(returnValue,ftotal); }
    else
-     { CVSetInteger(returnValue,ltotal); }
+     { mCVSetInteger(returnValue,ltotal); }
   }
 
 /*************************************/
@@ -191,11 +191,11 @@ void SubtractionFunction(
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      { return; }
 
-   if (CVIsType(&theArg,INTEGER_TYPE))
-     { ltotal = CVToInteger(&theArg); }
+   if (mCVIsType(&theArg,INTEGER_TYPE))
+     { ltotal = mCVToInteger(&theArg); }
    else
      {
-      ftotal = CVToFloat(&theArg);
+      ftotal = mCVToFloat(&theArg);
       useFloatTotal = true;
      }
 
@@ -212,14 +212,14 @@ void SubtractionFunction(
         { return; }
 
       if (useFloatTotal)
-        { ftotal -= CVToFloat(&theArg); }
+        { ftotal -= mCVToFloat(&theArg); }
       else
         {
-         if (CVIsType(&theArg,INTEGER_TYPE))
-           { ltotal -= CVToInteger(&theArg); }
+         if (mCVIsType(&theArg,INTEGER_TYPE))
+           { ltotal -= mCVToInteger(&theArg); }
          else
            {
-            ftotal = ((CLIPSFloat) ltotal) - CVToFloat(&theArg);
+            ftotal = ((CLIPSFloat) ltotal) - mCVToFloat(&theArg);
             useFloatTotal = true;
            }
         }
@@ -231,9 +231,9 @@ void SubtractionFunction(
    /*======================================================*/
 
    if (useFloatTotal)
-     { CVSetFloat(returnValue,ftotal); }
+     { mCVSetFloat(returnValue,ftotal); }
    else
-     { CVSetInteger(returnValue,ltotal); }
+     { mCVSetInteger(returnValue,ltotal); }
   }
 
 /***********************************/
@@ -260,7 +260,7 @@ void DivisionFunction(
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      { return; }
 
-   ftotal = CVToFloat(&theArg);
+   ftotal = mCVToFloat(&theArg);
 
    /*====================================================*/
    /* Loop through each of the arguments dividing it     */
@@ -275,13 +275,13 @@ void DivisionFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
         { return; }
         
-      theNumber = CVToFloat(&theArg);
+      theNumber = mCVToFloat(&theArg);
       
       if (theNumber == 0.0)
         {
          DivideByZeroErrorMessage(theEnv,"/");
          EnvSetEvaluationError(theEnv,true);
-         CVSetFloat(returnValue,1.0);
+         mCVSetFloat(returnValue,1.0);
          return;
         }
 
@@ -293,7 +293,7 @@ void DivisionFunction(
    /* then return a float, otherwise return an integer.    */
    /*======================================================*/
 
-   CVSetFloat(returnValue,ftotal);
+   mCVSetFloat(returnValue,ftotal);
   }
 
 /*************************************/
@@ -317,7 +317,7 @@ void DivFunction(
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      { return; }
-   total = CVToInteger(&theArg);
+   total = mCVToInteger(&theArg);
 
    /*=====================================================*/
    /* Loop through each of the arguments dividing it into */
@@ -331,13 +331,13 @@ void DivFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
         { return; }
 
-      theNumber = CVToInteger(&theArg);
+      theNumber = mCVToInteger(&theArg);
 
       if (theNumber == 0LL)
         {
          DivideByZeroErrorMessage(theEnv,"div");
          EnvSetEvaluationError(theEnv,true);
-         CVSetInteger(returnValue,1L);
+         mCVSetInteger(returnValue,1L);
          return;
         }
         
@@ -348,7 +348,7 @@ void DivFunction(
    /* The result of the div function is always an integer. */
    /*======================================================*/
 
-   CVSetInteger(returnValue,total);
+   mCVSetInteger(returnValue,total);
   }
 
 /*****************************************/
@@ -371,8 +371,8 @@ void IntegerFunction(
    /* return the argument unchanged.             */
    /*============================================*/
 
-   if (CVIsType(returnValue,FLOAT_TYPE))
-     { CVSetInteger(returnValue,CVToInteger(returnValue)); }
+   if (mCVIsType(returnValue,FLOAT_TYPE))
+     { mCVSetInteger(returnValue,mCVToInteger(returnValue)); }
   }
 
 /***************************************/
@@ -395,8 +395,8 @@ void FloatFunction(
    /* return the argument unchanged.              */
    /*=============================================*/
 
-   if (CVIsType(returnValue,INTEGER_TYPE))
-     { CVSetFloat(returnValue,CVToFloat(returnValue)); }
+   if (mCVIsType(returnValue,INTEGER_TYPE))
+     { mCVSetFloat(returnValue,mCVToFloat(returnValue)); }
   }
 
 /*************************************/
@@ -418,15 +418,15 @@ void AbsFunction(
    /* Return the absolute value of the number. */
    /*==========================================*/
 
-   if (CVIsType(returnValue,INTEGER_TYPE))
+   if (mCVIsType(returnValue,INTEGER_TYPE))
      {
-      CLIPSInteger lv = CVToInteger(returnValue);
-      if (lv < 0L) CVSetInteger(returnValue,-lv);
+      CLIPSInteger lv = mCVToInteger(returnValue);
+      if (lv < 0L) mCVSetInteger(returnValue,-lv);
      }
    else
      {
-      CLIPSFloat dv = CVToFloat(returnValue);
-      if (dv < 0.0) CVSetFloat(returnValue,-dv);
+      CLIPSFloat dv = mCVToFloat(returnValue);
+      if (dv < 0.0) mCVSetFloat(returnValue,-dv);
      }
   }
 
@@ -464,14 +464,14 @@ void MinFunction(
       /* to floats. Otherwise compare two integers.  */
       /*=============================================*/
       
-      if (CVIsType(returnValue,FLOAT_TYPE) || CVIsType(&nextPossible,FLOAT_TYPE))
+      if (mCVIsType(returnValue,FLOAT_TYPE) || mCVIsType(&nextPossible,FLOAT_TYPE))
         {
-         if (CVToFloat(returnValue) > CVToFloat(&nextPossible))
+         if (mCVToFloat(returnValue) > mCVToFloat(&nextPossible))
            { CVSetCLIPSValue(returnValue,&nextPossible); }
         }
       else
         {
-         if (CVToInteger(returnValue) > CVToInteger(&nextPossible))
+         if (mCVToInteger(returnValue) > mCVToInteger(&nextPossible))
            { CVSetCLIPSValue(returnValue,&nextPossible); }
         }
      }
@@ -511,14 +511,14 @@ void MaxFunction(
       /* to floats. Otherwise compare two integers.  */
       /*=============================================*/
       
-      if (CVIsType(returnValue,FLOAT_TYPE) || CVIsType(&nextPossible,FLOAT_TYPE))
+      if (mCVIsType(returnValue,FLOAT_TYPE) || mCVIsType(&nextPossible,FLOAT_TYPE))
         {
-         if (CVToFloat(returnValue) < CVToFloat(&nextPossible))
+         if (mCVToFloat(returnValue) < mCVToFloat(&nextPossible))
            { CVSetCLIPSValue(returnValue,&nextPossible); }
         }
       else
         {
-         if (CVToInteger(returnValue) < CVToInteger(&nextPossible))
+         if (mCVToInteger(returnValue) < mCVToInteger(&nextPossible))
            { CVSetCLIPSValue(returnValue,&nextPossible); }
         }
      }

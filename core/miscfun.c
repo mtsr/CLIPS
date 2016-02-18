@@ -218,12 +218,12 @@ void SetgenFunction(
    /* The integer must be greater than zero. */
    /*========================================*/
 
-   theLong = CVToInteger(returnValue);
+   theLong = mCVToInteger(returnValue);
 
    if (theLong < 1LL)
      {
       UDFInvalidArgumentMessage(context,"integer (greater than or equal to 1)");
-      CVSetInteger(returnValue,MiscFunctionData(theEnv)->GensymNumber);
+      mCVSetInteger(returnValue,MiscFunctionData(theEnv)->GensymNumber);
       return;
      }
 
@@ -257,7 +257,7 @@ void GensymFunction(
    /* Return the symbol. */
    /*====================*/
 
-   CVSetSymbol(returnValue,genstring);
+   mCVSetSymbol(returnValue,genstring);
   }
 
 /************************************************/
@@ -303,8 +303,8 @@ void GensymStar(
    /* Return the symbol. */
    /*====================*/
 
-   CVInit(returnValue,theEnv);
-   CVSetSymbol(returnValue,genstring);
+   mEnvCVInit(theEnv,returnValue);
+   mCVSetSymbol(returnValue,genstring);
   }
 
 /********************************************/
@@ -344,17 +344,17 @@ void RandomFunction(
      {
       if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
         { return; }
-      begin = CVToInteger(&theArg);
+      begin = mCVToInteger(&theArg);
       
       if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
         { return; }
-      end = CVToInteger(&theArg);
+      end = mCVToInteger(&theArg);
       
       if (end < begin)
         {
          PrintErrorID(theEnv,"MISCFUN",3,false);
          EnvPrintRouter(theEnv,WERROR,"Function random expected argument #1 to be less than argument #2\n"); 
-         CVSetInteger(returnValue,rv);
+         mCVSetInteger(returnValue,rv);
          return;
         }
         
@@ -362,7 +362,7 @@ void RandomFunction(
      }
    
    
-   CVSetInteger(returnValue,rv);
+   mCVSetInteger(returnValue,rv);
   }
 
 /******************************************/
@@ -386,7 +386,7 @@ void SeedFunction(
    /* Seed the random number generator with the provided integer. */
    /*=============================================================*/
 
-   genseed((int) CVToInteger(&theValue));
+   genseed((int) mCVToInteger(&theValue));
   }
 
 /********************************************/
@@ -411,9 +411,9 @@ void LengthFunction(
    /* the number of characters in the argument.          */
    /*====================================================*/
 
-   if (CVIsType(&theArg,LEXEME_TYPES))
+   if (mCVIsType(&theArg,LEXEME_TYPES))
      {
-      CVSetInteger(returnValue,strlen(CVToString(&theArg)));
+      mCVSetInteger(returnValue,strlen(mCVToString(&theArg)));
       return;
      }
 
@@ -422,9 +422,9 @@ void LengthFunction(
    /* the number of fields in the argument.              */
    /*====================================================*/
 
-   if (CVIsType(&theArg,MULTIFIELD_TYPE))
+   if (mCVIsType(&theArg,MULTIFIELD_TYPE))
      {
-      CVSetInteger(returnValue,CVLength(&theArg));
+      mCVSetInteger(returnValue,MFLength(&theArg));
       return;
      }
   }
@@ -442,7 +442,7 @@ void ReleaseMemCommand(
    /* and return the amount of memory freed. */
    /*========================================*/
 
-   CVSetInteger(returnValue,EnvReleaseMem(UDFContextEnvironment(context),-1L));
+   mCVSetInteger(returnValue,EnvReleaseMem(UDFContextEnvironment(context),-1L));
   }
 
 /******************************************/
@@ -465,7 +465,7 @@ void ConserveMemCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue))
      { return; }
      
-   argument = CVToString(&theValue);
+   argument = mCVToString(&theValue);
 
    /*====================================================*/
    /* If the argument is the symbol "on", then store the */
@@ -514,7 +514,7 @@ void MemUsedCommand(
    /* (both for current use and for later use).  */
    /*============================================*/
 
-   CVSetInteger(returnValue,EnvMemUsed(UDFContextEnvironment(context)));
+   mCVSetInteger(returnValue,EnvMemUsed(UDFContextEnvironment(context)));
   }
 
 /********************************************/
@@ -530,7 +530,7 @@ void MemRequestsCommand(
    /* memory requests.                 */
    /*==================================*/
 
-   CVSetInteger(returnValue,EnvMemRequests(UDFContextEnvironment(context)));
+   mCVSetInteger(returnValue,EnvMemRequests(UDFContextEnvironment(context)));
   }
 
 #endif
@@ -560,7 +560,7 @@ void AproposCommand(
    /* Determine the length of the argument. */
    /*=======================================*/
 
-   argument = CVToString(&argPtr);
+   argument = mCVToString(&argPtr);
    theLength = strlen(argument);
 
    /*====================================================================*/
@@ -591,7 +591,7 @@ void OptionsCommand(
    /* Set the return value. */
    /*=======================*/
    
-   CVSetVoid(returnValue);
+   mCVSetVoid(returnValue);
    
    /*=================================*/
    /* Print the state of the compiler */
@@ -820,23 +820,23 @@ void OperatingSystemFunction(
   CLIPSValue *returnValue)
   {
 #if GENERIC
-   CVSetSymbol(returnValue,"UNKNOWN");
+   mCVSetSymbol(returnValue,"UNKNOWN");
 #elif UNIX_V
-   CVSetSymbol(returnValue,"UNIX-V");
+   mCVSetSymbol(returnValue,"UNIX-V");
 #elif UNIX_7
-   CVSetSymbol(returnValue,"UNIX-7");
+   mCVSetSymbol(returnValue,"UNIX-7");
 #elif LINUX
-   CVSetSymbol(returnValue,"LINUX");
+   mCVSetSymbol(returnValue,"LINUX");
 #elif DARWIN
-   CVSetSymbol(returnValue,"DARWIN");
+   mCVSetSymbol(returnValue,"DARWIN");
 #elif MAC_XCD
-   CVSetSymbol(returnValue,"MAC-OS-X");
+   mCVSetSymbol(returnValue,"MAC-OS-X");
 #elif IBM && (! WINDOW_INTERFACE)
-   CVSetSymbol(returnValue,"DOS");
+   mCVSetSymbol(returnValue,"DOS");
 #elif IBM && WINDOW_INTERFACE
-   CVSetSymbol(returnValue,"WINDOWS");
+   mCVSetSymbol(returnValue,"WINDOWS");
 #else
-   CVSetSymbol(returnValue,"UNKNOWN");
+   mCVSetSymbol(returnValue,"UNKNOWN");
 #endif
   }
   
@@ -887,7 +887,7 @@ void ExpandFuncCall(
       func = (struct FunctionDefinition *) fcallexp->value;
       if (CheckFunctionArgCount(theEnv,func,CountArguments(newargexp)) == false)
         {
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          ReturnExpression(theEnv,fcallexp);
          return;
         }
@@ -898,7 +898,7 @@ void ExpandFuncCall(
       if (CheckDeffunctionCall(theEnv,fcallexp->value,
               CountArguments(fcallexp->argList)) == false)
         {
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          ReturnExpression(theEnv,fcallexp);
          EnvSetEvaluationError(theEnv,true);
          return;
@@ -929,7 +929,7 @@ void DummyExpandFuncMultifield(
   {
    Environment *theEnv = UDFContextEnvironment(context);
    
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    EnvSetEvaluationError(theEnv,true);
    PrintErrorID(theEnv,"MISCFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"expand$ must be used in the argument list of a function call.\n");
@@ -1033,7 +1033,7 @@ void CauseEvaluationError(
   CLIPSValue *returnValue)
   {
    EnvSetEvaluationError(UDFContextEnvironment(context),true);
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
   }
 
 /*****************/
@@ -1045,7 +1045,7 @@ void GetSORCommand(
   {
    Environment *theEnv = UDFContextEnvironment(context);
    
-   CVSetBoolean(returnValue,EnvGetSequenceOperatorRecognition(theEnv));
+   mCVSetBoolean(returnValue,EnvGetSequenceOperatorRecognition(theEnv));
   }
 
 /****************************************************************
@@ -1069,10 +1069,10 @@ void SetSORCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
      
-   CVSetBoolean(returnValue,EnvSetSequenceOperatorRecognition(theEnv,(CVIsFalseSymbol(&theArg) ?
+   mCVSetBoolean(returnValue,EnvSetSequenceOperatorRecognition(theEnv,(CVIsFalseSymbol(&theArg) ?
                                                                       false : true)));
 #else
-    CVSetBoolean(returnValue,ExpressionData(theEnv)->SequenceOpMode);
+    mCVSetBoolean(returnValue,ExpressionData(theEnv)->SequenceOpMode);
 #endif
   }
 
@@ -1098,12 +1098,12 @@ void GetFunctionRestrictions(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
      
-   fptr = FindFunction(theEnv,CVToString(&theArg));
+   fptr = FindFunction(theEnv,mCVToString(&theArg));
    if (fptr == NULL)
      {
-      CantFindItemErrorMessage(theEnv,"function",CVToString(&theArg));
+      CantFindItemErrorMessage(theEnv,"function",mCVToString(&theArg));
       EnvSetEvaluationError(theEnv,true);
-      CVSetString(returnValue,"");
+      mCVSetString(returnValue,"");
       return;
      }
 
@@ -1111,7 +1111,7 @@ void GetFunctionRestrictions(
      {
       if (fptr->restrictions == NULL)
         {
-         CVSetString(returnValue,"0**");
+         mCVSetString(returnValue,"0**");
          return;
         }
      
@@ -1152,7 +1152,7 @@ void GetFunctionRestrictions(
                                     stringBuffer,&bufferPosition,&bufferMaximum);
      }
 
-   CVSetString(returnValue,stringBuffer);
+   mCVSetString(returnValue,stringBuffer);
    
    rm(theEnv,stringBuffer,bufferMaximum);
   }
@@ -1211,7 +1211,7 @@ void FuncallFunction(
    /* Set up the default return value. */
    /*==================================*/
    
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
       
    /*============================================*/
    /* Get the name of the function to be called. */
@@ -1224,7 +1224,7 @@ void FuncallFunction(
    /* Find the function. */
    /*====================*/
 
-   name = CVToString(&theArg);
+   name = mCVToString(&theArg);
    if (! GetFunctionReference(theEnv,name,&theReference))
      {
       ExpectedTypeError1(theEnv,"funcall",1,"function, deffunction, or generic function name");
@@ -1363,7 +1363,7 @@ void NewFunction(
    /* Set up the default return value. */
    /*==================================*/
    
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    
    /*================================================================*/
    /* The new function has at least two arguments: the language type */
@@ -1421,7 +1421,7 @@ void CallFunction(
    /* Set up the default return value. */
    /*==================================*/
    
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    
    /*=====================================================*/
    /* The call function has at least one argument: either */
@@ -1519,7 +1519,7 @@ void TimeFunction(
    /* Return the time. */
    /*==================*/
 
-   CVSetFloat(returnValue,gentime());
+   mCVSetFloat(returnValue,gentime());
   }
 
 /****************************************/
@@ -1651,7 +1651,7 @@ void TimerFunction(
           (! EnvGetHaltExecution(UDFContextEnvironment(context))))
      { UDFNextArgument(context,ANY_TYPE,&theArg); }
 
-   CVSetFloat(returnValue,gentime() - startTime);
+   mCVSetFloat(returnValue,gentime() - startTime);
   }
 
 /***************************************/
@@ -1679,7 +1679,7 @@ void SystemCommand(
       if (! UDFNextArgument(context,LEXEME_TYPES,&tempValue))
         { return; }
 
-     theString = CVToString(&tempValue);
+     theString = mCVToString(&tempValue);
 
      commandBuffer = AppendToString(theEnv,theString,commandBuffer,&bufferPosition,&bufferMaximum);
     }

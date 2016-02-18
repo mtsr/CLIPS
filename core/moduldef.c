@@ -705,7 +705,7 @@ void GetCurrentModuleCommand(
 
    if (theModule == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -733,7 +733,7 @@ void SetCurrentModuleCommand(
    theModule = ((struct defmodule *) EnvGetCurrentModule(theEnv));
    if (theModule == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
    
@@ -747,7 +747,7 @@ void SetCurrentModuleCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
-   argument = CVToString(&theArg);
+   argument = mCVToString(&theArg);
 
    /*================================================*/
    /* Set the current module to the specified value. */

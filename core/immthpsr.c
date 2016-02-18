@@ -205,7 +205,7 @@ static void FormMethodsFromRestrictions( // TBD XXX
      {
       min = sysfunc->minArgs;
       max = sysfunc->maxArgs;
-      PopulateRestriction(&defaultc2,ANY_TYPE,rstring,0);
+      PopulateRestriction(theEnv,&defaultc2,ANY_TYPE,rstring,0);
      }
      
    /*==================================================*/
@@ -223,7 +223,7 @@ static void FormMethodsFromRestrictions( // TBD XXX
         }
       else
         {
-         PopulateRestriction(&argRestriction2,defaultc2,rstring,i+1);
+         PopulateRestriction(theEnv,&argRestriction2,defaultc2,rstring,i+1);
          rptr = ParseRestrictionType2(theEnv,argRestriction2);
         }
       tmp = get_struct(theEnv,expr);
@@ -265,7 +265,7 @@ static void FormMethodsFromRestrictions( // TBD XXX
           else if ((sysfunc->returnValueType =='z') &&
                    (! RestrictionExists(rstring,min+i+2)))
            {
-            PopulateRestriction(&defaultc2,ANY_TYPE,rstring,min+i+1);
+            PopulateRestriction(theEnv,&defaultc2,ANY_TYPE,rstring,min+i+1);
             break;
            }
         }
@@ -274,7 +274,7 @@ static void FormMethodsFromRestrictions( // TBD XXX
         { rptr = ParseRestrictionType(theEnv,(int) rstring[j]); }
       else
         {
-         PopulateRestriction(&argRestriction2,defaultc2,rstring,min+i+1);
+         PopulateRestriction(theEnv,&argRestriction2,defaultc2,rstring,min+i+1);
          rptr = ParseRestrictionType2(theEnv,argRestriction2);
         }
       

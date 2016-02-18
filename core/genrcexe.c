@@ -392,7 +392,7 @@ void NextMethodPCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetBoolean(returnValue,NextMethodP(UDFContextEnvironment(context)));
+   mCVSetBoolean(returnValue,NextMethodP(UDFContextEnvironment(context)));
   }
 
 /****************************************************
@@ -416,7 +416,7 @@ void CallNextMethod(
    struct profileFrameInfo profileFrame;
 #endif
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    
    if (EvaluationData(theEnv)->HaltExecution)
      return;
@@ -493,16 +493,16 @@ void CallSpecificMethod(
    int mi;
    Environment *theEnv = UDFContextEnvironment(context);
    
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
      
-   gfunc = CheckGenericExists(theEnv,"call-specific-method",CVToString(&theArg));
+   gfunc = CheckGenericExists(theEnv,"call-specific-method",mCVToString(&theArg));
    if (gfunc == NULL) return;
    
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg)) return;
 
-   mi = CheckMethodExists(theEnv,"call-specific-method",gfunc,(long) CVToInteger(&theArg));
+   mi = CheckMethodExists(theEnv,"call-specific-method",gfunc,(long) mCVToInteger(&theArg));
    if (mi == -1)
      return;
    gfunc->methods[mi].busy++;
@@ -526,7 +526,7 @@ void OverrideNextMethod(
   {
    Environment *theEnv = UDFContextEnvironment(context);
    
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    if (EvaluationData(theEnv)->HaltExecution)
      return;
    if (DefgenericData(theEnv)->CurrentMethod == NULL)

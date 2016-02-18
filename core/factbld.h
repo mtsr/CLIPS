@@ -29,8 +29,10 @@
 
 #define _H_factbld
 
+struct factPatternNode;
+
 #include "network.h"
-#include "pattern.h"
+#include "expressn.h"
 
 struct factPatternNode
   {
@@ -46,8 +48,9 @@ struct factPatternNode
    struct factPatternNode *rightNode;
   };
 
+#include "pattern.h" // TBD Needed?
+
    void                           InitializeFactPatterns(void *);
-   void                           DestroyFactPatternNetwork(void *,
-                                                                   struct factPatternNode *);
+   void                           DestroyFactPatternNetwork(void *,struct factPatternNode *);
 
 #endif /* _H_factbld */

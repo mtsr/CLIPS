@@ -1019,7 +1019,7 @@ void RunCommand(
    else if (numArgs == 1)
      {
       if (! UDFFirstArgument(context,INTEGER_TYPE,&argument)) return;
-      runLimit = CVToInteger(&argument);
+      runLimit = mCVToInteger(&argument);
      }
 
    EnvRun(UDFContextEnvironment(context),runLimit);
@@ -1158,7 +1158,7 @@ void SetBreakCommand(
 
    if (UDFFirstArgument(context,SYMBOL_TYPE,&value) == false) return;
 
-   argument = CVToString(&value);
+   argument = mCVToString(&value);
 
    if ((defrulePtr = EnvFindDefrule(theEnv,argument)) == NULL)
      {
@@ -1190,7 +1190,7 @@ void RemoveBreakCommand(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&value)) return;
 
-   argument = CVToString(&value);
+   argument = mCVToString(&value);
 
    if ((defrulePtr = EnvFindDefrule(theEnv,argument)) == NULL)
      {
@@ -1346,7 +1346,7 @@ void PopFocusFunction(
    theModule = (struct defmodule *) EnvPopFocus(theEnv);
    if (theModule == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
@@ -1367,7 +1367,7 @@ void GetFocusFunction(
    rv = (struct defmodule *) EnvGetFocus(theEnv);
    if (rv == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -1411,13 +1411,13 @@ void FocusCommand(
       if (! UDFNthArgument(context,i,SYMBOL_TYPE,&theArg))
         { return; }
 
-      argument = CVToString(&theArg);
+      argument = mCVToString(&theArg);
       theModule = (struct defmodule *) EnvFindDefmodule(theEnv,argument);
 
       if (theModule == NULL)
         {
          CantFindItemErrorMessage(theEnv,"defmodule",argument);
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
 
@@ -1428,7 +1428,7 @@ void FocusCommand(
    /* Return true to indicate success of focus command. */
    /*===================================================*/
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /***********************************************************************/

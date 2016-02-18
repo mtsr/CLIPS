@@ -132,7 +132,7 @@ void SortFunction(
    /* Set up the default return value. */
    /*==================================*/
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
  
    /*=============================================*/
    /* Verify that the comparison function exists. */

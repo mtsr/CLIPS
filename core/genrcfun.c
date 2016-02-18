@@ -600,12 +600,12 @@ void PreviewGeneric(
    EvaluationData(theEnv)->EvaluationError = false;
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
 
-   gfunc = LookupDefgenericByMdlOrScope(theEnv,CVToString(&theArg));
+   gfunc = LookupDefgenericByMdlOrScope(theEnv,mCVToString(&theArg));
    if (gfunc == NULL)
      {
       PrintErrorID(theEnv,"GENRCFUN",3,false);
       EnvPrintRouter(theEnv,WERROR,"Unable to find generic function ");
-      EnvPrintRouter(theEnv,WERROR,CVToString(&theArg));
+      EnvPrintRouter(theEnv,WERROR,mCVToString(&theArg));
       EnvPrintRouter(theEnv,WERROR," in function preview-generic.\n");
       return;
      }

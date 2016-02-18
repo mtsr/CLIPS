@@ -76,7 +76,7 @@ typedef struct saved_contexts
 
    bool                           CheckExpressionAgainstRestrictions(void *,struct expr *,
                                                                      struct FunctionDefinition *,const char *);
-   void                           PopulateRestriction(unsigned *,unsigned,const char *,int);
+   void                           PopulateRestriction(Environment *,unsigned *,unsigned,const char *,int);
    bool                           RestrictionExists(const char *,int);
    
 #endif

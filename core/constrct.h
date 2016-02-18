@@ -62,10 +62,10 @@
 struct constructHeader;
 struct construct;
 
-#include "moduldef.h"
 #include "symbol.h"
-
 #include "userdata.h"
+
+struct defmoduleItemHeader; // TBD Can this be removed?
 
 struct constructHeader
   {
@@ -76,6 +76,9 @@ struct constructHeader
    struct constructHeader *next;
    struct userData *usrData;
   };
+
+#include "moduldef.h"
+
 
 #define CHS (struct constructHeader *)
 

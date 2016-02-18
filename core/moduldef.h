@@ -52,12 +52,8 @@ struct moduleItem;
 
 #include <stdio.h>
 
-#include "conscomp.h"
-#include "constrct.h"
-#include "evaluatn.h"
-#include "modulpsr.h"
 #include "symbol.h"
-#include "utility.h"
+#include "userdata.h"
 
 /**********************************************************************/
 /* defmodule                                                          */
@@ -78,6 +74,7 @@ struct moduleItem;
 /*                                                                    */
 /* next: A pointer to the next defmodule data structure.              */
 /**********************************************************************/
+
 struct defmodule
   {
    struct symbolHashNode *name;
@@ -159,6 +156,12 @@ typedef struct moduleStackItem
   } MODULE_STACK_ITEM;
 
 #define DEFMODULE_DATA 4
+
+#include "conscomp.h" /* TBD Needed Headers? */
+#include "constrct.h"
+#include "evaluatn.h"
+#include "modulpsr.h"
+#include "utility.h"
 
 struct defmoduleData
   {   

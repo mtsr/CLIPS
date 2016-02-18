@@ -429,9 +429,9 @@ void InstancesCommand(
      {
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
       
-      theDefmodule = EnvFindDefmodule(theEnv,CVToString(&theArg));
+      theDefmodule = EnvFindDefmodule(theEnv,mCVToString(&theArg));
       if ((theDefmodule != NULL) ? false :
-          (strcmp(CVToString(&theArg),"*") != 0))
+          (strcmp(mCVToString(&theArg),"*") != 0))
         {
          EnvSetEvaluationError(theEnv,true);
          ExpectedTypeError1(theEnv,"instances",1,"defmodule name");
@@ -440,7 +440,7 @@ void InstancesCommand(
       if (UDFHasNextArgument(context))
         {
          if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg)) return;
-         className = CVToString(&theArg);
+         className = mCVToString(&theArg);
          if (LookupDefclassAnywhere(theEnv,(struct defmodule *) theDefmodule,className) == NULL)
            {
             if (strcmp(className,"*") == 0)
@@ -455,7 +455,7 @@ void InstancesCommand(
            {
             if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg)) return;
             
-            if (strcmp(CVToString(&theArg),ALL_QUALIFIER) != 0)
+            if (strcmp(mCVToString(&theArg),ALL_QUALIFIER) != 0)
               {
                EnvSetEvaluationError(theEnv,true);
                ExpectedTypeError1(theEnv,"instances",3,"keyword \"inherit\"");
@@ -1018,7 +1018,7 @@ void ClassCommand(
    func = ValueToString(((struct FunctionDefinition *)
                        EvaluationData(theEnv)->CurrentExpression->value)->callFunctionName);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    
    EvaluateExpression(theEnv,GetFirstArgument(),&temp);
    if (temp.type == INSTANCE_ADDRESS)
@@ -1084,7 +1084,7 @@ void CreateInstanceHandler(
 #pragma unused(context)
 #endif
 
-   CVSetBoolean(returnValue,true);
+   mCVSetBoolean(returnValue,true);
   }
 
 /******************************************************
@@ -1106,9 +1106,9 @@ void DeleteInstanceCommand(
    Environment *theEnv = UDFContextEnvironment(context);
    
    if (CheckCurrentMessage(theEnv,"delete-instance",true))
-     { CVSetBoolean(returnValue,QuashInstance(theEnv,GetActiveInstance(theEnv))); }
+     { mCVSetBoolean(returnValue,QuashInstance(theEnv,GetActiveInstance(theEnv))); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /********************************************************************
@@ -1136,24 +1136,24 @@ void UnmakeInstanceCommand(
       if (! UDFNextArgument(context,INSTANCE_TYPES | SYMBOL_TYPE,&theArg))
         { return; }
         
-      if (CVIsType(&theArg,INSTANCE_NAME_TYPE | SYMBOL_TYPE))
+      if (mCVIsType(&theArg,INSTANCE_NAME_TYPE | SYMBOL_TYPE))
         {
          ins = FindInstanceBySymbol(theEnv,(SYMBOL_HN *) CVToRawValue(&theArg));
-         if ((ins == NULL) ? (strcmp(CVToString(&theArg),"*") != 0) : false)
+         if ((ins == NULL) ? (strcmp(mCVToString(&theArg),"*") != 0) : false)
            {
-            NoInstanceError(theEnv,CVToString(&theArg),"unmake-instance");
-            CVSetBoolean(returnValue,false);
+            NoInstanceError(theEnv,mCVToString(&theArg),"unmake-instance");
+            mCVSetBoolean(returnValue,false);
             return;
            }
          }
-      else if (CVIsType(&theArg,INSTANCE_ADDRESS_TYPE))
+      else if (mCVIsType(&theArg,INSTANCE_ADDRESS_TYPE))
         {
          ins = (INSTANCE_TYPE *) CVToRawValue(&theArg);
          if (ins->garbage)
            {
             StaleInstanceAddress(theEnv,"unmake-instance",0);
             EnvSetEvaluationError(theEnv,true);
-            CVSetBoolean(returnValue,false);
+            mCVSetBoolean(returnValue,false);
             return;
            }
         }
@@ -1161,21 +1161,21 @@ void UnmakeInstanceCommand(
         {
          ExpectedTypeError1(theEnv,"unmake-instance",argNumber,"instance-address, instance-name, or the symbol *");
          EnvSetEvaluationError(theEnv,true);
-         CVSetBoolean(returnValue,false);
+         mCVSetBoolean(returnValue,false);
          return;
         }
       if (EnvUnmakeInstance(theEnv,ins) == false)
         rtn = false;
       if (ins == NULL)
         {
-         CVSetBoolean(returnValue,rtn);
+         mCVSetBoolean(returnValue,rtn);
          return;
         }
       argNumber++;
       theArgument = GetNextArgument(theArgument);
      }
      
-   CVSetBoolean(returnValue,rtn);
+   mCVSetBoolean(returnValue,rtn);
   }
 
 /*****************************************************************
@@ -1236,7 +1236,7 @@ void InstanceAddressCommand(
    bool searchImports;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    if (EnvRtnArgCount(theEnv) > 1)
      {
       if (EnvArgTypeCheck(theEnv,"instance-address",1,SYMBOL,&temp) == false)
@@ -1261,7 +1261,7 @@ void InstanceAddressCommand(
       ins = FindInstanceInModule(theEnv,(SYMBOL_HN *) temp.value,theModule,
                                  ((struct defmodule *) EnvGetCurrentModule(theEnv)),searchImports);
       if (ins != NULL)
-        { CVSetInstanceAddress(returnValue,ins); }
+        { mCVSetInstanceAddress(returnValue,ins); }
       else
         NoInstanceError(theEnv,ValueToString(temp.value),"instance-address");
      }
@@ -1271,7 +1271,7 @@ void InstanceAddressCommand(
         {
          ins = (INSTANCE_TYPE *) temp.value;
          if (ins->garbage == 0)
-           { CVSetInstanceAddress(returnValue,temp.value); }
+           { mCVSetInstanceAddress(returnValue,temp.value); }
          else
            {
             StaleInstanceAddress(theEnv,"instance-address",0);
@@ -1282,7 +1282,7 @@ void InstanceAddressCommand(
         {
          ins = FindInstanceBySymbol(theEnv,(SYMBOL_HN *) temp.value);
          if (ins != NULL)
-           { CVSetInstanceAddress(returnValue,ins); }
+           { mCVSetInstanceAddress(returnValue,ins); }
          else
            NoInstanceError(theEnv,ValueToString(temp.value),"instance-address");
         }
@@ -1305,11 +1305,11 @@ void InstanceNameCommand(
    CLIPSValue theArg;
    Environment *theEnv = UDFContextEnvironment(context);
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    if (! UDFFirstArgument(context,INSTANCE_TYPES | SYMBOL_TYPE,&theArg))
      { return; }
      
-   if (CVIsType(&theArg,INSTANCE_ADDRESS_TYPE))
+   if (mCVIsType(&theArg,INSTANCE_ADDRESS_TYPE))
      {
       ins = (INSTANCE_TYPE *) theArg.value;
       if (ins->garbage == 1)
@@ -1349,7 +1349,7 @@ void InstanceAddressPCommand(
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
 
-   CVSetBoolean(returnValue,CVIsType(&theArg,INSTANCE_ADDRESS_TYPE));
+   mCVSetBoolean(returnValue,mCVIsType(&theArg,INSTANCE_ADDRESS_TYPE));
   }
 
 /**************************************************************
@@ -1369,7 +1369,7 @@ void InstanceNamePCommand(
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
    
-   CVSetBoolean(returnValue,CVIsType(&theArg,INSTANCE_NAME_TYPE));
+   mCVSetBoolean(returnValue,mCVIsType(&theArg,INSTANCE_NAME_TYPE));
   }
 
 /*****************************************************************
@@ -1391,7 +1391,7 @@ void InstancePCommand(
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
 
-   CVSetBoolean(returnValue,CVIsType(&theArg,INSTANCE_ADDRESS_TYPE | INSTANCE_NAME_TYPE));
+   mCVSetBoolean(returnValue,mCVIsType(&theArg,INSTANCE_ADDRESS_TYPE | INSTANCE_NAME_TYPE));
   }
 
 /********************************************************
@@ -1412,21 +1412,21 @@ void InstanceExistPCommand(
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
 
-   if (CVIsType(&theArg,INSTANCE_ADDRESS_TYPE))
+   if (mCVIsType(&theArg,INSTANCE_ADDRESS_TYPE))
      {
-      CVSetBoolean(returnValue,((((INSTANCE_TYPE *) theArg.value)->garbage == 0) ? true : false));
+      mCVSetBoolean(returnValue,((((INSTANCE_TYPE *) theArg.value)->garbage == 0) ? true : false));
       return;
      }
      
-   if (CVIsType(&theArg,INSTANCE_NAME_TYPE | SYMBOL_TYPE))
+   if (mCVIsType(&theArg,INSTANCE_NAME_TYPE | SYMBOL_TYPE))
      {
-      CVSetBoolean(returnValue,((FindInstanceBySymbol(theEnv,(SYMBOL_HN *) theArg.value) != NULL) ?
+      mCVSetBoolean(returnValue,((FindInstanceBySymbol(theEnv,(SYMBOL_HN *) theArg.value) != NULL) ?
               true : false));
       return;
      }
    ExpectedTypeError1(theEnv,"instance-existp",1,"instance name, instance address or symbol");
    EnvSetEvaluationError(theEnv,true);
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
   }
 
 /* =========================================

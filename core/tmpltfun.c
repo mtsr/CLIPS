@@ -211,7 +211,7 @@ void ModifyCommand(
    /* Set the default return value to the symbol FALSE. */
    /*===================================================*/
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
    
    /*==================================================*/
    /* Evaluate the first argument which is used to get */
@@ -596,7 +596,7 @@ void DuplicateCommand(
    /* Set the default return value to the symbol FALSE. */
    /*===================================================*/
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 
    /*==================================================*/
    /* Evaluate the first argument which is used to get */
@@ -975,7 +975,7 @@ void DeftemplateSlotDefaultPFunction(
    slotName = CheckDeftemplateAndSlotArguments(theEnv,"deftemplate-slot-defaultp",&theDeftemplate,2);
    if (slotName == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -986,11 +986,11 @@ void DeftemplateSlotDefaultPFunction(
    defaultType = EnvDeftemplateSlotDefaultP(theEnv,theDeftemplate,ValueToString(slotName));
    
    if (defaultType == STATIC_DEFAULT)
-     { CVSetSymbol(returnValue,"static"); }
+     { mCVSetSymbol(returnValue,"static"); }
    else if (defaultType == DYNAMIC_DEFAULT)
-     { CVSetSymbol(returnValue,"dynamic"); }
+     { mCVSetSymbol(returnValue,"dynamic"); }
    else
-     { CVSetBoolean(returnValue,false); }
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /*************************************************/
@@ -1070,7 +1070,7 @@ void DeftemplateSlotDefaultValueFunction(
    slotName = CheckDeftemplateAndSlotArguments(theEnv,"deftemplate-slot-default-value",&theDeftemplate,2);
    if (slotName == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -1693,7 +1693,7 @@ void DeftemplateSlotMultiPFunction(
    slotName = CheckDeftemplateAndSlotArguments(theEnv,"deftemplate-slot-multip",&theDeftemplate,2);
    if (slotName == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -1701,7 +1701,7 @@ void DeftemplateSlotMultiPFunction(
    /* Is the slot a multifield slot? */
    /*================================*/
    
-   CVSetBoolean(returnValue,EnvDeftemplateSlotMultiP(theEnv,theDeftemplate,ValueToString(slotName)));
+   mCVSetBoolean(returnValue,EnvDeftemplateSlotMultiP(theEnv,theDeftemplate,ValueToString(slotName)));
   }
   
 /***********************************************/
@@ -1774,7 +1774,7 @@ void DeftemplateSlotSinglePFunction(
    slotName = CheckDeftemplateAndSlotArguments(theEnv,"deftemplate-slot-singlep",&theDeftemplate,2);
    if (slotName == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -1782,7 +1782,7 @@ void DeftemplateSlotSinglePFunction(
    /* Is the slot a single field slot? */
    /*==================================*/
    
-   CVSetBoolean(returnValue,EnvDeftemplateSlotSingleP(theEnv,theDeftemplate,ValueToString(slotName)));
+   mCVSetBoolean(returnValue,EnvDeftemplateSlotSingleP(theEnv,theDeftemplate,ValueToString(slotName)));
   }
 
 /************************************************/
@@ -1855,7 +1855,7 @@ void DeftemplateSlotExistPFunction(
    slotName = CheckDeftemplateAndSlotArguments(theEnv,"deftemplate-slot-existp",&theDeftemplate,2);
    if (slotName == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -1863,7 +1863,7 @@ void DeftemplateSlotExistPFunction(
    /* Does the slot exist? */
    /*======================*/
    
-   CVSetBoolean(returnValue,EnvDeftemplateSlotExistP(theEnv,theDeftemplate,ValueToString(slotName)));
+   mCVSetBoolean(returnValue,EnvDeftemplateSlotExistP(theEnv,theDeftemplate,ValueToString(slotName)));
   }
 
 /************************************************/
@@ -1926,7 +1926,7 @@ void DeftemplateSlotFacetExistPFunction(
    slotName = CheckDeftemplateAndSlotArguments(theEnv,"deftemplate-slot-facet-existp",&theDeftemplate,3);
    if (slotName == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -1936,7 +1936,7 @@ void DeftemplateSlotFacetExistPFunction(
 
    if (EnvArgTypeCheck(theEnv,"deftemplate-slot-facet-existp",3,SYMBOL,&facetName) == false)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
      
@@ -1944,7 +1944,7 @@ void DeftemplateSlotFacetExistPFunction(
    /* Does the slot exist? */
    /*======================*/
    
-   CVSetBoolean(returnValue,EnvDeftemplateSlotFacetExistP(theEnv,theDeftemplate,ValueToString(slotName),DOToString(facetName)));
+   mCVSetBoolean(returnValue,EnvDeftemplateSlotFacetExistP(theEnv,theDeftemplate,ValueToString(slotName),DOToString(facetName)));
   }
 
 /*****************************************************/
@@ -2015,7 +2015,7 @@ void DeftemplateSlotFacetValueFunction(
    /* Set up the default return value for errors. */
    /*=============================================*/
 
-   CVSetBoolean(returnValue,false);
+   mCVSetBoolean(returnValue,false);
 
    /*===================================================*/
    /* Retrieve the deftemplate and slot name arguments. */

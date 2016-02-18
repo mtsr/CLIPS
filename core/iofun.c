@@ -273,25 +273,25 @@ static void PrintDriver(
       switch(GetType(theArg))
         {
          case SYMBOL:
-           if (strcmp(CVToString(&theArg),"crlf") == 0)
+           if (strcmp(mCVToString(&theArg),"crlf") == 0)
              {    
               if (IOFunctionData(theEnv)->useFullCRLF)
                 { EnvPrintRouter(theEnv,logicalName,"\r\n"); }
               else
                 { EnvPrintRouter(theEnv,logicalName,"\n"); }
              }
-           else if (strcmp(CVToString(&theArg),"tab") == 0)
+           else if (strcmp(mCVToString(&theArg),"tab") == 0)
              { EnvPrintRouter(theEnv,logicalName,"\t"); }
-           else if (strcmp(CVToString(&theArg),"vtab") == 0)
+           else if (strcmp(mCVToString(&theArg),"vtab") == 0)
              { EnvPrintRouter(theEnv,logicalName,"\v"); }
-           else if (strcmp(CVToString(&theArg),"ff") == 0)
+           else if (strcmp(mCVToString(&theArg),"ff") == 0)
              { EnvPrintRouter(theEnv,logicalName,"\f"); }
            else
-             { EnvPrintRouter(theEnv,logicalName,CVToString(&theArg)); }
+             { EnvPrintRouter(theEnv,logicalName,mCVToString(&theArg)); }
            break;
 
          case STRING:
-           EnvPrintRouter(theEnv,logicalName,CVToString(&theArg));
+           EnvPrintRouter(theEnv,logicalName,mCVToString(&theArg));
            break;
 
          default:
@@ -349,7 +349,7 @@ void ReadFunction(
          IllegalLogicalNameMessage(theEnv,"read");
          EnvSetHaltExecution(theEnv,true);
          EnvSetEvaluationError(theEnv,true);
-         CVSetString(returnValue,"*** READ ERROR ***");
+         mCVSetString(returnValue,"*** READ ERROR ***");
          return;
         }
      }
@@ -363,7 +363,7 @@ void ReadFunction(
       UnrecognizedRouterMessage(theEnv,logicalName);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      CVSetString(returnValue,"*** READ ERROR ***");
+      mCVSetString(returnValue,"*** READ ERROR ***");
       return;
      }
 
@@ -398,7 +398,7 @@ void ReadFunction(
      }
    else if (theToken.type == UNKNOWN_VALUE)
      {
-      CVSetString(returnValue,"*** READ ERROR ***");
+      mCVSetString(returnValue,"*** READ ERROR ***");
      }
    else
      {
@@ -521,7 +521,7 @@ void OpenFunction(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -536,7 +536,7 @@ void OpenFunction(
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
       IllegalLogicalNameMessage(theEnv,"open");
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -553,7 +553,7 @@ void OpenFunction(
       EnvPrintRouter(theEnv,WERROR,"Logical name ");
       EnvPrintRouter(theEnv,WERROR,logicalName);
       EnvPrintRouter(theEnv,WERROR," already in use.\n");
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -567,7 +567,7 @@ void OpenFunction(
      {
       if (! UDFNextArgument(context,STRING_TYPE,&theArg))
         { return; }
-      accessMode = CVToString(&theArg);
+      accessMode = mCVToString(&theArg);
      }
 
    /*=====================================*/
@@ -584,7 +584,7 @@ void OpenFunction(
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
       ExpectedTypeError1(theEnv,"open",3,"string with value \"r\", \"w\", \"a\", \"rb\", \"wb\", or \"ab\"");
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -594,7 +594,7 @@ void OpenFunction(
    /* file was opened successfully, otherwise false. */
    /*================================================*/
 
-   CVSetBoolean(returnValue,OpenAFile(theEnv,fileName,accessMode,logicalName));
+   mCVSetBoolean(returnValue,OpenAFile(theEnv,fileName,accessMode,logicalName));
   }
 
 /***************************************************************/
@@ -615,7 +615,7 @@ void CloseFunction(
 
    if (! UDFHasNextArgument(context))
      {
-      CVSetBoolean(returnValue,CloseAllFiles(theEnv));
+      mCVSetBoolean(returnValue,CloseAllFiles(theEnv));
       return;
      }
 
@@ -629,7 +629,7 @@ void CloseFunction(
       IllegalLogicalNameMessage(theEnv,"close");
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -639,7 +639,7 @@ void CloseFunction(
    /* otherwise false.                                       */
    /*========================================================*/
 
-   CVSetBoolean(returnValue,CloseFile(theEnv,logicalName));
+   mCVSetBoolean(returnValue,CloseFile(theEnv,logicalName));
   }
 
 /***************************************/
@@ -663,7 +663,7 @@ void GetCharFunction(
          IllegalLogicalNameMessage(theEnv,"get-char");
          EnvSetHaltExecution(theEnv,true);
          EnvSetEvaluationError(theEnv,true);
-         CVSetInteger(returnValue,-1);
+         mCVSetInteger(returnValue,-1);
          return;
         }
      }
@@ -673,11 +673,11 @@ void GetCharFunction(
       UnrecognizedRouterMessage(theEnv,logicalName);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      CVSetInteger(returnValue,-1);
+      mCVSetInteger(returnValue,-1);
       return;
      }
 
-   CVSetInteger(returnValue,EnvGetcRouter(theEnv,logicalName));
+   mCVSetInteger(returnValue,EnvGetcRouter(theEnv,logicalName));
   }
 
 /***************************************/
@@ -730,7 +730,7 @@ void PutCharFunction(
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return; }
       
-   theChar = CVToInteger(&theArg);
+   theChar = mCVToInteger(&theArg);
    
    /*===================================================*/
    /* If the "fast load" option is being used, then the */
@@ -760,7 +760,7 @@ void RemoveFunction(
 
    if ((theFileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -769,7 +769,7 @@ void RemoveFunction(
    /* sucessfully removed, otherwise false.        */
    /*==============================================*/
 
-   CVSetBoolean(returnValue,genremove(theFileName));
+   mCVSetBoolean(returnValue,genremove(theFileName));
   }
 
 /****************************************/
@@ -788,13 +788,13 @@ void RenameFunction(
 
    if ((oldFileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
    if ((newFileName = GetFileName(context)) == NULL)
      {
-      CVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,false);
       return;
      }
 
@@ -803,7 +803,7 @@ void RenameFunction(
    /* sucessfully renamed, otherwise false.        */
    /*==============================================*/
 
-   CVSetBoolean(returnValue,genrename(oldFileName,newFileName));
+   mCVSetBoolean(returnValue,genrename(oldFileName,newFileName));
   }
 
 /****************************************/
@@ -1227,7 +1227,7 @@ void ReadlineFunction(
          IllegalLogicalNameMessage(theEnv,"readline");
          EnvSetHaltExecution(theEnv,true);
          EnvSetEvaluationError(theEnv,true);
-         CVSetString(returnValue,"*** READ ERROR ***");
+         mCVSetString(returnValue,"*** READ ERROR ***");
          return;
         }
      }
@@ -1237,7 +1237,7 @@ void ReadlineFunction(
       UnrecognizedRouterMessage(theEnv,logicalName);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      CVSetString(returnValue,"*** READ ERROR ***");
+      mCVSetString(returnValue,"*** READ ERROR ***");
       return;
      }
 
@@ -1249,18 +1249,18 @@ void ReadlineFunction(
 
    if (EnvGetHaltExecution(theEnv))
      {
-      CVSetString(returnValue,"*** READ ERROR ***");
+      mCVSetString(returnValue,"*** READ ERROR ***");
       if (buffer != NULL) rm(theEnv,buffer,(int) sizeof (char) * line_max);
       return;
      }
 
    if (buffer == NULL)
      {
-      CVSetSymbol(returnValue,"EOF");
+      mCVSetSymbol(returnValue,"EOF");
       return;
      }
 
-   CVSetString(returnValue,buffer);
+   mCVSetString(returnValue,buffer);
    rm(theEnv,buffer,(int) sizeof (char) * line_max);
    return;
   }
@@ -1377,7 +1377,7 @@ void ReadNumberFunction(
          IllegalLogicalNameMessage(theEnv,"read");
          EnvSetHaltExecution(theEnv,true);
          EnvSetEvaluationError(theEnv,true);
-         CVSetString(returnValue,"*** READ ERROR ***");
+         mCVSetString(returnValue,"*** READ ERROR ***");
          return;
         }
      }
@@ -1391,7 +1391,7 @@ void ReadNumberFunction(
       UnrecognizedRouterMessage(theEnv,logicalName);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      CVSetString(returnValue,"*** READ ERROR ***");
+      mCVSetString(returnValue,"*** READ ERROR ***");
       return;
      }
 

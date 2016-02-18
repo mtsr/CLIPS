@@ -230,11 +230,11 @@ void CosFunction(
   {
    if (SingleNumberCheck(context,"cos",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,cos(CVToFloat(returnValue)));
+   mCVSetFloat(returnValue,cos(mCVToFloat(returnValue)));
   }
 
 /*************************************/
@@ -247,11 +247,11 @@ void SinFunction(
   {
    if (SingleNumberCheck(context,"sin",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,sin(CVToFloat(returnValue)));
+   mCVSetFloat(returnValue,sin(mCVToFloat(returnValue)));
   }
 
 /*************************************/
@@ -266,19 +266,19 @@ void TanFunction(
 
    if (SingleNumberCheck(context,"tan",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   tv = cos(CVToFloat(returnValue));
+   tv = cos(mCVToFloat(returnValue));
    if ((tv < SMALLEST_ALLOWED_NUMBER) && (tv > -SMALLEST_ALLOWED_NUMBER))
      {
       SingularityErrorMessage(UDFContextEnvironment(context),"tan");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,sin(CVToFloat(returnValue)) / tv);
+   mCVSetFloat(returnValue,sin(mCVToFloat(returnValue)) / tv);
   }
 
 /*************************************/
@@ -293,19 +293,19 @@ void SecFunction(
 
    if (SingleNumberCheck(context,"sec",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   tv = cos(CVToFloat(returnValue));
+   tv = cos(mCVToFloat(returnValue));
    if ((tv < SMALLEST_ALLOWED_NUMBER) && (tv > -SMALLEST_ALLOWED_NUMBER))
      {
       SingularityErrorMessage(UDFContextEnvironment(context),"sec");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,1.0 / tv);
+   mCVSetFloat(returnValue,1.0 / tv);
   }
 
 /*************************************/
@@ -320,19 +320,19 @@ void CscFunction(
 
    if (SingleNumberCheck(context,"csc",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   tv = sin(CVToFloat(returnValue));
+   tv = sin(mCVToFloat(returnValue));
    if ((tv < SMALLEST_ALLOWED_NUMBER) && (tv > -SMALLEST_ALLOWED_NUMBER))
      {
       SingularityErrorMessage(UDFContextEnvironment(context),"csc");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,1.0 / tv);
+   mCVSetFloat(returnValue,1.0 / tv);
   }
 
 /*************************************/
@@ -347,19 +347,19 @@ void CotFunction(
 
     if (SingleNumberCheck(context,"cot",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-    tv = sin(CVToFloat(returnValue));
+    tv = sin(mCVToFloat(returnValue));
     if ((tv < SMALLEST_ALLOWED_NUMBER) && (tv > -SMALLEST_ALLOWED_NUMBER))
       {
        SingularityErrorMessage(UDFContextEnvironment(context),"cot");
-       CVSetFloat(returnValue,0.0);
+       mCVSetFloat(returnValue,0.0);
        return;
       }
 
-    CVSetFloat(returnValue,cos(CVToFloat(returnValue)) / tv);
+    mCVSetFloat(returnValue,cos(mCVToFloat(returnValue)) / tv);
   }
 
 /**************************************/
@@ -374,20 +374,20 @@ void AcosFunction(
 
    if (SingleNumberCheck(context,"acos",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    
    if ((num > 1.0) || (num < -1.0))
      {
       DomainErrorMessage(UDFContextEnvironment(context),"acos");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-    CVSetFloat(returnValue,acos(num));
+    mCVSetFloat(returnValue,acos(num));
   }
 
 /**************************************/
@@ -402,19 +402,19 @@ void AsinFunction(
 
    if (SingleNumberCheck(context,"asin",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if ((num > 1.0) || (num < -1.0))
      {
       DomainErrorMessage(UDFContextEnvironment(context),"asin");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,asin(num));
+   mCVSetFloat(returnValue,asin(num));
   }
 
 /**************************************/
@@ -427,11 +427,11 @@ void AtanFunction(
   {
    if (SingleNumberCheck(context,"atan",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,atan(CVToFloat(returnValue)));
+   mCVSetFloat(returnValue,atan(mCVToFloat(returnValue)));
   }
 
 /**************************************/
@@ -446,20 +446,20 @@ void AsecFunction(
 
    if (SingleNumberCheck(context,"asec",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if ((num < 1.0) && (num > -1.0))
      {
       DomainErrorMessage(UDFContextEnvironment(context),"asec");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
     num = 1.0 / num;
-    CVSetFloat(returnValue,acos(num));
+    mCVSetFloat(returnValue,acos(num));
   }
 
 /**************************************/
@@ -474,20 +474,20 @@ void AcscFunction(
 
    if (SingleNumberCheck(context,"acsc",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if ((num < 1.0) && (num > -1.0))
      {
       DomainErrorMessage(UDFContextEnvironment(context),"acsc");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
     num = 1.0 / num;
-    CVSetFloat(returnValue,asin(num));
+    mCVSetFloat(returnValue,asin(num));
   }
 
 /**************************************/
@@ -502,19 +502,19 @@ void AcotFunction(
 
    if (SingleNumberCheck(context,"acot",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if (TestProximity(num,1e-25) == true)
      {
-      CVSetFloat(returnValue,PID2);
+      mCVSetFloat(returnValue,PID2);
       return;
      }
      
    num = 1.0 / num;
-   CVSetFloat(returnValue,atan(num));
+   mCVSetFloat(returnValue,atan(num));
   }
 
 /**************************************/
@@ -527,11 +527,11 @@ void CoshFunction(
   {
    if (SingleNumberCheck(context,"cosh",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,cosh(CVToFloat(returnValue)));
+   mCVSetFloat(returnValue,cosh(mCVToFloat(returnValue)));
   }
 
 /**************************************/
@@ -544,11 +544,11 @@ void SinhFunction(
   {
    if (SingleNumberCheck(context,"sinh",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,sinh(CVToFloat(returnValue)));
+   mCVSetFloat(returnValue,sinh(mCVToFloat(returnValue)));
   }
 
 /**************************************/
@@ -561,11 +561,11 @@ void TanhFunction(
   {
    if (SingleNumberCheck(context,"tanh",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,tanh(CVToFloat(returnValue)));
+   mCVSetFloat(returnValue,tanh(mCVToFloat(returnValue)));
   }
 
 /**************************************/
@@ -578,11 +578,11 @@ void SechFunction(
   {
    if (SingleNumberCheck(context,"sech",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,1.0 / cosh(CVToFloat(returnValue)));
+   mCVSetFloat(returnValue,1.0 / cosh(mCVToFloat(returnValue)));
   }
 
 /**************************************/
@@ -598,25 +598,25 @@ void CschFunction(
    
    if (SingleNumberCheck(context,"csch",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if (num == 0.0)
      {
       SingularityErrorMessage(theEnv,"csch");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
    else if (TestProximity(num,1e-25) == true)
      {
       ArgumentOverflowErrorMessage(theEnv,"csch");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,1.0 / sinh(num));
+   mCVSetFloat(returnValue,1.0 / sinh(num));
   }
 
 /**************************************/
@@ -632,25 +632,25 @@ void CothFunction(
 
    if (SingleNumberCheck(context,"coth",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if (num == 0.0)
      {
       SingularityErrorMessage(theEnv,"coth");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
    else if (TestProximity(num,1e-25) == true)
      {
       ArgumentOverflowErrorMessage(theEnv,"coth");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,1.0 / tanh(num));
+   mCVSetFloat(returnValue,1.0 / tanh(num));
   }
 
 /***************************************/
@@ -665,19 +665,19 @@ void AcoshFunction(
 
    if (SingleNumberCheck(context,"acosh",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if (num < 1.0)
      {
       DomainErrorMessage(UDFContextEnvironment(context),"acosh");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,genacosh(num));
+   mCVSetFloat(returnValue,genacosh(num));
   }
 
 /***************************************/
@@ -690,11 +690,11 @@ void AsinhFunction(
   {
    if (SingleNumberCheck(context,"asinh",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,genasinh(CVToFloat(returnValue)));
+   mCVSetFloat(returnValue,genasinh(mCVToFloat(returnValue)));
   }
 
 /***************************************/
@@ -709,19 +709,19 @@ void AtanhFunction(
 
    if (SingleNumberCheck(context,"atanh",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if ((num >= 1.0) || (num <= -1.0))
      {
       DomainErrorMessage(UDFContextEnvironment(context),"atanh");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,genatanh(num));
+   mCVSetFloat(returnValue,genatanh(num));
   }
 
 /***************************************/
@@ -736,19 +736,19 @@ void AsechFunction(
 
    if (SingleNumberCheck(context,"asech",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if ((num > 1.0) || (num <= 0.0))
      {
       DomainErrorMessage(UDFContextEnvironment(context),"asech");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,genasech(num));
+   mCVSetFloat(returnValue,genasech(num));
   }
 
 /***************************************/
@@ -763,19 +763,19 @@ void AcschFunction(
    
    if (SingleNumberCheck(context,"acsch",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if (num == 0.0)
      {
       DomainErrorMessage(UDFContextEnvironment(context),"acsch");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,genacsch(num));
+   mCVSetFloat(returnValue,genacsch(num));
   }
 
 /***************************************/
@@ -790,19 +790,19 @@ void AcothFunction(
 
    if (SingleNumberCheck(context,"acoth",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if ((num <= 1.0) && (num >= -1.0))
      {
       DomainErrorMessage(UDFContextEnvironment(context),"acoth");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,genacoth(num));
+   mCVSetFloat(returnValue,genacoth(num));
   }
 
 /*************************************/
@@ -815,11 +815,11 @@ void ExpFunction(
   {
    if (SingleNumberCheck(context,"exp",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,exp(CVToFloat(returnValue)));
+   mCVSetFloat(returnValue,exp(mCVToFloat(returnValue)));
   }
 
 /*************************************/
@@ -835,25 +835,25 @@ void LogFunction(
 
    if (SingleNumberCheck(context,"log",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if (num < 0.0)
      {
       DomainErrorMessage(theEnv,"log");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
    else if (num == 0.0)
      {
       ArgumentOverflowErrorMessage(theEnv,"log");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,log(num));
+   mCVSetFloat(returnValue,log(num));
   }
 
 /***************************************/
@@ -869,25 +869,25 @@ void Log10Function(
 
    if (SingleNumberCheck(context,"log10",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if (num < 0.0)
      {
       DomainErrorMessage(theEnv,"log10");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
    else if (num == 0.0)
      {
       ArgumentOverflowErrorMessage(theEnv,"log10");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-    CVSetFloat(returnValue,log10(num));
+    mCVSetFloat(returnValue,log10(num));
    }
 
 /**************************************/
@@ -902,19 +902,19 @@ void SqrtFunction(
 
    if (SingleNumberCheck(context,"sqrt",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
    
-   num = CVToFloat(returnValue);
+   num = mCVToFloat(returnValue);
    if (num < 0.00000)
      {
       DomainErrorMessage(UDFContextEnvironment(context),"sqrt");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
      
-   CVSetFloat(returnValue,sqrt(num));
+   mCVSetFloat(returnValue,sqrt(num));
   }
 
 /*************************************/
@@ -942,14 +942,14 @@ void PowFunction(
     /* Domain error check. */
     /*=====================*/
     
-    num1 = CVToFloat(&value1);
-    num2 = CVToFloat(&value2);
+    num1 = mCVToFloat(&value1);
+    num2 = mCVToFloat(&value2);
     
     if (((num1 == 0.0) && (num2 <= 0.0)) ||
        ((num1 < 0.0) && (dtrunc(num2) != num2)))
      {
       DomainErrorMessage(UDFContextEnvironment(context),"**");
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
@@ -957,7 +957,7 @@ void PowFunction(
    /* Compute and set the value. */
    /*============================*/
    
-   CVSetFloat(returnValue,pow(num1,num2));
+   mCVSetFloat(returnValue,pow(num1,num2));
   }
 
 /*************************************/
@@ -987,12 +987,12 @@ void ModFunction(
    /* Check for divide by zero. */
    /*===========================*/
 
-   if ((CVIsType(&item2,INTEGER_TYPE) ? (CVToInteger(&item2) == 0L) : false) ||
-       (CVIsType(&item2,FLOAT_TYPE) ? (CVToFloat(&item2) == 0.0) : false))
+   if ((mCVIsType(&item2,INTEGER_TYPE) ? (mCVToInteger(&item2) == 0L) : false) ||
+       (mCVIsType(&item2,FLOAT_TYPE) ? (mCVToFloat(&item2) == 0.0) : false))
      {
       DivideByZeroErrorMessage(theEnv,"mod");
       EnvSetEvaluationError(theEnv,true);
-      CVSetInteger(returnValue,0);
+      mCVSetInteger(returnValue,0);
       return;
      }
 
@@ -1000,17 +1000,17 @@ void ModFunction(
    /* Compute the return value. */
    /*===========================*/
    
-   if (CVIsType(&item1,FLOAT_TYPE) || CVIsType(&item2,FLOAT_TYPE))
+   if (mCVIsType(&item1,FLOAT_TYPE) || mCVIsType(&item2,FLOAT_TYPE))
      {
-      fnum1 = CVToFloat(&item1);
-      fnum2 = CVToFloat(&item2);
-      CVSetFloat(returnValue,fnum1 - (dtrunc(fnum1 / fnum2) * fnum2));
+      fnum1 = mCVToFloat(&item1);
+      fnum2 = mCVToFloat(&item2);
+      mCVSetFloat(returnValue,fnum1 - (dtrunc(fnum1 / fnum2) * fnum2));
      }
    else
      {
-      lnum1 = CVToInteger(&item1);
-      lnum2 = CVToInteger(&item2);
-      CVSetInteger(returnValue,lnum1 - (lnum1 / lnum2) * lnum2);
+      lnum1 = mCVToInteger(&item1);
+      lnum2 = mCVToInteger(&item2);
+      mCVSetInteger(returnValue,lnum1 - (lnum1 / lnum2) * lnum2);
      }
   }
 
@@ -1022,7 +1022,7 @@ void PiFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetFloat(returnValue,acos(-1.0));
+   mCVSetFloat(returnValue,acos(-1.0));
   }
 
 /****************************************/
@@ -1035,11 +1035,11 @@ void DegRadFunction(
   {
    if (SingleNumberCheck(context,"deg-rad",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,CVToFloat(returnValue) * PI / 180.0);
+   mCVSetFloat(returnValue,mCVToFloat(returnValue) * PI / 180.0);
   }
 
 /****************************************/
@@ -1052,11 +1052,11 @@ void RadDegFunction(
   {
    if (SingleNumberCheck(context,"rad-deg",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,CVToFloat(returnValue) * 180.0 / PI);
+   mCVSetFloat(returnValue,mCVToFloat(returnValue) * 180.0 / PI);
   }
 
 /*****************************************/
@@ -1069,11 +1069,11 @@ void DegGradFunction(
   {
    if (SingleNumberCheck(context,"deg-grad",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,CVToFloat(returnValue) / 0.9);
+   mCVSetFloat(returnValue,mCVToFloat(returnValue) / 0.9);
   }
 
 /*****************************************/
@@ -1086,11 +1086,11 @@ void GradDegFunction(
   {
    if (SingleNumberCheck(context,"grad-deg",returnValue) == false)
      {
-      CVSetFloat(returnValue,0.0);
+      mCVSetFloat(returnValue,0.0);
       return;
      }
 
-   CVSetFloat(returnValue,CVToFloat(returnValue) * 0.9);
+   mCVSetFloat(returnValue,mCVToFloat(returnValue) * 0.9);
   }
 
 /***************************************/
@@ -1112,8 +1112,8 @@ void RoundFunction(
    /* Round float type to integer. */
    /*==============================*/
    
-   if (CVIsType(returnValue,FLOAT_TYPE))
-     { CVSetInteger(returnValue,ceil(CVToFloat(returnValue) - 0.5)); }
+   if (mCVIsType(returnValue,FLOAT_TYPE))
+     { mCVSetInteger(returnValue,ceil(mCVToFloat(returnValue) - 0.5)); }
   }
 
 /*******************************************/

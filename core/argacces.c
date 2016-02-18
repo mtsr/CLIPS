@@ -586,20 +586,20 @@ const char *GetLogicalName(
    if (! UDFNextArgument(context,ANY_TYPE,&theArg))
      { return(NULL); }
 
-   if (CVIsType(&theArg,LEXEME_TYPES) ||
-       CVIsType(&theArg,INSTANCE_NAME_TYPE))
+   if (mCVIsType(&theArg,LEXEME_TYPES) ||
+       mCVIsType(&theArg,INSTANCE_NAME_TYPE))
      {
-      logicalName = CVToString(&theArg);
+      logicalName = mCVToString(&theArg);
       if ((strcmp(logicalName,"t") == 0) || (strcmp(logicalName,"T") == 0))
         { logicalName = defaultLogicalName; }
      }
-   else if (CVIsType(&theArg,FLOAT_TYPE))
+   else if (mCVIsType(&theArg,FLOAT_TYPE))
      {
-      logicalName = ValueToString(EnvAddSymbol(theEnv,FloatToString(theEnv,CVToFloat(&theArg))));
+      logicalName = ValueToString(EnvAddSymbol(theEnv,FloatToString(theEnv,mCVToFloat(&theArg))));
      }
-   else if (CVIsType(&theArg,INTEGER_TYPE))
+   else if (mCVIsType(&theArg,INTEGER_TYPE))
      {
-      logicalName = ValueToString(EnvAddSymbol(theEnv,LongIntegerToString(theEnv,CVToInteger(&theArg))));
+      logicalName = ValueToString(EnvAddSymbol(theEnv,LongIntegerToString(theEnv,mCVToInteger(&theArg))));
      }
    else
      { logicalName = NULL; }
@@ -621,7 +621,7 @@ const char *GetFileName(
    if (! UDFNextArgument(context,LEXEME_TYPES,&theArg))
      { return(NULL); }
 
-   return(CVToString(&theArg));
+   return(mCVToString(&theArg));
   }
 
 /******************************************************************/
@@ -715,13 +715,13 @@ const char *GetConstructName(
    if (! UDFFirstArgument(context,ANY_TYPE,&result))
      { return(NULL); }
 
-   if (! CVIsType(&result,SYMBOL_TYPE))
+   if (! mCVIsType(&result,SYMBOL_TYPE))
      {
       UDFInvalidArgumentMessage(context,constructType);
       return(NULL);
      }
 
-   return(CVToString(&result));
+   return(mCVToString(&result));
   }
 
 /**************************************************************************/
