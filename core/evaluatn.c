@@ -1290,6 +1290,65 @@ void CVSetBoolean(
    theValue->type = SYMBOL;
   }
 
+/*******************/
+/* CVIsFalseSymbol */
+/*******************/
+bool CVIsFalseSymbol(
+  CLIPSValue *theValue)
+  {
+   return ((theValue->type == SYMBOL) &&
+           (theValue->value == SymbolData(theValue->environment)->FalseSymbolHN));
+  }
+
+/******************/
+/* CVIsTrueSymbol */
+/******************/
+bool CVIsTrueSymbol(
+  CLIPSValue *theValue)
+  {
+   return ((theValue->type == SYMBOL) &&
+           (theValue->value == SymbolData(theValue->environment)->TrueSymbolHN));
+  }
+
+/************/
+/* MFLength */
+/************/
+CLIPSInteger MFLength(
+  CLIPSValue *theValue)
+  {
+   if (theValue->type == MULTIFIELD)
+     { return (theValue->end - theValue->begin) + 1; }
+   else
+     { return 0; }
+  }
+
+/**************/
+/* MFNthValue */
+/**************/
+void MFNthValue(
+  CLIPSValue *theMFValue,
+  CLIPSInteger n,
+  CLIPSValue *returnValue)
+  {
+   struct multifield *theMF;
+   
+   if ((theMFValue->type != MULTIFIELD) ||
+       (n < 0) ||
+       (n >= (theMFValue->end - theMFValue->begin)))
+     {
+      returnValue->type = RVOID;
+      returnValue->bitType = VOID_TYPE;
+      returnValue->value = NULL;
+      return;
+     }
+     
+   theMF = (struct multifield *) theMFValue->value;
+   returnValue->type = theMF->theFields[theMFValue->begin + n - 1].type;
+   returnValue->value = theMF->theFields[theMFValue->begin + n - 1].value;
+   returnValue->bitType = (1 << returnValue->type);
+   returnValue->environment = theMFValue->environment;
+  }
+
 /******************/
 /* PrintCAddress: */
 /******************/

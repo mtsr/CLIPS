@@ -1124,7 +1124,6 @@ void UnmakeInstanceCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   EXPRESSION *theArgument;
    CLIPSValue theArg;
    INSTANCE_TYPE *ins;
    int argNumber = 1;
@@ -1172,7 +1171,6 @@ void UnmakeInstanceCommand(
          return;
         }
       argNumber++;
-      theArgument = GetNextArgument(theArgument);
      }
      
    mCVSetBoolean(returnValue,rtn);

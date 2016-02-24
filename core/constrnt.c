@@ -505,7 +505,7 @@ void SDCCommand(
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
 
-   EnvSetDynamicConstraintChecking(theEnv,! CVIsFalseSymbol(&theArg));
+   EnvSetDynamicConstraintChecking(theEnv,! mCVIsFalseSymbol(&theArg));
   }
 
 /**********************************************/

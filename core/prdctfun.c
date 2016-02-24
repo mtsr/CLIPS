@@ -391,7 +391,7 @@ void NotFunction(
    if (! UDFFirstArgument(context,ANY_TYPE,&result))
      { return; }
 
-   if (CVIsFalseSymbol(&result))
+   if (mCVIsFalseSymbol(&result))
      {
       mCVSetBoolean(returnValue,true);
       return;
@@ -415,7 +415,7 @@ void AndFunction(
       if (! UDFNextArgument(context,ANY_TYPE,&result))
         { return; }
         
-      if (CVIsFalseSymbol(&result))
+      if (mCVIsFalseSymbol(&result))
         {
          mCVSetBoolean(returnValue,false);
          return;
@@ -440,7 +440,7 @@ void OrFunction(
       if (! UDFNextArgument(context,ANY_TYPE,&result))
         { return; }
         
-      if (! CVIsFalseSymbol(&result))
+      if (! mCVIsFalseSymbol(&result))
         {
          mCVSetBoolean(returnValue,true);
          return;

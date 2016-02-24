@@ -256,6 +256,10 @@ struct evaluationData
    bool                           CVIsType(CLIPSValue *,unsigned);
    void                           EnvCVInit(Environment *,CLIPSValue *);
    void                           UDFCVInit(UDFContext *,CLIPSValue *);
+   bool                           CVIsFalseSymbol(CLIPSValue *);
+   bool                           CVIsTrueSymbol(CLIPSValue *);
+   CLIPSInteger                   MFLength(CLIPSValue *);
+   void                           MFNthValue(CLIPSValue *,CLIPSInteger,CLIPSValue *);
 
 #define mCVIsType(cv,cvType) ((cv)->bitType & (cvType))
 
@@ -317,15 +321,25 @@ struct evaluationData
 
 #define mUDFCVInit(context,rv) ((rv)->environment = (context)->environment)
 
+#define mCVIsFalseSymbol(cv) (((cv)->type == SYMBOL) &&  ((cv)->value == SymbolData((cv)->environment)->FalseSymbolHN))
+
+#define mCVIsTrueSymbol(cv) (((cv)->type == SYMBOL) &&  ((cv)->value == SymbolData((cv)->environment)->TrueSymbolHN))
+
+#define mMFLength(cv)   ((cv)->type == MULTIFIELD ? (((cv)->end - (cv)->begin) + 1) : 0)
+
+#define mMFNthValue(mf,n,rv) \
+   ( (rv)->type = (((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].type) , \
+     (rv)->value = (((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value) , \
+     (rv)->bitType = (1 << (rv)->type) , \
+     (rv)->environment = (mf)->environment )
+
 /******/
 
 #define CVType(cv) ((cv)->bitType)
-#define CVSetCLIPSValue(v1,v2) ((v1)->type = (v2)->type, (v1)->value = (v2)->value, (v1)->bitType = (v2)->bitType) 
 
+#define CVSetCLIPSValue(v1,v2) ((v1)->type = (v2)->type, (v1)->value = (v2)->value, (v1)->bitType = (v2)->bitType)
 
 #define CVToRawValue(cv) ((cv)->value)
-
-#define MFLength(cv)   ((cv)->type == MULTIFIELD ? (((cv)->end - (cv)->begin) + 1) : 0)
 
 #define CVSetCLIPSSymbol(cv,sv) \
    ( (cv)->value = (sv) , \
@@ -350,11 +364,6 @@ struct evaluationData
 #define CVSetRawValue(cv,rv) \
    ( (cv)->value = (rv)  )
 
-#define MFNthValue(mf,n,rv) \
-   ( (rv)->type = (((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].type) , \
-     (rv)->value = (((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value) , \
-     (rv)->bitType = (1 << (rv)->type) , \
-     (rv)->environment = (mf)->environment )
 
 #define MFSetNthValue(mf,n,nv) \
    ( \
@@ -380,8 +389,5 @@ struct evaluationData
      (tv)->begin = (sv)->begin , \
      (tv)->end = (sv)->end )
 
-#define CVIsFalseSymbol(cv) (((cv)->type == SYMBOL) &&  ((cv)->value == SymbolData((cv)->environment)->FalseSymbolHN))
-
-#define CVIsTrueSymbol(cv) (((cv)->type == SYMBOL) &&  ((cv)->value == SymbolData((cv)->environment)->TrueSymbolHN))
 
 #endif /* _H_evaluatn */

@@ -399,7 +399,7 @@ void SetFactDuplicationCommand(
    /* behavior is disabled, otherwise it is enabled.                */
    /*===============================================================*/
 
-   EnvSetFactDuplication(theEnv,! CVIsFalseSymbol(&theArg));
+   EnvSetFactDuplication(theEnv,! mCVIsFalseSymbol(&theArg));
   }
 
 /***************************************************/

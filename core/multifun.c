@@ -714,13 +714,13 @@ void SubsetpFunction(
    if (! UDFNextArgument(context,MULTIFIELD_TYPE,&item2))
      { return; }
  
-   if (MFLength(&item1) == 0)
+   if (mMFLength(&item1) == 0)
      {
       mCVSetBoolean(returnValue,true);
       return;
      }
      
-   if (MFLength(&item2) == 0)
+   if (mMFLength(&item2) == 0)
      {
       mCVSetBoolean(returnValue,false);
       return;

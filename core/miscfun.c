@@ -424,7 +424,7 @@ void LengthFunction(
 
    if (mCVIsType(&theArg,MULTIFIELD_TYPE))
      {
-      mCVSetInteger(returnValue,MFLength(&theArg));
+      mCVSetInteger(returnValue,mMFLength(&theArg));
       return;
      }
   }
@@ -1069,7 +1069,7 @@ void SetSORCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
      
-   mCVSetBoolean(returnValue,EnvSetSequenceOperatorRecognition(theEnv,(CVIsFalseSymbol(&theArg) ?
+   mCVSetBoolean(returnValue,EnvSetSequenceOperatorRecognition(theEnv,(mCVIsFalseSymbol(&theArg) ?
                                                                       false : true)));
 #else
     mCVSetBoolean(returnValue,ExpressionData(theEnv)->SequenceOpMode);

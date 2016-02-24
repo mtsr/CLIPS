@@ -225,7 +225,7 @@ void SetBetaMemoryResizingCommand(
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
     
-   if (CVIsFalseSymbol(&theArg))
+   if (mCVIsFalseSymbol(&theArg))
      { EnvSetBetaMemoryResizing(theEnv,false); }
    else
      { EnvSetBetaMemoryResizing(theEnv,true); }

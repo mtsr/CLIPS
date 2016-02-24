@@ -102,7 +102,7 @@ void SetResetGlobalsCommand(
    if (! UDFFirstArgument(context,ANY_TYPE,&result))
      { return; }
    
-   if (CVIsFalseSymbol(&result))
+   if (mCVIsFalseSymbol(&result))
      { EnvSetResetGlobals(theEnv,false); }
    else
      { EnvSetResetGlobals(theEnv,true); }
