@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  02/26/16             */
    /*                                                     */
    /*                PRINT UTILITY MODULE                 */
    /*******************************************************/
@@ -45,8 +45,11 @@
 /*            Fixed linkage issue when BLOAD_ONLY compiler   */
 /*            flag is set to 1.                              */
 /*                                                           */
-/*      6.31: Added Env prefix to GetEvaluationError and     */
+/*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            File name/line count displayed for errors      */
+/*            and warnings during load command.              */
 /*                                                           */
 /*************************************************************/
 
@@ -286,6 +289,26 @@ void PrintErrorID(
    EnvPrintRouter(theEnv,WERROR,module);
    PrintLongInteger(theEnv,WERROR,(long int) errorID);
    EnvPrintRouter(theEnv,WERROR,"] ");
+   
+   /*==================================================*/
+   /* Print the file name and line number if available */
+   /* and there is no callback for errors/warnings.    */
+   /*==================================================*/
+   
+   if ((ConstructData(theEnv)->ParserErrorCallback == NULL) &&
+       (GetLoadInProgress(theEnv) == true))
+     {
+      const char *fileName;
+
+      fileName = EnvGetParsingFileName(theEnv);
+      if (fileName != NULL)
+        {
+         EnvPrintRouter(theEnv,WERROR,fileName);
+         EnvPrintRouter(theEnv,WERROR,", Line ");
+         PrintLongInteger(theEnv,WERROR,GetLineCount(theEnv));
+         EnvPrintRouter(theEnv,WERROR,": ");
+        }
+     }
   }
 
 /**********************************************/
@@ -307,7 +330,29 @@ void PrintWarningID(
    EnvPrintRouter(theEnv,WWARNING,"[");
    EnvPrintRouter(theEnv,WWARNING,module);
    PrintLongInteger(theEnv,WWARNING,(long int) warningID);
-   EnvPrintRouter(theEnv,WWARNING,"] WARNING: ");
+   EnvPrintRouter(theEnv,WWARNING,"] ");
+   
+   /*==================================================*/
+   /* Print the file name and line number if available */
+   /* and there is no callback for errors/warnings.    */
+   /*==================================================*/
+   
+   if ((ConstructData(theEnv)->ParserErrorCallback == NULL) &&
+       (GetLoadInProgress(theEnv) == true))
+     {
+      const char *fileName;
+
+      fileName = EnvGetParsingFileName(theEnv);
+      if (fileName != NULL)
+        {
+         EnvPrintRouter(theEnv,WERROR,fileName);
+         EnvPrintRouter(theEnv,WERROR,", Line ");
+         PrintLongInteger(theEnv,WERROR,GetLineCount(theEnv));
+         EnvPrintRouter(theEnv,WERROR,", ");
+        }
+     }
+     
+   EnvPrintRouter(theEnv,WWARNING,"WARNING: ");
   }
 
 /***************************************************/

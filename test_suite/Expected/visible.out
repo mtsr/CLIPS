@@ -1,7 +1,7 @@
 TRUE
 CLIPS> (load "visible.clp")
 ##~~~
-[MSGFUN6] Private slot bar of class A cannot be accessed directly
+[MSGFUN6] visible.clp, Line 16: Private slot bar of class A cannot be accessed directly
    by handlers attached to class B
 
 ERROR:

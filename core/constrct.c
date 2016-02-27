@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/13/16             */
+   /*            CLIPS Version 6.40  02/26/16             */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -59,6 +59,11 @@
 /*                                                           */
 /*            Callbacks must be environment aware.           */
 /*                                                           */
+/*            Compilation watch flag defaults to off.        */
+/*                                                           */
+/*            File name/line count displayed for errors      */
+/*            and warnings during load command.              */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -103,7 +108,7 @@ void InitializeConstructData(
    AllocateEnvironmentData(theEnv,CONSTRUCT_DATA,sizeof(struct constructData),DeallocateConstructData);
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)   
-   ConstructData(theEnv)->WatchCompilations = ON;
+   ConstructData(theEnv)->WatchCompilations = OFF;
 #endif
   }
   
@@ -387,6 +392,28 @@ bool GetPrintWhileLoading(
   {
    return(ConstructData(theEnv)->PrintWhileLoading);
   }
+
+/*******************************/
+/* SetLoadInProgress: Sets the */
+/*   value of LoadInProgress.  */
+/*******************************/
+void SetLoadInProgress(
+  void *theEnv,
+  bool value)
+  {
+   ConstructData(theEnv)->LoadInProgress = value;
+  }
+
+/**********************************/
+/* GetLoadInProgress: Returns the */
+/*   value of LoadInProgress.     */
+/**********************************/
+bool GetLoadInProgress(
+  void *theEnv)
+  {
+   return(ConstructData(theEnv)->LoadInProgress);
+  }
+
 #endif
 
 /*************************************/

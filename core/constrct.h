@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  02/26/16             */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -50,6 +50,9 @@
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*      6.40: Modified EnvClear to return completion status. */
+/*                                                           */
+/*            File name/line count displayed for errors      */
+/*            and warnings during load command.              */
 /*                                                           */
 /*************************************************************/
 
@@ -119,6 +122,7 @@ struct constructData
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    struct callFunctionItem *ListOfSaveFunctions;
    bool PrintWhileLoading;
+   bool LoadInProgress;
    unsigned WatchCompilations;
    bool CheckSyntaxMode;
    bool ParsingConstruct;
@@ -177,6 +181,8 @@ struct constructData
    unsigned                       GetCompilationsWatch(void *);
    void                           SetPrintWhileLoading(void *,bool);
    bool                           GetPrintWhileLoading(void *);
+   void                           SetLoadInProgress(void *,bool);
+   bool                           GetLoadInProgress(void *);
    bool                           ExecutingConstruct(void *);
    void                           SetExecutingConstruct(void *,bool);
    void                           InitializeConstructs(void *);

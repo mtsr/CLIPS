@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/13/16             */
+   /*            CLIPS Version 6.40  02/26/16             */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -46,6 +46,9 @@
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            File name/line count displayed for errors      */
+/*            and warnings during load command.              */
 /*                                                           */
 /*************************************************************/
 
@@ -109,7 +112,9 @@ int EnvLoad(
    oldParsingFileName = CopyString(theEnv,EnvGetParsingFileName(theEnv));
    EnvSetParsingFileName(theEnv,fileName);
    
+   SetLoadInProgress(theEnv,true);
    noErrorsDetected = LoadConstructsFromLogicalName(theEnv,(char *) theFile);
+   SetLoadInProgress(theEnv,false);
    
    EnvSetParsingFileName(theEnv,oldParsingFileName);
    DeleteString(theEnv,oldParsingFileName);
@@ -141,8 +146,6 @@ void EnvSetParsingFileName(
   const char *fileName)
   {
    char *fileNameCopy = NULL;
-
-   if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
    
    if (fileName != NULL)
      {
@@ -175,8 +178,6 @@ void EnvSetErrorFileName(
   const char *fileName)
   {
    char *fileNameCopy = NULL;
-
-   if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
    
    if (fileName != NULL)
      {
@@ -209,8 +210,6 @@ void EnvSetWarningFileName(
   const char *fileName)
   {
    char *fileNameCopy = NULL;
-
-   if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
    
    if (fileName != NULL)
      {
