@@ -54,6 +54,23 @@
 - (IBAction) instanceBrowser: (id) sender;
 - (IBAction) constructInspector: (id) sender;
 
+- (IBAction) watchCompilations: (id) sender;
+- (IBAction) watchStatistics: (id) sender;
+- (IBAction) watchFacts: (id) sender;
+- (IBAction) watchRules: (id) sender;
+- (IBAction) watchActivations: (id) sender;
+- (IBAction) watchFocus: (id) sender;
+- (IBAction) watchGlobals: (id) sender;
+- (IBAction) watchDeffunctions: (id) sender;
+- (IBAction) watchGenericFunctions: (id) sender;
+- (IBAction) watchMethods: (id) sender;
+- (IBAction) watchInstances: (id) sender;
+- (IBAction) watchSlots: (id) sender;
+- (IBAction) watchMessageHandlers: (id) sender;
+- (IBAction) watchMessages: (id) sender;
+- (IBAction) watchAll: (id) sender;
+- (IBAction) watchNone: (id) sender;
+
 - (IBAction) showCLIPSHomePage: (id) sender;
 - (IBAction) showCLIPSDocumentation: (id) sender;
 - (IBAction) showCLIPSExamples: (id) sender;

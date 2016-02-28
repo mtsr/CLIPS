@@ -268,8 +268,18 @@
    unichar characterToCheck;
    unsigned short nestingDepth;
    NSString *theText = [super string];
+   NSUserDefaults *theValues;
    
-   /*================================================*/
+   /*==============================================================*/
+   /* Check the defaults to see if parentheses should be balanced. */
+   /*==============================================================*/
+   
+   theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
+    
+   if (! [[theValues valueForKey: @"dialogBalanceParens"] boolValue]) 
+     { return; } 
+
+  /*================================================*/
    /* Don't balance parentheses if there is no text. */
    /*================================================*/
    
@@ -837,39 +847,4 @@
    return [super validateMenuItem: menuItem];
   }
   
-/*
-- (void) keyDown: (NSEvent *) event
-  {
-   [super keyDown: event];
-  }
-*/
-/*
-    - (void)keyDown:(NSEvent *)event {
-    NSString *keys = [event charactersIgnoringModifiers];
-    wormHeading = kGameHeadingStraight;
-    if (keys && [keys length] > 0) {
-        unichar c = [keys characterAtIndex:0];
-        if (c == NSLeftArrowFunctionKey) {
-            wormHeading = kGameHeadingLeft;
-        } else if (c == NSRightArrowFunctionKey) {
-            wormHeading = kGameHeadingRight;
-        }
-    }
-    
-}*/
-/*
-- (void) refreshBindings
-  {
-   [self bind:@"fontName" 
-         toObject: [NSUserDefaultsController sharedUserDefaultsController]
-         withKeyPath:@"values.editorTextFontName" 
-         options: nil];
-
-   [self bind:@"fontSize" 
-         toObject: [NSUserDefaultsController sharedUserDefaultsController]
-         withKeyPath:@"values.editorTextFontSize" 
-         options: nil];
-  }
-
-*/
 @end

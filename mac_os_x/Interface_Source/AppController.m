@@ -24,44 +24,24 @@
    NSDictionary *appDefaults; 
    NSUserDefaults *defaults; 
    NSFont *theFont;
-     
+   
    theFont = [NSFont userFixedPitchFontOfSize:0.0];
 
    appDefaults = 
       [NSDictionary dictionaryWithObjectsAndKeys:
-         [NSNumber numberWithBool:YES], @"watchCompilations", 
-         [NSNumber numberWithBool:NO],  @"watchFacts", 
-         [NSNumber numberWithBool:NO],  @"watchRules", 
-         [NSNumber numberWithBool:NO],  @"watchStatistics", 
-         [NSNumber numberWithBool:NO],  @"watchActivations", 
-         [NSNumber numberWithBool:NO],  @"watchFocus", 
-         [NSNumber numberWithBool:NO],  @"watchGlobals", 
-         [NSNumber numberWithBool:NO],  @"watchDeffunctions", 
-         [NSNumber numberWithBool:NO],  @"watchGenericFunctions", 
-         [NSNumber numberWithBool:NO],  @"watchMethods", 
-         [NSNumber numberWithBool:NO],  @"watchInstances", 
-         [NSNumber numberWithBool:NO],  @"watchSlots", 
-         [NSNumber numberWithBool:NO],  @"watchMessageHandlers", 
-         [NSNumber numberWithBool:NO],  @"watchMessages",
 
-         [NSNumber numberWithInt: WHEN_DEFINED],   @"salienceEvaluation", 
-         [NSNumber numberWithInt: DEPTH_STRATEGY], @"strategy", 
-         
-         [NSNumber numberWithBool:NO],  @"dynamicConstraintChecking",
-         [NSNumber numberWithBool:YES], @"resetGlobalVariables",
-         [NSNumber numberWithBool:NO],  @"sequenceExpansionOperatorRecognition",
-         [NSNumber numberWithBool:NO],  @"factDuplication",
-         
          [theFont fontName],                             @"editorTextFontName",
          [NSNumber numberWithFloat:[theFont pointSize]], @"editorTextFontSize", 
          [NSNumber numberWithBool:YES],                  @"editorBalanceParens",
 
-         [NSNumber numberWithBool:NO], @"factsDisplayDefaultedValues",
-         
+         [theFont fontName],                             @"dialogTextFontName",
+         [NSNumber numberWithFloat:[theFont pointSize]], @"dialogTextFontSize",
+         [NSNumber numberWithBool:YES],                  @"dialogBalanceParens",
+       
          nil]; 
  
    defaults = [NSUserDefaults standardUserDefaults]; 
-   [defaults registerDefaults:appDefaults]; 
+   [defaults registerDefaults: appDefaults]; 
 
    [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:appDefaults];
   } 
@@ -77,11 +57,68 @@
    fileOpenLock = [[NSLock alloc] init];
   }
 
+/**************************/
+/* setWatchMenuItemState: */
+/**************************/
+- (void) setWatchMenuItemState: (NSMenuItem *) menuItem forItem: (char *) watchItem
+  {
+   if ([mainEnvironment getWatchItem: watchItem])
+     { [menuItem setState: NSOnState]; }
+   else
+     { [menuItem setState: NSOffState]; }
+  }
+
 /*********************/
 /* validateMenuItem: */
 /*********************/
 - (BOOL) validateMenuItem: (NSMenuItem *) menuItem
   {
+   /*===================================*/
+   /* Set the state of the watch items. */
+   /*===================================*/
+
+   if ([menuItem action] == @selector(watchCompilations:))
+     { [self setWatchMenuItemState: menuItem forItem: "compilations"]; }
+
+   if ([menuItem action] == @selector(watchStatistics:))
+     { [self setWatchMenuItemState: menuItem forItem: "statistics"]; }
+
+   if ([menuItem action] == @selector(watchFacts:))
+     { [self setWatchMenuItemState: menuItem forItem: "facts"]; }
+
+   if ([menuItem action] == @selector(watchRules:))
+     { [self setWatchMenuItemState: menuItem forItem: "rules"]; }
+
+   if ([menuItem action] == @selector(watchActivations:))
+     { [self setWatchMenuItemState: menuItem forItem: "activations"]; }
+
+   if ([menuItem action] == @selector(watchFocus:))
+     { [self setWatchMenuItemState: menuItem forItem: "focus"]; }
+
+   if ([menuItem action] == @selector(watchGlobals:))
+     { [self setWatchMenuItemState: menuItem forItem: "globals"]; }
+
+   if ([menuItem action] == @selector(watchDeffunctions:))
+     { [self setWatchMenuItemState: menuItem forItem: "deffunctions"]; }
+
+   if ([menuItem action] == @selector(watchGenericFunctions:))
+     { [self setWatchMenuItemState: menuItem forItem: "generic-functions"]; }
+
+   if ([menuItem action] == @selector(watchMethods:))
+     { [self setWatchMenuItemState: menuItem forItem: "methods"]; }
+
+   if ([menuItem action] == @selector(watchInstances:))
+     { [self setWatchMenuItemState: menuItem forItem: "instances"]; }
+
+   if ([menuItem action] == @selector(watchSlots:))
+     { [self setWatchMenuItemState: menuItem forItem: "slots"]; }
+
+   if ([menuItem action] == @selector(watchMessageHandlers:))
+     { [self setWatchMenuItemState: menuItem forItem: "message-handlers"]; }
+
+   if ([menuItem action] == @selector(watchMessages:))
+     { [self setWatchMenuItemState: menuItem forItem: "messages"]; }
+
    /*===================================================*/
    /* The Halt and Halt Immediately menu items are only */
    /* available if the CLIPS environment is executing.  */
@@ -268,8 +305,180 @@
   }
 
 /*******************/
-/* agendaBrowser: */
+/* toggleWatchItem */
 /*******************/
+- (void) toggleWatchItem: (char *) watchItem
+  {
+   [mainEnvironment setWatchItem: watchItem
+                         toValue: ! [mainEnvironment getWatchItem: watchItem]];
+  }
+
+/****************/
+/* setWatchItem */
+/****************/
+- (void) setWatchItem: (char *) watchItem toValue: (bool) value
+  {
+   [mainEnvironment setWatchItem: watchItem
+                         toValue: value];
+  }
+
+/*********************/
+/* watchCompilations */
+/*********************/
+- (IBAction) watchCompilations: (id) sender
+  {
+   [self toggleWatchItem: "compilations"];
+  }
+
+/*******************/
+/* watchStatistics */
+/*******************/
+- (IBAction) watchStatistics: (id) sender
+  {
+   [self toggleWatchItem: "statistics"];
+  }
+
+/**************/
+/* watchFacts */
+/**************/
+- (IBAction) watchFacts: (id) sender
+  {
+   [self toggleWatchItem: "facts"];
+  }
+
+/**************/
+/* watchRules */
+/**************/
+- (IBAction) watchRules: (id) sender
+  {
+   [self toggleWatchItem: "rules"];
+  }
+
+/********************/
+/* watchActivations */
+/********************/
+- (IBAction) watchActivations: (id) sender
+  {
+   [self toggleWatchItem: "activations"];
+  }
+
+/**************/
+/* watchFocus */
+/**************/
+- (IBAction) watchFocus: (id) sender
+  {
+   [self toggleWatchItem: "focus"];
+  }
+
+/****************/
+/* watchGlobals */
+/****************/
+- (IBAction) watchGlobals: (id) sender
+  {
+   [self toggleWatchItem: "globals"];
+  }
+
+/*********************/
+/* watchDeffunctions */
+/*********************/
+- (IBAction) watchDeffunctions: (id) sender
+  {
+   [self toggleWatchItem: "deffunctions"];
+  }
+
+/*************************/
+/* watchGenericFunctions */
+/*************************/
+- (IBAction) watchGenericFunctions: (id) sender
+  {
+   [self toggleWatchItem: "generic-functions"];
+  }
+
+/****************/
+/* watchMethods */
+/****************/
+- (IBAction) watchMethods: (id) sender
+  {
+   [self toggleWatchItem: "methods"];
+  }
+
+/******************/
+/* watchInstances */
+/******************/
+- (IBAction) watchInstances: (id) sender
+  {
+   [self toggleWatchItem: "instances"];
+  }
+
+/**************/
+/* watchSlots */
+/**************/
+- (IBAction) watchSlots: (id) sender
+  {
+   [self toggleWatchItem: "slots"];
+  }
+
+/*************/
+/* watchAll: */
+/*************/
+- (IBAction) watchAll: (id) sender
+  {
+   [self setWatchItem: "compilations" toValue: YES];
+   [self setWatchItem: "facts" toValue: YES];
+   [self setWatchItem: "rules" toValue: YES];
+   [self setWatchItem: "statistics" toValue: YES];
+   [self setWatchItem: "activations" toValue: YES];
+   [self setWatchItem: "focus" toValue: YES];
+   [self setWatchItem: "globals" toValue: YES];
+   [self setWatchItem: "deffunctions" toValue: YES];
+   [self setWatchItem: "generic-functions" toValue: YES];
+   [self setWatchItem: "methods" toValue: YES];
+   [self setWatchItem: "instances" toValue: YES];
+   [self setWatchItem: "slots" toValue: YES];
+   [self setWatchItem: "message-handlers" toValue: YES];
+   [self setWatchItem: "messages" toValue: YES];
+  }
+  
+/**************/
+/* watchNone: */
+/**************/
+- (IBAction) watchNone: (id) sender
+  {
+   [self setWatchItem: "compilations" toValue: NO];
+   [self setWatchItem: "facts" toValue: NO];
+   [self setWatchItem: "rules" toValue: NO];
+   [self setWatchItem: "statistics" toValue: NO];
+   [self setWatchItem: "activations" toValue: NO];
+   [self setWatchItem: "focus" toValue: NO];
+   [self setWatchItem: "globals" toValue: NO];
+   [self setWatchItem: "deffunctions" toValue: NO];
+   [self setWatchItem: "generic-functions" toValue: NO];
+   [self setWatchItem: "methods" toValue: NO];
+   [self setWatchItem: "instances" toValue: NO];
+   [self setWatchItem: "slots" toValue: NO];
+   [self setWatchItem: "message-handlers" toValue: NO];
+   [self setWatchItem: "messages" toValue: NO];
+  }
+
+/************************/
+/* watchMessageHandlers */
+/************************/
+- (IBAction) watchMessageHandlers: (id) sender
+  {
+   [self toggleWatchItem: "message-handlers"];
+  }
+
+/*****************/
+/* watchMessages */
+/*****************/
+- (IBAction) watchMessages: (id) sender
+  {
+   [self toggleWatchItem: "messages"];
+  }
+
+/******************/
+/* agendaBrowser: */
+/******************/
 - (IBAction) agendaBrowser: (id) sender
   {
    CLIPSAgendaController *theController;
@@ -281,9 +490,9 @@
    [theController showWindow: self];
   }
 
-/************************/
+/****************/
 /* factBrowser: */
-/************************/
+/****************/
 - (IBAction) factBrowser: (id) sender
   {
    CLIPSFactController *theController;
@@ -295,9 +504,9 @@
    [theController showWindow: self];
   }
 
-/****************************/
+/********************/
 /* instanceBrowser: */
-/****************************/
+/********************/
 - (IBAction) instanceBrowser: (id) sender
   {
    CLIPSInstanceController *theController;
@@ -377,6 +586,66 @@
        openURL: [NSURL URLWithString: @"http://stackoverflow.com/questions/tagged/clips"]];
   }
 
+/*********************************/
+/* setPreferencesFromWatchFlags: */
+/*********************************/
+- (void) setPreferencesFromWatchFlags
+  {
+   NSUserDefaults *theValues;
+   NSNumber *watchValue;
+   AppController *theDelegate = [NSApp delegate];
+   CLIPSTerminalController *theController = [theDelegate mainTerminal];
+   CLIPSEnvironment *theEnv = [theController environment];
+   NSUserDefaultsController *theDefaultsController;
+   
+   theDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
+   theValues = [theDefaultsController values];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "compilations"]];
+   [theValues setValue: watchValue forKey: @"compilations"];
+   
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "facts"]];
+   [theValues setValue: watchValue forKey: @"facts"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "rules"]];
+   [theValues setValue: watchValue forKey: @"rules"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "statistics"]];
+   [theValues setValue: watchValue forKey: @"statistics"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "activations"]];
+   [theValues setValue: watchValue forKey: @"activations"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "focus"]];
+   [theValues setValue: watchValue forKey: @"focus"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "globals"]];
+   [theValues setValue: watchValue forKey: @"globals"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "deffunctions"]];
+   [theValues setValue: watchValue forKey: @"deffunctions"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "generic-functions"]];
+   [theValues setValue: watchValue forKey: @"generic-functions"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "methods"]];
+   [theValues setValue: watchValue forKey: @"methods"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "instances"]];
+   [theValues setValue: watchValue forKey: @"instances"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "slots"]];
+   [theValues setValue: watchValue forKey: @"slots"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "message-handlers"]];
+   [theValues setValue: watchValue forKey: @"message-handlers"];
+
+   watchValue = [NSNumber numberWithBool: [theEnv getWatchItem: "messages"]];
+   [theValues setValue: watchValue forKey: @"messages"];
+   
+   [theDefaultsController save: self];
+  }
+
 /*%%%%%%%%%%%%%%%%%%*/
 /* Delegate Methods */
 /*%%%%%%%%%%%%%%%%%%*/
@@ -408,6 +677,8 @@
 /*******************************/
 - (NSApplicationTerminateReply) applicationShouldTerminate: (NSApplication *) app
   {
+   [self setPreferencesFromWatchFlags];
+   
    if (preferenceController != nil)
      { return [preferenceController reviewPreferencesBeforeQuitting]; }
      

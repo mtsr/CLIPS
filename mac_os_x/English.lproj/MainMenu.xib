@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9531" systemVersion="15C50" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="9532" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <deployment version="1090" identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9532"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -333,6 +333,111 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Debug" id="I88-XV-uM4">
                         <items>
+                            <menuItem title="Watch" id="5v8-vb-FQf" userLabel="Watch">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <menu key="submenu" title="Watch" id="teW-iv-vIY">
+                                    <items>
+                                        <menuItem title="Activations" id="G9z-hY-Hox" userLabel="Activations">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchActivations:" target="281" id="1sQ-JV-6Vy"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Compilations" id="Lye-mQ-EVS" userLabel="Compilations">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchCompilations:" target="281" id="L5T-Hu-Bod"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Deffunctions" id="4YK-5w-64B" userLabel="Deffunctions">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchDeffunctions:" target="281" id="7eT-6P-1cK"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Facts" id="X0E-p1-BXd" userLabel="Facts">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchFacts:" target="281" id="ynu-HX-0AU"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Focus" id="18Y-sV-NSe" userLabel="Focus">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchFocus:" target="281" id="y7D-dC-VgW"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Generic Functions" id="3wA-MI-CHa" userLabel="Generic Functions">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchGenericFunctions:" target="281" id="2WN-Sv-qat"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Globals" id="OTW-6g-FVc" userLabel="Globals">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchGlobals:" target="281" id="a9b-uN-omD"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Instances" id="XbR-62-Sg7" userLabel="Instances">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchInstances:" target="281" id="4N4-FI-zpO"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Message Handlers" id="st8-6D-pGU" userLabel="Message Handlers">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchMessageHandlers:" target="281" id="aDl-uT-V37"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Messages" id="bZu-dX-nCF" userLabel="Messages">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchMessages:" target="281" id="SRN-pD-5Qb"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Methods" id="b7N-f1-EtU" userLabel="Methods">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchMethods:" target="281" id="itY-WF-oHI"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Rules" id="0Lt-Va-YT2" userLabel="Rules">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchRules:" target="281" id="9gO-OS-UMY"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Slots" id="DLh-LO-jg3" userLabel="Slots">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchSlots:" target="281" id="gxc-tD-hi7"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Statistics" id="smt-4U-CNW" userLabel="Statistics">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchStatistics:" target="281" id="yqV-wU-u4D"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="6n7-iy-bGc"/>
+                                        <menuItem title="All" id="Y8Q-NK-5gy" userLabel="All">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchAll:" target="281" id="qzj-cU-aiN"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="None" id="qhR-L9-ju7" userLabel="None">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="watchNone:" target="281" id="Hna-Jg-J8h"/>
+                                            </connections>
+                                        </menuItem>
+                                    </items>
+                                </menu>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="VrV-BM-kKr"/>
                             <menuItem title="Agenda Browser" id="XhK-sl-vkC">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>

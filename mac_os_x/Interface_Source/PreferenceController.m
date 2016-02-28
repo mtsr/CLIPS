@@ -5,6 +5,10 @@
 //  Created by Gary Riley on 2/25/06.
 //
 
+#import "CLIPSTerminalController.h"
+#import "AppController.h"
+#import "CLIPSEnvironment.h"
+
 #import "PreferenceController.h"
 
 @implementation PreferenceController
@@ -52,7 +56,6 @@
 /**************/
 - (void) showPanel
   {
-   NSUserDefaultsController *theDefaultsController;
    NSWindow *panel = [self window];
    
    [panel setHidesOnDeactivate:NO];
@@ -60,18 +63,6 @@
    [panel setMenu:nil];
    [panel center];
 
-   /*============================================================================*/
-   /* One of the undocumented effects of setAppliesImmediately is that it marks  */
-   /* the defaults as having unapplied changes even though they were just loaded */
-   /* and the user has yet to change anything. As a result, the defaults need to */
-   /* be saved so that it can be correctly determined when the user has actually */
-   /* made a change.                                                             */
-   /*============================================================================*/ 
-      
-   theDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-   [theDefaultsController setAppliesImmediately: NO];
-   [theDefaultsController save: self];
-     
    /*====================*/
    /* Display the panel. */
    /*====================*/
@@ -99,8 +90,17 @@
    if (panelFont != nil)
      { 
       theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
-      [theValues setValue: [panelFont fontName] forKey: @"editorTextFontName"];
-      [theValues setValue: [NSNumber numberWithFloat: [panelFont pointSize]] forKey: @"editorTextFontSize"];
+      if ([[[tabView selectedTabViewItem] identifier] isEqualToString: @"dialog"])
+        {
+         [theValues setValue: [panelFont fontName] forKey: @"dialogTextFontName"];
+         [theValues setValue: [NSNumber numberWithFloat: [panelFont pointSize]] forKey: @"dialogTextFontSize"];
+        }
+      else
+        {
+         [theValues setValue: [panelFont fontName] forKey: @"editorTextFontName"];
+         [theValues setValue: [NSNumber numberWithFloat: [panelFont pointSize]] forKey: @"editorTextFontSize"];
+        }
+
      }
   }
 
@@ -143,8 +143,16 @@
      {
       theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
       
-      selectedFont = [NSFont fontWithName: [theValues valueForKey: @"editorTextFontName"] 
-                             size: [[theValues valueForKey: @"editorTextFontSize"] floatValue]];
+      if ([[[tabView selectedTabViewItem] identifier] isEqualToString: @"dialog"])
+        {
+         selectedFont = [NSFont fontWithName: [theValues valueForKey: @"dialogTextFontName"]
+                                        size: [[theValues valueForKey: @"dialogTextFontSize"] floatValue]];
+        }
+      else
+        {
+         selectedFont = [NSFont fontWithName: [theValues valueForKey: @"editorTextFontName"]
+                                        size: [[theValues valueForKey: @"editorTextFontSize"] floatValue]];
+        }
      }
    
    /*=================================*/
@@ -169,72 +177,6 @@
    [fontManager orderFrontFontPanel:self];
   }
   
-/*************/
-/* watchAll: */
-/*************/
-- (IBAction) watchAll: (id) sender
-  {
-   NSUserDefaults *theValues;
-   NSNumber *watchValue;
-
-   theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
-   watchValue = [NSNumber numberWithBool:YES];
-   
-   [theValues setValue: watchValue forKey: @"watchCompilations"];
-   [theValues setValue: watchValue forKey: @"watchFacts"];
-   [theValues setValue: watchValue forKey: @"watchRules"];
-   [theValues setValue: watchValue forKey: @"watchStatistics"];
-   [theValues setValue: watchValue forKey: @"watchActivations"];
-   [theValues setValue: watchValue forKey: @"watchFocus"];
-   [theValues setValue: watchValue forKey: @"watchGlobals"];
-   [theValues setValue: watchValue forKey: @"watchDeffunctions"];
-   [theValues setValue: watchValue forKey: @"watchGenericFunctions"];
-   [theValues setValue: watchValue forKey: @"watchMethods"];
-   [theValues setValue: watchValue forKey: @"watchInstances"];
-   [theValues setValue: watchValue forKey: @"watchSlots"];
-   [theValues setValue: watchValue forKey: @"watchMessageHandlers"];
-   [theValues setValue: watchValue forKey: @"watchMessages"];
-  }
-  
-/*************/
-/* watchNone: */
-/*************/
-- (IBAction) watchNone: (id) sender
-  {
-   NSUserDefaults *theValues;
-   NSNumber *watchValue;
-
-   theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
-   watchValue = [NSNumber numberWithBool:NO];
-   
-   [theValues setValue: watchValue forKey: @"watchCompilations"];
-   [theValues setValue: watchValue forKey: @"watchFacts"];
-   [theValues setValue: watchValue forKey: @"watchRules"];
-   [theValues setValue: watchValue forKey: @"watchStatistics"];
-   [theValues setValue: watchValue forKey: @"watchActivations"];
-   [theValues setValue: watchValue forKey: @"watchFocus"];
-   [theValues setValue: watchValue forKey: @"watchGlobals"];
-   [theValues setValue: watchValue forKey: @"watchDeffunctions"];
-   [theValues setValue: watchValue forKey: @"watchGenericFunctions"];
-   [theValues setValue: watchValue forKey: @"watchMethods"];
-   [theValues setValue: watchValue forKey: @"watchInstances"];
-   [theValues setValue: watchValue forKey: @"watchSlots"];
-   [theValues setValue: watchValue forKey: @"watchMessageHandlers"];
-   [theValues setValue: watchValue forKey: @"watchMessages"];
-  }
-
-/************/
-/* doApply: */
-/************/
-- (IBAction) doApply: (id) sender
-  {
-   NSUserDefaultsController *theDefaultsController;
-   
-   theDefaultsController = [NSUserDefaultsController sharedUserDefaultsController];
-
-   [theDefaultsController save: self];
-  }
-
 /**********************/
 /* windowShouldClose: */
 /**********************/  
@@ -264,11 +206,8 @@
                      [theDefaultsController save: self];
                      [panel close];
                     }
-                  else if (returnCode == NSAlertSecondButtonReturn) // Cancel
-                    {
-                     //[sheet orderOut: nil];
-                     [panel makeKeyAndOrderFront: nil];
-                    }
+                  else if (returnCode == NSAlertSecondButtonReturn)
+                    { [panel makeKeyAndOrderFront: nil]; }
                   else if (returnCode == NSAlertThirdButtonReturn)
                     {
                      [theDefaultsController revert: self];

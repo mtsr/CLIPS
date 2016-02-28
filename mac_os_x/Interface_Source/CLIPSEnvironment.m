@@ -1092,5 +1092,30 @@
   {
    return instancesListenerCount;
   }
-      
+
+/****************/
+/* getWatchItem */
+/****************/
+- (bool) getWatchItem: (const char *) watchItem
+  {
+   int rv;
+   
+   rv = EnvGetWatchItem(environment,watchItem);
+   
+   if (rv == 1) return YES;
+   
+   return NO;
+  }
+
+/****************/
+/* setWatchItem */
+/****************/
+- (void) setWatchItem: (const char *) watchItem toValue: (bool) newValue
+  {
+   if (newValue)
+     { EnvWatch(environment,watchItem); }
+   else
+     { EnvUnwatch(environment,watchItem); }
+  }
+
 @end

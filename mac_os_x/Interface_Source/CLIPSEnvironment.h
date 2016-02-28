@@ -147,4 +147,7 @@
 - (void)                         decrementInstancesListeners;
 - (int)                          instancesListenerCount;
 
+- (bool)                         getWatchItem: (const char *)  watchItem;
+- (void)                         setWatchItem: (const char *) watchItem toValue: (bool) newValue;
+
 @end

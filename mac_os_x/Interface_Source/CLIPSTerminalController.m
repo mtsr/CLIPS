@@ -971,20 +971,20 @@
 
    theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
    
-   EnvSetWatchItem(theEnv,"compilations", [[theValues valueForKey: @"watchCompilations"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"facts", [[theValues valueForKey: @"watchFacts"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"rules", [[theValues valueForKey: @"watchRules"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"statistics", [[theValues valueForKey: @"watchStatistics"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"activations", [[theValues valueForKey: @"watchActivations"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"focus", [[theValues valueForKey: @"watchFocus"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"globals", [[theValues valueForKey: @"watchGlobals"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"deffunctions", [[theValues valueForKey: @"watchDeffunctions"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"generic-functions", [[theValues valueForKey: @"watchGenericFunctions"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"methods", [[theValues valueForKey: @"watchMethods"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"instances", [[theValues valueForKey: @"watchInstances"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"slots", [[theValues valueForKey: @"watchSlots"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"message-handlers", [[theValues valueForKey: @"watchMessageHandlers"] boolValue], NULL);
-   EnvSetWatchItem(theEnv,"messages", [[theValues valueForKey: @"watchMessages"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"compilations", [[theValues valueForKey: @"compilations"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"facts", [[theValues valueForKey: @"facts"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"rules", [[theValues valueForKey: @"rules"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"statistics", [[theValues valueForKey: @"statistics"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"activations", [[theValues valueForKey: @"activations"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"focus", [[theValues valueForKey: @"focus"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"globals", [[theValues valueForKey: @"globals"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"deffunctions", [[theValues valueForKey: @"deffunctions"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"generic-functions", [[theValues valueForKey: @"generic-functions"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"methods", [[theValues valueForKey: @"methods"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"instances", [[theValues valueForKey: @"instances"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"slots", [[theValues valueForKey: @"slots"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"message-handlers", [[theValues valueForKey: @"message-handlers"] boolValue], NULL);
+   EnvSetWatchItem(theEnv,"messages", [[theValues valueForKey: @"messages"] boolValue], NULL);
   }
   
 /**********/    

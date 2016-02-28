@@ -10,12 +10,10 @@
 
 @interface PreferenceController : NSWindowController
   {
+   IBOutlet NSTabView *tabView;
   }
   
 - (IBAction) changeEditorFont: (id) sender;
-- (IBAction) watchAll: (id) sender;
-- (IBAction) watchNone: (id) sender;
-- (IBAction) doApply: (id) sender;
 - (IBAction) doCancel: (id) sender;
 - (IBAction) doOK: (id) sender;
 - (void) changeFont: (id) fontManager;
