@@ -77,6 +77,11 @@ IDE_CLASS = net.sf.clipsrules.jni.examples.ide.CLIPSIDE
 IDE_SRC = java-src/$(IDE_CP)
 IDE_BIN = bin/ide
 IDE_DST = $(IDE_BIN)/$(IDE_CP)
+IDE_FILES = \
+	$(IDE_SRC)/CLIPSIDE.java \
+	$(IDE_SRC)/AgendaBrowserFrame.java \
+	$(IDE_SRC)/BoundsDesktopManager.java \
+	$(IDE_SRC)/DialogFrame.java
 
 all: clipsjni animal auto sudoku wine router ide
 
@@ -127,7 +132,7 @@ router :
 
 ide :
 	mkdir -p $(IDE_DST)
-	javac -d $(IDE_BIN) -cp CLIPSJNI.jar $(IDE_SRC)/CLIPSIDE.java
+	javac -d $(IDE_BIN) -cp CLIPSJNI.jar $(IDE_FILES)
 	jar -cfe CLIPSIDE.jar $(IDE_CLASS) $(IDE_BIN)/$(IDE_CP)/CLIPSIDE.class -C $(IDE_BIN) net 
 	jar -uf CLIPSIDE.jar -C $(JNI_BIN) net
 
