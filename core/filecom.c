@@ -969,6 +969,8 @@ bool RemoveBatch(
       if (fileBatch)
         {
          EnvSetParsingFileName(theEnv,FileCommandData(theEnv)->batchPriorParsingFile);
+         EnvSetWarningFileName(theEnv,NULL);
+         EnvSetErrorFileName(theEnv,NULL);
          DeleteString(theEnv,FileCommandData(theEnv)->batchPriorParsingFile);
          FileCommandData(theEnv)->batchPriorParsingFile = NULL;
         }
@@ -987,7 +989,11 @@ bool RemoveBatch(
       rv = true;
 #if (! RUN_TIME) && (! BLOAD_ONLY)
       if (FileCommandData(theEnv)->TopOfBatchList->batchType == FILE_BATCH)
-        { EnvSetParsingFileName(theEnv,FileCommandData(theEnv)->TopOfBatchList->fileName); }
+        {
+         EnvSetParsingFileName(theEnv,FileCommandData(theEnv)->TopOfBatchList->fileName);
+         EnvSetWarningFileName(theEnv,NULL);
+         EnvSetErrorFileName(theEnv,NULL);
+        }
         
       SetLineCount(theEnv,FileCommandData(theEnv)->TopOfBatchList->lineNumber);
 #endif

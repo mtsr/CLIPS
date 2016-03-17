@@ -118,6 +118,9 @@ int EnvLoad(
    
    EnvSetParsingFileName(theEnv,oldParsingFileName);
    DeleteString(theEnv,oldParsingFileName);
+
+   EnvSetWarningFileName(theEnv,NULL);
+   EnvSetErrorFileName(theEnv,NULL);
    
    SetFastLoad(theEnv,NULL);
 
