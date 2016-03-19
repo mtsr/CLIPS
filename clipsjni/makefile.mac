@@ -4,8 +4,11 @@ JNI_BIN = bin/clipsjni
 JNI_SRC = java-src/$(JNI_CP)
 JNI_DST = $(JNI_BIN)/$(JNI_CP)
 JNI_FILES = \
+	$(JNI_SRC)/Activation.java \
+	$(JNI_SRC)/Agenda.java \
 	$(JNI_SRC)/CaptureRouter.java \
 	$(JNI_SRC)/CLIPSException.java \
+	$(JNI_SRC)/Focus.java \
 	$(JNI_SRC)/CLIPSLineError.java \
 	$(JNI_SRC)/CLIPSLoadException.java \
 	$(JNI_SRC)/CLIPSType.java \
@@ -16,6 +19,8 @@ JNI_FILES = \
 	$(JNI_SRC)/ExternalAddressValue.java \
 	$(JNI_SRC)/FactAddressValue.java \
 	$(JNI_SRC)/FloatValue.java \
+	$(JNI_SRC)/Focus.java \
+	$(JNI_SRC)/FocusStack.java \
 	$(JNI_SRC)/InstanceAddressValue.java \
 	$(JNI_SRC)/InstanceNameValue.java \
 	$(JNI_SRC)/IntegerValue.java \
@@ -79,9 +84,11 @@ IDE_BIN = bin/ide
 IDE_DST = $(IDE_BIN)/$(IDE_CP)
 IDE_FILES = \
 	$(IDE_SRC)/CLIPSIDE.java \
+	$(IDE_SRC)/ActivationTableModel.java \
 	$(IDE_SRC)/AgendaBrowserFrame.java \
 	$(IDE_SRC)/BoundsDesktopManager.java \
-	$(IDE_SRC)/DialogFrame.java
+	$(IDE_SRC)/DialogFrame.java \
+	$(IDE_SRC)/FocusStackTableModel.java
 
 all: clipsjni animal auto sudoku wine router ide
 

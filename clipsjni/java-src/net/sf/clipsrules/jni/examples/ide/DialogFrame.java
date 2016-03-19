@@ -163,7 +163,16 @@ public class DialogFrame extends JInternalFrame
 
       this.pack();
      }  
-     
+ 
+   /*******************************/
+   /* addCommandExecutionListener */
+   /*******************************/  
+    public void addCommandExecutionListener(
+     CommandExecutionListener theListener)
+     {
+      commandTextArea.addCommandExecutionListener(theListener); 
+     }
+   
    /*################*/
    /* Action Methods */
    /*################*/

@@ -884,6 +884,14 @@ jlong CreateCLIPSJNIEnvironment(
    jclass theInstanceAddressValueClass;
    jmethodID theInstanceAddressValueInitMethod;
    jmethodID theInstanceAddressValueGetInstanceAddressMethod;
+   jclass theFocusClass;
+   jmethodID theFocusInitMethod;
+   jclass theFocusStackClass;
+   jmethodID theFocusStackInitMethod;
+   jclass theAgendaClass;
+   jmethodID theAgendaInitMethod;
+   jclass theActivationClass;
+   jmethodID theActivationInitMethod;
    struct externalAddressType javaPointer = { "java", PrintJavaAddress, PrintJavaAddress, DiscardJavaAddress, NewJavaAddress, CallJavaMethod };
 
    /*===========================*/
@@ -907,12 +915,16 @@ jlong CreateCLIPSJNIEnvironment(
    theMultifieldValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/MultifieldValue");
    theFactAddressValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/FactAddressValue");
    theInstanceAddressValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/InstanceAddressValue");
+   theFocusClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/Focus");
+   theFocusStackClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/FocusStack");
+   theAgendaClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/Agenda");
+   theActivationClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/Activation");
                 
    /*=========================================*/
    /* If the Java classes could not be found, */
    /* abort creation of the environment.      */
    /*=========================================*/
-   
+
    if ((theEnvironmentClass == NULL) ||
        (theUserFunctionClass == NULL) ||
        (theClassClass == NULL) ||
@@ -926,7 +938,11 @@ jlong CreateCLIPSJNIEnvironment(
        (theLexemeValueClass == NULL) ||
        (theMultifieldValueClass == NULL) ||
        (theFactAddressValueClass == NULL) ||
-       (theInstanceAddressValueClass == NULL))
+       (theInstanceAddressValueClass == NULL) ||
+       (theFocusClass == NULL) ||
+       (theFocusStackClass == NULL) ||
+       (theAgendaClass == NULL) ||
+       (theActivationClass == NULL))
      { return((jlong) NULL); }
      
    /*================================*/
@@ -959,7 +975,11 @@ jlong CreateCLIPSJNIEnvironment(
    theFactAddressValueGetFactAddressMethod = (*env)->GetMethodID(env,theFactAddressValueClass,"getFactAddress","()J");
    theInstanceAddressValueInitMethod = (*env)->GetMethodID(env,theInstanceAddressValueClass,"<init>","(JLnet/sf/clipsrules/jni/Environment;)V");
    theInstanceAddressValueGetInstanceAddressMethod = (*env)->GetMethodID(env,theInstanceAddressValueClass,"getInstanceAddress","()J");
-
+   theFocusInitMethod = (*env)->GetMethodID(env,theFocusClass,"<init>","(Ljava/lang/String;)V");
+   theFocusStackInitMethod = (*env)->GetMethodID(env,theFocusStackClass,"<init>","(Ljava/util/List;)V");
+   theActivationInitMethod = (*env)->GetMethodID(env,theActivationClass,"<init>","(Ljava/lang/String;ILjava/lang/String;)V");
+   theAgendaInitMethod = (*env)->GetMethodID(env,theAgendaClass,"<init>","(Ljava/util/List;)V");
+     
    /*==============================================*/
    /* If the Java init methods could not be found, */
    /* abort creation of the enviroment.            */
@@ -982,9 +1002,13 @@ jlong CreateCLIPSJNIEnvironment(
        (theFactAddressValueInitMethod == NULL) ||
        (theFactAddressValueGetFactAddressMethod == NULL) ||
        (theInstanceAddressValueInitMethod == NULL) ||
-       (theInstanceAddressValueGetInstanceAddressMethod == NULL))
+       (theInstanceAddressValueGetInstanceAddressMethod == NULL) ||
+       (theFocusInitMethod == NULL) ||
+       (theFocusStackInitMethod == NULL) ||
+       (theAgendaInitMethod == NULL) ||
+       (theActivationInitMethod == NULL))
      { return((jlong) NULL); }
-     
+
    /*=========================*/
    /* Create the environment. */
    /*=========================*/
@@ -1057,6 +1081,18 @@ jlong CreateCLIPSJNIEnvironment(
    CLIPSJNIData(theEnv)->instanceAddressValueInitMethod = theInstanceAddressValueInitMethod;
    CLIPSJNIData(theEnv)->instanceAddressValueGetInstanceAddressMethod = theInstanceAddressValueGetInstanceAddressMethod;
    
+   CLIPSJNIData(theEnv)->FocusClass = (*env)->NewGlobalRef(env,theFocusClass);
+   CLIPSJNIData(theEnv)->FocusInitMethod = theFocusInitMethod;
+
+   CLIPSJNIData(theEnv)->FocusStackClass = (*env)->NewGlobalRef(env,theFocusStackClass);
+   CLIPSJNIData(theEnv)->FocusStackInitMethod = theFocusStackInitMethod;
+   
+   CLIPSJNIData(theEnv)->ActivationClass = (*env)->NewGlobalRef(env,theActivationClass);
+   CLIPSJNIData(theEnv)->ActivationInitMethod = theActivationInitMethod;
+
+   CLIPSJNIData(theEnv)->AgendaClass = (*env)->NewGlobalRef(env,theAgendaClass);
+   CLIPSJNIData(theEnv)->AgendaInitMethod = theAgendaInitMethod;
+   
    /*======================================*/
    /* Store the java environment for later */
    /* access by the CLIPS environment.     */
@@ -1085,6 +1121,10 @@ jlong CreateCLIPSJNIEnvironment(
    (*env)->DeleteLocalRef(env,theMultifieldValueClass);
    (*env)->DeleteLocalRef(env,theFactAddressValueClass);
    (*env)->DeleteLocalRef(env,theInstanceAddressValueClass);
+   (*env)->DeleteLocalRef(env,theFocusStackClass);
+   (*env)->DeleteLocalRef(env,theFocusClass);
+   (*env)->DeleteLocalRef(env,theAgendaClass);
+   (*env)->DeleteLocalRef(env,theActivationClass);
 
    /*=================================*/
    /* Set up Java External Addresses. */

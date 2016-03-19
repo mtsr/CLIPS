@@ -419,6 +419,160 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_build(
    return rv;
   }
 
+/************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_getAgenda: Native */
+/*   function for the CLIPSJNI getAgenda method.            */
+/*                                                          */
+/* Class:     net_sf_clipsrules_jni_Environment             */
+/* Method:    getAgenda                                     */
+/* Signature: (J)Lnet/sf/clipsrules/jni/Agenda;             */
+/*                                                          */
+/************************************************************/
+JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_getAgenda(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv, 
+  jstring moduleName)
+  {
+   struct defmodule *theModule;
+   struct defruleModule *theModuleItem;
+   struct activation *theActivation;
+   void *theCLIPSEnv = JLongToPointer(clipsEnv);
+   const char *cModuleName = (*env)->GetStringUTFChars(env,moduleName,NULL);
+   int activationCount = 0;
+   jobject arrayList, theJActivation, ruleName, basis, result;
+   char bindingsBuffer[1024]; // TBD Replace
+   void *oldContext;
+
+   theModule = (struct defmodule *) EnvFindDefmodule(theCLIPSEnv,cModuleName);
+   (*env)->ReleaseStringUTFChars(env,moduleName,cModuleName);
+   if (theModule == NULL) return NULL;
+
+   SaveCurrentModule(theCLIPSEnv);
+
+   EnvSetCurrentModule(theCLIPSEnv,(void *) theModule);
+
+   theModuleItem = (struct defruleModule *) 
+                   GetModuleItem(theCLIPSEnv,NULL,DefruleData(theCLIPSEnv)->DefruleModuleIndex);
+                   
+   RestoreCurrentModule(theCLIPSEnv);
+
+   if (theModuleItem == NULL) return(NULL);
+   
+   /*==================================*/
+   /* Count the number of activations. */
+   /*==================================*/
+   
+   for (theActivation = theModuleItem->agenda;
+        theActivation != NULL;
+        theActivation = EnvGetNextActivation(theCLIPSEnv,theActivation))
+     { activationCount++; }
+     
+   arrayList = (*env)->NewObject(env,
+                                 CLIPSJNIData(clipsEnv)->arrayListClass,
+                                 CLIPSJNIData(clipsEnv)->arrayListInitMethod,
+                                 (jint) activationCount);
+                                   
+   if (arrayList == NULL)
+     { return NULL; }
+
+   oldContext = SetEnvironmentContext(theCLIPSEnv,(void *) env);
+   
+   for (theActivation = theModuleItem->agenda;
+        theActivation != NULL;
+        theActivation = EnvGetNextActivation(theCLIPSEnv,theActivation))
+     { 
+      ruleName = (*env)->NewStringUTF(env,ValueToString(theActivation->theRule->header.name));
+
+      EnvGetActivationBasisPPForm(theCLIPSEnv,bindingsBuffer,1024,theActivation);
+      basis = (*env)->NewStringUTF(env,bindingsBuffer);
+
+      theJActivation = (*env)->NewObject(env,
+                                      CLIPSJNIData(clipsEnv)->ActivationClass,
+                                      CLIPSJNIData(clipsEnv)->ActivationInitMethod,
+                                      ruleName,(jint) theActivation->salience,basis);
+                                      
+      (*env)->DeleteLocalRef(env,ruleName);
+      (*env)->DeleteLocalRef(env,basis);
+      
+      if (theJActivation != NULL)
+        { 
+         (*env)->CallBooleanMethod(env,arrayList,CLIPSJNIData(clipsEnv)->arrayListAddMethod,theJActivation); 
+         (*env)->DeleteLocalRef(env,theJActivation);
+        }
+     }
+     
+   SetEnvironmentContext(JLongToPointer(clipsEnv),oldContext);
+
+   result = (*env)->NewObject(env,
+                              CLIPSJNIData(clipsEnv)->AgendaClass,
+                              CLIPSJNIData(clipsEnv)->AgendaInitMethod,
+                              arrayList);
+     
+   return result;
+  }
+
+/****************************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_getFocusStack: Native */
+/*   function for the CLIPSJNI getFocusStack method.            */
+/*                                                              */
+/* Class:     net_sf_clipsrules_jni_Environment                 */
+/* Method:    getFocusStack                                     */
+/* Signature: (J)Lnet/sf/clipsrules/jni/FocusStack;             */
+/*                                                              */
+/****************************************************************/
+JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_getFocusStack(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv)
+  {
+   jobject arrayList, focusModule, moduleName, result;
+   int moduleCount = 0;
+   struct focus *theFocus;
+   
+   void *theCLIPSEnv = JLongToPointer(clipsEnv);
+ 
+   for (theFocus = EngineData(theCLIPSEnv)->CurrentFocus; 
+        theFocus != NULL; 
+        theFocus = theFocus->next)
+     { moduleCount++; }
+  
+   arrayList = (*env)->NewObject(env,
+                                 CLIPSJNIData(clipsEnv)->arrayListClass,
+                                 CLIPSJNIData(clipsEnv)->arrayListInitMethod,
+                                 (jint) moduleCount);
+                                   
+   if (arrayList == NULL)
+     { return NULL; }
+     
+   for (theFocus = EngineData(theCLIPSEnv)->CurrentFocus; 
+        theFocus != NULL; 
+        theFocus = theFocus->next)
+     { 
+      moduleName = (*env)->NewStringUTF(env,ValueToString(theFocus->theModule->name));
+        
+      focusModule = (*env)->NewObject(env,
+                                      CLIPSJNIData(clipsEnv)->FocusClass,
+                                      CLIPSJNIData(clipsEnv)->FocusInitMethod,
+                                      moduleName);
+                                      
+      (*env)->DeleteLocalRef(env,moduleName);
+
+      if (focusModule != NULL)
+        { 
+         (*env)->CallBooleanMethod(env,arrayList,CLIPSJNIData(clipsEnv)->arrayListAddMethod,focusModule); 
+         (*env)->DeleteLocalRef(env,focusModule);
+        }
+     }
+     
+   result = (*env)->NewObject(env,
+                              CLIPSJNIData(clipsEnv)->FocusStackClass,
+                              CLIPSJNIData(clipsEnv)->FocusStackInitMethod,
+                              arrayList);
+     
+   return result;
+  }
+
 /****************************************************************************/
 /* Java_net_sf_clipsrules_jni_Environment_assertString: Native function for */
 /*   the CLIPSJNI assertString method.                                      */
@@ -1341,4 +1495,38 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_deactivateRout
    return rv;
   }
 
+/***********************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_getAgendaChanged */
+/* Class:     net_sf_clipsrules_jni_Environment            */
+/* Method:    getAgendaChanged                             */
+/* Signature: (J)Z                                         */
+/***********************************************************/
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_getAgendaChanged(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv)
+  {
+   jboolean rv;
+   void *theCLIPSEnv = JLongToPointer(clipsEnv);
+   
+   rv = EnvGetAgendaChanged(theCLIPSEnv);
+   return rv;
+  } 
+
+/***********************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_setAgendaChanged */
+/* Class:     net_sf_clipsrules_jni_Environment            */
+/* Method:    setAgendaChanged                             */
+/* Signature: (JZ)Z                                        */
+/***********************************************************/
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setAgendaChanged(
+  JNIEnv *env, 
+  jobject obj, 
+  jlong clipsEnv,
+  jboolean value)
+  {
+   void *theCLIPSEnv = JLongToPointer(clipsEnv);
+   
+   EnvSetAgendaChanged(theCLIPSEnv,value);
+  }
 

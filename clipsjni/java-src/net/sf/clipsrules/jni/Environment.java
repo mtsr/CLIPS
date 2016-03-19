@@ -482,6 +482,41 @@ public class Environment
       return build(theEnvironment,buildStr);
      }
 
+   /******************/
+   /* getFocusStack: */
+   /******************/
+   private native FocusStack getFocusStack(long env);
+
+   /******************/
+   /* getFocusStack: */
+   /******************/
+   public FocusStack getFocusStack()
+     {
+      return getFocusStack(theEnvironment);
+     }
+
+   /**************/
+   /* getAgenda: */
+   /**************/
+   private native Agenda getAgenda(long env,String moduleName);
+
+   /**************/
+   /* getAgenda: */
+   /**************/
+   public Agenda getAgenda(String moduleName)
+     {
+      return getAgenda(theEnvironment,moduleName);
+     }
+
+   /**************/
+   /* getAgenda: */
+   /**************/
+   public Agenda getAgenda(
+     Focus theFocus)
+     {
+      return getAgenda(theEnvironment,theFocus.getModuleName());
+     }
+
    /*****************/
    /* assertString: */
    /*****************/
@@ -875,6 +910,33 @@ public class Environment
       deactivateRouter(theRouter);
       printRouter(logName,printString);
       activateRouter(theRouter);
+     }
+
+   /*********************/
+   /* getAgendaChanged: */
+   /*********************/
+   private native boolean getAgendaChanged(long env);
+
+   /*********************/
+   /* getAgendaChanged: */
+   /*********************/
+   public boolean getAgendaChanged()
+     {
+      return getAgendaChanged(theEnvironment);
+     }
+
+   /*********************/
+   /* setAgendaChanged: */
+   /*********************/
+   private native void setAgendaChanged(long env,boolean value);
+
+   /*********************/
+   /* setAgendaChanged: */
+   /*********************/
+   public void setAgendaChanged(
+     boolean value)
+     {
+      setAgendaChanged(theEnvironment,value);
      }
 
    /***********************/

@@ -60,6 +60,18 @@ struct clipsJNIData
    jclass instanceAddressValueClass;
    jmethodID instanceAddressValueInitMethod;
    jmethodID instanceAddressValueGetInstanceAddressMethod;
+
+   jclass FocusStackClass;
+   jmethodID FocusStackInitMethod;
+
+   jclass FocusClass;
+   jmethodID FocusInitMethod;
+
+   jclass AgendaClass;
+   jmethodID AgendaInitMethod;
+
+   jclass ActivationClass;
+   jmethodID ActivationInitMethod;
   };
 
 #define CLIPSJNIData(theEnv) ((struct clipsJNIData *) GetEnvironmentData(theEnv,CLIPSJNI_DATA))

@@ -161,6 +161,22 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_build
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getFocusStack
+ * Signature: (J)Lnet/sf/clipsrules/jni/FocusStack;
+ */
+JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_getFocusStack
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getAgenda
+ * Signature: (JLjava/lang/String;)Lnet/sf/clipsrules/jni/Agenda;
+ */
+JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_getAgenda
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
  * Method:    assertString
  * Signature: (JLjava/lang/String;)Lnet/sf/clipsrules/jni/FactAddressValue;
  */
@@ -366,6 +382,22 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_activateRouter
  */
 JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_deactivateRouter
   (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getAgendaChanged
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_getAgendaChanged
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    setAgendaChanged
+ * Signature: (JZ)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setAgendaChanged
+  (JNIEnv *, jobject, jlong, jboolean);
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment

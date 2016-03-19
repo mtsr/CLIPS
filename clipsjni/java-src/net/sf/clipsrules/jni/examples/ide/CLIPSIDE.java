@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import java.util.HashMap;
+
 import net.sf.clipsrules.jni.*;
 
 // TBD
@@ -32,8 +34,8 @@ import net.sf.clipsrules.jni.*;
 // When environment destroyed, delete global context references
 
 public class CLIPSIDE extends JFrame 
-                   implements ActionListener, MenuListener, 
-                              InternalFrameListener
+                   implements ActionListener, CommandExecutionListener,
+                              MenuListener, InternalFrameListener
   {  
    private JDesktopPane ideDesktopPane;
             
@@ -49,6 +51,7 @@ public class CLIPSIDE extends JFrame
    static final String quitIDEAction = "QuitIDE";
    static final String resetAction = "Reset";
    static final String runAction = "Run";
+   static final String stepAction = "Step";
    static final String haltRulesAction = "HaltRules";
    static final String haltExecutionAction = "HaltExecution";
    static final String clearScrollbackAction = "ClearScrollback";
@@ -99,8 +102,10 @@ public class CLIPSIDE extends JFrame
    
    private List<AgendaBrowserFrame> agendaBrowsers = new ArrayList<AgendaBrowserFrame>();
    
-   private static int agendaBrowserCount = 1; // Remove
-   
+   private int agendaChangeIndex = 0;
+   private FocusStack focusStack;
+   private HashMap<Focus,Agenda> agendaMap;
+
    private int windowStartX = 28;
    private int windowStartY = 28;
    private int windowCurrentX = -1;
@@ -167,11 +172,17 @@ public class CLIPSIDE extends JFrame
       setSize((int) (screenSize.width * 0.80),(int) (screenSize.height * 0.80));
       setVisible(true);
 
+      /*********/
+      
+      focusStack = new FocusStack();
+      agendaMap = new HashMap<Focus,Agenda>();
+
       /*****************************/
       /* Create the dialog window. */
       /*****************************/
       
       createDialogWindow();
+      dialogWindow.addCommandExecutionListener(this);
       
       /*==========================*/
       /* Add some user functions. */
@@ -201,6 +212,110 @@ public class CLIPSIDE extends JFrame
      {  
       CLIPSIDE ide = new CLIPSIDE();  
      } 
+   
+   /***************/
+   /* fetchAgenda */
+   /***************/
+   private synchronized void fetchAgenda()
+     {
+      focusStack = dialogWindow.getEnvironment().getFocusStack();
+      agendaMap = new HashMap<Focus,Agenda>();
+
+      for (Iterator itr = focusStack.iterator(); itr.hasNext(); ) 
+        { 
+         Focus theFocus = (Focus) itr.next();
+         Agenda theAgenda = dialogWindow.getEnvironment().getAgenda(theFocus);
+         agendaMap.put(theFocus,theAgenda);
+        }
+     }
+
+   /****************/
+   /* assignAgenda */
+   /****************/
+   private synchronized void assignAgenda(
+     AgendaBrowserFrame theBrowser)
+     {
+      theBrowser.assignData(focusStack,agendaMap);
+     }
+
+   /************************/
+   /* updateAgendaBrowser: */
+   /************************/
+   private void updateAgendaBrowser(
+     AgendaBrowserFrame theBrowser)
+     {
+      if (EventQueue.isDispatchThread())
+        { 
+         assignAgenda(theBrowser);
+         return; 
+        }
+              
+      try
+        {
+         SwingUtilities.invokeAndWait(
+           new Runnable() 
+             {  
+              public void run() 
+                { assignAgenda(theBrowser); }  
+             });   
+        }
+      catch (Exception e) 
+        { e.printStackTrace(); }
+     }
+  
+   /****************************/
+   /* updateAllAgendaBrowsers: */
+   /****************************/
+   private void updateAllAgendaBrowsers()
+     {
+      if (agendaBrowsers.size() == 0) return;
+      
+      fetchAgenda();
+      
+      for (Iterator itr = agendaBrowsers.iterator(); itr.hasNext(); ) 
+        { 
+         AgendaBrowserFrame theBrowser = (AgendaBrowserFrame) itr.next();
+         updateAgendaBrowser(theBrowser);
+        }
+     }
+
+   /*******************************/
+   /* updateAgendaBrowserButtons: */
+   /*******************************/
+   private void updateAgendaBrowserButtons(
+     boolean isExecuting)
+     {
+      if (agendaBrowsers.size() == 0) return;
+            
+      for (Iterator itr = agendaBrowsers.iterator(); itr.hasNext(); ) 
+        { 
+         AgendaBrowserFrame theBrowser = (AgendaBrowserFrame) itr.next();
+         theBrowser.updateButtons(isExecuting);
+        }
+     }
+
+   /*********************************/
+   /* commandExecutionEventOccurred */
+   /*********************************/  
+   public void commandExecutionEventOccurred(
+     CommandExecutionEvent theEvent)
+     {    
+      if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.START_EVENT))
+        { updateAgendaBrowserButtons(true); }
+     
+      if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.FINISH_EVENT))
+        { updateAgendaBrowserButtons(false); }
+     
+      if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.PERIODIC_EVENT) ||
+          theEvent.getExecutionEvent().equals(CommandExecutionEvent.FINISH_EVENT))
+        {
+         if (dialogWindow.getEnvironment().getAgendaChanged())
+           {
+            dialogWindow.getEnvironment().setAgendaChanged(false);
+            updateAllAgendaBrowsers();
+           } 
+        }
+     }  
 
    /*################*/
    /* Action Methods */
@@ -258,6 +373,8 @@ public class CLIPSIDE extends JFrame
         { reset(); }
       else if (ae.getActionCommand().equals(runAction))  
         { run(); }
+      else if (ae.getActionCommand().equals(stepAction))  
+        { step(); }
       else if (ae.getActionCommand().equals(haltRulesAction))  
         { haltRules(); }
       else if (ae.getActionCommand().equals(haltExecutionAction))  
@@ -420,6 +537,14 @@ public class CLIPSIDE extends JFrame
       dialogWindow.replaceCommand("(run)\n");
      }
 
+   /********/
+   /* step */
+   /********/  
+   public void step()
+     {
+      dialogWindow.replaceCommand("(run 1)\n");
+     }
+
    /*************/
    /* haltRules */
    /*************/  
@@ -451,11 +576,21 @@ public class CLIPSIDE extends JFrame
      {
       AgendaBrowserFrame frame = new AgendaBrowserFrame();
       frame.addInternalFrameListener(this);
+      frame.setActionTarget(this);
+      agendaBrowsers.add(frame);
+      frame.updateButtons(dialogWindow.isExecuting());
       
       this.placeInternalFrame(frame);
       
       ideDesktopPane.add(frame);
       frame.setVisible(true);
+      
+      if (! dialogWindow.isExecuting())
+        { 
+         if (agendaBrowsers.size() == 1)
+           { fetchAgenda(); }
+         assignAgenda(frame); 
+        }      
      }
      
    /*********************/
@@ -558,7 +693,6 @@ public class CLIPSIDE extends JFrame
      {
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) source;
       JInternalFrame theFrame = (JInternalFrame) jmiWindow.getClientProperty(windowProperty);
-      //System.out.println("selectWindow = " + theFrame.getTitle()); 
 
       if (theFrame.isSelected())
         {
@@ -724,6 +858,9 @@ public class CLIPSIDE extends JFrame
       
       theFrame.removeInternalFrameListener(this);
       jmWindow.remove(jmiWindow);
+      
+      if (theFrame instanceof AgendaBrowserFrame)
+        { agendaBrowsers.remove(theFrame); }
      }
 
    /***********************/
@@ -740,7 +877,6 @@ public class CLIPSIDE extends JFrame
       jmiWindow.setActionCommand(selectWindowAction);
       jmWindow.add(jmiWindow);
       theFrame.putClientProperty(menuItemProperty,jmiWindow);
-      //System.out.println("Opened " + theFrame.getTitle());
      }
 
    /**************************/
@@ -774,7 +910,6 @@ public class CLIPSIDE extends JFrame
       JInternalFrame theFrame = e.getInternalFrame();
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) theFrame.getClientProperty(menuItemProperty);
       jmiWindow.setState(true);
-      //System.out.println("Activated " + theFrame.getTitle());
      }
 
    /****************************/
@@ -786,7 +921,6 @@ public class CLIPSIDE extends JFrame
       JInternalFrame theFrame = e.getInternalFrame();
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) theFrame.getClientProperty(menuItemProperty);
       jmiWindow.setState(false);
-      //System.out.println("Deactivated " + theFrame.getTitle());
      }
      
    /*#####################*/
