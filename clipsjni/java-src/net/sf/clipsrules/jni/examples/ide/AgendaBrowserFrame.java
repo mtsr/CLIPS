@@ -11,6 +11,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.util.HashMap;
 import java.awt.EventQueue;
+import java.awt.AWTEvent;
 
 import net.sf.clipsrules.jni.*;
 
@@ -33,10 +34,11 @@ public class AgendaBrowserFrame extends JInternalFrame
    private HashMap<Focus,Agenda> agendaMap = new HashMap<Focus,Agenda>();
    private int agendaChangeIndex = -1;
    
-   static final String resetAction = "Reset";
-   static final String runAction = "Run";
-   static final String stepAction = "Step";
-   static final String haltRulesAction = "HaltRules";
+   public static final String RESET_ACTION = "Reset";
+   public static final String RUN_ACTION = "Run";
+   public static final String STEP_ACTION = "Step";
+   public static final String HALT_RULES_ACTION = "HaltRules";
+   public static final String BROWSER_SELECTION_ACTION = "BrowserSelectionAction";
    
    private ActionListener actionTarget = null;
 
@@ -87,25 +89,25 @@ public class AgendaBrowserFrame extends JInternalFrame
 
       resetButton = new JButton("Reset");
       resetButton.setEnabled(false);
-      resetButton.setActionCommand(resetAction);
+      resetButton.setActionCommand(RESET_ACTION);
       resetButton.addActionListener(this);
       buttonPanel.add(resetButton);
 
       runButton = new JButton("Run");
       runButton.setEnabled(false);
-      runButton.setActionCommand(runAction);
+      runButton.setActionCommand(RUN_ACTION);
       runButton.addActionListener(this);
       buttonPanel.add(runButton);
 
       stepButton = new JButton("Step");
       stepButton.setEnabled(false);
-      stepButton.setActionCommand(stepAction);
+      stepButton.setActionCommand(STEP_ACTION);
       stepButton.addActionListener(this);
       buttonPanel.add(stepButton);
       
       haltRulesButton = new JButton("Halt Rules");
       haltRulesButton.setEnabled(false);
-      haltRulesButton.setActionCommand(haltRulesAction);
+      haltRulesButton.setActionCommand(HALT_RULES_ACTION);
       haltRulesButton.addActionListener(this);
       buttonPanel.add(haltRulesButton);
       
@@ -247,6 +249,25 @@ public class AgendaBrowserFrame extends JInternalFrame
         }
      }
 
+   /**************************/
+   /* selectedActivationRule */
+   /**************************/
+   public String selectedActivationRule() 
+     {
+      int focusSelection, activationSelection;
+      
+      focusSelection = focusStackTable.getSelectedRow();
+      if (focusSelection == -1) return null;
+      activationSelection = activationTable.getSelectedRow();
+      if (activationSelection == -1) return null;
+
+      Focus theFocus = focusStack.get(focusSelection);
+      Agenda theAgenda = agendaMap.get(theFocus);
+      Activation theActivation = theAgenda.get(activationSelection);
+      
+      return theFocus.getModuleName() + "::" + theActivation.getRuleName();
+     }
+     
    /****************/
    /* valueChanged */
    /****************/
@@ -272,6 +293,8 @@ public class AgendaBrowserFrame extends JInternalFrame
                { activationTable.setRowSelectionInterval(0,0); }
             }
          }
+         
+      actionPerformed(new ActionEvent(this,AWTEvent.RESERVED_ID_MAX + 1,BROWSER_SELECTION_ACTION));
      }
    
    /*########################*/

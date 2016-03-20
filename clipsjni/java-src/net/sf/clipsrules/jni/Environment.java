@@ -530,6 +530,19 @@ public class Environment
       return assertString(theEnvironment,factStr);
      }
 
+   /*******************/
+   /* getDefruleText: */
+   /*******************/
+   private native String getDefruleText(long env,String ruleName);
+
+   /*******************/
+   /* getDefruleText: */
+   /*******************/
+   public String getDefruleText(String ruleName)
+     {
+      return getDefruleText(theEnvironment,ruleName);
+     }
+
    /**************/
    /* factIndex: */
    /**************/

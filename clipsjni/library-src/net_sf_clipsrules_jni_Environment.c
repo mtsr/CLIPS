@@ -1530,3 +1530,35 @@ JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setAgendaChanged(
    EnvSetAgendaChanged(theCLIPSEnv,value);
   }
 
+/*********************************************************/
+/* Java_net_sf_clipsrules_jni_Environment_getDefruleText */
+/* Class:     net_sf_clipsrules_jni_Environment          */
+/* Method:    getDefruleText                             */
+/* Signature: (JLjava/lang/String;)Ljava/lang/String;    */
+/*********************************************************/
+JNIEXPORT jstring JNICALL Java_net_sf_clipsrules_jni_Environment_getDefruleText(
+  JNIEnv *env,
+  jobject obj,
+  jlong clipsEnv,
+  jstring defruleName)
+  {
+   const char *cDefruleName = (*env)->GetStringUTFChars(env,defruleName,NULL);
+   void *defrulePtr;
+   void *theEnv;
+   const char *ruleText = NULL;
+   
+   theEnv = JLongToPointer(clipsEnv);
+   
+   defrulePtr = EnvFindDefrule(theEnv,cDefruleName);
+
+   (*env)->ReleaseStringUTFChars(env,defruleName,cDefruleName);
+
+   if (defrulePtr != NULL)
+     { ruleText = EnvGetDefrulePPForm(theEnv,defrulePtr); }   
+
+   if (ruleText == NULL)
+     { return (*env)->NewStringUTF(env,""); }
+   else     
+     { return (*env)->NewStringUTF(env,ruleText); }   
+  }
+

@@ -185,6 +185,14 @@ JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_assertString
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getDefruleText
+ * Signature: (JLjava/lang/String;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_net_sf_clipsrules_jni_Environment_getDefruleText
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
  * Method:    factIndex
  * Signature: (Lnet/sf/clipsrules/jni/Environment;JJ)J
  */

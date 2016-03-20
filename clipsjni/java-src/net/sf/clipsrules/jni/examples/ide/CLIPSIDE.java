@@ -57,6 +57,7 @@ public class CLIPSIDE extends JFrame
    static final String clearScrollbackAction = "ClearScrollback";
 
    static final String agendaBrowserAction = "AgendaBrowser";
+   static final String constructInspectorAction = "ConstructInspector";
 
    static final String clipsHomePageAction = "CLIPSHomePage";
    static final String onlineDocumentationAction = "OnlineDocumentation";
@@ -90,6 +91,7 @@ public class CLIPSIDE extends JFrame
    private JMenuItem jmiClearScrollback = null;
 
    private JMenuItem jmiAgendaBrowser = null;
+   private JMenuItem jmiConstructInspector = null;
    
    private JMenuItem jmiCLIPSHomePage = null;
    private JMenuItem jmiOnlineDocumentation = null;   
@@ -101,6 +103,7 @@ public class CLIPSIDE extends JFrame
    private Preferences prefs = null;
    
    private List<AgendaBrowserFrame> agendaBrowsers = new ArrayList<AgendaBrowserFrame>();
+   private ConstructInspectorFrame constructInspector = null;
    
    private int agendaChangeIndex = 0;
    private FocusStack focusStack;
@@ -369,20 +372,28 @@ public class CLIPSIDE extends JFrame
         { setDirectory(); }
       else if (ae.getActionCommand().equals(quitIDEAction))  
         { quitIDE(); }
-      else if (ae.getActionCommand().equals(resetAction))  
+      else if ((ae.getActionCommand().equals(resetAction)) ||
+               (ae.getActionCommand().equals(AgendaBrowserFrame.RESET_ACTION))) 
         { reset(); }
-      else if (ae.getActionCommand().equals(runAction))  
+      else if ((ae.getActionCommand().equals(runAction)) ||
+               (ae.getActionCommand().equals(AgendaBrowserFrame.RUN_ACTION))) 
         { run(); }
-      else if (ae.getActionCommand().equals(stepAction))  
+      else if ((ae.getActionCommand().equals(stepAction)) ||
+               (ae.getActionCommand().equals(AgendaBrowserFrame.STEP_ACTION))) 
         { step(); }
-      else if (ae.getActionCommand().equals(haltRulesAction))  
+      else if ((ae.getActionCommand().equals(haltRulesAction)) ||
+               (ae.getActionCommand().equals(AgendaBrowserFrame.HALT_RULES_ACTION))) 
         { haltRules(); }
+      else if (ae.getActionCommand().equals(AgendaBrowserFrame.BROWSER_SELECTION_ACTION)) 
+        { agendaBrowserSelection(ae); }
       else if (ae.getActionCommand().equals(haltExecutionAction))  
         { haltExecution(); }
       else if (ae.getActionCommand().equals(clearScrollbackAction))  
         { clearScrollback(); }
       else if (ae.getActionCommand().equals(agendaBrowserAction))  
         { agendaBrowser(); }
+      else if (ae.getActionCommand().equals(constructInspectorAction))  
+        { constructInspector(); }
       else if (ae.getActionCommand().equals(clipsHomePageAction))  
         { openCLIPSHomePage(); }
       else if (ae.getActionCommand().equals(onlineDocumentationAction))  
@@ -578,11 +589,13 @@ public class CLIPSIDE extends JFrame
       frame.addInternalFrameListener(this);
       frame.setActionTarget(this);
       agendaBrowsers.add(frame);
+      
       frame.updateButtons(dialogWindow.isExecuting());
       
       this.placeInternalFrame(frame);
       
       ideDesktopPane.add(frame);
+
       frame.setVisible(true);
       
       if (! dialogWindow.isExecuting())
@@ -591,6 +604,33 @@ public class CLIPSIDE extends JFrame
            { fetchAgenda(); }
          assignAgenda(frame); 
         }      
+     }
+
+   /**********************/
+   /* constructInspector */
+   /**********************/  
+   public void constructInspector()
+     {
+      String theText = "";
+      
+      if (constructInspector != null) return;
+
+      JInternalFrame selectedPane = ideDesktopPane.getSelectedFrame();
+      
+      if (selectedPane instanceof AgendaBrowserFrame)
+        { theText = agendaBrowserSelectionText((AgendaBrowserFrame) selectedPane); } 
+      
+      constructInspector = new ConstructInspectorFrame();
+
+      constructInspector.setText(theText); 
+
+      constructInspector.addInternalFrameListener(this);
+             
+      constructInspector.setLocation(10,10); // TBD Save Location?
+      
+      ideDesktopPane.add(constructInspector,JLayeredPane.PALETTE_LAYER);
+
+      constructInspector.setVisible(true);
      }
      
    /*********************/
@@ -673,6 +713,32 @@ public class CLIPSIDE extends JFrame
             { e.printStackTrace(); }
          }
       }
+      
+   /******************************/
+   /* agendaBrowserSelectionText */
+   /******************************/  
+   private String agendaBrowserSelectionText(
+    AgendaBrowserFrame theFrame)
+    {
+     String ruleName = theFrame.selectedActivationRule();
+     if (ruleName == null)
+       { return ""; }
+     else
+       { return dialogWindow.getEnvironment().getDefruleText(ruleName); }
+    }
+
+   /**************************/
+   /* agendaBrowserSelection */
+   /**************************/  
+   public void agendaBrowserSelection(
+     ActionEvent ae)
+     {
+      if (constructInspector == null) return;
+      
+      AgendaBrowserFrame theFrame = (AgendaBrowserFrame) ae.getSource();
+        
+      constructInspector.setText(agendaBrowserSelectionText(theFrame));
+     }
 
    /***************/
    /* openWebpage */
@@ -764,6 +830,11 @@ public class CLIPSIDE extends JFrame
    /****************/  
    public void menuSelected(MenuEvent e)
      {
+      if (constructInspector == null)
+        { jmiConstructInspector.setEnabled(true); }
+      else
+        { jmiConstructInspector.setEnabled(false); }
+        
       if (dialogWindow.isExecuting())
         {
          jmiClear.setEnabled(false);
@@ -851,16 +922,23 @@ public class CLIPSIDE extends JFrame
      InternalFrameEvent e) 
      {
       JInternalFrame theFrame = e.getInternalFrame();
+      theFrame.removeInternalFrameListener(this);
+
+      if (theFrame instanceof ConstructInspectorFrame)
+        { 
+         constructInspector = null;
+         return; 
+        }
+
+      if (theFrame instanceof AgendaBrowserFrame)
+        { agendaBrowsers.remove(theFrame); }
+
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) theFrame.getClientProperty(menuItemProperty);
       
       theFrame.putClientProperty(menuItemProperty,null);
       jmiWindow.putClientProperty(windowProperty,null);
       
-      theFrame.removeInternalFrameListener(this);
       jmWindow.remove(jmiWindow);
-      
-      if (theFrame instanceof AgendaBrowserFrame)
-        { agendaBrowsers.remove(theFrame); }
      }
 
    /***********************/
@@ -870,6 +948,10 @@ public class CLIPSIDE extends JFrame
      InternalFrameEvent e)
      {
       JInternalFrame theFrame = e.getInternalFrame();
+      
+      if (theFrame instanceof ConstructInspectorFrame)
+        { return; }
+
       JCheckBoxMenuItem jmiWindow = new JCheckBoxMenuItem(theFrame.getTitle());
       jmiWindow.setState(false);      
       jmiWindow.putClientProperty(windowProperty,theFrame);
@@ -886,6 +968,10 @@ public class CLIPSIDE extends JFrame
      InternalFrameEvent e)
      {
       JInternalFrame theFrame = e.getInternalFrame();
+
+      if (theFrame instanceof ConstructInspectorFrame)
+        { return; }
+
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) theFrame.getClientProperty(menuItemProperty);
       jmiWindow.setState(false);
      }
@@ -897,6 +983,10 @@ public class CLIPSIDE extends JFrame
      InternalFrameEvent e)
      {
       JInternalFrame theFrame = e.getInternalFrame();
+
+      if (theFrame instanceof ConstructInspectorFrame)
+        { return; }
+
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) theFrame.getClientProperty(menuItemProperty);
       jmiWindow.setState(true);
      }
@@ -908,6 +998,17 @@ public class CLIPSIDE extends JFrame
      InternalFrameEvent e)
      {
       JInternalFrame theFrame = e.getInternalFrame();
+      
+      if (theFrame instanceof ConstructInspectorFrame)
+        { return; }
+
+      if ((constructInspector != null) && 
+          (theFrame instanceof AgendaBrowserFrame))
+        { 
+         String theText = agendaBrowserSelectionText((AgendaBrowserFrame) theFrame); 
+         constructInspector.setText(theText); 
+        } 
+
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) theFrame.getClientProperty(menuItemProperty);
       jmiWindow.setState(true);
      }
@@ -919,6 +1020,10 @@ public class CLIPSIDE extends JFrame
      InternalFrameEvent e) 
      {
       JInternalFrame theFrame = e.getInternalFrame();
+
+      if (theFrame instanceof ConstructInspectorFrame)
+        { return; }
+
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) theFrame.getClientProperty(menuItemProperty);
       jmiWindow.setState(false);
      }
@@ -1069,6 +1174,11 @@ public class CLIPSIDE extends JFrame
       jmiAgendaBrowser.setActionCommand(agendaBrowserAction);
       jmiAgendaBrowser.addActionListener(this);
       jmDebug.add(jmiAgendaBrowser);
+
+      jmiConstructInspector = new JMenuItem("Construct Inspector"); 
+      jmiConstructInspector.setActionCommand(constructInspectorAction);
+      jmiConstructInspector.addActionListener(this);
+      jmDebug.add(jmiConstructInspector);
 
       jmb.add(jmDebug);
       

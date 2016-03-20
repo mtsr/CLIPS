@@ -104,8 +104,7 @@ jobject ConvertSingleFieldValue(
       case RVOID:
         result = (*env)->NewObject(env,
                                    CLIPSJNIData(clipsEnv)->voidValueClass,
-                                   CLIPSJNIData(clipsEnv)->voidValueInitMethod,
-                                   sresult);
+                                   CLIPSJNIData(clipsEnv)->voidValueInitMethod); 
         break;
 
       case SYMBOL:

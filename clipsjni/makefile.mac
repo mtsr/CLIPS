@@ -87,6 +87,7 @@ IDE_FILES = \
 	$(IDE_SRC)/ActivationTableModel.java \
 	$(IDE_SRC)/AgendaBrowserFrame.java \
 	$(IDE_SRC)/BoundsDesktopManager.java \
+	$(IDE_SRC)/ConstructInspectorFrame.java \
 	$(IDE_SRC)/DialogFrame.java \
 	$(IDE_SRC)/FocusStackTableModel.java
 
