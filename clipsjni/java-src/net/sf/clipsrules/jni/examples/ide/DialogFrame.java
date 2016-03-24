@@ -29,13 +29,32 @@ public class DialogFrame extends JInternalFrame
    /***************/
    DialogFrame()
      {
-      this(null);
+      this(new Environment(),null);
      }
-   
+
+   /***************/
+   /* DialogFrame */
+   /***************/
+   DialogFrame(     
+     Environment theEnv)
+     {
+      this(theEnv,null);
+     }
+
    /***************/
    /* DialogFrame */
    /***************/
    DialogFrame(
+     File currentDirectory)
+     {
+      this(new Environment(),currentDirectory);
+     }
+
+   /***************/
+   /* DialogFrame */
+   /***************/
+   DialogFrame(
+     Environment theEnv,
      File currentDirectory)
      {  
       super("Dialog",true,false,true,true);
@@ -44,8 +63,8 @@ public class DialogFrame extends JInternalFrame
       /* Create the clips environment. */
       /*===============================*/
       
-      clips = new Environment();
-      
+      clips = theEnv;
+     
       /*============================*/
       /* Set the current directory. */
       /*============================*/

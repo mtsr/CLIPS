@@ -1,120 +1,55 @@
 package net.sf.clipsrules.jni.examples.ide;
 
 import javax.swing.*; 
-import javax.swing.border.*; 
-import javax.swing.table.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.*;
 
 import java.awt.*; 
 import java.awt.event.*; 
-import java.io.File;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-
-import java.util.List;
-import java.util.prefs.Preferences;
-import java.util.Properties;
+import java.util.List; 
 import java.util.Iterator;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import java.util.HashMap;
 
 import net.sf.clipsrules.jni.*;
-
-// TBD
-// Use lock for I/O
-// argument error functions 
-// external address user function
-// call java method
-// When environment destroyed, delete global context references
 
 public class CLIPSIDE extends JFrame 
                    implements ActionListener, CommandExecutionListener,
                               MenuListener, InternalFrameListener
   {  
-   private JDesktopPane ideDesktopPane;
-            
-   private DialogFrame dialogWindow;
-   
    private static final String windowProperty = "windowProperty";
    private static final String menuItemProperty = "menuItemProperty";
-   
-   static final String clearAction = "Clear";
-   static final String loadConstructsAction = "LoadConstructs";
-   static final String loadBatchAction = "LoadBatch";
-   static final String setDirectoryAction = "SetDirectory";
+
    static final String quitIDEAction = "QuitIDE";
-   static final String resetAction = "Reset";
-   static final String runAction = "Run";
-   static final String stepAction = "Step";
-   static final String haltRulesAction = "HaltRules";
-   static final String haltExecutionAction = "HaltExecution";
-   static final String clearScrollbackAction = "ClearScrollback";
+   
+   static EnvironmentMenu jmEnvironment;
 
    static final String agendaBrowserAction = "AgendaBrowser";
+   static final String factBrowserAction = "FactBrowser";
+   static final String instanceBrowserAction = "InstanceBrowser";
    static final String constructInspectorAction = "ConstructInspector";
-
-   static final String clipsHomePageAction = "CLIPSHomePage";
-   static final String onlineDocumentationAction = "OnlineDocumentation";
-   static final String onlineExamplesAction = "OnlineExamples";
-   static final String clipsExpertSystemGroupAction = "CLIPSExpertSystemGroup";
-   static final String sourceForgeForumsAction = "SourceForgeForums";
-   static final String stackOverflowQAAction = "StackOverflowQ&A";
 
    static final String selectWindowAction = "SelectWindow";
 
-   static final String currentDirectoryPref = "currentDirectory";
-
-   private File currentDirectory = null;
+   private IDEPreferences preferences;
    
    private JMenu jmWindow;
 
-   private JMenuItem jmiQuitIDE = null;
+   private JMenuItem jmiQuitIDE;
 
-   private JMenuItem jmiCut = null;
-   private JMenuItem jmiCopy = null;
-   private JMenuItem jmiPaste = null;
-   
-   private JMenuItem jmiClear = null;
-   private JMenuItem jmiLoadConstructs = null;
-   private JMenuItem jmiLoadBatch = null;
-   private JMenuItem jmiSetDirectory = null;
-   private JMenuItem jmiReset = null;
-   private JMenuItem jmiRun = null;
-   private JMenuItem jmiHaltRules = null;
-   private JMenuItem jmiHaltExecution = null;
-   private JMenuItem jmiClearScrollback = null;
+   private JMenuItem jmiCut;
+   private JMenuItem jmiCopy;
+   private JMenuItem jmiPaste;
 
-   private JMenuItem jmiAgendaBrowser = null;
-   private JMenuItem jmiConstructInspector = null;
+   private JMenuItem jmiAgendaBrowser;
+   private JMenuItem jmiFactBrowser;
+   private JMenuItem jmiInstanceBrowser;
+   private JMenuItem jmiConstructInspector;
    
-   private JMenuItem jmiCLIPSHomePage = null;
-   private JMenuItem jmiOnlineDocumentation = null;   
-   private JMenuItem jmiOnlineExamples = null;
-   private JMenuItem jmiCLIPSExpertSystemGroup = null;
-   private JMenuItem jmiSourceForgeForums = null;
-   private JMenuItem jmiStackOverflowQA = null;
-      
-   private Preferences prefs = null;
-   
-   private List<AgendaBrowserFrame> agendaBrowsers = new ArrayList<AgendaBrowserFrame>();
-   private ConstructInspectorFrame constructInspector = null;
-   
-   private int agendaChangeIndex = 0;
-   private FocusStack focusStack;
-   private HashMap<Focus,Agenda> agendaMap;
-
-   private int windowStartX = 28;
-   private int windowStartY = 28;
-   private int windowCurrentX = -1;
-   private int windowCurrentY = -1;
-   private int windowXIncrement = 28;
-   private int windowYIncrement = 28;
+   private Environment clips;
+   private ConstructInspectorFrame constructInspector;
+   private FramePlacer placer;
+   private AgendaBrowserManager agendaBrowserManager;
+   private DialogFrame dialogWindow;
+   private JDesktopPane ideDesktopPane;
 
    /************/
    /* CLIPSIDE */
@@ -132,35 +67,16 @@ public class CLIPSIDE extends JFrame
       catch (Exception e)
         { e.printStackTrace(); }
              
-      /************************/
-      /* Get the preferences. */
-      /************************/
+      preferences = new IDEPreferences();
       
-      prefs = Preferences.userNodeForPackage(net.sf.clipsrules.jni.examples.ide.CLIPSIDE.class);       
-      String directoryPref = prefs.get(currentDirectoryPref,null);         
-
-      /*==================================*/
-      /* Determine the working directory. */
-      /*==================================*/
+      clips = new Environment();
       
-      File workingDirectory;
-      if (directoryPref == null)
-        { workingDirectory = new File(System.getProperty("user.dir")); }
-      else
-        { 
-         workingDirectory = new File(directoryPref); 
-         if (! workingDirectory.exists())
-           { workingDirectory = new File(System.getProperty("user.dir")); }
-        }
-      
-      currentDirectory = workingDirectory.getAbsoluteFile();
-            
       /*======================*/
       /* Create the menu bar. */
       /*======================*/
 
-      createMenuBar();
-      
+      createMenuBar(clips);
+
       /*====================*/
       /* Display the frame. */
       /*====================*/
@@ -174,35 +90,94 @@ public class CLIPSIDE extends JFrame
       Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
       setSize((int) (screenSize.width * 0.80),(int) (screenSize.height * 0.80));
       setVisible(true);
-
-      /*********/
       
-      focusStack = new FocusStack();
-      agendaMap = new HashMap<Focus,Agenda>();
-
+      placer = new FramePlacer(ideDesktopPane);
+      
       /*****************************/
       /* Create the dialog window. */
       /*****************************/
       
-      createDialogWindow();
+      createDialogWindow(clips);
       dialogWindow.addCommandExecutionListener(this);
+      jmEnvironment.setDialog(dialogWindow);
       
-      /*==========================*/
-      /* Add some user functions. */
-      /*==========================*/
+      /********************************/
+      /* Create the browser managers. */
+      /********************************/
+      
+      agendaBrowserManager = new AgendaBrowserManager(this);
 
-      addUserFunctions();
+      /*========================================*/
+      /* Create the clear-window user function. */
+      /*========================================*/
+      
+      clips.addUserFunction("clear-window","00",
+            new UserFunction()
+              {
+               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
+                 {
+                  dialogWindow.clearScrollback();
+                  return null;
+                 }
+              });
+            
+      /*==================================*/
+      /* Add some example user functions. */
+      /*==================================*/
+
+      UserFunctionExamples.addUserFunctions(clips);
      }  
+
+   /******************/
+   /* getEnvironment */
+   /******************/  
+   public Environment getEnvironment()
+     {
+      return clips;
+     }
+     
+   /*******************/
+   /* getDialogWindow */
+   /*******************/  
+   public DialogFrame getDialogWindow()
+     {
+      return dialogWindow;
+     }
+     
+   /******************/
+   /* getDesktopPane */
+   /******************/  
+   public JDesktopPane getDesktopPane()
+     {
+      return ideDesktopPane;
+     }
+
+   /*************************/
+   /* getConstructInspector */
+   /*************************/  
+   public ConstructInspectorFrame getConstructInspector()
+     {
+      return constructInspector;
+     }
+     
+   /*************/
+   /* getPlacer */
+   /*************/  
+   public FramePlacer getPlacer()
+     {
+      return placer;
+     }
      
    /**********************/
    /* createDialogWindow */
    /**********************/  
-   public void createDialogWindow()
+   public void createDialogWindow(
+     Environment clips)
      {
-      dialogWindow = new DialogFrame(currentDirectory);
+      dialogWindow = new DialogFrame(clips,preferences.getCurrentDirectory());
       dialogWindow.addInternalFrameListener(this);
       
-      this.placeInternalFrame(dialogWindow);
+      placer.placeInternalFrame(dialogWindow);
       
       ideDesktopPane.add(dialogWindow);
       dialogWindow.setVisible(true);
@@ -216,87 +191,6 @@ public class CLIPSIDE extends JFrame
       CLIPSIDE ide = new CLIPSIDE();  
      } 
    
-   /***************/
-   /* fetchAgenda */
-   /***************/
-   private synchronized void fetchAgenda()
-     {
-      focusStack = dialogWindow.getEnvironment().getFocusStack();
-      agendaMap = new HashMap<Focus,Agenda>();
-
-      for (Iterator itr = focusStack.iterator(); itr.hasNext(); ) 
-        { 
-         Focus theFocus = (Focus) itr.next();
-         Agenda theAgenda = dialogWindow.getEnvironment().getAgenda(theFocus);
-         agendaMap.put(theFocus,theAgenda);
-        }
-     }
-
-   /****************/
-   /* assignAgenda */
-   /****************/
-   private synchronized void assignAgenda(
-     AgendaBrowserFrame theBrowser)
-     {
-      theBrowser.assignData(focusStack,agendaMap);
-     }
-
-   /************************/
-   /* updateAgendaBrowser: */
-   /************************/
-   private void updateAgendaBrowser(
-     AgendaBrowserFrame theBrowser)
-     {
-      if (EventQueue.isDispatchThread())
-        { 
-         assignAgenda(theBrowser);
-         return; 
-        }
-              
-      try
-        {
-         SwingUtilities.invokeAndWait(
-           new Runnable() 
-             {  
-              public void run() 
-                { assignAgenda(theBrowser); }  
-             });   
-        }
-      catch (Exception e) 
-        { e.printStackTrace(); }
-     }
-  
-   /****************************/
-   /* updateAllAgendaBrowsers: */
-   /****************************/
-   private void updateAllAgendaBrowsers()
-     {
-      if (agendaBrowsers.size() == 0) return;
-      
-      fetchAgenda();
-      
-      for (Iterator itr = agendaBrowsers.iterator(); itr.hasNext(); ) 
-        { 
-         AgendaBrowserFrame theBrowser = (AgendaBrowserFrame) itr.next();
-         updateAgendaBrowser(theBrowser);
-        }
-     }
-
-   /*******************************/
-   /* updateAgendaBrowserButtons: */
-   /*******************************/
-   private void updateAgendaBrowserButtons(
-     boolean isExecuting)
-     {
-      if (agendaBrowsers.size() == 0) return;
-            
-      for (Iterator itr = agendaBrowsers.iterator(); itr.hasNext(); ) 
-        { 
-         AgendaBrowserFrame theBrowser = (AgendaBrowserFrame) itr.next();
-         theBrowser.updateButtons(isExecuting);
-        }
-     }
-
    /*********************************/
    /* commandExecutionEventOccurred */
    /*********************************/  
@@ -304,10 +198,10 @@ public class CLIPSIDE extends JFrame
      CommandExecutionEvent theEvent)
      {    
       if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.START_EVENT))
-        { updateAgendaBrowserButtons(true); }
+        { agendaBrowserManager.updateAgendaBrowserButtons(true); }
      
       if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.FINISH_EVENT))
-        { updateAgendaBrowserButtons(false); }
+        { agendaBrowserManager.updateAgendaBrowserButtons(false); }
      
       if (theEvent.getExecutionEvent().equals(CommandExecutionEvent.PERIODIC_EVENT) ||
           theEvent.getExecutionEvent().equals(CommandExecutionEvent.FINISH_EVENT))
@@ -315,7 +209,7 @@ public class CLIPSIDE extends JFrame
          if (dialogWindow.getEnvironment().getAgendaChanged())
            {
             dialogWindow.getEnvironment().setAgendaChanged(false);
-            updateAllAgendaBrowsers();
+            agendaBrowserManager.updateAllAgendaBrowsers();
            } 
         }
      }  
@@ -362,158 +256,18 @@ public class CLIPSIDE extends JFrame
              theDialogFrame.paste(); 
             }
         }
-      else if (ae.getActionCommand().equals(clearAction))  
-        { clear(); }
-      else if (ae.getActionCommand().equals(loadConstructsAction))  
-        { loadConstructs(); }
-      else if (ae.getActionCommand().equals(loadBatchAction))  
-        { loadBatch(); }
-      else if (ae.getActionCommand().equals(setDirectoryAction))  
-        { setDirectory(); }
       else if (ae.getActionCommand().equals(quitIDEAction))  
         { quitIDE(); }
-      else if ((ae.getActionCommand().equals(resetAction)) ||
-               (ae.getActionCommand().equals(AgendaBrowserFrame.RESET_ACTION))) 
-        { reset(); }
-      else if ((ae.getActionCommand().equals(runAction)) ||
-               (ae.getActionCommand().equals(AgendaBrowserFrame.RUN_ACTION))) 
-        { run(); }
-      else if ((ae.getActionCommand().equals(stepAction)) ||
-               (ae.getActionCommand().equals(AgendaBrowserFrame.STEP_ACTION))) 
-        { step(); }
-      else if ((ae.getActionCommand().equals(haltRulesAction)) ||
-               (ae.getActionCommand().equals(AgendaBrowserFrame.HALT_RULES_ACTION))) 
-        { haltRules(); }
-      else if (ae.getActionCommand().equals(AgendaBrowserFrame.BROWSER_SELECTION_ACTION)) 
-        { agendaBrowserSelection(ae); }
-      else if (ae.getActionCommand().equals(haltExecutionAction))  
-        { haltExecution(); }
-      else if (ae.getActionCommand().equals(clearScrollbackAction))  
-        { clearScrollback(); }
       else if (ae.getActionCommand().equals(agendaBrowserAction))  
-        { agendaBrowser(); }
+        { agendaBrowserManager.createAgendaBrowser(); }
+      else if (ae.getActionCommand().equals(factBrowserAction))  
+        { factBrowser(); }
+      else if (ae.getActionCommand().equals(instanceBrowserAction))  
+        { instanceBrowser(); }
       else if (ae.getActionCommand().equals(constructInspectorAction))  
         { constructInspector(); }
-      else if (ae.getActionCommand().equals(clipsHomePageAction))  
-        { openCLIPSHomePage(); }
-      else if (ae.getActionCommand().equals(onlineDocumentationAction))  
-        { openOnlineDocumentation(); }
-      else if (ae.getActionCommand().equals(onlineExamplesAction))  
-        { openOnlineExamples(); }
-      else if (ae.getActionCommand().equals(clipsExpertSystemGroupAction))  
-        { openCLIPSExpertSystemGroup(); }
-      else if (ae.getActionCommand().equals(sourceForgeForumsAction))  
-        { openSourceForgeForums(); }
-      else if (ae.getActionCommand().equals(stackOverflowQAAction))  
-        { openStackOverflowQA(); }
       else if (ae.getActionCommand().equals(selectWindowAction))  
         { selectWindow(ae.getSource()); }
-     }
-  
-   /******************/
-   /* loadConstructs */
-   /******************/  
-   public void loadConstructs()
-     {
-      final JFileChooser fc = new JFileChooser();
-      
-      FileNameExtensionFilter filter 
-         = new FileNameExtensionFilter("Constructs File","clp");
-      fc.setFileFilter(filter);
-
-      if (currentDirectory != null)
-        { fc.setCurrentDirectory(currentDirectory); }
-
-      fc.setApproveButtonText("Load");
-      fc.setDialogTitle("Load Constructs");
-      
-      int returnVal = fc.showOpenDialog(this);
-      
-      if (returnVal != JFileChooser.APPROVE_OPTION) return;
-      
-      File file = fc.getSelectedFile();
-            
-      currentDirectory = fc.getCurrentDirectory();
-
-      if (dialogWindow.setDirectory(currentDirectory))
-        { 
-         dialogWindow.replaceCommand("(load \"" + 
-                                     file.getName() + 
-                                     "\")\n");
-         prefs.put(currentDirectoryPref,currentDirectory.getAbsolutePath());
-        }
-      else
-        {
-         dialogWindow.replaceCommand("(load \"" + 
-                                     file.getAbsolutePath() + 
-                                     "\")\n");
-        }
-     }
-     
-   /*************/
-   /* loadBatch */
-   /*************/  
-   public void loadBatch()
-     {
-      final JFileChooser fc = new JFileChooser();
-
-      FileNameExtensionFilter filter 
-         = new FileNameExtensionFilter("Batch File","bat","tst");
-      fc.setFileFilter(filter);
-
-      if (currentDirectory != null)
-        { fc.setCurrentDirectory(currentDirectory); }
-
-      fc.setApproveButtonText("Load");
-      fc.setDialogTitle("Load Batch");
-      
-      int returnVal = fc.showOpenDialog(this);
-      
-      if (returnVal != JFileChooser.APPROVE_OPTION) return;
-      
-      File file = fc.getSelectedFile();
-            
-      currentDirectory = fc.getCurrentDirectory();
-
-      if (dialogWindow.setDirectory(currentDirectory))
-        { 
-         dialogWindow.replaceCommand("(batch \"" + 
-                                     file.getName() + 
-                                     "\")\n");
-         prefs.put(currentDirectoryPref,currentDirectory.getAbsolutePath());
-        }
-      else
-        {
-         dialogWindow.replaceCommand("(batch \"" + 
-                                     file.getAbsolutePath() + 
-                                     "\")\n");
-        }
-     }
-
-   /****************/
-   /* setDirectory */
-   /****************/  
-   public void setDirectory()
-     {
-      final JFileChooser fc = new JFileChooser();
-
-      if (currentDirectory != null)
-        { fc.setCurrentDirectory(currentDirectory); }
-        
-      fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-      fc.setApproveButtonText("Set");
-      fc.setDialogTitle("Set Directory");
-      
-      int returnVal = fc.showOpenDialog(this);
-      
-      if (returnVal != JFileChooser.APPROVE_OPTION) return;
-      
-      File file = fc.getSelectedFile();
-            
-      currentDirectory = file.getAbsoluteFile();
-      
-      if (dialogWindow.setDirectory(currentDirectory))
-        { prefs.put(currentDirectoryPref,currentDirectory.getAbsolutePath()); }
      }
 
    /***********/
@@ -523,89 +277,21 @@ public class CLIPSIDE extends JFrame
      {
       System.exit(0);
      }
-
-   /*********/
-   /* clear */
-   /*********/  
-   public void clear()
+          
+   /***************/
+   /* factBrowser */
+   /***************/  
+   public void factBrowser()
      {
-      dialogWindow.replaceCommand("(clear)\n");
-     }
-     
-   /*********/
-   /* reset */
-   /*********/  
-   public void reset()
-     {
-      dialogWindow.replaceCommand("(reset)\n");
-     }
-
-   /*******/
-   /* run */
-   /*******/  
-   public void run()
-     {
-      dialogWindow.replaceCommand("(run)\n");
-     }
-
-   /********/
-   /* step */
-   /********/  
-   public void step()
-     {
-      dialogWindow.replaceCommand("(run 1)\n");
-     }
-
-   /*************/
-   /* haltRules */
-   /*************/  
-   public void haltRules()
-     {
-      dialogWindow.haltRules();
-     }
-
-   /*****************/
-   /* haltExecution */
-   /*****************/  
-   public void haltExecution()
-     {
-      dialogWindow.haltExecution();
      }
      
    /*******************/
-   /* clearScrollback */
+   /* instanceBrowser */
    /*******************/  
-   public void clearScrollback()
+   public void instanceBrowser()
      {
-      dialogWindow.clearScrollback();
      }
      
-   /*****************/
-   /* agendaBrowser */
-   /*****************/  
-   public void agendaBrowser()
-     {
-      AgendaBrowserFrame frame = new AgendaBrowserFrame();
-      frame.addInternalFrameListener(this);
-      frame.setActionTarget(this);
-      agendaBrowsers.add(frame);
-      
-      frame.updateButtons(dialogWindow.isExecuting());
-      
-      this.placeInternalFrame(frame);
-      
-      ideDesktopPane.add(frame);
-
-      frame.setVisible(true);
-      
-      if (! dialogWindow.isExecuting())
-        { 
-         if (agendaBrowsers.size() == 1)
-           { fetchAgenda(); }
-         assignAgenda(frame); 
-        }      
-     }
-
    /**********************/
    /* constructInspector */
    /**********************/  
@@ -618,7 +304,7 @@ public class CLIPSIDE extends JFrame
       JInternalFrame selectedPane = ideDesktopPane.getSelectedFrame();
       
       if (selectedPane instanceof AgendaBrowserFrame)
-        { theText = agendaBrowserSelectionText((AgendaBrowserFrame) selectedPane); } 
+        { theText = agendaBrowserManager.agendaBrowserSelectionText((AgendaBrowserFrame) selectedPane); } 
       
       constructInspector = new ConstructInspectorFrame();
 
@@ -626,131 +312,13 @@ public class CLIPSIDE extends JFrame
 
       constructInspector.addInternalFrameListener(this);
              
-      constructInspector.setLocation(10,10); // TBD Save Location?
+      constructInspector.setLocation(10,10);
       
       ideDesktopPane.add(constructInspector,JLayeredPane.PALETTE_LAYER);
 
       constructInspector.setVisible(true);
      }
-     
-   /*********************/
-   /* openCLIPSHomePage */
-   /*********************/  
-   public void openCLIPSHomePage()
-     {
-      try
-        { openWebpage(new URL("http://www.clipsrules.net")); }
-      catch (Exception e)
-        { e.printStackTrace(); }
-     }
-   
-   /***************************/
-   /* openOnlineDocumentation */
-   /***************************/  
-   public void openOnlineDocumentation()
-     {
-      try
-        { openWebpage(new URL("http://www.clipsrules.net/?q=Documentation")); }
-      catch (Exception e)
-        { e.printStackTrace(); }
-     }
-     
-   /**********************/
-   /* openOnlineExamples */
-   /**********************/  
-   public void openOnlineExamples()
-     {
-      try
-        { openWebpage(new URL("https://sourceforge.net/p/clipsrules/code/HEAD/tree/examples/")); }
-      catch (Exception e)
-        { e.printStackTrace(); }
-     }
-     
-   /******************************/
-   /* openCLIPSExpertSystemGroup */
-   /******************************/  
-   public void openCLIPSExpertSystemGroup()
-     {
-      try
-        { openWebpage(new URL("http://groups.google.com/group/CLIPSESG/")); }
-      catch (Exception e)
-        { e.printStackTrace(); }
-     }
-
-   /*************************/
-   /* openSourceForgeForums */
-   /*************************/  
-   public void openSourceForgeForums()
-     {
-      try
-        { openWebpage(new URL("http://sourceforge.net/p/clipsrules/discussion")); }
-      catch (Exception e)
-        { e.printStackTrace(); }
-     }
-
-   /***********************/
-   /* openStackOverflowQA */
-   /***********************/  
-   public void openStackOverflowQA()
-     {
-      try
-        { openWebpage(new URL("http://stackoverflow.com/questions/tagged/clips")); }
-      catch (Exception e)
-        { e.printStackTrace(); }
-     }
-
-   /***************/
-   /* openWebpage */
-   /***************/  
-    public static void openWebpage(URI uri) 
-      {
-       Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-       if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) 
-         {
-          try
-            { desktop.browse(uri); } 
-          catch (Exception e)
-            { e.printStackTrace(); }
-         }
-      }
-      
-   /******************************/
-   /* agendaBrowserSelectionText */
-   /******************************/  
-   private String agendaBrowserSelectionText(
-    AgendaBrowserFrame theFrame)
-    {
-     String ruleName = theFrame.selectedActivationRule();
-     if (ruleName == null)
-       { return ""; }
-     else
-       { return dialogWindow.getEnvironment().getDefruleText(ruleName); }
-    }
-
-   /**************************/
-   /* agendaBrowserSelection */
-   /**************************/  
-   public void agendaBrowserSelection(
-     ActionEvent ae)
-     {
-      if (constructInspector == null) return;
-      
-      AgendaBrowserFrame theFrame = (AgendaBrowserFrame) ae.getSource();
-        
-      constructInspector.setText(agendaBrowserSelectionText(theFrame));
-     }
-
-   /***************/
-   /* openWebpage */
-   /***************/  
-   public static void openWebpage(URL url)
-     {
-      try
-        { openWebpage(url.toURI()); } 
-      catch (URISyntaxException e)
-        { e.printStackTrace(); }
-     }    
-
+           
    /****************/
    /* selectWindow */
    /****************/  
@@ -772,32 +340,6 @@ public class CLIPSIDE extends JFrame
         { e.printStackTrace(); }
      }
    
-   /**********************/
-   /* placeInternalFrame */
-   /**********************/  
-   private void placeInternalFrame(
-     JInternalFrame frame)
-     {
-      if (windowCurrentX == -1)
-        {
-         windowCurrentX = windowStartX;
-         windowCurrentY = windowStartY;
-         frame.setLocation(windowCurrentX,windowCurrentY);
-         return;
-        }
-      
-      windowCurrentX += windowXIncrement;
-      windowCurrentY += windowYIncrement;
-
-      if ((frame.getHeight() + windowCurrentY) > ideDesktopPane.getHeight())
-        { windowCurrentY = windowStartY; }
-      
-      if ((frame.getWidth() + windowCurrentX) > ideDesktopPane.getWidth())
-        { windowCurrentX = windowStartX; }
-
-      frame.setLocation(windowCurrentX,windowCurrentY);
-     }
-
    /*########################*/
    /* ActionListener Methods */
    /*########################*/
@@ -834,32 +376,7 @@ public class CLIPSIDE extends JFrame
         { jmiConstructInspector.setEnabled(true); }
       else
         { jmiConstructInspector.setEnabled(false); }
-        
-      if (dialogWindow.isExecuting())
-        {
-         jmiClear.setEnabled(false);
-         jmiLoadConstructs.setEnabled(false);
-         jmiLoadBatch.setEnabled(false);
-         jmiSetDirectory.setEnabled(false);
-         jmiReset.setEnabled(false);
-         jmiRun.setEnabled(false);
-         jmiHaltRules.setEnabled(true);
-         jmiHaltExecution.setEnabled(true);
-         jmiClearScrollback.setEnabled(false);
-        }
-      else
-        {
-         jmiClear.setEnabled(true);
-         jmiLoadConstructs.setEnabled(true);
-         jmiLoadBatch.setEnabled(true);
-         jmiSetDirectory.setEnabled(true);
-         jmiReset.setEnabled(true);
-         jmiRun.setEnabled(true);
-         jmiHaltRules.setEnabled(false);
-         jmiHaltExecution.setEnabled(false);
-         jmiClearScrollback.setEnabled(true);
-        }
-     
+
       JInternalFrame theFrame = ideDesktopPane.getSelectedFrame();
      
       if ((theFrame == null) || theFrame.isIcon())
@@ -931,7 +448,7 @@ public class CLIPSIDE extends JFrame
         }
 
       if (theFrame instanceof AgendaBrowserFrame)
-        { agendaBrowsers.remove(theFrame); }
+        { agendaBrowserManager.removeAgendaBrowser((AgendaBrowserFrame) theFrame); }
 
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) theFrame.getClientProperty(menuItemProperty);
       
@@ -1005,7 +522,7 @@ public class CLIPSIDE extends JFrame
       if ((constructInspector != null) && 
           (theFrame instanceof AgendaBrowserFrame))
         { 
-         String theText = agendaBrowserSelectionText((AgendaBrowserFrame) theFrame); 
+         String theText = agendaBrowserManager.agendaBrowserSelectionText((AgendaBrowserFrame) theFrame); 
          constructInspector.setText(theText); 
         } 
 
@@ -1035,24 +552,17 @@ public class CLIPSIDE extends JFrame
    /*****************/
    /* createMenuBar */
    /*****************/
-   private void createMenuBar()
+   private void createMenuBar(
+     Environment clips)
      {
       /*=================================================*/
       /* Get KeyStroke for copy/paste keyboard commands. */
       /*=================================================*/
 
-      KeyStroke loadConstructs = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK);
-      KeyStroke loadBatch = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
       KeyStroke quitIDE = KeyStroke.getKeyStroke(KeyEvent.VK_Q,KeyEvent.CTRL_MASK);
-      
       KeyStroke cut = KeyStroke.getKeyStroke(KeyEvent.VK_X,KeyEvent.CTRL_MASK);
       KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_MASK);
       KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V,KeyEvent.CTRL_MASK);
-
-      KeyStroke reset = KeyStroke.getKeyStroke(KeyEvent.VK_R,KeyEvent.CTRL_MASK);
-      KeyStroke run = KeyStroke.getKeyStroke(KeyEvent.VK_R,KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
-      KeyStroke haltRules = KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD,KeyEvent.CTRL_MASK);
-      KeyStroke haltExecution = KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD,KeyEvent.CTRL_MASK | KeyEvent.SHIFT_MASK);
 
       /*======================*/
       /* Create the menu bar. */
@@ -1102,65 +612,8 @@ public class CLIPSIDE extends JFrame
       /*==================*/
       /* Environment menu */
       /*==================*/
-         
-      JMenu jmEnvironment = new JMenu("Environment");
-      jmEnvironment.addMenuListener(this);
-
-      jmiClear = new JMenuItem("Clear");
-      jmiClear.setActionCommand(clearAction);
-      jmiClear.addActionListener(this);
-      jmEnvironment.add(jmiClear);
- 
-      jmiLoadConstructs = new JMenuItem("Load Constructs...");
-      jmiLoadConstructs.setActionCommand(loadConstructsAction);
-      jmiLoadConstructs.setAccelerator(loadConstructs);
-      jmiLoadConstructs.addActionListener(this);
-      jmEnvironment.add(jmiLoadConstructs);
-
-      jmiLoadBatch = new JMenuItem("Load Batch...");
-      jmiLoadBatch.setActionCommand(loadBatchAction);
-      jmiLoadBatch.setAccelerator(loadBatch);
-      jmiLoadBatch.addActionListener(this);
-      jmEnvironment.add(jmiLoadBatch);
-
-      jmiSetDirectory = new JMenuItem("Set Directory...");
-      jmiSetDirectory.setActionCommand(setDirectoryAction);
-      jmiSetDirectory.addActionListener(this);
-      jmEnvironment.add(jmiSetDirectory);
-
-      jmEnvironment.addSeparator();
-
-      jmiReset = new JMenuItem("Reset");
-      jmiReset.setActionCommand(resetAction);
-      jmiReset.setAccelerator(reset);
-      jmiReset.addActionListener(this);
-      jmEnvironment.add(jmiReset);
-
-      jmiRun = new JMenuItem("Run"); 
-      jmiRun.setActionCommand(runAction);
-      jmiRun.setAccelerator(run);
-      jmiRun.addActionListener(this);
-      jmEnvironment.add(jmiRun);
-
-      jmiHaltRules = new JMenuItem("Halt Rules"); 
-      jmiHaltRules.setActionCommand(haltRulesAction);
-      jmiHaltRules.setAccelerator(haltRules);
-      jmiHaltRules.addActionListener(this);
-      jmEnvironment.add(jmiHaltRules);
-
-      jmiHaltExecution = new JMenuItem("Halt Execution"); 
-      jmiHaltExecution.setActionCommand(haltExecutionAction);
-      jmiHaltExecution.setAccelerator(haltExecution);
-      jmiHaltExecution.addActionListener(this);
-      jmEnvironment.add(jmiHaltExecution);
-
-      jmEnvironment.addSeparator();
-      
-      jmiClearScrollback = new JMenuItem("Clear Scrollback");
-      jmiClearScrollback.setActionCommand(clearScrollbackAction);
-      jmiClearScrollback.addActionListener(this);
-      jmEnvironment.add(jmiClearScrollback);
-      
+        
+      jmEnvironment = new EnvironmentMenu(preferences);
       jmb.add(jmEnvironment);
 
       /*============*/
@@ -1170,10 +623,32 @@ public class CLIPSIDE extends JFrame
       JMenu jmDebug = new JMenu("Debug");
       jmDebug.addMenuListener(this);
 
+      /*===============*/
+      /* Watch submenu */
+      /*===============*/
+
+      jmDebug.add(new WatchMenu(clips));
+
+      /*==========*/
+      /* Browsers */
+      /*==========*/
+      
+      jmDebug.addSeparator();
+
       jmiAgendaBrowser = new JMenuItem("Agenda Browser"); 
       jmiAgendaBrowser.setActionCommand(agendaBrowserAction);
       jmiAgendaBrowser.addActionListener(this);
       jmDebug.add(jmiAgendaBrowser);
+
+      jmiFactBrowser = new JMenuItem("Fact Browser"); 
+      jmiFactBrowser.setActionCommand(factBrowserAction);
+      jmiFactBrowser.addActionListener(this);
+      jmDebug.add(jmiFactBrowser);
+
+      jmiInstanceBrowser = new JMenuItem("Instance Browser"); 
+      jmiInstanceBrowser.setActionCommand(instanceBrowserAction);
+      jmiInstanceBrowser.addActionListener(this);
+      jmDebug.add(jmiInstanceBrowser);
 
       jmiConstructInspector = new JMenuItem("Construct Inspector"); 
       jmiConstructInspector.setActionCommand(constructInspectorAction);
@@ -1193,182 +668,13 @@ public class CLIPSIDE extends JFrame
       /*===========*/
       /* Help menu */
       /*===========*/
-         
-      JMenu jmHelp = new JMenu("Help");
-      jmHelp.addMenuListener(this);
-      
-      jmiCLIPSHomePage = new JMenuItem("CLIPS Home Page");
-      jmiCLIPSHomePage.setActionCommand(clipsHomePageAction);
-      jmiCLIPSHomePage.addActionListener(this);
-      jmHelp.add(jmiCLIPSHomePage);
 
-      jmiOnlineDocumentation = new JMenuItem("Online Documentation");
-      jmiOnlineDocumentation.setActionCommand(onlineDocumentationAction);
-      jmiOnlineDocumentation.addActionListener(this);
-      jmHelp.add(jmiOnlineDocumentation);
-
-      jmiOnlineExamples = new JMenuItem("Online Examples");
-      jmiOnlineExamples.setActionCommand(onlineExamplesAction);
-      jmiOnlineExamples.addActionListener(this);
-      jmHelp.add(jmiOnlineExamples);
-
-      jmiCLIPSExpertSystemGroup = new JMenuItem("CLIPS Expert System Group");
-      jmiCLIPSExpertSystemGroup.setActionCommand(clipsExpertSystemGroupAction);
-      jmiCLIPSExpertSystemGroup.addActionListener(this);
-      jmHelp.add(jmiCLIPSExpertSystemGroup);
-
-      jmiSourceForgeForums = new JMenuItem("SourceForge Forums");
-      jmiSourceForgeForums.setActionCommand(sourceForgeForumsAction);
-      jmiSourceForgeForums.addActionListener(this);
-      jmHelp.add(jmiSourceForgeForums);
-
-      jmiStackOverflowQA = new JMenuItem("Stack Overflow Q&A");
-      jmiStackOverflowQA.setActionCommand(stackOverflowQAAction);
-      jmiStackOverflowQA.addActionListener(this);
-      jmHelp.add(jmiStackOverflowQA);
-
-      jmb.add(jmHelp);
+      jmb.add(new HelpMenu());
 
       /*===================*/
       /* Add the menu bar. */
       /*===================*/
              
       this.setJMenuBar(jmb);
-     }
-
-   /*################*/
-   /* User Functions */
-   /*################*/
-     
-   /********************/
-   /* addUserFunctions */
-   /********************/
-   
-   public void addUserFunctions()
-     {
-      Environment theEnv = dialogWindow.getEnvironment();
-      // (upcase "ßuzäöü")
-      theEnv.removeUserFunction("upcase");
-      theEnv.addUserFunction("upcase","11j",
-            new UserFunction()
-              {
-               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                 {
-                  LexemeValue rv = (LexemeValue) arguments.get(0);
-                                   
-                  String urv = rv.getValue().toUpperCase();
-                  if (rv.isString())
-                    { return new StringValue(urv); }
-                  else if (rv.isSymbol())
-                    { return new SymbolValue(urv); }
-                  else if (rv.isInstanceName())
-                    { return new InstanceNameValue(urv); }
-                                                             
-                  return null;
-                 }
-              });
-                               
-      theEnv.removeUserFunction("lowcase");
-      theEnv.addUserFunction("lowcase","11j",
-            new UserFunction()
-              {
-               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                 {
-                  LexemeValue rv = (LexemeValue) arguments.get(0);
-                                   
-                  String lrv = rv.getValue().toLowerCase();
-                  if (rv.isString())
-                    { return new StringValue(lrv); }
-                  else if (rv.isSymbol())
-                    { return new SymbolValue(lrv); }
-                  else if (rv.isInstanceName())
-                    { return new InstanceNameValue(lrv); }
-                                                             
-                  return null;
-                 }
-              });
-
-      theEnv.addUserFunction("cbrt","11n",
-            new UserFunction()
-              {
-               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                 {
-                  NumberValue rv = (NumberValue) arguments.get(0);
-                  return new FloatValue(Math.cbrt(rv.doubleValue()));
-                 }
-              });
-
-       theEnv.addUserFunction("get-year","00",
-             new UserFunction()
-               {
-                public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                  { 
-                   Calendar theCalendar = new GregorianCalendar();
-                   return new IntegerValue(theCalendar.get(theCalendar.YEAR));
-                  }
-               });
-      
-      theEnv.addUserFunction("get-properties","00",
-            new UserFunction()
-              {
-               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                 {
-                  List<PrimitiveValue> values = new ArrayList<PrimitiveValue>();
-
-                  Properties props = System.getProperties();
-                  for (String key : props .stringPropertyNames())
-                    { values.add(new SymbolValue(key)); }
-
-                  return new MultifieldValue(values);
-                 }
-              });
-      
-      theEnv.addUserFunction("hello","00",
-            new UserFunction()
-              {
-               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                 {
-                  theEnv.println("Hello World!");
-                  return null;
-                 }
-              });
-
-      theEnv.addUserFunction("clear-window","00",
-            new UserFunction()
-              {
-               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                 {
-                  dialogWindow.clearScrollback();
-                  return null;
-                 }
-              });
-
-      theEnv.addUserFunction("make-instoid","00",
-            new UserFunction()
-              {
-               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                 {
-                  try
-                    {
-                     return theEnv.eval("(instance-address (make-instance [hello] of INITIAL-OBJECT))");
-                    }
-                  catch (Exception e)
-                    { return new SymbolValue("FALSE"); }
-                 }
-              });
-
-      theEnv.addUserFunction("make-factoid","00",
-            new UserFunction()
-              {
-               public PrimitiveValue evaluate(List<PrimitiveValue> arguments)
-                 {
-                  try
-                    {
-                     return theEnv.eval("(assert (hello world))");
-                    }
-                  catch (Exception e)
-                    { return new SymbolValue("FALSE"); }
-                 }
-              });
-     }
+     }   
   }

@@ -361,6 +361,30 @@ public class Environment
       return loadFacts(theEnvironment,filename);
      }
 
+   /*****************/
+   /* getWatchItem: */
+   /*****************/
+   private native boolean getWatchItem(long env,String watchItem);
+
+   /*****************/
+   /* getWatchItem: */
+   /*****************/
+   public boolean getWatchItem(String watchItem)
+     {
+      return getWatchItem(theEnvironment,watchItem);
+     }
+
+   /*****************/
+   /* setWatchItem: */
+   /*****************/
+   public void setWatchItem(String watchItem,boolean newValue)
+     {
+      if (newValue)
+        { watch(watchItem); }
+      else
+        { unwatch(watchItem); }
+     }
+
    /**********/
    /* watch: */
    /**********/
