@@ -105,6 +105,14 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_loadFacts
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getWatchItem
+ * Signature: (JLjava/lang/String;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_getWatchItem
+  (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
  * Method:    watch
  * Signature: (JLjava/lang/String;)Z
  */
@@ -161,10 +169,34 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_build
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getModuleList
+ * Signature: (J)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_getModuleList
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
  * Method:    getFocusStack
  * Signature: (J)Lnet/sf/clipsrules/jni/FocusStack;
  */
 JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_getFocusStack
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getFactScopes
+ * Signature: (J)Ljava/util/HashMap;
+ */
+JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_getFactScopes
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getFactList
+ * Signature: (J)Ljava/util/List;
+ */
+JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_getFactList
   (JNIEnv *, jobject, jlong);
 
 /*
@@ -182,6 +214,14 @@ JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_getAgenda
  */
 JNIEXPORT jobject JNICALL Java_net_sf_clipsrules_jni_Environment_assertString
   (JNIEnv *, jobject, jlong, jstring);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getDeftemplateText
+ * Signature: (JJ)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_net_sf_clipsrules_jni_Environment_getDeftemplateText
+  (JNIEnv *, jobject, jlong, jlong);
 
 /*
  * Class:     net_sf_clipsrules_jni_Environment
@@ -405,6 +445,22 @@ JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_getAgendaChang
  * Signature: (JZ)V
  */
 JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setAgendaChanged
+  (JNIEnv *, jobject, jlong, jboolean);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    getFactListChanged
+ * Signature: (J)Z
+ */
+JNIEXPORT jboolean JNICALL Java_net_sf_clipsrules_jni_Environment_getFactListChanged
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     net_sf_clipsrules_jni_Environment
+ * Method:    setFactListChanged
+ * Signature: (JZ)V
+ */
+JNIEXPORT void JNICALL Java_net_sf_clipsrules_jni_Environment_setFactListChanged
   (JNIEnv *, jobject, jlong, jboolean);
 
 /*

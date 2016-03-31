@@ -48,6 +48,7 @@ public class CLIPSIDE extends JFrame
    private ConstructInspectorFrame constructInspector;
    private FramePlacer placer;
    private AgendaBrowserManager agendaBrowserManager;
+   private FactBrowserManager factBrowserManager;
    private DialogFrame dialogWindow;
    private JDesktopPane ideDesktopPane;
 
@@ -106,6 +107,7 @@ public class CLIPSIDE extends JFrame
       /********************************/
       
       agendaBrowserManager = new AgendaBrowserManager(this);
+      factBrowserManager = new FactBrowserManager(this);
 
       /*========================================*/
       /* Create the clear-window user function. */
@@ -211,6 +213,12 @@ public class CLIPSIDE extends JFrame
             dialogWindow.getEnvironment().setAgendaChanged(false);
             agendaBrowserManager.updateAllAgendaBrowsers();
            } 
+
+         if (dialogWindow.getEnvironment().getFactListChanged())
+           {
+            dialogWindow.getEnvironment().setFactListChanged(false);
+            factBrowserManager.updateAllFactBrowsers();
+           } 
         }
      }  
 
@@ -261,7 +269,7 @@ public class CLIPSIDE extends JFrame
       else if (ae.getActionCommand().equals(agendaBrowserAction))  
         { agendaBrowserManager.createAgendaBrowser(); }
       else if (ae.getActionCommand().equals(factBrowserAction))  
-        { factBrowser(); }
+        { factBrowserManager.createFactBrowser(); }
       else if (ae.getActionCommand().equals(instanceBrowserAction))  
         { instanceBrowser(); }
       else if (ae.getActionCommand().equals(constructInspectorAction))  
@@ -305,6 +313,8 @@ public class CLIPSIDE extends JFrame
       
       if (selectedPane instanceof AgendaBrowserFrame)
         { theText = agendaBrowserManager.agendaBrowserSelectionText((AgendaBrowserFrame) selectedPane); } 
+      else if (selectedPane instanceof FactBrowserFrame)
+        { theText = factBrowserManager.factBrowserSelectionText((FactBrowserFrame) selectedPane); } 
       
       constructInspector = new ConstructInspectorFrame();
 
@@ -449,6 +459,8 @@ public class CLIPSIDE extends JFrame
 
       if (theFrame instanceof AgendaBrowserFrame)
         { agendaBrowserManager.removeAgendaBrowser((AgendaBrowserFrame) theFrame); }
+      else if (theFrame instanceof FactBrowserFrame)
+        { factBrowserManager.removeFactBrowser((FactBrowserFrame) theFrame); }
 
       JCheckBoxMenuItem jmiWindow = (JCheckBoxMenuItem) theFrame.getClientProperty(menuItemProperty);
       

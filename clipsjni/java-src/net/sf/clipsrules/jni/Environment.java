@@ -2,6 +2,7 @@ package net.sf.clipsrules.jni;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.concurrent.Callable;
 import java.util.HashMap;
 import java.util.List;
@@ -507,6 +508,19 @@ public class Environment
      }
 
    /******************/
+   /* getModuleList: */
+   /******************/
+   private native List<Module> getModuleList(long env);
+
+   /******************/
+   /* getModuleList: */
+   /******************/
+   public List<Module> getModuleList()
+     {
+      return getModuleList(theEnvironment);
+     }
+
+   /******************/
    /* getFocusStack: */
    /******************/
    private native FocusStack getFocusStack(long env);
@@ -517,6 +531,32 @@ public class Environment
    public FocusStack getFocusStack()
      {
       return getFocusStack(theEnvironment);
+     }
+
+   /******************/
+   /* getFactScopes: */
+   /******************/
+   private native HashMap<Long,BitSet> getFactScopes(long env);
+
+   /*****************/
+   /* getFactScopes */
+   /*****************/
+   public HashMap<Long,BitSet> getFactScopes()
+     {
+      return getFactScopes(theEnvironment);
+     }
+     
+   /****************/
+   /* getFactList: */
+   /****************/
+   private native List<FactInstance> getFactList(long env);
+
+   /****************/
+   /* getFactList: */
+   /****************/
+   public List<FactInstance> getFactList()
+     {
+      return getFactList(theEnvironment);
      }
 
    /**************/
@@ -552,6 +592,19 @@ public class Environment
    public FactAddressValue assertString(String factStr)
      {
       return assertString(theEnvironment,factStr);
+     }
+
+   /***********************/
+   /* getDeftemplateText: */
+   /***********************/
+   private native String getDeftemplateText(long env,long templatePtr);
+
+   /***********************/
+   /* getDeftemplateText: */
+   /***********************/
+   public String getDeftemplateText(long templatePtr)
+     {
+      return getDeftemplateText(theEnvironment,templatePtr);
      }
 
    /*******************/
@@ -974,6 +1027,33 @@ public class Environment
      boolean value)
      {
       setAgendaChanged(theEnvironment,value);
+     }
+
+   /***********************/
+   /* getFactListChanged: */
+   /***********************/
+   private native boolean getFactListChanged(long env);
+
+   /***********************/
+   /* getFactListChanged: */
+   /***********************/
+   public boolean getFactListChanged()
+     {
+      return getFactListChanged(theEnvironment);
+     }
+
+   /***********************/
+   /* setFactListChanged: */
+   /***********************/
+   private native void setFactListChanged(long env,boolean value);
+
+   /***********************/
+   /* setFactListChanged: */
+   /***********************/
+   public void setFactListChanged(
+     boolean value)
+     {
+      setFactListChanged(theEnvironment,value);
      }
 
    /***********************/

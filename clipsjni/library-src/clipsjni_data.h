@@ -24,6 +24,14 @@ struct clipsJNIData
    jclass arrayListClass;
    jmethodID arrayListInitMethod;
    jmethodID arrayListAddMethod;
+   
+   jclass hashMapClass;
+   jmethodID hashMapInitMethod;
+   jmethodID hashMapPutMethod;
+
+   jclass bitSetClass;
+   jmethodID bitSetInitMethod;
+   jmethodID bitSetSetMethod;
 
    jclass primitiveValueClass;
    jmethodID getCLIPSTypeValueMethod;
@@ -61,17 +69,26 @@ struct clipsJNIData
    jmethodID instanceAddressValueInitMethod;
    jmethodID instanceAddressValueGetInstanceAddressMethod;
 
-   jclass FocusStackClass;
-   jmethodID FocusStackInitMethod;
+   jclass factInstanceClass;
+   jmethodID factInstanceInitMethod;
 
-   jclass FocusClass;
-   jmethodID FocusInitMethod;
+   jclass slotValueClass;
+   jmethodID slotValueInitMethod;
 
-   jclass AgendaClass;
-   jmethodID AgendaInitMethod;
+   jclass focusStackClass;
+   jmethodID focusStackInitMethod;
 
-   jclass ActivationClass;
-   jmethodID ActivationInitMethod;
+   jclass focusClass;
+   jmethodID focusInitMethod;
+
+   jclass moduleClass;
+   jmethodID moduleInitMethod;
+
+   jclass agendaClass;
+   jmethodID agendaInitMethod;
+
+   jclass activationClass;
+   jmethodID activationInitMethod;
   };
 
 #define CLIPSJNIData(theEnv) ((struct clipsJNIData *) GetEnvironmentData(theEnv,CLIPSJNI_DATA))

@@ -17,6 +17,7 @@ JNI_FILES = \
 	$(JNI_SRC)/CommandPromptTextArea.java \
 	$(JNI_SRC)/Environment.java \
 	$(JNI_SRC)/ExternalAddressValue.java \
+	$(JNI_SRC)/FactInstance.java \
 	$(JNI_SRC)/FactAddressValue.java \
 	$(JNI_SRC)/FloatValue.java \
 	$(JNI_SRC)/Focus.java \
@@ -25,6 +26,7 @@ JNI_FILES = \
 	$(JNI_SRC)/InstanceNameValue.java \
 	$(JNI_SRC)/IntegerValue.java \
 	$(JNI_SRC)/LexemeValue.java \
+	$(JNI_SRC)/Module.java \
 	$(JNI_SRC)/MultifieldValue.java \
 	$(JNI_SRC)/NamedRouter.java \
 	$(JNI_SRC)/NumberValue.java \
@@ -32,9 +34,11 @@ JNI_FILES = \
 	$(JNI_SRC)/PrimitiveValue.java \
 	$(JNI_SRC)/Router.java \
 	$(JNI_SRC)/RouterTextArea.java \
+	$(JNI_SRC)/SlotValue.java \
 	$(JNI_SRC)/StringValue.java \
 	$(JNI_SRC)/SymbolValue.java \
 	$(JNI_SRC)/UserFunction.java \
+	$(JNI_SRC)/UserFunctionExamples.java \
 	$(JNI_SRC)/VoidValue.java
 
 ANIMAL_CP = net/sf/clipsrules/jni/examples/animal
@@ -86,10 +90,21 @@ IDE_FILES = \
 	$(IDE_SRC)/CLIPSIDE.java \
 	$(IDE_SRC)/ActivationTableModel.java \
 	$(IDE_SRC)/AgendaBrowserFrame.java \
+	$(IDE_SRC)/AgendaBrowserManager.java \
 	$(IDE_SRC)/BoundsDesktopManager.java \
 	$(IDE_SRC)/ConstructInspectorFrame.java \
 	$(IDE_SRC)/DialogFrame.java \
-	$(IDE_SRC)/FocusStackTableModel.java
+	$(IDE_SRC)/EnvironmentMenu.java \
+	$(IDE_SRC)/FactBrowserFrame.java \
+	$(IDE_SRC)/FactBrowserManager.java \
+	$(IDE_SRC)/FactInstanceTableModel.java \
+	$(IDE_SRC)/FocusStackTableModel.java \
+	$(IDE_SRC)/FramePlacer.java \
+	$(IDE_SRC)/HelpMenu.java \
+	$(IDE_SRC)/IDEPreferences.java \
+	$(IDE_SRC)/ModuleTableModel.java \
+	$(IDE_SRC)/SlotValueTableModel.java \
+	$(IDE_SRC)/WatchMenu.java
 
 all: clipsjni animal auto sudoku wine router ide
 

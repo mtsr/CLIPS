@@ -832,6 +832,8 @@ static void DeallocateJNIData(
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->longClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->doubleClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->arrayListClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->hashMapClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->bitSetClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->primitiveValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->voidValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->integerValueClass);
@@ -843,6 +845,13 @@ static void DeallocateJNIData(
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->multifieldValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->factAddressValueClass);
    (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->instanceAddressValueClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->factInstanceClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->slotValueClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->focusStackClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->focusClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->moduleClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->agendaClass);
+   (*env)->DeleteGlobalRef(env,CLIPSJNIData(theEnv)->activationClass); 
   }
 
 /*****************************/
@@ -864,6 +873,10 @@ jlong CreateCLIPSJNIEnvironment(
    jmethodID theDoubleInitMethod;
    jclass theArrayListClass; 
    jmethodID theArrayListInitMethod, theArrayListAddMethod;
+   jclass theHashMapClass; 
+   jmethodID theHashMapInitMethod, theHashMapPutMethod;
+   jclass theBitSetClass; 
+   jmethodID theBitSetInitMethod, theBitSetSetMethod;
    jclass theVoidValueClass;
    jmethodID theVoidValueInitMethod;
    jclass thePrimitiveValueClass;
@@ -884,8 +897,14 @@ jlong CreateCLIPSJNIEnvironment(
    jclass theInstanceAddressValueClass;
    jmethodID theInstanceAddressValueInitMethod;
    jmethodID theInstanceAddressValueGetInstanceAddressMethod;
+   jclass theFactInstanceClass;
+   jmethodID theFactInstanceInitMethod;
+   jclass theSlotValueClass;
+   jmethodID theSlotValueInitMethod;
    jclass theFocusClass;
    jmethodID theFocusInitMethod;
+   jclass theModuleClass;
+   jmethodID theModuleInitMethod;
    jclass theFocusStackClass;
    jmethodID theFocusStackInitMethod;
    jclass theAgendaClass;
@@ -904,6 +923,8 @@ jlong CreateCLIPSJNIEnvironment(
    theLongClass = (*env)->FindClass(env,"java/lang/Long"); 
    theDoubleClass = (*env)->FindClass(env,"java/lang/Double"); 
    theArrayListClass = (*env)->FindClass(env,"java/util/ArrayList"); 
+   theHashMapClass = (*env)->FindClass(env,"java/util/HashMap"); 
+   theBitSetClass = (*env)->FindClass(env,"java/util/BitSet"); 
    thePrimitiveValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/PrimitiveValue");
    theVoidValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/VoidValue");
    theIntegerValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/IntegerValue");
@@ -915,8 +936,11 @@ jlong CreateCLIPSJNIEnvironment(
    theMultifieldValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/MultifieldValue");
    theFactAddressValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/FactAddressValue");
    theInstanceAddressValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/InstanceAddressValue");
+   theFactInstanceClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/FactInstance");
+   theSlotValueClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/SlotValue");
    theFocusClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/Focus");
    theFocusStackClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/FocusStack");
+   theModuleClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/Module");
    theAgendaClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/Agenda");
    theActivationClass = (*env)->FindClass(env,"net/sf/clipsrules/jni/Activation");
                 
@@ -930,6 +954,8 @@ jlong CreateCLIPSJNIEnvironment(
        (theClassClass == NULL) ||
        (theLongClass == NULL) || (theDoubleClass == NULL) ||
        (theArrayListClass == NULL) ||
+       (theHashMapClass == NULL) ||
+       (theBitSetClass == NULL) ||
        (thePrimitiveValueClass == NULL) ||
        (theVoidValueClass == NULL) ||
        (theIntegerValueClass == NULL) || (theFloatValueClass == NULL) ||
@@ -939,8 +965,11 @@ jlong CreateCLIPSJNIEnvironment(
        (theMultifieldValueClass == NULL) ||
        (theFactAddressValueClass == NULL) ||
        (theInstanceAddressValueClass == NULL) ||
+       (theFactInstanceClass == NULL) ||
+       (theSlotValueClass == NULL) ||
        (theFocusClass == NULL) ||
        (theFocusStackClass == NULL) ||
+       (theModuleClass == NULL) ||
        (theAgendaClass == NULL) ||
        (theActivationClass == NULL))
      { return((jlong) NULL); }
@@ -958,6 +987,10 @@ jlong CreateCLIPSJNIEnvironment(
    theDoubleInitMethod = (*env)->GetMethodID(env,theDoubleClass,"<init>","(D)V");
    theArrayListInitMethod = (*env)->GetMethodID(env,theArrayListClass,"<init>","(I)V");
    theArrayListAddMethod = (*env)->GetMethodID(env,theArrayListClass,"add","(Ljava/lang/Object;)Z");
+   theHashMapInitMethod = (*env)->GetMethodID(env,theHashMapClass,"<init>","()V");
+   theHashMapPutMethod = (*env)->GetMethodID(env,theHashMapClass,"put","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;");
+   theBitSetInitMethod = (*env)->GetMethodID(env,theBitSetClass,"<init>","(I)V");
+   theBitSetSetMethod = (*env)->GetMethodID(env,theBitSetClass,"set","(I)V");
    theGetCLIPSTypeValueMethod = (*env)->GetMethodID(env,thePrimitiveValueClass,"getCLIPSTypeValue","()I");
    theVoidValueInitMethod = (*env)->GetMethodID(env,theVoidValueClass,"<init>","()V");
    theIntegerValueInitMethod = (*env)->GetMethodID(env,theIntegerValueClass,"<init>","(Ljava/lang/Long;)V");
@@ -975,8 +1008,11 @@ jlong CreateCLIPSJNIEnvironment(
    theFactAddressValueGetFactAddressMethod = (*env)->GetMethodID(env,theFactAddressValueClass,"getFactAddress","()J");
    theInstanceAddressValueInitMethod = (*env)->GetMethodID(env,theInstanceAddressValueClass,"<init>","(JLnet/sf/clipsrules/jni/Environment;)V");
    theInstanceAddressValueGetInstanceAddressMethod = (*env)->GetMethodID(env,theInstanceAddressValueClass,"getInstanceAddress","()J");
+   theFactInstanceInitMethod = (*env)->GetMethodID(env,theFactInstanceClass,"<init>","(JLjava/lang/String;Ljava/lang/String;Ljava/util/List;)V");
+   theSlotValueInitMethod = (*env)->GetMethodID(env,theSlotValueClass,"<init>","(Ljava/lang/String;Ljava/lang/String;Z)V");
    theFocusInitMethod = (*env)->GetMethodID(env,theFocusClass,"<init>","(Ljava/lang/String;)V");
    theFocusStackInitMethod = (*env)->GetMethodID(env,theFocusStackClass,"<init>","(Ljava/util/List;)V");
+   theModuleInitMethod = (*env)->GetMethodID(env,theModuleClass,"<init>","(Ljava/lang/String;)V");
    theActivationInitMethod = (*env)->GetMethodID(env,theActivationClass,"<init>","(Ljava/lang/String;ILjava/lang/String;)V");
    theAgendaInitMethod = (*env)->GetMethodID(env,theAgendaClass,"<init>","(Ljava/util/List;)V");
      
@@ -984,11 +1020,13 @@ jlong CreateCLIPSJNIEnvironment(
    /* If the Java init methods could not be found, */
    /* abort creation of the enviroment.            */
    /*==============================================*/
-
+     
    if ((theUserFunctionEvaluateMethod == NULL) ||
        (theClassGetCanonicalNameMethod == NULL) ||
        (theLongInitMethod == NULL) || (theDoubleInitMethod == NULL) || 
        (theArrayListInitMethod == NULL) || (theArrayListAddMethod == NULL) ||
+       (theHashMapInitMethod == NULL) || (theHashMapPutMethod == NULL) ||
+       (theBitSetInitMethod == NULL) || (theBitSetSetMethod == NULL) ||
        (theGetCLIPSTypeValueMethod == NULL) ||
        (theVoidValueInitMethod == NULL) ||
        (theIntegerValueInitMethod == NULL) || (theIntegerValueLongValueMethod == NULL) || 
@@ -1003,12 +1041,15 @@ jlong CreateCLIPSJNIEnvironment(
        (theFactAddressValueGetFactAddressMethod == NULL) ||
        (theInstanceAddressValueInitMethod == NULL) ||
        (theInstanceAddressValueGetInstanceAddressMethod == NULL) ||
+       (theFactInstanceInitMethod == NULL) ||
+       (theSlotValueInitMethod == NULL) ||
        (theFocusInitMethod == NULL) ||
        (theFocusStackInitMethod == NULL) ||
+       (theModuleInitMethod == NULL) ||
        (theAgendaInitMethod == NULL) ||
        (theActivationInitMethod == NULL))
-     { return((jlong) NULL); }
-
+     { return((jlong) NULL);  }
+    
    /*=========================*/
    /* Create the environment. */
    /*=========================*/
@@ -1021,7 +1062,7 @@ jlong CreateCLIPSJNIEnvironment(
    /*====================================*/
 
    AllocateEnvironmentData(theEnv,CLIPSJNI_DATA,sizeof(struct clipsJNIData),DeallocateJNIData);
-   
+
    /*===================================================*/
    /* Cache the class and method references (converting */
    /* the local class references to global references   */
@@ -1044,6 +1085,14 @@ jlong CreateCLIPSJNIEnvironment(
    CLIPSJNIData(theEnv)->arrayListClass = (*env)->NewGlobalRef(env,theArrayListClass);
    CLIPSJNIData(theEnv)->arrayListInitMethod = theArrayListInitMethod;
    CLIPSJNIData(theEnv)->arrayListAddMethod = theArrayListAddMethod;
+
+   CLIPSJNIData(theEnv)->hashMapClass = (*env)->NewGlobalRef(env,theHashMapClass);
+   CLIPSJNIData(theEnv)->hashMapInitMethod = theHashMapInitMethod;
+   CLIPSJNIData(theEnv)->hashMapPutMethod = theHashMapPutMethod;
+
+   CLIPSJNIData(theEnv)->bitSetClass = (*env)->NewGlobalRef(env,theBitSetClass);
+   CLIPSJNIData(theEnv)->bitSetInitMethod = theBitSetInitMethod;
+   CLIPSJNIData(theEnv)->bitSetSetMethod = theBitSetSetMethod;
 
    CLIPSJNIData(theEnv)->primitiveValueClass = (*env)->NewGlobalRef(env,thePrimitiveValueClass);
    CLIPSJNIData(theEnv)->getCLIPSTypeValueMethod = theGetCLIPSTypeValueMethod;
@@ -1080,18 +1129,27 @@ jlong CreateCLIPSJNIEnvironment(
    CLIPSJNIData(theEnv)->instanceAddressValueClass = (*env)->NewGlobalRef(env,theInstanceAddressValueClass);
    CLIPSJNIData(theEnv)->instanceAddressValueInitMethod = theInstanceAddressValueInitMethod;
    CLIPSJNIData(theEnv)->instanceAddressValueGetInstanceAddressMethod = theInstanceAddressValueGetInstanceAddressMethod;
-   
-   CLIPSJNIData(theEnv)->FocusClass = (*env)->NewGlobalRef(env,theFocusClass);
-   CLIPSJNIData(theEnv)->FocusInitMethod = theFocusInitMethod;
 
-   CLIPSJNIData(theEnv)->FocusStackClass = (*env)->NewGlobalRef(env,theFocusStackClass);
-   CLIPSJNIData(theEnv)->FocusStackInitMethod = theFocusStackInitMethod;
-   
-   CLIPSJNIData(theEnv)->ActivationClass = (*env)->NewGlobalRef(env,theActivationClass);
-   CLIPSJNIData(theEnv)->ActivationInitMethod = theActivationInitMethod;
+   CLIPSJNIData(theEnv)->factInstanceClass = (*env)->NewGlobalRef(env,theFactInstanceClass);
+   CLIPSJNIData(theEnv)->factInstanceInitMethod = theFactInstanceInitMethod;
 
-   CLIPSJNIData(theEnv)->AgendaClass = (*env)->NewGlobalRef(env,theAgendaClass);
-   CLIPSJNIData(theEnv)->AgendaInitMethod = theAgendaInitMethod;
+   CLIPSJNIData(theEnv)->slotValueClass = (*env)->NewGlobalRef(env,theSlotValueClass);
+   CLIPSJNIData(theEnv)->slotValueInitMethod = theSlotValueInitMethod;
+   
+   CLIPSJNIData(theEnv)->focusClass = (*env)->NewGlobalRef(env,theFocusClass);
+   CLIPSJNIData(theEnv)->focusInitMethod = theFocusInitMethod;
+
+   CLIPSJNIData(theEnv)->focusStackClass = (*env)->NewGlobalRef(env,theFocusStackClass);
+   CLIPSJNIData(theEnv)->focusStackInitMethod = theFocusStackInitMethod;
+   
+   CLIPSJNIData(theEnv)->moduleClass = (*env)->NewGlobalRef(env,theModuleClass);
+   CLIPSJNIData(theEnv)->moduleInitMethod = theModuleInitMethod;
+
+   CLIPSJNIData(theEnv)->activationClass = (*env)->NewGlobalRef(env,theActivationClass);
+   CLIPSJNIData(theEnv)->activationInitMethod = theActivationInitMethod;
+
+   CLIPSJNIData(theEnv)->agendaClass = (*env)->NewGlobalRef(env,theAgendaClass);
+   CLIPSJNIData(theEnv)->agendaInitMethod = theAgendaInitMethod;
    
    /*======================================*/
    /* Store the java environment for later */
@@ -1110,6 +1168,8 @@ jlong CreateCLIPSJNIEnvironment(
    (*env)->DeleteLocalRef(env,theLongClass);
    (*env)->DeleteLocalRef(env,theDoubleClass);
    (*env)->DeleteLocalRef(env,theArrayListClass);
+   (*env)->DeleteLocalRef(env,theHashMapClass);
+   (*env)->DeleteLocalRef(env,theBitSetClass);
    (*env)->DeleteLocalRef(env,thePrimitiveValueClass);
    (*env)->DeleteLocalRef(env,theVoidValueClass);
    (*env)->DeleteLocalRef(env,theIntegerValueClass);
@@ -1121,8 +1181,11 @@ jlong CreateCLIPSJNIEnvironment(
    (*env)->DeleteLocalRef(env,theMultifieldValueClass);
    (*env)->DeleteLocalRef(env,theFactAddressValueClass);
    (*env)->DeleteLocalRef(env,theInstanceAddressValueClass);
+   (*env)->DeleteLocalRef(env,theFactInstanceClass);
+   (*env)->DeleteLocalRef(env,theSlotValueClass);
    (*env)->DeleteLocalRef(env,theFocusStackClass);
    (*env)->DeleteLocalRef(env,theFocusClass);
+   (*env)->DeleteLocalRef(env,theModuleClass);
    (*env)->DeleteLocalRef(env,theAgendaClass);
    (*env)->DeleteLocalRef(env,theActivationClass);
 
