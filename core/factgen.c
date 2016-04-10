@@ -1379,7 +1379,7 @@ static SYMBOL_HN *ExtractVariableName(
    /* Return the storage of the temporary string. */
    /*=============================================*/
 
-   rm(theEnv,newString,thePosition);
+   rm(theEnv,newString,thePosition+1);
 
    /*===============================================*/
    /* Return a pointer to the variable name symbol. */

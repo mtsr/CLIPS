@@ -190,6 +190,7 @@ static void DeallocateFileCommandData(
       else
         { rm(theEnv,(void *) theEntry->theString,strlen(theEntry->theString) + 1); }
 
+      DeleteString(theEnv,(char *) theEntry->fileName);
       rtn_struct(theEnv,batchEntry,theEntry);
          
       theEntry = nextEntry;
