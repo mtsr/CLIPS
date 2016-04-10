@@ -176,8 +176,9 @@
    
    if (BatchActive(environment)) 
      {
-      CommandLoopBatchDriver(environment);
-      [self checkForChanges];
+      [NSThread detachNewThreadSelector: @selector(CommandLoopBatchDriverThread:)
+                     toTarget: self
+                     withObject: nil];
       return YES;
      }
      
@@ -188,11 +189,73 @@
    if (! CommandCompleteAndNotEmpty(environment)) return NO;
 
    [NSThread detachNewThreadSelector: @selector(CommandLoopOnceThenBatchThread:) 
-                  toTarget: self 
-                  withObject: nil]; 
+                            toTarget: self
+                          withObject: nil];
 
    return YES;
   }
+
+/*********************************/
+/* CommandLoopBatchDriverThread: */
+/*********************************/
+- (void) CommandLoopBatchDriverThread: (id) anObject
+  { 
+   jmp_buf theJmpBuffer;
+   int status;
+   
+   [accessLock lock];
+   executionThread = [NSThread currentThread];
+   [accessLock unlock];
+
+   [executionLock lock];
+      
+   [self setValue: [NSNumber numberWithBool:YES] forKey: @"executing"];
+       
+   /*===============================================*/
+   /* Set up the long jump so if the user issues an */
+   /* exit command it will return to this location. */
+   /*===============================================*/
+
+   SetJmpBuffer(environment,&theJmpBuffer);
+    
+   status = setjmp(theJmpBuffer);
+    
+   if (status != 0)
+     {
+      [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
+
+      [executionLock unlock];
+
+      [accessLock lock];
+      executionThread = nil;
+      [accessLock unlock];
+       
+      exited = YES;
+      return;
+     }
+    
+   /*======================*/
+   /* Execute the command. */
+   /*======================*/
+    
+   CommandLoopBatchDriver(environment);
+
+   /*=========================================*/
+   /* Cleanup after the command has executed. */
+   /*=========================================*/
+    
+   SetJmpBuffer(environment,NULL);
+    
+   [self setValue: [NSNumber numberWithBool: NO] forKey: @"executing"];
+   
+   [executionLock unlock]; 
+
+   [accessLock lock];
+   executionThread = nil;
+   [accessLock unlock];
+   
+   return;
+  } 
 
 /***********************************/
 /* CommandLoopOnceThenBatchThread: */
@@ -312,9 +375,9 @@
    [nc postNotificationName: @"CLIPSEnvironmentWillBeDestroyed" object: self];   
   }
 
-/********************/
+/****************/
 /* fetchAgenda: */
-/********************/
+/****************/
 - (void) fetchAgenda: (BOOL) lockAgenda
   {
    struct focus *theFocus;
@@ -645,9 +708,9 @@
      { [agendaLock unlock]; }
   }
 
-/********************/
+/******************/
 /* transferFacts: */
-/********************/
+/******************/
 - (void) transferFacts: (BOOL) lockFacts
   {
    if (lockFacts)
@@ -826,17 +889,17 @@
    return agendaChanged;
   }
 
-/*********************/
+/********************/
 /* setFactsChanged: */
-/*********************/
+/********************/
 - (void) setFactsChanged: (long int) theCount
   {
    factsChanged = theCount;
   }
 
-/******************/
+/*****************/
 /* factsChanged: */
-/******************/
+/*****************/
 - (long int) factsChanged
   {
    return factsChanged;
@@ -858,49 +921,49 @@
    return instancesChanged;
   }
       
-/****************************/
+/******************/
 /* setFocusStack: */
-/****************************/
+/******************/
 - (void) setFocusStack: (NSArray *) theFocusStack
   {
    focusStack = theFocusStack;
   }
 
-/*************************/
+/***************/
 /* focusStack: */
-/*************************/
+/***************/
 - (NSArray *) focusStack
   {
    return focusStack;
   }
 
-/****************************/
+/******************/
 /* setFactModule: */
-/****************************/
+/******************/
 - (void) setFactModule: (NSArray *) theFactModule
   {
    factModule = theFactModule;
   }
 
-/*************************/
+/***************/
 /* factModule: */
-/*************************/
+/***************/
 - (NSArray *) factModule
   {
    return factModule;
   }
 
-/****************************/
+/****************/
 /* setFactList: */
-/****************************/
+/****************/
 - (void) setFactList: (NSArray *) theFactList
   {
    factList = theFactList;
   }
 
-/*************************/
+/*************/
 /* factList: */
-/*************************/
+/*************/
 - (NSArray *) factList
   {
    return factList;
@@ -957,15 +1020,15 @@
 
 /**************/
 /* setExited: */
-/*****************/
+/**************/
 - (void) setExited: (BOOL) theValue
   {
    exited = theValue;
   }
 
-/**************/
+/***********/
 /* exited: */
-/**************/
+/***********/
 - (BOOL) exited
   {
    return exited;
@@ -1017,9 +1080,9 @@
    return agendaListenerCount;
   }
 
-/*****************************/
+/****************************/
 /* incrementFactsListeners: */
-/*****************************/
+/****************************/
 - (void) incrementFactsListeners
   {
    [factsLock lock];
@@ -1032,9 +1095,9 @@
      { [factsLock unlock]; }
   }
 
-/*****************************/
+/****************************/
 /* decrementFactsListeners: */
-/*****************************/
+/****************************/
 - (void) decrementFactsListeners
   {
    [factsLock lock];
@@ -1047,9 +1110,9 @@
      { [factsLock unlockWithCondition: STOP_FACTS_LISTENING]; }
   }
   
-/************************/
+/***********************/
 /* factsListenerCount: */
-/************************/
+/***********************/
 - (int) factsListenerCount
   {
    return factsListenerCount;
@@ -1085,9 +1148,9 @@
      { [instancesLock unlockWithCondition: STOP_INSTANCES_LISTENING]; }
   }
   
-/************************/
+/***************************/
 /* instancesListenerCount: */
-/************************/
+/***************************/
 - (int) instancesListenerCount
   {
    return instancesListenerCount;

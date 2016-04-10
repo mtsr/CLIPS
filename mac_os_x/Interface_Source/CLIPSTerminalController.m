@@ -1151,12 +1151,14 @@
 /****************/    
 - (int) waitForChar
   {
-   // CA_DEBUG_TRANSACTIONS
-   dispatch_async(dispatch_get_main_queue(),
-    ^{
-      [self dumpOutputBuffer];
-     });
-     
+   if ([NSThread isMainThread])
+     { [self dumpOutputBuffer]; }
+   else
+     {
+      dispatch_async(dispatch_get_main_queue(),
+       ^{ [self dumpOutputBuffer]; });
+     }
+
    return [textView waitForChar];
   }
   
