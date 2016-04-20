@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/13/16             */
+   /*            CLIPS Version 6.40  04/19/16             */
    /*                                                     */
    /*             MULTIFIELD FUNCTIONS MODULE             */
    /*******************************************************/
@@ -55,6 +55,8 @@
 /*                                                           */
 /*            Removed mv-replace, mv-subseq, and  mv-delete  */
 /*            functions.                                     */
+/*                                                           */
+/*            Fact ?var:slot references in progn$/foreach.   */
 /*                                                           */
 /*************************************************************/
 
@@ -977,9 +979,9 @@ MvPrognParseError:
    return(NULL);
   }
 
-/******************************************************/
+/***********************************************/
 /* ForeachParser: Parses the foreach function. */
-/******************************************************/
+/***********************************************/
 static struct expr *ForeachParser(
   void *theEnv,
   struct expr *top,
@@ -1085,6 +1087,25 @@ static void ReplaceMvPrognFieldVars(
             theExp->value = (void *) FindFunction(theEnv,"(get-progn$-field)");
             theExp->argList = GenConstant(theEnv,INTEGER,EnvAddLong(theEnv,(long long) depth));
            }
+#if DEFTEMPLATE_CONSTRUCT
+         else if (ValueToString(theExp->value)[flen] == ':')
+           {
+            size_t svlen = strlen(ValueToString(theExp->value));
+            if (svlen > (flen + 1))
+              {
+               const char *slotName = &ValueToString(theExp->value)[flen+1];
+               
+               theExp->argList = GenConstant(theEnv,FCALL,(void *) FindFunction(theEnv,"(get-progn$-field)"));
+               theExp->argList->argList = GenConstant(theEnv,INTEGER,EnvAddLong(theEnv,(long long) depth));
+
+               theExp->argList->nextArg = GenConstant(theEnv,SYMBOL,EnvAddSymbol(theEnv,slotName));
+               theExp->argList->nextArg->nextArg = GenConstant(theEnv,SYMBOL,theExp->value);
+
+               theExp->type = FCALL;
+               theExp->value = FindFunction(theEnv,"(slot-value)");
+              }
+           }
+#endif
          else if (strcmp(ValueToString(theExp->value) + flen,"-index") == 0)
            {
             theExp->type = FCALL;
