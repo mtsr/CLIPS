@@ -99,9 +99,10 @@
       "scale" : "2x"
     },
     {
-      "idiom" : "car",
-      "size" : "120x120",
-      "scale" : "1x"
+      "size" : "83.5x83.5",
+      "idiom" : "ipad",
+      "filename" : "CLIPSiPadPro@2x.png",
+      "scale" : "2x"
     },
     {
       "size" : "24x24",
