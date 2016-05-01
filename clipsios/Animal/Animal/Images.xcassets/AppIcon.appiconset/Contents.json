@@ -38,7 +38,7 @@
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "CLIPSiPhone@2x.png",
+      "filename" : "Animal@2x.png",
       "scale" : "2x"
     },
     {
@@ -89,19 +89,19 @@
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "CLIPSiPad.png",
+      "filename" : "AnimaliPad.png",
       "scale" : "1x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "CLIPSiPad@2x.png",
+      "filename" : "AnimaliPad@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "83.5x83.5",
       "idiom" : "ipad",
-      "filename" : "CLIPSiPadPro@2x.png",
+      "filename" : "AnimaliPadPro@2x.png",
       "scale" : "2x"
     },
     {

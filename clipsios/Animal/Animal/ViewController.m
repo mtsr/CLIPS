@@ -332,11 +332,11 @@ NSString *kRestoreCurrentAnswerKey = @"CurrentAnswer";
    clipsEnv = CreateEnvironment();
    if (clipsEnv == NULL) return;
 
-   filePath = [[NSBundle mainBundle] pathForResource: @"bccgi" ofType: @"clp"];
+   filePath = [[NSBundle mainBundle] pathForResource: @"bc" ofType: @"clp"];
    cFilePath = (char *) [filePath UTF8String];
    EnvLoad(clipsEnv,cFilePath);
 
-   filePath = [[NSBundle mainBundle] pathForResource: @"animalcgi" ofType: @"clp"];
+   filePath = [[NSBundle mainBundle] pathForResource: @"animal" ofType: @"clp"];
    cFilePath = (char *) [filePath UTF8String];
    EnvLoad(clipsEnv,cFilePath);
    

@@ -332,7 +332,7 @@ NSString *kRestoreCurrentAnswerKey = @"CurrentAnswer";
    clipsEnv = CreateEnvironment();
    if (clipsEnv == NULL) return;
 
-   filePath = [[NSBundle mainBundle] pathForResource: @"autocgi" ofType: @"clp"];
+   filePath = [[NSBundle mainBundle] pathForResource: @"auto" ofType: @"clp"];
    cFilePath = (char *) [filePath UTF8String];
    EnvLoad(clipsEnv,cFilePath);
    

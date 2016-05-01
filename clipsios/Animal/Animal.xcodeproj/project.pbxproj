@@ -15,8 +15,8 @@
 		1E55D8EB1AE9D49100C3E5FA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1E55D8E91AE9D49100C3E5FA /* LaunchScreen.xib */; };
 		1E8476161AE9F7610065074A /* CLIPSiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E8476151AE9F7610065074A /* CLIPSiOS.framework */; };
 		1E84761B1AE9F7A60065074A /* animal_en.fct in Resources */ = {isa = PBXBuildFile; fileRef = 1E8476181AE9F7A60065074A /* animal_en.fct */; };
-		1E84761C1AE9F7A60065074A /* animalcgi.clp in Resources */ = {isa = PBXBuildFile; fileRef = 1E8476191AE9F7A60065074A /* animalcgi.clp */; };
-		1E84761D1AE9F7A60065074A /* bccgi.clp in Resources */ = {isa = PBXBuildFile; fileRef = 1E84761A1AE9F7A60065074A /* bccgi.clp */; };
+		1E84761C1AE9F7A60065074A /* animal.clp in Resources */ = {isa = PBXBuildFile; fileRef = 1E8476191AE9F7A60065074A /* animal.clp */; };
+		1E84761D1AE9F7A60065074A /* bc.clp in Resources */ = {isa = PBXBuildFile; fileRef = 1E84761A1AE9F7A60065074A /* bc.clp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,8 +32,8 @@
 		1E55D8EA1AE9D49100C3E5FA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		1E8476151AE9F7610065074A /* CLIPSiOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CLIPSiOS.framework; sourceTree = "<group>"; };
 		1E8476181AE9F7A60065074A /* animal_en.fct */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = animal_en.fct; path = Animal/animal_en.fct; sourceTree = "<group>"; };
-		1E8476191AE9F7A60065074A /* animalcgi.clp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = animalcgi.clp; path = Animal/animalcgi.clp; sourceTree = "<group>"; };
-		1E84761A1AE9F7A60065074A /* bccgi.clp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = bccgi.clp; path = Animal/bccgi.clp; sourceTree = "<group>"; };
+		1E8476191AE9F7A60065074A /* animal.clp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = animal.clp; path = Animal/animal.clp; sourceTree = "<group>"; };
+		1E84761A1AE9F7A60065074A /* bc.clp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = bc.clp; path = Animal/bc.clp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,8 +94,8 @@
 			isa = PBXGroup;
 			children = (
 				1E8476181AE9F7A60065074A /* animal_en.fct */,
-				1E8476191AE9F7A60065074A /* animalcgi.clp */,
-				1E84761A1AE9F7A60065074A /* bccgi.clp */,
+				1E8476191AE9F7A60065074A /* animal.clp */,
+				1E84761A1AE9F7A60065074A /* bc.clp */,
 			);
 			name = Rules;
 			sourceTree = "<group>";
@@ -157,9 +157,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E84761D1AE9F7A60065074A /* bccgi.clp in Resources */,
+				1E84761D1AE9F7A60065074A /* bc.clp in Resources */,
 				1E84761B1AE9F7A60065074A /* animal_en.fct in Resources */,
-				1E84761C1AE9F7A60065074A /* animalcgi.clp in Resources */,
+				1E84761C1AE9F7A60065074A /* animal.clp in Resources */,
 				1E55D8E61AE9D49100C3E5FA /* Main.storyboard in Resources */,
 				1E55D8EB1AE9D49100C3E5FA /* LaunchScreen.xib in Resources */,
 				1E55D8E81AE9D49100C3E5FA /* Images.xcassets in Resources */,
@@ -218,7 +218,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_BITCODE = NO;
@@ -263,7 +263,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_BITCODE = NO;
@@ -288,6 +288,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Animal",
@@ -305,6 +306,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Animal",
