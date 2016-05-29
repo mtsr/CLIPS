@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  05/29/16             */
    /*                                                     */
    /*                I/O FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -63,18 +63,18 @@
 /*            Added STDOUT and STDIN logical name            */
 /*            definitions.                                   */
 /*                                                           */
-/*      6.40: Added Env prefix to GetEvaluationError and     */
-/*            SetEvaluationError functions.                  */
-/*                                                           */
-/*            Added Env prefix to GetHaltExecution and       */
-/*            SetHaltExecution functions.                    */
-/*                                                           */
-/*            Modified ReadTokenFromStdin to capture         */
+/*      6.40: Modified ReadTokenFromStdin to capture         */
 /*            carriage returns in the input buffer so that   */
 /*            input buffer count will accurately reflect     */
 /*            the number of characters typed for GUI         */
 /*            interfaces that support deleting carriage      */
 /*            returns.                                       */
+/*                                                           */
+/*      6.50: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
+/*                                                           */
+/*            Added Env prefix to GetHaltExecution and       */
+/*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Added print and println functions.             */
 /*                                                           */

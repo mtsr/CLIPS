@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  05/29/16             */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -75,16 +75,16 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.40: Refactored code to reduce header dependencies  */
+/*      6.40: Added genchdir function for changing the       */
+/*            current directory.                             */
+/*                                                           */
+/*      6.50: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Modified gentime to return "comparable" epoch  */
 /*            based values across platforms.                 */
 /*                                                           */
 /*            Updated compilations flags for CatchCtrlC.     */
-/*                                                           */
-/*            Added genchdir function for changing the       */
-/*            current directory.                             */
 /*                                                           */
 /*            Moved CatchCtrlC to main.c.                    */
 /*                                                           */

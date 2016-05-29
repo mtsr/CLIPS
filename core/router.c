@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/13/16             */
+   /*            CLIPS Version 6.50  05/29/16             */
    /*                                                     */
    /*                  I/O ROUTER MODULE                  */
    /*******************************************************/
@@ -37,10 +37,10 @@
 /*                                                           */
 /*      6.40: Added EnvInputBufferCount function.            */
 /*                                                           */
-/*            Added Env prefix to GetEvaluationError and     */
-/*            SetEvaluationError functions.                  */
-/*                                                           */
 /*            Added check for reuse of existing router name. */
+/*                                                           */
+/*      6.50: Added Env prefix to GetEvaluationError and     */
+/*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Callbacks must be environment aware.           */
 /*                                                           */

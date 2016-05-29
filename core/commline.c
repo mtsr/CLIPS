@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  05/21/16             */
    /*                                                     */
    /*                COMMAND LINE MODULE                  */
    /*******************************************************/
@@ -57,7 +57,10 @@
 /*            Added STDOUT and STDIN logical name            */
 /*            definitions.                                   */
 /*                                                           */
-/*      6.40: Refactored code to reduce header dependencies  */
+/*      6.40: Added call to FlushParsingMessages to clear    */
+/*            message buffer after each command.             */
+/*                                                           */
+/*      6.50: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Added Env prefix to GetEvaluationError and     */
@@ -65,9 +68,6 @@
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
-/*                                                           */
-/*            Added call to FlushParsingMessages to clear    */
-/*            message buffer after each command.             */
 /*                                                           */
 /*************************************************************/
 

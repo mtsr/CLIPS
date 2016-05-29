@@ -84,15 +84,15 @@
 #endif
 
 #ifndef VERSION_STRING
-#define VERSION_STRING "6.40"
+#define VERSION_STRING "6.50"
 #endif
 
 #ifndef CREATION_DATE_STRING
-#define CREATION_DATE_STRING "4/10/16"
+#define CREATION_DATE_STRING "5/21/16"
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (Cypher Alpha 4/10/16)\n"
+#define BANNER_STRING "         CLIPS (Forge Alpha 5/21/16)\n"
 #endif
 
 /*************************/

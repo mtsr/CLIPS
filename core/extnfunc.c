@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/13/16             */
+   /*            CLIPS Version 6.50  05/21/16             */
    /*                                                     */
    /*               EXTERNAL FUNCTION MODULE              */
    /*******************************************************/
@@ -36,7 +36,7 @@
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
 /*                                                           */
-/*            Callbacks must be environment aware.           */
+/*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 

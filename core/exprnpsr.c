@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*            CLIPS Version 6.50  05/21/16             */
    /*                                                     */
    /*              EXPRESSION PARSER MODULE               */
    /*******************************************************/
@@ -43,7 +43,7 @@
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
 /*                                                           */
-/*            Static constraint checking is always enabled.  */
+/*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
 

@@ -46,7 +46,7 @@
 /*      6.40: Added EnvAddPeriodicFunctionWithContext        */
 /*            function.                                      */
 /*                                                           */
-/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*      6.50: Added CLIPSBlockStart and CLIPSBlockEnd        */
 /*            functions for garbage collection blocks.       */
 /*                                                           */
 /*            Callbacks must be environment aware.           */

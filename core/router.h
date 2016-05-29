@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/13/16             */
+   /*            CLIPS Version 6.50  05/29/16             */
    /*                                                     */
    /*                 ROUTER HEADER FILE                  */
    /*******************************************************/
@@ -41,7 +41,7 @@
 /*                                                           */
 /*            Added check for reuse of existing router name. */
 /*                                                           */
-/*            Callbacks must be environment aware.           */
+/*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 

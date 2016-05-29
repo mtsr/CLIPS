@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  05/29/16             */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -63,7 +63,12 @@
 /*                                                           */
 /*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
-/*      6.40: Refactored code to reduce header dependencies  */
+/*      6.40: Changed restrictions from char * to            */
+/*            symbolHashNode * to support strings            */
+/*            originating from sources that are not          */
+/*            statically allocated.                          */
+/*                                                           */
+/*      6.50: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Added Env prefix to GetEvaluationError and     */
@@ -71,11 +76,6 @@
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
-/*                                                           */
-/*            Changed restrictions from char * to            */
-/*            symbolHashNode * to support strings            */
-/*            originating from sources that are not          */
-/*            statically allocated.                          */
 /*                                                           */
 /*            Fact ?var:slot reference support.              */
 /*                                                           */
