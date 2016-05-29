@@ -446,7 +446,7 @@ struct expr *ParseDefault(
 
       if ((theValue.type == MULTIFIELD) &&
           (multifield == false) &&
-          (*error == true))
+          (*error == false))
         {
          PrintErrorID(theEnv,"DEFAULT",1,true);
          EnvPrintRouter(theEnv,WERROR,"The default value for a single field slot must be a single field value\n");
