@@ -82,6 +82,42 @@ void CLIPSCPPEnv::CommandLoop()
 #endif
   }
 
+/****************************/
+/* CommandLoopOnceThenBatch */
+/****************************/
+void CLIPSCPPEnv::CommandLoopOnceThenBatch()
+  {
+#ifndef CLIPS_DLL_WRAPPER
+   ::CommandLoopOnceThenBatch(theEnv);
+#else
+   __CommandLoopOnceThenBatch(theEnv);
+#endif
+  }
+
+/***************/
+/* PrintBanner */
+/***************/
+void CLIPSCPPEnv::PrintBanner()
+  {
+#ifndef CLIPS_DLL_WRAPPER
+   ::PrintBanner(theEnv);
+#else
+   __PrintBanner(theEnv);
+#endif
+  }
+
+/***************/
+/* PrintPrompt */
+/***************/
+void CLIPSCPPEnv::PrintPrompt()
+  {
+#ifndef CLIPS_DLL_WRAPPER
+   ::PrintPrompt(theEnv);
+#else
+   __PrintPrompt(theEnv);
+#endif
+  }
+
 /*********/
 /* Clear */
 /*********/
@@ -268,6 +304,23 @@ void CLIPSCPPEnv::SetHaltRules(
 #endif
 }
 
+/*******************/
+/* ChangeDirectory */
+/*******************/
+int CLIPSCPPEnv::ChangeDirectory(
+  char *directory)
+  {
+   int rc;
+   
+#ifndef CLIPS_DLL_WRAPPER
+   rc = genchdir(directory);
+#else
+   rc = __genchdir(directory);
+#endif
+
+   return rc;
+  }
+
 /****************/
 /* AssertString */
 /****************/
@@ -405,6 +458,19 @@ int CLIPSCPPEnv::AddRouter(
 #endif
   }
 
+/****************/
+/* DeleteRouter */
+/****************/
+int CLIPSCPPEnv::DeleteRouter(
+  char *routerName)
+  {
+#ifndef CLIPS_DLL_WRAPPER
+   return EnvDeleteRouter(theEnv,routerName);
+#else
+   return __EnvDeleteRouter(theEnv,routerName);
+#endif
+  }
+
 /********************/
 /* InputBufferCount */
 /********************/
@@ -414,6 +480,53 @@ size_t CLIPSCPPEnv::InputBufferCount()
    return EnvInputBufferCount(theEnv);
 #else
    return __EnvInputBufferCount(theEnv);
+#endif
+  }
+
+/*******************/
+/* getInputBuffer: */
+/*******************/
+const char *CLIPSCPPEnv::GetInputBuffer()
+  {
+#ifndef CLIPS_DLL_WRAPPER
+   return GetCommandString(theEnv);
+#else
+   return __GetCommandString(theEnv);
+#endif
+  }
+
+/*******************/
+/* setInputBuffer: */
+/*******************/
+void CLIPSCPPEnv::SetInputBuffer(
+  const char *command)
+  {
+   unsigned char theChar;
+   int i;
+
+   for (i = 0; command[i] != '\0';  i++)
+     {
+      theChar = command[i];
+     }
+
+#ifndef CLIPS_DLL_WRAPPER
+   return SetCommandString(theEnv,command);
+#else
+   return __SetCommandString(theEnv,command);
+#endif
+  }
+
+/*******************************/
+/* InputBufferContainsCommand: */
+/*******************************/
+bool CLIPSCPPEnv::InputBufferContainsCommand()
+  {
+#ifndef CLIPS_DLL_WRAPPER
+   if (CommandCompleteAndNotEmpty(theEnv)) return true;
+   else return false;
+#else
+   if ( __CommandCompleteAndNotEmpty(theEnv)) return true;
+   else return false;
 #endif
   }
 

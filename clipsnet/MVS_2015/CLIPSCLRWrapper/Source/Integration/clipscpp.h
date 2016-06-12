@@ -33,6 +33,7 @@ class CLIPSCPPEnv
       CLIPSCPPEnv();
       ~CLIPSCPPEnv();
       void CommandLoop();
+      void CommandLoopOnceThenBatch();
       void Clear();
       int GetHaltExecution();
       void SetHaltExecution(int);
@@ -40,6 +41,7 @@ class CLIPSCPPEnv
       void SetEvaluationError(int);
       int GetHaltRules();
       void SetHaltRules(int);
+      int ChangeDirectory(char *);
       int Load(char *);
       void LoadFromString(char *);
       void Reset();
@@ -48,9 +50,15 @@ class CLIPSCPPEnv
       int Unwatch(char *);
       DataObject Eval(char *);
       bool Build(char *);
-	  FactAddressValue *AssertString(char *);
+      FactAddressValue *AssertString(char *);
       int AddRouter(char *,int,CLIPSCPPRouter *);
-	  size_t InputBufferCount();
+      int DeleteRouter(char *);
+      size_t InputBufferCount();
+      const char *GetInputBuffer();
+      void SetInputBuffer(const char *);
+      bool InputBufferContainsCommand();
+      void PrintBanner();
+      void PrintPrompt();
   };
 
 class CLIPSCPPRouter

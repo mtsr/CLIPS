@@ -31,12 +31,20 @@ namespace CLIPSNET
         bool GetEvaluationError();
         void SetEvaluationError(bool);
         int Load(String ^);
+        bool ChangeDirectory(String ^);
         void LoadFromString(String ^);
         bool LoadFromResource(String ^,String ^);
         PrimitiveValue ^ Eval(String ^);
         void AddRouter(String ^,int ,Router ^);
+        void DeleteRouter(String ^);
         FactAddressValue ^ AssertString(String ^);
         size_t InputBufferCount();
+        String ^ GetInputBuffer();
+        void SetInputBuffer(String ^);
+        bool InputBufferContainsCommand();
+        void CommandLoopOnceThenBatch();
+        void PrintBanner();
+        void PrintPrompt();
         virtual String^ ToString() override;
 
       protected:
