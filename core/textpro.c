@@ -47,6 +47,9 @@
 /*            Added STDOUT and STDIN logical name            */
 /*            definitions.                                   */
 /*                                                           */
+/*      6.31: Fixed crash issue when using textpro functions */
+/*            on Windows with files having unix eol.         */
+/*                                                           */
 /*************************************************************/
 
 
@@ -140,6 +143,7 @@ struct lists
 #define LIT_DELIM ('$')
 
 #define OPEN_READ "r"
+#define OPEN_READ_BINARY "rb"
 
 #define TEXTPRO_DATA 8
 
@@ -205,7 +209,7 @@ int TextLookupFetch(
    int line_ct;                  /*Line count - used for error messages   */
    int entries_ct;               /*Number of entries successfully loaded. */
 
-   fp = GenOpen(theEnv,file,OPEN_READ);
+   fp = GenOpen(theEnv,file,OPEN_READ_BINARY);
 
    if (fp == NULL)
      {
@@ -385,8 +389,8 @@ static FILE *GetEntries(
 
    offset = LookupEntry(theEnv,file,menu,name,code);
    if (offset < 0)
-      return(NULL);
-   fp = GenOpen(theEnv,file,OPEN_READ);
+     return(NULL);
+   fp = GenOpen(theEnv,file,OPEN_READ_BINARY);
    if (fp == NULL)
      {
       *code = NO_FILE;
@@ -456,7 +460,7 @@ static FILE *GetCurrentMenu(
       *status = NO_TOPIC;
       return(NULL);
      }
-   if ((fp = GenOpen(theEnv,file,OPEN_READ)) == NULL)
+   if ((fp = GenOpen(theEnv,file,OPEN_READ_BINARY)) == NULL)
      {
       *status = NO_FILE;
       return(NULL);
@@ -668,9 +672,10 @@ static struct entries *AllocateEntryNode(
    /* the following statement is necessary to move the file pointer */
    /* to the beginning of the next record.                          */
    /*===============================================================*/
-   ungetc(getc(fp),fp);
-   enode->offset = ftell(fp);
 
+   ungetc(getc(fp),fp);
+   
+   enode->offset = ftell(fp);
    enode->parent = NULL;
    enode->child  = NULL;
    enode->next = NULL;
