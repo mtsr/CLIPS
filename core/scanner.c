@@ -400,9 +400,9 @@ static void *ScanSymbol(
            (inchar != '(') && (inchar != ')') &&
            (inchar != '&') && (inchar != '|') && (inchar != '~') &&
            (inchar != ' ') && (inchar != ';') &&
-           (isprint(inchar) ||
-            IsUTF8MultiByteStart(inchar) || 
-            IsUTF8MultiByteContinuation(inchar)))
+           (IsUTF8MultiByteStart(inchar) || 
+            IsUTF8MultiByteContinuation(inchar) ||
+            isprint(inchar)))
      {
       ScannerData(theEnv)->GlobalString = ExpandStringWithChar(theEnv,inchar,ScannerData(theEnv)->GlobalString,&ScannerData(theEnv)->GlobalPos,&ScannerData(theEnv)->GlobalMax,ScannerData(theEnv)->GlobalMax+80);
 
@@ -602,7 +602,7 @@ static void ScanNumber(
                    (inchar == '(') || (inchar == ')') ||
                    (inchar == '&') || (inchar == '|') || (inchar == '~') ||
                    (inchar == ' ') || (inchar == ';') ||
-                   ((isprint(inchar) == 0) && (! IsUTF8MultiByteStart(inchar))) )
+                   ((! IsUTF8MultiByteStart(inchar) &&  (isprint(inchar) == 0))))
            { phase = 5; }
          else
            {
@@ -629,7 +629,7 @@ static void ScanNumber(
                    (inchar == '(') || (inchar == ')') ||
                    (inchar == '&') || (inchar == '|') || (inchar == '~') ||
                    (inchar == ' ') || (inchar == ';') ||
-                   ((isprint(inchar) == 0) && (! IsUTF8MultiByteStart(inchar))) )
+                   ((! IsUTF8MultiByteStart(inchar)) && ((isprint(inchar) == 0))) )
            { phase = 5; }
          else
            {
@@ -656,7 +656,7 @@ static void ScanNumber(
                    (inchar == '(') || (inchar == ')') ||
                    (inchar == '&') || (inchar == '|') || (inchar == '~') ||
                    (inchar == ' ') || (inchar == ';') ||
-                   ((isprint(inchar) == 0) && (! IsUTF8MultiByteStart(inchar))) )
+                   ((! IsUTF8MultiByteStart(inchar)) && (isprint(inchar) == 0)) )
            {
             digitFound = false;
             phase = 5;
@@ -679,7 +679,7 @@ static void ScanNumber(
                    (inchar == '(') || (inchar == ')') ||
                    (inchar == '&') || (inchar == '|') || (inchar == '~') ||
                    (inchar == ' ') || (inchar == ';') ||
-                   ((isprint(inchar) == 0) && (! IsUTF8MultiByteStart(inchar))) )
+                   ((! IsUTF8MultiByteStart(inchar)) && (isprint(inchar) == 0)) )
            {
             if ((ScannerData(theEnv)->GlobalString[count-1] == '+') || (ScannerData(theEnv)->GlobalString[count-1] == '-'))
               { digitFound = false; }

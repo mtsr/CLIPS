@@ -483,7 +483,7 @@ int CompleteCommand(
          default:
            if (depth == 0)
              {
-              if (isprint(inchar) || IsUTF8MultiByteStart(inchar))
+              if (IsUTF8MultiByteStart(inchar) || isprint(inchar))
                 {
                  while ((inchar = mstring[i++]) != EOS)
                    {

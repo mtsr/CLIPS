@@ -57,12 +57,12 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
+/*      6.31: Added local-time and gm-time functions.        */
+/*                                                           */
 /*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Fact ?var:slot reference support.              */
-/*                                                           */
-/*            Added local-time and gm-time functions.        */
 /*                                                           */
 /*************************************************************/
 

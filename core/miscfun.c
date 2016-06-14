@@ -63,6 +63,8 @@
 /*                                                           */
 /*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
+/*      6.31: Added local-time and gm-time functions.        */
+/*                                                           */
 /*      6.40: Changed restrictions from char * to            */
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
@@ -78,8 +80,6 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Fact ?var:slot reference support.              */
-/*                                                           */
-/*            Added local-time and gm-time functions.        */
 /*                                                           */
 /*************************************************************/
 
