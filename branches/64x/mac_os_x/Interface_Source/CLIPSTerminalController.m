@@ -222,9 +222,9 @@
    /* Define the clear-window function. */
    /*===================================*/
    
-   EnvAddUDF(theEnvironment,"clear-window","v",
-             ClearEnvironmentWindowCommand,"ClearEnvironmentWindowCommand",
-             0,0,NULL,(__bridge void *)(self));
+   EnvDefineFunction2(theEnvironment,"clear-window",'v',
+                      PTIEF ClearEnvironmentWindowCommand,
+                      "ClearEnvironmentWindowCommand", "00");
 
    EnvAddPeriodicFunction(theEnvironment,"mac-pf",MacPeriodicFunction,0);
 
@@ -552,7 +552,7 @@
            break;
         }
         
-      EnablePeriodicFunctions([environment environment],true);
+      EnablePeriodicFunctions([environment environment],TRUE);
       return;
      }
 
@@ -1304,7 +1304,7 @@
 /*********/
 - (IBAction) halt: (id) sender
   {
-   EnvSetHaltRules([environment environment],true);
+   EnvSetHaltRules([environment environment],TRUE);
   }
 
 /*********************/    
@@ -1314,8 +1314,8 @@
   {
    /* Need to abort waitForChar */
    /* Need to abort batch */
-   SetHaltCommandLoopBatch([environment environment],true);
-   EnvSetHaltExecution([environment environment],true);
+   SetHaltCommandLoopBatch([environment environment],TRUE);
+   EnvSetHaltExecution([environment environment],TRUE);
   }
       
 /*%%%%%%%%%%%%%%%%%%%%%%%%%*/
