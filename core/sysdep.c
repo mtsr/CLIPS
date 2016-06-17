@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/03/16             */
+   /*            CLIPS Version 6.50  06/17/16             */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -87,10 +87,10 @@
 /*            Modified gentime to return "comparable" epoch  */
 /*            based values across platforms.                 */
 /*                                                           */
-/*      6.50: Refactored code to reduce header dependencies  */
+/*            Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
-/*            Updated compilations flags for CatchCtrlC.     */
+/*      6.50: Updated compilations flags for CatchCtrlC.     */
 /*                                                           */
 /*            Moved CatchCtrlC to main.c.                    */
 /*                                                           */

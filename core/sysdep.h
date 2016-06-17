@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  05/29/16             */
+   /*            CLIPS Version 6.50  06/17/16             */
    /*                                                     */
    /*            SYSTEM DEPENDENT HEADER FILE             */
    /*******************************************************/
@@ -77,7 +77,7 @@
 /*      6.40: Added genchdir function for changing the       */
 /*            current directory.                             */
 /*                                                           */
-/*      6.50: Refactored code to reduce header dependencies  */
+/*            Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*************************************************************/
