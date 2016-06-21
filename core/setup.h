@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.40  06/20/16            */
    /*                                                     */
    /*                  SETUP HEADER FILE                  */
    /*******************************************************/
@@ -76,7 +76,9 @@
 /*                                                           */
 /*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
-/*      6.40: ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*      6.40: Removed globle definition.                     */
+/*                                                           */
+/*      6.50: ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Removed VAX_VMS support.                       */
 /*                                                           */
