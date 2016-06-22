@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*          DEFTEMPLATE UTILITIES HEADER FILE          */
    /*******************************************************/
@@ -34,7 +34,9 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.40: Watch facts for modify command only prints     */
+/*      6.40: Removed LOCALE definition.                     */
+/*                                                           */
+/*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
 /*************************************************************/

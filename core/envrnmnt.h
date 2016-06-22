@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*                ENVRNMNT HEADER FILE                 */
    /*******************************************************/
@@ -42,7 +42,9 @@
 /*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
-/*            Removed support for environment globals.       */
+/*            Removed LOCALE definition.                     */
+/*                                                           */
+/*      6.50: Removed support for environment globals.       */
 /*                                                           */
 /*************************************************************/
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  05/21/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*            EXTERNAL FUNCTIONS HEADER FILE           */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
+/*                                                           */
+/*            Removed LOCALE definition.                     */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */

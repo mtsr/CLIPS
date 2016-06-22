@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.40  06/20/16            */
    /*                                                     */
    /*           EXPRESSION BLOAD/BSAVE HEADER FILE        */
    /*******************************************************/
@@ -19,6 +19,8 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*************************************************************/
 

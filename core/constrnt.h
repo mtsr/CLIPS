@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*                CONSTRAINT HEADER FILE               */
    /*******************************************************/
@@ -33,7 +33,9 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
-/*      6.40: Static constraint checking is always enabled.  */
+/*      6.40: Removed LOCALE definition.                     */
+/*                                                           */
+/*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
 

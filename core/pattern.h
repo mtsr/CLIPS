@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*                PATTERN HEADER FILE                  */
    /*******************************************************/
@@ -29,7 +29,9 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.40: Removed initial-fact and initial-object        */
+/*      6.40: Removed LOCALE definition.                     */
+/*                                                           */
+/*      6.50: Removed initial-fact and initial-object        */
 /*            support.                                       */
 /*                                                           */
 /*************************************************************/

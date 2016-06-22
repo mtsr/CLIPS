@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*                 FACT HASHING MODULE                 */
    /*******************************************************/
@@ -28,7 +28,9 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
-/*      6.40: Modify command preserves fact id and address.  */
+/*      6.40: Removed LOCALE definition.                     */
+/*                                                           */
+/*      6.50: Modify command preserves fact id and address.  */
 /*                                                           */
 /*************************************************************/
 

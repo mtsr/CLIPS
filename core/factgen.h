@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*        FACT RETE FUNCTION GENERATION HEADER FILE    */
    /*******************************************************/
@@ -21,7 +21,9 @@
 /*            Increased maximum values for pattern/slot      */
 /*            indices.                                       */
 /*                                                           */
-/*      6.40: Fact ?var:slot references in deffunctions and  */
+/*      6.40: Removed LOCALE definition.                     */
+/*                                                           */
+/*      6.50: Fact ?var:slot references in deffunctions and  */
 /*            defrule actions.                               */
 /*                                                           */
 /*************************************************************/

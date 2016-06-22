@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  02/26/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -49,7 +49,9 @@
 /*            constructs that are contained externally to    */
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
-/*      6.40: Modified EnvClear to return completion status. */
+/*      6.40: Removed LOCALE definition.                     */
+/*                                                           */
+/*      6.50: Modified EnvClear to return completion status. */
 /*                                                           */
 /*            File name/line count displayed for errors      */
 /*            and warnings during load command.              */

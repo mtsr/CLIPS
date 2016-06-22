@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*          DEFTEMPLATE FUNCTION HEADER FILE           */
    /*******************************************************/
@@ -55,7 +55,9 @@
 /*            being executed during fact assertions via      */
 /*            Increment/DecrementClearReadyLocks API.        */
 /*                                                           */
-/*      6.40: Fact ?var:slot references in defrule actions.  */
+/*      6.40: Removed LOCALE definition.                     */
+/*                                                           */
+/*      6.50: Fact ?var:slot references in defrule actions.  */
 /*                                                           */
 /*************************************************************/
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -32,7 +32,9 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.40: Option printing of carriage return for the     */
+/*      6.40: Removed LOCALE definition.                     */
+/*                                                           */
+/*      6.50: Option printing of carriage return for the     */
 /*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*************************************************************/

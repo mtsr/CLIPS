@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.40  06/20/16            */
    /*                                                     */
    /*           DEFRULE BSAVE/BLOAD HEADER FILE           */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*            Added salience groups to improve performance   */
 /*            with large numbers of activations of different */
 /*            saliences.                                     */
+/*                                                           */
+/*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*************************************************************/
 

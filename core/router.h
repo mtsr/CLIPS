@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  05/29/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*                 ROUTER HEADER FILE                  */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*      6.40: Added EnvInputBufferCount function.            */
 /*                                                           */
 /*            Added check for reuse of existing router name. */
+/*                                                           */
+/*            Removed LOCALE definition.                     */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */

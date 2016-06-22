@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.40  06/20/16            */
    /*                                                     */
    /*                 REORDER HEADER FILE                 */
    /*******************************************************/
@@ -35,8 +35,10 @@
 /*                                                           */
 /*            Added support for hashed alpha memories.       */
 /*                                                           */
-/*      6.40: Removed the marked flag used for not/and       */
+/*      6.31: Removed the marked flag used for not/and       */
 /*            unification.                                   */
+/*                                                           */
+/*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*************************************************************/
 

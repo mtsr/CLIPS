@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/17/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*          MISCELLANEOUS FUNCTIONS HEADER FILE        */
    /*******************************************************/
@@ -61,6 +61,8 @@
 /*                                                           */
 /*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
+/*                                                           */
+/*            Removed LOCALE definition.                     */
 /*                                                           */
 /*      6.50: Fact ?var:slot reference support.              */
 /*                                                           */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*             CLIPS Version 6.40  06/20/16            */
    /*                                                     */
    /*        FACT RETE ACCESS FUNCTIONS HEADER FILE       */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*            MAC_MCW, and IBM_TBC).                         */
 /*                                                           */
 /*            Support for hashing optimizations.             */
+/*                                                           */
+/*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*************************************************************/
 

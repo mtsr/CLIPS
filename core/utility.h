@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/13/16             */
+   /*             CLIPS Version 6.50  06/20/16            */
    /*                                                     */
    /*                 UTILITY HEADER FILE                 */
    /*******************************************************/
@@ -45,6 +45,8 @@
 /*                                                           */
 /*      6.40: Added EnvAddPeriodicFunctionWithContext        */
 /*            function.                                      */
+/*                                                           */
+/*            Removed LOCALE definition.                     */
 /*                                                           */
 /*      6.50: Added CLIPSBlockStart and CLIPSBlockEnd        */
 /*            functions for garbage collection blocks.       */
