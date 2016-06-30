@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  05/29/16             */
+   /*            CLIPS Version 6.50  06/25/16             */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -70,7 +70,7 @@
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
 /*                                                           */
-/*      6.50: Refactored code to reduce header dependencies  */
+/*      6.40: Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Added Env prefix to GetEvaluationError and     */
@@ -79,7 +79,9 @@
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
-/*            Fact ?var:slot reference support.              */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Fact ?var:slot reference support.              */
 /*                                                           */
 /*************************************************************/
 

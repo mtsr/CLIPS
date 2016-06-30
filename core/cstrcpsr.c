@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  02/26/16             */
+   /*            CLIPS Version 6.50  06/23/16             */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -47,7 +47,9 @@
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
-/*            File name/line count displayed for errors      */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: File name/line count displayed for errors      */
 /*            and warnings during load command.              */
 /*                                                           */
 /*************************************************************/

@@ -46,17 +46,19 @@
 /*                                                           */
 /*            Converted API macros to function calls.        */
 /*                                                           */
-/*      6.40: Fixes for show-joins command.                  */
+/*      6.31: Fixes for show-joins command.                  */
 /*                                                           */
 /*            Fixes for matches command where the            */
 /*            activations listed were not correct if the     */
 /*            current module was different than the module   */
 /*            for the specified rule.                        */
 /*                                                           */
-/*            Added Env prefix to GetHaltExecution and       */
+/*      6.40: Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
-/*            Incremental reset is always enabled.           */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 

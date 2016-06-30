@@ -78,6 +78,8 @@
 /*                                                           */
 /*      6.40: Removed globle definition.                     */
 /*                                                           */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
 /*      6.50: ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Removed VAX_VMS support.                       */

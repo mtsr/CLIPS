@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/13/16             */
+   /*            CLIPS Version 6.50  06/28/16             */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -62,7 +62,9 @@
 /*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
-/*            Modify command preserves fact id and address.  */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Modify command preserves fact id and address.  */
 /*                                                           */
 /*            Watch facts for modify command only prints     */
 /*            changed slots.                                 */

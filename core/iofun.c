@@ -70,13 +70,15 @@
 /*            interfaces that support deleting carriage      */
 /*            returns.                                       */
 /*                                                           */
-/*      6.50: Added Env prefix to GetEvaluationError and     */
+/*            Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
-/*            Added print and println functions.             */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Added print and println functions.             */
 /*                                                           */
 /*************************************************************/
 

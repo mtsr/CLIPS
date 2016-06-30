@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  06/25/16             */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -47,6 +47,8 @@
 /*            Added Env prefix to GetHaltExecution and        */
 /*            SetHaltExecution functions.                     */
 /*                                                            */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
 /**************************************************************/
 /* =========================================
    *****************************************

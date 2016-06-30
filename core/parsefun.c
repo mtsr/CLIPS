@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  06/27/16             */
    /*                                                     */
    /*               PARSING FUNCTIONS MODULE              */
    /*******************************************************/
@@ -36,6 +36,8 @@
 /*                                                           */
 /*      6.40: Changed check-syntax router name because of    */
 /*            a conflict with another error-capture router.  */
+/*                                                           */
+/*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 

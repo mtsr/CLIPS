@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  05/29/16             */
+   /*            CLIPS Version 6.50  06/27/16             */
    /*                                                     */
    /*               STRING FUNCTIONS MODULE               */
    /*******************************************************/
@@ -50,10 +50,15 @@
 /*      6.40: Prior error flags are cleared before EnvEval   */
 /*            and EnvBuild are processed.                    */
 /*                                                           */
-/*      6.50: Added Env prefix to GetEvaluationError and     */
+/*            Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
-/*            The eval function can now access any local     */
+/*            Added Env prefix to GetHaltExecution and       */
+/*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: The eval function can now access any local     */
 /*            variables that have been defined.              */
 /*                                                           */
 /*************************************************************/

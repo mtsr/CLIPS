@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  06/24/16             */
    /*                                                     */
    /*                 FACT MATCH MODULE                   */
    /*******************************************************/
@@ -34,7 +34,9 @@
 /*            compilers/operating systems (IBM_MCW,          */
 /*            MAC_MCW, and IBM_TBC).                         */
 /*                                                           */
-/*      6.40: Watch facts for modify command only prints     */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
 /*************************************************************/

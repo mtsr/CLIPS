@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  06/24/16             */
    /*                                                     */
    /*           FACT LHS PATTERN PARSING MODULE           */
    /*******************************************************/
@@ -29,7 +29,9 @@
 /*            Added const qualifiers to remove C++           */
 /*            deprecation warnings.                          */
 /*                                                           */
-/*      6.40: Removed initial-fact support.                  */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Removed initial-fact support.                  */
 /*                                                           */
 /*************************************************************/
 

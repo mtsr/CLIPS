@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  06/24/16             */
    /*                                                     */
    /*          FACT RETE ACCESS FUNCTIONS MODULE          */
    /*******************************************************/
@@ -28,7 +28,9 @@
 /*                                                           */
 /*            Support for hashing optimizations.             */
 /*                                                           */
-/*      6.40: Modify command preserves fact address.         */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Modify command preserves fact address.         */
 /*                                                           */
 /*************************************************************/
 

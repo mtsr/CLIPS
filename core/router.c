@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  05/29/16             */
+   /*            CLIPS Version 6.50  06/27/16             */
    /*                                                     */
    /*                  I/O ROUTER MODULE                  */
    /*******************************************************/
@@ -39,10 +39,12 @@
 /*                                                           */
 /*            Added check for reuse of existing router name. */
 /*                                                           */
-/*      6.50: Added Env prefix to GetEvaluationError and     */
+/*            Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
-/*            Callbacks must be environment aware.           */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 

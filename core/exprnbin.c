@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  06/24/16             */
    /*                                                     */
    /*             EXPRESSION BSAVE/BLOAD MODULE           */
    /*******************************************************/
@@ -19,6 +19,8 @@
 /* Revision History:                                         */
 /*                                                           */
 /*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 

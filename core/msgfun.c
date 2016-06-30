@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  06/25/16             */
    /*                                                     */
    /*              OBJECT MESSAGE FUNCTIONS               */
    /*******************************************************/
@@ -35,7 +35,9 @@
 /*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
-/*            Option printing of carriage return for the     */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Option printing of carriage return for the     */
 /*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*************************************************************/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  06/25/16              */
    /*                                                     */
    /*         IMPLICIT SYSTEM METHODS PARSING MODULE      */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
+/*                                                           */
+/*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 

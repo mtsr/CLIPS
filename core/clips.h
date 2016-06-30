@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  06/28/16             */
    /*                                                     */
    /*                   API HEADER FILE                   */
    /*******************************************************/
@@ -21,6 +21,8 @@
 /*                                                           */
 /*      6.30: Added classpsr.h, iofun.h, and strngrtr.h to   */
 /*            include list.                                  */
+/*                                                           */
+/*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 
@@ -110,6 +112,7 @@
 #if OBJECT_SYSTEM
 #include "classcom.h"
 #include "classexm.h"
+#include "classfun.h"
 #include "classinf.h"
 #include "classini.h"
 #include "classpsr.h"
@@ -122,6 +125,4 @@
 #include "objrtmch.h"
 #endif
 
-
-#endif
-
+#endif /* _H_CLIPS_API */

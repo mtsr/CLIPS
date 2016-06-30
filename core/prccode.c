@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  06/27/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -45,7 +45,9 @@
 /*      6.40: Added Env prefix to GetEvaluationError and      */
 /*            SetEvaluationError functions.                   */
 /*                                                            */
-/*            Generic error message no longer printed when    */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Generic error message no longer printed when    */
 /*            an alternate variable handling function         */
 /*            generates an error.                             */
 /*                                                            */

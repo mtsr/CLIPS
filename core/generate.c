@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  06/25/16             */
    /*                                                     */
    /*                   GENERATE MODULE                   */
    /*******************************************************/
@@ -26,12 +26,14 @@
 /*            Reimplemented algorithm for comparisons to     */
 /*            variables contained within not/and CEs.        */
 /*                                                           */
-/*      6.40: Not/and unification was only occurring for the */
+/*      6.31: Not/and unification was only occurring for the */
 /*            first not/and group referencing a variable.    */
 /*            Use of the marked flag was unneccessary since  */
 /*            the referring variable is always the closest   */
 /*            and unification does not occur within the same */
 /*            non/and group.                                 */
+/*                                                           */
+/*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 

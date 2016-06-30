@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  05/21/16            */
+   /*             CLIPS Version 6.50  06/23/16            */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -58,6 +58,8 @@
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
+/*                                                           */
+/*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */

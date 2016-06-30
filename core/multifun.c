@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  04/19/16             */
+   /*            CLIPS Version 6.50  06/25/16             */
    /*                                                     */
    /*             MULTIFIELD FUNCTIONS MODULE             */
    /*******************************************************/
@@ -53,7 +53,9 @@
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
-/*            Removed mv-replace, mv-subseq, and  mv-delete  */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Removed mv-replace, mv-subseq, and  mv-delete  */
 /*            functions.                                     */
 /*                                                           */
 /*            Fact ?var:slot references in progn$/foreach.   */

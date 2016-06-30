@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  05/21/16             */
+   /*            CLIPS Version 6.50  06/24/16             */
    /*                                                     */
    /*              EXPRESSION PARSER MODULE               */
    /*******************************************************/
@@ -42,6 +42,8 @@
 /*            symbolHashNode * to support strings            */
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
+/*                                                           */
+/*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */

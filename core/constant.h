@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  06/28/16             */
    /*                                                     */
    /*                CONSTANTS HEADER FILE                */
    /*******************************************************/
@@ -24,7 +24,9 @@
 /*                                                           */
 /*            Added NESTED_RHS constant.                     */
 /*                                                           */
-/*      6.40: Added support for booleans with <stdbool.h>.   */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -88,11 +90,11 @@
 #endif
 
 #ifndef CREATION_DATE_STRING
-#define CREATION_DATE_STRING "6/17/16"
+#define CREATION_DATE_STRING "6/28/16"
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (Forge Alpha 6/17/16)\n"
+#define BANNER_STRING "         CLIPS (Forge Alpha 6/28/16)\n"
 #endif
 
 /*************************/

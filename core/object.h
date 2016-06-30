@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*               CLIPS Version 6.40  06/21/16          */
    /*                                                     */
    /*                OBJECT SYSTEM DEFINITIONS            */
    /*******************************************************/
@@ -20,6 +20,8 @@
 /*      6.30: Changed integer type/precision.                */
 /*                                                           */
 /*            Changed garbage collection algorithm.          */
+/*                                                           */
+/*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 

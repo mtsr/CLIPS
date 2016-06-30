@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  05/29/16            */
+   /*             CLIPS Version 6.40  06/24/16            */
    /*                                                     */
    /*                 FILE COMMANDS MODULE                */
    /*******************************************************/
@@ -47,11 +47,13 @@
 /*      6.40: Split inputSource to fileSource and            */
 /*            logicalSource.                                 */
 /*                                                           */
-/*      6.50: Added Env prefix to GetEvaluationError and     */
+/*            Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 

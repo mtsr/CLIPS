@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*            CLIPS Version 6.50  06/25/16             */
    /*                                                     */
    /*           MESSAGE-HANDLER PARSER FUNCTIONS          */
    /*******************************************************/
@@ -37,7 +37,9 @@
 /*            Fixed linkage issue when BLOAD_AND_SAVE        */
 /*            compiler flag is set to 0.                     */
 /*                                                           */
-/*      6.40: Option printing of carriage return for the     */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Option printing of carriage return for the     */
 /*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*            Static constraint checking is always enabled.  */

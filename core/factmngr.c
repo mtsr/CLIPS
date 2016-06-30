@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/13/16             */
+   /*            CLIPS Version 6.50  06/24/16             */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -64,7 +64,9 @@
 /*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
-/*            Removed initial-fact support.                  */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Removed initial-fact support.                  */
 /*                                                           */
 /*            Modify command preserves fact id and address.  */
 /*                                                           */
@@ -74,7 +76,6 @@
 /*            Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
-
 
 #include <stdio.h>
 

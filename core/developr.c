@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  06/23/16             */
    /*                                                     */
    /*                   DEVELOPER MODULE                  */
    /*******************************************************/
@@ -35,7 +35,9 @@
 /*            Replaced deprecated WCLIPS logical name with   */
 /*            WPROMPT.                                       */
 /*                                                           */
-/*      6.40: Crash fix for show-opn.                        */
+/*      6.31: Crash fix for show-opn.                        */
+/*                                                           */
+/*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  06/24/16             */
    /*                                                     */
    /*          FACT RETE FUNCTION GENERATION MODULE       */
    /*******************************************************/
@@ -26,7 +26,9 @@
 /*            Increased maximum values for pattern/slot      */
 /*            indices.                                       */
 /*                                                           */
-/*      6.40: Fact ?var:slot references in deffunctions and  */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Fact ?var:slot references in deffunctions and  */
 /*            defrule actions.                               */
 /*                                                           */
 /*************************************************************/

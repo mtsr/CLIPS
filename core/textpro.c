@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  06/27/16             */
    /*                                                     */
    /*               TEXT PROCESSING MODULE                */
    /*******************************************************/
@@ -49,6 +49,8 @@
 /*                                                           */
 /*      6.31: Fixed crash issue when using textpro functions */
 /*            on Windows with files having unix eol.         */
+/*                                                           */
+/*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 

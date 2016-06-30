@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  06/23/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -44,7 +44,9 @@
 /*            imported modules are search when locating a    */
 /*            named construct.                               */
 /*                                                           */
-/*      6.40: Fact ?var:slot references in deffunctions.     */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Fact ?var:slot references in deffunctions.     */
 /*                                                           */
 /*************************************************************/
 

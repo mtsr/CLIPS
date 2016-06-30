@@ -42,6 +42,8 @@
 /*                                                           */
 /*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_msgcom
@@ -76,7 +78,6 @@ struct messageHandlerData
   };
 
 #define MessageHandlerData(theEnv) ((struct messageHandlerData *) GetEnvironmentData(theEnv,MESSAGE_HANDLER_DATA))
-
 
 #define INIT_STRING   "init"
 #define DELETE_STRING "delete"

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*            CLIPS Version 6.50  06/23/16             */
    /*                                                     */
    /*             BASIC MATH FUNCTIONS MODULE             */
    /*******************************************************/
@@ -33,7 +33,9 @@
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
-/*            Auto-float-dividend always enabled.            */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Auto-float-dividend always enabled.            */
 /*                                                           */
 /*************************************************************/
 

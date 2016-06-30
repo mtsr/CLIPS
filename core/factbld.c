@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.50  06/24/16             */
    /*                                                     */
    /*                   FACT BUILD MODULE                 */
    /*******************************************************/
@@ -26,7 +26,9 @@
 /*            Added support for hashed comparisons to        */
 /*            constants.                                     */
 /*                                                           */
-/*      6.40: Removed initial-fact support.                  */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Removed initial-fact support.                  */
 /*                                                           */
 /*************************************************************/
 

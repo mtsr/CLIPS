@@ -14,21 +14,23 @@
 /*                                                           */
 /* Contributing Programmer(s):                               */
 /*                                                           */
-/* Revision History:                                          */
-/*                                                            */
-/*      6.24: Converted INSTANCE_PATTERN_MATCHING to          */
-/*            DEFRULE_CONSTRUCT.                              */
-/*                                                            */
-/*            Renamed BOOLEAN macro type to intBool.          */
-/*                                                            */
-/*      6.30: Changed integer type/precision.                 */
-/*                                                            */
-/*            Support for long long integers.                 */
-/*                                                            */
-/*            Added const qualifiers to remove C++            */
-/*            deprecation warnings.                           */
-/*                                                            */
+/* Revision History:                                         */
+/*                                                           */
+/*      6.24: Converted INSTANCE_PATTERN_MATCHING to         */
+/*            DEFRULE_CONSTRUCT.                             */
+/*                                                           */
+/*            Renamed BOOLEAN macro type to intBool.         */
+/*                                                           */
+/*      6.30: Changed integer type/precision.                */
+/*                                                           */
+/*            Support for long long integers.                */
+/*                                                           */
+/*            Added const qualifiers to remove C++           */
+/*            deprecation warnings.                          */
+/*                                                           */
 /*      6.40: Removed LOCALE definition.                     */
+/*                                                           */
+/*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 

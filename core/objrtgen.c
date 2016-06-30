@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  016/25/16             */
    /*                                                     */
    /*    INFERENCE ENGINE OBJECT PARSING ROUTINES MODULE  */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*                                                           */
 /*      6.30: Added support for hashed memories and other    */
 /*            join network changes.                          */
+/*                                                           */
+/*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*************************************************************/
 /* =========================================

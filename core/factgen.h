@@ -23,6 +23,8 @@
 /*                                                           */
 /*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
 /*      6.50: Fact ?var:slot references in deffunctions and  */
 /*            defrule actions.                               */
 /*                                                           */

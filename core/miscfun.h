@@ -64,6 +64,8 @@
 /*                                                           */
 /*            Removed LOCALE definition.                     */
 /*                                                           */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
 /*      6.50: Fact ?var:slot reference support.              */
 /*                                                           */
 /*************************************************************/

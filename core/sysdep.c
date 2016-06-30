@@ -78,17 +78,13 @@
 /*      6.40: Added genchdir function for changing the       */
 /*            current directory.                             */
 /*                                                           */
-/*            Added Env prefix to GetEvaluationError and     */
-/*            SetEvaluationError functions.                  */
-/*                                                           */
-/*            Added Env prefix to GetHaltExecution and       */
-/*            SetHaltExecution functions.                    */
-/*                                                           */
 /*            Modified gentime to return "comparable" epoch  */
 /*            based values across platforms.                 */
 /*                                                           */
 /*            Refactored code to reduce header dependencies  */
 /*            in sysdep.c.                                   */
+/*                                                           */
+/*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*      6.50: Updated compilations flags for CatchCtrlC.     */
 /*                                                           */

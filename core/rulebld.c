@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  03/17/16             */
+   /*            CLIPS Version 6.50  06/27/16             */
    /*                                                     */
    /*                  RULE BUILD MODULE                  */
    /*******************************************************/
@@ -30,9 +30,11 @@
 /*                                                           */
 /*            Added support for hashed memories.             */
 /*                                                           */
-/*      6.40: Incremental reset is always enabled.           */
+/*      6.31: Fix for nand crash                             */
 /*                                                           */
-/*            Fix for nand crash                             */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 

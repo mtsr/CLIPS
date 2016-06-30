@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*            CLIPS Version 6.50  06/25/16             */
    /*                                                     */
    /*              INCREMENTAL RESET MODULE               */
    /*******************************************************/
@@ -39,7 +39,9 @@
 /*      6.40: Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
-/*            Incremental reset is always enabled.           */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 

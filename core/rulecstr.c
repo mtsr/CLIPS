@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*            CLIPS Version 6.50  06/27/16             */
    /*                                                     */
    /*              RULE CONSTRAINTS MODULE                */
    /*******************************************************/
@@ -21,7 +21,9 @@
 /*                                                           */
 /*      6.30: Support for long long integers.                */
 /*                                                           */
-/*      6.40: Static constraint checking is always enabled.  */
+/*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
 

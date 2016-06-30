@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*            CLIPS Version 6.50  06/28/16             */
    /*                                                     */
    /*            DEFTEMPLATE UTILITIES MODULE             */
    /*******************************************************/
@@ -41,7 +41,9 @@
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
-/*            Watch facts for modify command only prints     */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
 /*            Static constraint checking is always enabled.  */
