@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/04/16             */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -57,6 +57,8 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
 /*      6.50: Modified EnvClear to return completion status. */
 /*                                                           */
 /*            Callbacks must be environment aware.           */
@@ -110,7 +112,7 @@ void InitializeConstructData(
    AllocateEnvironmentData(theEnv,CONSTRUCT_DATA,sizeof(struct constructData),DeallocateConstructData);
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)   
-   ConstructData(theEnv)->WatchCompilations = OFF;
+   ConstructData(theEnv)->WatchCompilations = true;
 #endif
   }
   
@@ -216,13 +218,13 @@ bool RemoveConstruct(
          else
            { lastPtr->next = currentPtr->next; }
          rtn_struct(theEnv,construct,currentPtr);
-         return(true);
+         return true;
         }
 
       lastPtr = currentPtr;
      }
 
-   return(false);
+   return false;
   }
 
 /************************************************/
@@ -243,7 +245,7 @@ bool EnvSave(
    /*=====================*/
 
    if ((filePtr = GenOpen(theEnv,fileName,"w")) == NULL)
-     { return(false); }
+     { return false; }
 
    /*===========================*/
    /* Bypass the router system. */
@@ -331,7 +333,7 @@ bool EnvSave(
    /* successful completion.  */
    /*=========================*/
 
-   return(true);
+   return true;
   }
 
 /*******************************************************/
@@ -348,9 +350,9 @@ bool RemoveSaveFunction(
    ConstructData(theEnv)->ListOfSaveFunctions =
      RemoveFunctionFromCallList(theEnv,name,ConstructData(theEnv)->ListOfSaveFunctions,&found);
 
-   if (found) return(true);
+   if (found) return true;
 
-   return(false);
+   return false;
   }
 
 /**********************************/
@@ -566,7 +568,7 @@ bool EnvAddResetFunction(
    ConstructData(theEnv)->ListOfResetFunctions = AddFunctionToCallList(theEnv,name,priority,
                                                 functionPtr,
                                                 ConstructData(theEnv)->ListOfResetFunctions);
-   return(true);
+   return true;
   }
 
 /**********************************************/
@@ -581,7 +583,7 @@ bool EnvRemoveResetFunction(
 
    ConstructData(theEnv)->ListOfResetFunctions =
       RemoveFunctionFromCallList(theEnv,name,ConstructData(theEnv)->ListOfResetFunctions,&found);
-   
+
    return found;
   }
 
@@ -714,10 +716,10 @@ bool ClearReady(
      {
       tempFunction = (bool (*)(void *)) theFunction->func;
       if ((*tempFunction)(theEnv) == false)
-        { return(false); }
+        { return false; }
      }
 
-   return(true);
+   return true;
   }
 
 /******************************************/
@@ -734,7 +736,7 @@ bool AddClearReadyFunction(
      AddFunctionToCallList(theEnv,name,priority,
                            (void (*)(void *)) functionPtr,
                            ConstructData(theEnv)->ListOfClearReadyFunctions);
-   return(true);
+   return true;
   }
 
 /************************************************/
@@ -750,9 +752,9 @@ bool RemoveClearReadyFunction(
    ConstructData(theEnv)->ListOfClearReadyFunctions =
       RemoveFunctionFromCallList(theEnv,name,ConstructData(theEnv)->ListOfClearReadyFunctions,&found);
 
-   if (found) return(true);
+   if (found) return true;
 
-   return(false);
+   return false;
   }
 
 /****************************************/
@@ -769,7 +771,7 @@ bool EnvAddClearFunction(
       AddFunctionToCallList(theEnv,name,priority,
                             (void (*)(void *)) functionPtr,
                             ConstructData(theEnv)->ListOfClearFunctions);
-   return(true);
+   return true;
   }
 
 /**********************************************/
@@ -785,9 +787,9 @@ bool EnvRemoveClearFunction(
    ConstructData(theEnv)->ListOfClearFunctions =
      RemoveFunctionFromCallList(theEnv,name,ConstructData(theEnv)->ListOfClearFunctions,&found);
 
-   if (found) return(true);
+   if (found) return true;
 
-   return(false);
+   return false;
   }
 
 /********************************************/
@@ -935,6 +937,6 @@ bool AddSaveFunction(
 #endif
 #endif
 
-   return(true);
+   return true;
   }
 

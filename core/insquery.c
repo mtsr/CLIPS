@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -253,7 +255,7 @@ void GetQueryInstanceSlot(
   DESCRIPTION  : Determines if there any existing instances which satisfy
                    the query
   INPUTS       : None
-  RETURNS      : true if the query is satisfied, false otherwise
+  RETURNS      : True if the query is satisfied, false otherwise
   SIDE EFFECTS : The query class-expressions are evaluated once,
                    and the query boolean-expression is evaluated
                    zero or more times (depending on instance restrictions
@@ -266,7 +268,7 @@ void AnyInstances(
   {
    QUERY_CLASS *qclasses;
    unsigned rcnt;
-   int testResult;
+   bool testResult;
    Environment *theEnv = UDFContextEnvironment(context);
 
    qclasses = DetermineQueryClasses(theEnv,GetFirstArgument()->nextArg,
@@ -296,7 +298,7 @@ void AnyInstances(
   DESCRIPTION  : Finds the first set of instances which satisfy the query and
                    stores their names in the user's multi-field variable
   INPUTS       : Caller's result buffer
-  RETURNS      : true if the query is satisfied, false otherwise
+  RETURNS      : True if the query is satisfied, false otherwise
   SIDE EFFECTS : The query class-expressions are evaluated once,
                    and the query boolean-expression is evaluated
                    zero or more times (depending on instance restrictions
@@ -858,7 +860,7 @@ static void DeleteQueryClasses(
   INPUTS       : 1) The current chain
                  2) The index of the chain restriction
                      (e.g. the 4th query-variable)
-  RETURNS      : true if query succeeds, false otherwise
+  RETURNS      : True if query succeeds, false otherwise
   SIDE EFFECTS : Sets current restriction class
                  Instance variable values set
   NOTES        : None
@@ -876,17 +878,17 @@ static bool TestForFirstInChain(
      {
       InstanceQueryData(theEnv)->AbortQuery = false;
       if ((id = GetTraversalID(theEnv)) == -1)
-        return(false);
+        return false;
       if (TestForFirstInstanceInClass(theEnv,qptr->theModule,id,qptr->cls,qchain,indx))
         {
          ReleaseTraversalID(theEnv);
-         return(true);
+         return true;
         }
       ReleaseTraversalID(theEnv);
       if ((EvaluationData(theEnv)->HaltExecution == true) || (InstanceQueryData(theEnv)->AbortQuery == true))
-        return(false);
+        return false;
      }
-   return(false);
+   return false;
   }
 
 /*****************************************************************
@@ -899,7 +901,7 @@ static bool TestForFirstInChain(
                  3) The class
                  4) The current class restriction chain
                  5) The index of the current restriction
-  RETURNS      : true if query succeeds, false otherwise
+  RETURNS      : True if query succeeds, false otherwise
   SIDE EFFECTS : Instance variable values set
   NOTES        : None
  *****************************************************************/
@@ -917,10 +919,10 @@ static bool TestForFirstInstanceInClass(
    struct CLIPSBlock gcBlock;
    
    if (TestTraversalID(cls->traversalRecord,id))
-     return(false);
+     return false;
    SetTraversalID(cls->traversalRecord,id);
    if (DefclassInScope(theEnv,cls,theModule) == false)
-     return(false);
+     return false;
      
    CLIPSBlockStart(theEnv,&gcBlock);
    
@@ -970,11 +972,11 @@ static bool TestForFirstInstanceInClass(
      {
       if (TestForFirstInstanceInClass(theEnv,theModule,id,cls->directSubclasses.classArray[i],
                                       qchain,indx))
-        return(true);
+        return true;
       if ((EvaluationData(theEnv)->HaltExecution == true) || (InstanceQueryData(theEnv)->AbortQuery == true))
-        return(false);
+        return false;
      }
-   return(false);
+   return false;
   }
 
 /************************************************************

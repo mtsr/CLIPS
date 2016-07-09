@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/25/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                  DEFMODULE MODULE                   */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*            Converted API macros to function calls.        */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                  MULTIFIELD MODULE                  */
    /*******************************************************/
@@ -44,6 +44,8 @@
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -536,17 +538,17 @@ bool MultifieldDOsEqual(
    extent1 = GetpDOLength(dobj1);
    extent2 = GetpDOLength(dobj2);
    if (extent1 != extent2)
-     { return(false); }
+     { return false; }
 
    e1 = (FIELD_PTR) GetMFPtr(GetpValue(dobj1),GetpDOBegin(dobj1));
    e2 = (FIELD_PTR) GetMFPtr(GetpValue(dobj2),GetpDOBegin(dobj2));
    while (extent1 != 0)
      {
       if (e1->type != e2->type)
-        { return(false); }
+        { return false; }
 
       if (e1->value != e2->value)
-        { return(false); }
+        { return false; }
 
       extent1--;
 
@@ -556,7 +558,7 @@ bool MultifieldDOsEqual(
          e2++;
         }
      }
-   return(true);
+   return true;
   }
 
 /******************************************************************/
@@ -572,7 +574,7 @@ bool MultifieldsEqual(
 
    length = segment1->multifieldLength;
    if (length != segment2->multifieldLength)
-     { return(false); }
+     { return false; }
 
    elem1 = segment1->theFields;
    elem2 = segment2->theFields;
@@ -585,20 +587,20 @@ bool MultifieldsEqual(
    while (i < length)
      {
       if (elem1[i].type != elem2[i].type)
-        { return(false); }
+        { return false; }
 
       if (elem1[i].type == MULTIFIELD)
         {
          if (MultifieldsEqual((struct multifield *) elem1[i].value,
                               (struct multifield *) elem2[i].value) == false)
-          { return(false); }
+          { return false; }
         }
       else if (elem1[i].value != elem2[i].value)
-        { return(false); }
+        { return false; }
 
       i++;
      }
-   return(true);
+   return true;
   }
 
 /************************************************************/

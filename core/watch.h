@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/20/16            */
+   /*             CLIPS Version 6.40  07/05/16            */
    /*                                                     */
    /*                  WATCH HEADER FILE                  */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_watch
@@ -53,7 +55,7 @@
 struct watchItem
   {
    const char *name;
-   unsigned *flag;
+   bool *flag;
    int code,priority;
    bool (*accessFunc)(void *,int,bool,struct expr *);
    bool (*printFunc)(void *,const char *,int,struct expr *);
@@ -72,7 +74,7 @@ struct watchData
    void                           InitializeWatchData(void *);   
    bool                           EnvSetWatchItem(void *,const char *,bool,struct expr *);
    int                            EnvGetWatchItem(void *,const char *);
-   bool                           AddWatchItem(void *,const char *,int,unsigned *,int,
+   bool                           AddWatchItem(void *,const char *,int,bool *,int,
                                                       bool (*)(void *,int,bool,struct expr *),
                                                       bool (*)(void *,const char *,int,struct expr *));
    const char                    *GetNthWatchName(void *,int);

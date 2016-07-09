@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/25/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*             MULTIFIELD FUNCTIONS MODULE             */
    /*******************************************************/
@@ -54,6 +54,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Removed mv-replace, mv-subseq, and  mv-delete  */
 /*            functions.                                     */
@@ -696,7 +698,7 @@ void NthFunction(
  *               multi-field variable, the second is the list to be
  *               compared to. Both should be of type MULTIFIELD.
  *
- *    OUTPUTS:   true if the first list is a subset of the
+ *    OUTPUTS:   True if the first list is a subset of the
  *               second, else false
  *
  *    NOTES:     This function is called from H/L with the subset
@@ -820,7 +822,7 @@ bool FindDOsInSegment(
                  {
                   *si = i + 1L;
                   *ei = i + slen;
-                  return(true);
+                  return true;
                  }
               }
            }
@@ -829,12 +831,12 @@ bool FindDOsInSegment(
                   MVRangeCheck(i+1L,i+1L,excludes,epaircnt))
            {
             *si = *ei = i+1L;
-            return(true);
+            return true;
            }
         }
      }
 
-   return(false);
+   return false;
   }
 
 /******************************************************/
@@ -849,13 +851,13 @@ static bool MVRangeCheck(
   int i;
 
   if (!elist || !epaircnt)
-    return(true);
+    return true;
   for (i = 0 ; i < epaircnt ; i++)
     if (((si >= elist[i*2]) && (si <= elist[i*2+1])) ||
         ((ei >= elist[i*2]) && (ei <= elist[i*2+1])))
-    return(false);
+    return false;
 
-  return(true);
+  return true;
 }
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -1284,7 +1286,7 @@ void GetMvPrognIndex(
                  3) Beginning of index range
                  4) End of range
                  5) The new field value
-  RETURNS      : true if successful, false otherwise
+  RETURNS      : True if successful, false otherwise
   SIDE EFFECTS : Allocates and sets a ephemeral segment (even if new
                    number of fields is 0)
                  Src value segment is not changed
@@ -1311,7 +1313,7 @@ bool ReplaceMultiValueField(
 	   (rb > srclen) || (re > srclen))
 	 {
 	  MVRangeError(theEnv,rb,re,srclen,funcName);
-	  return(false);
+	  return false;
 	 }
    rb = src->begin + rb - 1;
    re = src->begin + re - 1;
@@ -1355,7 +1357,7 @@ bool ReplaceMultiValueField(
 	  deptr->type = septr->type;
 	  deptr->value = septr->value;
 	 }
-   return(true);
+   return true;
   }
 
 /**************************************************************************
@@ -1366,7 +1368,7 @@ bool ReplaceMultiValueField(
                  2) The source value (can be NULL)
                  3) The index for the change
                  4) The new field value
-  RETURNS      : true if successful, false otherwise
+  RETURNS      : True if successful, false otherwise
   SIDE EFFECTS : Allocates and sets a ephemeral segment (even if new
                    number of fields is 0)
                  Src value segment is not changed
@@ -1389,7 +1391,7 @@ bool InsertMultiValueField(
    if (theIndex < 1)
      {
       MVRangeError(theEnv,theIndex,theIndex,srclen+1,funcName);
-      return(false);
+      return false;
      }
    if (theIndex > (srclen + 1))
      theIndex = (srclen + 1);
@@ -1410,7 +1412,7 @@ bool InsertMultiValueField(
          deptr->type = field->type;
          deptr->value = field->value;
         }
-      return(true);
+      return true;
      }
    dstlen = (field->type == MULTIFIELD) ? GetpDOLength(field) + srclen : srclen + 1;
    dst->value = EnvCreateMultifield(theEnv,dstlen);
@@ -1447,7 +1449,7 @@ bool InsertMultiValueField(
       deptr->type = septr->type;
       deptr->value = septr->value;
      }
-   return(true);
+   return true;
   }
 
 /*******************************************************
@@ -1499,7 +1501,7 @@ static void MVRangeError(
                  2) The source value (can be NULL)
                  3) The beginning index for deletion
                  4) The ending index for deletion
-  RETURNS      : true if successful, false otherwise
+  RETURNS      : True if successful, false otherwise
   SIDE EFFECTS : Allocates and sets a ephemeral segment (even if new
                    number of fields is 0)
                  Src value segment is not changed
@@ -1524,7 +1526,7 @@ bool DeleteMultiValueField(
        (rb > srclen) || (re > srclen))
      {
       MVRangeError(theEnv,rb,re,srclen,funcName);
-      return(false);
+      return false;
      }
    dst->type = MULTIFIELD;
    dst->begin = 0;
@@ -1532,7 +1534,7 @@ bool DeleteMultiValueField(
     {
      dst->value = EnvCreateMultifield(theEnv,0L);
      dst->end = -1;
-     return(true);
+     return true;
     }
    rb = src->begin + rb -1;
    re = src->begin + re -1;
@@ -1555,7 +1557,7 @@ bool DeleteMultiValueField(
       deptr->type = septr->type;
       deptr->value = septr->value;
      }
-   return(true);
+   return true;
   }
 
 #endif /* OBJECT_SYSTEM || MULTIFIELD_FUNCTIONS */

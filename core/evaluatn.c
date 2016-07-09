@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                  EVALUATION MODULE                  */
    /*******************************************************/
@@ -49,6 +49,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
@@ -419,9 +421,9 @@ int InstallExternalAddressType(
    return rv;
   }
 
-/******************************************************/
-/* SetEvaluationError: Sets the EvaluationError flag. */
-/******************************************************/
+/*********************************************************/
+/* EnvSetEvaluationError: Sets the EvaluationError flag. */
+/*********************************************************/
 void EnvSetEvaluationError(
   void *theEnv,
   bool value)
@@ -431,9 +433,9 @@ void EnvSetEvaluationError(
      { EvaluationData(theEnv)->HaltExecution = true; }
   }
 
-/*********************************************************/
-/* GetEvaluationError: Returns the EvaluationError flag. */
-/*********************************************************/
+/************************************************************/
+/* EnvGetEvaluationError: Returns the EvaluationError flag. */
+/************************************************************/
 bool EnvGetEvaluationError(
   void *theEnv)
   {
@@ -706,7 +708,7 @@ bool EnvFunctionCall(
    EnvPrintRouter(theEnv,WERROR,"No function, generic function or deffunction of name ");
    EnvPrintRouter(theEnv,WERROR,name);
    EnvPrintRouter(theEnv,WERROR," exists for external call.\n");
-   return(true);
+   return true;
   }
 
 /********************************************/
@@ -754,7 +756,7 @@ bool FunctionCall2(
    /*============================*/
 
    argexps = ParseConstantArguments(theEnv,args,&error);
-   if (error == true) return(true);
+   if (error == true) return true;
 
    /*====================*/
    /* Call the function. */
@@ -996,7 +998,7 @@ bool GetFunctionReference(
      {
       theReference->type = PCALL;
       theReference->value = dptr;
-      return(true);
+      return true;
      }
 #endif
 
@@ -1009,7 +1011,7 @@ bool GetFunctionReference(
      {
       theReference->type = GCALL;
       theReference->value = gfunc;
-      return(true);
+      return true;
      }
 #endif
 
@@ -1022,7 +1024,7 @@ bool GetFunctionReference(
      {
       theReference->type = FCALL;
       theReference->value = fptr;
-      return(true);
+      return true;
      }
 
    /*===================================================*/
@@ -1030,7 +1032,7 @@ bool GetFunctionReference(
    /* defgeneric, or user/system defined function.      */
    /*===================================================*/
 
-   return(false);
+   return false;
   }
 
 /*******************************************************/
@@ -1041,17 +1043,17 @@ bool DOsEqual(
   DATA_OBJECT_PTR dobj2)
   {
    if (GetpType(dobj1) != GetpType(dobj2))
-     { return(false); }
+     { return false; }
 
    if (GetpType(dobj1) == MULTIFIELD)
      {
       if (MultifieldDOsEqual(dobj1,dobj2) == false)
-        { return(false); }
+        { return false; }
      }
    else if (GetpValue(dobj1) != GetpValue(dobj2))
-     { return(false); }
+     { return false; }
 
-   return(true);
+   return true;
   }
 
 /***********************************************************
@@ -1064,7 +1066,7 @@ bool DOsEqual(
                  3) The data object structure
                  4) Flag indicating if a multifield value
                     should be placed on the garbage list.
-  RETURNS      : false on errors, true otherwise
+  RETURNS      : False on errors, true otherwise
   SIDE EFFECTS : Segment allocated for storing
                  multifield values
   NOTES        : None
@@ -1085,7 +1087,7 @@ bool EvaluateAndStoreInDataObject(
       if (garbageSegment) val->value = EnvCreateMultifield(theEnv,0L);
       else val->value = CreateMultifield2(theEnv,0L);
 
-      return(true);
+      return true;
      }
 
    if ((mfp == false) && (theExp->nextArg == NULL))

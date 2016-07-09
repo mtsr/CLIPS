@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*    INFERENCE ENGINE OBJECT ACCESS ROUTINES MODULE   */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 /* =========================================
@@ -312,7 +314,7 @@ static void DestroyObjectAlphaNodes(
                  against a constant
   INPUTS       : 1) The constant test bitmap
                  2) Data object buffer to hold result
-  RETURNS      : true if test successful,
+  RETURNS      : True if test successful,
                  false otherwise
   SIDE EFFECTS : Buffer set to symbol TRUE if test
                  successful, false otherwise
@@ -431,7 +433,7 @@ static bool ObjectGetVarJNFunction1(
    hack = (struct ObjectMatchVar1 *) ValueToBitMap(theValue);
    GetPatternObjectAndMarks(theEnv,((int) hack->whichPattern),hack->lhs,hack->rhs,&theInstance,&theMarks);
    GetObjectValueGeneral(theEnv,theResult,theInstance,theMarks,hack);
-   return(true);
+   return true;
   }
 
 static void PrintObjectGetVarJN2(
@@ -479,7 +481,7 @@ static bool ObjectGetVarJNFunction2(
    hack = (struct ObjectMatchVar2 *) ValueToBitMap(theValue);
    GetPatternObjectAndMarks(theEnv,((int) hack->whichPattern),hack->lhs,hack->rhs,&theInstance,&theMarks);
    GetObjectValueSimple(theEnv,theResult,theInstance,hack);
-   return(true);
+   return true;
   }
 
 static void PrintObjectGetVarPN1(
@@ -525,7 +527,7 @@ static bool ObjectGetVarPNFunction1(
 
    hack = (struct ObjectMatchVar1 *) ValueToBitMap(theValue);
    GetObjectValueGeneral(theEnv,theResult,ObjectReteData(theEnv)->CurrentPatternObject,ObjectReteData(theEnv)->CurrentPatternObjectMarks,hack);
-   return(true);
+   return true;
   }
 
 static void PrintObjectGetVarPN2(
@@ -568,7 +570,7 @@ static bool ObjectGetVarPNFunction2(
 
    hack = (struct ObjectMatchVar2 *) ValueToBitMap(theValue);
    GetObjectValueSimple(theEnv,theResult,ObjectReteData(theEnv)->CurrentPatternObject,hack);
-   return(true);
+   return true;
   }
 
 static void PrintObjectCmpConstant(
@@ -639,11 +641,11 @@ static bool SlotLengthTestFunction(
    theResult->value = EnvFalseSymbol(theEnv);
    hack = (struct ObjectMatchLength *) ValueToBitMap(theValue);
    if (ObjectReteData(theEnv)->CurrentObjectSlotLength < hack->minLength)
-     return(false);
+     return false;
    if (hack->exactly && (ObjectReteData(theEnv)->CurrentObjectSlotLength > hack->minLength))
-     return(false);
+     return false;
    theResult->value = EnvTrueSymbol(theEnv);
-   return(true);
+   return true;
   }
 
 static void PrintPNSimpleCompareFunction1(

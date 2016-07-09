@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*               ARGUMENT ACCESS MODULE                */
    /*******************************************************/
@@ -39,6 +39,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -411,14 +413,14 @@ bool EnvArgTypeCheck(
    /*========================*/
 
    EnvRtnUnknown(theEnv,argumentPosition,returnValue);
-   if (EvaluationData(theEnv)->EvaluationError) return(false);
+   if (EvaluationData(theEnv)->EvaluationError) return false;
 
    /*========================================*/
    /* If the argument's type exactly matches */
    /* the expected type, then return true.   */
    /*========================================*/
 
-   if (returnValue->type == expectedType) return (true);
+   if (returnValue->type == expectedType) return true;
 
    /*=============================================================*/
    /* Some expected types encompass more than one primitive type. */
@@ -428,26 +430,26 @@ bool EnvArgTypeCheck(
 
    if ((expectedType == INTEGER_OR_FLOAT) &&
        ((returnValue->type == INTEGER) || (returnValue->type == FLOAT)))
-     { return(true); }
+     { return true; }
 
    if ((expectedType == SYMBOL_OR_STRING) &&
        ((returnValue->type == SYMBOL) || (returnValue->type == STRING)))
-     { return(true); }
+     { return true; }
 
 #if OBJECT_SYSTEM
    if (((expectedType == SYMBOL_OR_STRING) || (expectedType == SYMBOL)) &&
        (returnValue->type == INSTANCE_NAME))
-     { return(true); }
+     { return true; }
 
    if ((expectedType == INSTANCE_NAME) &&
        ((returnValue->type == INSTANCE_NAME) || (returnValue->type == SYMBOL)))
-     { return(true); }
+     { return true; }
 
    if ((expectedType == INSTANCE_OR_INSTANCE_NAME) &&
        ((returnValue->type == INSTANCE_ADDRESS) ||
         (returnValue->type == INSTANCE_NAME) ||
         (returnValue->type == SYMBOL)))
-     { return(true); }
+     { return true; }
 #endif
 
    /*===========================================================*/
@@ -460,14 +462,14 @@ bool EnvArgTypeCheck(
      {
       returnValue->type = FLOAT;
       returnValue->value = (void *) EnvAddDouble(theEnv,(double) ValueToLong(returnValue->value));
-      return(true);
+      return true;
      }
 
    if ((returnValue->type == FLOAT) && (expectedType == INTEGER))
      {
       returnValue->type = INTEGER;
       returnValue->value = (void *) EnvAddLong(theEnv,(long long) ValueToDouble(returnValue->value));
-      return(true);
+      return true;
      }
 
    /*=====================================================*/
@@ -492,7 +494,7 @@ bool EnvArgTypeCheck(
    EnvSetHaltExecution(theEnv,true);
    EnvSetEvaluationError(theEnv,true);
 
-   return(false);
+   return false;
   }
 
 /******************************************************************/
@@ -546,7 +548,7 @@ bool GetNumericArgument(
       EnvSetEvaluationError(theEnv,true);
       result->type = INTEGER;
       result->value = (void *) EnvAddLong(theEnv,0LL);
-      return(false);
+      return false;
      }
 
    /*==========================================================*/
@@ -568,7 +570,7 @@ bool GetNumericArgument(
    result->type = theType;
    result->value = theValue;
 
-   return(true);
+   return true;
   }
 
 /*********************************************************************/
@@ -779,7 +781,7 @@ void ExpectedCountError(
 /*  INPUTS       : 1) Name of the calling function           */
 /*                 2) The restriction list can be NULL       */
 /*                 3) The number of arguments                */
-/*  RETURNS      : true if OK, false otherwise               */
+/*  RETURNS      : True if OK, false otherwise               */
 /*  SIDE EFFECTS : EvaluationError set on errrors            */
 /*  NOTES        : Used to check generic function implicit   */
 /*                 method (system function) calls and system */
@@ -809,7 +811,7 @@ bool CheckFunctionArgCount(
    /*=====================================================*/
 
    if (func->returnValueType !='z')
-     { if (restrictions == NULL) return(true); }
+     { if (restrictions == NULL) return true; }
 
    /*===========================================*/
    /* Determine the minimum number of arguments */
@@ -828,7 +830,7 @@ bool CheckFunctionArgCount(
      }
    else
      { minArguments = func->minArgs; }
-   
+
    /*===========================================*/
    /* Determine the maximum number of arguments */
    /* required by the function.                 */
@@ -853,7 +855,7 @@ bool CheckFunctionArgCount(
    /*=====================================*/
 
    if ((minArguments == UNBOUNDED) && (maxArguments == UNBOUNDED))
-     { return(true); }
+     { return true; }
 
    /*==============================================*/
    /* If the function expects exactly N arguments, */
@@ -866,9 +868,9 @@ bool CheckFunctionArgCount(
         {
          ExpectedCountError(theEnv,functionName,EXACTLY,minArguments);
          EnvSetEvaluationError(theEnv,true);
-         return(false);
+         return false;
         }
-      return(true);
+      return true;
      }
 
    /*==================================*/
@@ -880,7 +882,7 @@ bool CheckFunctionArgCount(
      {
       ExpectedCountError(theEnv,functionName,AT_LEAST,minArguments);
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 
    /*=================================*/
@@ -892,7 +894,7 @@ bool CheckFunctionArgCount(
      {
       ExpectedCountError(theEnv,functionName,NO_MORE_THAN,maxArguments);
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 
    /*===============================*/
@@ -900,7 +902,7 @@ bool CheckFunctionArgCount(
    /* within the expected range.    */
    /*===============================*/
 
-   return(true);
+   return true;
   }
 
 /*******************************************************************/

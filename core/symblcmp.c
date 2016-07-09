@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*           SYMBOL CONSTRUCT COMPILER MODULE          */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -184,7 +186,8 @@ static int SymbolHashNodesToCode(
             version++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL)
+                 { return 0; }
                newHeader = true;
               }
            }
@@ -193,7 +196,7 @@ static int SymbolHashNodesToCode(
         }
      }
 
-   return(version);
+   return version;
   }
 
 /******************************************************/
@@ -298,7 +301,8 @@ static int BitMapHashNodesToCode(
             version++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL)
+                 { return 0; }
                newHeader = true;
               }
            }
@@ -307,7 +311,7 @@ static int BitMapHashNodesToCode(
         }
      }
 
-   return(version);
+   return version;
   }
 
 /*****************************************************/
@@ -411,7 +415,8 @@ static int BitMapValuesToCode(
             version++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL)
+                 { return 0; }
                newHeader = true;
               }
            }
@@ -420,7 +425,7 @@ static int BitMapValuesToCode(
         }
      }
 
-   return(version);
+   return version;
   }
 
 /****************************************************/
@@ -513,7 +518,8 @@ static int FloatHashNodesToCode(
             arrayVersion++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL)
+                 { return 0; }
                newHeader = true;
               }
            }
@@ -522,7 +528,7 @@ static int FloatHashNodesToCode(
         }
      }
 
-   return(version);
+   return version;
   }
 
 /******************************************************/
@@ -615,7 +621,8 @@ static int IntegerHashNodesToCode(
             arrayVersion++;
             if (count < numberOfEntries)
               {
-               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL) return(0);
+               if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,version,false)) == NULL)
+                 { return 0; }
                newHeader = true;
               }
            }
@@ -624,7 +631,7 @@ static int IntegerHashNodesToCode(
         }
      }
 
-   return(version);
+   return version;
   }
 
 /****************************************************************/
@@ -651,7 +658,8 @@ static int HashTablesToCode(
 
    symbolTable = GetSymbolTable(theEnv);
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,1,false)) == NULL) return(0);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,1,false)) == NULL)
+     { return 0; }
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct symbolHashNode *sht%d[];\n",ConstructCompilerData(theEnv)->ImageID);
    fprintf(fp,"struct symbolHashNode *sht%d[%ld] = {\n",ConstructCompilerData(theEnv)->ImageID,SYMBOL_HASH_SIZE);
@@ -673,7 +681,8 @@ static int HashTablesToCode(
 
    floatTable = GetFloatTable(theEnv);
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,2,false)) == NULL) return(0);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,2,false)) == NULL)
+     { return 0; }
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct floatHashNode *fht%d[];\n",ConstructCompilerData(theEnv)->ImageID);
    fprintf(fp,"struct floatHashNode *fht%d[%d] = {\n",ConstructCompilerData(theEnv)->ImageID,FLOAT_HASH_SIZE);
@@ -696,7 +705,8 @@ static int HashTablesToCode(
 
    integerTable = GetIntegerTable(theEnv);
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,3,false)) == NULL) return(0);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,3,false)) == NULL)
+     { return 0; }
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct integerHashNode *iht%d[];\n",ConstructCompilerData(theEnv)->ImageID);
    fprintf(fp,"struct integerHashNode *iht%d[%d] = {\n",ConstructCompilerData(theEnv)->ImageID,INTEGER_HASH_SIZE);
@@ -719,7 +729,8 @@ static int HashTablesToCode(
 
    bitMapTable = GetBitMapTable(theEnv);
 
-   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,4,false)) == NULL) return(0);
+   if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,1,4,false)) == NULL)
+     { return 0; }
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"extern struct bitMapHashNode *bmht%d[];\n",ConstructCompilerData(theEnv)->ImageID);
    fprintf(fp,"struct bitMapHashNode *bmht%d[%d] = {\n",ConstructCompilerData(theEnv)->ImageID,BITMAP_HASH_SIZE);
@@ -735,7 +746,7 @@ static int HashTablesToCode(
 
     GenClose(theEnv,fp);
 
-    return(1);
+    return 1;
    }
 
 /*****************************************************/

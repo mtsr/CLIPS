@@ -1,9 +1,9 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  06/20/16            */
+   /*             CLIPS Version 6.50  07/04/16            */
    /*                                                     */
-   /*                                                     */
+   /*             CLASS FUNCTIONS HEADER FILE             */
    /*******************************************************/
 
 /*************************************************************/
@@ -37,6 +37,8 @@
 /*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Removed initial-object support.                */
 /*                                                           */
@@ -124,8 +126,8 @@ struct defclassData
    SYMBOL_HN *ISA_SYMBOL;
    SYMBOL_HN *NAME_SYMBOL;
 #if DEBUGGING_FUNCTIONS
-   unsigned WatchInstances;
-   unsigned WatchSlots;
+   bool WatchInstances;
+   bool WatchSlots;
 #endif
    unsigned short CTID;
    struct token ObjectParseToken;

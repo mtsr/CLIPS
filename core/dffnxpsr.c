@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -45,6 +45,8 @@
 /*            named construct.                               */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Fact ?var:slot references in deffunctions.     */
 /*                                                           */
@@ -101,7 +103,7 @@
   NAME         : ParseDeffunction
   DESCRIPTION  : Parses the deffunction construct
   INPUTS       : The input logical name
-  RETURNS      : false if successful parse, true otherwise
+  RETURNS      : False if successful parse, true otherwise
   SIDE EFFECTS : Creates valid deffunction definition
   NOTES        : H/L Syntax :
                  (deffunction <name> [<comment>]
@@ -132,7 +134,7 @@ bool ParseDeffunction(
    if ((Bloaded(theEnv) == true) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"deffunctions");
-      return(true);
+      return true;
      }
 #endif
 
@@ -146,10 +148,10 @@ bool ParseDeffunction(
                                  "!",true,true,true,false);
 
    if (deffunctionName == NULL)
-     { return(true); }
+     { return true; }
 
    if (ValidDeffunctionName(theEnv,ValueToString(deffunctionName)) == false)
-     { return(true); }
+     { return true; }
 
    /*==========================*/
    /* Parse the argument list. */
@@ -158,7 +160,7 @@ bool ParseDeffunction(
    parameterList = ParseProcParameters(theEnv,readSource,&DeffunctionData(theEnv)->DFInputToken,
                                        NULL,&wildcard,&min,&max,&deffunctionError,NULL);
    if (deffunctionError)
-     { return(true); }
+     { return true; }
 
    /*===================================================================*/
    /* Go ahead and add the deffunction so it can be recursively called. */
@@ -184,7 +186,7 @@ bool ParseDeffunction(
    if (dptr == NULL)
      {
       ReturnExpression(theEnv,parameterList);
-      return(true);
+      return true;
      }
 
    /*==================================================*/
@@ -229,7 +231,7 @@ bool ParseDeffunction(
          RemoveDeffunction(theEnv,dptr);
         }
 
-      return(true);
+      return true;
      }
 
    if (actions == NULL)
@@ -246,7 +248,7 @@ bool ParseDeffunction(
          RemoveConstructFromModule(theEnv,(struct constructHeader *) dptr);
          RemoveDeffunction(theEnv,dptr);
         }
-      return(true);
+      return true;
      }
 
    /*==============================================*/
@@ -268,7 +270,7 @@ bool ParseDeffunction(
          RemoveConstructFromModule(theEnv,(struct constructHeader *) dptr);
          RemoveDeffunction(theEnv,dptr);
         }
-      return(false);
+      return false;
      }
 
    /*=============================*/
@@ -302,7 +304,7 @@ bool ParseDeffunction(
   DESCRIPTION  : Determines if a new deffunction of the given
                  name can be defined in the current module
   INPUTS       : The new deffunction name
-  RETURNS      : true if OK, false otherwise
+  RETURNS      : True if OK, false otherwise
   SIDE EFFECTS : Error message printed if not OK
   NOTES        : GetConstructNameAndComment() (called before
                  this function) ensures that the deffunction
@@ -328,7 +330,7 @@ static bool ValidDeffunctionName(
      {
       PrintErrorID(theEnv,"DFFNXPSR",1,false);
       EnvPrintRouter(theEnv,WERROR,"Deffunctions are not allowed to replace constructs.\n");
-      return(false);
+      return false;
      }
 
    /*========================================*/
@@ -341,7 +343,7 @@ static bool ValidDeffunctionName(
      {
       PrintErrorID(theEnv,"DFFNXPSR",2,false);
       EnvPrintRouter(theEnv,WERROR,"Deffunctions are not allowed to replace external functions.\n");
-      return(false);
+      return false;
      }
 
 #if DEFGENERIC_CONSTRUCT
@@ -366,14 +368,14 @@ static bool ValidDeffunctionName(
          EnvPrintRouter(theEnv,WERROR," imported from module ");
          EnvPrintRouter(theEnv,WERROR,EnvGetDefmoduleName(theEnv,(void *) theModule));
          EnvPrintRouter(theEnv,WERROR," conflicts with this deffunction.\n");
-         return(false);
+         return false;
         }
       else
         {
          PrintErrorID(theEnv,"DFFNXPSR",3,false);
          EnvPrintRouter(theEnv,WERROR,"Deffunctions are not allowed to replace generic functions.\n");
         }
-      return(false);
+      return false;
      }
 #endif
 
@@ -391,10 +393,10 @@ static bool ValidDeffunctionName(
          EnvPrintRouter(theEnv,WERROR,"Deffunction ");
          EnvPrintRouter(theEnv,WERROR,EnvGetDeffunctionName(theEnv,(void *) theDeffunction));
          EnvPrintRouter(theEnv,WERROR," may not be redefined while it is executing.\n");
-         return(false);
+         return false;
         }
      }
-   return(true);
+   return true;
   }
 
 /****************************************************

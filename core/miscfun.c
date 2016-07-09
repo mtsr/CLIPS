@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/25/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -70,16 +70,18 @@
 /*            originating from sources that are not          */
 /*            statically allocated.                          */
 /*                                                           */
-/*      6.40: Refactored code to reduce header dependencies  */
-/*            in sysdep.c.                                   */
-/*                                                           */
 /*            Added Env prefix to GetEvaluationError and     */
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
+/*            Refactored code to reduce header dependencies  */
+/*            in sysdep.c.                                   */
+/*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Fact ?var:slot reference support.              */
 /*                                                           */
@@ -362,7 +364,6 @@ void RandomFunction(
         
       rv = begin + (rv % ((end - begin) + 1));
      }
-   
    
    mCVSetInteger(returnValue,rv);
   }
@@ -1691,7 +1692,7 @@ void SystemCommand(
    /*=======================================*/
    /* Execute the operating system command. */
    /*=======================================*/
-   
+
    gensystem(theEnv,commandBuffer);
 
    /*==================================================*/

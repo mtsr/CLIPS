@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*             CONSTRAINT CHECKING MODULE              */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*            imported modules.                              */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -84,77 +86,77 @@ static bool CheckFunctionReturnType(
   int functionReturnType,
   CONSTRAINT_RECORD *constraints)
   {
-   if (constraints == NULL) return(true);
+   if (constraints == NULL) return true;
 
-   if (constraints->anyAllowed) return(true);
+   if (constraints->anyAllowed) return true;
 
    switch(functionReturnType)
      {
       case 'c':
       case 'w':
       case 'b':
-        if (constraints->symbolsAllowed) return(true);
-        else return(false);
+        if (constraints->symbolsAllowed) return true;
+        else return false;
 
       case 's':
-        if (constraints->stringsAllowed) return(true);
-        else return(false);
+        if (constraints->stringsAllowed) return true;
+        else return false;
 
       case 'j':
         if ((constraints->symbolsAllowed) ||
             (constraints->stringsAllowed) ||
-            (constraints->instanceNamesAllowed)) return(true);
-        else return(false);
+            (constraints->instanceNamesAllowed)) return true;
+        else return false;
 
       case 'k':
-        if ((constraints->symbolsAllowed) || (constraints->stringsAllowed)) return(true);
-        else return(false);
+        if ((constraints->symbolsAllowed) || (constraints->stringsAllowed)) return true;
+        else return false;
 
       case 'd':
       case 'f':
-        if (constraints->floatsAllowed) return(true);
-        else return(false);
+        if (constraints->floatsAllowed) return true;
+        else return false;
 
       case 'i':
       case 'l':
-        if (constraints->integersAllowed) return(true);
-        else return(false);
+        if (constraints->integersAllowed) return true;
+        else return false;
 
       case 'n':
-        if ((constraints->integersAllowed) || (constraints->floatsAllowed)) return(true);
-        else return(false);
+        if ((constraints->integersAllowed) || (constraints->floatsAllowed)) return true;
+        else return false;
 
       case 'm':
-        if (constraints->multifieldsAllowed) return(true);
-        else return(false);
+        if (constraints->multifieldsAllowed) return true;
+        else return false;
 
       case 'a':
-        if (constraints->externalAddressesAllowed) return(true);
-        else return(false);
+        if (constraints->externalAddressesAllowed) return true;
+        else return false;
 
       case 'x':
-        if (constraints->instanceAddressesAllowed) return(true);
-        else return(false);
+        if (constraints->instanceAddressesAllowed) return true;
+        else return false;
 
       case 'y':
-        if (constraints->factAddressesAllowed) return(true);
-        else return(false);
+        if (constraints->factAddressesAllowed) return true;
+        else return false;
 
       case 'o':
-        if (constraints->instanceNamesAllowed) return(true);
-        else return(false);
+        if (constraints->instanceNamesAllowed) return true;
+        else return false;
 
       case 'u':
-        return(true);
+        return true;
 
       case 'z':
-        return(true);
+        return true;
 
       case 'v':
-        if (constraints->voidAllowed) return(true);
+        if (constraints->voidAllowed) return true;
      }
 
-   return(true);
+   return true;
   }
 
 /*******************************************************/
@@ -167,9 +169,9 @@ static bool CheckFunctionReturnType2(
   unsigned functionReturnType,
   CONSTRAINT_RECORD *constraints)
   {
-   if (constraints == NULL) return(true);
+   if (constraints == NULL) return true;
 
-   if (constraints->anyAllowed) return(true);
+   if (constraints->anyAllowed) return true;
 
    if (constraints->voidAllowed)
      { if (functionReturnType & VOID_TYPE) return true; }
@@ -201,7 +203,7 @@ static bool CheckFunctionReturnType2(
    if (constraints->instanceAddressesAllowed)
      { if (functionReturnType & INSTANCE_ADDRESS_TYPE) return true; }
 
-   return(false);
+   return false;
   }
 
 /****************************************************/
@@ -213,42 +215,42 @@ static bool CheckTypeConstraint(
   int type,
   CONSTRAINT_RECORD *constraints)
   {
-   if (type == RVOID) return(false);
+   if (type == RVOID) return false;
 
-   if (constraints == NULL) return(true);
+   if (constraints == NULL) return true;
 
-   if (constraints->anyAllowed == true) return(true);
+   if (constraints->anyAllowed == true) return true;
 
    if ((type == SYMBOL) && (constraints->symbolsAllowed != true))
-     { return(false); }
+     { return false; }
 
    if ((type == STRING) && (constraints->stringsAllowed != true))
-     { return(false); }
+     { return false; }
 
    if ((type == FLOAT) && (constraints->floatsAllowed != true))
-     { return(false); }
+     { return false; }
 
    if ((type == INTEGER) && (constraints->integersAllowed != true))
-     { return(false); }
+     { return false; }
 
 #if OBJECT_SYSTEM
    if ((type == INSTANCE_NAME) && (constraints->instanceNamesAllowed != true))
-     { return(false); }
+     { return false; }
 
    if ((type == INSTANCE_ADDRESS) && (constraints->instanceAddressesAllowed != true))
-     { return(false); }
+     { return false; }
 #endif
 
    if ((type == EXTERNAL_ADDRESS) && (constraints->externalAddressesAllowed != true))
-     { return(false); }
+     { return false; }
 
    if ((type == RVOID) && (constraints->voidAllowed != true))
-     { return(false); }
+     { return false; }
 
    if ((type == FACT_ADDRESS) && (constraints->factAddressesAllowed != true))
-     { return(false); }
+     { return false; }
 
-   return(true);
+   return true;
   }
 
 /********************************************************/
@@ -266,7 +268,7 @@ bool CheckCardinalityConstraint(
    /* are no cardinality restrictions.        */
    /*=========================================*/
 
-   if (constraints == NULL) return(true);
+   if (constraints == NULL) return true;
 
    /*==================================*/
    /* Determine if the integer is less */
@@ -278,7 +280,7 @@ bool CheckCardinalityConstraint(
       if (constraints->minFields->value != SymbolData(theEnv)->NegativeInfinity)
         {
          if (number < ValueToLong(constraints->minFields->value))
-           { return(false); }
+           { return false; }
         }
      }
 
@@ -292,7 +294,7 @@ bool CheckCardinalityConstraint(
       if (constraints->maxFields->value != SymbolData(theEnv)->PositiveInfinity)
         {
          if (number > ValueToLong(constraints->maxFields->value))
-           { return(false); }
+           { return false; }
         }
      }
 
@@ -300,7 +302,7 @@ bool CheckCardinalityConstraint(
    /* The integer falls within the allowed cardinality range. */
    /*=========================================================*/
 
-   return(true);
+   return true;
   }
 
 /*****************************************************************/
@@ -321,7 +323,7 @@ static bool CheckRangeAgainstCardinalityConstraint(
    /* are no cardinality restrictions.        */
    /*=========================================*/
 
-   if (constraints == NULL) return(true);
+   if (constraints == NULL) return true;
 
    /*===============================================================*/
    /* If the minimum value of the range is greater than the maximum */
@@ -335,7 +337,7 @@ static bool CheckRangeAgainstCardinalityConstraint(
       if (constraints->maxFields->value != SymbolData(theEnv)->PositiveInfinity)
         {
          if (min > ValueToLong(constraints->maxFields->value))
-           { return(false); }
+           { return false; }
         }
      }
 
@@ -352,7 +354,7 @@ static bool CheckRangeAgainstCardinalityConstraint(
       if (constraints->minFields->value != SymbolData(theEnv)->NegativeInfinity)
         {
          if (max < ValueToLong(constraints->minFields->value))
-           { return(false); }
+           { return false; }
         }
      }
 
@@ -361,7 +363,7 @@ static bool CheckRangeAgainstCardinalityConstraint(
    /* falls within the allowed cardinality range. */
    /*=============================================*/
 
-   return(true);
+   return true;
   }
 
 /**********************************************************************/
@@ -382,7 +384,7 @@ bool CheckAllowedValuesConstraint(
    /* are no allowed-... restrictions.        */
    /*=========================================*/
 
-   if (constraints == NULL) return(true);
+   if (constraints == NULL) return true;
 
    /*=====================================================*/
    /* Determine if there are any allowed-... restrictions */
@@ -394,37 +396,37 @@ bool CheckAllowedValuesConstraint(
       case SYMBOL:
         if ((constraints->symbolRestriction == false) &&
             (constraints->anyRestriction == false))
-          { return(true); }
+          { return true; }
         break;
 
 #if OBJECT_SYSTEM
       case INSTANCE_NAME:
         if ((constraints->instanceNameRestriction == false) &&
             (constraints->anyRestriction == false))
-          { return(true); }
+          { return true; }
         break;
 #endif
 
       case STRING:
         if ((constraints->stringRestriction == false) &&
             (constraints->anyRestriction == false))
-          { return(true); }
+          { return true; }
         break;
 
       case INTEGER:
         if ((constraints->integerRestriction == false) &&
             (constraints->anyRestriction == false))
-          { return(true); }
+          { return true; }
         break;
 
       case FLOAT:
         if ((constraints->floatRestriction == false) &&
             (constraints->anyRestriction == false))
-          { return(true); }
+          { return true; }
         break;
 
       default:
-        return(true);
+        return true;
      }
 
    /*=========================================================*/
@@ -436,7 +438,7 @@ bool CheckAllowedValuesConstraint(
         tmpPtr != NULL;
         tmpPtr = tmpPtr->nextArg)
      {
-      if ((tmpPtr->type == type) && (tmpPtr->value == vPtr)) return(true);
+      if ((tmpPtr->type == type) && (tmpPtr->value == vPtr)) return true;
      }
 
    /*====================================================*/
@@ -444,7 +446,7 @@ bool CheckAllowedValuesConstraint(
    /* false because the constraint has been violated.    */
    /*====================================================*/
 
-   return(false);
+   return false;
   }
 
 /**********************************************************************/
@@ -469,7 +471,7 @@ bool CheckAllowedClassesConstraint(
    /* is no allowed-classes restriction.      */
    /*=========================================*/
 
-   if (constraints == NULL) return(true);
+   if (constraints == NULL) return true;
 
    /*======================================*/
    /* The constraint is satisfied if there */
@@ -477,7 +479,7 @@ bool CheckAllowedClassesConstraint(
    /*======================================*/
    
    if (constraints->classList == NULL)
-     { return(true); }
+     { return true; }
 
    /*==================================*/
    /* Class restrictions only apply to */
@@ -485,7 +487,7 @@ bool CheckAllowedClassesConstraint(
    /*==================================*/
     
    if ((type != INSTANCE_ADDRESS) && (type != INSTANCE_NAME))
-     { return(true); }
+     { return true; }
 
    /*=============================================*/
    /* If an instance name is specified, determine */
@@ -498,7 +500,7 @@ bool CheckAllowedClassesConstraint(
      { ins = FindInstanceBySymbol(theEnv,(SYMBOL_HN *) vPtr); }
     
    if (ins == NULL)
-     { return(false); }
+     { return false; }
    
    /*======================================================*/
    /* Search through the class list to see if the instance */
@@ -513,8 +515,8 @@ bool CheckAllowedClassesConstraint(
       //cmpClass = (DEFCLASS *) EnvFindDefclass(theEnv,ValueToString(tmpPtr->value));
       cmpClass = (DEFCLASS *) LookupDefclassByMdlOrScope(theEnv,ValueToString(tmpPtr->value));
       if (cmpClass == NULL) continue;
-      if (cmpClass == insClass) return(true);
-      if (EnvSubclassP(theEnv,insClass,cmpClass)) return(true);
+      if (cmpClass == insClass) return true;
+      if (EnvSubclassP(theEnv,insClass,cmpClass)) return true;
      }
 
    /*=========================================================*/
@@ -522,7 +524,7 @@ bool CheckAllowedClassesConstraint(
    /* false because the constraint has been violated.         */
    /*=========================================================*/
 
-   return(false);
+   return false;
 #else
 
 #if MAC_XCD
@@ -532,7 +534,7 @@ bool CheckAllowedClassesConstraint(
 #pragma unused(constraints)
 #endif
 
-   return(true);
+   return true;
 #endif     
   }
 
@@ -553,14 +555,14 @@ static bool CheckRangeConstraint(
    /* there are no range restrictions.  */
    /*===================================*/
 
-   if (constraints == NULL) return(true);
+   if (constraints == NULL) return true;
 
    /*============================================*/
    /* If the value being checked isn't a number, */
    /* then the range restrictions don't apply.   */
    /*============================================*/
 
-   if ((type != INTEGER) && (type != FLOAT)) return(true);
+   if ((type != INTEGER) && (type != FLOAT)) return true;
 
    /*=====================================================*/
    /* Check each of the range restrictions to see if the  */
@@ -585,7 +587,7 @@ static bool CheckRangeConstraint(
          maxList = maxList->nextArg;
         }
       else
-        { return(true); }
+        { return true; }
      }
 
    /*===========================================*/
@@ -593,7 +595,7 @@ static bool CheckRangeConstraint(
    /* within one of the allowed numeric ranges. */
    /*===========================================*/
 
-   return(false);
+   return false;
   }
 
 /************************************************/
@@ -900,7 +902,7 @@ int ConstraintCheckExpression(
 bool UnmatchableConstraint(
   CONSTRAINT_RECORD *theConstraint)
   {
-   if (theConstraint == NULL) return(false);
+   if (theConstraint == NULL) return false;
 
    if ((! theConstraint->anyAllowed) &&
        (! theConstraint->symbolsAllowed) &&
@@ -913,9 +915,9 @@ bool UnmatchableConstraint(
        (! theConstraint->externalAddressesAllowed) &&
        (! theConstraint->voidAllowed) &&
        (! theConstraint->factAddressesAllowed))
-     { return(true); }
+     { return true; }
 
-   return(false);
+   return false;
   }
 
 #endif /* (! RUN_TIME) */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/27/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                 RETE UTILITY MODULE                 */
    /*******************************************************/
@@ -46,6 +46,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Incremental reset is always enabled.           */
 /*                                                           */
@@ -837,10 +839,10 @@ bool FindEntityInPartialMatch(
      {
       if (thePartialMatch->binds[i].gm.theMatch == NULL) continue;
       if (thePartialMatch->binds[i].gm.theMatch->matchingItem == theEntity)
-        { return(true); }
+        { return true; }
      }
 
-   return(false);
+   return false;
   }
   
 /***********************************************************************/
@@ -1178,16 +1180,16 @@ bool BetaMemoryNotEmpty(
    if (theJoin->leftMemory != NULL)
      {
       if (theJoin->leftMemory->count > 0)
-        { return(true); }
+        { return true; }
      }
      
    if (theJoin->rightMemory != NULL)
      {
       if (theJoin->rightMemory->count > 0)
-        { return(true); }
+        { return true; }
      }
      
-   return(false);
+   return false;
   }
     
 /*********************************************/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/24/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                FACT COMMANDS MODULE                 */
    /*******************************************************/
@@ -51,7 +51,9 @@
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
 /*                                                           */
-/*      6.40: Pragma once and other inclusion changes.       */
+/*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
@@ -867,7 +869,7 @@ bool EnvSaveFactsDriver(
    if ((filePtr = GenOpen(theEnv,fileName,"w")) == NULL)
      {
       OpenErrorMessage(theEnv,"save-facts",fileName);
-      return(false);
+      return false;
      }
 
    SetFastSave(theEnv,filePtr);
@@ -897,7 +899,7 @@ bool EnvSaveFactsDriver(
       PrintUtilityData(theEnv)->InstanceAddressesToNames = tempValue3;
       GenClose(theEnv,filePtr);
       SetFastSave(theEnv,NULL);
-      return(false);
+      return false;
      }
 
    /*=================*/
@@ -986,7 +988,7 @@ bool EnvSaveFactsDriver(
    /* occurred while saving the facts.  */
    /*===================================*/
 
-   return(true);
+   return true;
   }
 
 /*******************************************************************/
@@ -1139,7 +1141,7 @@ bool EnvLoadFacts(
    if ((filePtr = GenOpen(theEnv,fileName,"r")) == NULL)
      {
       OpenErrorMessage(theEnv,"load-facts",fileName);
-      return(false);
+      return false;
      }
 
    SetFastLoad(theEnv,filePtr);
@@ -1169,8 +1171,8 @@ bool EnvLoadFacts(
    /* the facts, otherwise return false.             */
    /*================================================*/
 
-   if (EvaluationData(theEnv)->EvaluationError) return(false);
-   return(true);
+   if (EvaluationData(theEnv)->EvaluationError) return false;
+   return true;
   }
 
 /*********************************************/
@@ -1192,7 +1194,7 @@ bool EnvLoadFactsFromString(
 
    if ((theMax == -1) ? (!OpenStringSource(theEnv,theStrRouter,theString,0)) :
                         (!OpenTextSource(theEnv,theStrRouter,theString,0,(size_t) theMax)))
-     return(false);
+     return false;
 
    /*=================*/
    /* Load the facts. */
@@ -1218,8 +1220,8 @@ bool EnvLoadFactsFromString(
    /* the facts, otherwise return false.             */
    /*================================================*/
 
-   if (EvaluationData(theEnv)->EvaluationError) return(false);
-   return(true);
+   if (EvaluationData(theEnv)->EvaluationError) return false;
+   return true;
   }
 
 /**************************************************************************/

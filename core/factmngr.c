@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/24/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -65,6 +65,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Removed initial-fact support.                  */
 /*                                                           */
@@ -425,7 +427,7 @@ void PrintFact(
   void *theEnv,
   const char *logicalName,
   struct fact *factPtr,
-  bool seperateLines,
+  bool separateLines,
   bool ignoreDefaults,
   const char *changeMap)
   {
@@ -437,7 +439,7 @@ void PrintFact(
 
    if (factPtr->whichDeftemplate->implied == false)
      {
-      PrintTemplateFact(theEnv,logicalName,factPtr,seperateLines,ignoreDefaults,changeMap);
+      PrintTemplateFact(theEnv,logicalName,factPtr,separateLines,ignoreDefaults,changeMap);
       return;
      }
 
@@ -497,7 +499,7 @@ bool RetractDriver(
      {
       PrintErrorID(theEnv,"FACTMNGR",1,true);
       EnvPrintRouter(theEnv,WERROR,"Facts may not be retracted during pattern-matching\n");
-      return(false);
+      return false;
      }
 
    /*====================================*/
@@ -508,14 +510,14 @@ bool RetractDriver(
    if (theFact == NULL)
      {
       RemoveAllFacts(theEnv);
-      return(true);
+      return true;
      }
 
    /*======================================================*/
    /* Check to see if the fact has already been retracted. */
    /*======================================================*/
 
-   if (theFact->garbage) return(false);
+   if (theFact->garbage) return false;
    
    /*===========================================*/
    /* Execute the list of functions that are    */
@@ -676,7 +678,7 @@ bool RetractDriver(
    /* was successfully retracted.      */
    /*==================================*/
 
-   return(true);
+   return true;
   }
 
 /*********************************************************/
@@ -1060,12 +1062,12 @@ bool EnvGetFactSlot(
 
    if (theDeftemplate->implied)
      {
-      if (slotName != NULL) return(false);
+      if (slotName != NULL) return false;
       theValue->type = theFact->theProposition.theFields[0].type;
       theValue->value = theFact->theProposition.theFields[0].value;
       SetpDOBegin(theValue,1);
       SetpDOEnd(theValue,((struct multifield *) theValue->value)->multifieldLength);
-      return(true);
+      return true;
      }
 
    /*===================================*/
@@ -1074,7 +1076,7 @@ bool EnvGetFactSlot(
    /*===================================*/
 
    if (FindSlot(theDeftemplate,(SYMBOL_HN *) EnvAddSymbol(theEnv,slotName),&whichSlot) == NULL)
-     { return(false); }
+     { return false; }
 
    /*======================================================*/
    /* Return the slot value. If the slot value wasn't set, */
@@ -1090,9 +1092,9 @@ bool EnvGetFactSlot(
       SetpDOEnd(theValue,((struct multifield *) theValue->value)->multifieldLength);
      }
 
-   if (theValue->type == RVOID) return(false);
+   if (theValue->type == RVOID) return false;
 
-   return(true);
+   return true;
   }
 
 /***************************************/
@@ -1125,7 +1127,7 @@ bool EnvPutFactSlot(
    if (theDeftemplate->implied)
      {
       if ((slotName != NULL) || (theValue->type != MULTIFIELD))
-        { return(false); }
+        { return false; }
 
       if (theFact->theProposition.theFields[0].type == MULTIFIELD)
         { ReturnMultifield(theEnv,(struct multifield *) theFact->theProposition.theFields[0].value); }
@@ -1133,7 +1135,7 @@ bool EnvPutFactSlot(
       theFact->theProposition.theFields[0].type = theValue->type;
       theFact->theProposition.theFields[0].value = DOToMultifield(theEnv,theValue);
       
-      return(true);
+      return true;
      }
 
    /*===================================*/
@@ -1142,7 +1144,7 @@ bool EnvPutFactSlot(
    /*===================================*/
 
    if ((theSlot = FindSlot(theDeftemplate,(SYMBOL_HN *) EnvAddSymbol(theEnv,slotName),&whichSlot)) == NULL)
-     { return(false); }
+     { return false; }
 
    /*=============================================*/
    /* Make sure a single field value is not being */
@@ -1151,7 +1153,7 @@ bool EnvPutFactSlot(
 
    if (((theSlot->multislot == 0) && (theValue->type == MULTIFIELD)) ||
        ((theSlot->multislot == 1) && (theValue->type != MULTIFIELD)))
-     { return(false); }
+     { return false; }
 
    /*=====================*/
    /* Set the slot value. */
@@ -1167,7 +1169,7 @@ bool EnvPutFactSlot(
    else
      { theFact->theProposition.theFields[whichSlot-1].value = theValue->value; }
    
-   return(true);
+   return true;
   }
 
 /********************************************************/
@@ -1197,7 +1199,7 @@ bool EnvAssignFactSlotDefaults(
    /* of length zero when the fact is created.       */
    /*================================================*/
 
-   if (theDeftemplate->implied) return(true);
+   if (theDeftemplate->implied) return true;
 
    /*============================================*/
    /* Loop through each slot of the deftemplate. */
@@ -1230,7 +1232,7 @@ bool EnvAssignFactSlotDefaults(
    /* values have been successfully set.       */
    /*==========================================*/
 
-   return(true);
+   return true;
   }
   
 /********************************************************/
@@ -1249,7 +1251,7 @@ bool DeftemplateSlotDefault(
    /* implied deftemplate does not have a default.    */
    /*=================================================*/
 
-   if (theDeftemplate->implied) return(false);
+   if (theDeftemplate->implied) return false;
 
    /*===============================================*/
    /* If the (default ?NONE) attribute was declared */
@@ -1259,7 +1261,7 @@ bool DeftemplateSlotDefault(
    /* default value can't be used for the slot.     */
    /*===============================================*/
 
-   if (slotPtr->noDefault) return(false);
+   if (slotPtr->noDefault) return false;
 
    /*==============================================*/
    /* Otherwise if a static default was specified, */
@@ -1289,7 +1291,7 @@ bool DeftemplateSlotDefault(
       if (! EvaluateAndStoreInDataObject(theEnv,(int) slotPtr->multislot,
                                          (EXPRESSION *) slotPtr->defaultList,
                                          theResult,garbageMultifield))
-        { return(false); }
+        { return false; }
      }
 
    /*====================================*/
@@ -1308,7 +1310,7 @@ bool DeftemplateSlotDefault(
    /* values have been successfully set.       */
    /*==========================================*/
 
-   return(true);
+   return true;
   }
 
 /***************************************************************/
@@ -1332,7 +1334,7 @@ bool CopyFactSlotValues(
 
    theDeftemplate = theSourceFact->whichDeftemplate;
    if (theDestFact->whichDeftemplate != theDeftemplate)
-     { return(false); }
+     { return false; }
 
    /*===================================================*/
    /* Loop through each slot of the deftemplate copying */
@@ -1362,7 +1364,7 @@ bool CopyFactSlotValues(
    /* values were successfully copied.       */
    /*========================================*/
 
-   return(true);
+   return true;
   }
 
 /*********************************************/
@@ -1704,7 +1706,7 @@ static bool ClearFactsReady(
    /* operation is already in progress.    */
    /*======================================*/
 
-   if (EngineData(theEnv)->JoinOperationInProgress) return(false);
+   if (EngineData(theEnv)->JoinOperationInProgress) return false;
    
    /*====================================*/
    /* Initialize the fact index to zero. */
@@ -1723,14 +1725,14 @@ static bool ClearFactsReady(
    /* remaining, don't continue with the clear.    */
    /*==============================================*/
 
-   if (EnvGetNextFact(theEnv,NULL) != NULL) return(false);
+   if (EnvGetNextFact(theEnv,NULL) != NULL) return false;
 
    /*=============================*/
    /* Return true to indicate the */
    /* clear command can continue. */
    /*=============================*/
 
-   return(true);
+   return true;
   }
 
 /***************************************************/
@@ -1768,7 +1770,7 @@ bool EnvAddAssertFunction(
       AddFunctionToCallListWithArg(theEnv,name,priority,
                                               functionPtr,
                                               FactData(theEnv)->ListOfAssertFunctions);
-   return(1);
+   return true;
   }
     
 /********************************************/
@@ -1786,7 +1788,7 @@ bool EnvAddAssertFunctionWithContext(
       AddFunctionToCallListWithArgWithContext(theEnv,name,priority,functionPtr,
                                        FactData(theEnv)->ListOfAssertFunctions,
                                        context);
-   return(1);
+   return true;
   }
     
 /***********************************************/
@@ -1802,9 +1804,9 @@ bool EnvRemoveAssertFunction(
    FactData(theEnv)->ListOfAssertFunctions =
       RemoveFunctionFromCallListWithArg(theEnv,name,FactData(theEnv)->ListOfAssertFunctions,&found);
 
-   if (found) return(true);
+   if (found) return true;
 
-   return(false);
+   return false;
   }
   
 /******************************************/
@@ -1821,7 +1823,7 @@ bool EnvAddRetractFunction(
       AddFunctionToCallListWithArg(theEnv,name,priority,
                                               functionPtr,
                                               FactData(theEnv)->ListOfRetractFunctions);
-   return(1);
+   return true;
   }
     
 /*********************************************/
@@ -1839,7 +1841,7 @@ bool EnvAddRetractFunctionWithContext(
       AddFunctionToCallListWithArgWithContext(theEnv,name,priority,functionPtr,
                                        FactData(theEnv)->ListOfRetractFunctions,
                                        context);
-   return(1);
+   return true;
   }
     
 /************************************************/
@@ -1855,9 +1857,9 @@ bool EnvRemoveRetractFunction(
    FactData(theEnv)->ListOfRetractFunctions =
       RemoveFunctionFromCallListWithArg(theEnv,name,FactData(theEnv)->ListOfRetractFunctions,&found);
 
-   if (found) return(true);
+   if (found) return true;
 
-   return(false);
+   return false;
   }
 
 /*****************************************/
@@ -1874,7 +1876,7 @@ bool EnvAddModifyFunction(
       AddFunctionToCallListWithArg(theEnv,name,priority,
                                               (void (*)(void *, void *)) functionPtr,
                                               FactData(theEnv)->ListOfModifyFunctions);
-   return(1);
+   return true;
   }
     
 /********************************************/
@@ -1893,7 +1895,7 @@ bool EnvAddModifyFunctionWithContext(
                                        (void (*)(void *, void *)) functionPtr,
                                        FactData(theEnv)->ListOfModifyFunctions,
                                        context);
-   return(1);
+   return true;
   }
     
 /***********************************************/
@@ -1909,9 +1911,9 @@ bool EnvRemoveModifyFunction(
    FactData(theEnv)->ListOfModifyFunctions =
       RemoveFunctionFromCallListWithArg(theEnv,name,FactData(theEnv)->ListOfModifyFunctions,&found);
 
-   if (found) return(true);
+   if (found) return true;
 
-   return(false);
+   return false;
   }
 
 #endif /* DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT */

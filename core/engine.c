@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -68,6 +68,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
@@ -184,7 +186,8 @@ long long EnvRun(
    /* Make sure the run command is not already executing. */
    /*=====================================================*/
 
-   if (EngineData(theEnv)->AlreadyRunning) return(0);
+   if (EngineData(theEnv)->AlreadyRunning)
+     { return 0; }
    EngineData(theEnv)->AlreadyRunning = true;
     
    /*========================================*/
@@ -654,7 +657,7 @@ long long EnvRun(
    /*===================================*/
 
    EngineData(theEnv)->AlreadyRunning = false;
-   return(rulesFired);
+   return rulesFired;
   }
 
 /***********************************************************/
@@ -915,7 +918,7 @@ bool EnvAddRunFunction(
    EngineData(theEnv)->ListOfRunFunctions = AddFunctionToCallList(theEnv,name,priority,
                                               functionPtr,
                                               EngineData(theEnv)->ListOfRunFunctions);
-   return(true);
+   return true;
   }
   
 /********************************************/
@@ -931,7 +934,7 @@ bool EnvAddBeforeRunFunction(
    EngineData(theEnv)->ListOfBeforeRunFunctions = AddFunctionToCallListWithArg(theEnv,name,priority,
                                               functionPtr,
                                               EngineData(theEnv)->ListOfBeforeRunFunctions);
-   return(true);
+   return true;
   }
   
 /*****************************************/
@@ -949,7 +952,7 @@ bool EnvAddRunFunctionWithContext(
       AddFunctionToCallListWithContext(theEnv,name,priority,functionPtr,
                                        EngineData(theEnv)->ListOfRunFunctions,
                                        context);
-   return(true);
+   return true;
   }
   
 /***********************************************/
@@ -967,7 +970,7 @@ bool EnvAddBeforeRunFunctionWithContext(
       AddFunctionToCallListWithArgWithContext(theEnv,name,priority,functionPtr,
                                        EngineData(theEnv)->ListOfBeforeRunFunctions,
                                        context);
-   return(true);
+   return true;
   }
   
 /********************************************/
@@ -999,9 +1002,7 @@ bool EnvRemoveBeforeRunFunction(
    EngineData(theEnv)->ListOfBeforeRunFunctions = 
       RemoveFunctionFromCallListWithArg(theEnv,name,EngineData(theEnv)->ListOfBeforeRunFunctions,&found);
 
-   if (found) return(true);
-
-   return(false);
+   return found;
   }
 
 /*********************************************************/

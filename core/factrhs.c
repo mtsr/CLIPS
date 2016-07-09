@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/24/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*            FACT RHS PATTERN PARSER MODULE           */
    /*******************************************************/
@@ -37,6 +37,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 

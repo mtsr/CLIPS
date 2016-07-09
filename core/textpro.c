@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*               TEXT PROCESSING MODULE                */
    /*******************************************************/
@@ -51,6 +51,8 @@
 /*            on Windows with files having unix eol.         */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -354,7 +356,7 @@ bool TextLookupToss(
         l_flag = 0;
      }
    if (clptr == NULL)
-     return(false);
+     return false;
 
    TossFunction(theEnv,clptr->topics);
 
@@ -363,7 +365,7 @@ bool TextLookupToss(
    else
      plptr->next = clptr->next;
    rm(theEnv,(void *) clptr,(int) sizeof(struct lists));
-   return(true);
+   return true;
   }
 
 /******************************************************************************/
@@ -688,7 +690,7 @@ static struct entries *AllocateEntryNode(
 
 /******************************************************************************/
 /*FUNCTION ATTACH_LEAF :                                                      */
-/* Input : 1) address of current NewFetchFile                                    */
+/* Input : 1) address of current NewFetchFile                                 */
 /*         2) address of current topic entry-node                             */
 /*         3) file pointer                                                    */
 /*         4) name of file                                                    */
@@ -739,7 +741,7 @@ static bool AttachLeaf(
         PrintLongInteger(theEnv,WERROR,line_ct);
         EnvPrintRouter(theEnv,WERROR," : Non-menu entries cannot have subtopics.\n");
 
-        return(false);
+        return false;
        }
    /*====================================*/
    /*Brother-topic -- same level in tree */
@@ -804,7 +806,7 @@ static bool AttachLeaf(
         }
      }
    TextProcessingData(theEnv)->parent = enode;
-   return(true);
+   return true;
   }
 
 /******************************************************************************/

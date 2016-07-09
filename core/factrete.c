@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/24/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*          FACT RETE ACCESS FUNCTIONS MODULE          */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*            Support for hashing optimizations.             */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Modify command preserves fact address.         */
 /*                                                           */
@@ -92,7 +94,7 @@ bool FactPNGetVar1(
      {
       returnValue->type = FACT_ADDRESS;
       returnValue->value = (void *) factPtr;
-      return(true);
+      return true;
      }
 
    /*=========================================================*/
@@ -111,7 +113,7 @@ bool FactPNGetVar1(
          SetpDOEnd(returnValue,((struct multifield *) fieldPtr->value)->multifieldLength);
         }
 
-      return(true);
+      return true;
      }
 
    /*====================================================*/
@@ -146,7 +148,7 @@ bool FactPNGetVar1(
       returnValue->value = (void *) fieldPtr->value;
       returnValue->begin = theField;
       returnValue->end = theField + extent - 1;
-      return(true);
+      return true;
      }
 
    /*========================================================*/
@@ -160,7 +162,7 @@ bool FactPNGetVar1(
    returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
-   return(true);
+   return true;
   }
 
 /**************************************************/
@@ -198,7 +200,7 @@ bool FactPNGetVar2(
    returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
-   return(true);
+   return true;
   }
 
 /*****************************************************************/
@@ -245,7 +247,7 @@ bool FactPNGetVar3(
       returnValue->value = (void *) segmentPtr;
       returnValue->begin = (long) hack->beginOffset;
       returnValue->end = (long) (segmentPtr->multifieldLength - (hack->endOffset + 1));
-      return(true);
+      return true;
      }
 
    /*=====================================================*/
@@ -260,7 +262,7 @@ bool FactPNGetVar3(
    returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
-   return(true);
+   return true;
   }
 
 /******************************************************/
@@ -423,7 +425,7 @@ bool FactJNGetVar1(
      {
       returnValue->type = FACT_ADDRESS;
       returnValue->value = (void *) factPtr;
-      return(true);
+      return true;
      }
 
    if ((factPtr->basisSlots != NULL) &&
@@ -448,7 +450,7 @@ bool FactJNGetVar1(
          SetpDOEnd(returnValue,((struct multifield *) fieldPtr->value)->multifieldLength);
         }
 
-      return(true);
+      return true;
      }
 
    /*====================================================*/
@@ -468,7 +470,7 @@ bool FactJNGetVar1(
      {
       returnValue->type = fieldPtr->type;
       returnValue->value = fieldPtr->value;
-      return(true);
+      return true;
      }
 
    /*==========================================================*/
@@ -490,7 +492,7 @@ bool FactJNGetVar1(
       returnValue->value = (void *) fieldPtr->value;
       returnValue->begin = theField;
       returnValue->end = theField + extent - 1;
-      return(true);
+      return true;
      }
 
    /*========================================================*/
@@ -504,7 +506,7 @@ bool FactJNGetVar1(
    returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
-   return(true);
+   return true;
   }
 
 /*************************************************/
@@ -555,7 +557,7 @@ bool FactJNGetVar2(
    returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
-   return(true);
+   return true;
   }
 
 /****************************************************************/
@@ -615,7 +617,7 @@ bool FactJNGetVar3(
       returnValue->value = (void *) segmentPtr;
       returnValue->begin = hack->beginOffset;
       returnValue->end = (long) (segmentPtr->multifieldLength - (hack->endOffset + 1));
-      return(true);
+      return true;
      }
 
    /*=====================================================*/
@@ -630,7 +632,7 @@ bool FactJNGetVar3(
    returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
-   return(true);
+   return true;
   }
 
 /****************************************************/
@@ -663,13 +665,13 @@ bool FactSlotLength(
    segmentPtr = (struct multifield *) FactData(theEnv)->CurrentPatternFact->theProposition.theFields[hack->whichSlot].value;
 
    if (segmentPtr->multifieldLength < (hack->minLength + extraOffset))
-     { return(false); }
+     { return false; }
 
    if (hack->exactly && (segmentPtr->multifieldLength > (hack->minLength + extraOffset)))
-     { return(false); }
+     { return false; }
 
    returnValue->value = EnvTrueSymbol(theEnv);
-   return(true);
+   return true;
   }
 
 /************************************************************/
@@ -717,13 +719,13 @@ bool FactJNCompVars1(
 
    if (fact1->theProposition.theFields[e1].type !=
        fact2->theProposition.theFields[e2].type)
-     { return((int) hack->fail); }
+     { return((bool) hack->fail); }
 
    if (fact1->theProposition.theFields[e1].value !=
        fact2->theProposition.theFields[e2].value)
-     { return((int) hack->fail); }
+     { return((bool) hack->fail); }
 
-   return((int) hack->pass);
+   return((bool) hack->pass);
   }
 
 /*****************************************************************/
@@ -802,12 +804,12 @@ bool FactJNCompVars2(
    /*=====================*/
 
    if (fieldPtr1->type != fieldPtr2->type)
-     { return((int) hack->fail); }
+     { return((bool) hack->fail); }
 
    if (fieldPtr1->value != fieldPtr2->value)
-     { return((int) hack->fail); }
+     { return((bool) hack->fail); }
 
-   return((int) hack->pass);
+   return((bool) hack->pass);
   }
 
 /*****************************************************/
@@ -937,7 +939,7 @@ bool FactStoreMultifield(
 #endif
 
    StoreInMultifield(theEnv,theResult,GetFirstArgument(),false);
-   return(true);
+   return true;
   }
 
 #endif /* DEFTEMPLATE_CONSTRUCT && DEFRULE_CONSTRUCT */

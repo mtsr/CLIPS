@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/20/16            */
+   /*             CLIPS Version 6.40  07/04/16            */
    /*                                                     */
    /*                 AGENDA HEADER FILE                  */
    /*******************************************************/
@@ -44,6 +44,8 @@
 /*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -95,7 +97,7 @@ typedef struct activation ACTIVATION;
 struct agendaData
   { 
 #if DEBUGGING_FUNCTIONS
-   unsigned WatchActivations;
+   bool WatchActivations;
 #endif
    unsigned long NumberOfActivations;
    unsigned long long CurrentTimetag;
@@ -117,7 +119,7 @@ struct agendaData
    const char             *EnvGetActivationName(void *,void *);
    struct defrule         *EnvGetActivationRule(void *,void *);
    int                     EnvGetActivationSalience(void *,void *);
-   int                     EnvSetActivationSalience(void *,void *,int); // TBD remove?
+   int                     EnvSetActivationSalience(void *,void *,int);
    void                    EnvGetActivationPPForm(void *,char *,size_t,void *);
    void                    EnvGetActivationBasisPPForm(void *,char *,size_t,void *);
    bool                    MoveActivationToTop(void *,void *);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/25/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*             OBJECT MESSAGE DISPATCH CODE            */
    /*******************************************************/
@@ -45,6 +45,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Option printing of carriage return for the     */
 /*            SlotVisibilityViolationError function.         */
@@ -285,7 +287,7 @@ void NextHandlerAvailableFunction(
                    shadowed handler
                  Used before calling call-next-handler
   INPUTS       : None
-  RETURNS      : true if shadow ready, false otherwise
+  RETURNS      : True if shadow ready, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax: (next-handlerp)
  *****************************************************/
@@ -293,12 +295,12 @@ bool NextHandlerAvailable(
   void *theEnv)
   {
    if (MessageHandlerData(theEnv)->CurrentCore == NULL)
-     return(false);
+     return false;
    if (MessageHandlerData(theEnv)->CurrentCore->hnd->type == MAROUND)
      return((MessageHandlerData(theEnv)->NextInCore != NULL) ? true : false);
    if ((MessageHandlerData(theEnv)->CurrentCore->hnd->type == MPRIMARY) && (MessageHandlerData(theEnv)->NextInCore != NULL))
      return((MessageHandlerData(theEnv)->NextInCore->hnd->type == MPRIMARY) ? true : false);
-   return(false);
+   return false;
   }
 
 /********************************************************
@@ -596,11 +598,11 @@ void PrintHandlerSlotGetFunction(
                  references in message-handlers
   INPUTS       : 1) The bitmap expression
                  2) A data object buffer
-  RETURNS      : true if OK, false
+  RETURNS      : True if OK, false
                  on errors
   SIDE EFFECTS : Data object buffer gets value of
                  slot. On errors, buffer gets
-                 symbol FALSE, EvaluationError
+                 symbol false, EvaluationError
                  is set and error messages are
                  printed
   NOTES        : It is possible for a handler
@@ -635,7 +637,7 @@ bool HandlerSlotGetFunction(
       theResult->type = SYMBOL;
       theResult->value = EnvFalseSymbol(theEnv);
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 
    if (theInstance->cls == theDefclass)
@@ -662,14 +664,14 @@ bool HandlerSlotGetFunction(
       theResult->begin = 0;
       SetpDOEnd(theResult,GetInstanceSlotLength(sp));
      }
-   return(true);
+   return true;
 
 HandlerGetError:
    EarlySlotBindError(theEnv,theInstance,theDefclass,theReference->slotID);
    theResult->type = SYMBOL;
    theResult->value = EnvFalseSymbol(theEnv);
    EnvSetEvaluationError(theEnv,true);
-   return(false);
+   return false;
   }
 
 /***************************************************
@@ -722,7 +724,7 @@ void PrintHandlerSlotPutFunction(
                  bindings in message-handlers
   INPUTS       : 1) The bitmap expression
                  2) A data object buffer
-  RETURNS      : true if OK, false
+  RETURNS      : True if OK, false
                  on errors
   SIDE EFFECTS : Data object buffer gets symbol
                  TRUE and slot is set. On errors,
@@ -762,7 +764,7 @@ bool HandlerSlotPutFunction(
       theResult->type = SYMBOL;
       theResult->value = EnvFalseSymbol(theEnv);
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 
    if (theInstance->cls == theDefclass)
@@ -816,7 +818,7 @@ bool HandlerSlotPutFunction(
      }
    if (PutSlotValue(theEnv,theInstance,sp,&theSetVal,theResult,NULL) == false)
       goto HandlerPutError2;
-   return(true);
+   return true;
 
 HandlerPutError:
    EarlySlotBindError(theEnv,theInstance,theDefclass,theReference->slotID);
@@ -826,7 +828,7 @@ HandlerPutError2:
    theResult->value = EnvFalseSymbol(theEnv);
    EnvSetEvaluationError(theEnv,true);
 
-   return(false);
+   return false;
   }
 
 /*****************************************************

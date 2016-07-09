@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  016/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*    INFERENCE ENGINE OBJECT PARSING ROUTINES MODULE  */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*            join network changes.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 /* =========================================
@@ -412,7 +414,7 @@ static void GenObjectGetVar(
                  use of multifield markers
                  (Object addresses are not simple variables)
   INPUTS       : The intermediate parse node
-  RETURNS      : true if the variable is simple,
+  RETURNS      : True if the variable is simple,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -421,18 +423,18 @@ static bool IsSimpleSlotVariable(
   struct lhsParseNode *node)
   {
    if ((node->type == MF_WILDCARD) || (node->type == MF_VARIABLE))
-     return(false);
+     return false;
    if ((node->slotNumber < 0) ||
        (node->slotNumber == ISA_ID) ||
        (node->slotNumber == NAME_ID))
-     return(false);
+     return false;
    if (node->withinMultifieldSlot == false)
-     return(true);
+     return true;
    if (node->multifieldSlot == true)
-     return(false);
+     return false;
    if ((node->multiFieldsBefore == 0) || (node->multiFieldsAfter == 0))
-     return(true);
-   return(false);
+     return true;
+   return false;
   }
 
 /***************************************************************

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                  DEFGLOBAL MODULE                   */
    /*******************************************************/
@@ -47,6 +47,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -301,9 +303,9 @@ bool EnvIsDefglobalDeletable(
    if (! ConstructsDeletable(theEnv))
      { return false; }
 
-   if (((struct defglobal *) ptr)->busyCount) return(false);
+   if (((struct defglobal *) ptr)->busyCount) return false;
 
-   return(true);
+   return true;
   }
 
 /************************************************************/
@@ -564,7 +566,7 @@ static bool GetDefglobalValue2(
       vPtr->type = SYMBOL;
       vPtr->value = EnvFalseSymbol(theEnv);
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 
    /*========================================================*/
@@ -579,7 +581,7 @@ static bool GetDefglobalValue2(
       vPtr->type = SYMBOL;
       vPtr->value = EnvFalseSymbol(theEnv);
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 
    /*=================================*/
@@ -588,7 +590,7 @@ static bool GetDefglobalValue2(
 
    QGetDefglobalValue(theEnv,theGlobal,vPtr);
 
-   return(true);
+   return true;
   }
 
 /***************************************************************/
@@ -624,7 +626,7 @@ bool QGetDefglobalValue(
                                 &((struct multifield *) theGlobal->current.value)->theFields[theGlobal->current.begin]);
      }
 
-   return(true);
+   return true;
   }
 
 /************************************************************/
@@ -639,11 +641,11 @@ bool EnvGetDefglobalValue(
    struct defglobal *theDefglobal;
 
    if ((theDefglobal = (struct defglobal *) EnvFindDefglobal(theEnv,variableName)) == NULL)
-     { return(false); }
+     { return false; }
 
    QGetDefglobalValue(theEnv,theDefglobal,vPtr);
 
-   return(true);
+   return true;
   }
 
 /****************************************************************/
@@ -658,11 +660,11 @@ bool EnvSetDefglobalValue(
    struct defglobal *theGlobal;
 
    if ((theGlobal = QFindDefglobal(theEnv,(SYMBOL_HN *) EnvAddSymbol(theEnv,variableName))) == NULL)
-     { return(false); }
+     { return false; }
 
    QSetDefglobalValue(theEnv,theGlobal,vPtr,false);
 
-   return(true);
+   return true;
   }
 
 /**********************************************************/

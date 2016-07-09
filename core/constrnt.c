@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/04/16             */
    /*                                                     */
    /*                 CONSTRAINT MODULE                   */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*            Converted API macros to function calls.        */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
@@ -350,67 +352,67 @@ static bool ConstraintCompare(
        (constraint1->integerRestriction != constraint2->integerRestriction) ||
        (constraint1->classRestriction != constraint2->classRestriction) ||
        (constraint1->instanceNameRestriction != constraint2->instanceNameRestriction))
-     { return(false); }
+     { return false; }
 
    for (tmpPtr1 = constraint1->classList, tmpPtr2 = constraint2->classList;
         (tmpPtr1 != NULL) && (tmpPtr2 != NULL);
         tmpPtr1 = tmpPtr1->nextArg, tmpPtr2 = tmpPtr2->nextArg)
      {
       if ((tmpPtr1->type != tmpPtr2->type) || (tmpPtr1->value != tmpPtr2->value))
-        { return(false); }
+        { return false; }
      }
-   if (tmpPtr1 != tmpPtr2) return(false);
+   if (tmpPtr1 != tmpPtr2) return false;
 
    for (tmpPtr1 = constraint1->restrictionList, tmpPtr2 = constraint2->restrictionList;
         (tmpPtr1 != NULL) && (tmpPtr2 != NULL);
         tmpPtr1 = tmpPtr1->nextArg, tmpPtr2 = tmpPtr2->nextArg)
      {
       if ((tmpPtr1->type != tmpPtr2->type) || (tmpPtr1->value != tmpPtr2->value))
-        { return(false); }
+        { return false; }
      }
-   if (tmpPtr1 != tmpPtr2) return(false);
+   if (tmpPtr1 != tmpPtr2) return false;
 
    for (tmpPtr1 = constraint1->minValue, tmpPtr2 = constraint2->minValue;
         (tmpPtr1 != NULL) && (tmpPtr2 != NULL);
         tmpPtr1 = tmpPtr1->nextArg, tmpPtr2 = tmpPtr2->nextArg)
      {
       if ((tmpPtr1->type != tmpPtr2->type) || (tmpPtr1->value != tmpPtr2->value))
-        { return(false); }
+        { return false; }
      }
-   if (tmpPtr1 != tmpPtr2) return(false);
+   if (tmpPtr1 != tmpPtr2) return false;
 
    for (tmpPtr1 = constraint1->maxValue, tmpPtr2 = constraint2->maxValue;
         (tmpPtr1 != NULL) && (tmpPtr2 != NULL);
         tmpPtr1 = tmpPtr1->nextArg, tmpPtr2 = tmpPtr2->nextArg)
      {
       if ((tmpPtr1->type != tmpPtr2->type) || (tmpPtr1->value != tmpPtr2->value))
-        { return(false); }
+        { return false; }
      }
-   if (tmpPtr1 != tmpPtr2) return(false);
+   if (tmpPtr1 != tmpPtr2) return false;
 
    for (tmpPtr1 = constraint1->minFields, tmpPtr2 = constraint2->minFields;
         (tmpPtr1 != NULL) && (tmpPtr2 != NULL);
         tmpPtr1 = tmpPtr1->nextArg, tmpPtr2 = tmpPtr2->nextArg)
      {
       if ((tmpPtr1->type != tmpPtr2->type) || (tmpPtr1->value != tmpPtr2->value))
-        { return(false); }
+        { return false; }
      }
-   if (tmpPtr1 != tmpPtr2) return(false);
+   if (tmpPtr1 != tmpPtr2) return false;
 
    for (tmpPtr1 = constraint1->maxFields, tmpPtr2 = constraint2->maxFields;
         (tmpPtr1 != NULL) && (tmpPtr2 != NULL);
         tmpPtr1 = tmpPtr1->nextArg, tmpPtr2 = tmpPtr2->nextArg)
      {
       if ((tmpPtr1->type != tmpPtr2->type) || (tmpPtr1->value != tmpPtr2->value))
-        { return(false); }
+        { return false; }
      }
-   if (tmpPtr1 != tmpPtr2) return(false);
+   if (tmpPtr1 != tmpPtr2) return false;
 
    if (((constraint1->multifield == NULL) && (constraint2->multifield != NULL)) ||
        ((constraint1->multifield != NULL) && (constraint2->multifield == NULL)))
-     { return(false); }
+     { return false; }
    else if (constraint1->multifield == constraint2->multifield)
-     { return(true); }
+     { return true; }
 
    return(ConstraintCompare(constraint1->multifield,constraint2->multifield));
   }

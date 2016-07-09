@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  06/20/16            */
+   /*             CLIPS Version 6.50  07/05/16            */
    /*                                                     */
    /*                 ROUTER HEADER FILE                  */
    /*******************************************************/
@@ -45,6 +45,10 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Changed return values for router functions.    */
+/*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
@@ -77,8 +81,8 @@ struct router
    int priority;
    void *context;
    bool (*query)(void *,const char *);
-   int (*printer)(void *,const char *,const char *);
-   int (*exiter)(void *,int);
+   void (*printer)(void *,const char *,const char *);
+   void (*exiter)(void *,int);
    int (*charget)(void *,const char *);
    int (*charunget)(void *,int,const char *);
    struct router *next;
@@ -109,19 +113,19 @@ struct routerData
    bool                           EnvAddRouterWithContext(void *,
                                                    const char *,int,
                                                    bool (*)(void *,const char *),
-                                                   int (*)(void *,const char *,const char *),
+                                                   void (*)(void *,const char *,const char *),
                                                    int (*)(void *,const char *),
                                                    int (*)(void *,int,const char *),
-                                                   int (*)(void *,int),
+                                                   void (*)(void *,int),
                                                    void *);
    bool                           EnvAddRouter(void *,
                                                    const char *,int,
                                                    bool (*)(void *,const char *),
-                                                   int (*)(void *,const char *,const char *),
+                                                   void (*)(void *,const char *,const char *),
                                                    int (*)(void *,const char *),
                                                    int (*)(void *,int,const char *),
-                                                   int (*)(void *,int));
-   int                            EnvDeleteRouter(void *,const char *);
+                                                   void (*)(void *,int));
+   bool                           EnvDeleteRouter(void *,const char *);
    bool                           QueryRouters(void *,const char *);
    bool                           EnvDeactivateRouter(void *,const char *);
    bool                           EnvActivateRouter(void *,const char *);
@@ -136,5 +140,3 @@ struct routerData
    struct router                 *EnvFindRouter(void *,const char *);
 
 #endif /* _H_router */
-
-

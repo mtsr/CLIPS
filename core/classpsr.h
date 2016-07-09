@@ -3,7 +3,7 @@
    /*                                                     */
    /*             CLIPS Version 6.40  06/20/16            */
    /*                                                     */
-   /*                                                     */
+   /*               CLASS PARSER HEADER FILE              */
    /*******************************************************/
 
 /*************************************************************/
@@ -38,6 +38,8 @@
 /*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 

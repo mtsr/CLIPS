@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -32,6 +32,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -283,7 +285,7 @@ void UnboundMethodErr(
                  A method is applicable if all its restrictions are
                    satisfied by the corresponding arguments
   INPUTS       : The method address
-  RETURNS      : true if method is applicable, false otherwise
+  RETURNS      : True if method is applicable, false otherwise
   SIDE EFFECTS : Any query functions are evaluated
   NOTES        : Uses globals ProcParamArraySize and ProcParamArray
  ***********************************************************************/
@@ -302,7 +304,7 @@ bool IsMethodApplicable(
 
    if ((ProceduralPrimitiveData(theEnv)->ProcParamArraySize < meth->minRestrictions) ||
        ((ProceduralPrimitiveData(theEnv)->ProcParamArraySize > meth->minRestrictions) && (meth->maxRestrictions != -1)))
-     return(false);
+     return false;
    for (i = 0 , k = 0 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
      {
       rp = &meth->restrictions[k];
@@ -311,7 +313,7 @@ bool IsMethodApplicable(
 #if OBJECT_SYSTEM
          type = (void *) DetermineRestrictionClass(theEnv,&ProceduralPrimitiveData(theEnv)->ProcParamArray[i]);
          if (type == NULL)
-           return(false);
+           return false;
          for (j = 0 ; j < rp->tcnt ; j++)
            {
             if (type == rp->types[j])
@@ -347,7 +349,7 @@ bool IsMethodApplicable(
            }
 #endif
          if (j == rp->tcnt)
-           return(false);
+           return false;
         }
       if (rp->query != NULL)
         {
@@ -355,12 +357,12 @@ bool IsMethodApplicable(
          EvaluateExpression(theEnv,rp->query,&temp);
          if ((temp.type != SYMBOL) ? false :
              (temp.value == EnvFalseSymbol(theEnv)))
-           return(false);
+           return false;
         }
       if (((int) k) != meth->restrictionCount-1)
         k++;
      }
-   return(true);
+   return true;
   }
 
 /***************************************************
@@ -369,7 +371,7 @@ bool IsMethodApplicable(
                    function method is available for
                    execution
   INPUTS       : None
-  RETURNS      : true if there is a method available,
+  RETURNS      : True if there is a method available,
                    false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax: (next-methodp)
@@ -380,14 +382,14 @@ bool NextMethodP(
    register DEFMETHOD *meth;
 
    if (DefgenericData(theEnv)->CurrentMethod == NULL)
-     return(false);
+     return false;
    meth = FindApplicableMethod(theEnv,DefgenericData(theEnv)->CurrentGeneric,DefgenericData(theEnv)->CurrentMethod);
    if (meth != NULL)
      {
       meth->busy--;
-      return(true);
+      return true;
      }
-   return(false);
+   return false;
   }
 
 void NextMethodPCommand(

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                   RETRACT MODULE                    */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*            Removed pseudo-facts used in not CEs.          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -411,7 +413,7 @@ static bool FindNextConflictingMatch(
          EngineData(theEnv)->GlobalLHSBinds = oldLHSBinds;
          EngineData(theEnv)->GlobalRHSBinds = oldRHSBinds;
          EngineData(theEnv)->GlobalJoin = oldJoin;
-         return(true);
+         return true;
         }
      }
 
@@ -426,7 +428,7 @@ static bool FindNextConflictingMatch(
    /* No conflict was found. */
    /*========================*/
 
-   return(false);
+   return false;
   }
 
 /***********************************************************/
@@ -448,9 +450,9 @@ static bool PartialMatchDefunct(
       thePE = thePM->binds[i].gm.theMatch->matchingItem;
       if (thePE && thePE->theInfo->synchronized &&
           !(*thePE->theInfo->synchronized)(theEnv,thePE))
-        return(true);
+        return true;
      }
-   return(false);
+   return false;
   }
 
 /*****************************************************************/
@@ -476,10 +478,10 @@ bool PartialMatchWillBeDeleted(
       thePE = thePM->binds[i].gm.theMatch->matchingItem;
       if (thePE && thePE->theInfo->isDeleted &&
           (*thePE->theInfo->isDeleted)(theEnv,thePE))
-        return(true);
+        return true;
      }
      
-   return(false);
+   return false;
   }
 
 /***************************************************/

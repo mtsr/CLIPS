@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                   DEVELOPER MODULE                  */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*      6.31: Crash fix for show-opn.                        */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -662,7 +664,7 @@ static void ValidateRuleBetaMemoriesAction(
 void ValidateBetaMemories(
   void *theEnv)
   {
-  EnvPrintRouter(theEnv,WPROMPT,"ValidateBetaMemories");
+   EnvPrintRouter(theEnv,WPROMPT,"ValidateBetaMemories");
    DoForAllConstructs(theEnv,ValidateRuleBetaMemoriesAction,DefruleData(theEnv)->DefruleModuleIndex,false,NULL);
   }
 

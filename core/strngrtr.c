@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*              STRING I/O ROUTER MODULE               */
    /*******************************************************/
@@ -31,6 +31,10 @@
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Changed return values for router functions.    */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -55,7 +59,7 @@
 /***************************************/
 
    static bool                    FindString(void *,const char *);
-   static int                     PrintString(void *,const char *,const char *);
+   static void                    PrintString(void *,const char *,const char *);
    static int                     GetcString(void *,const char *);
    static int                     UngetcString(void *,int,const char *);
    static struct stringRouter    *FindStringRouter(void *,const char *);
@@ -105,17 +109,17 @@ static bool FindString(
    while (head != NULL)
      {
       if (strcmp(head->name,fileid) == 0)
-        { return(true); }
+        { return true; }
       head = head->next;
      }
 
-   return(false);
+   return false;
   }
 
 /**************************************************/
 /* PrintString: Print routine for string routers. */
 /**************************************************/
-static int PrintString(
+static void PrintString(
   void *theEnv,
   const char *logicalName,
   const char *str)
@@ -127,20 +131,19 @@ static int PrintString(
      {
       SystemError(theEnv,"ROUTER",3);
       EnvExitRouter(theEnv,EXIT_FAILURE);
+      return;
      }
 
-   if (head->readWriteType != WRITE_STRING) return(1);
+   if (head->readWriteType != WRITE_STRING) return;
    
-   if (head->maximumPosition == 0) return(1);
+   if (head->maximumPosition == 0) return;
    
-   if ((head->currentPosition + 1) >= head->maximumPosition) return(1);
+   if ((head->currentPosition + 1) >= head->maximumPosition) return;
 
    genstrncpy(&head->writeString[head->currentPosition],
               str,(STD_SIZE) (head->maximumPosition - head->currentPosition) - 1);
 
    head->currentPosition += strlen(str);
-   
-   return(1);
   }
 
 /************************************************/
@@ -194,11 +197,11 @@ static int UngetcString(
       EnvExitRouter(theEnv,EXIT_FAILURE);
      }
 
-   if (head->readWriteType != READ_STRING) return(0);
+   if (head->readWriteType != READ_STRING) return 0;
    if (head->currentPosition > 0)
      { head->currentPosition--; }
 
-   return(1);
+   return 1;
   }
 
 /************************************************/
@@ -227,7 +230,7 @@ bool OpenStringSource(
 /* OpenTextSource: Opens a new string router for text */
 /*   (which is not NULL terminated).                  */
 /******************************************************/
-int OpenTextSource(
+bool OpenTextSource(
   void *theEnv,
   const char *name,
   const char *str,
@@ -256,7 +259,7 @@ static bool CreateReadStringSource(
    struct stringRouter *newStringRouter;
    char *theName;
 
-   if (FindStringRouter(theEnv,name) != NULL) return(false);
+   if (FindStringRouter(theEnv,name) != NULL) return false;
 
    newStringRouter = get_struct(theEnv,stringRouter);
    theName = (char *) gm1(theEnv,strlen(name) + 1);
@@ -270,13 +273,13 @@ static bool CreateReadStringSource(
    newStringRouter->next = StringRouterData(theEnv)->ListOfStringRouters;
    StringRouterData(theEnv)->ListOfStringRouters = newStringRouter;
 
-   return(true);
+   return true;
   }
 
 /**********************************************/
 /* CloseStringSource: Closes a string router. */
 /**********************************************/
-int CloseStringSource(
+bool CloseStringSource(
   void *theEnv,
   const char *name)
   {
@@ -293,27 +296,27 @@ int CloseStringSource(
             StringRouterData(theEnv)->ListOfStringRouters = head->next;
             rm(theEnv,(void *) head->name,strlen(head->name) + 1);
             rtn_struct(theEnv,stringRouter,head);
-            return(1);
+            return true;
            }
          else
            {
             last->next = head->next;
             rm(theEnv,(void *) head->name,strlen(head->name) + 1);
             rtn_struct(theEnv,stringRouter,head);
-            return(1);
+            return true;
            }
         }
       last = head;
       head = head->next;
      }
 
-   return(0);
+   return false;
   }
 
 /******************************************************************/
 /* OpenStringDestination: Opens a new string router for printing. */
 /******************************************************************/
-int OpenStringDestination(
+bool OpenStringDestination(
   void *theEnv,
   const char *name,
   char *str,
@@ -322,7 +325,7 @@ int OpenStringDestination(
    struct stringRouter *newStringRouter;
    char *theName;
 
-   if (FindStringRouter(theEnv,name) != NULL) return(0);
+   if (FindStringRouter(theEnv,name) != NULL) return false;
 
    newStringRouter = get_struct(theEnv,stringRouter);
    theName = (char *) gm1(theEnv,(int) strlen(name) + 1);
@@ -336,13 +339,13 @@ int OpenStringDestination(
    newStringRouter->next = StringRouterData(theEnv)->ListOfStringRouters;
    StringRouterData(theEnv)->ListOfStringRouters = newStringRouter;
 
-   return(1);
+   return true;
   }
 
 /***************************************************/
 /* CloseStringDestination: Closes a string router. */
 /***************************************************/
-int CloseStringDestination(
+bool CloseStringDestination(
   void *theEnv,
   const char *name)
   {

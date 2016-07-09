@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/24/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*               FACT FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -11,22 +11,22 @@
 /*                                                           */
 /*                                                           */
 /* (fact-existp <fact-address-or-index>)                     */
-/*    Returns true if the fact exists, otherwise false is    */
+/*    Returns TRUE if the fact exists, otherwise FALSE is    */
 /*    returned.                                              */
 /*                                                           */
 /* (fact-relation <fact-address-or-index>)                   */
 /*    Returns the deftemplate name of the fact. Returns      */
-/*    false if the specified fact doesn't exist.             */
+/*    FALSE if the specified fact doesn't exist.             */
 /*                                                           */
 /* (fact-slot-value <fact-address-or-index> <slot-name>)     */
 /*    Returns the contents of a slot (use the slot name      */
 /*    implied for the implied multifield slot of an ordered  */
-/*    fact). Returns the value false if the slot name is     */
+/*    fact). Returns the value FALSE if the slot name is     */
 /*    invalid or the fact doesn't exist.                     */
 /*                                                           */
 /* (fact-slot-names <fact-address-or-index>)                 */
 /*    Returns the slot names associated with a fact in a     */
-/*    multifield value. Returns false if the fact doesn't    */
+/*    multifield value. Returns FALSE if the fact doesn't    */
 /*    exist.                                                 */
 /*                                                           */
 /* (get-fact-list [<module-name>])                           */
@@ -69,6 +69,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
@@ -190,11 +192,11 @@ bool EnvFactExistp(
 #endif
    struct fact *theFact = (struct fact *) vTheFact;
 
-   if (theFact == NULL) return(false);
+   if (theFact == NULL) return false;
 
-   if (theFact->garbage) return(false);
+   if (theFact->garbage) return false;
 
-   return(true);
+   return true;
   }
 
 /***********************************************/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*                     BSAVE MODULE                    */
    /*******************************************************/
@@ -36,6 +36,8 @@
 /*            Converted API macros to function calls.        */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -148,7 +150,7 @@ bool EnvBsave(
       PrintErrorID(theEnv,"BSAVE",1,false);
       EnvPrintRouter(theEnv,WERROR,
           "Cannot perform a binary save while a binary load is in effect.\n");
-      return(0);
+      return false;
      }
 
    /*================*/
@@ -158,7 +160,7 @@ bool EnvBsave(
    if ((fp = GenOpen(theEnv,fileName,"wb")) == NULL)
      {
       OpenErrorMessage(theEnv,"bsave",fileName);
-      return(0);
+      return false;
      }
 
    /*==============================*/
@@ -283,7 +285,7 @@ bool EnvBsave(
    /* Return true to indicate success. */
    /*==================================*/
 
-   return(true);
+   return true;
   }
 
 /*********************************************/
@@ -570,7 +572,7 @@ bool AddBinaryItem(
      {
       newPtr->next = NULL;
       BsaveData(theEnv)->ListOfBinaryItems = newPtr;
-      return(true);
+      return true;
      }
 
    /*=========================================*/
@@ -602,7 +604,7 @@ bool AddBinaryItem(
    /* was successfully added.          */
    /*==================================*/
 
-   return(true);
+   return true;
   }
 
 #endif /* BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE */

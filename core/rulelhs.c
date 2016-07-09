@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*             DEFRULE LHS PARSING MODULE              */
    /*******************************************************/
@@ -24,6 +24,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 

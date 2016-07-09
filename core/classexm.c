@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*                 CLASS EXAMINATION MODULE            */
    /*******************************************************/
@@ -19,7 +19,7 @@
 /*      6.23: Correction for FalseSymbol/TrueSymbol. DR0859   */
 /*                                                            */
 /*            Modified the slot-writablep function to return  */
-/*            false for slots having initialize-only access.  */
+/*            FALSE for slots having initialize-only access.  */
 /*            DR0860                                          */
 /*                                                            */
 /*      6.24: Added allowed-classes slot facet.               */
@@ -53,6 +53,8 @@
 /*                                                            */
 /*            Pragma once and other inclusion changes.        */
 /*                                                            */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
 /**************************************************************/
 
 /* =========================================
@@ -345,7 +347,7 @@ void GetDefclassModuleCommand(
   NAME         : SuperclassPCommand
   DESCRIPTION  : Determines if a class is a superclass of another
   INPUTS       : None
-  RETURNS      : true if class-1 is a superclass of class-2
+  RETURNS      : True if class-1 is a superclass of class-2
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (superclassp <class-1> <class-2>)
  *********************************************************************/
@@ -370,7 +372,7 @@ void SuperclassPCommand(
                  a superclass of the other
   INPUTS       : 1) First class
                  2) Second class
-  RETURNS      : true if first class is a
+  RETURNS      : True if first class is a
                  superclass of the first,
                  false otherwise
   SIDE EFFECTS : None
@@ -392,7 +394,7 @@ bool EnvSuperclassP(
   NAME         : SubclassPCommand
   DESCRIPTION  : Determines if a class is a subclass of another
   INPUTS       : None
-  RETURNS      : true if class-1 is a subclass of class-2
+  RETURNS      : True if class-1 is a subclass of class-2
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (subclassp <class-1> <class-2>)
  *********************************************************************/
@@ -417,7 +419,7 @@ void SubclassPCommand(
                  a subclass of the other
   INPUTS       : 1) First class
                  2) Second class
-  RETURNS      : true if first class is a
+  RETURNS      : True if first class is a
                  subclass of the first,
                  false otherwise
   SIDE EFFECTS : None
@@ -439,7 +441,7 @@ bool EnvSubclassP(
   NAME         : SlotExistPCommand
   DESCRIPTION  : Determines if a slot is present in a class
   INPUTS       : None
-  RETURNS      : true if the slot exists, false otherwise
+  RETURNS      : True if the slot exists, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-existp <class> <slot> [inherit])
  *********************************************************************/
@@ -484,7 +486,7 @@ void SlotExistPCommand(
                  2) The slot name
                  3) A flag indicating if the slot
                     can be inherited or not
-  RETURNS      : true if slot exists,
+  RETURNS      : True if slot exists,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -503,7 +505,7 @@ bool EnvSlotExistP(
   NAME         : MessageHandlerExistPCommand
   DESCRIPTION  : Determines if a message-handler is present in a class
   INPUTS       : None
-  RETURNS      : true if the message header is present, false otherwise
+  RETURNS      : True if the message header is present, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (message-handler-existp <class> <hnd> [<type>])
  ************************************************************************************/
@@ -555,7 +557,7 @@ void MessageHandlerExistPCommand(
   NAME         : SlotWritablePCommand
   DESCRIPTION  : Determines if an existing slot can be written to
   INPUTS       : None
-  RETURNS      : true if the slot is writable, false otherwise
+  RETURNS      : True if the slot is writable, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-writablep <class> <slot>)
  **********************************************************************/
@@ -578,7 +580,7 @@ void SlotWritablePCommand(
   DESCRIPTION  : Determines if a slot is writable
   INPUTS       : 1) The class
                  2) The slot name
-  RETURNS      : true if slot is writable,
+  RETURNS      : True if slot is writable,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -591,7 +593,7 @@ bool EnvSlotWritableP(
    SLOT_DESC *sd;
 
    if ((sd = LookupSlot(theEnv,(DEFCLASS *) theDefclass,slotName,true)) == NULL)
-     return(false);
+     return false;
    return((sd->noWrite || sd->initializeOnly) ? false : true);
   }
 
@@ -600,7 +602,7 @@ bool EnvSlotWritableP(
   DESCRIPTION  : Determines if an existing slot can be initialized
                    via an init message-handler or slot-override
   INPUTS       : None
-  RETURNS      : true if the slot is writable, false otherwise
+  RETURNS      : True if the slot is writable, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-initablep <class> <slot>)
  **********************************************************************/
@@ -623,7 +625,7 @@ void SlotInitablePCommand(
   DESCRIPTION  : Determines if a slot is initable
   INPUTS       : 1) The class
                  2) The slot name
-  RETURNS      : true if slot is initable,
+  RETURNS      : True if slot is initable,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -636,7 +638,7 @@ bool EnvSlotInitableP(
    SLOT_DESC *sd;
 
    if ((sd = LookupSlot(theEnv,(DEFCLASS *) theDefclass,slotName,true)) == NULL)
-     return(false);
+     return false;
    return((sd->noWrite && (sd->initializeOnly == 0)) ? false : true);
   }
 
@@ -645,7 +647,7 @@ bool EnvSlotInitableP(
   DESCRIPTION  : Determines if an existing slot is publicly visible
                    for direct reference by subclasses
   INPUTS       : None
-  RETURNS      : true if the slot is public, false otherwise
+  RETURNS      : True if the slot is public, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-publicp <class> <slot>)
  **********************************************************************/
@@ -668,7 +670,7 @@ void SlotPublicPCommand(
   DESCRIPTION  : Determines if a slot is public
   INPUTS       : 1) The class
                  2) The slot name
-  RETURNS      : true if slot is public,
+  RETURNS      : True if slot is public,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -681,7 +683,7 @@ bool EnvSlotPublicP(
    SLOT_DESC *sd;
 
    if ((sd = LookupSlot(theEnv,(DEFCLASS *) theDefclass,slotName,false)) == NULL)
-     return(false);
+     return false;
    return(sd->publicVisibility ? true : false);
   }
 
@@ -690,7 +692,7 @@ bool EnvSlotPublicP(
   DESCRIPTION  : Determines if a slot has a default value
   INPUTS       : 1) The class
                  2) The slot name
-  RETURNS      : true if slot is public,
+  RETURNS      : True if slot is public,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -720,7 +722,7 @@ int EnvSlotDefaultP(
                    referenced by the class - i.e., if the slot is
                    private, is the slot defined in the class
   INPUTS       : None
-  RETURNS      : true if the slot is private,
+  RETURNS      : True if the slot is private,
                     false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (slot-direct-accessp <class> <slot>)
@@ -746,7 +748,7 @@ void SlotDirectAccessPCommand(
                  on class
   INPUTS       : 1) The class
                  2) The slot name
-  RETURNS      : true if slot is directly
+  RETURNS      : True if slot is directly
                  accessible, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -759,7 +761,7 @@ bool EnvSlotDirectAccessP(
    SLOT_DESC *sd;
 
    if ((sd = LookupSlot(theEnv,(DEFCLASS *) theDefclass,slotName,true)) == NULL)
-     return(false);
+     return false;
    return((sd->publicVisibility || (sd->cls == (DEFCLASS *) theDefclass)) ?
            true : false);
   }
@@ -806,7 +808,7 @@ void SlotDefaultValueCommand(
                  the specified slot of the specified class
   INPUTS       : 1) The class
                  2) The slot name
-  RETURNS      : true if slot default value is set,
+  RETURNS      : True if slot default value is set,
                  false otherwise
   SIDE EFFECTS : Slot default value evaluated - dynamic
                  defaults will cause any side effects
@@ -823,13 +825,13 @@ bool EnvSlotDefaultValue(
    SetpType(theValue,SYMBOL);
    SetpValue(theValue,EnvFalseSymbol(theEnv));
    if ((sd = LookupSlot(theEnv,(DEFCLASS *) theDefclass,slotName,true)) == NULL)
-     return(false);
+     return false;
    
    if (sd->noDefault)
      {
       SetpType(theValue,SYMBOL);
       SetpValue(theValue,EnvAddSymbol(theEnv,"?NONE"));
-      return(true);
+      return true;
      }
      
    if (sd->dynamicDefault)
@@ -837,14 +839,14 @@ bool EnvSlotDefaultValue(
                                          (EXPRESSION *) sd->defaultValue,
                                          theValue,true));
    GenCopyMemory(DATA_OBJECT,1,theValue,sd->defaultValue);
-   return(true);
+   return true;
   }
 
 /********************************************************
   NAME         : ClassExistPCommand
   DESCRIPTION  : Determines if a class exists
   INPUTS       : None
-  RETURNS      : true if class exists, false otherwise
+  RETURNS      : True if class exists, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (class-existp <arg>)
  ********************************************************/
@@ -874,7 +876,7 @@ void ClassExistPCommand(
   INPUTS       : 1) The function name
                  2) Caller's buffer for first class
                  3) Caller's buffer for second class
-  RETURNS      : true if both found, false otherwise
+  RETURNS      : True if both found, false otherwise
   SIDE EFFECTS : Caller's buffers set
   NOTES        : Assumes exactly 2 arguments
  ******************************************************/
@@ -888,26 +890,26 @@ static bool CheckTwoClasses(
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
-     { return(false); }
+     { return false; }
      
    *c1 = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (*c1 == NULL)
      {
       ClassExistError(theEnv,func,mCVToString(&theArg));
-      return(false);
+      return false;
      }
      
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
-     { return(false); }
+     { return false; }
      
    *c2 = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (*c2 == NULL)
      {
       ClassExistError(theEnv,func,mCVToString(&theArg));
-      return(false);
+      return false;
      }
      
-   return(true);
+   return true;
   }
 
 /***************************************************
@@ -1206,7 +1208,7 @@ static void DisplaySlotBasicInfo(
                     links array
                  5) Flag indicating whether to
                     disregard noniherit facet
-  RETURNS      : true if a class is printed, false
+  RETURNS      : True if a class is printed, false
                  otherwise
   SIDE EFFECTS : Recursively prints out appropriate
                  memebers from list in reverse order
@@ -1223,7 +1225,7 @@ static bool PrintSlotSources(
    SLOT_DESC *csp;
 
    if (theIndex == sprec->classCount)
-     return(false);
+     return false;
    csp = FindClassSlot(sprec->classArray[theIndex],sname);
    if ((csp != NULL) ? ((csp->noInherit == 0) || inhp) : false)
      {
@@ -1233,7 +1235,7 @@ static bool PrintSlotSources(
            EnvPrintRouter(theEnv,logicalName," ");
         }
       PrintClassName(theEnv,logicalName,sprec->classArray[theIndex],false);
-      return(true);
+      return true;
      }
    else
      return(PrintSlotSources(theEnv,logicalName,sname,sprec,theIndex+1,false));

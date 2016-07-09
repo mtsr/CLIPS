@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/24/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*            FACT-SET QUERIES PARSER MODULE           */
    /*******************************************************/
@@ -37,6 +37,8 @@
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -376,12 +378,14 @@ ParseQueryRestrictionsError2:
    return(NULL);
   }
 
-/***************************[;sing an fact-set query,
+/***************************************************
+  NAME         : ReplaceTemplateNameWithReference
+  DESCRIPTION  : In parsing an fact-set query,
                  this function replaces a constant
                  template name with an actual pointer
                  to the template
   INPUTS       : The expression
-  RETURNS      : true if all OK, false
+  RETURNS      : True if all OK, otherwise false
                  if template cannot be found
   SIDE EFFECTS : The expression type and value are
                  modified if template is found
@@ -407,13 +411,13 @@ static bool ReplaceTemplateNameWithReference(
       if (theDeftemplate == NULL)
         {
          CantFindItemErrorMessage(theEnv,"deftemplate",theTemplateName);
-         return(false);
+         return false;
         }
         
       if (count > 1)
         {
          AmbiguousReferenceErrorMessage(theEnv,"deftemplate",theTemplateName);
-         return(false);
+         return false;
         }
 
       theExp->type = DEFTEMPLATE_PTR;
@@ -425,7 +429,7 @@ static bool ReplaceTemplateNameWithReference(
 #endif
      }
 
-   return(true);
+   return true;
   }
 
 /*************************************************************
@@ -433,7 +437,7 @@ static bool ReplaceTemplateNameWithReference(
   DESCRIPTION  : Parses the test-expression for a query
   INPUTS       : 1) The top node of the query expression
                  2) The logical name of the input
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Entire query-expression deleted on errors
                  Nodes allocated for new expression
                  Test shoved in front of class-restrictions on
@@ -460,7 +464,7 @@ static bool ParseQueryTestExpression(
       ClearParsedBindNames(theEnv);
       SetParsedBindNames(theEnv,oldBindList);
       ReturnExpression(theEnv,top);
-      return(false);
+      return false;
      }
    
    if (qtest == NULL)
@@ -469,7 +473,7 @@ static bool ParseQueryTestExpression(
       SetParsedBindNames(theEnv,oldBindList);
       SyntaxErrorMessage(theEnv,"fact-set query function");
       ReturnExpression(theEnv,top);
-      return(false);
+      return false;
      }
    
    qtest->nextArg = top->argList;
@@ -484,12 +488,12 @@ static bool ParseQueryTestExpression(
       EnvPrintRouter(theEnv,WERROR,ValueToString(ExpressionFunctionCallName(top)));
       EnvPrintRouter(theEnv,WERROR,".\n");
       ReturnExpression(theEnv,top);
-      return(false);
+      return false;
      }
      
    SetParsedBindNames(theEnv,oldBindList);
    
-   return(true);
+   return true;
   }
 
 /*************************************************************
@@ -498,7 +502,7 @@ static bool ParseQueryTestExpression(
   INPUTS       : 1) The top node of the query expression
                  2) The logical name of the input
                  3) List of query parameters
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Entire query-expression deleted on errors
                  Nodes allocated for new expression
                  Action shoved in front of template-restrictions
@@ -536,7 +540,7 @@ static bool ParseQueryActionExpression(
       SetParsedBindNames(theEnv,oldBindList);
       SyntaxErrorMessage(theEnv,"fact-set query function");
       ReturnExpression(theEnv,top);
-      return(false);
+      return false;
      }
      
    qaction->nextArg = top->argList->nextArg;
@@ -560,7 +564,7 @@ static bool ParseQueryActionExpression(
             EnvPrintRouter(theEnv,WERROR,ValueToString(ExpressionFunctionCallName(top)));
             EnvPrintRouter(theEnv,WERROR,".\n");
             ReturnExpression(theEnv,top);
-            return(false);
+            return false;
            }
          tmpFactSetVars = tmpFactSetVars->nextArg;
         }
@@ -573,7 +577,7 @@ static bool ParseQueryActionExpression(
    else
      { prev->next = oldBindList; }
    
-   return(true);
+   return true;
   }
 
 /***********************************************************************************
@@ -712,7 +716,7 @@ static void ReplaceSlotReference(
   NAME         : IsQueryFunction
   DESCRIPTION  : Determines if an expression is a query function call
   INPUTS       : The expression
-  RETURNS      : true if query function call, false otherwise
+  RETURNS      : True if query function call, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************************/
@@ -722,23 +726,23 @@ static bool IsQueryFunction(
    int (*fptr)(void);
 
    if (theExp->type != FCALL)
-     return(false);
+     return false;
    fptr = (int (*)(void)) ExpressionFunctionPointer(theExp);
 
    if (fptr == (int (*)(void)) AnyFacts)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) QueryFindFact)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) QueryFindAllFacts)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) QueryDoForFact)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) QueryDoForAllFacts)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) DelayedQueryDoForAllFacts)
-     return(true);
+     return true;
 
-   return(false);
+   return false;
   }
 
 #endif

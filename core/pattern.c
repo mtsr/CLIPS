@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                 RULE PATTERN MODULE                 */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -196,19 +198,19 @@ bool RemoveHashedPatternNode(
            {
             PatternData(theEnv)->PatternHashTable[hashValue] = hptr->next;
             rtn_struct(theEnv,patternNodeHashEntry,hptr);
-            return(1);
+            return true;
            }
          else
            {
             prev->next = hptr->next;
             rtn_struct(theEnv,patternNodeHashEntry,hptr);
-            return(1);
+            return true;
            }
         }
       prev = hptr;
      }
 
-   return(0);
+   return false;
   }
 
 /***********************************************/
@@ -282,15 +284,15 @@ bool ReservedPatternSymbol(
       if (strcmp(theSymbol,currentSymbol->theSymbol) == 0)
         {
          if ((currentSymbol->reservedBy == NULL) || (checkedBy ==  NULL))
-           { return(true); }
+           { return true; }
 
-         if (strcmp(checkedBy,currentSymbol->reservedBy) == 0) return(false);
+         if (strcmp(checkedBy,currentSymbol->reservedBy) == 0) return false;
 
-         return(true);
+         return true;
         }
      }
 
-   return(false);
+   return false;
   }
 
 /********************************************************/
@@ -419,7 +421,7 @@ bool AddPatternParser(
    /* of pattern parsers has not been exceeded.  */
    /*============================================*/
 
-   if (PatternData(theEnv)->NextPosition >= MAX_POSITIONS) return(false);
+   if (PatternData(theEnv)->NextPosition >= MAX_POSITIONS) return false;
 
    /*================================*/
    /* Create the new pattern parser. */
@@ -438,7 +440,7 @@ bool AddPatternParser(
      {
       newPtr->next = NULL;
       PatternData(theEnv)->ListOfPatternParsers = newPtr;
-      return(true);
+      return true;
      }
 
    currentPtr = PatternData(theEnv)->ListOfPatternParsers;
@@ -459,7 +461,7 @@ bool AddPatternParser(
       lastPtr->next = newPtr;
      }
 
-   return(true);
+   return true;
   }
 
 /****************************************************/
@@ -552,11 +554,11 @@ bool PostPatternAnalysis(
         {
          tempParser = patternPtr->patternType;
          if (tempParser->postAnalysisFunction != NULL)
-           { if ((*tempParser->postAnalysisFunction)(theEnv,patternPtr)) return(true); }
+           { if ((*tempParser->postAnalysisFunction)(theEnv,patternPtr)) return true; }
         }
      }
 
-   return(false);
+   return false;
   }
 
 /******************************************************************/
@@ -1090,7 +1092,7 @@ static bool CheckForVariableMixing(
      {
       PrintErrorID(theEnv,"PATTERN",2,true);
       EnvPrintRouter(theEnv,WERROR,"Single and multifield constraints cannot be mixed in a field constraint\n");
-      return(true);
+      return true;
      }
 
    /*=======================================*/
@@ -1098,7 +1100,7 @@ static bool CheckForVariableMixing(
    /* illegal variable mixing was detected. */
    /*=======================================*/
 
-   return(false);
+   return false;
   }
 
 /***********************************************************/

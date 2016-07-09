@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/24/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                 FACT MATCH MODULE                   */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*            MAC_MCW, and IBM_TBC).                         */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
@@ -586,7 +588,7 @@ static bool EvaluatePatternExpression(
    /* is always satisfied.                */
    /*=====================================*/
 
-   if (theTest == NULL) return(true);
+   if (theTest == NULL) return true;
 
    /*======================================*/
    /* Evaluate pattern network primitives. */
@@ -647,13 +649,13 @@ static bool EvaluatePatternExpression(
         {
          if (EvaluatePatternExpression(theEnv,patternPtr,theTest) == true)
            {
-            if (EvaluationData(theEnv)->EvaluationError) return(false);
-            return(true);
+            if (EvaluationData(theEnv)->EvaluationError) return false;
+            return true;
            }
-         if (EvaluationData(theEnv)->EvaluationError) return(false);
+         if (EvaluationData(theEnv)->EvaluationError) return false;
         }
 
-      return(false);
+      return false;
      }
 
    /*===============================================*/
@@ -669,11 +671,11 @@ static bool EvaluatePatternExpression(
            theTest = theTest->nextArg)
         {
          if (EvaluatePatternExpression(theEnv,patternPtr,theTest) == false)
-           { return(false); }
-         if (EvaluationData(theEnv)->EvaluationError) return(false);
+           { return false; }
+         if (EvaluationData(theEnv)->EvaluationError) return false;
         }
 
-      return(true);
+      return true;
      }
 
    /*==========================================================*/
@@ -683,13 +685,13 @@ static bool EvaluatePatternExpression(
    if (EvaluateExpression(theEnv,theTest,&theResult))
      {
       PatternNetErrorMessage(theEnv,patternPtr);
-      return(false);
+      return false;
      }
 
    if ((theResult.value == EnvFalseSymbol(theEnv)) && (theResult.type == SYMBOL))
-     { return(false); }
+     { return false; }
 
-   return(true);
+   return true;
   }
 
 /************************************************************************/
@@ -792,10 +794,10 @@ static bool SkipFactPatternNode(
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    if (EngineData(theEnv)->IncrementalResetInProgress &&
        (thePattern->header.initialize == false))
-     { return(true); }
+     { return true; }
 #endif
 
-   return(false);
+   return false;
   }
 
 /***************************************************************/

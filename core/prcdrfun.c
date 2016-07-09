@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*             PROCEDURAL FUNCTIONS MODULE             */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -137,7 +139,7 @@ void WhileFunction(
    
    /*====================================================*/
    /* Evaluate the body of the while loop as long as the */
-   /* while condition evaluates to a non-false value.    */
+   /* while condition evaluates to a non-FALSE value.    */
    /*====================================================*/
    
    CLIPSBlockStart(theEnv,&gcBlock);
@@ -344,7 +346,7 @@ void IfFunction(
      }
 
    /*=========================================*/
-   /* If the condition evaluated to false and */
+   /* If the condition evaluated to FALSE and */
    /* an "else" portion exists, evaluate it   */
    /* and return the value.                   */
    /*=========================================*/
@@ -377,7 +379,7 @@ void IfFunction(
      }
 
    /*===================================================*/
-   /* Otherwise if the symbol evaluated to a non-false  */
+   /* Otherwise if the symbol evaluated to a non-FALSE  */
    /* value, evaluate the "then" portion and return it. */
    /*===================================================*/
 
@@ -408,8 +410,8 @@ void IfFunction(
      }
 
    /*=========================================*/
-   /* Return false if the condition evaluated */
-   /* to false and there is no "else" portion */
+   /* Return FALSE if the condition evaluated */
+   /* to FALSE and there is no "else" portion */
    /* of the if statement.                    */
    /*=========================================*/
 
@@ -561,11 +563,11 @@ bool GetBoundVariable(
          vPtr->value = bindPtr->value;
          vPtr->begin = bindPtr->begin;
          vPtr->end = bindPtr->end;
-         return(true);
+         return true;
         }
      }
 
-   return(false);
+   return false;
   }
 
 /*************************************************/

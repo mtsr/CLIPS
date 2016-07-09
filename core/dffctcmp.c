@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*            DEFFACTS CONSTRUCTS-TO-C MODULE          */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -124,7 +126,7 @@ static bool ConstructToCode(
       if (moduleFile == NULL)
         {
          CloseDeffactsFiles(theEnv,moduleFile,deffactsFile,maxIndices);
-         return(false);
+         return false;
         }
 
       DeffactsModuleToCode(theEnv,moduleFile,theModule,imageID,maxIndices,moduleCount);
@@ -146,7 +148,7 @@ static bool ConstructToCode(
          if (deffactsFile == NULL)
            {
             CloseDeffactsFiles(theEnv,moduleFile,deffactsFile,maxIndices);
-            return(false);
+            return false;
            }
 
          DeffactsToCode(theEnv,deffactsFile,theDeffacts,imageID,maxIndices,moduleCount);
@@ -161,7 +163,7 @@ static bool ConstructToCode(
 
    CloseDeffactsFiles(theEnv,moduleFile,deffactsFile,maxIndices);
 
-   return(true);
+   return true;
   }
 
 /*********************************************************/

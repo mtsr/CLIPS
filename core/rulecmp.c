@@ -2,7 +2,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*            DEFRULE CONSTRUCTS-TO-C MODULE           */
    /*******************************************************/
@@ -37,6 +37,8 @@
 /*      6.31: Fixed disjunct bug in defrule iteration.       */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -132,14 +134,14 @@ static bool ConstructToCode(
                            maxIndices,&linkFile,&fileCount,&linkArrayVersion,&linkArrayCount))
      {
       CloseDefruleFiles(theEnv,moduleFile,defruleFile,joinFile,linkFile,maxIndices);
-      return(false);
+      return false;
      }
 
    if (! TraverseJoinLinks(theEnv,DefruleData(theEnv)->RightPrimeJoins,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,
                            maxIndices,&linkFile,&fileCount,&linkArrayVersion,&linkArrayCount))
      {
       CloseDefruleFiles(theEnv,moduleFile,defruleFile,joinFile,linkFile,maxIndices);
-      return(false);
+      return false;
      }
      
    /*=========================================================*/
@@ -170,7 +172,7 @@ static bool ConstructToCode(
       if (moduleFile == NULL)
         {
          CloseDefruleFiles(theEnv,moduleFile,defruleFile,joinFile,linkFile,maxIndices);
-         return(false);
+         return false;
         }
 
       DefruleModuleToCode(theEnv,moduleFile,theModule,imageID,maxIndices,moduleCount);
@@ -201,7 +203,7 @@ static bool ConstructToCode(
             if (defruleFile == NULL)
               {
                CloseDefruleFiles(theEnv,moduleFile,defruleFile,joinFile,linkFile,maxIndices);
-               return(false);
+               return false;
               }
 
             DefruleToCode(theEnv,defruleFile,theDisjunct,imageID,maxIndices,
@@ -219,7 +221,7 @@ static bool ConstructToCode(
                                             &linkArrayVersion,&linkArrayCount))
               {
                CloseDefruleFiles(theEnv,moduleFile,defruleFile,joinFile,linkFile,maxIndices);
-               return(false);
+               return false;
               }
            }
         }
@@ -230,7 +232,7 @@ static bool ConstructToCode(
 
    CloseDefruleFiles(theEnv,moduleFile,defruleFile,joinFile,linkFile,maxIndices);
 
-   return(true);
+   return true;
   }
 
 /*********************************************************************/
@@ -264,7 +266,7 @@ static bool RuleCompilerTraverseJoins(
                                       *joinArrayVersion,headerFP,
                                       "struct joinNode",JoinPrefix(),false,NULL);
          if (*joinFile == NULL)
-           { return(false); }
+           { return false; }
 
          JoinToCode(theEnv,*joinFile,joinPtr,imageID,maxIndices);
          (*joinArrayCount)++;
@@ -274,7 +276,7 @@ static bool RuleCompilerTraverseJoins(
                                        
          if (! TraverseJoinLinks(theEnv,joinPtr->nextLinks,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,
                                  maxIndices,linkFile,fileCount,linkArrayVersion,linkArrayCount))
-           { return(false); }
+           { return false; }
         }
       
       if (joinPtr->joinFromTheRight)
@@ -283,11 +285,11 @@ static bool RuleCompilerTraverseJoins(
                                        fileNameBuffer,fileID,headerFP,imageID,maxIndices,joinFile,linkFile,fileCount,
                                        joinArrayVersion,joinArrayCount,
                                        linkArrayVersion,linkArrayCount) == false)
-           { return(false); }
+           { return false; }
         }
      }
 
-   return(true);
+   return true;
   }
 
 /*******************************************************/
@@ -317,7 +319,7 @@ static bool TraverseJoinLinks(
                                    "struct joinLink",LinkPrefix(),false,NULL);
            
       if (*linkFile == NULL)
-        { return(false); }
+        { return false; }
            
       LinkToCode(theEnv,*linkFile,linkPtr,imageID,maxIndices);
       (*linkArrayCount)++;
@@ -325,7 +327,7 @@ static bool TraverseJoinLinks(
                                     maxIndices,NULL,NULL);
      }
 
-   return(true);
+   return true;
   }
 
 /********************************************************/

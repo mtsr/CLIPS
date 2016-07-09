@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/27/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                    REORDER MODULE                   */
    /*******************************************************/
@@ -35,7 +35,7 @@
 /*                                                           */
 /*            Added support for hashed alpha memories.       */
 /*                                                           */
-/*      6.40: Fixed crash bug that occurred from             */
+/*      6.31: Fixed crash bug that occurred from             */
 /*            AssignPatternIndices incorrectly               */
 /*            assigning the wrong join depth to              */
 /*            multiply nested nand  groups.                  */
@@ -47,6 +47,8 @@
 /*            AssignPatternIndices for not/and groups.       */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Removed initial-fact support.                  */
 /*                                                           */
@@ -1777,15 +1779,15 @@ bool IsExistsSubjoin(
    int startDepth = theLHS->beginNandDepth;
    
    if ((startDepth - parentDepth) != 2)
-     { return(false); }
+     { return false; }
      
    while (theLHS->endNandDepth >= startDepth)
      { theLHS = theLHS->bottom; }
    
    if (theLHS->endNandDepth <= parentDepth)
-     { return(true); }
+     { return true; }
 
-   return(false);
+   return false;
   }
 
 /***************************************************************************/

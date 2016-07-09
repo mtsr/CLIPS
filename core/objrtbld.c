@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/25/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Removed initial-object support.                */
 /*                                                           */
@@ -268,7 +270,7 @@ void SetupObjectPatternStuff(
                  is the constant symbol "object")
   INPUTS       : 1) The type of the first field
                  2) The value of the first field
-  RETURNS      : true if it is an object pattern,
+  RETURNS      : True if it is an object pattern,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : Used by AddPatternParser()
@@ -277,9 +279,9 @@ static bool PatternParserFind(
   SYMBOL_HN *value)
   {
    if (strcmp(ValueToString(value),OBJECT_PATTERN_INDICATOR) == 0)
-     return(true);
+     return true;
 
-   return(false);
+   return false;
   }
 
 /************************************************************************************
@@ -465,7 +467,7 @@ ObjectLHSParseERROR:
                  and name restrictions are always placed
                  first regardless of symbolic hash value.)
   INPUTS       : The pattern CE lhsParseNode
-  RETURNS      : false if all OK, otherwise true
+  RETURNS      : False if all OK, otherwise true
                  (e.g. all classes are eliminated as potential
                   matching candidates for the pattern)
   SIDE EFFECTS : Slot restrictions are reordered (if necessary)
@@ -613,7 +615,7 @@ static bool ReorderAndAnalyzeObjectPattern(
          EnvPrintRouter(theEnv,WERROR,"No objects of existing classes can satisfy pattern #");
          PrintLongInteger(theEnv,WERROR,(long long) topNode->pattern);
          EnvPrintRouter(theEnv,WERROR,".\n");
-         return(true);
+         return true;
         }
       clsset = PackClassBitMap(theEnv,tmpset);
       DeleteClassBitMap(theEnv,(void *) bitmap_node->userData);
@@ -623,7 +625,7 @@ static bool ReorderAndAnalyzeObjectPattern(
      }
    else
      DeleteIntermediateClassBitMap(theEnv,tmpset);
-   return(false);
+   return false;
   }
 
 /*****************************************************
@@ -1276,7 +1278,7 @@ static void RemoveObjectPartialMatches(
   DESCRIPTION  : Determines if a restriction has
                  already been defined in a pattern
   INPUTS       : The list of already built restrictions
-  RETURNS      : true if a definition already
+  RETURNS      : True if a definition already
                  exists, false otherwise
   SIDE EFFECTS : An error message is printed if a
                  duplicate is found
@@ -1295,11 +1297,11 @@ static bool CheckDuplicateSlots(
          EnvPrintRouter(theEnv,WERROR,"Multiple restrictions on attribute ");
          EnvPrintRouter(theEnv,WERROR,ValueToString(slotName));
          EnvPrintRouter(theEnv,WERROR," not allowed.\n");
-         return(true);
+         return true;
         }
       nodeList = nodeList->right;
      }
-   return(false);
+   return false;
   }
 
 /**********************************************************
@@ -1638,7 +1640,7 @@ static void MarkBitMapClassesBusy(
   DESCRIPTION  : Determines if one or more bits
                  are marked in a bitmap
   INPUTS       : The bitmap
-  RETURNS      : true if the set has no bits
+  RETURNS      : True if the set has no bits
                  marked, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -1652,10 +1654,10 @@ static bool EmptyClassBitMap(
    while (bytes > 0)
      {
       if (bmp->map[bytes - 1] != (char) 0)
-        return(false);
+        return false;
       bytes--;
      }
-   return(true);
+   return true;
   }
 
 /***************************************************
@@ -1664,7 +1666,7 @@ static bool EmptyClassBitMap(
                  are identical
   INPUTS       : 1) First bitmap
                  2) Second bitmap
-  RETURNS      : true if bitmaps are the same,
+  RETURNS      : True if bitmaps are the same,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -1676,11 +1678,11 @@ static bool IdenticalClassBitMap(
    register int i;
 
    if (cs1->maxid != cs2->maxid)
-     return(false);
+     return false;
    for (i = 0 ; i < (int) (cs1->maxid / BITS_PER_BYTE + 1) ; i++)
      if (cs1->map[i] != cs2->map[i])
-       return(false);
-   return(true);
+       return false;
+   return true;
   }
 
 /*****************************************************************
@@ -1692,7 +1694,7 @@ static bool IdenticalClassBitMap(
                  2) The lhsParseNodes of the restriction
                  3) A flag indicating if this is the first
                     non-recursive call or not
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Class bitmap set and lhsParseNodes corressponding
                  to constant restrictions are removed
   NOTES        : None
@@ -1711,7 +1713,7 @@ static bool ProcessClassRestriction(
      {
       if (recursiveCall)
         InitializeClassBitMap(theEnv,clsset,1);
-      return(true);
+      return true;
      }
 
    /* ===============================================
@@ -1734,7 +1736,7 @@ static bool ProcessClassRestriction(
             EnvPrintRouter(theEnv,WERROR,"Undefined class in object pattern.\n");
             DeleteIntermediateClassBitMap(theEnv,tmpset1);
             DeleteIntermediateClassBitMap(theEnv,tmpset2);
-            return(false);
+            return false;
            }
          if (chk->negated)
            {
@@ -1758,7 +1760,7 @@ static bool ProcessClassRestriction(
       EnvPrintRouter(theEnv,WERROR,"is-a restriction in object pattern.\n");
       DeleteIntermediateClassBitMap(theEnv,tmpset1);
       DeleteIntermediateClassBitMap(theEnv,tmpset2);
-      return(false);
+      return false;
      }
    if (constant_restriction)
      {

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/04/16             */
    /*                                                     */
    /*                    BLOAD MODULE                     */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
@@ -118,7 +120,7 @@ bool EnvBload(
    if (GenOpenReadBinary(theEnv,"bload",fileName) == 0)
      {
       OpenErrorMessage(theEnv,"bload",fileName);
-      return(false);
+      return false;
      }
 
    /*=====================================*/
@@ -133,7 +135,7 @@ bool EnvBload(
       EnvPrintRouter(theEnv,WERROR,fileName);
       EnvPrintRouter(theEnv,WERROR," is not a binary construct file.\n");
       GenCloseBinary(theEnv);
-      return(false);
+      return false;
      }
 
    /*=======================================*/
@@ -149,7 +151,7 @@ bool EnvBload(
       EnvPrintRouter(theEnv,WERROR,fileName);
       EnvPrintRouter(theEnv,WERROR," is an incompatible binary construct file.\n");
       GenCloseBinary(theEnv);
-      return(false);
+      return false;
      }
      
    /*====================*/
@@ -161,7 +163,7 @@ bool EnvBload(
       if (ClearBload(theEnv) == false)
         {
          GenCloseBinary(theEnv);
-         return(false);
+         return false;
         }
      }
 
@@ -177,7 +179,7 @@ bool EnvBload(
       EnvPrintRouter(theEnv,WERROR,APPLICATION_NAME);
       EnvPrintRouter(theEnv,WERROR," environment could not be cleared.\n");
       EnvPrintRouter(theEnv,WERROR,"Binary load cannot continue.\n");
-      return(false);
+      return false;
      }
 
    /*==================================*/
@@ -202,7 +204,7 @@ bool EnvBload(
      {
       GenCloseBinary(theEnv);
       AbortBload(theEnv);
-      return(false);
+      return false;
      }
 
    /*================================================*/
@@ -366,7 +368,7 @@ bool EnvBload(
    /* binary load was successful. */
    /*=============================*/
 
-   return(true);
+   return true;
   }
 
 /************************************************************
@@ -649,7 +651,7 @@ static bool ClearBload(
    if (error == true)
      {
       EnvPrintRouter(theEnv,WERROR,"Binary clear cannot continue.\n");
-      return(false);
+      return false;
      }
 
    /*=============================*/
@@ -684,7 +686,7 @@ static bool ClearBload(
    /* image was successfully cleared.    */
    /*====================================*/
 
-   return(true);
+   return true;
   }
 
 /*************************************************/
@@ -769,7 +771,7 @@ void AddAbortBloadFunction(
                    prevent exiting when out of
                    memory - used by BloadandRefresh
   INPUTS       : The memory request size (unused)
-  RETURNS      : true (indicates a failure and for
+  RETURNS      : True (indicates a failure and for
                  the memory functions to simply
                  return a NULL pointer)
   SIDE EFFECTS : None
@@ -782,7 +784,7 @@ static bool BloadOutOfMemoryFunction(
 #if MAC_XCD
 #pragma unused(size,theEnv)
 #endif
-   return(true);
+   return true;
   }
 
 /*****************************************************/

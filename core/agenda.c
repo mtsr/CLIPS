@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*                    AGENDA MODULE                    */
    /*******************************************************/
@@ -46,6 +46,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -464,7 +466,7 @@ bool MoveActivationToTop(
    /* the agenda, then nothing needs to be done. */
    /*============================================*/
 
-   if (theActivation == theModuleItem->agenda) return(false);
+   if (theActivation == theModuleItem->agenda) return false;
 
    /*=================================================*/
    /* Update the pointers of the activation preceding */
@@ -492,7 +494,7 @@ bool MoveActivationToTop(
 
    AgendaData(theEnv)->AgendaChanged = true;
 
-   return(true);
+   return true;
   }
 
 /**********************************************/
@@ -506,7 +508,7 @@ bool EnvDeleteActivation(
    if (theActivation == NULL) RemoveAllActivations(theEnv);
    else RemoveActivation(theEnv,(struct activation *) theActivation,true,true);
 
-   return(true);
+   return true;
   }
 
 /*******************************************************/
@@ -570,7 +572,7 @@ bool DetachActivation(
 
    AgendaData(theEnv)->AgendaChanged = true;
 
-   return(true);
+   return true;
   }
 
 /****************************************************************************/
@@ -978,7 +980,7 @@ bool EnvRefresh(
         }
      }
 
-   return(true);
+   return true;
   }
 
 /**********************************************/

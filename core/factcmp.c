@@ -2,7 +2,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/24/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*     FACT PATTERN NETWORK CONSTRUCTS-TO-C MODULE     */
    /*******************************************************/
@@ -25,6 +25,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -221,7 +223,7 @@ static bool PatternNetworkToCode(
             if (networkFile == NULL)
               {
                CloseNetworkFiles(theEnv,networkFile,maxIndices);
-               return(false);
+               return false;
               }
 
             PatternNodeToCode(theEnv,networkFile,thePatternNode,imageID,maxIndices);
@@ -243,7 +245,7 @@ static bool PatternNetworkToCode(
    /* code was successfully saved.  */
    /*===============================*/
 
-   return(true);
+   return true;
   }
 
 /****************************************************************/

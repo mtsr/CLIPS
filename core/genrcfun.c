@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -46,6 +46,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -107,7 +109,7 @@ static void DisplayGenericCore(void *,DEFGENERIC *);
                  any methods are currently
                  executing
   INPUTS       : None
-  RETURNS      : true if no methods are
+  RETURNS      : True if no methods are
                  executing, false otherwise
   SIDE EFFECTS : None
   NOTES        : Used by (clear) and (bload)
@@ -161,7 +163,7 @@ void FreeDefgenericModule(
   DESCRIPTION  : Deletes all defmethods - generic headers
                    are left intact
   INPUTS       : None
-  RETURNS      : true if all methods deleted, false otherwise
+  RETURNS      : True if all methods deleted, false otherwise
   SIDE EFFECTS : Defmethods deleted
   NOTES        : Clearing generic functions is done in
                    two stages
@@ -181,7 +183,7 @@ bool ClearDefmethods(
    bool success = true;
 
 #if BLOAD || BLOAD_AND_BSAVE
-   if (Bloaded(theEnv) == true) return(false);
+   if (Bloaded(theEnv) == true) return false;
 #endif
 
    gfunc = (DEFGENERIC *) EnvGetNextDefgeneric(theEnv,NULL);
@@ -200,7 +202,7 @@ bool ClearDefmethods(
                    are left intact (as well as a method for an
                    overloaded system function)
   INPUTS       : None
-  RETURNS      : true if all methods deleted, false otherwise
+  RETURNS      : True if all methods deleted, false otherwise
   SIDE EFFECTS : Explicit defmethods deleted
   NOTES        : None
  *****************************************************************/
@@ -243,9 +245,9 @@ bool RemoveAllExplicitMethods(
          gfunc->mcnt = 0;
          gfunc->methods = NULL;
         }
-      return(true);
+      return true;
      }
-   return(false);
+   return false;
   }
 
 /**************************************************
@@ -281,7 +283,7 @@ void RemoveDefgeneric(
   NAME         : ClearDefgenerics
   DESCRIPTION  : Deletes all generic headers
   INPUTS       : None
-  RETURNS      : true if all methods deleted, false otherwise
+  RETURNS      : True if all methods deleted, false otherwise
   SIDE EFFECTS : Generic headers deleted (and any implicit system
                   function methods)
   NOTES        : None
@@ -293,7 +295,7 @@ bool ClearDefgenerics(
    bool success = true;
 
 #if BLOAD || BLOAD_AND_BSAVE
-   if (Bloaded(theEnv) == true) return(false);
+   if (Bloaded(theEnv) == true) return false;
 #endif
 
    gfunc = (DEFGENERIC *) EnvGetNextDefgeneric(theEnv,NULL);
@@ -430,7 +432,7 @@ void DestroyMethodInfo(
                    a generic function are currently
                    executing
   INPUTS       : The generic function address
-  RETURNS      : true if any methods are executing,
+  RETURNS      : True if any methods are executing,
                    false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -442,8 +444,8 @@ bool MethodsExecuting(
 
    for (i = 0 ; i < gfunc->mcnt ; i++)
      if (gfunc->methods[i].busy > 0)
-       return(true);
-   return(false);
+       return true;
+   return false;
   }
   
 #endif
@@ -456,7 +458,7 @@ bool MethodsExecuting(
                  the first type
                  (e.g. INTEGER is subsumed by NUMBER_TYPE_CODE)
   INPUTS       : Two type codes
-  RETURNS      : true if type 2 subsumes type 1, false
+  RETURNS      : True if type 2 subsumes type 1, false
                  otherwise
   SIDE EFFECTS : None
   NOTES        : Used only when COOL is not present
@@ -466,18 +468,18 @@ bool SubsumeType(
   int t2)
   {
    if ((t2 == OBJECT_TYPE_CODE) || (t2 == PRIMITIVE_TYPE_CODE))
-     return(true);
+     return true;
    if ((t2 == NUMBER_TYPE_CODE) && ((t1 == INTEGER) || (t1 == FLOAT)))
-     return(true);
+     return true;
    if ((t2 == LEXEME_TYPE_CODE) && ((t1 == STRING) || (t1 == SYMBOL)))
-     return(true);
+     return true;
    if ((t2 == ADDRESS_TYPE_CODE) && ((t1 == EXTERNAL_ADDRESS) ||
        (t1 == FACT_ADDRESS) || (t1 == INSTANCE_ADDRESS)))
-     return(true);
+     return true;
    if ((t2 == LEXEME_TYPE_CODE) &&
        ((t1 == INSTANCE_NAME) || (t1 == INSTANCE_ADDRESS)))
-     return(true);
-   return(false);
+     return true;
+   return false;
   }
 
 #endif

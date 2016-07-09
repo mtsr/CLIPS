@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/28/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -63,6 +63,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Modify command preserves fact id and address.  */
 /*                                                           */
@@ -1118,14 +1120,14 @@ bool EnvDeftemplateSlotDefaultValue(
          theValue->value = EnvCreateMultifield(theEnv,0L);
          theValue->begin = 1;
          theValue->end = 0;
-         return(true);
+         return true;
         }
       else
         {
          EnvSetEvaluationError(theEnv,true);
          InvalidDeftemplateSlotMessage(theEnv,slotName,
                                        ValueToString(theDeftemplate->header.name),false);
-         return(false);
+         return false;
         }
      }
 
@@ -1139,7 +1141,7 @@ bool EnvDeftemplateSlotDefaultValue(
       EnvSetEvaluationError(theEnv,true);
       InvalidDeftemplateSlotMessage(theEnv,slotName,
                                     ValueToString(theDeftemplate->header.name),false);
-      return(false);
+      return false;
      }
      
    /*=======================================*/
@@ -1159,9 +1161,9 @@ bool EnvDeftemplateSlotDefaultValue(
       SetpValue(theValue,tempDO.value);
      }
    else
-     { return (false); }
+     { return false; }
 
-   return(true);
+   return true;
   }
 
 /**********************************************************/
@@ -1727,13 +1729,13 @@ bool EnvDeftemplateSlotMultiP(
    if (theDeftemplate->implied)
      {
       if (strcmp(slotName,"implied") == 0)
-        { return(true); }
+        { return true; }
       else
         {
          EnvSetEvaluationError(theEnv,true);
          InvalidDeftemplateSlotMessage(theEnv,slotName,
                                        ValueToString(theDeftemplate->header.name),false);
-         return(false);
+         return false;
         }
      }
 
@@ -1747,7 +1749,7 @@ bool EnvDeftemplateSlotMultiP(
       EnvSetEvaluationError(theEnv,true);
       InvalidDeftemplateSlotMessage(theEnv,slotName,
                                     ValueToString(theDeftemplate->header.name),false);
-      return(false);
+      return false;
      }
 
    /*================================*/
@@ -1808,13 +1810,13 @@ bool EnvDeftemplateSlotSingleP(
    if (theDeftemplate->implied)
      {
       if (strcmp(slotName,"implied") == 0)
-        { return(false); }
+        { return false; }
       else
         {
          EnvSetEvaluationError(theEnv,true);
          InvalidDeftemplateSlotMessage(theEnv,slotName,
                                        ValueToString(theDeftemplate->header.name),false);
-         return(false);
+         return false;
         }
      }
 
@@ -1828,7 +1830,7 @@ bool EnvDeftemplateSlotSingleP(
       EnvSetEvaluationError(theEnv,true);
       InvalidDeftemplateSlotMessage(theEnv,slotName,
                                     ValueToString(theDeftemplate->header.name),false);
-      return(false);
+      return false;
      }
 
    /*==================================*/
@@ -1888,9 +1890,9 @@ bool EnvDeftemplateSlotExistP(
    if (theDeftemplate->implied)
      {
       if (strcmp(slotName,"implied") == 0)
-        { return(true); }
+        { return true; }
       else
-        { return(false); }
+        { return false; }
      }
 
    /*============================================*/
@@ -1899,13 +1901,13 @@ bool EnvDeftemplateSlotExistP(
    /*============================================*/
      
    else if (FindSlot(theDeftemplate,(SYMBOL_HN *) EnvAddSymbol(theEnv,slotName),&position) == NULL)
-     { return(false); }
+     { return false; }
 
    /*==================*/
    /* The slot exists. */
    /*==================*/
    
-   return(true);
+   return true;
   }  
 
 /**********************************************************/
@@ -1970,7 +1972,7 @@ bool EnvDeftemplateSlotFacetExistP(
    /*=================================================*/
 
    if (theDeftemplate->implied)
-     { return(false); }
+     { return false; }
 
    /*============================================*/
    /* Otherwise search for the slot name in the  */
@@ -1978,7 +1980,7 @@ bool EnvDeftemplateSlotFacetExistP(
    /*============================================*/
      
    else if ((theSlot = FindSlot(theDeftemplate,(SYMBOL_HN *) EnvAddSymbol(theEnv,slotName),&position)) == NULL)
-     { return(false); }
+     { return false; }
 
    /*=======================*/
    /* Search for the facet. */
@@ -1990,14 +1992,14 @@ bool EnvDeftemplateSlotFacetExistP(
         tempFacet = tempFacet->nextArg)
      {
       if (tempFacet->value == facetHN)
-        { return(true); }
+        { return true; }
      }
    
    /*===========================*/
    /* The facet does not exist. */
    /*===========================*/
    
-   return(false);
+   return false;
   }  
 
 /*********************************************************/
@@ -2063,7 +2065,7 @@ bool EnvDeftemplateSlotFacetValue(
    /*=================================================*/
 
    if (theDeftemplate->implied)
-     { return(false); }
+     { return false; }
 
    /*============================================*/
    /* Otherwise search for the slot name in the  */
@@ -2071,7 +2073,7 @@ bool EnvDeftemplateSlotFacetValue(
    /*============================================*/
      
    else if ((theSlot = FindSlot(theDeftemplate,(SYMBOL_HN *) EnvAddSymbol(theEnv,slotName),&position)) == NULL)
-     { return(false); }
+     { return false; }
 
    /*=======================*/
    /* Search for the facet. */
@@ -2085,7 +2087,7 @@ bool EnvDeftemplateSlotFacetValue(
       if (tempFacet->value == facetHN)
         { 
          EvaluateExpression(theEnv,tempFacet->argList,rv);
-         return(true);
+         return true;
         }
      }
    
@@ -2093,7 +2095,7 @@ bool EnvDeftemplateSlotFacetValue(
    /* The facet does not exist. */
    /*===========================*/
    
-   return(false);
+   return false;
   }  
   
 /************************************************************/
@@ -2187,13 +2189,13 @@ bool UpdateModifyDuplicate(
    if (functionArgs->type == SF_VARIABLE)
      {
       if (SearchParsedBindNames(theEnv,functionArgs->value) != 0)
-        { return(true); }
+        { return true; }
       templateName = FindTemplateForFactAddress((SYMBOL_HN *) functionArgs->value,
                                                 (struct lhsParseNode *) vTheLHS);
-      if (templateName == NULL) return(true);
+      if (templateName == NULL) return true;
      }
    else
-     { return(true); }
+     { return true; }
 
    /*========================================*/
    /* Make sure that the fact being modified */
@@ -2205,9 +2207,9 @@ bool UpdateModifyDuplicate(
                                     ValueToString(templateName),
                                     false);
 
-   if (theDeftemplate == NULL) return(true);
+   if (theDeftemplate == NULL) return true;
 
-   if (theDeftemplate->implied) return(true);
+   if (theDeftemplate->implied) return true;
 
    /*=============================================================*/
    /* Make sure all the slot names are valid for the deftemplate. */
@@ -2224,7 +2226,7 @@ bool UpdateModifyDuplicate(
         {
          InvalidDeftemplateSlotMessage(theEnv,ValueToString(tempArg->value),
                                        ValueToString(theDeftemplate->header.name),true);
-         return(false);
+         return false;
         }
 
       /*=========================================================*/
@@ -2236,12 +2238,12 @@ bool UpdateModifyDuplicate(
          if (tempArg->argList == NULL)
            {
             SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
-            return(false);
+            return false;
            }
          else if (tempArg->argList->nextArg != NULL)
            {
             SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
-            return(false);
+            return false;
            }
          else if (tempArg->argList->type == FCALL)
            {
@@ -2250,13 +2252,13 @@ bool UpdateModifyDuplicate(
                  ((ExpressionUnknownFunctionType(tempArg->argList) & SINGLEFIELD_TYPES) == 0)))
               {
                SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
-               return(false);
+               return false;
               }
            }
          else if (tempArg->argList->type == MF_VARIABLE)
            {
             SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
-            return(false);
+            return false;
            }
         }
 
@@ -2265,7 +2267,7 @@ bool UpdateModifyDuplicate(
       /*======================================*/
 
       if (CheckRHSSlotTypes(theEnv,tempArg->argList,slotPtr,name) == 0)
-        return(false);
+        return false;
 
       /*=============================================*/
       /* Replace the slot with the integer position. */
@@ -2277,7 +2279,7 @@ bool UpdateModifyDuplicate(
       tempArg = tempArg->nextArg;
      }
 
-   return(true);
+   return true;
   }
 
 /**************************************************/

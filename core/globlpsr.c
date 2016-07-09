@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*              DEFGLOBAL PARSER MODULE                */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -107,7 +109,7 @@ bool ParseDefglobal(
    if ((Bloaded(theEnv) == true) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"defglobal");
-      return(true);
+      return true;
      }
 #endif
 
@@ -129,7 +131,7 @@ bool ParseDefglobal(
       if (FindModuleSeparator(ValueToString(theToken.value)))
         {
          SyntaxErrorMessage(theEnv,"defglobal");
-         return(true);
+         return true;
         }
 
       /*=================================*/
@@ -140,7 +142,7 @@ bool ParseDefglobal(
       if (theModule == NULL)
         {
          CantFindItemErrorMessage(theEnv,"defmodule",ValueToString(theToken.value));
-         return(true);
+         return true;
         }
 
       /*=========================================*/
@@ -216,19 +218,19 @@ static bool GetVariableDefinition(
    /*========================================*/
 
    if (! tokenRead) GetToken(theEnv,readSource,theToken);
-   if (theToken->type == RPAREN) return(false);
+   if (theToken->type == RPAREN) return false;
 
    if (theToken->type == SF_VARIABLE)
      {
       SyntaxErrorMessage(theEnv,"defglobal");
       *defglobalError = true;
-      return(false);
+      return false;
      }
    else if (theToken->type != GBL_VARIABLE)
      {
       SyntaxErrorMessage(theEnv,"defglobal");
       *defglobalError = true;
-      return(false);
+      return false;
      }
 
    variableName = (SYMBOL_HN *) theToken->value;
@@ -240,7 +242,7 @@ static bool GetVariableDefinition(
    /*================================*/
 
 #if DEBUGGING_FUNCTIONS
-   if ((EnvGetWatchItem(theEnv,"compilations") == ON) && GetPrintWhileLoading(theEnv))
+   if ((EnvGetWatchItem(theEnv,"compilations") == true) && GetPrintWhileLoading(theEnv))
      {
       const char *outRouter = WDIALOG;
       if (QFindDefglobal(theEnv,variableName) != NULL) 
@@ -266,7 +268,7 @@ static bool GetVariableDefinition(
      {
       ImportExportConflictMessage(theEnv,"defglobal",ValueToString(variableName),NULL,NULL);
       *defglobalError = true;
-      return(false);
+      return false;
      }
 #endif
 
@@ -279,7 +281,7 @@ static bool GetVariableDefinition(
      {
       SyntaxErrorMessage(theEnv,"defglobal");
       *defglobalError = true;
-      return(false);
+      return false;
      }
 
    SavePPBuffer(theEnv," ");
@@ -292,7 +294,7 @@ static bool GetVariableDefinition(
    if (assignPtr == NULL)
      {
       *defglobalError = true;
-      return(false);
+      return false;
      }
 
    /*==========================*/
@@ -306,7 +308,7 @@ static bool GetVariableDefinition(
         {
          ReturnExpression(theEnv,assignPtr);
          *defglobalError = true;
-         return(false);
+         return false;
         }
      }
    else
@@ -326,7 +328,7 @@ static bool GetVariableDefinition(
    /* definition was successfully parsed.              */
    /*==================================================*/
 
-   return(true);
+   return true;
   }
 
 /*********************************************************/
@@ -464,7 +466,7 @@ bool ReplaceGlobalVariable(
    if (theGlobal == NULL)
      {
       GlobalReferenceErrorMessage(theEnv,ValueToString(ePtr->value));
-      return(false);
+      return false;
      }
 
    /*========================================================*/
@@ -476,7 +478,7 @@ bool ReplaceGlobalVariable(
    if (count > 1)
      {
       AmbiguousReferenceErrorMessage(theEnv,"defglobal",ValueToString(ePtr->value));
-      return(false);
+      return false;
      }
 
    /*==============================================*/
@@ -487,7 +489,7 @@ bool ReplaceGlobalVariable(
    ePtr->type = DEFGLOBAL_PTR;
    ePtr->value = (void *) theGlobal;
 
-   return(true);
+   return true;
   }
 
 /*****************************************************************/

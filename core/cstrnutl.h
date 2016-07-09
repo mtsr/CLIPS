@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/20/16            */
+   /*             CLIPS Version 6.40  07/04/16            */
    /*                                                     */
    /*            CONSTRAINT UTILITY HEADER FILE           */
    /*******************************************************/
@@ -21,6 +21,8 @@
 /*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 

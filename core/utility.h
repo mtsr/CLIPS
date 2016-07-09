@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  06/20/16            */
+   /*             CLIPS Version 6.50  07/05/16            */
    /*                                                     */
    /*                 UTILITY HEADER FILE                 */
    /*******************************************************/
@@ -49,6 +49,8 @@
 /*            Removed LOCALE definition.                     */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Added CLIPSBlockStart and CLIPSBlockEnd        */
 /*            functions for garbage collection blocks.       */
@@ -166,7 +168,6 @@ struct utilityData
                                                                             struct callFunctionItemWithArg *,
                                                                             bool *);
    void                           DeallocateCallListWithArg(void *,struct callFunctionItemWithArg *);
-
    struct callFunctionItem       *GetFunctionFromCallList(void *,const char *,struct callFunctionItem *);
    void                          *EnvGetPeriodicFunctionContext(void *,const char *);
    unsigned long                  ItemHashValue(void *,unsigned short,void *,unsigned long);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/28/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*              DEFTEMPLATE PARSER MODULE              */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*            named construct.                               */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
@@ -112,7 +114,7 @@ bool ParseDeftemplate(
    if ((Bloaded(theEnv) == true) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"deftemplate");
-      return(true);
+      return true;
      }
 #endif
 
@@ -127,12 +129,12 @@ bool ParseDeftemplate(
    deftemplateName = GetConstructNameAndComment(theEnv,readSource,&inputToken,"deftemplate",
                                                 EnvFindDeftemplateInModule,EnvUndeftemplate,"%",
                                                 true,true,true,false);
-   if (deftemplateName == NULL) return(true);
+   if (deftemplateName == NULL) return true;
 
    if (ReservedPatternSymbol(theEnv,ValueToString(deftemplateName),"deftemplate"))
      {
       ReservedPatternSymbolErrorMsg(theEnv,ValueToString(deftemplateName),"a deftemplate name");
-      return(true);
+      return true;
      }
 
    /*===========================================*/
@@ -140,7 +142,7 @@ bool ParseDeftemplate(
    /*===========================================*/
 
    slots = SlotDeclarations(theEnv,readSource,&inputToken);
-   if (DeftemplateData(theEnv)->DeftemplateError == true) return(true);
+   if (DeftemplateData(theEnv)->DeftemplateError == true) return true;
 
    /*==============================================*/
    /* If we're only checking syntax, don't add the */
@@ -150,7 +152,7 @@ bool ParseDeftemplate(
    if (ConstructData(theEnv)->CheckSyntaxMode)
      {
       ReturnSlots(theEnv,slots);
-      return(false);
+      return false;
      }
 
    /*=====================================*/
@@ -198,7 +200,7 @@ bool ParseDeftemplate(
 
 #if DEBUGGING_FUNCTIONS
    if ((BitwiseTest(DeftemplateData(theEnv)->DeletedTemplateDebugFlags,0)) || EnvGetWatchItem(theEnv,"facts"))
-     { EnvSetDeftemplateWatch(theEnv,ON,(void *) newDeftemplate); }
+     { EnvSetDeftemplateWatch(theEnv,true,(void *) newDeftemplate); }
 #endif
 
    /*==============================================*/
@@ -215,7 +217,7 @@ bool ParseDeftemplate(
 #endif
 #endif
 
-   return(false);
+   return false;
   }
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
@@ -676,7 +678,7 @@ static bool ParseFacetAttribute(
      {
       if (multifacet) SyntaxErrorMessage(theEnv,"multifacet attribute");
       else SyntaxErrorMessage(theEnv,"facet attribute");
-      return(false);
+      return false;
      }
      
    facetName = (SYMBOL_HN *) inputToken.value;
@@ -698,7 +700,7 @@ static bool ParseFacetAttribute(
         {
          if (multifacet) AlreadyParsedErrorMessage(theEnv,"multifacet ",ValueToString(facetName));
          else AlreadyParsedErrorMessage(theEnv,"facet ",ValueToString(facetName));
-         return(false);
+         return false;
         }
      }
    
@@ -720,7 +722,7 @@ static bool ParseFacetAttribute(
          if (multifacet) SyntaxErrorMessage(theEnv,"multifacet attribute");
          else SyntaxErrorMessage(theEnv,"facet attribute");
          ReturnExpression(theEnv,facetValue);
-         return(false);
+         return false;
         }
 
       /*======================================*/
@@ -753,7 +755,7 @@ static bool ParseFacetAttribute(
         {
          SyntaxErrorMessage(theEnv,"facet attribute");
          ReturnExpression(theEnv,facetValue);
-         return(false);
+         return false;
         }
      }
      
@@ -772,7 +774,7 @@ static bool ParseFacetAttribute(
    if ((! multifacet) && (facetValue == NULL))
      {
       SyntaxErrorMessage(theEnv,"facet attribute");
-      return(false);
+      return false;
      }
 
    /*=================================================*/
@@ -796,7 +798,7 @@ static bool ParseFacetAttribute(
    /* The facet/multifacet was successfully parsed. */
    /*===============================================*/
 
-   return(true);
+   return true;
   }
 
 #endif /* (! RUN_TIME) && (! BLOAD_ONLY) */

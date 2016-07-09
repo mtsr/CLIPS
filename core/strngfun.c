@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/27/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*               STRING FUNCTIONS MODULE               */
    /*******************************************************/
@@ -57,6 +57,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: The eval function can now access any local     */
 /*            variables that have been defined.              */
@@ -734,7 +736,7 @@ bool EnvEval(
      {
       mCVSetBoolean(returnValue,false);
       depth--;
-      return(false);
+      return false;
      }
 
    /*================================================*/
@@ -773,7 +775,7 @@ bool EnvEval(
       mCVSetBoolean(returnValue,false);
       depth--;
       ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
-      return(false);
+      return false;
      }
 
    /*==============================================*/
@@ -791,7 +793,7 @@ bool EnvEval(
       ReturnExpression(theEnv,top);
       depth--;
       ConstructData(theEnv)->DanglingConstructs = danglingConstructs;
-      return(false);
+      return false;
      }
 
    /*====================================*/
@@ -827,8 +829,8 @@ bool EnvEval(
       CallPeriodicTasks(theEnv);
      }
 
-   if (EnvGetEvaluationError(theEnv)) return(false);
-   return(true);
+   if (EnvGetEvaluationError(theEnv)) return false;
+   return true;
   }
 
 #else
@@ -860,7 +862,7 @@ bool EnvEval(
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function eval does not work in run time modules.\n");
    mCVSetBoolean(returnValue,false);
-   return(false);
+   return false;
   }
 
 #endif
@@ -918,7 +920,7 @@ bool EnvBuild(
    /*====================================================*/
 
 #if DEFRULE_CONSTRUCT
-   if (EngineData(theEnv)->JoinOperationInProgress) return(false);
+   if (EngineData(theEnv)->JoinOperationInProgress) return false;
 #endif
 
    /*===========================================*/
@@ -927,7 +929,7 @@ bool EnvBuild(
    /*===========================================*/
 
    if (OpenStringSource(theEnv,"build",theString,0) == 0)
-     { return(false); }
+     { return false; }
 
    /*================================*/
    /* The first token of a construct */
@@ -939,7 +941,7 @@ bool EnvBuild(
    if (theToken.type != LPAREN)
      {
       CloseStringSource(theEnv,"build");
-      return(false);
+      return false;
      }
 
    /*==============================================*/
@@ -950,7 +952,7 @@ bool EnvBuild(
    if (theToken.type != SYMBOL)
      {
       CloseStringSource(theEnv,"build");
-      return(false);
+      return false;
      }
 
    constructType = ValueToString(theToken.value);
@@ -998,9 +1000,9 @@ bool EnvBuild(
    /* parsed, otherwise return false.               */
    /*===============================================*/
 
-   if (errorFlag == 0) return(true);
+   if (errorFlag == 0) return true;
 
-   return(false);
+   return false;
   }
 #else
 /**************************************************/
@@ -1026,7 +1028,7 @@ bool EnvBuild(
   { 
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function build does not work in run time modules.\n");
-   return(false);
+   return false;
   }
 #endif /* (! RUN_TIME) && (! BLOAD_ONLY) */
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*               INSTANCE PARSER MODULE                */
    /*******************************************************/
@@ -41,6 +41,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -536,7 +538,7 @@ SlotOverrideError:
                  class name with an actual pointer
                  to the class
   INPUTS       : The expression
-  RETURNS      : true if all OK, false
+  RETURNS      : True if all OK, false
                  if class cannot be found
   SIDE EFFECTS : The expression type and value are
                  modified if class is found
@@ -561,7 +563,7 @@ static bool ReplaceClassNameWithReference(
       if (theDefclass == NULL)
         {
          CantFindItemErrorMessage(theEnv,"class",theClassName);
-         return(false);
+         return false;
         }
       if (EnvClassAbstractP(theEnv,theDefclass))
         {
@@ -569,7 +571,7 @@ static bool ReplaceClassNameWithReference(
          EnvPrintRouter(theEnv,WERROR,"Cannot create instances of abstract class ");
          EnvPrintRouter(theEnv,WERROR,theClassName);
          EnvPrintRouter(theEnv,WERROR,".\n");
-         return(false);
+         return false;
         }
       theExp->type = DEFCLASS_PTR;
       theExp->value = theDefclass;
@@ -579,7 +581,7 @@ static bool ReplaceClassNameWithReference(
         { ConstructData(theEnv)->DanglingConstructs++; }
 #endif
      }
-   return(true);
+   return true;
   }
 
 #endif

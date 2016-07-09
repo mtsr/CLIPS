@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  06/20/16            */
+   /*             CLIPS Version 6.50  07/05/16            */
    /*                                                     */
    /*          DEFTEMPLATE UTILITIES HEADER FILE          */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
@@ -62,7 +64,7 @@
    bool                           CheckRHSSlotTypes(void *,struct expr *,struct templateSlot *,const char *);
    struct templateSlot           *GetNthSlot(struct deftemplate *,int);
    int                            FindSlotPosition(struct deftemplate *,struct symbolHashNode *);
-   void                           PrintTemplateFact(void *,const char *,struct fact *,int,int,const char *);
+   void                           PrintTemplateFact(void *,const char *,struct fact *,bool,bool,const char *);
    void                           UpdateDeftemplateScope(void *);
    struct templateSlot           *FindSlot(struct deftemplate *,struct symbolHashNode *,short *);
    struct deftemplate            *CreateImpliedDeftemplate(void *,SYMBOL_HN *,bool);

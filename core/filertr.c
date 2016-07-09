@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/24/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*               FILE I/O ROUTER MODULE                */
    /*******************************************************/
@@ -42,6 +42,10 @@
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Changed return values for router functions.    */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -61,8 +65,8 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static int                     ExitFile(void *,int);
-   static int                     PrintFile(void *,const char *,const char *);
+   static void                    ExitFile(void *,int);
+   static void                    PrintFile(void *,const char *,const char *);
    static int                     GetcFile(void *,const char *);
    static int                     UngetcFile(void *,int,const char *);
    static void                    DeallocateFileRouterData(void *);
@@ -155,15 +159,15 @@ bool FindFile(
   void *theEnv,
   const char *logicalName)
   {
-   if (FindFptr(theEnv,logicalName) != NULL) return(true);
+   if (FindFptr(theEnv,logicalName) != NULL) return true;
 
-   return(false);
+   return false;
   }
 
 /********************************************/
 /* ExitFile:  Exit routine for file router. */
 /********************************************/
-static int ExitFile(
+static void ExitFile(
   void *theEnv,
   int num)
   {
@@ -177,13 +181,12 @@ static int ExitFile(
 #pragma unused(theEnv)
 #endif
 #endif
-   return(1);
   }
 
 /*********************************************/
 /* PrintFile: Print routine for file router. */
 /*********************************************/
-static int PrintFile(
+static void PrintFile(
   void *theEnv,
   const char *logicalName,
   const char *str)
@@ -193,8 +196,6 @@ static int PrintFile(
    fptr = FindFptr(theEnv,logicalName);
    
    genprintfile(theEnv,fptr,str);
-   
-   return(1);
   }
 
 /*******************************************/
@@ -264,7 +265,7 @@ bool OpenAFile(
    /*==================================*/
 
    if ((newstream = GenOpen(theEnv,fileName,accessMode)) == NULL)
-     { return(false); }
+     { return false; }
 
    /*===========================*/
    /* Create a new file router. */
@@ -289,7 +290,7 @@ bool OpenAFile(
    /* was opened successfully.         */
    /*==================================*/
 
-   return(true);
+   return true;
   }
 
 /*************************************************************/
@@ -317,13 +318,13 @@ bool CloseFile(
            { prev->next = fptr->next; }
          rm(theEnv,fptr,(int) sizeof(struct fileRouter));
 
-         return(true);
+         return true;
         }
 
       prev = fptr;
      }
 
-   return(false);
+   return false;
   }
 
 /**********************************************/
@@ -336,7 +337,7 @@ bool CloseAllFiles(
   {
    struct fileRouter *fptr, *prev;
 
-   if (FileRouterData(theEnv)->ListOfFileRouters == NULL) return(false);
+   if (FileRouterData(theEnv)->ListOfFileRouters == NULL) return false;
 
    fptr = FileRouterData(theEnv)->ListOfFileRouters;
 
@@ -351,7 +352,7 @@ bool CloseAllFiles(
 
    FileRouterData(theEnv)->ListOfFileRouters = NULL;
 
-   return(true);
+   return true;
   }
 
 

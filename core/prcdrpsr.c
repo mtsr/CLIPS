@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*          PROCEDURAL FUNCTIONS PARSER MODULE         */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*            flag is set to 1.                              */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -174,9 +176,9 @@ void ClearParsedBindNames(
 bool ParsedBindNamesEmpty(
   void *theEnv)
   {
-   if (ProcedureParserData(theEnv)->ListOfParsedBindNames != NULL) return(false);
+   if (ProcedureParserData(theEnv)->ListOfParsedBindNames != NULL) return false;
 
-   return(true);
+   return true;
   }
 
 #if (! BLOAD_ONLY)
@@ -904,9 +906,9 @@ SwitchParseError:
    return(NULL);
   }
 
-/********************************************************/
-/* SearchParsedBindNames:                               */
-/********************************************************/
+/**************************/
+/* SearchParsedBindNames: */
+/**************************/
 int SearchParsedBindNames(
   void *theEnv,
   SYMBOL_HN *name_sought)
@@ -923,12 +925,12 @@ int SearchParsedBindNames(
       theIndex++;
      }
 
-   return(0);
+   return 0;
   }
 
-/********************************************************/
-/* FindBindConstraints:                               */
-/********************************************************/
+/************************/
+/* FindBindConstraints: */
+/************************/
 struct constraintRecord *FindBindConstraints(
   void *theEnv,
   SYMBOL_HN *nameSought)

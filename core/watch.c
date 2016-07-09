@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/28/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                    WATCH MODULE                     */
    /*******************************************************/
@@ -41,6 +41,10 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Changed return values for router functions.    */
+/*                                                           */
 /*************************************************************/
 
 #include "setup.h"
@@ -65,7 +69,7 @@
 
    static struct watchItem       *ValidWatchItem(void *,const char *,bool *);
    static bool                    RecognizeWatchRouters(void *,const char *);
-   static int                     CaptureWatchPrints(void *,const char *,const char *);
+   static void                    CaptureWatchPrints(void *,const char *,const char *);
    static void                    DeallocateWatchData(void *);
 
 /**********************************************/
@@ -106,7 +110,7 @@ bool AddWatchItem(
   void *theEnv,
   const char *name,
   int code,
-  unsigned *flag,
+  bool *flag,
   int priority,
   bool (*accessFunc)(void *,int,bool,struct expr *),
   bool (*printFunc)(void *,const char *,int,struct expr *))
@@ -122,7 +126,7 @@ bool AddWatchItem(
         currentPtr != NULL;
         currentPtr = currentPtr->next)
      {
-      if (strcmp(currentPtr->name,name) == 0) return(false);
+      if (strcmp(currentPtr->name,name) == 0) return false;
       if (priority < currentPtr->priority) lastPtr = currentPtr;
      }
 
@@ -157,7 +161,7 @@ bool AddWatchItem(
    /* Return true to indicate the item has been added. */
    /*==================================================*/
 
-   return(true);
+   return true;
   }
 
 /*****************************************************/
@@ -167,7 +171,7 @@ bool EnvWatch(
   void *theEnv,
   const char *itemName)
   {
-   return(EnvSetWatchItem(theEnv,itemName,ON,NULL));
+   return(EnvSetWatchItem(theEnv,itemName,true,NULL));
   }
 
 /*********************************************************/
@@ -177,7 +181,7 @@ bool EnvUnwatch(
   void *theEnv,
   const char *itemName)
   {
-   return(EnvSetWatchItem(theEnv,itemName,OFF,NULL));
+   return(EnvSetWatchItem(theEnv,itemName,false,NULL));
   }
 
 /***********************************************************************/
@@ -217,10 +221,10 @@ bool EnvSetWatchItem(
              ((*wPtr->accessFunc)(theEnv,wPtr->code,newState,argExprs) == false))
            {
             EnvSetEvaluationError(theEnv,true);
-            return(false);
+            return false;
            }
         }
-      return(true);
+      return true;
      }
 
    /*=================================================*/
@@ -248,10 +252,10 @@ bool EnvSetWatchItem(
              ((*wPtr->accessFunc)(theEnv,wPtr->code,newState,argExprs) == false))
            {
             EnvSetEvaluationError(theEnv,true);
-            return(false);
+            return false;
            }
 
-         return(true);
+         return true;
         }
      }
 
@@ -260,7 +264,7 @@ bool EnvSetWatchItem(
    /* of watchable items then return false.           */
    /*=================================================*/
 
-   return(false);
+   return false;
   }
 
 /******************************************************************/
@@ -395,7 +399,7 @@ void WatchCommand(
    /* Set the watch item. */
    /*=====================*/
 
-   EnvSetWatchItem(theEnv,argument,ON,GetNextArgument(GetFirstArgument()));
+   EnvSetWatchItem(theEnv,argument,true,GetNextArgument(GetFirstArgument()));
   }
 
 /****************************************/
@@ -445,7 +449,7 @@ void UnwatchCommand(
    /* Set the watch item. */
    /*=====================*/
 
-   EnvSetWatchItem(theEnv,argument,OFF,GetNextArgument(GetFirstArgument()));
+   EnvSetWatchItem(theEnv,argument,false,GetNextArgument(GetFirstArgument()));
   }
 
 /************************************************/
@@ -590,15 +594,15 @@ static bool RecognizeWatchRouters(
 #pragma unused(theEnv)
 #endif
 
-   if (strcmp(logName,WTRACE) == 0) return(true);
+   if (strcmp(logName,WTRACE) == 0) return true;
 
-   return(false);
+   return false;
   }
 
 /**************************************************/
 /* CaptureWatchPrints: Suppresses WTRACE messages */
 /**************************************************/
-static int CaptureWatchPrints(
+static void CaptureWatchPrints(
   void *theEnv,
   const char *logName,
   const char *str)
@@ -608,7 +612,6 @@ static int CaptureWatchPrints(
 #pragma unused(str)
 #pragma unused(theEnv)
 #endif
-   return(1);
   }
 
 #endif /* DEBUGGING_FUNCTIONS */

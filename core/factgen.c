@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/24/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*          FACT RETE FUNCTION GENERATION MODULE       */
    /*******************************************************/
@@ -27,6 +27,8 @@
 /*            indices.                                       */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Fact ?var:slot references in deffunctions and  */
 /*            defrule actions.                               */

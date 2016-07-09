@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -47,7 +47,9 @@
 /*            Added Env prefix to GetHaltExecution and        */
 /*            SetHaltExecution functions.                     */
 /*                                                            */
-/*            Pragma once and other inclusion changes.       */
+/*            Pragma once and other inclusion changes.        */
+/*                                                            */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /**************************************************************/
 /* =========================================
@@ -734,7 +736,7 @@ static void MarkObjectPatternNetwork(
                  bitwising and'ing byte per byte up
                  to the length of the smaller map.
   INPUTS       : The two slot bitmaps
-  RETURNS      : true if any common bits
+  RETURNS      : True if any common bits
                  are set in both maps, false
                  otherwise
   SIDE EFFECTS : None
@@ -751,8 +753,8 @@ static bool CompareSlotBitMaps(
               smap1->maxid : smap2->maxid) / BITS_PER_BYTE);
    for (i = 0 ; i <= maxByte ; i++)
      if (smap1->map[i] & smap2->map[i])
-       return(true);
-   return(false);
+       return true;
+   return false;
   }
 
 /**********************************************************************************
@@ -1169,7 +1171,7 @@ static void CreateObjectAlphaMatch(
                     for the pattern node being exmained
                  3) The pattern network test expression
                  4) The pattern node being examined
-  RETURNS      : true if the node passes the
+  RETURNS      : True if the node passes the
                  test, false otherwise
   SIDE EFFECTS : Evaluation of the test
                  EvaluationError and HaltExecution
@@ -1186,7 +1188,7 @@ static bool EvaluateObjectPatternTest(
    DATA_OBJECT vresult;
    int rv;
 
-   if (networkTest == NULL) return(true);
+   if (networkTest == NULL) return true;
    
    if (networkTest->type == OBJ_PN_CONSTANT)
      {
@@ -1201,9 +1203,9 @@ static bool EvaluateObjectPatternTest(
          if (((struct ObjectCmpPNConstant *)
                  ValueToBitMap(networkTest->value))->pass)
            patternNode->blocked = true;
-         return(true);
+         return true;
         }
-      return(false);
+      return false;
      }
 
    /* =========================================================
@@ -1224,12 +1226,12 @@ static bool EvaluateObjectPatternTest(
                positive constant test on that node
                ============================================ */
             patternNode->blocked = false;
-            return(true);
+            return true;
            }
          patternNode->blocked = false;
          networkTest = networkTest->nextArg;
         }
-      return(false);
+      return false;
      }
 
    /* ==========================================================
@@ -1247,12 +1249,12 @@ static bool EvaluateObjectPatternTest(
               == false)
            {
             patternNode->blocked = false;
-            return(false);
+            return false;
            }
          patternNode->blocked = false;
          networkTest = networkTest->nextArg;
         }
-      return(true);
+      return true;
      }
 
    /* =======================================================
@@ -1266,12 +1268,12 @@ static bool EvaluateObjectPatternTest(
          ObjectPatternNetErrorMessage(theEnv,patternNode);
          EvaluationData(theEnv)->EvaluationError = false;
          EvaluationData(theEnv)->HaltExecution = false;
-         return(false);
+         return false;
         }
       if ((vresult.value != EnvFalseSymbol(theEnv)) || (vresult.type != SYMBOL))
-        return(true);
+        return true;
      }
-   return(false);
+   return false;
   }
 
 /***************************************************

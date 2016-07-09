@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/04/16             */
    /*                                                     */
    /*             BASIC MATH FUNCTIONS MODULE             */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Auto-float-dividend always enabled.            */
 /*                                                           */
@@ -453,7 +455,7 @@ void MinFunction(
    /* Loop through the remaining arguments, first checking each */
    /* argument to see that it is a number, and then determining */
    /* if the argument is less than the previous arguments and   */
-   /* is thus the maximum value.                                */
+   /* is thus the minimum value.                                */
    /*===========================================================*/
 
    while (UDFHasNextArgument(context))

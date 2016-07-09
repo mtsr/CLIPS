@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                    MEMORY MODULE                    */
    /*******************************************************/
@@ -41,6 +41,8 @@
 /*            Removed support for BLOCK_MEMORY.              */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -145,7 +147,7 @@ bool DefaultOutOfMemoryFunction(
    PrintErrorID(theEnv,"MEMORY",1,true);
    EnvPrintRouter(theEnv,WERROR,"Out of memory.\n");
    EnvExitRouter(theEnv,EXIT_FAILURE);
-   return(true);
+   return true;
   }
 
 /***********************************************************/

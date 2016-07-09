@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*               INSTANCE FUNCTIONS MODULE             */
    /*******************************************************/
@@ -63,6 +63,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -535,7 +537,7 @@ int FindInstanceTemplateSlot(
                  4) DATA_OBJECT_PTR to store the
                     set value
                  5) The command doing the put-
-  RETURNS      : false on errors, or true
+  RETURNS      : False on errors, or true
   SIDE EFFECTS : Old value deleted and new one allocated
                  Old value symbols deinstalled
                  New value symbols installed
@@ -553,7 +555,7 @@ bool PutSlotValue(
      {
       SetpType(setVal,SYMBOL);
       SetpValue(setVal,EnvFalseSymbol(theEnv));
-      return(false);
+      return false;
      }
    return(DirectPutSlotValue(theEnv,ins,sp,val,setVal));
   }
@@ -569,7 +571,7 @@ bool PutSlotValue(
                  3) The address of the value
                  4) DATA_OBJECT_PTR to store the
                     set value
-  RETURNS      : false on errors, or true
+  RETURNS      : False on errors, or true
   SIDE EFFECTS : Old value deleted and new one allocated
                  Old value symbols deinstalled
                  New value symbols installed
@@ -603,7 +605,7 @@ bool DirectPutSlotValue(
          val = &tmpVal;
          if (!EvaluateAndStoreInDataObject(theEnv,sp->desc->multiple,
                                            (EXPRESSION *) sp->desc->defaultValue,val,true))
-           return(false);
+           return false;
         }
       else if (sp->desc->defaultValue != NULL)
         { val = (DATA_OBJECT *) sp->desc->defaultValue; }
@@ -616,7 +618,7 @@ bool DirectPutSlotValue(
          EnvPrintRouter(theEnv,WERROR,ValueToString(ins->name));
          EnvPrintRouter(theEnv,WERROR,".\n");
          EnvSetEvaluationError(theEnv,true);
-         return(false);
+         return false;
         }
      }
 #if DEFRULE_CONSTRUCT
@@ -627,7 +629,7 @@ bool DirectPutSlotValue(
       EnvPrintRouter(theEnv,WERROR,"Cannot modify reactive instance slots while\n");
       EnvPrintRouter(theEnv,WERROR,"  pattern-matching is in process.\n");
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 
    /* =============================================
@@ -760,7 +762,7 @@ bool DirectPutSlotValue(
      }
 #endif
 
-   return(true);
+   return true;
   }
 
 /*******************************************************************
@@ -774,7 +776,7 @@ bool DirectPutSlotValue(
                  4) Buffer holding printout of the offending command
                     (if NULL assumes message-handler is executing
                      and calls PrintHandler for CurrentCore instead)
-  RETURNS      : true if value is OK, false otherwise
+  RETURNS      : True if value is OK, false otherwise
   SIDE EFFECTS : Sets EvaluationError if slot is not OK
   NOTES        : Examines all fields of a multi-field
  *******************************************************************/
@@ -792,7 +794,7 @@ bool ValidSlotValue(
       slot to default value
       =================================== */
    if (GetpValue(val) == ProceduralPrimitiveData(theEnv)->NoParamValue)
-     return(true);
+     return true;
    if ((sd->multiple == 0) && (val->type == MULTIFIELD) &&
                               (GetpDOLength(val) != 1))
      {
@@ -802,7 +804,7 @@ bool ValidSlotValue(
       PrintSlot(theEnv,WERROR,sd,ins,theCommand);
       EnvPrintRouter(theEnv,WERROR,".\n");
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
    if (val->type == RVOID)
      {
@@ -811,7 +813,7 @@ bool ValidSlotValue(
       PrintSlot(theEnv,WERROR,sd,ins,theCommand);
       EnvPrintRouter(theEnv,WERROR,".\n");
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
    if (EnvGetDynamicConstraintChecking(theEnv))
      {
@@ -829,10 +831,10 @@ bool ValidSlotValue(
          ConstraintViolationErrorMessage(theEnv,NULL,NULL,0,0,NULL,0,
                                          violationCode,sd->constraint,false);
          EnvSetEvaluationError(theEnv,true);
-         return(false);
+         return false;
         }
      }
-   return(true);
+   return true;
   }
 
 /********************************************************
@@ -1225,7 +1227,7 @@ void MatchObjectFunction(
                  consistent with last push through
                  pattern-matching network
   INPUTS       : The instance
-  RETURNS      : true if instance has not
+  RETURNS      : True if instance has not
                  changed since last push through the
                  Rete network, false otherwise
   SIDE EFFECTS : None
@@ -1247,7 +1249,7 @@ bool NetworkSynchronized(
   DESCRIPTION  : Determines if an instance has been
                  deleted
   INPUTS       : The instance
-  RETURNS      : true if instance has been deleted, 
+  RETURNS      : True if instance has been deleted, 
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None

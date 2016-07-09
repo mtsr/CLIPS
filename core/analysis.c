@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/04/16             */
    /*                                                     */
    /*                  ANALYSIS MODULE                    */
    /*******************************************************/
@@ -24,6 +24,8 @@
 /*      6.30: Join network rework and optimizations.         */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
@@ -188,7 +190,7 @@ bool VariableAnalysis(
          if (GetVariables(theEnv,patternPtr,PATTERN_CE,theNandFrames))
            {
             ReleaseNandFrames(theEnv,theNandFrames);
-            return(true);
+            return true;
            }
  
          /*==========================================================*/
@@ -198,13 +200,13 @@ bool VariableAnalysis(
          if (TestCEAnalysis(theEnv,patternPtr,patternPtr->expression,false,&errorFlag,theNandFrames) == true)
            {
             ReleaseNandFrames(theEnv,theNandFrames);
-            return(true);
+            return true;
            }
  
          if (TestCEAnalysis(theEnv,patternPtr,patternPtr->secondaryExpression,true,&errorFlag,theNandFrames) == true)
            {
             ReleaseNandFrames(theEnv,theNandFrames);
-            return(true);
+            return true;
            }
         }
 
@@ -220,7 +222,7 @@ bool VariableAnalysis(
          if (TestCEAnalysis(theEnv,patternPtr,patternPtr->expression,false,&errorFlag,theNandFrames) == true)
            {
             ReleaseNandFrames(theEnv,theNandFrames);
-            return(true);
+            return true;
            }
         }
 
@@ -284,7 +286,7 @@ static bool TestCEAnalysis(
   {
    struct lhsParseNode *rv, *theList, *tempList, *tempRight;
 
-   if (theExpression == NULL) return(false);
+   if (theExpression == NULL) return false;
    
    /*=====================================================*/
    /* Verify that all variables were referenced properly. */
@@ -316,7 +318,7 @@ static bool TestCEAnalysis(
          {
           ReturnLHSParseNodes(theEnv,theList);
           patternPtr->right = tempRight;
-          return(true);
+          return true;
          }
       }
       
@@ -391,12 +393,12 @@ static bool GetVariables(
              ((thePattern->type == PATTERN_CE) && (thePattern->value != NULL)))
            {
             if (ProcessVariable(theEnv,thePattern,multifieldHeader,patternHead,patternHeadType,theNandFrames))
-              { return(true); }
+              { return true; }
            }
          else
            {
             if (ProcessField(theEnv,thePattern,multifieldHeader,patternHead,patternHeadType,theNandFrames))
-              { return(true); }
+              { return true; }
            }
         }
 
@@ -421,7 +423,7 @@ static bool GetVariables(
    /* no errors were detected.      */
    /*===============================*/
 
-   return(false);
+   return false;
   }
 
 /******************************************************/
@@ -483,7 +485,7 @@ static bool ProcessVariable(
                                true,false);
 
       if (ProcessField(theEnv,thePattern,multifieldHeader,patternHead,patternHeadType,theNandFrames))
-        { return(true); }
+        { return true; }
      }
 
    /*=================================================================*/
@@ -520,7 +522,7 @@ static bool PropagateVariableDriver(
                                    theReference,patternHead->beginNandDepth,assignReference,false))
         {
          VariableMixingErrorMessage(theEnv,variableName);
-         return(true);
+         return true;
         }
      }
 
@@ -533,7 +535,7 @@ static bool PropagateVariableDriver(
                                 patternHead->beginNandDepth,assignReference,false))
      {
       VariableMixingErrorMessage(theEnv,variableName);
-      return(true);
+      return true;
      }
 
    /*==============================================*/
@@ -543,11 +545,11 @@ static bool PropagateVariableDriver(
 
    if (PropagateVariableToNodes(theEnv,patternHead->expression,theType,variableName,theReference,
                                 patternHead->beginNandDepth,assignReference,true))
-     { return(true); }
+     { return true; }
 
    if (PropagateVariableToNodes(theEnv,patternHead->secondaryExpression,theType,variableName,theReference,
                                 patternHead->beginNandDepth,assignReference,true))
-     { return(true); }
+     { return true; }
    
    /*======================================================*/
    /* Propagate values to other patterns if the pattern in */
@@ -582,7 +584,7 @@ static bool PropagateVariableDriver(
                                    ignoreVariableMixing))
        {
          VariableMixingErrorMessage(theEnv,variableName);
-         return(true);
+         return true;
         }
      }
 
@@ -591,7 +593,7 @@ static bool PropagateVariableDriver(
    /* generated by the variable propagation.       */
    /*==============================================*/
 
-   return(false);
+   return false;
   }
 
 /********************************************************/
@@ -614,7 +616,7 @@ static bool ProcessField(
    /* no errors were generated.                          */
    /*====================================================*/
 
-   if (thePattern->type == PATTERN_CE) return(false);
+   if (thePattern->type == PATTERN_CE) return false;
 
    /*====================================================================*/
    /* Derive a set of constraints based on values found in the slot or   */
@@ -631,7 +633,7 @@ static bool ProcessField(
                                   (SYMBOL_HN *) tempList->value,tempList,false,patternHeadType))
         {
          ReturnLHSParseNodes(theEnv,theList);
-         return(true);
+         return true;
         }
      }
    ReturnLHSParseNodes(theEnv,theList);
@@ -642,7 +644,7 @@ static bool ProcessField(
    /*===========================================================*/
 
    if (UnboundVariablesInPattern(theEnv,thePattern,(int) patternHead->whichCE))
-     { return(true); }
+     { return true; }
 
    /*==================================================*/
    /* Check for constraint errors for this slot/field. */
@@ -651,7 +653,7 @@ static bool ProcessField(
    /*==================================================*/
 
    if (ProcessConnectedConstraints(theEnv,thePattern,multifieldHeader,patternHead))
-     { return(true); }
+     { return true; }
 
    /*==============================================================*/
    /* Convert the slot/field constraint to a series of expressions */
@@ -664,7 +666,7 @@ static bool ProcessField(
    /* Return false to indicate that no errors were generated. */
    /*=========================================================*/
 
-   return(false);
+   return false;
   }
 
 /*************************************************************/
@@ -728,7 +730,7 @@ static bool PropagateVariableToNodes(
            {
             if (((theType == SF_VARIABLE) && (theNode->type == MF_VARIABLE)) ||
                 ((theType == MF_VARIABLE) && (theNode->type == SF_VARIABLE)))
-              { return(true); }
+              { return true; }
            }
 
          /*======================================================*/
@@ -775,7 +777,7 @@ static bool PropagateVariableToNodes(
                (theNode->value == (void *) variableName) &&
                (assignReference == true))
         {
-         if (theType == MF_VARIABLE) return(true);
+         if (theType == MF_VARIABLE) return true;
 
          theNode->referringNode = theReference;
         }
@@ -789,7 +791,7 @@ static bool PropagateVariableToNodes(
         {
          if (PropagateVariableToNodes(theEnv,theNode->right,theType,variableName,
                                       theReference,startDepth,assignReference,ignoreVariableTypes))
-           { return(true); }
+           { return true; }
         }
 
       /*============================================================*/
@@ -811,7 +813,7 @@ static bool PropagateVariableToNodes(
    /* Return false to indicate that no errors were detected. */
    /*========================================================*/
 
-   return(false);
+   return false;
   }
 
 /*************************************************************/
@@ -844,11 +846,11 @@ static bool UnboundVariablesInPattern(
       while (theSlot != NULL)
         {
          if (UnboundVariablesInPattern(theEnv,theSlot,pattern))
-           { return(true); }
+           { return true; }
          theSlot = theSlot->right;
         }
 
-      return(false);
+      return false;
      }
 
    /*=======================*/
@@ -888,7 +890,7 @@ static bool UnboundVariablesInPattern(
            {
             VariableReferenceErrorMessage(theEnv,(SYMBOL_HN *) andField->value,NULL,pattern,
                                           slotName,theField);
-            return(true);
+            return true;
            }
 
          /*==============================================*/
@@ -901,7 +903,7 @@ static bool UnboundVariablesInPattern(
                   (andField->type == RETURN_VALUE_CONSTRAINT))
            {
             rv = CheckExpression(theEnv,andField->expression,NULL,pattern,slotName,theField);
-            if (rv != NULL) return(true);
+            if (rv != NULL) return true;
            }
 
          /*========================================================*/
@@ -922,7 +924,7 @@ static bool UnboundVariablesInPattern(
                                                NULL,false,pattern,
                                                slotName,theField,result,
                                                theConstraints,true);
-               return(true);
+               return true;
               }
            }
         }
@@ -933,7 +935,7 @@ static bool UnboundVariablesInPattern(
    /* no errors were detected.      */
    /*===============================*/
 
-   return(false);
+   return false;
   }
 
 /******************************************************************/

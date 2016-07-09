@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                 DEFFUNCTION MODULE                  */
    /*******************************************************/
@@ -53,6 +53,8 @@
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -377,7 +379,7 @@ DEFFUNCTION *LookupDeffunctionInScope(
   DESCRIPTION  : External interface routine for
                  removing a deffunction
   INPUTS       : Deffunction pointer
-  RETURNS      : false if unsuccessful,
+  RETURNS      : False if unsuccessful,
                  true otherwise
   SIDE EFFECTS : Deffunction deleted, if possible
   NOTES        : None
@@ -387,21 +389,21 @@ bool EnvUndeffunction(
   void *vptr)
   {
 #if BLOAD_ONLY || RUN_TIME
-   return(false);
+   return false;
 #else
 
 #if BLOAD || BLOAD_AND_BSAVE
 
    if (Bloaded(theEnv) == true)
-     return(false);
+     return false;
 #endif
    if (vptr == NULL)
       return(RemoveAllDeffunctions(theEnv));
    if (EnvIsDeffunctionDeletable(theEnv,vptr) == false)
-     return(false);
+     return false;
    RemoveConstructFromModule(theEnv,(struct constructHeader *) vptr);
    RemoveDeffunction(theEnv,vptr);
-   return(true);
+   return true;
 #endif
   }
 
@@ -427,7 +429,7 @@ void *EnvGetNextDeffunction(
                  executing or referenced by another
                  expression
   INPUTS       : Deffunction pointer
-  RETURNS      : true if the deffunction can
+  RETURNS      : True if the deffunction can
                  be deleted, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -604,7 +606,7 @@ void EnvGetDeffunctionList(
                  passed to a deffunction
   INPUTS       : 1) Deffunction pointer
                  2) The number of arguments
-  RETURNS      : true if OK, false otherwise
+  RETURNS      : True if OK, false otherwise
   SIDE EFFECTS : Message printed on errors
   NOTES        : None
  *******************************************************/
@@ -616,7 +618,7 @@ bool CheckDeffunctionCall(
    DEFFUNCTION *dptr;
 
    if (vdptr == NULL)
-     return(false);
+     return false;
    dptr = (DEFFUNCTION *) vdptr;
    if (args < dptr->minNumberOfParameters)
      {
@@ -626,16 +628,16 @@ bool CheckDeffunctionCall(
       else
         ExpectedCountError(theEnv,EnvGetDeffunctionName(theEnv,(void *) dptr),
                            EXACTLY,dptr->minNumberOfParameters);
-      return(false);
+      return false;
      }
    else if ((args > dptr->minNumberOfParameters) &&
             (dptr->maxNumberOfParameters != -1))
      {
       ExpectedCountError(theEnv,EnvGetDeffunctionName(theEnv,(void *) dptr),
                          EXACTLY,dptr->minNumberOfParameters);
-      return(false);
+      return false;
      }
-   return(true);
+   return true;
   }
 
 /* =========================================
@@ -685,8 +687,8 @@ static void PrintDeffunctionCall(
   INPUTS       : 1) The deffunction
                  2) A data object buffer to hold
                     the evaluation result
-  RETURNS      : false if the deffunction
-                 returns the symbol FALSE,
+  RETURNS      : False if the deffunction
+                 returns the symbol false,
                  true otherwise
   SIDE EFFECTS : Data obejct buffer set and any
                  side-effects of calling the deffunction
@@ -700,8 +702,8 @@ static bool EvaluateDeffunctionCall(
    CallDeffunction(theEnv,(DEFFUNCTION *) value,GetFirstArgument(),result);
    if ((GetpType(result) == SYMBOL) &&
        (GetpValue(result) == EnvFalseSymbol(theEnv)))
-     return(false);
-   return(true);
+     return false;
+   return true;
   }
 
 /***************************************************
@@ -797,7 +799,7 @@ static void ReturnModule(
                  any deffunctions are currently
                  executing
   INPUTS       : None
-  RETURNS      : true if no deffunctions are
+  RETURNS      : True if no deffunctions are
                  executing, false otherwise
   SIDE EFFECTS : None
   NOTES        : Used by (clear) and (bload)
@@ -816,7 +818,7 @@ static bool ClearDeffunctionsReady(
   NAME         : RemoveAllDeffunctions
   DESCRIPTION  : Removes all deffunctions
   INPUTS       : None
-  RETURNS      : true if all deffunctions
+  RETURNS      : True if all deffunctions
                  removed, false otherwise
   SIDE EFFECTS : Deffunctions removed
   NOTES        : None
@@ -831,7 +833,7 @@ static bool RemoveAllDeffunctions(
 #if BLOAD || BLOAD_AND_BSAVE
 
    if (Bloaded(theEnv) == true)
-     return(false);
+     return false;
 #endif
 
    dptr = (DEFFUNCTION *) EnvGetNextDeffunction(theEnv,NULL);
@@ -991,7 +993,7 @@ static void SaveDeffunctions(
                  2) The value to which to set the trace flags
                  3) A list of expressions containing the names
                     of the deffunctions for which to set traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags set in specified deffunctions
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
@@ -1018,7 +1020,7 @@ static bool DeffunctionWatchAccess(
                     Ignored
                  3) A list of expressions containing the names
                     of the deffunctions for which to examine traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags displayed for specified deffunctions
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
@@ -1040,7 +1042,7 @@ static bool DeffunctionWatchPrint(
   NAME         : EnvSetDeffunctionWatch
   DESCRIPTION  : Sets the trace to ON/OFF for the
                  deffunction
-  INPUTS       : 1) true to set the trace on,
+  INPUTS       : 1) True to set the trace on,
                     false to set it off
                  2) A pointer to the deffunction
   RETURNS      : Nothing useful
@@ -1064,7 +1066,7 @@ void EnvSetDeffunctionWatch(
   DESCRIPTION  : Determines if trace messages are
                  gnerated when executing deffunction
   INPUTS       : A pointer to the deffunction
-  RETURNS      : true if a trace is active,
+  RETURNS      : True if a trace is active,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None

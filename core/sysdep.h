@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/21/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*            SYSTEM DEPENDENT HEADER FILE             */
    /*******************************************************/
@@ -81,6 +81,8 @@
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 

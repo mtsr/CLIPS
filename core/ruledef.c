@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                   DEFRULE MODULE                    */
    /*******************************************************/
@@ -56,6 +56,8 @@
 /*            named construct.                               */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -328,11 +330,11 @@ bool EnvIsDefruleDeletable(
    for (theDefrule = (struct defrule *) vTheDefrule;
         theDefrule != NULL;
         theDefrule = theDefrule->disjunct)
-     { if (theDefrule->executing) return(false); }
+     { if (theDefrule->executing) return false; }
 
-   if (EngineData(theEnv)->JoinOperationInProgress) return(false);
+   if (EngineData(theEnv)->JoinOperationInProgress) return false;
 
-   return(true);
+   return true;
   }
 
 /***********************************************************/

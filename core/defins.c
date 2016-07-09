@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                  DEFINSTANCES MODULE                */
    /*******************************************************/
@@ -48,6 +48,8 @@
 /*            named construct.                               */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Removed initial-object support.                */
 /*                                                           */
@@ -335,7 +337,7 @@ void *EnvFindDefinstancesInModule(
   DESCRIPTION  : Determines if a definstances
                    can be deleted
   INPUTS       : Address of the definstances
-  RETURNS      : true if deletable, false otherwise
+  RETURNS      : True if deletable, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
@@ -386,7 +388,7 @@ void GetDefinstancesModuleCommand(
   NAME         : EnvUndefinstances
   DESCRIPTION  : Removes a definstance
   INPUTS       : Address of definstances to remove
-  RETURNS      : true if successful,
+  RETURNS      : True if successful,
                  false otherwise
   SIDE EFFECTS : Definstance deallocated
   NOTES        : None
@@ -399,7 +401,7 @@ bool EnvUndefinstances(
 #if MAC_XCD
 #pragma unused(theEnv,vptr)
 #endif
-   return(false);
+   return false;
 #else
    DEFINSTANCES *dptr;
 
@@ -407,15 +409,15 @@ bool EnvUndefinstances(
 
 #if BLOAD || BLOAD_AND_BSAVE
    if (Bloaded(theEnv))
-     return(false);
+     return false;
 #endif
    if (dptr == NULL)
      return(RemoveAllDefinstances(theEnv));
    if (EnvIsDefinstancesDeletable(theEnv,vptr) == false)
-     return(false);
+     return false;
    RemoveConstructFromModule(theEnv,(struct constructHeader *) vptr);
    RemoveDefinstances(theEnv,(void *) dptr);
-   return(true);
+   return true;
 #endif
   }
 
@@ -521,7 +523,7 @@ void EnvGetDefinstancesList(
   NAME         : ParseDefinstances
   DESCRIPTION  : Parses and allocates a definstances construct
   INPUTS       : The logical name of the input source
-  RETURNS      : false if no errors, true otherwise
+  RETURNS      : False if no errors, true otherwise
   SIDE EFFECTS : Definstances parsed and created
   NOTES        : H/L Syntax :
 
@@ -552,12 +554,12 @@ static bool ParseDefinstances(
    if ((Bloaded(theEnv)) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"definstances");
-      return(true);
+      return true;
      }
 #endif
    dname = ParseDefinstancesName(theEnv,readSource,&active);
    if (dname == NULL)
-     return(true);
+     return true;
 
    dobj = get_struct(theEnv,definstances);
    InitializeConstructHeader(theEnv,"definstances",(struct constructHeader *) dobj,dname);
@@ -579,7 +581,7 @@ static bool ParseDefinstances(
         {
          ReturnExpression(theEnv,dobj->mkinstance);
          rtn_struct(theEnv,definstances,dobj);
-         return(true);
+         return true;
         }
       if (ExpressionContainsVariables(mkinstance,false) == true)
         {
@@ -587,7 +589,7 @@ static bool ParseDefinstances(
          ReturnExpression(theEnv,mkinstance);
          ReturnExpression(theEnv,dobj->mkinstance);
          rtn_struct(theEnv,definstances,dobj);
-         return(true);
+         return true;
         }
       if (mkbot == NULL)
         dobj->mkinstance = mkinstance;
@@ -605,7 +607,7 @@ static bool ParseDefinstances(
       ReturnExpression(theEnv,dobj->mkinstance);
       rtn_struct(theEnv,definstances,dobj);
       SyntaxErrorMessage(theEnv,"definstances");
-      return(true);
+      return true;
      }
    else
      {
@@ -613,7 +615,7 @@ static bool ParseDefinstances(
         {
          ReturnExpression(theEnv,dobj->mkinstance);
          rtn_struct(theEnv,definstances,dobj);
-         return(false);
+         return false;
         }
 #if DEBUGGING_FUNCTIONS
       if (EnvGetConserveMemory(theEnv) == false)
@@ -633,7 +635,7 @@ static bool ParseDefinstances(
      }
 
    AddConstructToModule((struct constructHeader *) dobj);
-   return(false);
+   return false;
   }
 
 /*************************************************************
@@ -732,7 +734,7 @@ static void SaveDefinstances(
   NAME         : RemoveAllDefinstances
   DESCRIPTION  : Removes all definstances constructs
   INPUTS       : None
-  RETURNS      : true if successful,
+  RETURNS      : True if successful,
                  false otherwise
   SIDE EFFECTS : All definstances deallocated
   NOTES        : None
@@ -746,7 +748,7 @@ static bool RemoveAllDefinstances(
 #if BLOAD || BLOAD_AND_BSAVE
 
    if (Bloaded(theEnv))
-     return(false);
+     return false;
 #endif
   dhead = (DEFINSTANCES *) EnvGetNextDefinstances(theEnv,NULL);
   while (dhead != NULL)
@@ -829,7 +831,7 @@ static void ReturnModule(
                  Assumes *all* constructs will be
                  deleted
   INPUTS       : None
-  RETURNS      : true if all definstances can
+  RETURNS      : True if all definstances can
                  be deleted, false otherwise
   SIDE EFFECTS : None
   NOTES        : Used by (clear) and (bload)

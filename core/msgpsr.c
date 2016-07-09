@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/25/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*           MESSAGE-HANDLER PARSER FUNCTIONS          */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*            compiler flag is set to 0.                     */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Option printing of carriage return for the     */
 /*            SlotVisibilityViolationError function.         */
@@ -111,7 +113,7 @@ static void GenHandlerSlotReference(void *,EXPRESSION *,unsigned short,SLOT_DESC
   NAME         : ParseDefmessageHandler
   DESCRIPTION  : Parses a message-handler for a class of objects
   INPUTS       : The logical name of the input source
-  RETURNS      : false if successful parse, true otherwise
+  RETURNS      : False if successful parse, true otherwise
   SIDE EFFECTS : Handler allocated and inserted into class
   NOTES        : H/L Syntax:
 
@@ -142,19 +144,19 @@ bool ParseDefmessageHandler(
    if ((Bloaded(theEnv)) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"defmessage-handler");
-      return(true);
+      return true;
      }
 #endif
    cname = GetConstructNameAndComment(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken,"defmessage-handler",
                                       NULL,NULL,"~",true,false,true,false);
    if (cname == NULL)
-     return(true);
+     return true;
    cls = LookupDefclassByMdlOrScope(theEnv,ValueToString(cname));
    if (cls == NULL)
      {
       PrintErrorID(theEnv,"MSGPSR",1,false);
       EnvPrintRouter(theEnv,WERROR,"A class must be defined before its message-handlers.\n");
-      return(true);
+      return true;
      }
    if ((cls == DefclassData(theEnv)->PrimitiveClassMap[INSTANCE_NAME]) ||
        (cls == DefclassData(theEnv)->PrimitiveClassMap[INSTANCE_ADDRESS]) ||
@@ -164,19 +166,19 @@ bool ParseDefmessageHandler(
       EnvPrintRouter(theEnv,WERROR,"Message-handlers cannot be attached to the class ");
       EnvPrintRouter(theEnv,WERROR,EnvGetDefclassName(theEnv,(void *) cls));
       EnvPrintRouter(theEnv,WERROR,".\n");
-      return(true);
+      return true;
      }
    if (HandlersExecuting(cls))
      {
       PrintErrorID(theEnv,"MSGPSR",2,false);
       EnvPrintRouter(theEnv,WERROR,"Cannot (re)define message-handlers during execution of \n");
       EnvPrintRouter(theEnv,WERROR,"  other message-handlers for the same class.\n");
-      return(true);
+      return true;
      }
    if (GetType(DefclassData(theEnv)->ObjectParseToken) != SYMBOL)
      {
       SyntaxErrorMessage(theEnv,"defmessage-handler");
-      return(true);
+      return true;
      }
    PPBackup(theEnv);
    PPBackup(theEnv);
@@ -193,11 +195,11 @@ bool ParseDefmessageHandler(
          if (GetType(DefclassData(theEnv)->ObjectParseToken) != SYMBOL)
            {
             SyntaxErrorMessage(theEnv,"defmessage-handler");
-            return(true);
+            return true;
            }
          mtype = HandlerType(theEnv,"defmessage-handler",DOToString(DefclassData(theEnv)->ObjectParseToken));
          if (mtype == MERROR)
-           return(true);
+           return true;
 
          GetToken(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken);
          if (GetType(DefclassData(theEnv)->ObjectParseToken) == STRING)
@@ -234,14 +236,14 @@ bool ParseDefmessageHandler(
      {
       PrintErrorID(theEnv,"MSGPSR",3,false);
       EnvPrintRouter(theEnv,WERROR,"System message-handlers may not be modified.\n");
-      return(true);
+      return true;
      }
 
    hndParams = GenConstant(theEnv,SYMBOL,(void *) MessageHandlerData(theEnv)->SELF_SYMBOL);
    hndParams = ParseProcParameters(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken,hndParams,
                                     &wildcard,&min,&max,&error,IsParameterSlotReference);
    if (error)
-     return(true);
+     return true;
    PPCRAndIndent(theEnv);
    ExpressionData(theEnv)->ReturnContext = true;
    actions = ParseProcActions(theEnv,"message-handler",readSource,
@@ -251,14 +253,14 @@ bool ParseDefmessageHandler(
    if (actions == NULL)
      {
       ReturnExpression(theEnv,hndParams);
-      return(true);
+      return true;
      }
    if (GetType(DefclassData(theEnv)->ObjectParseToken) != RPAREN)
      {
       SyntaxErrorMessage(theEnv,"defmessage-handler");
       ReturnExpression(theEnv,hndParams);
       ReturnPackedExpression(theEnv,actions);
-      return(true);
+      return true;
      }
    PPBackup(theEnv);
    PPBackup(theEnv);
@@ -274,7 +276,7 @@ bool ParseDefmessageHandler(
      {
       ReturnExpression(theEnv,hndParams);
       ReturnPackedExpression(theEnv,actions);
-      return(false);
+      return false;
      }
 
    if (hnd != NULL)
@@ -307,7 +309,7 @@ bool ParseDefmessageHandler(
    else
 #endif
      hnd->ppForm = NULL;
-   return(false);
+   return false;
   }
 
 /*******************************************************************************
@@ -432,7 +434,7 @@ void CreateGetAndPutHandlers(
                  the form ?self:<name>, which is not allowed since
                  this is slot reference syntax
   INPUTS       : The paramter name
-  RETURNS      : true if the parameter is a slot reference,
+  RETURNS      : True if the parameter is a slot reference,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -446,9 +448,9 @@ static bool IsParameterSlotReference(
      {
       PrintErrorID(theEnv,"MSGPSR",4,false);
       EnvPrintRouter(theEnv,WERROR,"Illegal slot reference in parameter list.\n");
-      return(true);
+      return true;
      }
-   return(false);
+   return false;
   }
 
 /****************************************************************************
@@ -481,7 +483,7 @@ static int SlotReferenceVar(
    SLOT_DESC *sd;
 
    if ((varexp->type != SF_VARIABLE) && (varexp->type != MF_VARIABLE))
-     return(0);
+     { return 0; }
    if ((strncmp(ValueToString(varexp->value),SELF_STRING,SELF_LEN) == 0) ?
                (ValueToString(varexp->value)[SELF_LEN] == SELF_SLOT_REF) : false)
      {
@@ -496,12 +498,13 @@ static int SlotReferenceVar(
          sd = CheckSlotReference(theEnv,(DEFCLASS *) userBuffer,itkn.type,itkn.value,
                                  false,NULL);
          if (sd == NULL)
-           return(-1);
+           { return -1; }
          GenHandlerSlotReference(theEnv,varexp,HANDLER_GET,sd);
-         return(1);
+         return 1;
         }
      }
-   return(0);
+     
+   return 0;
   }
 
 /****************************************************************************
@@ -539,7 +542,7 @@ static int BindSlotReference(
      {
       PrintErrorID(theEnv,"MSGPSR",5,false);
       EnvPrintRouter(theEnv,WERROR,"Active instance parameter cannot be changed.\n");
-      return(-1);
+      return -1;
      }
    if ((strncmp(bindName,SELF_STRING,SELF_LEN) == 0) ?
                (bindName[SELF_LEN] == SELF_SLOT_REF) : false)
@@ -556,15 +559,15 @@ static int BindSlotReference(
          sd = CheckSlotReference(theEnv,(DEFCLASS *) userBuffer,itkn.type,itkn.value,
                                  true,saveExp);
          if (sd == NULL)
-           return(-1);
+           { return -1; }
          GenHandlerSlotReference(theEnv,bindExp,HANDLER_PUT,sd);
          bindExp->argList->nextArg = NULL;
          ReturnExpression(theEnv,bindExp->argList);
          bindExp->argList = saveExp;
-         return(1);
+         return 1;
         }
      }
-   return(0);
+   return 0;
   }
 
 /*********************************************************

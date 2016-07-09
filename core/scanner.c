@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                    SCANNER MODULE                   */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -631,7 +633,7 @@ static void ScanNumber(
                    (inchar == '(') || (inchar == ')') ||
                    (inchar == '&') || (inchar == '|') || (inchar == '~') ||
                    (inchar == ' ') || (inchar == ';') ||
-                   ((! IsUTF8MultiByteStart(inchar)) && ((isprint(inchar) == 0))) )
+                   ((! IsUTF8MultiByteStart(inchar)) && (isprint(inchar) == 0)) )
            { phase = 5; }
          else
            {

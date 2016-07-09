@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                OBJECT MESSAGE COMMANDS              */
    /*******************************************************/
@@ -44,6 +44,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -316,7 +318,7 @@ int EnvGetNextDefmessageHandler(
    if (theIndex == 0)
      return((cls->handlers != NULL) ? 1 : 0);
    if (theIndex == cls->handlerCount)
-     return(0);
+     { return 0; }
    return(theIndex+1);
   }
 
@@ -345,7 +347,7 @@ HANDLER *GetDefmessageHandlerPointer(
                  to this handler will be generated or not
   INPUTS       : 1) A pointer to the class
                  2) The index of the handler
-  RETURNS      : true if a trace is active,
+  RETURNS      : True if a trace is active,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -366,7 +368,7 @@ bool EnvGetDefmessageHandlerWatch(
   NAME         : EnvSetDefmessageHandlerWatch
   DESCRIPTION  : Sets the trace to ON/OFF for the
                  calling of the handler
-  INPUTS       : 1) true to set the trace on,
+  INPUTS       : 1) True to set the trace on,
                     false to set it off
                  2) A pointer to the class
                  3) The index of the handler
@@ -415,10 +417,10 @@ unsigned EnvFindDefmessageHandler(
 
    htype = HandlerType(theEnv,"handler-lookup",htypestr);
    if (htype == MERROR)
-     return(0);
+     { return 0; }
    hsym = FindSymbolHN(theEnv,hname);
    if (hsym == NULL)
-     return(0);
+     { return 0; }
    cls = (DEFCLASS *) ptr;
    theIndex = FindHandlerByIndex(cls,hsym,(unsigned) htype);
    return((unsigned) (theIndex+1));
@@ -430,7 +432,7 @@ unsigned EnvFindDefmessageHandler(
                    can be deleted
   INPUTS       : 1) Address of the handler's class
                  2) Index of the handler
-  RETURNS      : true if deletable, false otherwise
+  RETURNS      : True if deletable, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
@@ -446,7 +448,7 @@ bool EnvIsDefmessageHandlerDeletable(
 
    cls = (DEFCLASS *) ptr;
    if (cls->handlers[theIndex-1].system == 1)
-     return(false);
+     return false;
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    return((HandlersExecuting(cls) == false) ? true : false);
@@ -527,7 +529,7 @@ bool EnvUndefmessageHandler(
 #if RUN_TIME || BLOAD_ONLY
    PrintErrorID(theEnv,"MSGCOM",3,false);
    EnvPrintRouter(theEnv,WERROR,"Unable to delete message-handlers.\n");
-   return(false);
+   return false;
 #else
    DEFCLASS *cls;
 
@@ -536,7 +538,7 @@ bool EnvUndefmessageHandler(
      {
       PrintErrorID(theEnv,"MSGCOM",3,false);
       EnvPrintRouter(theEnv,WERROR,"Unable to delete message-handlers.\n");
-      return(false);
+      return false;
      }
 #endif
    if (vptr == NULL)
@@ -545,7 +547,7 @@ bool EnvUndefmessageHandler(
         {
          PrintErrorID(theEnv,"MSGCOM",1,false);
          EnvPrintRouter(theEnv,WERROR,"Incomplete message-handler specification for deletion.\n");
-         return(false);
+         return false;
         }
       return(WildDeleteHandler(theEnv,NULL,NULL,NULL));
      }
@@ -555,11 +557,11 @@ bool EnvUndefmessageHandler(
    if (HandlersExecuting(cls))
      {
       HandlerDeleteError(theEnv,EnvGetDefclassName(theEnv,(void *) cls));
-      return(false);
+      return false;
      }
    cls->handlers[mhi-1].mark = 1;
    DeallocateMarkedHandlers(theEnv,cls);
-   return(true);
+   return true;
 #endif
   }
 
@@ -643,7 +645,7 @@ void ListDefmessageHandlersCommand(
   CLIPSValue *returnValue)
   {
    bool inhp;
-   bool *clsptr;
+   void *clsptr;
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (UDFArgumentCount(context) == 0)
@@ -700,7 +702,7 @@ void PreviewSendCommand(
   DESCRIPTION  : Gets a message-handler pretty print form
   INPUTS       : 1) Address of the handler's class
                  2) Index of the handler
-  RETURNS      : true if printable, false otherwise
+  RETURNS      : True if printable, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************/
@@ -887,7 +889,7 @@ static bool WildDeleteHandler(
      {
       mtype = (int) HandlerType(theEnv,"undefmessage-handler",tname);
       if (mtype == MERROR)
-        return(false);
+        return false;
      }
    else
      mtype = -1;
@@ -919,7 +921,7 @@ static bool WildDeleteHandler(
                  2) The value to which to set the trace flags
                  3) A list of expressions containing the names
                     of the classes for which to set traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags set in specified classes
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
@@ -950,7 +952,7 @@ static bool DefmessageHandlerWatchAccess(
                     1 - Watch slot changes to instances
                  3) A list of expressions containing the names
                     of the classes for which to examine traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags displayed for specified classes
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
@@ -977,7 +979,7 @@ static bool DefmessageHandlerWatchPrint(
                  5) The print function (can be NULL)
                  6) The trace function (can be NULL)
                  7) The handlers expression list
-  RETURNS      : true if all OK,
+  RETURNS      : True if all OK,
                  false otherwise
   SIDE EFFECTS : Handler trace flags set or displayed
   NOTES        : None
@@ -1020,13 +1022,13 @@ static bool DefmessageHandlerWatchSupport(
             {
              if (WatchClassHandlers(theEnv,theClass,NULL,-1,logName,newState,
                                     true,printFunc,traceFunc) == false)
-                 return(false);
+                 return false;
              theClass = EnvGetNextDefclass(theEnv,theClass);
             }
           theModule = (struct defmodule *) EnvGetNextDefmodule(theEnv,(void *) theModule);
          }
       RestoreCurrentModule(theEnv);
-      return(true);
+      return true;
      }
 
    /* ================================================
@@ -1035,28 +1037,28 @@ static bool DefmessageHandlerWatchSupport(
    while (argExprs != NULL)
      {
       if (EvaluateExpression(theEnv,argExprs,&tmpData))
-        return(false);
+        return false;
       if (tmpData.type != SYMBOL)
         {
          ExpectedTypeError1(theEnv,funcName,argIndex,"class name");
-         return(false);
+         return false;
         }
       theClass = (void *) LookupDefclassByMdlOrScope(theEnv,DOToString(tmpData));
       if (theClass == NULL)
         {
          ExpectedTypeError1(theEnv,funcName,argIndex,"class name");
-         return(false);
+         return false;
         }
       if (GetNextArgument(argExprs) != NULL)
         {
          argExprs = GetNextArgument(argExprs);
          argIndex++;
          if (EvaluateExpression(theEnv,argExprs,&tmpData))
-           return(false);
+           return false;
          if (tmpData.type != SYMBOL)
            {
             ExpectedTypeError1(theEnv,funcName,argIndex,"handler name");
-            return(false);
+            return false;
            }
          theHandlerStr = DOToString(tmpData);
          if (GetNextArgument(argExprs) != NULL)
@@ -1064,14 +1066,14 @@ static bool DefmessageHandlerWatchSupport(
             argExprs = GetNextArgument(argExprs);
             argIndex++;
             if (EvaluateExpression(theEnv,argExprs,&tmpData))
-              return(false);
+              return false;
             if (tmpData.type != SYMBOL)
               {
                ExpectedTypeError1(theEnv,funcName,argIndex,"handler type");
-               return(false);
+               return false;
               }
             if ((theType = (int) HandlerType(theEnv,funcName,DOToString(tmpData))) == MERROR)
-              return(false);
+              return false;
            }
          else
            theType = -1;
@@ -1085,12 +1087,12 @@ static bool DefmessageHandlerWatchSupport(
                              newState,false,printFunc,traceFunc) == false)
         {
          ExpectedTypeError1(theEnv,funcName,argIndex,"handler");
-         return(false);
+         return false;
         }
       argIndex++;
       argExprs = GetNextArgument(argExprs);
      }
-   return(true);
+   return true;
   }
 
 /*******************************************************
@@ -1104,7 +1106,7 @@ static bool DefmessageHandlerWatchSupport(
                  5) The new set state (can be -1)
                  6) The print function (can be NULL)
                  7) The trace function (can be NULL)
-  RETURNS      : true if all OK,
+  RETURNS      : True if all OK,
                  false otherwise
   SIDE EFFECTS : Handler trace flags set or displayed
   NOTES        : None
@@ -1146,8 +1148,8 @@ static bool WatchClassHandlers(
       theHandler = EnvGetNextDefmessageHandler(theEnv,theClass,theHandler);
      }
    if ((theHandlerStr != NULL) && (theType != -1) && (found == false))
-     return(false);
-   return(true);
+     return false;
+   return true;
   }
 
 /***************************************************

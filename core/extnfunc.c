@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/24/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*               EXTERNAL FUNCTION MODULE              */
    /*******************************************************/
@@ -37,6 +37,8 @@
 /*            statically allocated.                          */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
@@ -286,10 +288,10 @@ bool DefineFunction3(
         (returnType != 'w') &&
        
         (returnType != 'z'))
-     { return(false); }
+     { return false; }
 
    newFunction = FindFunction(theEnv,name);
-   if (newFunction != NULL) return(0);
+   if (newFunction != NULL) return false;
    
    newFunction = get_struct(theEnv,FunctionDefinition);
    newFunction->callFunctionName = (SYMBOL_HN *) EnvAddSymbol(theEnv,name);
@@ -313,7 +315,7 @@ bool DefineFunction3(
            (! isdigit(restrictions[1]) && (restrictions[1] != '*'))))
         restrictions = NULL;
      }
-     
+
    if (restrictions == NULL)
      { newFunction->restrictions = NULL; }
    else
@@ -321,14 +323,14 @@ bool DefineFunction3(
       newFunction->restrictions = EnvAddSymbol(theEnv,restrictions);
       IncrementSymbolCount(newFunction->restrictions);
      }
-     
+
    newFunction->parser = NULL;
    newFunction->overloadable = true;
    newFunction->sequenceuseok = true;
    newFunction->usrData = NULL;
    newFunction->context = context;
 
-   return(true);
+   return true;
   }
   
 /***********************************************/
@@ -362,13 +364,13 @@ bool UndefineFunction(
            { DecrementSymbolCount(theEnv,fPtr->restrictions); }
          ClearUserDataList(theEnv,fPtr->usrData);
          rtn_struct(theEnv,FunctionDefinition,fPtr);
-         return(true);
+         return true;
         }
 
       lastPtr = fPtr;
      }
 
-   return(false);
+   return false;
   }
 
 /******************************************/
@@ -396,13 +398,13 @@ static bool RemoveHashFunction(
            { lastPtr->next = fhPtr->next; }
 
          rtn_struct(theEnv,FunctionHash,fhPtr);
-         return(true);
+         return true;
         }
 
       lastPtr = fhPtr;
      }
 
-   return(false);
+   return false;
   }
 
 /***************************************************************************/
@@ -414,7 +416,7 @@ static bool RemoveHashFunction(
 /*   routines. Generic functions and deffunctions can not have specialized */
 /*   parsing routines.                                                     */
 /***************************************************************************/
-int AddFunctionParser(
+bool AddFunctionParser(
   void *theEnv,
   const char *functionName,
   struct expr *(*fpPtr)(void *,struct expr *,const char *))
@@ -425,20 +427,20 @@ int AddFunctionParser(
    if (fdPtr == NULL)
      {
       EnvPrintRouter(theEnv,WERROR,"Function parsers can only be added for existing functions.\n");
-      return(0);
+      return false;
      }
    fdPtr->restrictions = NULL;
    fdPtr->parser = fpPtr;
    fdPtr->overloadable = false;
 
-   return(1);
+   return true;
   }
 
 /*********************************************************************/
 /* RemoveFunctionParser: Removes a specialized expression parsing    */
 /*   function (if it exists) from the function entry for a function. */
 /*********************************************************************/
-int RemoveFunctionParser(
+bool RemoveFunctionParser(
   void *theEnv,
   const char *functionName)
   {
@@ -448,12 +450,12 @@ int RemoveFunctionParser(
    if (fdPtr == NULL)
      {
       EnvPrintRouter(theEnv,WERROR,"Function parsers can only be removed from existing functions.\n");
-      return(0);
+      return false;
      }
 
    fdPtr->parser = NULL;
 
-   return(1);
+   return true;
   }
 
 /*****************************************************************/
@@ -472,11 +474,11 @@ bool FuncSeqOvlFlags(
    if (fdPtr == NULL)
      {
       EnvPrintRouter(theEnv,WERROR,"Only existing functions can be marked as using sequence expansion arguments/overloadable or not.\n");
-      return(false);
+      return false;
      }
    fdPtr->sequenceuseok = (short) (seqp ? true : false);
    fdPtr->overloadable = (short) (ovlp ? true : false);
-   return(true);
+   return true;
   }
 
 #endif
@@ -886,7 +888,7 @@ bool UDFNextArgument(
         returnValue->type = argPtr->type;
         returnValue->bitType = INTEGER_TYPE;
         returnValue->value = argPtr->value;
-        if (expectedType & INTEGER_TYPE) return(true);
+        if (expectedType & INTEGER_TYPE) return true;
         ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);
@@ -899,7 +901,7 @@ bool UDFNextArgument(
         returnValue->type = argPtr->type;
         returnValue->bitType = FLOAT_TYPE;
         returnValue->value = argPtr->value;
-        if (expectedType & FLOAT_TYPE) return(true);
+        if (expectedType & FLOAT_TYPE) return true;
         ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);
@@ -912,7 +914,7 @@ bool UDFNextArgument(
         returnValue->type = argPtr->type;
         returnValue->value = argPtr->value;
         returnValue->bitType = SYMBOL_TYPE;
-        if (expectedType & SYMBOL_TYPE) return(true);
+        if (expectedType & SYMBOL_TYPE) return true;
         ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);
@@ -925,7 +927,7 @@ bool UDFNextArgument(
         returnValue->type = argPtr->type;
         returnValue->value = argPtr->value;
         returnValue->bitType = STRING_TYPE;
-        if (expectedType & STRING_TYPE) return(true);
+        if (expectedType & STRING_TYPE) return true;
         ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);
@@ -938,7 +940,7 @@ bool UDFNextArgument(
         returnValue->type = argPtr->type;
         returnValue->value = argPtr->value;
         returnValue->bitType = INSTANCE_NAME_TYPE;
-        if (expectedType & INSTANCE_NAME_TYPE) return(true);
+        if (expectedType & INSTANCE_NAME_TYPE) return true;
         ExpectedTypeError0(theEnv,UDFContextFunctionName(context),argumentPosition);
         PrintTypesString(theEnv,WERROR,expectedType,true);
         EnvSetHaltExecution(theEnv,true);

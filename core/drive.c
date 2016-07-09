@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                    DRIVE MODULE                     */
    /*******************************************************/
@@ -39,6 +39,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -596,7 +598,7 @@ bool EvaluateJoinExpression(
    /* A NULL expression evaluates to true. */
    /*======================================*/
 
-   if (joinExpr == NULL) return(true);
+   if (joinExpr == NULL) return true;
 
    /*====================================================*/
    /* Initialize some variables which allow this routine */
@@ -653,11 +655,11 @@ bool EvaluateJoinExpression(
          if (EvaluateJoinExpression(theEnv,joinExpr,joinPtr) == true)
            {
             if (EvaluationData(theEnv)->EvaluationError)
-              { return(false); }
+              { return false; }
             result = true;
            }
          else if (EvaluationData(theEnv)->EvaluationError)
-           { return(false); }
+           { return false; }
         }
 
       /*==============================*/
@@ -670,11 +672,11 @@ bool EvaluateJoinExpression(
          if (EvaluateJoinExpression(theEnv,joinExpr,joinPtr) == false)
            {
             if (EvaluationData(theEnv)->EvaluationError)
-              { return(false); }
+              { return false; }
             result = false;
            }
          else if (EvaluationData(theEnv)->EvaluationError)
-           { return(false); }
+           { return false; }
         }
 
       /*==========================================================*/
@@ -688,7 +690,7 @@ bool EvaluateJoinExpression(
          if (EvaluationData(theEnv)->EvaluationError)
            {
             JoinNetErrorMessage(theEnv,joinPtr);
-            return(false);
+            return false;
            }
 
          if ((theResult.value == EnvFalseSymbol(theEnv)) && (theResult.type == SYMBOL))
@@ -703,9 +705,9 @@ bool EvaluateJoinExpression(
       /*====================================*/
 
       if ((andLogic == true) && (result == false))
-        { return(false); }
+        { return false; }
       else if ((andLogic == false) && (result == true))
-        { return(true); }
+        { return true; }
 
       /*==============================================*/
       /* Move to the next expression to be evaluated. */
@@ -735,7 +737,7 @@ bool EvaluateSecondaryNetworkTest(
    struct joinNode *oldJoin;
 
    if (joinPtr->secondaryNetworkTest == NULL)
-     { return(true); }
+     { return true; }
         
 #if DEVELOPER
    EngineData(theEnv)->rightToLeftComparisons++;
@@ -783,7 +785,8 @@ unsigned long BetaMemoryHashValue(
    /* A NULL expression evaluates to zero. */
    /*======================================*/
 
-   if (hashExpr == NULL) return(0);
+   if (hashExpr == NULL)
+     { return 0; }
 
    /*=========================================*/
    /* Initialize some of the global variables */
@@ -879,7 +882,7 @@ unsigned long BetaMemoryHashValue(
    /* Return the result of evaluating the expression. */
    /*=================================================*/
 
-   return(hashValue);
+   return hashValue;
   }
 
 /*******************************************************************/

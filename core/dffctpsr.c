@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                DEFFACTS PARSER MODULE               */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*            named construct.                               */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -88,7 +90,7 @@ bool ParseDeffacts(
    if ((Bloaded(theEnv) == true) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"deffacts");
-      return(true);
+      return true;
      }
 #endif
 
@@ -99,7 +101,7 @@ bool ParseDeffacts(
    deffactsName = GetConstructNameAndComment(theEnv,readSource,&inputToken,"deffacts",
                                              EnvFindDeffactsInModule,EnvUndeffacts,"$",true,
                                              true,true,false);
-   if (deffactsName == NULL) { return(true); }
+   if (deffactsName == NULL) { return true; }
 
    /*===============================================*/
    /* Parse the list of facts in the deffacts body. */
@@ -107,13 +109,13 @@ bool ParseDeffacts(
 
    temp = BuildRHSAssert(theEnv,readSource,&inputToken,&deffactsError,false,false,"deffacts");
 
-   if (deffactsError == true) { return(true); }
+   if (deffactsError == true) { return true; }
 
    if (ExpressionContainsVariables(temp,false))
      {
       LocalVariableErrorMessage(theEnv,"a deffacts construct");
       ReturnExpression(theEnv,temp);
-      return(true);
+      return true;
      }
 
    SavePPBuffer(theEnv,"\n");
@@ -126,7 +128,7 @@ bool ParseDeffacts(
    if (ConstructData(theEnv)->CheckSyntaxMode)
      {
       ReturnExpression(theEnv,temp);
-      return(false);
+      return false;
      }
 
    /*==========================*/
@@ -166,7 +168,7 @@ bool ParseDeffacts(
    /* Return false to indicate the deffacts was successfully parsed. */
    /*================================================================*/
 
-   return(false);
+   return false;
   }
 
 #endif /* DEFFACTS_CONSTRUCT */

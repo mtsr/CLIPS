@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/03/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*            EXTENDED MATH FUNCTIONS MODULE           */
    /*******************************************************/
@@ -39,6 +39,8 @@
 /*                                                           */
 /*            Added Env prefix to GetHaltExecution and       */
 /*            SetHaltExecution functions.                    */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -154,7 +156,7 @@ static bool SingleNumberCheck(
    if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
      { return false; }
   
-   return(true);
+   return true;
   }
 
 /**************************************************************/

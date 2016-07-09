@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/20/16            */
+   /*             CLIPS Version 6.40  07/05/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -44,6 +44,8 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_msgcom
@@ -65,8 +67,8 @@ struct messageHandlerData
    SYMBOL_HN *DELETE_SYMBOL;
    SYMBOL_HN *CREATE_SYMBOL;
 #if DEBUGGING_FUNCTIONS
-   unsigned WatchHandlers;
-   unsigned WatchMessages;
+   bool WatchHandlers;
+   bool WatchMessages;
 #endif
    const char *hndquals[4];
    SYMBOL_HN *SELF_SYMBOL;

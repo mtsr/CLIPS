@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*              DEFMODULE UTILITY MODULE               */
    /*******************************************************/
@@ -28,6 +28,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -73,7 +75,7 @@ unsigned FindModuleSeparator(
         { foundColon = false; }
      }
 
-   return(0);
+   return 0;
   }
 
 /*******************************************************************/
@@ -567,7 +569,7 @@ bool ConstructExported(
    theModule = (struct defmodule *) EnvFindDefmodule(theEnv,ValueToString(moduleName));
    
    if ((constructType == NULL) || (theModule == NULL) || (findName == NULL))
-     { return(false); }
+     { return false; }
    
    theExportList = theModule->exportList;
    while (theExportList != NULL)

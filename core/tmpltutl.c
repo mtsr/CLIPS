@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/28/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*            DEFTEMPLATE UTILITIES MODULE             */
    /*******************************************************/
@@ -42,6 +42,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
@@ -240,11 +242,11 @@ bool CheckRHSSlotTypes(
       if (rv != CARDINALITY_VIOLATION) theName = "A literal slot value";
       else theName = "Literal slot values";
       ConstraintViolationErrorMessage(theEnv,theName,thePlace,true,0,
-                                         slotPtr->slotName,0,rv,slotPtr->constraints,true);
-      return(0);
+                                      slotPtr->slotName,0,rv,slotPtr->constraints,true);
+      return false;
      }
 
-   return(1);
+   return true;
   }
 
 /*********************************************************/
@@ -288,7 +290,7 @@ int FindSlotPosition(
         { return(position); }
      }
 
-   return(0);
+   return 0;
   }
 
 /**********************/
@@ -407,8 +409,8 @@ void PrintTemplateFact(
   void *theEnv,
   const char *logicalName,
   struct fact *theFact,
-  int seperateLines,
-  int ignoreDefaults,
+  bool separateLines,
+  bool ignoreDefaults,
   const char *changeMap)
   {
    struct field *sublist;
@@ -456,7 +458,7 @@ void PrintTemplateFact(
          EnvPrintRouter(theEnv,logicalName," "); 
         }
 
-      if (seperateLines)
+      if (separateLines)
         { EnvPrintRouter(theEnv,logicalName,"\n   "); }
 
       /*===================================*/
@@ -581,7 +583,7 @@ struct deftemplate *CreateImpliedDeftemplate(
 
 #if DEBUGGING_FUNCTIONS
    if (EnvGetWatchItem(theEnv,"facts"))
-     { EnvSetDeftemplateWatch(theEnv,ON,(void *) newDeftemplate); }
+     { EnvSetDeftemplateWatch(theEnv,true,(void *) newDeftemplate); }
 #endif
 
    newDeftemplate->header.whichModule = (struct defmoduleItemHeader *)

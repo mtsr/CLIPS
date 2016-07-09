@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*        CLASS INFO PROGRAMMATIC ACCESS MODULE        */
    /*******************************************************/
@@ -43,6 +43,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /**************************************************************/
 
@@ -88,7 +90,7 @@ static SLOT_DESC *SlotInfoSlot(void *,DATA_OBJECT *,DEFCLASS *,const char *,cons
   NAME         : ClassAbstractPCommand
   DESCRIPTION  : Determines if direct instances of a class can be made
   INPUTS       : None
-  RETURNS      : true (1) if class is abstract, false (0) if concrete
+  RETURNS      : True (1) if class is abstract, false (0) if concrete
   SIDE EFFECTS : None
   NOTES        : Syntax: (class-abstractp <class>)
  *********************************************************************/
@@ -110,7 +112,7 @@ void ClassAbstractPCommand(
       mCVSetBoolean(returnValue,false);
       return;
      }
-     
+
    mCVSetBoolean(returnValue,(EnvClassAbstractP(theEnv,(void *) cls)));
   }
 
@@ -121,7 +123,7 @@ void ClassAbstractPCommand(
   DESCRIPTION  : Determines if instances of a class can match rule
                  patterns
   INPUTS       : None
-  RETURNS      : true (1) if class is reactive, false (0)
+  RETURNS      : True (1) if class is reactive, false (0)
                  if non-reactive
   SIDE EFFECTS : None
   NOTES        : Syntax: (class-reactivep <class>)

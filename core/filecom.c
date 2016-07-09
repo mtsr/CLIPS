@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/24/16            */
+   /*             CLIPS Version 6.40  07/05/16            */
    /*                                                     */
    /*                 FILE COMMANDS MODULE                */
    /*******************************************************/
@@ -54,6 +54,10 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Changed return values for router functions.    */
 /*                                                           */
 /*************************************************************/
 
@@ -137,14 +141,14 @@ struct fileCommandData
    static bool                    FindDribble(void *,const char *);
    static int                     GetcDribble(void *,const char *);
    static int                     UngetcDribble(void *,int,const char *);
-   static int                     ExitDribble(void *,int);
-   static int                     PrintDribble(void *,const char *,const char *);
+   static void                    ExitDribble(void *,int);
+   static void                    PrintDribble(void *,const char *,const char *);
    static void                    PutcDribbleBuffer(void *,int);
 #endif
    static bool                    FindBatch(void *,const char *);
    static int                     GetcBatch(void *,const char *);
    static int                     UngetcBatch(void *,int,const char *);
-   static int                     ExitBatch(void *,int);
+   static void                    ExitBatch(void *,int);
    static void                    AddBatch(void *,bool,FILE *,const char *,int,const char *,const char *);
    static void                    DeallocateFileCommandData(void *);
 
@@ -238,15 +242,15 @@ static bool FindDribble(
         (strcmp(logicalName,WWARNING) == 0) ||
         (strcmp(logicalName,WDISPLAY) == 0) ||
         (strcmp(logicalName,WDIALOG) == 0) )
-     { return(true); }
+     { return true; }
 
-    return(false);
+    return false;
   }
 
 /*******************************************************/
 /* PrintDribble: Print routine for the dribble router. */
 /*******************************************************/
-static int PrintDribble(
+static void PrintDribble(
   void *theEnv,
   const char *logicalName,
   const char *str)
@@ -267,8 +271,6 @@ static int PrintDribble(
    EnvDeactivateRouter(theEnv,"dribble");
    EnvPrintRouter(theEnv,logicalName,str);
    EnvActivateRouter(theEnv,"dribble");
-
-   return(1);
   }
 
 /*****************************************************/
@@ -396,7 +398,7 @@ static int UngetcDribble(
 /*****************************************************/
 /* ExitDribble: Exit routine for the dribble router. */
 /*****************************************************/
-static int ExitDribble(
+static void ExitDribble(
   void *theEnv,
   int num)
   {
@@ -408,7 +410,6 @@ static int ExitDribble(
      { fprintf(FileCommandData(theEnv)->DribbleFP,"%s",FileCommandData(theEnv)->DribbleBuffer); }
  
    if (FileCommandData(theEnv)->DribbleFP != NULL) GenClose(theEnv,FileCommandData(theEnv)->DribbleFP);
-   return(1);
   }
 
 /******************************************/
@@ -454,7 +455,7 @@ bool EnvDribbleOn(
    if (FileCommandData(theEnv)->DribbleFP == NULL)
      {
       OpenErrorMessage(theEnv,"dribble-on",fileName);
-      return(false);
+      return false;
      }
 
    /*============================*/
@@ -484,7 +485,7 @@ bool EnvDribbleOn(
    /* file was successfully opened.       */
    /*=====================================*/
 
-   return(true);
+   return true;
   }
 
 /*************************************************/
@@ -494,9 +495,9 @@ bool EnvDribbleOn(
 bool EnvDribbleActive(
   void *theEnv)
   {
-   if (FileCommandData(theEnv)->DribbleFP != NULL) return(true);
+   if (FileCommandData(theEnv)->DribbleFP != NULL) return true;
 
-   return(false);
+   return false;
   }
 
 /*******************************************/
@@ -594,9 +595,9 @@ static bool FindBatch(
 #endif
 
    if (strcmp(logicalName,STDIN) == 0)
-     { return(true); }
+     { return true; }
 
-   return(false);
+   return false;
   }
 
 /*************************************************/
@@ -717,7 +718,7 @@ static int UngetcBatch(
 /*************************************************/
 /* ExitBatch: Exit routine for the batch router. */
 /*************************************************/
-static int ExitBatch(
+static void ExitBatch(
   void *theEnv,
   int num)
   {
@@ -725,7 +726,6 @@ static int ExitBatch(
 #pragma unused(num)
 #endif
    CloseAllBatchSources(theEnv);
-   return(1);
   }
 
 /**************************************/
@@ -775,7 +775,7 @@ bool OpenBatch(
    if (theFile == NULL)
      {
       OpenErrorMessage(theEnv,"batch",fileName);
-      return(false);
+      return false;
      }
 
    /*============================*/
@@ -829,7 +829,7 @@ bool OpenBatch(
    /* file was successfully opened.     */
    /*===================================*/
 
-   return(true);
+   return true;
   }
 
 /*****************************************************************/
@@ -846,7 +846,7 @@ bool OpenStringBatch(
   bool placeAtEnd)
   {
    if (OpenStringSource(theEnv,stringName,theString,0) == false)
-     { return(false); }
+     { return false; }
 
    if (FileCommandData(theEnv)->TopOfBatchList == NULL)
      {
@@ -858,7 +858,7 @@ bool OpenStringBatch(
 
    AddBatch(theEnv,placeAtEnd,NULL,stringName,STRING_BATCH,theString,NULL);
 
-   return(true);
+   return true;
   }
 
 /*******************************************************/
@@ -927,7 +927,7 @@ bool RemoveBatch(
    struct batchEntry *bptr;
    bool rv, fileBatch = false;
 
-   if (FileCommandData(theEnv)->TopOfBatchList == NULL) return(false);
+   if (FileCommandData(theEnv)->TopOfBatchList == NULL) return false;
 
    /*==================================================*/
    /* Close the source from which batch input is read. */
@@ -1029,9 +1029,9 @@ bool RemoveBatch(
 bool BatchActive(
   void *theEnv)
   {
-   if (FileCommandData(theEnv)->TopOfBatchList != NULL) return(true);
+   if (FileCommandData(theEnv)->TopOfBatchList != NULL) return true;
 
-   return(false);
+   return false;
   }
 
 /******************************************************/
@@ -1113,7 +1113,7 @@ bool EnvBatchStar(
    if (theFile == NULL)
      {
       OpenErrorMessage(theEnv,"batch",fileName);
-      return(false);
+      return false;
      }
 
    /*======================================*/
@@ -1190,7 +1190,7 @@ bool EnvBatchStar(
    DeleteString(theEnv,oldParsingFileName);
 #endif
 
-   return(true);
+   return true;
   }
 
 #else
@@ -1205,7 +1205,7 @@ bool EnvBatchStar(
   {
    PrintErrorID(theEnv,"FILECOM",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function batch* does not work in run time modules.\n");
-   return(false);
+   return false;
   }
 
 #endif
@@ -1266,7 +1266,7 @@ void LoadStarCommand(
       return;
      }
 
-   if ((rv = EnvLoad(theEnv,theFileName)) == 0) // TBD Load Code
+   if ((rv = EnvLoad(theEnv,theFileName)) == 0)
      {
       OpenErrorMessage(theEnv,"load*",theFileName);
       mCVSetBoolean(returnValue,false);

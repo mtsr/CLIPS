@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*             LOGICAL DEPENDENCIES MODULE             */
    /*******************************************************/
@@ -30,6 +30,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -88,10 +90,10 @@ bool AddLogicalDependencies(
    if (EngineData(theEnv)->TheLogicalJoin == NULL)
      {
       if (existingEntity) RemoveEntityDependencies(theEnv,theEntity);
-      return(true);
+      return true;
      }
    else if (existingEntity && (theEntity->dependents == NULL))
-     { return(true); }
+     { return true; }
 
    /*===========================================================*/
    /* Retrieve the partial match in the logical join associated */
@@ -103,9 +105,9 @@ bool AddLogicalDependencies(
    /*===========================================================*/
 
    theBinds = EngineData(theEnv)->TheLogicalBind;
-   if (theBinds == NULL) return(false);
+   if (theBinds == NULL) return false;
    if ((theBinds->leftParent == NULL) && (theBinds->rightParent == NULL))
-     { return(false); }
+     { return false; }
 
    /*==============================================================*/
    /* Add a dependency link between the partial match and the data */
@@ -132,7 +134,7 @@ bool AddLogicalDependencies(
    /* Return true to indicate that the data entity should be asserted. */
    /*==================================================================*/
 
-   return(true);
+   return true;
   }
 
 /************************************************************************/

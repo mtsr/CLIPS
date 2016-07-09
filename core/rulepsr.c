@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/27/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                 RULE PARSING MODULE                 */
    /*******************************************************/
@@ -37,6 +37,8 @@
 /*            named construct.                               */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Added displayed of computed join depth for     */
 /*            patterns when rule-analysis is being watched.  */
@@ -142,7 +144,7 @@ bool ParseDefrule(
    if ((Bloaded(theEnv) == true) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"defrule");
-      return(true);
+      return true;
      }
 #endif
 
@@ -159,7 +161,7 @@ bool ParseDefrule(
                                          EnvFindDefruleInModule,EnvUndefrule,"*",false,
                                          true,true,false);
 
-   if (ruleName == NULL) return(true);
+   if (ruleName == NULL) return true;
 
    /*============================*/
    /* Parse the LHS of the rule. */
@@ -170,7 +172,7 @@ bool ParseDefrule(
      {
       ReturnPackedExpression(theEnv,PatternData(theEnv)->SalienceExpression);
       PatternData(theEnv)->SalienceExpression = NULL;
-      return(true);
+      return true;
      }
 
    /*============================*/
@@ -186,7 +188,7 @@ bool ParseDefrule(
       ReturnPackedExpression(theEnv,PatternData(theEnv)->SalienceExpression);
       PatternData(theEnv)->SalienceExpression = NULL;
       ReturnLHSParseNodes(theEnv,theLHS);
-      return(true);
+      return true;
      }
 
    /*=======================*/
@@ -203,7 +205,7 @@ bool ParseDefrule(
      {
       ReturnPackedExpression(theEnv,PatternData(theEnv)->SalienceExpression);
       PatternData(theEnv)->SalienceExpression = NULL;
-      return(true);
+      return true;
      }
 
    /*==============================================*/
@@ -215,7 +217,7 @@ bool ParseDefrule(
      {
       ReturnPackedExpression(theEnv,PatternData(theEnv)->SalienceExpression);
       PatternData(theEnv)->SalienceExpression = NULL;
-      return(false);
+      return false;
      }
 
    PatternData(theEnv)->SalienceExpression = NULL;
@@ -257,9 +259,9 @@ bool ParseDefrule(
    if (BitwiseTest(DefruleData(theEnv)->DeletedRuleDebugFlags,0))
      { EnvSetBreak(theEnv,topDisjunct); }
    if (BitwiseTest(DefruleData(theEnv)->DeletedRuleDebugFlags,1) || EnvGetWatchItem(theEnv,"activations"))
-     { EnvSetDefruleWatchActivations(theEnv,ON,(void *) topDisjunct); }
+     { EnvSetDefruleWatchActivations(theEnv,true,(void *) topDisjunct); }
    if (BitwiseTest(DefruleData(theEnv)->DeletedRuleDebugFlags,2) || EnvGetWatchItem(theEnv,"rules"))
-     { EnvSetDefruleWatchFirings(theEnv,ON,(void *) topDisjunct); }
+     { EnvSetDefruleWatchFirings(theEnv,true,(void *) topDisjunct); }
 #endif
 
    /*================================*/
@@ -273,7 +275,7 @@ bool ParseDefrule(
    /*=============================================*/
 
 #endif
-   return(false);
+   return false;
   }
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
@@ -577,21 +579,21 @@ static int ReplaceRHSVariable(
       if (list->value == (void *) FindFunction(theEnv,"modify"))
         {
          if (UpdateModifyDuplicate(theEnv,list,"modify",VtheLHS) == false)
-           return(-1);
+           { return -1; }
         }
       else if (list->value == (void *) FindFunction(theEnv,"duplicate"))
         {
          if (UpdateModifyDuplicate(theEnv,list,"duplicate",VtheLHS) == false)
-           return(-1);
+           { return -1; }
         }
 
-      return(0);
+      return 0;
      }
 
 #endif
 
    if ((list->type != SF_VARIABLE) && (list->type != MF_VARIABLE))
-     { return(0); }
+     { return 0; }
 
    /*==================================*/
    /* Check for a ?var:slot reference. */
@@ -611,7 +613,7 @@ static int ReplaceRHSVariable(
    /*===============================================================*/
 
    theVariable = FindVariable((SYMBOL_HN *) list->value,(struct lhsParseNode *) VtheLHS);
-   if (theVariable == NULL) return(0);
+   if (theVariable == NULL) return 0;
 
    /*================================================*/
    /* Replace the variable reference with a function */
@@ -621,13 +623,13 @@ static int ReplaceRHSVariable(
    if (theVariable->patternType != NULL)
      { (*theVariable->patternType->replaceGetJNValueFunction)(theEnv,list,theVariable,LHS); }
    else
-     { return(0); }
+     { return 0; }
 
    /*==============================================================*/
    /* Return 1 to indicate the variable was successfully replaced. */
    /*==============================================================*/
 
-   return(1);
+   return 1;
   }
 
 /*******************************************************/
@@ -768,7 +770,7 @@ static int LogicalAnalysis(
    int logicalJoin = 1;
    bool gap = false;
 
-   if (patternList == NULL) return(0);
+   if (patternList == NULL) return 0;
 
    firstLogical = patternList->logical;
 
@@ -812,7 +814,7 @@ static int LogicalAnalysis(
         {
          PrintErrorID(theEnv,"RULEPSR",1,true);
          EnvPrintRouter(theEnv,WERROR,"Logical CEs must be placed first in a rule\n");
-         return(-1);
+         return -1;
         }
 
       /*===================================================*/
@@ -825,7 +827,7 @@ static int LogicalAnalysis(
         {
          PrintErrorID(theEnv,"RULEPSR",2,true);
          EnvPrintRouter(theEnv,WERROR,"Gaps may not exist between logical CEs\n");
-         return(-1);
+         return -1;
         }
 
       /*===========================================*/
@@ -842,14 +844,15 @@ static int LogicalAnalysis(
    /* will be stored in the join network.        */
    /*============================================*/
 
-   if (logicalsFound) return(logicalJoin);
+   if (logicalsFound)
+     { return logicalJoin; }
 
    /*=============================*/
    /* Return zero indicating that */
    /* no logical CE was found.    */
    /*=============================*/
 
-   return(0);
+   return 0;
   }
 
 /*****************************************************************/

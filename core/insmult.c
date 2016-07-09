@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*           INSTANCE MULTIFIELD SLOT MODULE           */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -115,7 +117,7 @@ void SetupInstanceMultifieldCommands(
                    slot-value is placed via a put- message.
                  This function is not valid for single-value slots.
   INPUTS       : Caller's result buffer
-  RETURNS      : true if multi-value slot successfully modified,
+  RETURNS      : True if multi-value slot successfully modified,
                  false otherwise
   SIDE EFFECTS : Put messsage sent for slot
   NOTES        : H/L Syntax : (slot-replace$ <instance> <slot>
@@ -157,7 +159,7 @@ void MVSlotReplaceCommand(
                    slot-value is placed via a put- message.
                  This function is not valid for single-value slots.
   INPUTS       : Caller's result buffer
-  RETURNS      : true if multi-value slot successfully modified, false otherwise
+  RETURNS      : True if multi-value slot successfully modified, false otherwise
   SIDE EFFECTS : Put messsage sent for slot
   NOTES        : H/L Syntax : (slot-insert$ <instance> <slot> <index> <value>)
  ***********************************************************************************/
@@ -197,7 +199,7 @@ void MVSlotInsertCommand(
                    slot-value is placed via a put- message.
                  This function is not valid for single-value slots.
   INPUTS       : Caller's result buffer
-  RETURNS      : true if multi-value slot successfully modified, false otherwise
+  RETURNS      : True if multi-value slot successfully modified, false otherwise
   SIDE EFFECTS : Put message sent for slot
   NOTES        : H/L Syntax : (slot-delete$ <instance> <slot>
                                  <range-begin> <range-end>)
@@ -235,7 +237,7 @@ void MVSlotDeleteCommand(
   NAME         : DirectMVReplaceCommand
   DESCRIPTION  : Directly replaces a slot's value
   INPUTS       : None
-  RETURNS      : true if put OK, false otherwise
+  RETURNS      : True if put OK, false otherwise
   SIDE EFFECTS : Slot modified
   NOTES        : H/L Syntax: (direct-slot-replace$ <slot>
                                 <range-begin> <range-end> <value>)
@@ -282,7 +284,7 @@ void DirectMVReplaceCommand(
   NAME         : DirectMVInsertCommand
   DESCRIPTION  : Directly inserts a slot's value
   INPUTS       : None
-  RETURNS      : true if put OK, false otherwise
+  RETURNS      : True if put OK, false otherwise
   SIDE EFFECTS : Slot modified
   NOTES        : H/L Syntax: (direct-slot-insert$ <slot> <index> <value>)
  ************************************************************************/
@@ -318,7 +320,7 @@ void DirectMVInsertCommand(
   NAME         : DirectMVDeleteCommand
   DESCRIPTION  : Directly deletes a slot's value
   INPUTS       : None
-  RETURNS      : true if put OK, false otherwise
+  RETURNS      : True if put OK, false otherwise
   SIDE EFFECTS : Slot modified
   NOTES        : H/L Syntax: (direct-slot-delete$ <slot>
                                 <range-begin> <range-end>)

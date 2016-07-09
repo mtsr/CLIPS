@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/20/16            */
+   /*             CLIPS Version 6.40  07/05/16            */
    /*                                                     */
    /*                 DEFRULE HEADER FILE                 */
    /*******************************************************/
@@ -58,6 +58,8 @@
 /*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -127,11 +129,11 @@ struct defruleData
    struct joinLink *LeftPrimeJoins;
 
 #if DEBUGGING_FUNCTIONS
-    unsigned WatchRules;
+    bool WatchRules;
     int DeletedRuleDebugFlags;
 #endif
 #if DEVELOPER && (! RUN_TIME) && (! BLOAD_ONLY)
-    unsigned WatchRuleAnalysis;
+    bool WatchRuleAnalysis;
 #endif
 #if CONSTRUCT_COMPILER && (! RUN_TIME)
    struct CodeGeneratorItem *DefruleCodeItem;

@@ -55,7 +55,6 @@ struct objectReteBinaryData
 
 #define ObjectReteBinaryData(theEnv) ((struct objectReteBinaryData *) GetEnvironmentData(theEnv,OBJECTRETEBIN_DATA))
 
-
    void                    SetupObjectPatternsBload(void *);
 
 #endif /* DEFRULE_CONSTRUCT && OBJECT_SYSTEM */

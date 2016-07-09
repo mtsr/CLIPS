@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*         CONSTRUCT PROFILING FUNCTIONS MODULE        */
    /*******************************************************/
@@ -39,6 +39,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -218,9 +220,9 @@ bool Profile(
    /*=====================================================*/
 
    else
-     { return(false); }
+     { return false; }
 
-   return(true);
+   return true;
   }
 
 /******************************************/
@@ -365,9 +367,9 @@ static bool OutputProfileInfo(
    double percent = 0.0, percentWithKids = 0.0;
    char buffer[512];
    
-   if (profileInfo == NULL) return(false);
+   if (profileInfo == NULL) return false;
    
-   if (profileInfo->numberOfEntries == 0) return(false);
+   if (profileInfo->numberOfEntries == 0) return false;
 
    if (ProfileFunctionData(theEnv)->ProfileTotalTime != 0.0)
      {
@@ -377,7 +379,7 @@ static bool OutputProfileInfo(
       if (percentWithKids < 0.005) percentWithKids = 0.0;
      }
 
-   if (percent < ProfileFunctionData(theEnv)->PercentThreshold) return(false);
+   if (percent < ProfileFunctionData(theEnv)->PercentThreshold) return false;
 
    if ((banner != NULL) && (*banner != NULL))
      {
@@ -412,7 +414,7 @@ static bool OutputProfileInfo(
                         (double) percentWithKids);
    EnvPrintRouter(theEnv,WDISPLAY,buffer);
 
-   return(true);
+   return true;
   }
 
 /*******************************************/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/20/16            */
+   /*             CLIPS Version 6.40  067/05/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -45,6 +45,8 @@
 /*      6.40: Removed LOCALE definition.                     */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -118,8 +120,8 @@ struct defgenericData
    int DefgenericModuleIndex;
    ENTITY_RECORD GenericEntityRecord;
 #if DEBUGGING_FUNCTIONS
-   unsigned WatchGenerics;
-   unsigned WatchMethods;
+   bool WatchGenerics;
+   bool WatchMethods;
 #endif
    DEFGENERIC *CurrentGeneric;
    DEFMETHOD *CurrentMethod;

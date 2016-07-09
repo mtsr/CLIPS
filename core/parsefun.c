@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*               PARSING FUNCTIONS MODULE              */
    /*******************************************************/
@@ -38,6 +38,10 @@
 /*            a conflict with another error-capture router.  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Changed return values for router functions.    */
 /*                                                           */
 /*************************************************************/
 
@@ -78,7 +82,7 @@ struct parseFunctionData
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    static bool                    FindErrorCapture(void *,const char *);
-   static int                     PrintErrorCapture(void *,const char *,const char *);
+   static void                    PrintErrorCapture(void *,const char *,const char *);
    static void                    DeactivateErrorCapture(void *);
    static void                    SetErrorCaptureValues(void *,DATA_OBJECT_PTR);
 #endif
@@ -149,7 +153,7 @@ bool CheckSyntax(
    /*===========================================*/
 
    if (OpenStringSource(theEnv,"check-syntax",theString,0) == 0)
-     { return(true); }
+     { return true; }
 
    /*=================================*/
    /* Only expressions and constructs */
@@ -162,7 +166,7 @@ bool CheckSyntax(
      {
       CloseStringSource(theEnv,"check-syntax");
       mCVSetSymbol(returnValue,"MISSING-LEFT-PARENTHESIS");
-      return(true);
+      return true;
      }
 
    /*========================================*/
@@ -175,7 +179,7 @@ bool CheckSyntax(
      {
       CloseStringSource(theEnv,"check-syntax");
       mCVSetSymbol(returnValue,"EXPECTED-SYMBOL-AFTER-LEFT-PARENTHESIS");
-      return(true);
+      return true;
      }
 
    name = ValueToString(theToken.value);
@@ -214,19 +218,19 @@ bool CheckSyntax(
         {
          SetErrorCaptureValues(theEnv,returnValue);
          DeactivateErrorCapture(theEnv);
-         return(true);
+         return true;
         }
 
       if (theToken.type != STOP)
         {
          SetpValue(returnValue,EnvAddSymbol(theEnv,"EXTRANEOUS-INPUT-AFTER-LAST-PARENTHESIS"));
          DeactivateErrorCapture(theEnv);
-         return(true);
+         return true;
         }
 
       mCVSetBoolean(returnValue,false);
       DeactivateErrorCapture(theEnv);
-      return(false);
+      return false;
      }
 
    /*=======================*/
@@ -242,7 +246,7 @@ bool CheckSyntax(
      {
       SetErrorCaptureValues(theEnv,returnValue);
       DeactivateErrorCapture(theEnv);
-      return(true);
+      return true;
      }
 
    if (theToken.type != STOP)
@@ -250,14 +254,14 @@ bool CheckSyntax(
       mCVSetSymbol(returnValue,"EXTRANEOUS-INPUT-AFTER-LAST-PARENTHESIS");
       DeactivateErrorCapture(theEnv);
       ReturnExpression(theEnv,top);
-      return(true);
+      return true;
      }
 
    DeactivateErrorCapture(theEnv);
 
    ReturnExpression(theEnv,top);
    mCVSetBoolean(returnValue,false);
-   return(false);
+   return false;
   }
 
 /**************************************************/
@@ -346,16 +350,16 @@ static bool FindErrorCapture(
 
    if ((strcmp(logicalName,WERROR) == 0) ||
        (strcmp(logicalName,WWARNING) == 0))
-     { return(true); }
+     { return true; }
 
-   return(false);
+   return false;
   }
 
 /************************************/
 /* PrintErrorCapture: Print routine */
 /*   for the check-syntax router.   */
 /************************************/
-static int PrintErrorCapture(
+static void PrintErrorCapture(
   void *theEnv,
   const char *logicalName,
   const char *str)
@@ -372,8 +376,6 @@ static int PrintErrorCapture(
                                      &ParseFunctionData(theEnv)->WarningCurrentPosition,
                                      &ParseFunctionData(theEnv)->WarningMaximumPosition);
      }
-
-   return(1);
   }
 
 #else
@@ -404,7 +406,7 @@ bool CheckSyntax(
    EnvPrintRouter(theEnv,WERROR,"Function check-syntax does not work in run time modules.\n");
    SetpType(returnValue,SYMBOL);
    SetpValue(returnValue,EnvTrueSymbol(theEnv));
-   return(true);
+   return true;
   }
 
 #endif /* (! RUN_TIME) && (! BLOAD_ONLY) */

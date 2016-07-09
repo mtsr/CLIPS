@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*                  CLASS COMMANDS MODULE              */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*            named construct.                                */
 /*                                                            */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /**************************************************************/
 
@@ -286,7 +288,7 @@ DEFCLASS *LookupDefclassAnywhere(
   INPUTS       : 1) The defclass
                  2) The module (NULL for current
                     module)
-  RETURNS      : true if in scope,
+  RETURNS      : True if in scope,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -309,7 +311,7 @@ bool DefclassInScope(
 #if MAC_XCD
 #pragma unused(theEnv,theDefclass,theModule)
 #endif
-   return(true);
+   return true;
 #endif
   }
 
@@ -335,7 +337,7 @@ void *EnvGetNextDefclass(
   DESCRIPTION  : Determines if a defclass
                    can be deleted
   INPUTS       : Address of the defclass
-  RETURNS      : true if deletable,
+  RETURNS      : True if deletable,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -351,7 +353,7 @@ bool EnvIsDefclassDeletable(
 
    cls = (DEFCLASS *) ptr;
    if (cls->system == 1)
-     return(false);
+     return false;
    
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    return((IsClassBeingUsed(cls) == false) ? true : false);
@@ -381,7 +383,7 @@ void UndefclassCommand(
   NAME         : EnvUndefclass
   DESCRIPTION  : Deletes the named defclass
   INPUTS       : None
-  RETURNS      : true if deleted, or false
+  RETURNS      : True if deleted, or false
   SIDE EFFECTS : Defclass and handlers removed
   NOTES        : Interface for AddConstruct()
  ********************************************************/
@@ -390,14 +392,14 @@ bool EnvUndefclass(
   void *theDefclass)
   {
 #if RUN_TIME || BLOAD_ONLY
-   return(false);
+   return false;
 #else
    DEFCLASS *cls;
 
    cls = (DEFCLASS *) theDefclass;
 #if BLOAD || BLOAD_AND_BSAVE
    if (Bloaded(theEnv))
-     return(false);
+     return false;
 #endif
    if (cls == NULL)
      return(RemoveAllUserClasses(theEnv));
@@ -464,7 +466,7 @@ void EnvListDefclasses(
                  instances of this class will generate
                  trace messages or not
   INPUTS       : A pointer to the class
-  RETURNS      : true if a trace is active,
+  RETURNS      : True if a trace is active,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -512,7 +514,7 @@ void EnvSetDefclassWatchInstances(
                  instances of this class will generate
                  trace messages or not
   INPUTS       : A pointer to the class
-  RETURNS      : true if a trace is active,
+  RETURNS      : True if a trace is active,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -561,7 +563,7 @@ void EnvSetDefclassWatchSlots(
                  2) The value to which to set the trace flags
                  3) A list of expressions containing the names
                     of the classes for which to set traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags set in specified classes
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
@@ -589,7 +591,7 @@ bool DefclassWatchAccess(
                     1 - Watch slot changes to instances
                  3) A list of expressions containing the names
                     of the classes for which to examine traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags displayed for specified classes
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
@@ -651,7 +653,7 @@ void EnvGetDefclassList(
                    of class-1
   INPUTS       : 1) Class-1
                  2) Class-2
-  RETURNS      : true if class-2 is a superclass of
+  RETURNS      : True if class-2 is a superclass of
                    class-1, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -664,8 +666,8 @@ bool HasSuperclass(
 
    for (i = 1 ; i < c1->allSuperclasses.classCount ; i++)
      if (c1->allSuperclasses.classArray[i] == c2)
-       return(true);
-   return(false);
+       return true;
+   return false;
   }
 
 /********************************************************************
@@ -687,7 +689,7 @@ SYMBOL_HN *CheckClassAndSlot(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      return(NULL);
-     
+
    *cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (*cls == NULL)
      {

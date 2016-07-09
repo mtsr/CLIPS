@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*              PREDICATE FUNCTIONS MODULE             */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*            MAC_MCW).                                      */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -122,7 +124,7 @@ void EqFunction(
 
    /*=====================================*/
    /* Compare all arguments to the first. */
-   /* If any are the same, return false.  */
+   /* If any are the same, return FALSE.  */
    /*=====================================*/
 
    theExpression = GetNextArgument(theExpression);
@@ -155,7 +157,7 @@ void EqFunction(
 
    /*=====================================*/
    /* All of the arguments were different */
-   /* from the first. Return true.        */
+   /* from the first. Return TRUE.        */
    /*=====================================*/
 
    mCVSetBoolean(returnValue,true);
@@ -195,7 +197,7 @@ void NeqFunction(
 
    /*=====================================*/
    /* Compare all arguments to the first. */
-   /* If any are different, return false. */
+   /* If any are different, return FALSE. */
    /*=====================================*/
 
    for (i = 2, theExpression = GetNextArgument(theExpression);
@@ -222,7 +224,7 @@ void NeqFunction(
 
    /*=====================================*/
    /* All of the arguments were identical */
-   /* to the first. Return true.          */
+   /* to the first. Return TRUE.          */
    /*=====================================*/
 
    mCVSetBoolean(returnValue,true);
@@ -471,7 +473,7 @@ void LessThanOrEqualFunction(
 
    /*====================================================*/
    /* Compare each of the subsequent arguments to its    */
-   /* predecessor. If any is greater, then return false. */
+   /* predecessor. If any is greater, then return FALSE. */
    /*====================================================*/
 
    while (UDFHasNextArgument(context))
@@ -501,7 +503,7 @@ void LessThanOrEqualFunction(
 
    /*======================================*/
    /* Each argument was less than or equal */
-   /* to its predecessor. Return true.     */
+   /* to its predecessor. Return TRUE.     */
    /*======================================*/
 
    mCVSetBoolean(returnValue,true);
@@ -556,7 +558,7 @@ void GreaterThanOrEqualFunction(
 
    /*=========================================*/
    /* Each argument was greater than or equal */
-   /* to its predecessor. Return true.        */
+   /* to its predecessor. Return TRUE.        */
    /*=========================================*/
 
    mCVSetBoolean(returnValue,true);
@@ -582,7 +584,7 @@ void LessThanFunction(
    /*==========================================*/
    /* Compare each of the subsequent arguments */
    /* to its predecessor. If any is greater or */
-   /* equal, then return false.                */
+   /* equal, then return FALSE.                */
    /*==========================================*/
    
    while (UDFHasNextArgument(context))
@@ -612,7 +614,7 @@ void LessThanFunction(
 
    /*=================================*/
    /* Each argument was less than its */
-   /* predecessor. Return true.       */
+   /* predecessor. Return TRUE.       */
    /*=================================*/
 
    mCVSetBoolean(returnValue,true);
@@ -638,7 +640,7 @@ void GreaterThanFunction(
    /*==========================================*/
    /* Compare each of the subsequent arguments */
    /* to its predecessor. If any is lesser or  */
-   /* equal, then return false.                */
+   /* equal, then return FALSE.                */
    /*==========================================*/
    
    while (UDFHasNextArgument(context))
@@ -666,10 +668,10 @@ void GreaterThanFunction(
       CVSetCLIPSValue(&rv1,&rv2);
      }
 
-   /*=================================*/
-   /* Each argument was less than its */
-   /* predecessor. Return true.       */
-   /*=================================*/
+   /*================================*/
+   /* Each argument was greater than */
+   /* its predecessor. Return TRUE.  */
+   /*================================*/
 
    mCVSetBoolean(returnValue,true);
   }
@@ -693,7 +695,7 @@ void NumericEqualFunction(
 
    /*=================================================*/
    /* Compare each of the subsequent arguments to the */
-   /* first. If any is unequal, then return false.    */
+   /* first. If any is unequal, then return FALSE.    */
    /*=================================================*/
 
    while (UDFHasNextArgument(context))
@@ -718,10 +720,10 @@ void NumericEqualFunction(
            }
         }
      }
-     
+
    /*=================================*/
    /* All arguments were equal to the */
-   /* first argument. Return true.    */
+   /* first argument. Return TRUE.    */
    /*=================================*/
 
    mCVSetBoolean(returnValue,true);
@@ -746,7 +748,7 @@ void NumericNotEqualFunction(
 
    /*=================================================*/
    /* Compare each of the subsequent arguments to the */
-   /* first. If any is equal, then return false.      */
+   /* first. If any is equal, then return FALSE.      */
    /*=================================================*/
 
    while (UDFHasNextArgument(context))
@@ -771,10 +773,10 @@ void NumericNotEqualFunction(
            }
         }
      }
-     
+
    /*===================================*/
    /* All arguments were unequal to the */
-   /* first argument. Return true.      */
+   /* first argument. Return TRUE.      */
    /*===================================*/
 
    mCVSetBoolean(returnValue,true);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  06/20/16            */
+   /*             CLIPS Version 6.50  07/05/16            */
    /*                                                     */
    /*              FACTS MANAGER HEADER FILE              */
    /*******************************************************/
@@ -57,6 +57,8 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
 /*      6.50: Modify command preserves fact id and address.  */
 /*                                                           */
 /*            Watch facts for modify command only prints     */
@@ -103,7 +105,7 @@ struct factsData
   {
    bool ChangeToFactList;
 #if DEBUGGING_FUNCTIONS
-   unsigned WatchFacts;
+   bool WatchFacts;
 #endif
    struct fact DummyFact;
    struct fact *GarbageFacts;

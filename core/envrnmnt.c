@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                ENVIRONMENT MODULE                   */
    /*******************************************************/
@@ -48,6 +48,8 @@
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Removed support for environment globals.       */
 /*                                                           */
@@ -158,7 +160,7 @@ bool AllocateEnvironmentData(
    if (size <= 0)
      {
       printf("\n[ENVRNMNT1] Environment data position %d allocated with size of 0 or less.\n",position);      
-      return(false);
+      return false;
      }
      
    /*================================================================*/
@@ -168,7 +170,7 @@ bool AllocateEnvironmentData(
    if (position >= MAXIMUM_ENVIRONMENT_POSITIONS)
      {
       printf("\n[ENVRNMNT2] Environment data position %d exceeds the maximum allowed.\n",position);      
-      return(false);
+      return false;
      }
      
    /*============================================================*/
@@ -178,7 +180,7 @@ bool AllocateEnvironmentData(
    if (theEnvironment->theData[position] != NULL)
      {
       printf("\n[ENVRNMNT3] Environment data position %d already allocated.\n",position);      
-      return(false);
+      return false;
      }
      
    /*====================*/
@@ -189,7 +191,7 @@ bool AllocateEnvironmentData(
    if (theEnvironment->theData[position] == NULL)
      {
       printf("\n[ENVRNMNT4] Environment data position %d could not be allocated.\n",position);      
-      return(false);
+      return false;
      }
    
    memset(theEnvironment->theData[position],0,size);
@@ -204,7 +206,7 @@ bool AllocateEnvironmentData(
    /* Data successfully registered. */
    /*===============================*/
    
-   return(true);
+   return true;
   }
 
 /************************************************************/
@@ -417,11 +419,11 @@ bool DestroyEnvironment(
    struct environmentData *theEnvironment = (struct environmentData *) vtheEnvironment;
    /*
    if (EvaluationData(theEnvironment)->CurrentExpression != NULL)
-     { return(false); }
+     { return false; }
      
 #if DEFRULE_CONSTRUCT
    if (EngineData(theEnvironment)->ExecutingRule != NULL)
-     { return(false); }
+     { return false; }
 #endif
 */
    theMemData = MemoryData(theEnvironment);
@@ -488,7 +490,7 @@ bool AddEnvironmentCleanupFunction(
      
    newPtr = (struct environmentCleanupFunction *) malloc(sizeof(struct environmentCleanupFunction));
    if (newPtr == NULL)
-     { return(false); }
+     { return false; }
 
    newPtr->name = name;
    newPtr->func = functionPtr;
@@ -498,7 +500,7 @@ bool AddEnvironmentCleanupFunction(
      {
       newPtr->next = NULL;
       theEnv->listOfCleanupEnvironmentFunctions = newPtr;
-      return(true);
+      return true;
      }
 
    currentPtr = theEnv->listOfCleanupEnvironmentFunctions;
@@ -519,7 +521,7 @@ bool AddEnvironmentCleanupFunction(
       lastPtr->next = newPtr;
      }
      
-   return(true);
+   return true;
   }
 
 /**************************************************/
@@ -537,7 +539,7 @@ static void RemoveEnvironmentCleanupFunctions(
       free(theEnv->listOfCleanupEnvironmentFunctions);
       theEnv->listOfCleanupEnvironmentFunctions = nextPtr;
      }
-  } 
+  }
 
 /*****************************************************/
 /* EnvInitializeEnvironment: Performs initialization */

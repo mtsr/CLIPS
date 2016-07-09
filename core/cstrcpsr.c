@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/04/16             */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -48,6 +48,10 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Changed return values for router functions.    */
 /*                                                           */
 /*      6.50: File name/line count displayed for errors      */
 /*            and warnings during load command.              */
@@ -101,7 +105,8 @@ int EnvLoad(
    /* Open the file specified by file name. */
    /*=======================================*/
 
-   if ((theFile = GenOpen(theEnv,fileName,"r")) == NULL) return(0);
+   if ((theFile = GenOpen(theEnv,fileName,"r")) == NULL)
+     { return 0; }
 
    /*===================================================*/
    /* Read in the constructs. Enabling fast load allows */
@@ -137,9 +142,10 @@ int EnvLoad(
    /* return 1, otherwise return -1.         */
    /*========================================*/
 
-   if (noErrorsDetected) return(1);
+   if (noErrorsDetected)
+     { return 1; }
 
-   return(-1);
+   return -1;
   }
 
 /*******************************************************/
@@ -452,7 +458,7 @@ static bool FindConstructBeginning(
          /* Is this a valid construct name (e.g., defrule, deffacts). */
          /*===========================================================*/
 
-         if (FindConstruct(theEnv,ValueToString(theToken->value)) != NULL) return(true);
+         if (FindConstruct(theEnv,ValueToString(theToken->value)) != NULL) return true;
 
          /*===============================================*/
          /* The construct name is invalid. Print an error */
@@ -508,7 +514,7 @@ static bool FindConstructBeginning(
    /* Couldn't find the beginning of a construct, so false is returned. */
    /*===================================================================*/
 
-   return(false);
+   return false;
   }
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
@@ -526,15 +532,15 @@ static bool FindError(
 
    if ((strcmp(logicalName,WERROR) == 0) ||
        (strcmp(logicalName,WWARNING) == 0))
-     { return(true); }
+     { return true; }
 
-    return(false);
+    return false;
   }
 
 /***************************************************/
 /* PrintError: Print routine for the error router. */
 /***************************************************/
-static int PrintError(
+static void PrintError(
   void *theEnv,
   const char *logicalName,
   const char *str)
@@ -557,8 +563,6 @@ static int PrintError(
    EnvDeactivateRouter(theEnv,"error-capture");
    EnvPrintRouter(theEnv,logicalName,str);
    EnvActivateRouter(theEnv,"error-capture");
-
-   return(1);
   }
 
 /***********************************************/

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16              */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*             CONSTRAINT UTILITY MODULE               */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*      6.30: Support for long long integers.                */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 

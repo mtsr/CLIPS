@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*                CLASS FUNCTIONS MODULE               */
    /*******************************************************/
@@ -43,6 +43,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -156,7 +158,7 @@ void DecrementDefclassBusyCount(
   NAME         : InstancesPurge
   DESCRIPTION  : Removes all instances
   INPUTS       : None
-  RETURNS      : true if all instances deleted,
+  RETURNS      : True if all instances deleted,
                  false otherwise
   SIDE EFFECTS : The instance hash table is cleared
   NOTES        : None
@@ -959,7 +961,7 @@ void InstallClass(
                    it to make sure that it is not
                    in use before deletion
   INPUTS       : The class
-  RETURNS      : true if in use, false otherwise
+  RETURNS      : True if in use, false otherwise
   SIDE EFFECTS : None
   NOTES        : Recursively examines all subclasses
  ***************************************************/
@@ -969,18 +971,18 @@ bool IsClassBeingUsed(
    long i;
 
    if (cls->busy > 0)
-     return(true);
+     return true;
    for (i = 0 ; i < cls->directSubclasses.classCount ; i++)
      if (IsClassBeingUsed(cls->directSubclasses.classArray[i]))
-       return(true);
-   return(false);
+       return true;
+   return false;
   }
 
 /***************************************************
   NAME         : RemoveAllUserClasses
   DESCRIPTION  : Removes all classes
   INPUTS       : None
-  RETURNS      : true if succesful, false otherwise
+  RETURNS      : True if succesful, false otherwise
   SIDE EFFECTS : The class hash table is cleared
   NOTES        : None
  ***************************************************/
@@ -992,7 +994,7 @@ bool RemoveAllUserClasses(
 
 #if BLOAD || BLOAD_AND_BSAVE
    if (Bloaded(theEnv))
-     return(false);
+     return false;
 #endif
    /* ====================================================
       Don't delete built-in system classes at head of list
@@ -1043,15 +1045,15 @@ bool DeleteClassUAG(
       subCount = cls->directSubclasses.classCount;
       DeleteClassUAG(theEnv,cls->directSubclasses.classArray[0]);
       if (cls->directSubclasses.classCount == subCount)
-        return(false);
+        return false;
      }
    if (EnvIsDefclassDeletable(theEnv,(void *) cls))
      {
       RemoveConstructFromModule(theEnv,(struct constructHeader *) cls);
       RemoveDefclass(theEnv,(void *) cls);
-      return(true);
+      return true;
      }
-   return(false);
+   return false;
   }
 
 /*********************************************************

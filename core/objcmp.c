@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -388,8 +390,8 @@ static void InitObjectsCode(
                  4) The base id for the construct set
                  5) The max number of indices allowed
                     in an array
-  RETURNS      :  0 on errors,
-                  1 if object system structures written
+  RETURNS      : False on errors,
+                 True if object system structures written
   SIDE EFFECTS : Code written to files
   NOTES        : None
  *************************************************************/
@@ -428,16 +430,16 @@ static bool ObjectsToCode(
    fprintf(headerFP,"#include \"classini.h\"\n");
    if (ClassIDMapToCode(theEnv,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,maxIndices,&fileCount)
        == false)
-     return(false);
+     return false;
    if (ClassHashTableToCode(theEnv,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,maxIndices,&fileCount)
        == false)
-     return(false);
+     return false;
    if (SlotNameHashTableToCode(theEnv,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,maxIndices,&fileCount)
        == false)
-     return(false);
+     return false;
    if (SlotNameEntriesToCode(theEnv,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,maxIndices,&fileCount)
        == false)
-     return(false);
+     return false;
 
    /* =============================================================
       Loop through all the modules and all the defclasses writing
@@ -537,11 +539,11 @@ static bool ObjectsToCode(
      }
 
    CloseObjectFiles(theEnv,itemFiles,itemReopenFlags,itemCodeFiles,maxIndices);
-   return(true);
+   return true;
 
 ObjectCodeError:
    CloseObjectFiles(theEnv,itemFiles,itemReopenFlags,itemCodeFiles,maxIndices);
-   return(false);
+   return false;
   }
 
 /************************************************************
@@ -552,7 +554,7 @@ ObjectCodeError:
                  3) The construct set image id
                  4) The max # of allowed indices
                  5) Caller's file count buffer
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Class ID Map and Max Indices Written
   NOTES        : None
  ***********************************************************/
@@ -575,7 +577,7 @@ static bool ClassIDMapToCode(
                                      classIDMapArrayVersion,headerFP,
                                      "DEFCLASS *",ClassIDPrefix(),false,NULL);
    if (classIDMapFile == NULL)
-     return(false);
+     return false;
    for (classIDMapArrayCount = 0 ;
         classIDMapArrayCount < DefclassData(theEnv)->MaxClassID ;
         classIDMapArrayCount++)
@@ -590,7 +592,7 @@ static bool ClassIDMapToCode(
                           MaxClassIDPrefix(),imageID,(unsigned) DefclassData(theEnv)->MaxClassID);
    fprintf(headerFP,"extern unsigned %s%d;\n",MaxClassIDPrefix(),imageID);
    GenClose(theEnv,classIDMapFile);
-   return(true);
+   return true;
   }
 
 /************************************************************
@@ -601,7 +603,7 @@ static bool ClassIDMapToCode(
                  3) The construct set image id
                  4) The max # of allowed indices
                  5) Caller's file count buffer
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Class Hash Table Written
   NOTES        : None
  ***********************************************************/
@@ -624,7 +626,7 @@ static bool ClassHashTableToCode(
                                     classHashArrayVersion,headerFP,
                                     "DEFCLASS *",ClassHashPrefix(),false,NULL);
    if (classHashFile == NULL)
-     return(false);
+     return false;
    for (classHashArrayCount = 0 ;
         classHashArrayCount < CLASS_TABLE_HASH_SIZE ;
         classHashArrayCount++)
@@ -637,7 +639,7 @@ static bool ClassHashTableToCode(
 
    CloseFileIfNeeded(theEnv,classHashFile,&classHashArrayCount,
                      &classHashArrayVersion,classHashArrayCount,NULL,NULL);
-   return(true);
+   return true;
   }
 
 /************************************************************
@@ -648,7 +650,7 @@ static bool ClassHashTableToCode(
                  3) The construct set image id
                  4) The max # of allowed indices
                  5) Caller's version number buffer
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Slot Name Hash Table Written
   NOTES        : None
  ***********************************************************/
@@ -672,7 +674,7 @@ static bool SlotNameHashTableToCode(
                                        slotNameHashArrayVersion,headerFP,
                                        "SLOT_NAME *",SlotNameHashPrefix(),false,NULL);
    if (slotNameHashFile == NULL)
-     return(false);
+     return false;
    for (slotNameHashArrayCount = 0 ;
         slotNameHashArrayCount < SLOT_NAME_TABLE_HASH_SIZE ;
         slotNameHashArrayCount++)
@@ -685,7 +687,7 @@ static bool SlotNameHashTableToCode(
    CloseFileIfNeeded(theEnv,slotNameHashFile,&slotNameHashArrayCount,
                                         &slotNameHashArrayVersion,slotNameHashArrayCount,
                                         NULL,NULL);
-   return(true);
+   return true;
   }
 
 /************************************************************
@@ -696,7 +698,7 @@ static bool SlotNameHashTableToCode(
                  3) The construct set image id
                  4) The max # of allowed indices
                  5) Caller's version number buffer
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Slot name entries Written
   NOTES        : None
  ***********************************************************/
@@ -726,7 +728,7 @@ static bool SlotNameEntriesToCode(
                                        slotNameArrayVersion,headerFP,
                                        "SLOT_NAME",SlotNamePrefix(),false,NULL);
          if (slotNameFile == NULL)
-           return(false);
+           return false;
          fprintf(slotNameFile,"{ %u,1,%d,",snp->hashTableIndex,snp->id);
          PrintSymbolReference(theEnv,slotNameFile,snp->name);
          fprintf(slotNameFile,",");
@@ -742,7 +744,7 @@ static bool SlotNameEntriesToCode(
    if (slotNameFile != NULL)
      CloseFileIfNeeded(theEnv,slotNameFile,&slotNameArrayCount,
                        &slotNameArrayVersion,slotNameArrayCount,NULL,NULL);
-   return(true);
+   return true;
   }
 
 /******************************************************
@@ -976,8 +978,7 @@ static void SingleDefclassToCode(
                  12) A pointer to the file info for
                      this data if the last file needs
                      to be reopened for termination
-  RETURNS      : true if all OK, false
-                 otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Inheritance links written
   NOTES        : None
  ***********************************************************/
@@ -1007,7 +1008,7 @@ static bool InheritanceLinksToCode(
                           theDefclass->allSuperclasses.classCount;
 
    if (inheritanceLinkCount == 0)
-     return(true);
+     return true;
 
    *classLinkFile = OpenFileIfNeeded(theEnv,*classLinkFile,fileName,pathName,fileNameBuffer,fileID,
                                       imageID,fileCount,
@@ -1015,7 +1016,7 @@ static bool InheritanceLinksToCode(
                                       "DEFCLASS *",ClassLinkPrefix(),
                                       *reopenClassLinkFile,classLinkCodeFile);
    if (*classLinkFile == NULL)
-     return(false);
+     return false;
 
    for (i = 0 ; i < theDefclass->directSuperclasses.classCount ; i++)
      {
@@ -1048,7 +1049,7 @@ static bool InheritanceLinksToCode(
    *classLinkFile = CloseFileIfNeeded(theEnv,*classLinkFile,classLinkArrayCount,
                                        classLinkArrayVersion,maxIndices,
                                        reopenClassLinkFile,classLinkCodeFile);
-   return(true);
+   return true;
   }
 
 /***********************************************************
@@ -1074,7 +1075,7 @@ static bool InheritanceLinksToCode(
                  12) A pointer to the file info for
                      this data if the last file needs
                      to be reopened for termination
-  RETURNS      : true if all OK, false
+  RETURNS      : True if all OK, FALSE
                  otherwise
   SIDE EFFECTS : Slots written
   NOTES        : None
@@ -1102,7 +1103,7 @@ static bool SlotsToCode(
    PACKED_LOCATION_INFO theLocationInfo;
 
    if (theDefclass->slotCount == 0)
-     return(true);
+     return true;
 
    *slotFile = OpenFileIfNeeded(theEnv,*slotFile,fileName,pathName,fileNameBuffer,fileID,
                                 imageID,fileCount,
@@ -1110,7 +1111,7 @@ static bool SlotsToCode(
                                 "SLOT_DESC",SlotPrefix(),
                                 *reopenSlotFile,slotCodeFile);
    if (*slotFile == NULL)
-     return(false);
+     return false;
 
    for (i = 0 ; i < theDefclass->slotCount ; i++)
      {
@@ -1162,7 +1163,7 @@ static bool SlotsToCode(
    *slotFile = CloseFileIfNeeded(theEnv,*slotFile,slotArrayCount,
                                  slotArrayVersion,maxIndices,
                                  reopenSlotFile,slotCodeFile);
-   return(true);
+   return true;
   }
 
 /*************************************************************
@@ -1189,7 +1190,7 @@ static bool SlotsToCode(
                  12) A pointer to the file info for
                      this data if the last file needs
                      to be reopened for termination
-  RETURNS      : true if all OK, false
+  RETURNS      : True if all OK, false
                  otherwise
   SIDE EFFECTS : Templates written
   NOTES        : None
@@ -1216,7 +1217,7 @@ static bool TemplateSlotsToCode(
    PACKED_LOCATION_INFO theLocationInfo;
 
    if (theDefclass->instanceSlotCount == 0)
-     return(true);
+     return true;
 
    *templateSlotFile = OpenFileIfNeeded(theEnv,*templateSlotFile,fileName,pathName,fileNameBuffer,fileID,
                                         imageID,fileCount,
@@ -1224,7 +1225,7 @@ static bool TemplateSlotsToCode(
                                         "SLOT_DESC *",TemplateSlotPrefix(),
                                         *reopenTemplateSlotFile,templateSlotCodeFile);
    if (*templateSlotFile == NULL)
-     return(false);
+     return false;
 
    for (i = 0 ; i < theDefclass->instanceSlotCount ; i++)
      {
@@ -1241,7 +1242,7 @@ static bool TemplateSlotsToCode(
    *templateSlotFile = CloseFileIfNeeded(theEnv,*templateSlotFile,templateSlotArrayCount,
                                          templateSlotArrayVersion,maxIndices,
                                          reopenTemplateSlotFile,templateSlotCodeFile);
-   return(true);
+   return true;
   }
 
 /*************************************************************
@@ -1268,7 +1269,7 @@ static bool TemplateSlotsToCode(
                  12) A pointer to the file info for
                      this data if the last file needs
                      to be reopened for termination
-  RETURNS      : true if all OK, false
+  RETURNS      : True if all OK, false
                  otherwise
   SIDE EFFECTS : Slot maps written
   NOTES        : None
@@ -1293,7 +1294,7 @@ static bool OrderedSlotsToCode(
    long i;
 
    if (theDefclass->instanceSlotCount == 0)
-     return(true);
+     return true;
 
    *orderedSlotFile = OpenFileIfNeeded(theEnv,*orderedSlotFile,fileName,pathName,fileNameBuffer,fileID,
                                         imageID,fileCount,
@@ -1301,7 +1302,7 @@ static bool OrderedSlotsToCode(
                                         "unsigned",OrderedSlotPrefix(),
                                         *reopenOrderedSlotFile,orderedSlotCodeFile);
    if (*orderedSlotFile == NULL)
-     return(false);
+     return false;
 
    for (i = 0 ; i <= theDefclass->maxSlotNameID ; i++)
      {
@@ -1313,7 +1314,7 @@ static bool OrderedSlotsToCode(
    *orderedSlotFile = CloseFileIfNeeded(theEnv,*orderedSlotFile,orderedSlotArrayCount,
                                         orderedSlotArrayVersion,maxIndices,
                                         reopenOrderedSlotFile,orderedSlotCodeFile);
-   return(true);
+   return true;
   }
 
 /*************************************************************
@@ -1339,7 +1340,7 @@ static bool OrderedSlotsToCode(
                  12) A pointer to the file info for
                      this data if the last file needs
                      to be reopened for termination
-  RETURNS      : true if all OK, false
+  RETURNS      : True if all OK, false
                  otherwise
   SIDE EFFECTS : Handlers written
   NOTES        : None
@@ -1365,7 +1366,7 @@ static bool HandlersToCode(
    HANDLER *hnd;
 
    if (theDefclass->handlerCount == 0)
-     return(true);
+     return true;
 
    *handlerFile = OpenFileIfNeeded(theEnv,*handlerFile,fileName,pathName,fileNameBuffer,fileID,
                                         imageID,fileCount,
@@ -1373,7 +1374,7 @@ static bool HandlersToCode(
                                         "HANDLER",HandlerPrefix(),*reopenHandlerFile,
                                         handlerCodeFile);
    if (*handlerFile == NULL)
-     return(false);
+     return false;
 
    for (i = 0 ; i < theDefclass->handlerCount ; i++)
      {
@@ -1393,7 +1394,7 @@ static bool HandlersToCode(
    *handlerFile = CloseFileIfNeeded(theEnv,*handlerFile,handlerArrayCount,
                                     handlerArrayVersion,maxIndices,
                                     reopenHandlerFile,handlerCodeFile);
-   return(true);
+   return true;
   }
 
 /****************************************************************
@@ -1420,7 +1421,7 @@ static bool HandlersToCode(
                  12) A pointer to the file info for
                      this data if the last file needs
                      to be reopened for termination
-  RETURNS      : true if all OK, false
+  RETURNS      : True if all OK, false
                  otherwise
   SIDE EFFECTS : Handler maps written
   NOTES        : None
@@ -1445,7 +1446,7 @@ static bool OrderedHandlersToCode(
    long i;
 
    if (theDefclass->handlerCount == 0)
-     return(true);
+     return true;
 
    *orderedHandlerFile = OpenFileIfNeeded(theEnv,*orderedHandlerFile,fileName,pathName,fileNameBuffer,fileID,
                                           imageID,fileCount,
@@ -1454,7 +1455,7 @@ static bool OrderedHandlersToCode(
                                           *reopenOrderedHandlerFile,
                                           orderedHandlerCodeFile);
    if (*orderedHandlerFile == NULL)
-     return(false);
+     return false;
 
    for (i = 0 ; i < theDefclass->handlerCount ; i++)
      {
@@ -1467,7 +1468,7 @@ static bool OrderedHandlersToCode(
                                            orderedHandlerArrayVersion,maxIndices,
                                            reopenOrderedHandlerFile,
                                            orderedHandlerCodeFile);
-   return(true);
+   return true;
   }
 
 #endif

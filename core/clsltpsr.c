@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/23/16             */
+   /*            CLIPS Version 6.50  07/04/16             */
    /*                                                     */
    /*                 CLASS PARSER MODULE                 */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*            deprecation warnings.                           */
 /*                                                            */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Static constraint checking is always enabled.   */
 /*                                                            */
@@ -608,7 +610,7 @@ ParseSimpleFacetError:
                  2) The bitmap indicating which facets have
                     already been parsed
                  3) The slot descriptor to set
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Slot  set and parsed facet bitmap set
   NOTES        : Syntax: (default ?NONE|<expression>*)
                          (default-dynamic <expression>*)
@@ -626,14 +628,14 @@ static bool ParseDefaultFacet(
      {
       PrintErrorID(theEnv,"CLSLTPSR",2,false);
       EnvPrintRouter(theEnv,WERROR,"default facet already specified.\n");
-      return(false);
+      return false;
      }
    SetBitMap(specbits,DEFAULT_BIT);
    error = false;
    tmp = ParseDefault(theEnv,readSource,true,TestBitMap(specbits,DEFAULT_DYNAMIC_BIT),
                       false,&noneSpecified,&deriveSpecified,&error);
    if (error == true)
-     return(false);
+     return false;
    if (noneSpecified || deriveSpecified)
      {
      if (noneSpecified)
@@ -651,7 +653,7 @@ static bool ParseDefaultFacet(
       ExpressionInstall(theEnv,(EXPRESSION *) slot->defaultValue);
       slot->defaultSpecified = 1;
      }
-   return(true);
+   return true;
   }
 
 /**************************************************************************
@@ -758,7 +760,7 @@ static void BuildCompositeFacets(
   INPUTS       : 1) The slot descriptor
                  2) The parse record for the
                     type constraints on the slot
-  RETURNS      : true if all OK,
+  RETURNS      : True if all OK,
                  false otherwise
   SIDE EFFECTS : Min and Max fields replaced in
                  constraint for single-field slot
@@ -775,7 +777,7 @@ static bool CheckForFacetConflicts(
         {
          PrintErrorID(theEnv,"CLSLTPSR",3,true);
          EnvPrintRouter(theEnv,WERROR,"Cardinality facet can only be used with multifield slots\n");
-         return(false);
+         return false;
         }
       else
         {
@@ -789,21 +791,21 @@ static bool CheckForFacetConflicts(
      {
       PrintErrorID(theEnv,"CLSLTPSR",4,true);
       EnvPrintRouter(theEnv,WERROR,"read-only slots must have a default value\n");
-      return(false);
+      return false;
      }
    if (sd->noWrite && (sd->createWriteAccessor || sd->overrideMessageSpecified))
      {
       PrintErrorID(theEnv,"CLSLTPSR",5,true);
       EnvPrintRouter(theEnv,WERROR,"read-only slots cannot have a write accessor\n");
-      return(false);
+      return false;
      }
    if (sd->noInherit && sd->publicVisibility)
      {
       PrintErrorID(theEnv,"CLSLTPSR",6,true);
       EnvPrintRouter(theEnv,WERROR,"no-inherit slots cannot also be public\n");
-      return(false);
+      return false;
      }
-   return(true);
+   return true;
   }
 
 /********************************************************************
@@ -813,7 +815,7 @@ static bool CheckForFacetConflicts(
   INPUTS       : 1) The slot descriptor
                  2) The bitmap marking which facets were specified in
                     the original slot definition
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Static default value expressions deleted and
                  replaced with data object evaluation
   NOTES        : On errors, slot is marked as dynamix so that
@@ -838,7 +840,7 @@ static bool EvaluateSlotDefaultValue(
      sd->dynamicDefault = 0;
 
    if (sd->noDefault)
-     return(true);
+     return true;
 
    if (sd->dynamicDefault == 0)
      {
@@ -864,7 +866,7 @@ static bool EvaluateSlotDefaultValue(
          else
            {
             sd->dynamicDefault = 1;
-            return(false);
+            return false;
            }
         }
       else if (sd->defaultSpecified == 0)
@@ -885,10 +887,10 @@ static bool EvaluateSlotDefaultValue(
          PrintSlot(theEnv,WERROR,sd,NULL,"dynamic default value");
          ConstraintViolationErrorMessage(theEnv,NULL,NULL,0,0,NULL,0,
                                          vCode,sd->constraint,false);
-         return(false);
+         return false;
         }
      }
-   return(true);
+   return true;
   }
 
 #endif

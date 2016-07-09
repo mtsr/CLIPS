@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*            CONSTRAINT OPERATIONS MODULE             */
    /*******************************************************/
@@ -21,6 +21,8 @@
 /*      6.24: Added allowed-classes slot facet.              */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -598,14 +600,14 @@ static bool FindItemInExpression(
      {
       if (theList->type == theType)
         {
-         if (! useValue) return(true);
-         else if (theList->value == theValue) return(true);
+         if (! useValue) return true;
+         else if (theList->value == theValue) return true;
         }
 
       theList = theList->nextArg;
      }
 
-   return(false);
+   return false;
   }
 
 #if (! BLOAD_ONLY)
@@ -619,7 +621,7 @@ static bool RestrictionOnType(
   int theType,
   CONSTRAINT_RECORD *theConstraint)
   {
-   if (theConstraint == NULL) return(false);
+   if (theConstraint == NULL) return false;
 
    if ((theConstraint->anyRestriction) ||
        (theConstraint->symbolRestriction && (theType == SYMBOL)) ||
@@ -629,9 +631,9 @@ static bool RestrictionOnType(
        (theConstraint->classRestriction && ((theType == INSTANCE_ADDRESS) ||
                                             (theType == INSTANCE_NAME))) ||
        (theConstraint->instanceNameRestriction && (theType == INSTANCE_NAME)))
-     { return(true); }
+     { return true; }
 
-   return(false);
+   return false;
   }
 
 /**********************************************************/

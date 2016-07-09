@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/24/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                 FACT HASHING MODULE                 */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*            Converted API macros to function calls.        */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Modify command preserves fact id and address.  */
 /*                                                           */
@@ -176,7 +178,7 @@ bool RemoveHashedFact(
             rtn_struct(theEnv,factHashEntry,hptr);
             if (FactData(theEnv)->NumberOfFacts == 1)
               { ResetFactHashTable(theEnv); }
-            return(1);
+            return true;
            }
          else
            {
@@ -184,13 +186,13 @@ bool RemoveHashedFact(
             rtn_struct(theEnv,factHashEntry,hptr);
             if (FactData(theEnv)->NumberOfFacts == 1)
               { ResetFactHashTable(theEnv); }
-            return(1);
+            return true;
            }
         }
       prev = hptr;
      }
 
-   return(0);
+   return false;
   }
 
 /****************************************************/
@@ -204,14 +206,14 @@ bool FactWillBeAsserted(
    struct fact *tempPtr;
    unsigned long hashValue;
 
-   if (FactData(theEnv)->FactDuplication) return(true);
+   if (FactData(theEnv)->FactDuplication) return true;
 
    hashValue = HashFact((struct fact *) theFact);
 
    tempPtr = FactExists(theEnv,(struct fact *) theFact,hashValue);
-   if (tempPtr == NULL) return(true);
+   if (tempPtr == NULL) return true;
    
-   return(false);
+   return false;
   }
 
 /*****************************************************/
@@ -233,7 +235,8 @@ unsigned long HandleFactDuplication(
    
    hashValue = HashFact((struct fact *) theFact);
 
-   if (FactData(theEnv)->FactDuplication) return(hashValue);
+   if (FactData(theEnv)->FactDuplication)
+     { return hashValue; }
 
    tempPtr = FactExists(theEnv,(struct fact *) theFact,hashValue);
    if (tempPtr == NULL) return(hashValue);
@@ -253,7 +256,7 @@ unsigned long HandleFactDuplication(
 #endif
    *duplicate = true;
 
-   return(0);
+   return 0;
   }
 
 /*******************************************/

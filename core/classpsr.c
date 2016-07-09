@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*                  CLASS PARSER MODULE                */
    /*******************************************************/
@@ -41,6 +41,8 @@
 /*                                                            */
 /*      6.40: Pragma once and other inclusion changes.        */
 /*                                                            */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
 /**************************************************************/
 
 /* =========================================
@@ -120,7 +122,7 @@ static void CreatePublicSlotMessageHandlers(void *,DEFCLASS *);
                  be STATICALLY defined (like rules).
   INPUTS       : The logical name of the router
                     for the parser input
-  RETURNS      : false if successful parse, true otherwise
+  RETURNS      : False if successful parse, true otherwise
   SIDE EFFECTS : Inserts valid class definition into
                  Class Table.
   NOTES        : H/L Syntax :
@@ -182,7 +184,7 @@ bool ParseDefclass(
    if ((Bloaded(theEnv)) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"defclass");
-      return(true);
+      return true;
      }
 #endif
 
@@ -190,19 +192,19 @@ bool ParseDefclass(
                                       EnvFindDefclassInModule,NULL,"#",true,
                                       true,true,false);
    if (cname == NULL)
-     return(true);
+     return true;
 
    if (ValidClassName(theEnv,ValueToString(cname),&cls) == false)
-     return(true);
+     return true;
 
    sclasses = ParseSuperclasses(theEnv,readSource,cname);
    if (sclasses == NULL)
-     return(true);
+     return true;
    preclist = FindPrecedenceList(theEnv,cls,sclasses);
    if (preclist == NULL)
      {
       DeletePackedClassLinks(theEnv,sclasses,true);
-      return(true);
+      return true;
      }
    parseError = false;
    GetToken(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken);
@@ -293,7 +295,7 @@ bool ParseDefclass(
       DeletePackedClassLinks(theEnv,sclasses,true);
       DeletePackedClassLinks(theEnv,preclist,true);
       DeleteSlots(theEnv,slots);
-      return(true);
+      return true;
      }
    SavePPBuffer(theEnv,"\n");
 
@@ -331,7 +333,7 @@ bool ParseDefclass(
       DeletePackedClassLinks(theEnv,sclasses,true);
       DeletePackedClassLinks(theEnv,preclist,true);
       DeleteSlots(theEnv,slots);
-      return(true);
+      return true;
      }
 
 #endif
@@ -346,7 +348,7 @@ bool ParseDefclass(
       DeletePackedClassLinks(theEnv,sclasses,true);
       DeletePackedClassLinks(theEnv,preclist,true);
       DeleteSlots(theEnv,slots);
-      return(false);
+      return false;
      }
 
    cls = NewClass(theEnv,cname);
@@ -376,7 +378,7 @@ bool ParseDefclass(
      PackSlots(theEnv,cls,slots);
    AddClass(theEnv,cls);
 
-   return(false);
+   return false;
   }
 
 /* =========================================
@@ -391,7 +393,7 @@ bool ParseDefclass(
                  name can be defined in the current module
   INPUTS       : 1) The new class name
                  2) Buffer to hold class address
-  RETURNS      : true if OK, false otherwise
+  RETURNS      : True if OK, false otherwise
   SIDE EFFECTS : Error message printed if not OK
   NOTES        : GetConstructNameAndComment() (called before
                  this function) ensures that the defclass
@@ -414,7 +416,7 @@ static bool ValidClassName(
         {
          PrintErrorID(theEnv,"CLASSPSR",2,false);
          EnvPrintRouter(theEnv,WERROR,"Cannot redefine a predefined system class.\n");
-         return(false);
+         return false;
         }
 
       /* ===============================================
@@ -429,10 +431,10 @@ static bool ValidClassName(
          EnvPrintRouter(theEnv,WERROR,EnvGetDefclassName(theEnv,(void *) *theDefclass));
          EnvPrintRouter(theEnv,WERROR," class cannot be redefined while\n");
          EnvPrintRouter(theEnv,WERROR,"    outstanding references to it still exist.\n");
-         return(false);
+         return false;
         }
      }
-   return(true);
+   return true;
   }
 
 /***************************************************************
@@ -448,7 +450,7 @@ static bool ValidClassName(
                  5) A pointer to a bitmap indicating
                     if the qualifier has already been parsed
                  6) A buffer to store the value of the qualifier
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Bitmap and qualifier buffers set
                  Messages printed on errors
   NOTES        : None
@@ -468,7 +470,7 @@ static bool ParseSimpleQualifier(
       EnvPrintRouter(theEnv,WERROR,"Class ");
       EnvPrintRouter(theEnv,WERROR,classQualifier);
       EnvPrintRouter(theEnv,WERROR," already declared.\n");
-      return(false);
+      return false;
      }
    SavePPBuffer(theEnv," ");
    GetToken(theEnv,readSource,&DefclassData(theEnv)->ObjectParseToken);
@@ -484,11 +486,11 @@ static bool ParseSimpleQualifier(
    if (GetType(DefclassData(theEnv)->ObjectParseToken) != RPAREN)
      goto ParseSimpleQualifierError;
    *alreadyTestedFlag = true;
-   return(true);
+   return true;
 
 ParseSimpleQualifierError:
    SyntaxErrorMessage(theEnv,"defclass");
-   return(false);
+   return false;
   }
 
 /***************************************************
@@ -497,7 +499,7 @@ ParseSimpleQualifierError:
                  encountered.
   INPUTS       : 1) The logical input source
                  2) A buffer for scanned tokens
-  RETURNS      : true if ')' read, false
+  RETURNS      : True if ')' read, otherwise false
                  otherwise
   SIDE EFFECTS : Tokens read
   NOTES        : Expects first token after opening
@@ -519,7 +521,7 @@ static bool ReadUntilClosingParen(
       if (inputToken->type == STOP)
         {
          SyntaxErrorMessage(theEnv,"message-handler declaration");
-         return(false);
+         return false;
         }
       else if (inputToken->type == LPAREN)
         {
@@ -542,7 +544,7 @@ static bool ReadUntilClosingParen(
      }
    while (cnt > 0);
 
-   return(true);
+   return true;
   }
 
 /*****************************************************************************

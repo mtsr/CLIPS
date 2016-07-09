@@ -10,9 +10,9 @@
 #import <CLIPS/clips.h>
 
    bool                    QueryInterfaceRouter(void *,const char *);
-   int                     PrintInterfaceRouter(void *,const char *,const char *);
+   void                    PrintInterfaceRouter(void *,const char *,const char *);
    int                     GetcInterfaceRouter(void *,const char *);
-   int                     ExitInterfaceRouter(void *,int);
+   void                    ExitInterfaceRouter(void *,int);
    void                    MacPeriodicFunction(void *);
    void                    ClearEnvironmentWindowCommand(UDFContext *,CLIPSValue *);
    int                     MacBeforeOpenFunction(void *);   

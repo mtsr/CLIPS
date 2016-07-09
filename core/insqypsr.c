@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*         INSTANCE-SET QUERIES PARSER MODULE          */
    /*******************************************************/
@@ -37,6 +37,8 @@
 /*            to constructs, DanglingConstructs.             */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -344,7 +346,7 @@ ParseQueryRestrictionsError2:
                  class name with an actual pointer
                  to the class
   INPUTS       : The expression
-  RETURNS      : true if all OK, false
+  RETURNS      : True if all OK, false
                  if class cannot be found
   SIDE EFFECTS : The expression type and value are
                  modified if class is found
@@ -365,7 +367,7 @@ static bool ReplaceClassNameWithReference(
       if (theDefclass == NULL)
         {
          CantFindItemErrorMessage(theEnv,"class",theClassName);
-         return(false);
+         return false;
         }
       theExp->type = DEFCLASS_PTR;
       theExp->value = theDefclass;
@@ -375,7 +377,7 @@ static bool ReplaceClassNameWithReference(
         { ConstructData(theEnv)->DanglingConstructs++; }
 #endif
      }
-   return(true);
+   return true;
   }
 
 /*************************************************************
@@ -383,7 +385,7 @@ static bool ReplaceClassNameWithReference(
   DESCRIPTION  : Parses the test-expression for a query
   INPUTS       : 1) The top node of the query expression
                  2) The logical name of the input
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Entire query-expression deleted on errors
                  Nodes allocated for new expression
                  Test shoved in front of class-restrictions on
@@ -408,7 +410,7 @@ static bool ParseQueryTestExpression(
       ClearParsedBindNames(theEnv);
       SetParsedBindNames(theEnv,oldBindList);
       ReturnExpression(theEnv,top);
-      return(false);
+      return false;
      }
    if (qtest == NULL)
      {
@@ -416,7 +418,7 @@ static bool ParseQueryTestExpression(
       SetParsedBindNames(theEnv,oldBindList);
       SyntaxErrorMessage(theEnv,"instance-set query function");
       ReturnExpression(theEnv,top);
-      return(false);
+      return false;
      }
    qtest->nextArg = top->argList;
    top->argList = qtest;
@@ -429,10 +431,10 @@ static bool ParseQueryTestExpression(
       EnvPrintRouter(theEnv,WERROR,ValueToString(ExpressionFunctionCallName(top)));
       EnvPrintRouter(theEnv,WERROR,".\n");
       ReturnExpression(theEnv,top);
-      return(false);
+      return false;
      }
    SetParsedBindNames(theEnv,oldBindList);
-   return(true);
+   return true;
   }
 
 /*************************************************************
@@ -441,7 +443,7 @@ static bool ParseQueryTestExpression(
   INPUTS       : 1) The top node of the query expression
                  2) The logical name of the input
                  3) List of query parameters
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Entire query-expression deleted on errors
                  Nodes allocated for new expression
                  Action shoved in front of class-restrictions
@@ -476,7 +478,7 @@ static bool ParseQueryActionExpression(
       SetParsedBindNames(theEnv,oldBindList);
       SyntaxErrorMessage(theEnv,"instance-set query function");
       ReturnExpression(theEnv,top);
-      return(false);
+      return false;
      }
    qaction->nextArg = top->argList->nextArg;
    top->argList->nextArg = qaction;
@@ -498,7 +500,7 @@ static bool ParseQueryActionExpression(
             EnvPrintRouter(theEnv,WERROR,ValueToString(ExpressionFunctionCallName(top)));
             EnvPrintRouter(theEnv,WERROR,".\n");
             ReturnExpression(theEnv,top);
-            return(false);
+            return false;
            }
          tmpInsSetVars = tmpInsSetVars->nextArg;
         }
@@ -509,7 +511,7 @@ static bool ParseQueryActionExpression(
      SetParsedBindNames(theEnv,oldBindList);
    else
      prev->next = oldBindList;
-   return(true);
+   return true;
   }
 
 /***********************************************************************************
@@ -648,7 +650,7 @@ static void ReplaceSlotReference(
   NAME         : IsQueryFunction
   DESCRIPTION  : Determines if an expression is a query function call
   INPUTS       : The expression
-  RETURNS      : true if query function call, false otherwise
+  RETURNS      : True if query function call, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************************/
@@ -658,21 +660,21 @@ static bool IsQueryFunction(
    int (*fptr)(void);
 
    if (theExp->type != FCALL)
-     return(false);
+     return false;
    fptr = (int (*)(void)) ExpressionFunctionPointer(theExp);
    if (fptr == (int (*)(void)) AnyInstances)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) QueryFindInstance)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) QueryFindAllInstances)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) QueryDoForInstance)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) QueryDoForAllInstances)
-     return(true);
+     return true;
    if (fptr == (int (*)(void)) DelayedQueryDoForAllInstances)
-     return(true);
-   return(false);
+     return true;
+   return false;
   }
 
 #endif

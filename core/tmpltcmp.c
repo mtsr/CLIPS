@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/28/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*          DEFTEMPLATE CONSTRUCTS-TO-C MODULE         */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -128,7 +130,7 @@ static bool ConstructToCode(
       if (moduleFile == NULL)
         {
          CloseDeftemplateFiles(theEnv,moduleFile,templateFile,slotFile,maxIndices);
-         return(false);
+         return false;
         }
 
       DeftemplateModuleToCode(theEnv,moduleFile,theModule,imageID,maxIndices,moduleCount);
@@ -150,7 +152,7 @@ static bool ConstructToCode(
          if (templateFile == NULL)
            {
             CloseDeftemplateFiles(theEnv,moduleFile,templateFile,slotFile,maxIndices);
-            return(false);
+            return false;
            }
 
          DeftemplateToCode(theEnv,templateFile,theTemplate,imageID,maxIndices,
@@ -172,7 +174,7 @@ static bool ConstructToCode(
             if (slotFile == NULL)
               {
                CloseDeftemplateFiles(theEnv,moduleFile,templateFile,slotFile,maxIndices);
-               return(false);
+               return false;
               }
 
             SlotToCode(theEnv,slotFile,slotPtr,imageID,maxIndices,slotCount);
@@ -194,7 +196,7 @@ static bool ConstructToCode(
 
    CloseDeftemplateFiles(theEnv,moduleFile,templateFile,slotFile,maxIndices);
 
-   return(true);
+   return true;
   }
 
 /************************************************************/

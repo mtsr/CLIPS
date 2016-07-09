@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*         INSTANCE LOAD/SAVE (ASCII/BINARY) MODULE    */
    /*******************************************************/
@@ -46,6 +46,8 @@
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -1360,7 +1362,7 @@ static void ProcessFileErrorMessage(
                  from a file to verify that the
                  input is a valid binary instances file
   INPUTS       : The name of the file
-  RETURNS      : true if OK, false otherwise
+  RETURNS      : True if OK, false otherwise
   SIDE EFFECTS : Input prefix and version read
   NOTES        : Assumes file already open with 
                  GenOpenReadBinary
@@ -1377,7 +1379,7 @@ static bool VerifyBinaryHeader(
       PrintErrorID(theEnv,"INSFILE",2,false);
       EnvPrintRouter(theEnv,WERROR,theFile);
       EnvPrintRouter(theEnv,WERROR," file is not a binary instances file.\n");
-      return(false);
+      return false;
      }
    GenReadBinary(theEnv,(void *) buf,(unsigned long) (strlen(InstanceFileData(theEnv)->InstanceBinaryVersionID) + 1));
    if (strcmp(buf,InstanceFileData(theEnv)->InstanceBinaryVersionID) != 0)
@@ -1385,9 +1387,9 @@ static bool VerifyBinaryHeader(
       PrintErrorID(theEnv,"INSFILE",3,false);
       EnvPrintRouter(theEnv,WERROR,theFile);
       EnvPrintRouter(theEnv,WERROR," file is not a compatible binary instances file.\n");
-      return(false);
+      return false;
      }
-   return(true);
+   return true;
   }
 
 /***************************************************
@@ -1396,7 +1398,7 @@ static bool VerifyBinaryHeader(
                  instance and its slot values and
                  creates/initializes the instance
   INPUTS       : None
-  RETURNS      : true if all OK,
+  RETURNS      : True if all OK,
                  false otherwise
   SIDE EFFECTS : Binary data read and instance
                  created
@@ -1444,12 +1446,12 @@ static bool LoadSingleBinaryInstance(
    if (theDefclass == NULL)
      {
       ClassExistError(theEnv,"bload-instances",ValueToString(className));
-      return(false);
+      return false;
      }
    if (theDefclass->instanceSlotCount != slotCount)
      {
       BinaryLoadInstanceError(theEnv,instanceName,theDefclass);
-      return(false);
+      return false;
      }
 
    /* ===================================
@@ -1459,10 +1461,10 @@ static bool LoadSingleBinaryInstance(
    if (newInstance == NULL)
      {
       BinaryLoadInstanceError(theEnv,instanceName,theDefclass);
-      return(false);
+      return false;
      }
    if (slotCount == 0)
-     return(true);
+     return true;
 
    /* ====================================
       Read all slot override info and slot
@@ -1510,7 +1512,7 @@ static bool LoadSingleBinaryInstance(
      rm3(theEnv,(void *) bsaArray,
          (long) (totalValueCount * sizeof(struct bsaveSlotValueAtom)));
 
-   return(true);
+   return true;
 
 LoadError:
    BinaryLoadInstanceError(theEnv,instanceName,theDefclass);
@@ -1518,7 +1520,7 @@ LoadError:
    rm(theEnv,(void *) bsArray,(sizeof(struct bsaveSlotValue) * slotCount));
    rm3(theEnv,(void *) bsaArray,
        (long) (totalValueCount * sizeof(struct bsaveSlotValueAtom)));
-   return(false);
+   return false;
   }
 
 /***************************************************

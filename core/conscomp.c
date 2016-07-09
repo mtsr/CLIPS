@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  06/23/16            */
+   /*             CLIPS Version 6.50  07/04/16            */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -60,6 +60,8 @@
 /*            statically allocated.                          */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
@@ -144,7 +146,7 @@
 /***************************************/
 
    void                               ConstructsToCCommand(UDFContext *,CLIPSValue *);
-   static int                         ConstructsToC(void *,const char *,const char *,char *,long long,long long);
+   static bool                        ConstructsToC(void *,const char *,const char *,char *,long long,long long);
    static void                        WriteFunctionExternDeclarations(void *,FILE *);
    static bool                        FunctionsToCode(void *theEnv,const char *,const char *,char *);
    static bool                        WriteInitializationFunction(void *,const char *,const char *,char *);
@@ -348,7 +350,7 @@ void ConstructsToCCommand(
 /* ConstructsToC: C access routine for */
 /*   the constructs-to-c command.      */
 /***************************************/
-static int ConstructsToC(
+static bool ConstructsToC(
   void *theEnv,
   const char *fileName,
   const char *pathName,
@@ -375,7 +377,7 @@ static int ConstructsToC(
    if ((ConstructCompilerData(theEnv)->HeaderFP = GenOpen(theEnv,fileNameBuffer,"w")) == NULL)
      {
       OpenErrorMessage(theEnv,"constructs-to-c",fileNameBuffer);
-      return(0);
+      return false;
      }
 
    /*============================================*/
@@ -386,7 +388,7 @@ static int ConstructsToC(
    if ((ConstructCompilerData(theEnv)->FixupFP = GenOpen(theEnv,fileNameBuffer,"w")) == NULL)
      {
       OpenErrorMessage(theEnv,"constructs-to-c",fileNameBuffer);
-      return(0);
+      return false;
      }
 
    /*==================================*/
@@ -528,7 +530,7 @@ static int ConstructsToC(
    /* command was successfully executed.               */
    /*==================================================*/
 
-   return(true);
+   return true;
   }
 
 /*******************************************************/
@@ -677,7 +679,7 @@ static bool FunctionsToCode(
    /*=======================================*/
 
    if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,2,version,false)) == NULL)
-     { return(false); }
+     { return false; }
 
    /*===============================================*/
    /* Construct the definition of the function list */
@@ -724,7 +726,7 @@ static bool FunctionsToCode(
          version++;
          if (fctnPtr != NULL)
            {
-            if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,2,version,false)) == NULL) return(false);
+            if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,2,version,false)) == NULL) return false;
             newHeader = true;
            }
         }
@@ -732,7 +734,7 @@ static bool FunctionsToCode(
         { fprintf(fp,"},\n"); }
      }
 
-   return(true);
+   return true;
   }
 
 /************************************************************/
@@ -773,7 +775,7 @@ static bool WriteInitializationFunction(
    if ((fp = GenOpen(theEnv,fileNameBuffer,"w")) == NULL)
      {
       OpenErrorMessage(theEnv,"constructs-to-c",fileNameBuffer);
-      return(false);
+      return false;
      }
 
    /*=====================================*/
@@ -846,7 +848,7 @@ static bool WriteInitializationFunction(
    /* file was successfully written.         */
    /*========================================*/
 
-   return(true);
+   return true;
   }
 
 
@@ -954,7 +956,7 @@ int ExpressionToCode(
    if (exprPtr == NULL)
      {
       if (fp != NULL) fprintf(fp,"NULL");
-      return(0);
+      return 0;
      }
    else if (fp != NULL)
      { fprintf(fp,"&E%d_%d[%ld]",ConstructCompilerData(theEnv)->ImageID,ConstructCompilerData(theEnv)->ExpressionVersion,ConstructCompilerData(theEnv)->ExpressionCount); }
@@ -1004,7 +1006,7 @@ int ExpressionToCode(
    /* were succcessfully written to the file.  */
    /*==========================================*/
 
-   return(1);
+   return 1;
   }
 
 /**********************************************************/

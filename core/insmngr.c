@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*          INSTANCE PRIMITIVE SUPPORT MODULE          */
    /*******************************************************/
@@ -43,6 +43,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -525,11 +527,11 @@ bool QuashInstance(
       EnvPrintRouter(theEnv,WERROR,"Cannot delete instances of reactive classes while\n");
       EnvPrintRouter(theEnv,WERROR,"  pattern-matching is in process.\n");
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 #endif
    if (ins->garbage == 1)
-     return(false);
+     return false;
    if (ins->installed == 0)
      {
       PrintErrorID(theEnv,"INSMNGR",6,false);
@@ -537,7 +539,7 @@ bool QuashInstance(
       EnvPrintRouter(theEnv,WERROR,ValueToString(ins->name));
       EnvPrintRouter(theEnv,WERROR," during initialization.\n");
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 #if DEBUGGING_FUNCTIONS
    if (ins->cls->traceInstances)
@@ -612,7 +614,7 @@ bool QuashInstance(
       UtilityData(theEnv)->CurrentGarbageFrame->dirty = true;
      }
    InstanceData(theEnv)->ChangesToInstances = true;
-   return(true);
+   return true;
   }
 
 
@@ -915,7 +917,7 @@ static void BuildDefaultSlots(
   DESCRIPTION  : Performs the core work for initializing an instance
   INPUTS       : 1) The instance address
                  2) Slot override expressions
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : EvaluationError set on errors - slots evaluated
   NOTES        : None
  *******************************************************************/
@@ -933,7 +935,7 @@ static bool CoreInitializeInstance(
       EnvPrintRouter(theEnv,WERROR,ValueToString(ins->name));
       EnvPrintRouter(theEnv,WERROR," is already being initialized.\n");
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 
    /* =======================================================
@@ -953,7 +955,7 @@ static bool CoreInitializeInstance(
       {
        ins->installed = 1;
        ins->busy--;
-       return(false);
+       return false;
       }
 
    /* =================================================================
@@ -974,7 +976,7 @@ static bool CoreInitializeInstance(
       EnvPrintRouter(theEnv,WERROR,"An error occurred during the initialization of instance ");
       EnvPrintRouter(theEnv,WERROR,ValueToString(ins->name));
       EnvPrintRouter(theEnv,WERROR,".\n");
-      return(false);
+      return false;
      }
      
    ins->initializeInProgress = 0;
@@ -987,7 +989,7 @@ static bool CoreInitializeInstance(
   INPUTS       : 1) The instance address
                  2) The address of the beginning of the
                     list of slot-expressions
-  RETURNS      : true if all okay, false otherwise
+  RETURNS      : True if all okay, false otherwise
   SIDE EFFECTS : Old slot expression deallocated
   NOTES        : Assumes symbols not yet installed
                  EVALUATES the slot-name expression but
@@ -1010,7 +1012,7 @@ static bool InsertSlotOverrides(
          PrintErrorID(theEnv,"INSMNGR",9,false);
          EnvPrintRouter(theEnv,WERROR,"Expected a valid slot name for slot-override.\n");
          EnvSetEvaluationError(theEnv,true);
-         return(false);
+         return false;
         }
       slot = FindInstanceSlot(theEnv,ins,(SYMBOL_HN *) GetValue(temp));
       if (slot == NULL)
@@ -1022,7 +1024,7 @@ static bool InsertSlotOverrides(
          EnvPrintRouter(theEnv,WERROR,ValueToString(ins->name));
          EnvPrintRouter(theEnv,WERROR,".\n");
          EnvSetEvaluationError(theEnv,true);
-         return(false);
+         return false;
         }
 
       if (InstanceData(theEnv)->MkInsMsgPass)
@@ -1044,11 +1046,11 @@ static bool InsertSlotOverrides(
         }
 
       if (EvaluationData(theEnv)->EvaluationError)
-        return(false);
+        return false;
       slot->override = true;
       slot_exp = slot_exp->nextArg->nextArg;
      }
-   return(true);
+   return true;
   }
 
 /*****************************************************************************

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*           DEFMODULE CONSTRUCTS-TO-C MODULE          */
    /*******************************************************/
@@ -30,6 +30,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -167,7 +169,7 @@ static bool ConstructToCode(
    /*============================================*/
 
    if ((itemsFile = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,1,false)) == NULL)
-     { return(false); }
+     { return false; }
    fprintf(itemsFile,"struct defmoduleItemHeader *%s%d_%d[] = {\n",ItemPrefix(),imageID,1);
    fprintf(headerFP,"extern struct defmoduleItemHeader *%s%d_%d[];\n",ItemPrefix(),imageID,1);
 
@@ -195,7 +197,7 @@ static bool ConstructToCode(
          CloseFileIfNeeded(theEnv,moduleFile,&moduleCount,
                            &moduleArrayVersion,maxIndices,NULL,NULL);
          GenClose(theEnv,itemsFile);
-         return(false);
+         return false;
         }
 
       /*======================================*/
@@ -310,7 +312,7 @@ static bool ConstructToCode(
    /* Write out the portItem data structures. */
    /*=========================================*/
 
-   if (portItemCount == 0) return(true);
+   if (portItemCount == 0) return true;
    return(PortItemsToCode(theEnv,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,maxIndices,&fileCount));
   }
 
@@ -360,7 +362,7 @@ static bool PortItemsToCode(
          portItemCount = maxIndices;
          CloseFileIfNeeded(theEnv,portItemsFile,&portItemCount,
                            &portItemArrayVersion,maxIndices,NULL,NULL);
-         return(false);
+         return false;
         }
 
       /*================================================*/
@@ -403,7 +405,7 @@ static bool PortItemsToCode(
    CloseFileIfNeeded(theEnv,portItemsFile,&portItemCount,
                      &portItemArrayVersion,maxIndices,NULL,NULL);
 
-   return(true);
+   return true;
   }
 
 /*********************************************************************/

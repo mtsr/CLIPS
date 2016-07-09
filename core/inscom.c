@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*               INSTANCE COMMAND MODULE               */
    /*******************************************************/
@@ -51,6 +51,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -747,7 +749,7 @@ void EnvDirectGetSlot(
   INPUTS       : 1) Instance address
                  2) Slot name
                  3) Caller's new value buffer
-  RETURNS      : true if put successful, false otherwise
+  RETURNS      : True if put successful, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
  *********************************************************/
@@ -763,13 +765,13 @@ bool EnvDirectPutSlot(
    if ((((INSTANCE_TYPE *) ins)->garbage == 1) || (val == NULL))
      {
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
    sp = FindISlotByName(theEnv,(INSTANCE_TYPE *) ins,sname);
    if (sp == NULL)
      {
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
 
    if (PutSlotValue(theEnv,(INSTANCE_TYPE *) ins,sp,val,&junk,"external put"))
@@ -780,9 +782,9 @@ bool EnvDirectPutSlot(
          CleanCurrentGarbageFrame(theEnv,NULL);
          CallPeriodicTasks(theEnv);
         }
-      return(true);
+      return true;
      }
-   return(false);
+   return false;
   }
 
 /***************************************************
@@ -1073,7 +1075,7 @@ void ClassCommand(
   NAME         : CreateInstanceHandler
   DESCRIPTION  : Message handler called after instance creation
   INPUTS       : None
-  RETURNS      : true if successful,
+  RETURNS      : True if successful,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : Does nothing. Provided so it can be overridden.
@@ -1095,7 +1097,7 @@ void CreateInstanceHandler(
                    hash table and its class's
                    instance list
   INPUTS       : None
-  RETURNS      : true if successful,
+  RETURNS      : True if successful,
                  false otherwise
   SIDE EFFECTS : Instance is deallocated
   NOTES        : This is an internal function that
@@ -1118,7 +1120,7 @@ void DeleteInstanceCommand(
   DESCRIPTION  : Uses message-passing to delete the
                    specified instance
   INPUTS       : None
-  RETURNS      : true if successful, false otherwise
+  RETURNS      : True if successful, false otherwise
   SIDE EFFECTS : Instance is deallocated
   NOTES        : Syntax: (unmake-instance <instance-expression>+ | *)
  ********************************************************************/
@@ -1336,7 +1338,7 @@ void InstanceNameCommand(
   NAME         : InstanceAddressPCommand
   DESCRIPTION  : Determines if a value is of type INSTANCE
   INPUTS       : None
-  RETURNS      : true if type INSTANCE_ADDRESS, false otherwise
+  RETURNS      : True if type INSTANCE_ADDRESS, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (instance-addressp <arg>)
  **************************************************************/
@@ -1356,7 +1358,7 @@ void InstanceAddressPCommand(
   NAME         : InstanceNamePCommand
   DESCRIPTION  : Determines if a value is of type INSTANCE_NAME
   INPUTS       : None
-  RETURNS      : true if type INSTANCE_NAME, false otherwise
+  RETURNS      : True if type INSTANCE_NAME, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (instance-namep <arg>)
  **************************************************************/
@@ -1377,7 +1379,7 @@ void InstanceNamePCommand(
   DESCRIPTION  : Determines if a value is of type INSTANCE_ADDRESS
                    or INSTANCE_NAME
   INPUTS       : None
-  RETURNS      : true if type INSTANCE_NAME or INSTANCE_ADDRESS,
+  RETURNS      : True if type INSTANCE_NAME or INSTANCE_ADDRESS,
                      false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (instancep <arg>)
@@ -1398,7 +1400,7 @@ void InstancePCommand(
   NAME         : InstanceExistPCommand
   DESCRIPTION  : Determines if an instance exists
   INPUTS       : None
-  RETURNS      : true if instance exists, false otherwise
+  RETURNS      : True if instance exists, false otherwise
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (instance-existp <arg>)
  ********************************************************/

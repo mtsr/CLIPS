@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -32,6 +32,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -203,8 +205,8 @@ static void ReadyDefgenericsForCode(
                  4) The base id for the construct set
                  5) The max number of indices allowed
                     in an array
-  RETURNS      : 0 on errors,
-                  1 if generic functions written
+  RETURNS      : False on errors,
+                 true if generic functions written
   SIDE EFFECTS : Code written to files
   NOTES        : None
  *******************************************************/
@@ -384,11 +386,11 @@ static bool DefgenericsToCode(
       itemArrayCounts[MODULEI]++;
      }
    CloseDefgenericFiles(theEnv,itemFiles,itemReopenFlags,itemCodeFiles,maxIndices);
-   return(true);
+   return true;
 
 GenericCodeError:
    CloseDefgenericFiles(theEnv,itemFiles,itemReopenFlags,itemCodeFiles,maxIndices);
-   return(false);
+   return false;
   }
 
 /******************************************************

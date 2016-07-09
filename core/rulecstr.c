@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/27/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*              RULE CONSTRAINTS MODULE                */
    /*******************************************************/
@@ -22,6 +22,8 @@
 /*      6.30: Support for long long integers.                */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
@@ -76,10 +78,10 @@ static bool CheckForUnmatchableConstraints(
      {
       ConstraintConflictMessage(theEnv,(SYMBOL_HN *) theNode->value,whichCE,
                                 theNode->index,theNode->slot);
-      return(true);
+      return true;
      }
 
-   return(false);
+   return false;
   }
 
 /******************************************************/
@@ -161,7 +163,7 @@ static bool MultifieldCardinalityViolation(
    /* a cardinality violation.       */
    /*================================*/
 
-   if (theNode->multifieldSlot == false) return(false);
+   if (theNode->multifieldSlot == false) return false;
 
    /*=============================================*/
    /* Determine the minimum and maximum number of */
@@ -254,9 +256,9 @@ static bool MultifieldCardinalityViolation(
    /* Determine if the final cardinality for the slot can be satisfied. */
    /*===================================================================*/
 
-   if (UnmatchableConstraint(newConstraint)) return(true);
+   if (UnmatchableConstraint(newConstraint)) return true;
 
-   return(false);
+   return false;
   }
 
 /***************************************************/
@@ -367,7 +369,7 @@ bool ProcessConnectedConstraints(
    /*==================================*/
 
    if (CheckForUnmatchableConstraints(theEnv,theNode,(int) patternHead->whichCE))
-     { return(true); }
+     { return true; }
 
    /*=========================================*/
    /* If the constraints are for a multifield */
@@ -385,7 +387,7 @@ bool ProcessConnectedConstraints(
                                                   multifieldHeader->index,
                                                   CARDINALITY_VIOLATION,
                                                   multifieldHeader->constraints,true);
-          return(true);
+          return true;
          }
       }
 
@@ -394,7 +396,7 @@ bool ProcessConnectedConstraints(
    /* violations were detected.             */
    /*=======================================*/
 
-   return(false);
+   return false;
   }
 
 /**************************************************/
@@ -708,7 +710,7 @@ bool CheckRHSForConstraintErrors(
    int i;
    struct expr *lastOne = NULL, *checkList, *tmpPtr;
 
-   if (expressionList == NULL) return(false);
+   if (expressionList == NULL) return false;
 
    for (checkList = expressionList;
         checkList != NULL;
@@ -728,7 +730,7 @@ bool CheckRHSForConstraintErrors(
          {
           if (CheckArgumentForConstraintError(theEnv,expressionList,lastOne,i,
                                               theFunction,theLHS))
-            { return(true); }
+            { return true; }
 
           i++;
           tmpPtr = expressionList->nextArg;
@@ -736,14 +738,14 @@ bool CheckRHSForConstraintErrors(
           if (CheckRHSForConstraintErrors(theEnv,expressionList,theLHS))
             {
              expressionList->nextArg = tmpPtr;
-             return(true);
+             return true;
             }
           expressionList->nextArg = tmpPtr;
           expressionList = expressionList->nextArg;
          }
       }
 
-   return(false);
+   return false;
   }
 
 /*************************************************************/

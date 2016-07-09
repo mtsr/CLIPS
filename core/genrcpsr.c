@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -47,6 +47,8 @@
 /*            named construct.                               */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -134,7 +136,7 @@ static DEFGENERIC *NewGeneric(void *,SYMBOL_HN *);
   NAME         : ParseDefgeneric
   DESCRIPTION  : Parses the defgeneric construct
   INPUTS       : The input logical name
-  RETURNS      : false if successful parse, true otherwise
+  RETURNS      : False if successful parse, true otherwise
   SIDE EFFECTS : Inserts valid generic function defn into generic entry
   NOTES        : H/L Syntax :
                  (defgeneric <name> [<comment>])
@@ -156,7 +158,7 @@ bool ParseDefgeneric(
    if ((Bloaded(theEnv) == true) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"defgeneric");
-      return(true);
+      return true;
      }
 #endif
 
@@ -164,16 +166,16 @@ bool ParseDefgeneric(
                                       EnvFindDefgenericInModule,NULL,"^",true,
                                       true,true,false);
    if (gname == NULL)
-     return(true);
+     return true;
 
    if (ValidGenericName(theEnv,ValueToString(gname)) == false)
-     return(true);
+     return true;
 
    if (DefgenericData(theEnv)->GenericInputToken.type != RPAREN)
      {
       PrintErrorID(theEnv,"GENRCPSR",1,false);
       EnvPrintRouter(theEnv,WERROR,"Expected ')' to complete defgeneric.\n");
-      return(true);
+      return true;
      }
    SavePPBuffer(theEnv,"\n");
 
@@ -183,21 +185,21 @@ bool ParseDefgeneric(
       ======================================================== */
 
    if (ConstructData(theEnv)->CheckSyntaxMode)
-     { return(false); }
+     { return false; }
 
    gfunc = AddGeneric(theEnv,gname,&newGeneric);
 
 #if DEBUGGING_FUNCTIONS
    EnvSetDefgenericPPForm(theEnv,(void *) gfunc,EnvGetConserveMemory(theEnv) ? NULL : CopyPPBuffer(theEnv));
 #endif
-   return(false);
+   return false;
   }
 
 /***************************************************************************
   NAME         : ParseDefmethod
   DESCRIPTION  : Parses the defmethod construct
   INPUTS       : The input logical name
-  RETURNS      : false if successful parse, true otherwise
+  RETURNS      : False if successful parse, true otherwise
   SIDE EFFECTS : Inserts valid method definition into generic entry
   NOTES        : H/L Syntax :
                  (defmethod <name> [<index>] [<comment>]
@@ -232,16 +234,16 @@ bool ParseDefmethod(
    if ((Bloaded(theEnv) == true) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
       CannotLoadWithBloadMessage(theEnv,"defmethod");
-      return(true);
+      return true;
      }
 #endif
 
    gname = ParseMethodNameAndIndex(theEnv,readSource,&theIndex);
    if (gname == NULL)
-     return(true);
+     return true;
 
    if (ValidGenericName(theEnv,ValueToString(gname)) == false)
-     return(true);
+     return true;
 
    /* ========================================================
       Go ahead and add the header so that the generic function
@@ -352,7 +354,7 @@ bool ParseDefmethod(
          RemoveConstructFromModule(theEnv,(struct constructHeader *) gfunc);
          RemoveDefgeneric(theEnv,(struct constructHeader *) gfunc);
         }
-      return(false);
+      return false;
      }
 
    PPBackup(theEnv);
@@ -387,7 +389,7 @@ bool ParseDefmethod(
          EnvPrintRouter(theEnv,outRouter," redefined.\n");
         }
      }
-   return(false);
+   return false;
 
 DefmethodParseError:
    if (newMethod)
@@ -395,7 +397,7 @@ DefmethodParseError:
       RemoveConstructFromModule(theEnv,(struct constructHeader *) gfunc);
       RemoveDefgeneric(theEnv,(void *) gfunc);
      }
-   return(true);
+   return true;
   }
 
 /************************************************************************
@@ -667,7 +669,7 @@ DEFMETHOD *FindMethodByRestrictions(
   DESCRIPTION  : Determines if a particular function name
                     can be overloaded
   INPUTS       : The name
-  RETURNS      : true if OK, false otherwise
+  RETURNS      : True if OK, false otherwise
   SIDE EFFECTS : Error message printed
   NOTES        : GetConstructNameAndComment() (called before
                  this function) ensures that the defgeneric
@@ -693,7 +695,7 @@ static bool ValidGenericName(
      {
       PrintErrorID(theEnv,"GENRCPSR",3,false);
       EnvPrintRouter(theEnv,WERROR,"Defgenerics are not allowed to replace constructs.\n");
-      return(false);
+      return false;
      }
 
 #if DEFFUNCTION_CONSTRUCT
@@ -715,14 +717,14 @@ static bool ValidGenericName(
          EnvPrintRouter(theEnv,WERROR," imported from module ");
          EnvPrintRouter(theEnv,WERROR,EnvGetDefmoduleName(theEnv,(void *) theModule));
          EnvPrintRouter(theEnv,WERROR," conflicts with this defgeneric.\n");
-         return(false);
+         return false;
         }
       else
         {
          PrintErrorID(theEnv,"GENRCPSR",5,false);
          EnvPrintRouter(theEnv,WERROR,"Defgenerics are not allowed to replace deffunctions.\n");
         }
-      return(false);
+      return false;
      }
 #endif
 
@@ -741,7 +743,7 @@ static bool ValidGenericName(
       if (MethodsExecuting((DEFGENERIC *) theDefgeneric))
         {
          MethodAlterError(theEnv,(DEFGENERIC *) theDefgeneric);
-         return(false);
+         return false;
         }
      }
 
@@ -757,9 +759,9 @@ static bool ValidGenericName(
       EnvPrintRouter(theEnv,WERROR,"The system function ");
       EnvPrintRouter(theEnv,WERROR,theDefgenericName);
       EnvPrintRouter(theEnv,WERROR," cannot be overloaded.\n");
-      return(false);
+      return false;
      }
-   return(true);
+   return true;
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -1130,7 +1132,7 @@ static void ReplaceCurrentArgRefs(
                     last node searched (can be used to
                     later attach new parameter)
                  3) The name of the parameter being checked
-  RETURNS      : true if duplicates found, false otherwise
+  RETURNS      : True if duplicates found, false otherwise
   SIDE EFFECTS : Caller's prv address set
   NOTES        : Assumes all parameter list nodes are WORDS
  **********************************************************/
@@ -1147,12 +1149,12 @@ static bool DuplicateParameters(
         {
          PrintErrorID(theEnv,"PRCCODE",7,false);
          EnvPrintRouter(theEnv,WERROR,"Duplicate parameter names not allowed.\n");
-         return(true);
+         return true;
         }
       *prv = head;
       head = head->nextArg;
      }
-   return(false);
+   return false;
   }
 
 /*****************************************************************
@@ -1267,7 +1269,7 @@ static EXPRESSION *ValidType(
   INPUTS       : Two void pointers which are class pointers
                  if COOL is installed or integer hash nodes
                  for type codes otherwise.
-  RETURNS      : true if there is subsumption, false otherwise
+  RETURNS      : True if there is subsumption, false otherwise
   SIDE EFFECTS : An error message is printed, if appropriate.
   NOTES        : None
  *************************************************************/
@@ -1290,11 +1292,11 @@ static bool RedundantClasses(
      tname = TypeName(theEnv,ValueToInteger(c2));
 #endif
    else
-     return(false);
+     return false;
    PrintErrorID(theEnv,"GENRCPSR",15,false);
    EnvPrintRouter(theEnv,WERROR,tname);
    EnvPrintRouter(theEnv,WERROR," class is redundant.\n");
-   return(true);
+   return true;
   }
 
 /*********************************************************

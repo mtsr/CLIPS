@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/27/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                  I/O ROUTER MODULE                  */
    /*******************************************************/
@@ -43,6 +43,10 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Changed return values for router functions.    */
 /*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
@@ -129,7 +133,7 @@ int EnvPrintRouter(
    if (((char *) RouterData(theEnv)->FastSaveFilePtr) == logicalName)
      {
       fprintf(RouterData(theEnv)->FastSaveFilePtr,"%s",str);
-      return(2);
+      return 2;
      }
 
    /*==============================================*/
@@ -144,7 +148,7 @@ int EnvPrintRouter(
         {
          SetEnvironmentRouterContext(theEnv,currentPtr->context);
          (*currentPtr->printer)(theEnv,logicalName,str);
-         return(1);
+         return 1;
         }
       currentPtr = currentPtr->next;
      }
@@ -154,7 +158,7 @@ int EnvPrintRouter(
    /*=====================================================*/
 
    if (strcmp(WERROR,logicalName) != 0) UnrecognizedRouterMessage(theEnv,logicalName);
-   return(0);
+   return 0;
   }
 
 /**************************************************/
@@ -400,10 +404,10 @@ bool EnvAddRouter(
   const char *routerName,
   int priority,
   bool (*queryFunction)(void *,const char *),
-  int (*printFunction)(void *,const char *,const char *),
+  void (*printFunction)(void *,const char *,const char *),
   int (*getcFunction)(void *,const char *),
   int (*ungetcFunction)(void *,int,const char *),
-  int (*exitFunction)(void *,int))
+  void (*exitFunction)(void *,int))
   {
    return EnvAddRouterWithContext(theEnv,routerName,priority,
                                   queryFunction,printFunction,getcFunction,
@@ -418,10 +422,10 @@ bool EnvAddRouterWithContext(
   const char *routerName,
   int priority,
   bool (*queryFunction)(void *,const char *),
-  int (*printFunction)(void *,const char *,const char *),
+  void (*printFunction)(void *,const char *,const char *),
   int (*getcFunction)(void *,const char *),
   int (*ungetcFunction)(void *,int,const char *),
-  int (*exitFunction)(void *,int),
+  void (*exitFunction)(void *,int),
   void *context)
   {
    struct router *newPtr, *lastPtr, *currentPtr;
@@ -436,7 +440,7 @@ bool EnvAddRouterWithContext(
         currentPtr = currentPtr->next)
      {
       if (strcmp(currentPtr->name,routerName) == 0)
-        { return 0; }
+        { return false; }
      }
      
    newPtr = get_struct(theEnv,router);
@@ -458,7 +462,7 @@ bool EnvAddRouterWithContext(
    if (RouterData(theEnv)->ListOfRouters == NULL)
      {
       RouterData(theEnv)->ListOfRouters = newPtr;
-      return(1);
+      return true;
      }
 
    lastPtr = NULL;
@@ -480,13 +484,13 @@ bool EnvAddRouterWithContext(
       lastPtr->next = newPtr;
      }
 
-   return(1);
+   return true;
   }
 
 /********************************************************************/
 /* EnvDeleteRouter: Removes an I/O router from the list of routers. */
 /********************************************************************/
-int EnvDeleteRouter(
+bool EnvDeleteRouter(
   void *theEnv,
   const char *routerName)
   {
@@ -504,17 +508,17 @@ int EnvDeleteRouter(
            {
             RouterData(theEnv)->ListOfRouters = currentPtr->next;
             rm(theEnv,currentPtr,(int) sizeof(struct router));
-            return(1);
+            return true;
            }
          lastPtr->next = currentPtr->next;
          rm(theEnv,currentPtr,(int) sizeof(struct router));
-         return(1);
+         return true;
         }
       lastPtr = currentPtr;
       currentPtr = currentPtr->next;
      }
 
-   return(0);
+   return false;
   }
 
 /*********************************************************************/
@@ -529,11 +533,11 @@ bool QueryRouters(
    currentPtr = RouterData(theEnv)->ListOfRouters;
    while (currentPtr != NULL)
      {
-      if (QueryRouter(theEnv,logicalName,currentPtr) == true) return(true);
+      if (QueryRouter(theEnv,logicalName,currentPtr) == true) return true;
       currentPtr = currentPtr->next;
      }
 
-   return(false);
+   return false;
   }
 
 /************************************************/
@@ -550,13 +554,13 @@ static bool QueryRouter(
    /*===================================================*/
 
    if (currentPtr->active == false)
-     { return(false); }
+     { return false; }
 
    /*=============================================================*/
    /* If the router has no query function, then it can't respond. */
    /*=============================================================*/
 
-   if (currentPtr->query == NULL) return(false);
+   if (currentPtr->query == NULL) return false;
 
    /*=========================================*/
    /* Call the router's query function to see */
@@ -565,9 +569,9 @@ static bool QueryRouter(
    
    SetEnvironmentRouterContext(theEnv,currentPtr->context);
    if ((*currentPtr->query)(theEnv,logicalName) == true)
-     { return(true); }
+     { return true; }
 
-   return(false);
+   return false;
   }
 
 /*******************************************************/
@@ -586,12 +590,12 @@ bool EnvDeactivateRouter(
       if (strcmp(currentPtr->name,routerName) == 0)
         {
          currentPtr->active = false;
-         return(true);
+         return true;
         }
       currentPtr = currentPtr->next;
      }
 
-   return(false);
+   return false;
   }
 
 /***************************************************/
@@ -610,12 +614,12 @@ bool EnvActivateRouter(
       if (strcmp(currentPtr->name,routerName) == 0)
         {
          currentPtr->active = true;
-         return(true);
+         return true;
         }
       currentPtr = currentPtr->next;
      }
 
-   return(false);
+   return false;
   }
 
 /********************************************/

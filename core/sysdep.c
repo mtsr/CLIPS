@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/17/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -85,6 +85,8 @@
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Updated compilations flags for CatchCtrlC.     */
 /*                                                           */
@@ -524,9 +526,9 @@ int genchdir(
 bool genremove(
   const char *fileName)
   {
-   if (remove(fileName)) return(false);
+   if (remove(fileName)) return false;
 
-   return(true);
+   return true;
   }
 
 /****************************************************/
@@ -536,9 +538,9 @@ bool genrename(
   const char *oldFileName,
   const char *newFileName)
   {
-   if (rename(oldFileName,newFileName)) return(false);
+   if (rename(oldFileName,newFileName)) return false;
 
-   return(true);
+   return true;
   }
 
 /**************************************/
@@ -680,7 +682,7 @@ int GenOpenReadBinary(
      {
       if (SystemDependentData(theEnv)->AfterOpenFunction != NULL)
         { (*SystemDependentData(theEnv)->AfterOpenFunction)(theEnv); }
-      return(0);
+      return 0;
      }
 #endif
 
@@ -689,14 +691,14 @@ int GenOpenReadBinary(
      {
       if (SystemDependentData(theEnv)->AfterOpenFunction != NULL)
         { (*SystemDependentData(theEnv)->AfterOpenFunction)(theEnv); }
-      return(0);
+      return 0;
      }
 #endif
 
    if (SystemDependentData(theEnv)->AfterOpenFunction != NULL)
      { (*SystemDependentData(theEnv)->AfterOpenFunction)(theEnv); }
 
-   return(1);
+   return 1;
   }
 
 /***********************************************/
@@ -817,4 +819,3 @@ void GenWrite(
    fwrite(dataPtr,size,1,fp);
 #endif
   }
-

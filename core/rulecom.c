@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/20/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                RULE COMMANDS MODULE                 */
    /*******************************************************/
@@ -57,6 +57,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Incremental reset is always enabled.           */
 /*                                                           */

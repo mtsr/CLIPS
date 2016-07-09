@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/28/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -50,6 +50,8 @@
 /*            function.                                      */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Added CLIPSBlockStart and CLIPSBlockEnd        */
 /*            functions for garbage collection blocks.       */
@@ -354,7 +356,7 @@ bool AddCleanupFunction(
      AddFunctionToCallList(theEnv,name,priority,
                            (void (*)(void *)) theFunction,
                            UtilityData(theEnv)->ListOfCleanupFunctions);
-   return(true);
+   return true;
   }
 
 /******************************************************/
@@ -390,7 +392,7 @@ bool EnvAddPeriodicFunctionWithContext(
      AddFunctionToCallListWithContext(theEnv,name,priority,
                            (void (*)(void *)) theFunction,
                            UtilityData(theEnv)->ListOfPeriodicFunctions,context);
-   return(1);
+   return true;
   }
 
 /*******************************************************/
@@ -1069,7 +1071,7 @@ unsigned long ItemHashValue(
      }
 
    SystemError(theEnv,"UTILITY",1);
-   return(0);
+   return 0;
   }
 
 /********************************************/

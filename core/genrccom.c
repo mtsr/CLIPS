@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -58,6 +58,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -470,11 +472,11 @@ long EnvGetNextDefmethod(
      {
       if (gfunc->methods != NULL)
         return(gfunc->methods[0].index);
-      return(0);
+      return 0;
      }
    mi = FindMethodByIndex(gfunc,theIndex);
    if ((mi+1) == gfunc->mcnt)
-     return(0);
+     { return 0; }
    return(gfunc->methods[mi+1].index);
   }
 
@@ -500,7 +502,7 @@ DEFMETHOD *GetDefmethodPointer(
   DESCRIPTION  : Determines if a generic function
                    can be deleted
   INPUTS       : Address of the generic function
-  RETURNS      : true if deletable, false otherwise
+  RETURNS      : True if deletable, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
@@ -520,7 +522,7 @@ bool EnvIsDefgenericDeletable(
                    method can be deleted
   INPUTS       : 1) Address of the generic function
                  2) Index of the method
-  RETURNS      : true if deletable, false otherwise
+  RETURNS      : True if deletable, false otherwise
   SIDE EFFECTS : None
   NOTES        : None
  ***************************************************/
@@ -533,7 +535,7 @@ bool EnvIsDefmethodDeletable(
      { return false; }
 
    if (((DEFGENERIC *) ptr)->methods[FindMethodByIndex((DEFGENERIC *) ptr,theIndex)].system)
-     return(false);
+     return false;
    
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    return((MethodsExecuting((DEFGENERIC *) ptr) == false) ? true : false);
@@ -638,7 +640,7 @@ void UndefmethodCommand(
   NAME         : EnvUndefgeneric
   DESCRIPTION  : Deletes all methods for a generic function
   INPUTS       : The generic-function address (NULL for all)
-  RETURNS      : true if generic successfully deleted,
+  RETURNS      : True if generic successfully deleted,
                  false otherwise
   SIDE EFFECTS : methods deallocated
   NOTES        : None
@@ -648,7 +650,7 @@ bool EnvUndefgeneric(
   void *vptr)
   {
 #if RUN_TIME || BLOAD_ONLY
-   return(false);
+   return false;
 #else
    DEFGENERIC *gfunc;
    bool success = true;
@@ -663,10 +665,10 @@ bool EnvUndefgeneric(
       return(success);
      }
    if (EnvIsDefgenericDeletable(theEnv,vptr) == false)
-     return(false);
+     return false;
    RemoveConstructFromModule(theEnv,(struct constructHeader *) vptr);
    RemoveDefgeneric(theEnv,gfunc);
-   return(true);
+   return true;
 #endif
   }
 
@@ -675,7 +677,7 @@ bool EnvUndefgeneric(
   DESCRIPTION  : Deletes one method for a generic function
   INPUTS       : 1) Address of generic function (can be NULL)
                  2) Method index (0 for all)
-  RETURNS      : true if method deleted successfully,
+  RETURNS      : True if method deleted successfully,
                  false otherwise
   SIDE EFFECTS : methods deallocated
   NOTES        : None
@@ -700,7 +702,7 @@ bool EnvUndefmethod(
    else
      EnvPrintRouter(theEnv,WERROR,"*");
    EnvPrintRouter(theEnv,WERROR,".\n");
-   return(false);
+   return false;
 #else
    long nmi;
 
@@ -719,7 +721,7 @@ bool EnvUndefmethod(
       else
         EnvPrintRouter(theEnv,WERROR,"*");
       EnvPrintRouter(theEnv,WERROR,".\n");
-      return(false);
+      return false;
      }
 #endif
    if (gfunc == NULL)
@@ -728,14 +730,14 @@ bool EnvUndefmethod(
         {
          PrintErrorID(theEnv,"GENRCCOM",3,false);
          EnvPrintRouter(theEnv,WERROR,"Incomplete method specification for deletion.\n");
-         return(false);
+         return false;
         }
       return(ClearDefmethods(theEnv));
      }
    if (MethodsExecuting(gfunc))
      {
       MethodAlterError(theEnv,gfunc);
-      return(false);
+      return false;
      }
    if (mi == 0)
      RemoveAllExplicitMethods(theEnv,gfunc);
@@ -743,10 +745,10 @@ bool EnvUndefmethod(
      {
       nmi = CheckMethodExists(theEnv,"undefmethod",gfunc,mi);
       if (nmi == -1)
-        return(false);
+        return false;
       RemoveDefgenericMethod(theEnv,gfunc,nmi);
      }
-   return(true);
+   return true;
 #endif
   }
 
@@ -791,7 +793,7 @@ void EnvGetDefmethodDescription(
   DESCRIPTION  : Determines if trace messages are
                  gnerated when executing generic function
   INPUTS       : A pointer to the generic
-  RETURNS      : true if a trace is active,
+  RETURNS      : True if a trace is active,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -811,8 +813,8 @@ bool EnvGetDefgenericWatch(
   NAME         : EnvSetDefgenericWatch
   DESCRIPTION  : Sets the trace to ON/OFF for the
                  generic function
-  INPUTS       : 1) true to set the trace on,
-                    false to set it off
+  INPUTS       : 1) True to set the trace on,
+                    False to set it off
                  2) A pointer to the generic
   RETURNS      : Nothing useful
   SIDE EFFECTS : Watch flag for the generic set
@@ -836,7 +838,7 @@ void EnvSetDefgenericWatch(
                  to this method will be generated or not
   INPUTS       : 1) A pointer to the generic
                  2) The index of the method
-  RETURNS      : true if a trace is active,
+  RETURNS      : True if a trace is active,
                  false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -861,7 +863,7 @@ bool EnvGetDefmethodWatch(
   NAME         : EnvSetDefmethodWatch
   DESCRIPTION  : Sets the trace to ON/OFF for the
                  calling of the method
-  INPUTS       : 1) true to set the trace on,
+  INPUTS       : 1) True to set the trace on,
                     false to set it off
                  2) A pointer to the generic
                  3) The index of the method
@@ -1359,8 +1361,8 @@ static void PrintGenericCall(
   INPUTS       : 1) The generic function
                  2) A data object buffer to hold
                     the evaluation result
-  RETURNS      : false if the generic function
-                 returns the symbol FALSE,
+  RETURNS      : False if the generic function
+                 returns the symbol false,
                  true otherwise
   SIDE EFFECTS : Data obejct buffer set and any
                  side-effects of calling the generic
@@ -1374,8 +1376,8 @@ static bool EvaluateGenericCall(
    GenericDispatch(theEnv,(DEFGENERIC *) value,NULL,NULL,GetFirstArgument(),result);
    if ((GetpType(result) == SYMBOL) &&
        (GetpValue(result) == EnvFalseSymbol(theEnv)))
-     return(false);
-   return(true);
+     return false;
+   return true;
   }
 
 /***************************************************
@@ -1585,7 +1587,7 @@ static long ListMethodsForGeneric(
                  2) The value to which to set the trace flags
                  3) A list of expressions containing the names
                     of the generics for which to set traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags set in specified generics
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
@@ -1612,7 +1614,7 @@ static bool DefgenericWatchAccess(
                     Ignored
                  3) A list of expressions containing the names
                     of the generics for which to examine traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags displayed for specified generics
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
@@ -1639,7 +1641,7 @@ static bool DefgenericWatchPrint(
                  2) The value to which to set the trace flags
                  3) A list of expressions containing the methods
                    for which to set traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags set in specified methods
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
@@ -1667,7 +1669,7 @@ static bool DefmethodWatchAccess(
                     Ignored
                  3) A list of expressions containing the methods for
                     which to examine traces
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : Watch flags displayed for specified methods
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
@@ -1694,7 +1696,7 @@ static bool DefmethodWatchPrint(
                  4) The print function (can be NULL)
                  5) The trace function (can be NULL)
                  6) The methods expression list
-  RETURNS      : true if all OK,
+  RETURNS      : True if all OK,
                  false otherwise
   SIDE EFFECTS : Method trace flags set or displayed
   NOTES        : None
@@ -1751,7 +1753,7 @@ static bool DefmethodWatchSupport(
          theModule = (struct defmodule *) EnvGetNextDefmodule(theEnv,(void *) theModule);
         }
       RestoreCurrentModule(theEnv);
-      return(true);
+      return true;
      }
 
    /* =========================================
@@ -1760,13 +1762,13 @@ static bool DefmethodWatchSupport(
    while (argExprs != NULL)
      {
       if (EvaluateExpression(theEnv,argExprs,&genericName))
-        return(false);
+        return false;
       if ((genericName.type != SYMBOL) ? true :
           ((theGeneric = (void *)
               LookupDefgenericByMdlOrScope(theEnv,DOToString(genericName))) == NULL))
         {
          ExpectedTypeError1(theEnv,funcName,argIndex,"generic function name");
-         return(false);
+         return false;
         }
       if (GetNextArgument(argExprs) == NULL)
         theMethod = 0;
@@ -1775,7 +1777,7 @@ static bool DefmethodWatchSupport(
          argExprs = GetNextArgument(argExprs);
          argIndex++;
          if (EvaluateExpression(theEnv,argExprs,&methodIndex))
-           return(false);
+           return false;
          if ((methodIndex.type != INTEGER) ? false :
              ((DOToLong(methodIndex) <= 0) ? false :
               (FindMethodByIndex((DEFGENERIC *) theGeneric,theMethod) != -1)))
@@ -1783,7 +1785,7 @@ static bool DefmethodWatchSupport(
          else
            {
             ExpectedTypeError1(theEnv,funcName,argIndex,"method index");
-            return(false);
+            return false;
            }
         }
       if (theMethod == 0)
@@ -1808,7 +1810,7 @@ static bool DefmethodWatchSupport(
       argExprs = GetNextArgument(argExprs);
       argIndex++;
      }
-   return(true);
+   return true;
   }
 
 /***************************************************

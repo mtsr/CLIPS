@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*            DEFGLOBAL CONSTRUCTS-TO-C MODULE         */
    /*******************************************************/
@@ -29,6 +29,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -143,7 +145,7 @@ static bool ConstructToCode(
       if (moduleFile == NULL)
         {
          CloseDefglobalFiles(theEnv,moduleFile,defglobalFile,maxIndices);
-         return(false);
+         return false;
         }
 
       DefglobalModuleToCode(theEnv,moduleFile,theModule,imageID,maxIndices,moduleCount);
@@ -161,7 +163,7 @@ static bool ConstructToCode(
          if (defglobalFile == NULL)
            {
             CloseDefglobalFiles(theEnv,moduleFile,defglobalFile,maxIndices);
-            return(false);
+            return false;
            }
 
          DefglobalToCode(theEnv,defglobalFile,theDefglobal,imageID,maxIndices,moduleCount);
@@ -176,7 +178,7 @@ static bool ConstructToCode(
 
    CloseDefglobalFiles(theEnv,moduleFile,defglobalFile,maxIndices);
 
-   return(true);
+   return true;
   }
 
 /**********************************************************/

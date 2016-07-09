@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/27/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*          DEFRULE BASIC COMMANDS HEADER FILE         */
    /*******************************************************/
@@ -45,6 +45,8 @@
 /*            JoinOperationInProgress mechanism.             */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -222,16 +224,16 @@ static void ResetDefrulesPrime(
 static bool ClearDefrulesReady(
   void *theEnv)
   {
-   if (EngineData(theEnv)->ExecutingRule != NULL) return(false);
+   if (EngineData(theEnv)->ExecutingRule != NULL) return false;
 
-   if (EngineData(theEnv)->JoinOperationInProgress) return(false);
+   if (EngineData(theEnv)->JoinOperationInProgress) return false;
 
    EnvClearFocusStack(theEnv);
-   if (EnvGetCurrentModule(theEnv) == NULL) return(false);
+   if (EnvGetCurrentModule(theEnv) == NULL) return false;
 
    DefruleData(theEnv)->CurrentEntityTimeTag = 1L;
 
-   return(true);
+   return true;
   }
 
 /***************************************************************/
@@ -386,9 +388,9 @@ bool EnvGetDefruleWatchActivations(
    for (thePtr = (struct defrule *) rulePtr;
         thePtr != NULL;
         thePtr = thePtr->disjunct)
-     { if (thePtr->watchActivation) return(true); }
+     { if (thePtr->watchActivation) return true; }
 
-   return(false);
+   return false;
   }
 
 /***********************************************/
@@ -408,9 +410,9 @@ bool EnvGetDefruleWatchFirings(
    for (thePtr = (struct defrule *) rulePtr;
         thePtr != NULL;
         thePtr = thePtr->disjunct)
-     { if (thePtr->watchFiring) return(true); }
+     { if (thePtr->watchFiring) return true; }
 
-   return(false);
+   return false;
   }
 
 /***************************************************/

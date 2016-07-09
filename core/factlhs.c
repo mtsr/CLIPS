@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/24/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*           FACT LHS PATTERN PARSING MODULE           */
    /*******************************************************/
@@ -30,6 +30,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Removed initial-fact support.                  */
 /*                                                           */
@@ -160,7 +162,7 @@ bool FactPatternParserFind(
 #if MAC_XCD
 #pragma unused(theRelation)
 #endif
-   return(true);
+   return true;
   }
 
 /******************************************************/

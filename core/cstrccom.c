@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*              CONSTRUCT COMMANDS MODULE              */
    /*******************************************************/
@@ -51,6 +51,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -131,7 +133,7 @@ bool DeleteNamedConstruct(
    /*=============================*/
 
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
-   if (Bloaded(theEnv) == true) return(false);
+   if (Bloaded(theEnv) == true) return false;
 #endif
 
    /*===============================*/
@@ -156,7 +158,7 @@ bool DeleteNamedConstruct(
    if (strcmp("*",constructName) == 0)
      {
       (*constructClass->deleteFunction)(theEnv,NULL);
-      return(true);
+      return true;
      }
 
    /*===============================*/
@@ -164,12 +166,12 @@ bool DeleteNamedConstruct(
    /* indicate no deletion occured. */
    /*===============================*/
 
-   return(false);
+   return false;
 #else
 #if MAC_XCD
 #pragma unused(theEnv,constructName,constructClass)
 #endif
-   return(false);
+   return false;
 #endif
   }
 
@@ -410,7 +412,7 @@ bool PPConstruct(
    /*==================================*/
 
    constructPtr = (*constructClass->findFunction)(theEnv,constructName);
-   if (constructPtr == NULL) return(false);
+   if (constructPtr == NULL) return false;
 
    /*==============================================*/
    /* If the pretty print form is NULL (because of */
@@ -419,7 +421,7 @@ bool PPConstruct(
    /*==============================================*/
 
    if ((*constructClass->getPPFormFunction)(theEnv,(struct constructHeader *) constructPtr) == NULL)
-     { return(true); }
+     { return true; }
 
    /*============================================*/
    /* Print the pretty print string in smaller   */
@@ -434,7 +436,7 @@ bool PPConstruct(
    /* was found and pretty printed.         */
    /*=======================================*/
 
-   return(true);
+   return true;
   }
 
 /*********************************************/
@@ -535,7 +537,7 @@ bool Undefconstruct(
 #pragma unused(constructClass)
 #pragma unused(theEnv)
 #endif
-   return(false);
+   return false;
 #else
    void *currentConstruct,*nextConstruct;
    bool success;
@@ -611,7 +613,7 @@ bool Undefconstruct(
    /*==================================================*/
 
    if ((*constructClass->isConstructDeletableFunction)(theEnv,theConstruct) == false)
-     { return(false); }
+     { return false; }
 
    /*===========================*/
    /* Remove the construct from */
@@ -644,7 +646,7 @@ bool Undefconstruct(
    /* construct was deleted.      */
    /*=============================*/
 
-   return(true);
+   return true;
 #endif
   }
 
@@ -1566,7 +1568,7 @@ static bool ConstructWatchSupport(
       /* completion of the command.         */
       /*====================================*/
 
-      return(true);
+      return true;
      }
 
    /*==================================================*/
@@ -1582,7 +1584,7 @@ static bool ConstructWatchSupport(
       /*==========================================*/
 
       if (EvaluateExpression(theEnv,argExprs,&constructName))
-        { return(false); }
+        { return false; }
 
       /*================================================*/
       /* Check to see that it's a valid construct name. */
@@ -1593,7 +1595,7 @@ static bool ConstructWatchSupport(
                                            DOToString(constructName),true)) == NULL))
         {
          ExpectedTypeError1(theEnv,funcName,argIndex,constructClass->constructName);
-         return(false);
+         return false;
         }
 
       /*=============================================*/
@@ -1619,7 +1621,7 @@ static bool ConstructWatchSupport(
    /* completion of the command.         */
    /*====================================*/
 
-   return(true);
+   return true;
   }
 
 /*************************************************/
@@ -1710,12 +1712,12 @@ bool ConstructsDeletable(
 #endif
 
 #if BLOAD_ONLY || RUN_TIME
-   return(false);
+   return false;
 #elif BLOAD || BLOAD_AND_BSAVE
    if (Bloaded(theEnv))
-     return(false);
+     return false;
    return true;
 #else
-   return(true);
+   return true;
 #endif
   }

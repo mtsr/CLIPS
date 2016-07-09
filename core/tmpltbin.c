@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/28/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*           DEFTEMPLATE BSAVE/BLOAD MODULE            */
    /*******************************************************/
@@ -26,6 +26,8 @@
 /*            Support for deftemplate slot facets.           */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Removed initial-fact support.                  */
 /*                                                           */

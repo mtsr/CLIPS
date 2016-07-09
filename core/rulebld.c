@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/27/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                  RULE BUILD MODULE                  */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*      6.31: Fix for nand crash                             */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Incremental reset is always enabled.           */
 /*                                                           */
@@ -1002,21 +1004,21 @@ static bool TestJoinForReuse(
    /* a join that has its firstJoin field set to true. */
    /*==================================================*/
 
-   if (testJoin->firstJoin != firstJoin) return(false);
+   if (testJoin->firstJoin != firstJoin) return false;
 
    /*========================================================*/
    /* A join connected to a not CE may only be shared with a */
    /* join that has its patternIsNegated field set to true.  */
    /*========================================================*/
 
-   if ((testJoin->patternIsNegated != negatedRHS) && (! existsRHS)) return(false);
+   if ((testJoin->patternIsNegated != negatedRHS) && (! existsRHS)) return false;
 
    /*==========================================================*/
    /* A join connected to an exists CE may only be shared with */
    /* a join that has its patternIsExists field set to true.   */
    /*==========================================================*/
 
-   if (testJoin->patternIsExists != existsRHS) return(false);
+   if (testJoin->patternIsExists != existsRHS) return false;
    
    /*==========================================================*/
    /* If the join added is associated with a logical CE, then  */
@@ -1028,7 +1030,7 @@ static bool TestJoinForReuse(
    if ((isLogical == true) &&
        (testJoin->logicalJoin == false) &&
        BetaMemoryNotEmpty(testJoin))
-     { return(false); }
+     { return false; }
 
    /*===============================================================*/
    /* The expression associated with the join must be identical to  */
@@ -1036,10 +1038,10 @@ static bool TestJoinForReuse(
    /*===============================================================*/
 
    if (IdenticalExpression(testJoin->networkTest,joinTest) != true)
-     { return(false); }
+     { return false; }
 
    if (IdenticalExpression(testJoin->secondaryNetworkTest,secondaryJoinTest) != true)
-     { return(false); }
+     { return false; }
      
    /*====================================================================*/
    /* The alpha memory hashing values associated with the join must be   */
@@ -1047,17 +1049,17 @@ static bool TestJoinForReuse(
    /*====================================================================*/
 
    if (IdenticalExpression(testJoin->leftHash,leftHash) != true)
-     { return(false); }
+     { return false; }
 
    if (IdenticalExpression(testJoin->rightHash,rightHash) != true)
-     { return(false); }
+     { return false; }
      
    /*=============================================*/
    /* The join can be shared since all conditions */
    /* for sharing have been satisfied.            */
    /*=============================================*/
 
-   return(true);
+   return true;
   }
 
 /*************************************************************************/

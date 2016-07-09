@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/04/16             */
    /*                                                     */
    /*                COMMAND LINE MODULE                  */
    /*******************************************************/
@@ -70,6 +70,8 @@
 /*            in sysdep.c.                                   */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -380,7 +382,7 @@ int CompleteCommand(
    bool complete;
    bool error = false;
 
-   if (mstring == NULL) return(0);
+   if (mstring == NULL) return 0;
 
    /*===================================================*/
    /* Loop through each character of the command string */
@@ -403,7 +405,7 @@ int CompleteCommand(
          case '\n' :
          case '\r' :
            if (error) return(-1);
-           if (moreThanZero && (depth == 0)) return(1);
+           if (moreThanZero && (depth == 0)) return 1;
            i = DoWhiteSpace(mstring,i);
            break;
 
@@ -437,8 +439,8 @@ int CompleteCommand(
            i = DoComment(mstring,i);
            if (moreThanZero && (depth == 0) && (mstring[i] != EOS))
              {
-              if (error) return(-1);
-              else return(1);
+              if (error) return -1;
+              else return 1;
              }
            else if (mstring[i] != EOS) i++;
            break;
@@ -491,11 +493,11 @@ int CompleteCommand(
                    {
                     if ((inchar == '\n') || (inchar == '\r'))
                       {
-                       if (error) return(-1);
-                       else return(1);
+                       if (error) return -1;
+                       else return 1;
                       }
                    }
-                 return(0);
+                 return 0;
                 }
              }
            break;
@@ -506,7 +508,7 @@ int CompleteCommand(
    /* Return 0 because a complete command was not found. */
    /*====================================================*/
 
-   return(0);
+   return 0;
   }
 
 /***********************************************************/
@@ -884,7 +886,7 @@ bool RouteCommand(
    int danglingConstructs;
 
    if (command == NULL)
-     { return(0); }
+     { return false; }
 
    /*========================================*/
    /* Open a string input source and get the */
@@ -909,7 +911,7 @@ bool RouteCommand(
          PrintAtom(theEnv,STDOUT,theToken.type,theToken.value);
          EnvPrintRouter(theEnv,STDOUT,"\n");
         }
-      return(1);
+      return true;
      }
 
    /*=====================*/
@@ -929,7 +931,7 @@ bool RouteCommand(
          PrintDataObject(theEnv,STDOUT,&result);
          EnvPrintRouter(theEnv,STDOUT,"\n");
         }
-      return(1);
+      return true;
      }
 
    /*========================================================*/
@@ -943,7 +945,7 @@ bool RouteCommand(
       PrintErrorID(theEnv,"COMMLINE",1,false);
       EnvPrintRouter(theEnv,WERROR,"Expected a '(', constant, or variable\n");
       CloseStringSource(theEnv,"command");
-      return(0);
+      return false;
      }
 
    /*===========================================================*/
@@ -956,7 +958,7 @@ bool RouteCommand(
       PrintErrorID(theEnv,"COMMLINE",2,false);
       EnvPrintRouter(theEnv,WERROR,"Expected a command.\n");
       CloseStringSource(theEnv,"command");
-      return(0);
+      return false;
      }
 
    commandName = ValueToString(theToken.value);
@@ -980,8 +982,8 @@ bool RouteCommand(
           EnvPrintRouter(theEnv,WERROR,"\n");
          }
        DestroyPPBuffer(theEnv);
-       if (errorFlag) return 0;
-       else return 1;
+       if (errorFlag) return false;
+       else return true;
       }
    }
 #endif

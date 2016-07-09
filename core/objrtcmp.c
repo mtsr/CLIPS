@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*    OBJECT PATTERN NETWORK CONSTRUCTS-TO-C MODULE    */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 /* =========================================
@@ -273,10 +275,10 @@ static bool ObjectPatternsToCode(
    version = IntermediatePatternNodesToCode(theEnv,fileName,pathName,fileNameBuffer,
                                             fileID,headerFP,imageID,maxIndices,1);
    if (version == 0)
-     return(false);
+     return false;
    if (! AlphaPatternNodesToCode(theEnv,fileName,pathName,fileNameBuffer,fileID,headerFP,imageID,maxIndices,version))
-     return(false);
-   return(true);
+     return false;
+   return true;
   }
 
 /***************************************************
@@ -349,7 +351,7 @@ static int IntermediatePatternNodesToCode(
       Create the file.
       ================ */
    if (ObjectNetworkPointer(theEnv) == NULL)
-     return(1);
+     { return 1; }
 
    fprintf(headerFP,"#include \"objrtmch.h\"\n");
 
@@ -357,7 +359,7 @@ static int IntermediatePatternNodesToCode(
       Dump the pattern node structures.
       ================================= */
    if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,false)) == NULL)
-     return(0);
+     { return 0; }
    newHeader = true;
 
    arrayVersion = 1;
@@ -407,7 +409,7 @@ static int IntermediatePatternNodesToCode(
          if (thePattern != NULL)
            {
             if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,false)) == NULL)
-              return(0);
+              { return 0; }
             newHeader = true;
            }
         }
@@ -415,7 +417,7 @@ static int IntermediatePatternNodesToCode(
         { fprintf(fp,",\n"); }
      }
 
-   return(version);
+   return version;
   }
 
 /***********************************************************
@@ -454,13 +456,13 @@ static int AlphaPatternNodesToCode(
       Create the file.
       ================ */
    if (ObjectNetworkTerminalPointer(theEnv) == NULL)
-     return(version);
+     { return version; }
 
    /* =================================
       Dump the pattern node structures.
       ================================= */
    if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,false)) == NULL)
-     return(0);
+     { return 0; }
    newHeader = true;
 
    arrayVersion = 1;
@@ -507,7 +509,7 @@ static int AlphaPatternNodesToCode(
          if (thePattern != NULL)
            {
             if ((fp = NewCFile(theEnv,fileName,pathName,fileNameBuffer,fileID,version,false)) == NULL)
-              return(0);
+              { return 0; }
             newHeader = true;
            }
         }
@@ -515,7 +517,7 @@ static int AlphaPatternNodesToCode(
         { fprintf(fp,",\n"); }
      }
 
-   return(version);
+   return version;
   }
 
 #endif

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/24/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -268,7 +270,7 @@ void GetQueryFactSlot(
   DESCRIPTION  : Determines if there any existing facts which satisfy
                    the query
   INPUTS       : None
-  RETURNS      : true if the query is satisfied, false otherwise
+  RETURNS      : True if the query is satisfied, false otherwise
   SIDE EFFECTS : The query template-expressions are evaluated once,
                    and the query boolean-expression is evaluated
                    zero or more times (depending on fact restrictions
@@ -310,7 +312,7 @@ void AnyFacts(
   DESCRIPTION  : Finds the first set of facts which satisfy the query and
                    stores their addresses in the user's multi-field variable
   INPUTS       : Caller's result buffer
-  RETURNS      : true if the query is satisfied, false otherwise
+  RETURNS      : True if the query is satisfied, false otherwise
   SIDE EFFECTS : The query template-expressions are evaluated once,
                    and the query boolean-expression is evaluated
                    zero or more times (depending on fact restrictions
@@ -873,7 +875,7 @@ static void DeleteQueryTemplates(
   INPUTS       : 1) The current chain
                  2) The index of the chain restriction
                      (e.g. the 4th query-variable)
-  RETURNS      : true if query succeeds, false otherwise
+  RETURNS      : True if query succeeds, false otherwise
   SIDE EFFECTS : Sets current restriction class
                  Fact variable values set
   NOTES        : None
@@ -891,12 +893,12 @@ static bool TestForFirstInChain(
       FactQueryData(theEnv)->AbortQuery = false;
 
       if (TestForFirstFactInTemplate(theEnv,qptr->templatePtr,qchain,indx))
-        { return(true); }
+        { return true; }
         
       if ((EvaluationData(theEnv)->HaltExecution == true) || (FactQueryData(theEnv)->AbortQuery == true))
-        return(false);
+        return false;
      }
-   return(false);
+   return false;
   }
 
 /*****************************************************************
@@ -906,7 +908,7 @@ static bool TestForFirstInChain(
                  2) The template
                  3) The current template restriction chain
                  4) The index of the current restriction
-  RETURNS      : true if query succeeds, false otherwise
+  RETURNS      : True if query succeeds, false otherwise
   SIDE EFFECTS : Fact variable values set
   NOTES        : None
  *****************************************************************/
@@ -965,7 +967,7 @@ static bool TestForFirstFactInTemplate(
      return(((EvaluationData(theEnv)->HaltExecution == true) || (FactQueryData(theEnv)->AbortQuery == true))
              ? false : true);
 
-   return(false);
+   return false;
   }
 
 /************************************************************

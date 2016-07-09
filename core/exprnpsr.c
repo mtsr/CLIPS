@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/24/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*              EXPRESSION PARSER MODULE               */
    /*******************************************************/
@@ -44,6 +44,8 @@
 /*            statically allocated.                          */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
@@ -337,7 +339,7 @@ struct expr *Function2Parse(
                  3) The address of the internal H/L function
                     (expansion-call)
                  4) The address of the H/L function expand$
-  RETURNS      : false if OK, true on errors
+  RETURNS      : False if OK, true on errors
   SIDE EFFECTS : Function call expressions modified, if necessary
   NOTES        : Function calls which truly want a multifield
                    to be passed need use only a single-field
@@ -368,7 +370,7 @@ bool ReplaceSequenceExpansionOps(
             EnvPrintRouter(theEnv,WERROR,ValueToString(((struct FunctionDefinition *)
                               fcallexp->value)->callFunctionName));
             EnvPrintRouter(theEnv,WERROR,".\n");
-            return(true);
+            return true;
            }
          if (fcallexp->value != expcall)
            {
@@ -398,11 +400,11 @@ bool ReplaceSequenceExpansionOps(
          else
            theExp = fcallexp;
          if (ReplaceSequenceExpansionOps(theEnv,actions->argList,theExp,expcall,expmult))
-           return(true);
+           return true;
         }
       actions = actions->nextArg;
      }
-   return(false);
+   return false;
   }
 
 /*************************************************/
@@ -608,7 +610,7 @@ bool CheckExpressionAgainstRestrictions(
    /*============================================*/
    
    if (theFunction->returnValueType !='z')
-     { if (restrictions == NULL) return(false); }
+     { if (restrictions == NULL) return false; }
 
    /*=========================================*/
    /* Count the number of function arguments. */
@@ -629,7 +631,7 @@ bool CheckExpressionAgainstRestrictions(
       else if (theChar[0] == '*')
         { number1 = UNBOUNDED; }
       else
-        { return(false); }
+        { return false; }
      }
    else
      { number1 = theFunction->minArgs; }
@@ -646,7 +648,7 @@ bool CheckExpressionAgainstRestrictions(
       else if (theChar[0] == '*')
         { number2 = UNBOUNDED; }
       else
-        { return(false); }
+        { return false; }
      }
    else
      { number2 = theFunction->maxArgs; }
@@ -662,25 +664,25 @@ bool CheckExpressionAgainstRestrictions(
       if (argCount != number1)
         {
          ExpectedCountError(theEnv,functionName,EXACTLY,number1);
-         return(true);
+         return true;
         }
      }
    else if (argCount < number1)
      {
       ExpectedCountError(theEnv,functionName,AT_LEAST,number1);
-      return(true);
+      return true;
      }
    else if ((number2 != UNBOUNDED) && (argCount > number2))
      {
       ExpectedCountError(theEnv,functionName,NO_MORE_THAN,number2);
-      return(true);
+      return true;
      }
 
    /*===============================================*/
    /* Return if there are no argument restrictions. */
    /*===============================================*/
    
-   if (restrictions == NULL) return(false);
+   if (restrictions == NULL) return false;
    
    /*=======================================*/
    /* Check for the default argument types. */
@@ -726,7 +728,7 @@ bool CheckExpressionAgainstRestrictions(
          if (CheckArgumentAgainstRestriction(theEnv,argPtr,theRestriction))
            {
             ExpectedTypeError1(theEnv,functionName,j,GetArgumentTypeName(theRestriction));
-            return(true);
+            return true;
            }
    
          j++;
@@ -744,14 +746,14 @@ bool CheckExpressionAgainstRestrictions(
            {
             ExpectedTypeError0(theEnv,functionName,j);
             PrintTypesString(theEnv,WERROR,argRestriction2,true);
-            return(true);
+            return true;
            }
    
          j++;
         }
       }
      
-   return(false);
+   return false;
   }
 
 /*******************************************************/

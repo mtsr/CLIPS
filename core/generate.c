@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/25/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                   GENERATE MODULE                   */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*            non/and group.                                 */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -1001,7 +1003,7 @@ static bool AllVariablesInPattern(
          /*========================================================*/
 
          if ((andField->type == SF_VARIABLE) || (andField->type == MF_VARIABLE))
-           { if (andField->referringNode->pattern != pattern) return(false); }
+           { if (andField->referringNode->pattern != pattern) return false; }
 
          /*========================================================*/
          /* Check predicate and return value constraints to see    */
@@ -1012,7 +1014,7 @@ static bool AllVariablesInPattern(
                   (andField->type == RETURN_VALUE_CONSTRAINT))
            {
             if (AllVariablesInExpression(andField->expression,pattern) == false)
-              { return(false); }
+              { return false; }
            }
         }
      }
@@ -1022,7 +1024,7 @@ static bool AllVariablesInPattern(
    /* referenced from within the pattern. */
    /*=====================================*/
 
-   return(true);
+   return true;
   }
 
 /**************************************************************************/
@@ -1050,14 +1052,14 @@ static bool AllVariablesInExpression(
 
       if ((theExpression->type == SF_VARIABLE) ||
           (theExpression->type == MF_VARIABLE))
-        { if (theExpression->referringNode->pattern != pattern) return(false); }
+        { if (theExpression->referringNode->pattern != pattern) return false; }
 
       /*=======================================================*/
       /* Recursively check all expressions in the bottom link. */
       /*=======================================================*/
 
       if (AllVariablesInExpression(theExpression->bottom,pattern) == false)
-        { return(false); }
+        { return false; }
      }
 
    /*========================================*/
@@ -1065,7 +1067,7 @@ static bool AllVariablesInExpression(
    /* referenced from within the pattern.    */
    /*========================================*/
 
-   return(true);
+   return true;
   }
 
 #endif /* (! RUN_TIME) && (! BLOAD_ONLY) && DEFRULE_CONSTRUCT */

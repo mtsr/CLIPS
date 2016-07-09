@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/23/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -23,6 +23,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -134,8 +136,8 @@ static void ReadyDefinstancesForCode(
                  4) The base id for the construct set
                  5) The max number of indices allowed
                     in an array
-  RETURNS      : 0 on errors,
-                  1 if definstances written
+  RETURNS      : False on errors,
+                 True if definstances written
   SIDE EFFECTS : Code written to files
   NOTES        : None
  *******************************************************/
@@ -179,7 +181,7 @@ static bool DefinstancesToCode(
       if (moduleFile == NULL)
         {
          CloseDefinstancesFiles(theEnv,moduleFile,definstancesFile,maxIndices);
-         return(false);
+         return false;
         }
 
       DefinstancesModuleToCode(theEnv,moduleFile,theModule,imageID,maxIndices);
@@ -197,7 +199,7 @@ static bool DefinstancesToCode(
          if (definstancesFile == NULL)
            {
             CloseDefinstancesFiles(theEnv,moduleFile,definstancesFile,maxIndices);
-            return(false);
+            return false;
            }
 
          SingleDefinstancesToCode(theEnv,definstancesFile,theDefinstances,imageID,
@@ -216,7 +218,7 @@ static bool DefinstancesToCode(
 
    CloseDefinstancesFiles(theEnv,moduleFile,definstancesFile,maxIndices);
 
-   return(true);
+   return true;
   }
 
 /***************************************************

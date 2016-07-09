@@ -56,7 +56,7 @@ bool QueryInterfaceRouter(
 /* PrintInterfaceRouter: Router function */
 /*   which prints to the display window. */
 /*****************************************/
-int PrintInterfaceRouter(
+void PrintInterfaceRouter(
   void *theEnv,
   const char *logicalName,
   const char *str)
@@ -69,8 +69,6 @@ int PrintInterfaceRouter(
      { [theObject printC: str]; }
    else
      { fprintf(fptr,"%s",str); } // TBD Is this necessary?
- 
-   return(true);  // TBD bool?
   }
 
 /*******************************************/
@@ -95,7 +93,7 @@ int GetcInterfaceRouter(
 /*   from the dialog window to make sure that    */
 /*   the application doesn't exit.               */
 /*************************************************/
-int ExitInterfaceRouter(
+void ExitInterfaceRouter(
   void *theEnv,
   int num)
   {   
@@ -104,8 +102,7 @@ int ExitInterfaceRouter(
    [[NSApplication sharedApplication] terminate: NULL];
    [theController exit];
    /* AbortExit(theEnv); */
-   return(true);  // TBD bool?
-  }  
+  }
     
 /************************/
 /* MacPeriodicFunction: */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/25/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*              OBJECT MESSAGE FUNCTIONS               */
    /*******************************************************/
@@ -36,6 +36,8 @@
 /*            SetEvaluationError functions.                  */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Option printing of carriage return for the     */
 /*            SlotVisibilityViolationError function.         */
@@ -121,7 +123,7 @@ void PrintNoHandlerError(
                    list satisfies the current
                    handler's parameter count restriction
   INPUTS       : None
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : EvaluationError set on errors
   NOTES        : Uses ProcParamArraySize and CurrentCore globals
  ***************************************************************/
@@ -149,9 +151,9 @@ bool CheckHandlerArgCount(
         EnvPrintRouter(theEnv,WERROR,"exactly ");
       PrintLongInteger(theEnv,WERROR,(long long) (hnd->minParams-1));
       EnvPrintRouter(theEnv,WERROR," argument(s).\n");
-      return(false);
+      return false;
      }
-   return(true);
+   return true;
   }
 
 /***************************************************
@@ -340,7 +342,7 @@ HANDLER *InsertHandlerHeader(
   DESCRIPTION  : Determines if any message-handlers
                    for a class are currently executing
   INPUTS       : The class address
-  RETURNS      : true if any handlers are executing,
+  RETURNS      : True if any handlers are executing,
                    false otherwise
   SIDE EFFECTS : None
   NOTES        : None
@@ -352,8 +354,8 @@ bool HandlersExecuting(
 
    for (i = 0 ; i < cls->handlerCount ; i++)
      if (cls->handlers[i].busy > 0)
-       return(true);
-   return(false);
+       return true;
+   return false;
   }
 
 /*********************************************************************
@@ -392,14 +394,14 @@ bool DeleteHandler(
       if (indicate_missing)
         {
          HandlerDeleteError(theEnv,EnvGetDefclassName(theEnv,(void *) cls));
-         return(false);
+         return false;
         }
-      return(true);
+      return true;
      }
    if (HandlersExecuting(cls))
      {
       HandlerDeleteError(theEnv,EnvGetDefclassName(theEnv,(void *) cls));
-      return(false);
+      return false;
      }
    if (mtype == -1)
      {
@@ -594,7 +596,7 @@ unsigned HandlerType(
                  2) A flag indicating whether the object must be
                       a class instance or not (it could be a
                       primitive type)
-  RETURNS      : true if all OK, false otherwise
+  RETURNS      : True if all OK, false otherwise
   SIDE EFFECTS : EvaluationError set on errors
   NOTES        : None
  *****************************************************************/
@@ -611,7 +613,7 @@ bool CheckCurrentMessage(
       EnvPrintRouter(theEnv,WERROR,func);
       EnvPrintRouter(theEnv,WERROR," may only be called from within message-handlers.\n");
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
    activeMsgArg = GetNthMessageArgument(theEnv,0);
    if ((ins_reqd == true) ? (activeMsgArg->type != INSTANCE_ADDRESS) : false)
@@ -620,16 +622,16 @@ bool CheckCurrentMessage(
       EnvPrintRouter(theEnv,WERROR,func);
       EnvPrintRouter(theEnv,WERROR," operates only on instances.\n");
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
    if ((activeMsgArg->type == INSTANCE_ADDRESS) ?
        (((INSTANCE_TYPE *) activeMsgArg->value)->garbage == 1) : false)
      {
       StaleInstanceAddress(theEnv,func,0);
       EnvSetEvaluationError(theEnv,true);
-      return(false);
+      return false;
      }
-   return(true);
+   return true;
   }
 
 /***************************************************

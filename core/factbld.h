@@ -52,7 +52,7 @@ struct factPatternNode
    struct factPatternNode *rightNode;
   };
 
-#include "pattern.h" // TBD Needed?
+//#include "pattern.h" // TBD Needed?
 
    void                           InitializeFactPatterns(void *);
    void                           DestroyFactPatternNetwork(void *,struct factPatternNode *);

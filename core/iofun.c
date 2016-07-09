@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  05/29/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                I/O FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -77,6 +77,8 @@
 /*            SetHaltExecution functions.                    */
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Added print and println functions.             */
 /*                                                           */
@@ -592,8 +594,8 @@ void OpenFunction(
 
    /*================================================*/
    /* Open the named file and associate it with the  */
-   /* specified logical name. Return true if the     */
-   /* file was opened successfully, otherwise false. */
+   /* specified logical name. Return TRUE if the     */
+   /* file was opened successfully, otherwise FALSE. */
    /*================================================*/
 
    mCVSetBoolean(returnValue,OpenAFile(theEnv,fileName,accessMode,logicalName));
@@ -1198,7 +1200,7 @@ static const char *PrintFormatFlag(
       default:
          EnvPrintRouter(theEnv,WERROR," Error in format, the conversion character");
          EnvPrintRouter(theEnv,WERROR," for formatted output is not valid\n");
-         return(NULL);
+         return NULL;
      }
 
    theString = ValueToString(EnvAddSymbol(theEnv,printBuffer));

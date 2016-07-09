@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  06/27/16             */
+   /*            CLIPS Version 6.50  07/05/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -46,6 +46,8 @@
 /*            SetEvaluationError functions.                   */
 /*                                                            */
 /*            Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*      6.50: Generic error message no longer printed when    */
 /*            an alternate variable handling function         */
@@ -467,7 +469,7 @@ EXPRESSION *ParseProcActions(
                     This argument can be NULL.
                  6) Data buffer to be passed to alternate parsing
                     function
-  RETURNS      : false if OK, true on errors
+  RETURNS      : False if OK, true on errors
   SIDE EFFECTS : Variable references replaced with function calls
   NOTES        : This function works from the ParsedBindNames list in
                     SPCLFORM.C to access local binds.  Make sure that
@@ -536,7 +538,7 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
                   EnvPrintRouter(theEnv,WERROR,bodytype);
                   EnvPrintRouter(theEnv,WERROR,".\n");
                  }
-               return(1);
+               return 1;
               }
            }
 
@@ -569,7 +571,7 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
                else if (altcode == -1)
                  {
                   rtn_struct(theEnv,expr,altvarexp);
-                  return(true);
+                  return true;
                  }
               }
             else
@@ -592,12 +594,12 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
         }
 #endif
       if ((altvarfunc != NULL) ? ((*altvarfunc)(theEnv,actions,specdata) == -1) : false)
-        return(1);
+        return 1;
       if (actions->argList != NULL)
         {
          if (ReplaceProcVars(theEnv,bodytype,actions->argList,parameterList,
                                         wildcard,altvarfunc,specdata))
-           return(1);
+           return 1;
 
          /* ====================================================================
             Check to see if this is a call to the bind function.  If so (and the
@@ -620,7 +622,7 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
         }
       actions = actions->nextArg;
      }
-   return(0);
+   return 0;
   }
 
 #if DEFGENERIC_CONSTRUCT
@@ -1146,7 +1148,7 @@ static bool RtnProcParam(
    result->value = src->value;
    result->begin = src->begin;
    result->end = src->end;
-   return(true);
+   return true;
   }
 
 /**************************************************************
@@ -1178,12 +1180,12 @@ static bool GetProcBind(
       result->value = src->value;
       result->begin = src->begin;
       result->end = src->end;
-      return(true);
+      return true;
      }
    if (GetFirstArgument()->nextArg != NULL)
      {
       EvaluateExpression(theEnv,GetFirstArgument()->nextArg,result);
-      return(true);
+      return true;
      }
    if (pvar->second == 0)
      {
@@ -1200,7 +1202,7 @@ static bool GetProcBind(
         EnvPrintRouter(theEnv,WERROR," unbound.\n");
       result->type = SYMBOL;
       result->value = EnvFalseSymbol(theEnv);
-      return(true);
+      return true;
      }
    if (pvar->secondFlag == 0)
      {
@@ -1212,7 +1214,7 @@ static bool GetProcBind(
      }
    else
      GrabProcWildargs(theEnv,result,(int) pvar->second);
-   return(true);
+   return true;
   }
 
 /**************************************************************
@@ -1258,7 +1260,7 @@ static bool PutProcBind(
       dst->end = result->end;
       ValueInstall(theEnv,dst);
      }
-   return(true);
+   return true;
   }
 
 /****************************************************************
@@ -1280,7 +1282,7 @@ static bool RtnProcWild(
   DATA_OBJECT *result)
   {
    GrabProcWildargs(theEnv,result,*(int *) ValueToBitMap(value));
-   return(true);
+   return true;
   }
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -1308,7 +1310,7 @@ static int FindProcParameter(
    while (parameterList != NULL)
      {
       if (parameterList->value == (void *) name)
-        return(i);
+        { return i; }
       i++;
       parameterList = parameterList->nextArg;
      }
@@ -1317,8 +1319,8 @@ static int FindProcParameter(
       Wildcard may not be stored in actual list but know is always at end
       =================================================================== */
    if (name == wildcard)
-     return(i);
-   return(0);
+     { return i; }
+   return 0;
   }
 
 /*************************************************************************
@@ -1348,7 +1350,7 @@ static int FindProcParameter(
                     if recognized, 0 if not, -1 on errors.
                     This argument CANNOT be NULL.
                  3) Specialized user data buffer
-  RETURNS      : false if OK, true on errors
+  RETURNS      : False if OK, true on errors
   SIDE EFFECTS : Some binds replaced with specialized calls
   NOTES        : Local variable binds are replaced in ReplaceProcVars
                  (after this routine has had a chance to replace all
@@ -1369,21 +1371,21 @@ static bool ReplaceProcBinds(
       if (actions->argList != NULL)
         {
          if (ReplaceProcBinds(theEnv,actions->argList,altbindfunc,userBuffer))
-           return(true);
+           return true;
          if ((actions->value == (void *) FindFunction(theEnv,"bind")) &&
              (actions->argList->type == SYMBOL))
            {
             bname = (SYMBOL_HN *) actions->argList->value;
             bcode = (*altbindfunc)(theEnv,actions,userBuffer);
             if (bcode == -1)
-              return(true);
+              return true;
             if (bcode == 1)
               RemoveParsedBindName(theEnv,bname);
            }
         }
       actions = actions->nextArg;
      }
-   return(false);
+   return false;
   }
 
 /*****************************************************
@@ -1434,7 +1436,7 @@ static EXPRESSION *CompactActions(
                  capability is not present.
   INPUTS       : 1) The function (ignored)
                  2) A data object buffer for the result
-  RETURNS      : false
+  RETURNS      : False
   SIDE EFFECTS : Data object buffer set to the
                  symbol FALSE and evaluation error set
   NOTES        : Used for binary images which
@@ -1455,7 +1457,7 @@ static bool EvaluateBadCall(
    EnvSetEvaluationError(theEnv,true);
    SetpType(result,SYMBOL);
    SetpValue(result,EnvFalseSymbol(theEnv));
-   return(false);
+   return false;
   }
 
 #endif

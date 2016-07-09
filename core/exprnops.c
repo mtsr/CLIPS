@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  06/24/16             */
+   /*            CLIPS Version 6.40  07/05/16             */
    /*                                                     */
    /*             EXPRESSION OPERATIONS MODULE            */
    /*******************************************************/
@@ -26,6 +26,8 @@
 /*            deprecation warnings.                          */
 /*                                                           */
 /*      6.40: Pragma once and other inclusion changes.       */
+/*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*************************************************************/
 
@@ -118,7 +120,7 @@ bool CheckArgumentAgainstRestriction(
    if (UnmatchableConstraint(cr3))
      {
       RemoveConstraint(theEnv,cr3);
-      return(true);
+      return true;
      }
 
    /*===================================================*/
@@ -126,7 +128,7 @@ bool CheckArgumentAgainstRestriction(
    /*===================================================*/
 
    RemoveConstraint(theEnv,cr3);
-   return(false);
+   return false;
   }
 
 /*************************************/
@@ -172,7 +174,7 @@ bool CheckArgumentAgainstRestriction2(
    if (UnmatchableConstraint(cr3))
      {
       RemoveConstraint(theEnv,cr3);
-      return(true);
+      return true;
      }
 
    /*===================================================*/
@@ -180,7 +182,7 @@ bool CheckArgumentAgainstRestriction2(
    /*===================================================*/
 
    RemoveConstraint(theEnv,cr3);
-   return(false);
+   return false;
   }
 
 #endif /* (! RUN_TIME) */
@@ -199,11 +201,11 @@ bool ConstantExpression(
           (testPtr->type != INSTANCE_NAME) && (testPtr->type != INSTANCE_ADDRESS) &&
 #endif
           (testPtr->type != INTEGER) && (testPtr->type != FLOAT))
-        { return(false); }
+        { return false; }
       testPtr = testPtr->nextArg;
      }
 
-   return(true);
+   return true;
   }
 
 /******************************************/
@@ -223,10 +225,10 @@ bool ConstantType(
       case INSTANCE_NAME:
       case INSTANCE_ADDRESS:
 #endif
-        return(true);
+        return true;
      }
 
-   return(false);
+   return false;
   }
 
 /*****************************************************************************/
@@ -251,17 +253,17 @@ bool IdenticalExpression(
       /*=========================*/
 
       if (firstList->type != secondList->type)
-        { return(false); }
+        { return false; }
 
       if (firstList->value != secondList->value)
-        { return (false); }
+        { return false; }
 
       /*==============================*/
       /* Compare the arguments lists. */
       /*==============================*/
 
       if (IdenticalExpression(firstList->argList,secondList->argList) == false)
-        { return(false); }
+        { return false; }
      }
 
    /*=====================================================*/
@@ -270,13 +272,13 @@ bool IdenticalExpression(
    /* other.                                              */
    /*=====================================================*/
 
-   if (firstList != secondList) return(false);
+   if (firstList != secondList) return false;
 
    /*============================*/
    /* Expressions are identical. */
    /*============================*/
 
-   return(true);
+   return true;
   }
 
 /****************************************************/
@@ -342,7 +344,7 @@ bool ExpressionContainsVariables(
       if (theExpression->argList != NULL)
         {
          if (ExpressionContainsVariables(theExpression->argList,globalsAreVariables))
-           { return(true); }
+           { return true; }
         }
 
       if ((theExpression->type == MF_VARIABLE) ||
@@ -351,12 +353,12 @@ bool ExpressionContainsVariables(
           (((theExpression->type == GBL_VARIABLE) ||
             (theExpression->type == MF_GBL_VARIABLE)) &&
            (globalsAreVariables == true)))
-        { return(true); }
+        { return true; }
 
       theExpression = theExpression->nextArg;
      }
 
-   return(false);
+   return false;
   }
 
 /*****************************************/
