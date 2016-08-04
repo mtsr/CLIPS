@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -51,6 +51,9 @@
 /*                                                            */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /**************************************************************/
 /* =========================================
    *****************************************
@@ -81,28 +84,26 @@
 
 #include "insmngr.h"
 
-/* =========================================
-   *****************************************
-      INTERNALLY VISIBLE FUNCTION HEADERS
-   =========================================
-   ***************************************** */
+/***************************************/
+/* LOCAL INTERNAL FUNCTION DEFINITIONS */
+/***************************************/
 
-static void QueueObjectMatchAction(void *,int,INSTANCE_TYPE *,int);
-static SLOT_BITMAP *QueueModifySlotMap(void *,SLOT_BITMAP *,int);
-static void ReturnObjectMatchAction(void *,OBJECT_MATCH_ACTION *);
-static void ProcessObjectMatchQueue(void *);
-static void MarkObjectPatternNetwork(void *,SLOT_BITMAP *);
-static bool CompareSlotBitMaps(SLOT_BITMAP *,SLOT_BITMAP *);
-static void ObjectPatternMatch(void *,int,OBJECT_PATTERN_NODE *,struct multifieldMarker *);
-static void ProcessPatternNode(void *,int,OBJECT_PATTERN_NODE *,struct multifieldMarker *);
-static void CreateObjectAlphaMatch(void *,OBJECT_ALPHA_NODE *);
-static bool EvaluateObjectPatternTest(void *,int,struct multifieldMarker *,EXPRESSION *,
-                                         OBJECT_PATTERN_NODE *);
-static void ObjectAssertAction(void *,INSTANCE_TYPE *);
-static void ObjectModifyAction(void *,INSTANCE_TYPE *,SLOT_BITMAP *);
-static void ObjectRetractAction(void *,INSTANCE_TYPE *,SLOT_BITMAP *);
-static void ObjectPatternNetErrorMessage(void *,OBJECT_PATTERN_NODE *);
-static void TraceErrorToObjectPattern(void *,bool,OBJECT_PATTERN_NODE *);
+   static void                    QueueObjectMatchAction(Environment *,int,Instance *,int);
+   static SLOT_BITMAP            *QueueModifySlotMap(Environment *,SLOT_BITMAP *,int);
+   static void                    ReturnObjectMatchAction(Environment *,OBJECT_MATCH_ACTION *);
+   static void                    ProcessObjectMatchQueue(Environment *);
+   static void                    MarkObjectPatternNetwork(Environment *,SLOT_BITMAP *);
+   static bool                    CompareSlotBitMaps(SLOT_BITMAP *,SLOT_BITMAP *);
+   static void                    ObjectPatternMatch(Environment *,int,OBJECT_PATTERN_NODE *,struct multifieldMarker *);
+   static void                    ProcessPatternNode(Environment *,int,OBJECT_PATTERN_NODE *,struct multifieldMarker *);
+   static void                    CreateObjectAlphaMatch(Environment *,OBJECT_ALPHA_NODE *);
+   static bool                    EvaluateObjectPatternTest(Environment *,int,struct multifieldMarker *,
+                                                            EXPRESSION *,OBJECT_PATTERN_NODE *);
+   static void                    ObjectAssertAction(Environment *,Instance *);
+   static void                    ObjectModifyAction(Environment *,Instance *,SLOT_BITMAP *);
+   static void                    ObjectRetractAction(Environment *,Instance *,SLOT_BITMAP *);
+   static void                    ObjectPatternNetErrorMessage(Environment *,OBJECT_PATTERN_NODE *);
+   static void                    TraceErrorToObjectPattern(Environment *,bool,OBJECT_PATTERN_NODE *);
 
 /* =========================================
    *****************************************
@@ -155,7 +156,7 @@ void ObjectMatchDelay(
                  are performed
  ***************************************************/
 bool SetDelayObjectPatternMatching(
-  void *theEnv,
+  Environment *theEnv,
   bool value)
   {
    bool oldval;
@@ -182,7 +183,7 @@ bool SetDelayObjectPatternMatching(
   NOTES        : None
  ***************************************************/
 bool GetDelayObjectPatternMatching(
-  void *theEnv)
+  Environment *theEnv)
   {
    return(ObjectReteData(theEnv)->DelayObjectPatternMatching);
   }
@@ -197,7 +198,7 @@ bool GetDelayObjectPatternMatching(
   NOTES        : None
  ********************************************************/
 OBJECT_PATTERN_NODE *ObjectNetworkPointer(
-  void *theEnv)
+  Environment *theEnv)
   {
    return(ObjectReteData(theEnv)->ObjectPatternNetworkPointer);
   }
@@ -211,7 +212,7 @@ OBJECT_PATTERN_NODE *ObjectNetworkPointer(
   NOTES        : None
  ********************************************************/
 OBJECT_ALPHA_NODE *ObjectNetworkTerminalPointer(
-  void *theEnv)
+  Environment *theEnv)
   {
    return(ObjectReteData(theEnv)->ObjectPatternNetworkTerminalPointer);
   }
@@ -226,7 +227,7 @@ OBJECT_ALPHA_NODE *ObjectNetworkTerminalPointer(
   NOTES        : None
  ***************************************************/
 void SetObjectNetworkPointer(
-  void *theEnv,
+  Environment *theEnv,
   OBJECT_PATTERN_NODE *value)
   {
    ObjectReteData(theEnv)->ObjectPatternNetworkPointer = value;
@@ -243,7 +244,7 @@ void SetObjectNetworkPointer(
   NOTES        : None
  *******************************************************/
 void SetObjectNetworkTerminalPointer(
-  void *theEnv,
+  Environment *theEnv,
   OBJECT_ALPHA_NODE *value)
   {
    ObjectReteData(theEnv)->ObjectPatternNetworkTerminalPointer = value;
@@ -273,9 +274,9 @@ void SetObjectNetworkTerminalPointer(
   NOTES        : None
  ************************************************************************/
 void ObjectNetworkAction(
-  void *theEnv,
+  Environment *theEnv,
   int type,
-  INSTANCE_TYPE *ins,
+  Instance *ins,
   int slotNameID)
   {
    SLOT_BITMAP *tmpMap;
@@ -321,7 +322,7 @@ void ObjectNetworkAction(
          default             :
            tmpMap = QueueModifySlotMap(theEnv,NULL,slotNameID);
            ObjectModifyAction(theEnv,ins,tmpMap);
-           rm(theEnv,(void *) tmpMap,SlotBitMapSize(tmpMap));
+           rm(theEnv,tmpMap,SlotBitMapSize(tmpMap));
         }
       else
         QueueObjectMatchAction(theEnv,type,ins,slotNameID);
@@ -367,7 +368,7 @@ void ObjectNetworkAction(
   NOTES        : None
  ***************************************************/
 void ResetObjectMatchTimeTags(
-  void *theEnv)
+  Environment *theEnv)
   {
    OBJECT_ALPHA_NODE *alphaPtr;
    OBJECT_PATTERN_NODE *lastLevel;
@@ -412,9 +413,9 @@ void ResetObjectMatchTimeTags(
   NOTES        : None
  ***************************************************/
 static void QueueObjectMatchAction(
-  void *theEnv,
+  Environment *theEnv,
   int type,
-  INSTANCE_TYPE *ins,
+  Instance *ins,
   int slotNameID)
   {
    OBJECT_MATCH_ACTION *prv,*cur,*newMatch;
@@ -475,7 +476,7 @@ static void QueueObjectMatchAction(
             cur->type = OBJECT_RETRACT;
             if (cur->slotNameIDs != NULL)
               {
-               rm(theEnv,(void *) cur->slotNameIDs,SlotBitMapSize(cur->slotNameIDs));
+               rm(theEnv,cur->slotNameIDs,SlotBitMapSize(cur->slotNameIDs));
                cur->slotNameIDs = NULL;
               }
            }
@@ -550,7 +551,7 @@ static void QueueObjectMatchAction(
                  to allow for growth.
  ****************************************************/
 static SLOT_BITMAP *QueueModifySlotMap(
-  void *theEnv,
+  Environment *theEnv,
   SLOT_BITMAP *oldMap,
   int slotNameID)
   {
@@ -564,12 +565,12 @@ static SLOT_BITMAP *QueueModifySlotMap(
       newsz = sizeof(SLOT_BITMAP) +
               (sizeof(char) * (newmaxid / BITS_PER_BYTE));
       newMap = (SLOT_BITMAP *) gm2(theEnv,newsz);
-      ClearBitString((void *) newMap,newsz);
+      ClearBitString(newMap,newsz);
       if (oldMap != NULL)
         {
          oldsz = SlotBitMapSize(oldMap);
          GenCopyMemory(char,oldsz,newMap,oldMap);
-         rm(theEnv,(void *) oldMap,oldsz);
+         rm(theEnv,oldMap,oldsz);
         }
       newMap->maxid = newmaxid;
      }
@@ -590,11 +591,11 @@ static SLOT_BITMAP *QueueModifySlotMap(
   NOTES        : None
  ***************************************************/
 static void ReturnObjectMatchAction(
-  void *theEnv,
+  Environment *theEnv,
   OBJECT_MATCH_ACTION *omaPtr)
   {
    if (omaPtr->slotNameIDs != NULL)
-     rm(theEnv,(void *) omaPtr->slotNameIDs,SlotBitMapSize(omaPtr->slotNameIDs));
+     rm(theEnv,omaPtr->slotNameIDs,SlotBitMapSize(omaPtr->slotNameIDs));
    rtn_struct(theEnv,objectMatchAction,omaPtr);
   }
 
@@ -608,7 +609,7 @@ static void ReturnObjectMatchAction(
   NOTES        : None
  ***************************************************/
 static void ProcessObjectMatchQueue(
-  void *theEnv)
+  Environment *theEnv)
   {
    OBJECT_MATCH_ACTION *cur;
 
@@ -652,7 +653,7 @@ static void ProcessObjectMatchQueue(
                  checked here
  ******************************************************/
 static void MarkObjectPatternNetwork(
-  void *theEnv,
+  Environment *theEnv,
   SLOT_BITMAP *slotNameIDs)
   {
    OBJECT_ALPHA_NODE *alphaPtr;
@@ -788,13 +789,13 @@ static bool CompareSlotBitMaps(
                  nodes for that slot on this level can be skipped
  **********************************************************************************/
 static void ObjectPatternMatch(
-  void *theEnv,
+  Environment *theEnv,
   int offset,
   OBJECT_PATTERN_NODE *patternTop,
   struct multifieldMarker *endMark)
   {
-   register unsigned saveSlotLength;
-   register INSTANCE_SLOT *saveSlot;
+   unsigned saveSlotLength;
+   INSTANCE_SLOT *saveSlot;
    OBJECT_PATTERN_NODE *blockedNode;
 
    while (patternTop != NULL)
@@ -903,7 +904,7 @@ static void ObjectPatternMatch(
                  CurrentObjectSlotLength - the cardinality of the slot value
  **********************************************************************************/
 static void ProcessPatternNode(
-  void *theEnv,
+  Environment *theEnv,
   int offset,
   OBJECT_PATTERN_NODE *patternNode,
   struct multifieldMarker *endMark)
@@ -1108,7 +1109,7 @@ static void ProcessPatternNode(
   NOTES        : None
  ***************************************************/
 static void CreateObjectAlphaMatch(
-  void *theEnv,
+  Environment *theEnv,
   OBJECT_ALPHA_NODE *alphaPtr)
   {
    struct joinNode *listOfJoins;
@@ -1132,7 +1133,7 @@ static void CreateObjectAlphaMatch(
             of this pattern and mark it as busy
             =================================================== */
          ObjectReteData(theEnv)->CurrentPatternObject->busy++;
-         theMatch = CreateAlphaMatch(theEnv,(void *) ObjectReteData(theEnv)->CurrentPatternObject,
+         theMatch = CreateAlphaMatch(theEnv,ObjectReteData(theEnv)->CurrentPatternObject,
                                      ObjectReteData(theEnv)->CurrentPatternObjectMarks,
                                      (struct patternNodeHeader *) alphaPtr,hashValue);
          theMatch->owner = alphaPtr;
@@ -1179,7 +1180,7 @@ static void CreateObjectAlphaMatch(
   NOTES        : Assumes networkTest != NULL
  ******************************************************/
 static bool EvaluateObjectPatternTest(
-  void *theEnv,
+  Environment *theEnv,
   int objectSlotField,
   struct multifieldMarker *selfSlotMarker,
   EXPRESSION *networkTest,
@@ -1286,8 +1287,8 @@ static bool EvaluateObjectPatternTest(
   NOTES        : None
  ***************************************************/
 static void ObjectAssertAction(
-  void *theEnv,
-  INSTANCE_TYPE *ins)
+  Environment *theEnv,
+  Instance *ins)
   {
    ins->header.timeTag = ObjectReteData(theEnv)->UseEntityTimeTag;
    ObjectReteData(theEnv)->CurrentPatternObject = ins;
@@ -1311,8 +1312,8 @@ static void ObjectAssertAction(
   NOTES        : None
  **********************************************************************/
 static void ObjectModifyAction(
-  void *theEnv,  
-  INSTANCE_TYPE *ins,
+  Environment *theEnv,
+  Instance *ins,
   SLOT_BITMAP *slotNameIDs)
   {
    ins->header.timeTag = ObjectReteData(theEnv)->UseEntityTimeTag;
@@ -1341,8 +1342,8 @@ static void ObjectModifyAction(
   NOTES        : None
  ****************************************************/
 static void ObjectRetractAction(
-  void *theEnv,
-  INSTANCE_TYPE *ins,
+  Environment *theEnv,
+  Instance *ins,
   SLOT_BITMAP *slotNameIDs)
   {
    struct patternMatch *prvMatch,*tmpMatch,
@@ -1434,7 +1435,7 @@ static void ObjectRetractAction(
   NOTES        : None
  *****************************************************/
 static void ObjectPatternNetErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   OBJECT_PATTERN_NODE *patternPtr)
   {
    PrintErrorID(theEnv,"OBJRTMCH",1,true);
@@ -1465,7 +1466,7 @@ static void ObjectPatternNetErrorMessage(
   NOTES        : None
  *********************************************************/
 static void TraceErrorToObjectPattern(
-  void *theEnv,
+  Environment *theEnv,
   bool errorNode,
   OBJECT_PATTERN_NODE *patternPtr)
   {

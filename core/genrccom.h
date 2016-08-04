@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -45,6 +45,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_genrccom
@@ -60,53 +63,53 @@
 #include "moduldef.h"
 #include "symbol.h"
 
-   void                           SetupGenericFunctions(void *);
-   void                          *EnvFindDefgeneric(void *,const char *);
-   void                          *EnvFindDefgenericInModule(void *,const char *);
-   DEFGENERIC                    *LookupDefgenericByMdlOrScope(void *,const char *);
-   DEFGENERIC                    *LookupDefgenericInScope(void *,const char *);
-   void                          *EnvGetNextDefgeneric(void *,void *);
-   long                           EnvGetNextDefmethod(void *,void *,long);
-   bool                           EnvIsDefgenericDeletable(void *,void *);
-   bool                           EnvIsDefmethodDeletable(void *,void *,long);
+   void                           SetupGenericFunctions(Environment *);
+   Defgeneric                    *EnvFindDefgeneric(Environment *,const char *);
+   Defgeneric                    *EnvFindDefgenericInModule(Environment *,const char *);
+   Defgeneric                    *LookupDefgenericByMdlOrScope(Environment *,const char *);
+   Defgeneric                    *LookupDefgenericInScope(Environment *,const char *);
+   Defgeneric                    *EnvGetNextDefgeneric(Environment *,Defgeneric *);
+   long                           EnvGetNextDefmethod(Environment *,Defgeneric *,long);
+   bool                           EnvIsDefgenericDeletable(Environment *,Defgeneric *);
+   bool                           EnvIsDefmethodDeletable(Environment *,Defgeneric *,long);
    void                           UndefgenericCommand(UDFContext *,CLIPSValue *);
    void                           GetDefgenericModuleCommand(UDFContext *,CLIPSValue *);
    void                           UndefmethodCommand(UDFContext *,CLIPSValue *);
-   DEFMETHOD                     *GetDefmethodPointer(void *,long);
-   bool                           EnvUndefgeneric(void *,void *);
-   bool                           EnvUndefmethod(void *,void *,long);
+   Defmethod                     *GetDefmethodPointer(Defgeneric *,long);
+   bool                           EnvUndefgeneric(Environment *,Defgeneric *);
+   bool                           EnvUndefmethod(Environment *,Defgeneric *,long);
 #if ! OBJECT_SYSTEM
    void                           TypeCommand(UDFContext *,CLIPSValue *);
 #endif
 #if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
-   void                           EnvGetDefmethodDescription(void *,char *,size_t,void *,long);
+   void                           EnvGetDefmethodDescription(Environment *,char *,size_t,Defgeneric *,long);
 #endif
 #if DEBUGGING_FUNCTIONS
-   bool                           EnvGetDefgenericWatch(void *,void *);
-   void                           EnvSetDefgenericWatch(void *,bool,void *);
-   bool                           EnvGetDefmethodWatch(void *,void *,long);
-   void                           EnvSetDefmethodWatch(void *,bool,void *,long);
+   bool                           EnvGetDefgenericWatch(Environment *,Defgeneric *);
+   void                           EnvSetDefgenericWatch(Environment *,bool,Defgeneric *);
+   bool                           EnvGetDefmethodWatch(Environment *,Defgeneric *,long);
+   void                           EnvSetDefmethodWatch(Environment *,bool,Defgeneric *,long);
    void                           PPDefgenericCommand(UDFContext *,CLIPSValue *);
    void                           PPDefmethodCommand(UDFContext *,CLIPSValue *);
    void                           ListDefmethodsCommand(UDFContext *,CLIPSValue *);
-   const char                    *EnvGetDefmethodPPForm(void *,void *,long);
+   const char                    *EnvGetDefmethodPPForm(Environment *,Defgeneric *,long);
    void                           ListDefgenericsCommand(UDFContext *,CLIPSValue *);
-   void                           EnvListDefgenerics(void *,const char *,struct defmodule *);
-   void                           EnvListDefmethods(void *,const char *,void *);
+   void                           EnvListDefgenerics(Environment *,const char *,Defmodule *);
+   void                           EnvListDefmethods(Environment *,const char *,Defgeneric *);
 #endif
    void                           GetDefgenericListFunction(UDFContext *,CLIPSValue *);
-   void                           EnvGetDefgenericList(void *,DATA_OBJECT *,struct defmodule *);
+   void                           EnvGetDefgenericList(Environment *,DATA_OBJECT *,Defmodule *);
    void                           GetDefmethodListCommand(UDFContext *,CLIPSValue *);
-   void                           EnvGetDefmethodList(void *,void *,DATA_OBJECT *);
+   void                           EnvGetDefmethodList(Environment *,Defgeneric *,DATA_OBJECT *);
    void                           GetMethodRestrictionsCommand(UDFContext *,CLIPSValue *);
-   void                           EnvGetMethodRestrictions(void *,void *,long,DATA_OBJECT *);
-   SYMBOL_HN                     *GetDefgenericNamePointer(void *);
-   void                           SetNextDefgeneric(void *,void *);
-   const char                    *EnvDefgenericModule(void *,void *);
-   const char                    *EnvGetDefgenericName(void *,void *);
-   const char                    *EnvGetDefgenericPPForm(void *,void *);
-   SYMBOL_HN                     *EnvGetDefgenericNamePointer(void *,void *);
-   void                           EnvSetDefgenericPPForm(void *,void *,const char *);
+   void                           EnvGetMethodRestrictions(Environment *,Defgeneric *,long,DATA_OBJECT *);
+   SYMBOL_HN                     *GetDefgenericNamePointer(Defgeneric *);
+   void                           SetNextDefgeneric(Defgeneric *,Defgeneric *);
+   const char                    *EnvDefgenericModule(Environment *,Defgeneric *);
+   const char                    *EnvGetDefgenericName(Environment *,Defgeneric *);
+   const char                    *EnvGetDefgenericPPForm(Environment *,Defgeneric *);
+   SYMBOL_HN                     *EnvGetDefgenericNamePointer(Environment *,Defgeneric *);
+   void                           EnvSetDefgenericPPForm(Environment *,Defgeneric *,const char *);
 
 #endif /* _H_genrccom */
 

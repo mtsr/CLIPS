@@ -515,7 +515,7 @@
 /***************/
 - (void) fetchFacts: (BOOL) lockFacts
   {
-   struct defmodule *theModule;
+   Defmodule *theModule;
    CLIPSModule *newModule;
    const char *moduleName;
    NSString *theStr;
@@ -540,9 +540,9 @@
    /*=====================================*/
    
    moduleCount = 0;
-   for (theModule = (struct defmodule *) EnvGetNextDefmodule(environment,NULL);
+   for (theModule = EnvGetNextDefmodule(environment,NULL);
         theModule != NULL;
-        theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
+        theModule = EnvGetNextDefmodule(environment,theModule))
      { moduleCount++; }
 
    runningFactModule = [[NSMutableArray alloc] initWithCapacity: moduleCount];
@@ -553,9 +553,9 @@
    /*===================================*/
 
    factCount = 0;
-   for (theFact = (struct fact *) EnvGetNextFact(environment,NULL);
+   for (theFact = EnvGetNextFact(environment,NULL);
         theFact != NULL;
-        theFact = (struct fact *) EnvGetNextFact(environment,theFact))
+        theFact = EnvGetNextFact(environment,theFact))
      { factCount++; }
      
    runningFactList = [[NSMutableArray alloc] initWithCapacity: factCount];
@@ -564,9 +564,9 @@
    /* Get a list of all the modules. */
    /*================================*/
    
-   for (theModule = (struct defmodule *) EnvGetNextDefmodule(environment,NULL);
+   for (theModule = EnvGetNextDefmodule(environment,NULL);
         theModule != NULL;
-        theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
+        theModule = EnvGetNextDefmodule(environment,theModule))
      {
       newModule = [[CLIPSModule alloc] init];
 
@@ -583,9 +583,9 @@
    /* Get the list of all the facts. */
    /*================================*/
    
-   for (theFact = (struct fact *) EnvGetNextFact(environment,NULL);
+   for (theFact = EnvGetNextFact(environment,NULL);
         theFact != NULL;
-        theFact = (struct fact *) EnvGetNextFact(environment,theFact))
+        theFact = EnvGetNextFact(environment,theFact))
      {
       newFact = [[CLIPSFactInstance alloc] initWithFact: theFact fromEnvironment: environment];
 
@@ -601,11 +601,11 @@
 /*******************/
 - (void) fetchInstances: (BOOL) lockInstances
   {
-   struct defmodule *theModule;
+   Defmodule *theModule;
    CLIPSModule *newModule;
    const char *moduleName;
    NSString *theStr;
-   struct instance *theInstance;
+   Instance *theInstance;
    CLIPSFactInstance *newInstance;
    unsigned moduleCount, instanceCount;
 
@@ -627,9 +627,9 @@
    /*=====================================*/
    
    moduleCount = 0;
-   for (theModule = (struct defmodule *) EnvGetNextDefmodule(environment,NULL);
+   for (theModule = EnvGetNextDefmodule(environment,NULL);
         theModule != NULL;
-        theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
+        theModule = EnvGetNextDefmodule(environment,theModule))
      { moduleCount++; }
 
    runningInstanceModule = [[NSMutableArray alloc] initWithCapacity: moduleCount];
@@ -640,9 +640,9 @@
    /*=======================================*/
 
    instanceCount = 0;
-   for (theInstance = (struct instance *) EnvGetNextInstance(environment,NULL);
+   for (theInstance = EnvGetNextInstance(environment,NULL);
         theInstance != NULL;
-        theInstance = (struct instance *) EnvGetNextInstance(environment,theInstance))
+        theInstance = EnvGetNextInstance(environment,theInstance))
      { instanceCount++; }
      
    runningInstanceList = [[NSMutableArray alloc] initWithCapacity: instanceCount];
@@ -651,9 +651,9 @@
    /* Get a list of all the modules. */
    /*================================*/
    
-   for (theModule = (struct defmodule *) EnvGetNextDefmodule(environment,NULL);
+   for (theModule = EnvGetNextDefmodule(environment,NULL);
         theModule != NULL;
-        theModule = (struct defmodule *) EnvGetNextDefmodule(environment,theModule))
+        theModule = EnvGetNextDefmodule(environment,theModule))
      {
       newModule = [[CLIPSModule alloc] init];
 
@@ -670,9 +670,9 @@
    /* Get the list of all the instances. */
    /*====================================*/
    
-   for (theInstance = (struct instance *) EnvGetNextInstance(environment,NULL);
+   for (theInstance = EnvGetNextInstance(environment,NULL);
         theInstance != NULL;
-        theInstance = (struct instance *) EnvGetNextInstance(environment,theInstance))
+        theInstance = EnvGetNextInstance(environment,theInstance))
      {
       newInstance = [[CLIPSFactInstance alloc] initWithInstance: theInstance fromEnvironment: environment];
 

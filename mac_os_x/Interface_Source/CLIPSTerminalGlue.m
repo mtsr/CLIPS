@@ -32,7 +32,7 @@ void ClearEnvironmentWindowCommand(
 /*   I/O directed to the display window.                  */
 /**********************************************************/
 bool QueryInterfaceRouter(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName)
   {
 #if MAC_XCD
@@ -57,7 +57,7 @@ bool QueryInterfaceRouter(
 /*   which prints to the display window. */
 /*****************************************/
 void PrintInterfaceRouter(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   const char *str)
   {
@@ -77,7 +77,7 @@ void PrintInterfaceRouter(
 /*   process other events.                 */
 /*******************************************/
 int GetcInterfaceRouter(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName)
   {
    int theChar;
@@ -94,7 +94,7 @@ int GetcInterfaceRouter(
 /*   the application doesn't exit.               */
 /*************************************************/
 void ExitInterfaceRouter(
-  void *theEnv,
+  Environment *theEnv,
   int num)
   {   
    CLIPSTerminalController *theController = (__bridge CLIPSTerminalController *) GetEnvironmentRouterContext(theEnv);
@@ -108,7 +108,7 @@ void ExitInterfaceRouter(
 /* MacPeriodicFunction: */
 /************************/
 void MacPeriodicFunction(
-  void *theEnv)
+  Environment *theEnv)
   {
    CLIPSTerminalController *theController = (__bridge CLIPSTerminalController *) GetEnvironmentContext(theEnv);
    NSConditionLock *theAgendaLock, *theFactsLock;
@@ -177,7 +177,7 @@ void MacPeriodicFunction(
 /* MacBeforeOpenFunction:             */
 /**************************************/
 int MacBeforeOpenFunction( // TBD bool?
-  void *theEnv)
+  Environment *theEnv)
   {
    AppController *theDelegate = [NSApp delegate];
    CLIPSTerminalController *theController = [theDelegate mainTerminal];
@@ -195,7 +195,7 @@ int MacBeforeOpenFunction( // TBD bool?
 /* MacAfterOpenFunction: */
 /*************************/
 int MacAfterOpenFunction( // TBD bool?
-  void *theEnv)
+  Environment *theEnv)
   {
    AppController *theDelegate = [NSApp delegate];
    NSLock *theLock = [theDelegate fileOpenLock];

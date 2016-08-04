@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -50,6 +50,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_inscom
@@ -65,44 +68,44 @@
 
 struct instanceData
   { 
-   INSTANCE_TYPE DummyInstance;
-   INSTANCE_TYPE **InstanceTable;
+   Instance DummyInstance;
+   Instance **InstanceTable;
    bool MaintainGarbageInstances;
    bool MkInsMsgPass;
    bool ChangesToInstances;
    IGARBAGE *InstanceGarbageList;
    struct patternEntityRecord InstanceInfo;
-   INSTANCE_TYPE *InstanceList;  
+   Instance *InstanceList;  
    unsigned long GlobalNumberOfInstances;
-   INSTANCE_TYPE *CurrentInstance;
-   INSTANCE_TYPE *InstanceListBottom;
+   Instance *CurrentInstance;
+   Instance *InstanceListBottom;
    bool ObjectModDupMsgValid;
   };
 
 #define InstanceData(theEnv) ((struct instanceData *) GetEnvironmentData(theEnv,INSTANCE_DATA))
 
-   void                           SetupInstances(void *);
-   bool                           EnvDeleteInstance(void *,void *);
-   bool                           EnvUnmakeInstance(void *,void *);
+   void                           SetupInstances(Environment *);
+   bool                           EnvDeleteInstance(Environment *,Instance *);
+   bool                           EnvUnmakeInstance(Environment *,Instance *);
 #if DEBUGGING_FUNCTIONS
    void                           InstancesCommand(UDFContext *,CLIPSValue *);
    void                           PPInstanceCommand(UDFContext *,CLIPSValue *);
-   void                           EnvInstances(void *,const char *,void *,const char *,bool);
+   void                           EnvInstances(Environment *,const char *,Defmodule *,const char *,bool);
 #endif
-   void                          *EnvMakeInstance(void *,const char *);
-   void                          *EnvCreateRawInstance(void *,void *,const char *);
-   void                          *EnvFindInstance(void *,void *,const char *,bool);
-   bool                           EnvValidInstanceAddress(void *,void *);
-   void                           EnvDirectGetSlot(void *,void *,const char *,DATA_OBJECT *);
-   bool                           EnvDirectPutSlot(void *,void *,const char *,DATA_OBJECT *);
-   const char                    *EnvGetInstanceName(void *,void *);
-   void                          *EnvGetInstanceClass(void *,void *);
-   unsigned long GetGlobalNumberOfInstances(void *);
-   void                          *EnvGetNextInstance(void *,void *);
-   void                          *GetNextInstanceInScope(void *,void *);
-   void                          *EnvGetNextInstanceInClass(void *,void *,void *);
-   void                          *EnvGetNextInstanceInClassAndSubclasses(void *,void **,void *,DATA_OBJECT *);
-   void                           EnvGetInstancePPForm(void *,char *,size_t,void *);
+   Instance                      *EnvMakeInstance(Environment *,const char *);
+   Instance                      *EnvCreateRawInstance(Environment *,Defclass *,const char *);
+   Instance                      *EnvFindInstance(Environment *,Defmodule *,const char *,bool);
+   bool                           EnvValidInstanceAddress(Environment *,Instance *);
+   void                           EnvDirectGetSlot(Environment *,Instance *,const char *,DATA_OBJECT *);
+   bool                           EnvDirectPutSlot(Environment *,Instance *,const char *,DATA_OBJECT *);
+   const char                    *EnvGetInstanceName(Environment *,Instance *);
+   Defclass                      *EnvGetInstanceClass(Environment *,Instance *);
+   unsigned long                  GetGlobalNumberOfInstances(Environment *);
+   Instance                      *EnvGetNextInstance(Environment *,Instance *);
+   Instance                      *GetNextInstanceInScope(Environment *,Instance *);
+   Instance                      *EnvGetNextInstanceInClass(Environment *,Defclass *,Instance *);
+   Instance                      *EnvGetNextInstanceInClassAndSubclasses(Environment *,Defclass **,Instance *,DATA_OBJECT *);
+   void                           EnvGetInstancePPForm(Environment *,char *,size_t,Instance *);
    void                           ClassCommand(UDFContext *,CLIPSValue *);
    void                           DeleteInstanceCommand(UDFContext *,CLIPSValue *);
    void                           UnmakeInstanceCommand(UDFContext *,CLIPSValue *);

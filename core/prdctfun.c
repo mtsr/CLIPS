@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*              PREDICATE FUNCTIONS MODULE             */
    /*******************************************************/
@@ -34,6 +34,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -53,7 +56,7 @@
 /*   math and predicate functions.                */
 /**************************************************/
 void PredicateFunctionDefinitions(
-  void *theEnv)
+  Environment *theEnv)
   {
 #if ! RUN_TIME
    EnvAddUDF(theEnv,"not", "b", NotFunction, "NotFunction",   1,1,          NULL,NULL);

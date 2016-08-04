@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*                PRINT UTILITY MODULE                 */
    /*******************************************************/
@@ -52,6 +52,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: File name/line count displayed for errors      */
 /*            and warnings during load command.              */
 /*                                                           */
@@ -84,7 +87,7 @@
 /*    data for print utility routines.               */
 /*****************************************************/
 void InitializePrintUtilityData(
-  void *theEnv)
+  Environment *theEnv)
   {
    AllocateEnvironmentData(theEnv,PRINT_UTILITY_DATA,sizeof(struct printUtilityData),NULL);
   }
@@ -95,7 +98,7 @@ void InitializePrintUtilityData(
 /*   string which can be printed.                          */
 /***********************************************************/
 void PrintInChunks(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   const char *bigString)
   {
@@ -134,7 +137,7 @@ void PrintInChunks(
 /* PrintFloat: Controls printout of floating point numbers. */
 /************************************************************/
 void PrintFloat(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileid,
   double number)
   {
@@ -148,7 +151,7 @@ void PrintFloat(
 /* PrintLongInteger: Controls printout of integers. */
 /****************************************************/
 void PrintLongInteger(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   long long number)
   {
@@ -162,7 +165,7 @@ void PrintLongInteger(
 /* PrintAtom: Prints an atomic value. */
 /**************************************/
 void PrintAtom(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   int type,
   void *value)
@@ -255,7 +258,7 @@ void PrintAtom(
 /*   such as list-defrules.                               */
 /**********************************************************/
 void PrintTally(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   long long count,
   const char *singular,
@@ -278,7 +281,7 @@ void PrintTally(
 /*   error ID for an error message.         */
 /********************************************/
 void PrintErrorID(
-  void *theEnv,
+  Environment *theEnv,
   const char *module,
   int errorID,
   bool printCR)
@@ -320,7 +323,7 @@ void PrintErrorID(
 /*   warning ID for a warning message.        */
 /**********************************************/
 void PrintWarningID(
-  void *theEnv,
+  Environment *theEnv,
   const char *module,
   int warningID,
   bool printCR)
@@ -364,7 +367,7 @@ void PrintWarningID(
 /*  when an "item" can not be found.               */
 /***************************************************/
 void CantFindItemErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *itemType,
   const char *itemName)
   {
@@ -381,7 +384,7 @@ void CantFindItemErrorMessage(
 /*  message when an "item" can not be found.         */
 /*****************************************************/
 void CantFindItemInFunctionErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *itemType,
   const char *itemName,
   const char *func)
@@ -401,7 +404,7 @@ void CantFindItemInFunctionErrorMessage(
 /*  when an "item" can not be deleted.               */
 /*****************************************************/
 void CantDeleteItemErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *itemType,
   const char *itemName)
   {
@@ -418,7 +421,7 @@ void CantDeleteItemErrorMessage(
 /*  when an "item" has already been parsed.         */
 /****************************************************/
 void AlreadyParsedErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *itemType,
   const char *itemName)
   {
@@ -433,7 +436,7 @@ void AlreadyParsedErrorMessage(
 /* SyntaxErrorMessage: Generalized syntax error message. */
 /*********************************************************/
 void SyntaxErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *location)
   {
    PrintErrorID(theEnv,"PRNTUTIL",2,true);
@@ -454,7 +457,7 @@ void SyntaxErrorMessage(
 /*  which can not access local variables.           */
 /****************************************************/
 void LocalVariableErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *byWhat)
   {
    PrintErrorID(theEnv,"PRNTUTIL",6,true);
@@ -468,7 +471,7 @@ void LocalVariableErrorMessage(
 /*   for major internal errors.           */
 /******************************************/
 void SystemError(
-  void *theEnv,
+  Environment *theEnv,
   const char *module,
   int errorID)
   {
@@ -494,7 +497,7 @@ void SystemError(
 /*   for when a function attempts to divide by zero.   */
 /*******************************************************/
 void DivideByZeroErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName)
   {
    PrintErrorID(theEnv,"PRNTUTIL",7,false);
@@ -507,7 +510,7 @@ void DivideByZeroErrorMessage(
 /* FloatToString: Converts number to KB string format. */
 /*******************************************************/
 const char *FloatToString(
-  void *theEnv,
+  Environment *theEnv,
   double number)
   {
    char floatString[40];
@@ -536,7 +539,7 @@ const char *FloatToString(
 /* LongIntegerToString: Converts long integer to KB string format. */
 /*******************************************************************/
 const char *LongIntegerToString(
-  void *theEnv,
+  Environment *theEnv,
   long long number)
   {
    char buffer[50];
@@ -552,7 +555,7 @@ const char *LongIntegerToString(
 /* DataObjectToString: Converts a DATA_OBJECT to KB string format. */
 /*******************************************************************/
 const char *DataObjectToString(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *theDO)
   {
    void *thePtr;
@@ -611,7 +614,7 @@ const char *DataObjectToString(
          else
            {
             prefix = "<Instance-";
-            theString = ValueToString(GetFullInstanceName(theEnv,(INSTANCE_TYPE *) thePtr));
+            theString = ValueToString(GetFullInstanceName(theEnv,(Instance *) thePtr));
             postfix = ">";
            }
            
@@ -656,7 +659,7 @@ const char *DataObjectToString(
 /*   occur during the evaluation of a salience value.       */
 /************************************************************/
 void SalienceInformationError(
-  void *theEnv,
+  Environment *theEnv,
   const char *constructType,
   const char *constructName)
   {
@@ -678,7 +681,7 @@ void SalienceInformationError(
 /*   and maximum salience values.                         */
 /**********************************************************/
 void SalienceRangeError(
-  void *theEnv,
+  Environment *theEnv,
   int min,
   int max)
   {
@@ -695,7 +698,7 @@ void SalienceRangeError(
 /*   a rule's salience does not evaluate to an integer.        */
 /***************************************************************/
 void SalienceNonIntegerError(
-  void *theEnv)
+  Environment *theEnv)
   {
    PrintErrorID(theEnv,"PRNTUTIL",10,true);
    EnvPrintRouter(theEnv,WERROR,"Salience value must be an integer value.\n");
@@ -708,7 +711,7 @@ void SalienceNonIntegerError(
 /*   name and the function name.                   */
 /***************************************************/
 void SlotExistError(
-  void *theEnv,
+  Environment *theEnv,
   const char *sname,
   const char *func)
   {

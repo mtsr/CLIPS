@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/05/16            */
+   /*             CLIPS Version 6.50  07/30/16            */
    /*                                                     */
    /*                ENVRNMNT HEADER FILE                 */
    /*******************************************************/
@@ -48,6 +48,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Removed support for environment globals.       */
 /*                                                           */
 /*************************************************************/
@@ -60,6 +63,8 @@
 
 #include <stdbool.h>
 
+typedef struct environmentData Environment;
+
 #include "symbol.h"
 
 #define USER_ENVIRONMENT_DATA 70
@@ -68,12 +73,12 @@
 struct environmentCleanupFunction
   {
    const char *name;
-   void (*func)(void *);
+   void (*func)(Environment *);
    int priority;
    struct environmentCleanupFunction *next;
   };
 
-typedef struct environmentData
+struct environmentData
   {   
    unsigned int initialized : 1;
    void *context;
@@ -81,31 +86,28 @@ typedef struct environmentData
    void *functionContext;
    void *callbackContext;
    void **theData;
-   void (**cleanupFunctions)(void *);
+   void (**cleanupFunctions)(Environment *);
    struct environmentCleanupFunction *listOfCleanupEnvironmentFunctions;
    struct environmentData *next;
-  } Environment;
-
-typedef struct environmentData ENVIRONMENT_DATA;
-typedef struct environmentData * ENVIRONMENT_DATA_PTR;
+  };
 
 #define GetEnvironmentData(theEnv,position) (((struct environmentData *) theEnv)->theData[position])
 #define SetEnvironmentData(theEnv,position,value) (((struct environmentData *) theEnv)->theData[position] = value)
 
-   bool                           AllocateEnvironmentData(void *,unsigned int,unsigned long,void (*)(void *));
+   bool                           AllocateEnvironmentData(Environment *,unsigned int,unsigned long,void (*)(Environment *));
    void                          *CreateEnvironment(void);
    void                          *CreateRuntimeEnvironment(struct symbolHashNode **,struct floatHashNode **,
                                                                   struct integerHashNode **,struct bitMapHashNode **);
-   bool                           DestroyEnvironment(void *);
-   bool                           AddEnvironmentCleanupFunction(void *,const char *,void (*)(void *),int);
-   void                          *GetEnvironmentContext(void *);
-   void                          *SetEnvironmentContext(void *,void *);
-   void                          *GetEnvironmentRouterContext(void *);
-   void                          *SetEnvironmentRouterContext(void *,void *);
-   void                          *GetEnvironmentFunctionContext(void *);
-   void                          *SetEnvironmentFunctionContext(void *,void *);
-   void                          *GetEnvironmentCallbackContext(void *);
-   void                          *SetEnvironmentCallbackContext(void *,void *);
+   bool                           DestroyEnvironment(Environment *);
+   bool                           AddEnvironmentCleanupFunction(Environment *,const char *,void (*)(Environment *),int);
+   void                          *GetEnvironmentContext(Environment *);
+   void                          *SetEnvironmentContext(Environment *,void *);
+   void                          *GetEnvironmentRouterContext(Environment *);
+   void                          *SetEnvironmentRouterContext(Environment *,void *);
+   void                          *GetEnvironmentFunctionContext(Environment *);
+   void                          *SetEnvironmentFunctionContext(Environment *,void *);
+   void                          *GetEnvironmentCallbackContext(Environment *);
+   void                          *SetEnvironmentCallbackContext(Environment *,void *);
 
 #endif /* _H_envrnmnt */
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*         DEFMODULE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -34,6 +34,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_modulbsc
@@ -44,13 +47,13 @@
 
 #include "evaluatn.h"
 
-   void                           DefmoduleBasicCommands(void *);
+   void                           DefmoduleBasicCommands(Environment *);
    void                           EnvGetDefmoduleListFunction(UDFContext *,CLIPSValue *);
-   void                           EnvGetDefmoduleList(void *,DATA_OBJECT_PTR);
+   void                           EnvGetDefmoduleList(Environment *,DATA_OBJECT_PTR);
    void                           PPDefmoduleCommand(UDFContext *,CLIPSValue *);
-   bool                           PPDefmodule(void *,const char *,const char *);
+   bool                           PPDefmodule(Environment *,const char *,const char *);
    void                           ListDefmodulesCommand(UDFContext *,CLIPSValue *);
-   void                           EnvListDefmodules(void *,const char *);
+   void                           EnvListDefmodules(Environment *,const char *);
 
 #endif /* _H_modulbsc */
 

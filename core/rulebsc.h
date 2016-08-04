@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*         DEFRULE BASIC COMMANDS HEADER FILE          */
    /*******************************************************/
@@ -48,6 +48,11 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_rulebsc
@@ -58,23 +63,23 @@
 
 #include "evaluatn.h"
 
-   void                           DefruleBasicCommands(void *);
+   void                           DefruleBasicCommands(Environment *);
    void                           UndefruleCommand(UDFContext *,CLIPSValue *);
-   bool                           EnvUndefrule(void *,void *);
+   bool                           EnvUndefrule(Environment *,Defrule *);
    void                           GetDefruleListFunction(UDFContext *,CLIPSValue *);
-   void                           EnvGetDefruleList(void *,DATA_OBJECT_PTR,void *);
+   void                           EnvGetDefruleList(Environment *,DATA_OBJECT_PTR,Defmodule *);
    void                           DefruleModuleFunction(UDFContext *,CLIPSValue *);
 #if DEBUGGING_FUNCTIONS
    void                           PPDefruleCommand(UDFContext *,CLIPSValue *);
-   int                            PPDefrule(void *,const char *,const char *);
+   bool                           PPDefrule(Environment *,const char *,const char *);
    void                           ListDefrulesCommand(UDFContext *,CLIPSValue *);
-   void                           EnvListDefrules(void *,const char *,void *);
-   bool                           EnvGetDefruleWatchFirings(void *,void *);
-   bool                           EnvGetDefruleWatchActivations(void *,void *);
-   void                           EnvSetDefruleWatchFirings(void *,bool,void *);
-   void                           EnvSetDefruleWatchActivations(void *,bool,void *);
-   bool                           DefruleWatchAccess(void *,int,bool,struct expr *);
-   bool                           DefruleWatchPrint(void *,const char *,int,struct expr *);
+   void                           EnvListDefrules(Environment *,const char *,Defmodule *);
+   bool                           EnvGetDefruleWatchFirings(Environment *,Defrule *);
+   bool                           EnvGetDefruleWatchActivations(Environment *,Defrule *);
+   void                           EnvSetDefruleWatchFirings(Environment *,bool,Defrule *);
+   void                           EnvSetDefruleWatchActivations(Environment *,bool,Defrule *);
+   bool                           DefruleWatchAccess(Environment *,int,bool,struct expr *);
+   bool                           DefruleWatchPrint(Environment *,const char *,int,struct expr *);
 #endif
 
 #endif /* _H_rulebsc */

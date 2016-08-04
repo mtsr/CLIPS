@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*          INSTANCE PRIMITIVE SUPPORT MODULE          */
    /*******************************************************/
@@ -45,6 +45,9 @@
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -92,23 +95,21 @@
 #define MAKE_TRACE   "==>"
 #define UNMAKE_TRACE "<=="
 
-/* =========================================
-   *****************************************
-      INTERNALLY VISIBLE FUNCTION HEADERS
-   =========================================
-   ***************************************** */
+/***************************************/
+/* LOCAL INTERNAL FUNCTION DEFINITIONS */
+/***************************************/
 
-static INSTANCE_TYPE *NewInstance(void *);
-static INSTANCE_TYPE *InstanceLocationInfo(void *,DEFCLASS *,SYMBOL_HN *,INSTANCE_TYPE **,
-                                           unsigned *);
-static void InstallInstance(void *,INSTANCE_TYPE *,bool);
-static void BuildDefaultSlots(void *,bool);
-static bool CoreInitializeInstance(void *,INSTANCE_TYPE *,EXPRESSION *);
-static bool InsertSlotOverrides(void *,INSTANCE_TYPE *,EXPRESSION *);
-static void EvaluateClassDefaults(void *,INSTANCE_TYPE *);
+   static Instance               *NewInstance(Environment *);
+   static Instance               *InstanceLocationInfo(Environment *,Defclass *,SYMBOL_HN *,Instance **,
+                                                       unsigned *);
+   static void                    InstallInstance(Environment *,Instance *,bool);
+   static void                    BuildDefaultSlots(Environment *,bool);
+   static bool                    CoreInitializeInstance(Environment *,Instance *,EXPRESSION *);
+   static bool                    InsertSlotOverrides(Environment *,Instance *,EXPRESSION *);
+   static void                    EvaluateClassDefaults(Environment *,Instance *);
 
 #if DEBUGGING_FUNCTIONS
-static void PrintInstanceWatch(void *,const char *,INSTANCE_TYPE *);
+   static void                    PrintInstanceWatch(Environment *,const char *,Instance *);
 #endif
 
 /* =========================================
@@ -131,7 +132,7 @@ void InitializeInstanceCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   INSTANCE_TYPE *ins;
+   Instance *ins;
    Environment *theEnv = UDFContextEnvironment(context);
    
    mCVSetBoolean(returnValue,false);
@@ -160,9 +161,9 @@ void MakeInstanceCommand(
   CLIPSValue *returnValue)
   {
    SYMBOL_HN *iname;
-   INSTANCE_TYPE *ins;
+   Instance *ins;
    DATA_OBJECT temp;
-   DEFCLASS *cls;
+   Defclass *cls;
    Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
@@ -178,7 +179,7 @@ void MakeInstanceCommand(
    iname = (SYMBOL_HN *) GetValue(temp);
 
    if (GetFirstArgument()->nextArg->type == DEFCLASS_PTR)
-     cls = (DEFCLASS *) GetFirstArgument()->nextArg->value;
+     cls = (Defclass *) GetFirstArgument()->nextArg->value;
    else
      {
       EvaluateExpression(theEnv,GetFirstArgument()->nextArg,&temp);
@@ -236,8 +237,8 @@ void MakeInstanceCommand(
                  name.
  ***************************************************/
 SYMBOL_HN *GetFullInstanceName(
-  void *theEnv,
-  INSTANCE_TYPE *ins)
+  Environment *theEnv,
+  Instance *ins)
   {
    /*
    const char *moduleName;
@@ -254,15 +255,15 @@ SYMBOL_HN *GetFullInstanceName(
 /*
    if (ins->garbage)
      return(ins->name);
-   if (ins->cls->header.whichModule->theModule == ((struct defmodule *) EnvGetCurrentModule(theEnv)))
+   if (ins->cls->header.whichModule->theModule == EnvGetCurrentModule(theEnv))
      return(ins->name);
-   moduleName = EnvGetDefmoduleName(theEnv,(void *) ins->cls->header.whichModule->theModule);
+   moduleName = EnvGetDefmoduleName(theEnv,ins->cls->header.whichModule->theModule);
    bufsz = (sizeof(char) * (strlen(moduleName) +
                                   strlen(ValueToString(ins->name)) + 3));
    buffer = (char *) gm2(theEnv,bufsz);
    gensprintf(buffer,"%s::%s",moduleName,ValueToString(ins->name));
    iname = (SYMBOL_HN *) EnvAddSymbol(theEnv,buffer);
-   rm(theEnv,(void *) buffer,bufsz);
+   rm(theEnv,buffer,bufsz);
    return(iname);
 */
   }
@@ -284,13 +285,13 @@ SYMBOL_HN *GetFullInstanceName(
   SIDE EFFECTS : Old definition (if any) is deleted
   NOTES        : None
  ***************************************************/
-INSTANCE_TYPE *BuildInstance(
-  void *theEnv,
+Instance *BuildInstance(
+  Environment *theEnv,
   SYMBOL_HN *iname,
-  DEFCLASS *cls,
+  Defclass *cls,
   bool initMessage)
   {
-   INSTANCE_TYPE *ins,*iprv;
+   Instance *ins,*iprv;
    unsigned hashTableIndex;
    unsigned modulePosition;
    SYMBOL_HN *moduleName;
@@ -303,17 +304,17 @@ INSTANCE_TYPE *BuildInstance(
       EnvPrintRouter(theEnv,WERROR,"Cannot create instances of reactive classes while\n");
       EnvPrintRouter(theEnv,WERROR,"  pattern-matching is in process.\n");
       EnvSetEvaluationError(theEnv,true);
-      return(NULL);
+      return NULL;
      }
 #endif
    if (cls->abstract)
      {
       PrintErrorID(theEnv,"INSMNGR",3,false);
       EnvPrintRouter(theEnv,WERROR,"Cannot create instances of abstract class ");
-      EnvPrintRouter(theEnv,WERROR,EnvGetDefclassName(theEnv,(void *) cls));
+      EnvPrintRouter(theEnv,WERROR,EnvGetDefclassName(theEnv,cls));
       EnvPrintRouter(theEnv,WERROR,".\n");
       EnvSetEvaluationError(theEnv,true);
-      return(NULL);
+      return NULL;
      }
    modulePosition = FindModuleSeparator(ValueToString(iname));
    if (modulePosition)
@@ -325,7 +326,7 @@ INSTANCE_TYPE *BuildInstance(
          PrintErrorID(theEnv,"INSMNGR",11,true);
          EnvPrintRouter(theEnv,WERROR,"Invalid module specifier in new instance name.\n");
          EnvSetEvaluationError(theEnv,true);
-         return(NULL);
+         return NULL;
         }
       iname = ExtractConstructName(theEnv,modulePosition,ValueToString(iname));
      }
@@ -342,7 +343,7 @@ INSTANCE_TYPE *BuildInstance(
          EnvPrintRouter(theEnv,WERROR,ValueToString(ins->cls->header.name));
          EnvPrintRouter(theEnv,WERROR,".\n");
          EnvSetEvaluationError(theEnv,true);
-         return(NULL);
+         return NULL;
         }
         
       if (ins->installed == 0)
@@ -352,7 +353,7 @@ INSTANCE_TYPE *BuildInstance(
          EnvPrintRouter(theEnv,WERROR,ValueToString(iname));
          EnvPrintRouter(theEnv,WERROR," has a slot-value which depends on the instance definition.\n");
          EnvSetEvaluationError(theEnv,true);
-         return(NULL);
+         return NULL;
         }
       ins->busy++;
       IncrementSymbolCount(iname);
@@ -372,7 +373,7 @@ INSTANCE_TYPE *BuildInstance(
          EnvPrintRouter(theEnv,WERROR,ValueToString(iname));
          EnvPrintRouter(theEnv,WERROR,".\n");
          EnvSetEvaluationError(theEnv,true);
-         return(NULL);
+         return NULL;
         }
      }
 
@@ -393,7 +394,7 @@ INSTANCE_TYPE *BuildInstance(
      {
       rtn_struct(theEnv,instance,InstanceData(theEnv)->CurrentInstance);
       InstanceData(theEnv)->CurrentInstance = NULL;
-      return(NULL);
+      return NULL;
      }
 #endif
 
@@ -454,7 +455,7 @@ INSTANCE_TYPE *BuildInstance(
 
 #if DEFRULE_CONSTRUCT
    if (ins->cls->reactive)
-     ObjectNetworkAction(theEnv,OBJECT_ASSERT,(INSTANCE_TYPE *) ins,-1);
+     ObjectNetworkAction(theEnv,OBJECT_ASSERT,(Instance *) ins,-1);
 #endif
 
    return(ins);
@@ -514,10 +515,10 @@ void InitSlotsCommand(
                    instance was garbage collected).
  ******************************************************/
 bool QuashInstance(
-  void *theEnv,
-  INSTANCE_TYPE *ins)
+  Environment *theEnv,
+  Instance *ins)
   {
-   register int iflag;
+   int iflag;
    IGARBAGE *gptr;
 
 #if DEFRULE_CONSTRUCT
@@ -550,7 +551,7 @@ bool QuashInstance(
    RemoveEntityDependencies(theEnv,(struct patternEntity *) ins);
 
    if (ins->cls->reactive)
-     ObjectNetworkAction(theEnv,OBJECT_RETRACT,(INSTANCE_TYPE *) ins,-1);
+     ObjectNetworkAction(theEnv,OBJECT_RETRACT,(Instance *) ins,-1);
 #endif
 
    if (ins->prvHash != NULL)
@@ -686,10 +687,10 @@ void InactiveMakeInstance(
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************/
-static INSTANCE_TYPE *NewInstance(
-  void *theEnv)
+static Instance *NewInstance(
+  Environment *theEnv)
   {
-   INSTANCE_TYPE *instance;
+   Instance *instance;
 
    instance = get_struct(theEnv,instance);
 #if DEFRULE_CONSTRUCT
@@ -737,14 +738,14 @@ static INSTANCE_TYPE *NewInstance(
                  Change: instance names must be unique regardless
                  of module.
  *****************************************************************/
-static INSTANCE_TYPE *InstanceLocationInfo(
-  void *theEnv,
-  DEFCLASS *cls,
+static Instance *InstanceLocationInfo(
+  Environment *theEnv,
+  Defclass *cls,
   SYMBOL_HN *iname,
-  INSTANCE_TYPE **prv,
+  Instance **prv,
   unsigned *hashTableIndex)
   {
-   INSTANCE_TYPE *ins;
+   Instance *ins;
 
    *hashTableIndex = HashInstance(iname);
    ins = InstanceData(theEnv)->InstanceTable[*hashTableIndex];
@@ -778,7 +779,7 @@ static INSTANCE_TYPE *InstanceLocationInfo(
       ins = ins->nxtHash;
      }
    */
-   return(NULL);
+   return NULL;
   }
 
 /********************************************************
@@ -795,8 +796,8 @@ static INSTANCE_TYPE *InstanceLocationInfo(
                    by PutSlotValue
  ********************************************************/
 static void InstallInstance(
-  void *theEnv,
-  INSTANCE_TYPE *ins,
+  Environment *theEnv,
+  Instance *ins,
   bool set)
   {
    if (set == true)
@@ -809,7 +810,7 @@ static void InstallInstance(
 #endif
       ins->installed = 1;
       IncrementSymbolCount(ins->name);
-      IncrementDefclassBusyCount(theEnv,(void *) ins->cls);
+      IncrementDefclassBusyCount(theEnv,ins->cls);
       InstanceData(theEnv)->GlobalNumberOfInstances++;
      }
    else
@@ -846,14 +847,14 @@ static void InstallInstance(
                  stored in a global variable
  ****************************************************************/
 static void BuildDefaultSlots(
-  void *theEnv,
+  Environment *theEnv,
   bool initMessage)
   {
-   register unsigned i,j;
+   unsigned i,j;
    unsigned scnt;
    unsigned lscnt;
    INSTANCE_SLOT *dst = NULL,**adst;
-   SLOT_DESC **src;
+   SlotDescriptor **src;
 
    scnt = InstanceData(theEnv)->CurrentInstance->cls->instanceSlotCount;
    lscnt = InstanceData(theEnv)->CurrentInstance->cls->localInstanceSlotCount;
@@ -922,8 +923,8 @@ static void BuildDefaultSlots(
   NOTES        : None
  *******************************************************************/
 static bool CoreInitializeInstance(
-  void *theEnv,
-  INSTANCE_TYPE *ins,
+  Environment *theEnv,
+  Instance *ins,
   EXPRESSION *ovrexp)
   {
    DATA_OBJECT temp;
@@ -996,8 +997,8 @@ static bool CoreInitializeInstance(
                     simply copies the slot value-expression
  **********************************************************/
 static bool InsertSlotOverrides(
-  void *theEnv,
-  INSTANCE_TYPE *ins,
+  Environment *theEnv,
+  Instance *ins,
   EXPRESSION *slot_exp)
   {
    INSTANCE_SLOT *slot;
@@ -1066,8 +1067,8 @@ static bool InsertSlotOverrides(
   NOTES        : None
  *****************************************************************************/
 static void EvaluateClassDefaults(
-  void *theEnv,
-  INSTANCE_TYPE *ins)
+  Environment *theEnv,
+  Instance *ins)
   {
    INSTANCE_SLOT *slot;
    DATA_OBJECT temp,junk;
@@ -1140,9 +1141,9 @@ static void EvaluateClassDefaults(
   NOTES        : None
  ***************************************************/
 static void PrintInstanceWatch(
-  void *theEnv,
+  Environment *theEnv,
   const char *traceString,
-  INSTANCE_TYPE *theInstance)
+  Instance *theInstance)
   {
    EnvPrintRouter(theEnv,WTRACE,traceString);
    EnvPrintRouter(theEnv,WTRACE," instance ");

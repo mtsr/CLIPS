@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*               SYSTEM DEPENDENT MODULE               */
    /*******************************************************/
@@ -88,6 +88,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Updated compilations flags for CatchCtrlC.     */
 /*                                                           */
 /*            Moved CatchCtrlC to main.c.                    */
@@ -139,9 +142,9 @@
 
 struct systemDependentData
   { 
-   void (*RedrawScreenFunction)(void *);
-   void (*PauseEnvFunction)(void *);
-   void (*ContinueEnvFunction)(void *,int);
+   void (*RedrawScreenFunction)(Environment *);
+   void (*PauseEnvFunction)(Environment *);
+   void (*ContinueEnvFunction)(Environment *,int);
 
 #if WIN_MVC
    int BinaryFileHandle;
@@ -152,8 +155,8 @@ struct systemDependentData
 #if (! WIN_MVC)
    FILE *BinaryFP;
 #endif
-   int (*BeforeOpenFunction)(void *);
-   int (*AfterOpenFunction)(void *);
+   int (*BeforeOpenFunction)(Environment *);
+   int (*AfterOpenFunction)(Environment *);
    jmp_buf *jmpBuffer;
   };
 
@@ -164,7 +167,7 @@ struct systemDependentData
 /*    data for system dependent routines.               */
 /********************************************************/
 void InitializeSystemDependentData(
-  void *theEnv)
+  Environment *theEnv)
   {
    AllocateEnvironmentData(theEnv,SYSTEM_DEPENDENT_DATA,sizeof(struct systemDependentData),NULL);
   }
@@ -175,8 +178,8 @@ void InitializeSystemDependentData(
 /*   overwritten by execution of a command.           */
 /******************************************************/
 void SetRedrawFunction(
-  void *theEnv,
-  void (*theFunction)(void *))
+  Environment *theEnv,
+  void (*theFunction)(Environment *))
   {
    SystemDependentData(theEnv)->RedrawScreenFunction = theFunction;
   }
@@ -186,8 +189,8 @@ void SetRedrawFunction(
 /*   which puts terminal in a normal state.           */
 /******************************************************/
 void SetPauseEnvFunction(
-  void *theEnv,
-  void (*theFunction)(void *))
+  Environment *theEnv,
+  void (*theFunction)(Environment *))
   {
    SystemDependentData(theEnv)->PauseEnvFunction = theFunction;
   }
@@ -198,8 +201,8 @@ void SetPauseEnvFunction(
 /*   screen interface state.                             */
 /*********************************************************/
 void SetContinueEnvFunction(
-  void *theEnv,
-  void (*theFunction)(void *,int))
+  Environment *theEnv,
+  void (*theFunction)(Environment *,int))
   {
    SystemDependentData(theEnv)->ContinueEnvFunction = theFunction;
   }
@@ -207,7 +210,7 @@ void SetContinueEnvFunction(
 /*******************************************************/
 /* GetRedrawFunction: Gets the redraw screen function. */
 /*******************************************************/
-void (*GetRedrawFunction(void *theEnv))(void *)
+void (*GetRedrawFunction(Environment *theEnv))(Environment *)
   {
    return SystemDependentData(theEnv)->RedrawScreenFunction;
   }
@@ -215,7 +218,7 @@ void (*GetRedrawFunction(void *theEnv))(void *)
 /*****************************************************/
 /* GetPauseEnvFunction: Gets the normal state function. */
 /*****************************************************/
-void (*GetPauseEnvFunction(void *theEnv))(void *)
+void (*GetPauseEnvFunction(Environment *theEnv))(Environment *)
   {
    return SystemDependentData(theEnv)->PauseEnvFunction;
   }
@@ -224,7 +227,7 @@ void (*GetPauseEnvFunction(void *theEnv))(void *)
 /* GetContinueEnvFunction: Gets the continue */
 /*   environment function.                   */
 /*********************************************/
-void (*GetContinueEnvFunction(void *theEnv))(void *,int)
+void (*GetContinueEnvFunction(Environment *theEnv))(Environment *,int)
   {
    return SystemDependentData(theEnv)->ContinueEnvFunction;
   }
@@ -261,7 +264,7 @@ double gentime()
 /*   representing a command to the operating system. */
 /*****************************************************/
 void gensystem(
-  void *theEnv,
+  Environment *theEnv,
   const char *commandBuffer)
   {
    if (SystemDependentData(theEnv)->PauseEnvFunction != NULL) (*SystemDependentData(theEnv)->PauseEnvFunction)(theEnv);
@@ -275,7 +278,7 @@ void gensystem(
 /*    a character from stdin.              */
 /*******************************************/
 int gengetchar(
-  void *theEnv)
+  Environment *theEnv)
   {
 /*
 #if WIN_MVC
@@ -312,7 +315,7 @@ int gengetchar(
 /*    a character from stdin.                  */
 /***********************************************/
 int genungetchar(
-  void *theEnv,
+  Environment *theEnv,
   int theChar)
   {
   /*
@@ -337,7 +340,7 @@ int genungetchar(
 /*   character string to a file (including stdout). */
 /****************************************************/
 void genprintfile(
-  void *theEnv,
+  Environment *theEnv,
   FILE *fptr,
   const char *str)
   {
@@ -377,7 +380,7 @@ void genprintfile(
 /*   which allows execution to be halted.                  */
 /***********************************************************/
 void InitializeNonportableFeatures(
-  void *theEnv)
+  Environment *theEnv)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -388,7 +391,7 @@ void InitializeNonportableFeatures(
 /* genexit:  A generic exit function. */
 /**************************************/
 void genexit(
-  void *theEnv,
+  Environment *theEnv,
   int num)
   {
    if (SystemDependentData(theEnv)->jmpBuffer != NULL)
@@ -401,7 +404,7 @@ void genexit(
 /* SetJmpBuffer: */
 /**************************************/
 void SetJmpBuffer(
-  void *theEnv,
+  Environment *theEnv,
   jmp_buf *theJmpBuffer)
   {
    SystemDependentData(theEnv)->jmpBuffer = theJmpBuffer;
@@ -547,10 +550,10 @@ bool genrename(
 /* EnvSetBeforeOpenFunction: Sets the */
 /*  value of BeforeOpenFunction.      */
 /**************************************/
-int (*EnvSetBeforeOpenFunction(void *theEnv,
-                                      int (*theFunction)(void *)))(void *)
+int (*EnvSetBeforeOpenFunction(Environment *theEnv,
+                               int (*theFunction)(Environment *)))(Environment *)
   {
-   int (*tempFunction)(void *);
+   int (*tempFunction)(Environment *);
 
    tempFunction = SystemDependentData(theEnv)->BeforeOpenFunction;
    SystemDependentData(theEnv)->BeforeOpenFunction = theFunction;
@@ -561,10 +564,10 @@ int (*EnvSetBeforeOpenFunction(void *theEnv,
 /* EnvSetAfterOpenFunction: Sets the */
 /*  value of AfterOpenFunction.      */
 /*************************************/
-int (*EnvSetAfterOpenFunction(void *theEnv,
-                                     int (*theFunction)(void *)))(void *)
+int (*EnvSetAfterOpenFunction(Environment *theEnv,
+                              int (*theFunction)(Environment *)))(Environment *)
   {
-   int (*tempFunction)(void *);
+   int (*tempFunction)(Environment *);
 
    tempFunction = SystemDependentData(theEnv)->AfterOpenFunction;
    SystemDependentData(theEnv)->AfterOpenFunction = theFunction;
@@ -575,7 +578,7 @@ int (*EnvSetAfterOpenFunction(void *theEnv,
 /* GenOpen: Trap routine for opening a file. */
 /*********************************************/
 FILE *GenOpen(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileName,
   const char *accessType)
   {
@@ -646,7 +649,7 @@ FILE *GenOpen(
 /* GenClose: Trap routine for closing a file. */
 /**********************************************/
 int GenClose(
-  void *theEnv,
+  Environment *theEnv,
   FILE *theFile)
   {
    int rv;
@@ -669,7 +672,7 @@ int GenClose(
 /*   pointer is stored in a global variable.                */
 /************************************************************/
 int GenOpenReadBinary(
-  void *theEnv,
+  Environment *theEnv,
   const char *funcName,
   const char *fileName)
   {
@@ -706,7 +709,7 @@ int GenOpenReadBinary(
 /*   code for reading from a file.             */
 /***********************************************/
 void GenReadBinary(
-  void *theEnv,
+  Environment *theEnv,
   void *dataPtr,
   size_t size)
   {
@@ -735,7 +738,7 @@ void GenReadBinary(
 /*   code for seeking a position in a file.        */
 /***************************************************/
 void GetSeekCurBinary(
-  void *theEnv,
+  Environment *theEnv,
   long offset)
   {
 #if WIN_MVC
@@ -752,7 +755,7 @@ void GetSeekCurBinary(
 /*   code for seeking a position in a file.        */
 /***************************************************/
 void GetSeekSetBinary(
-  void *theEnv,
+  Environment *theEnv,
   long offset)
   {
 #if WIN_MVC
@@ -769,7 +772,7 @@ void GetSeekSetBinary(
 /*   code for telling a position in a file.     */
 /************************************************/
 void GenTellBinary(
-  void *theEnv,
+  Environment *theEnv,
   long *offset)
   {
 #if WIN_MVC
@@ -786,7 +789,7 @@ void GenTellBinary(
 /*   specific code for closing a file.  */
 /****************************************/
 void GenCloseBinary(
-  void *theEnv)
+  Environment *theEnv)
   {
    if (SystemDependentData(theEnv)->BeforeOpenFunction != NULL)
      { (*SystemDependentData(theEnv)->BeforeOpenFunction)(theEnv); }

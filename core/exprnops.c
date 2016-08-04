@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*             EXPRESSION OPERATIONS MODULE            */
    /*******************************************************/
@@ -28,6 +28,9 @@
 /*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -81,7 +84,7 @@
 /*     z - fact address, integer, or symbol (*)               */
 /**************************************************************/
 bool CheckArgumentAgainstRestriction(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *theExpression,
   int theRestriction)
   {
@@ -135,7 +138,7 @@ bool CheckArgumentAgainstRestriction(
 /* CheckArgumentAgainstRestriction2: */
 /*************************************/
 bool CheckArgumentAgainstRestriction2(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *theExpression,
   unsigned theRestriction)
   {
@@ -305,12 +308,12 @@ int CountArguments(
 /* CopyExpresssion: Copies an expression. */
 /******************************************/
 struct expr *CopyExpression(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *original)
   {
    struct expr *topLevel, *next, *last;
 
-   if (original == NULL) return(NULL);
+   if (original == NULL) return NULL;
 
    topLevel = GenConstant(theEnv,original->type,original->value);
    topLevel->argList = CopyExpression(theEnv,original->argList);
@@ -385,7 +388,7 @@ long ExpressionSize(
 /*   value of type string, symbol, or number.   */
 /************************************************/
 struct expr *GenConstant(
-  void *theEnv,
+  Environment *theEnv,
   unsigned short type,
   void *value)
   {
@@ -404,7 +407,7 @@ struct expr *GenConstant(
 /* PrintExpression: Pretty prints an expression. */
 /*************************************************/
 void PrintExpression(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileid,
   struct expr *theExpression)
   {
@@ -462,7 +465,7 @@ void PrintExpression(
 /*   expressions to the list of arguments for the other and expression). */
 /*************************************************************************/
 struct expr *CombineExpressions(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *expr1,
   struct expr *expr2)
   {
@@ -566,7 +569,7 @@ struct expr *CombineExpressions(
 /* NegateExpression: */
 /*********************/
 struct expr *NegateExpression(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *theExpression)
   {
    struct expr *tempPtr;
@@ -575,7 +578,7 @@ struct expr *NegateExpression(
    /* If the expression is NULL, return NULL. */
    /*=========================================*/
 
-   if (theExpression == NULL) return(NULL);
+   if (theExpression == NULL) return NULL;
 
    /*==================================================*/
    /* The expression is already wrapped within a "not" */

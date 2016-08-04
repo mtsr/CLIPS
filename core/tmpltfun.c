@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -66,6 +66,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Modify command preserves fact id and address.  */
 /*                                                           */
 /*            Watch facts for modify command only prints     */
@@ -112,18 +115,18 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static SYMBOL_HN              *CheckDeftemplateAndSlotArguments(void *,const char *,struct deftemplate **,int);
-   static void                    FreeTemplateDataObjectArray(void *,DATA_OBJECT_PTR,struct deftemplate *);
+   static void                    DuplicateModifyCommand(Environment *,int,DATA_OBJECT_PTR);
+   static SYMBOL_HN              *CheckDeftemplateAndSlotArguments(Environment *,const char *,Deftemplate **,int);
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
-   static struct expr            *ModAndDupParse(void *,struct expr *,const char *,const char *);
+   static struct expr            *ModAndDupParse(Environment *,struct expr *,const char *,const char *);
 #endif
 
 /****************************************************************/
 /* DeftemplateFunctions: Initializes the deftemplate functions. */
 /****************************************************************/
 void DeftemplateFunctions(
-  void *theEnv)
+  Environment *theEnv)
   {
 #if ! RUN_TIME
    EnvAddUDF(theEnv,"modify","bf",  ModifyCommand,"ModifyCommand",0,UNBOUNDED,NULL,NULL);
@@ -587,10 +590,10 @@ void DuplicateCommand(
   CLIPSValue *returnValue)
   {
    long long factNum;
-   struct fact *oldFact, *newFact, *theFact;
+   Fact *oldFact, *newFact, *theFact;
    struct expr *testPtr;
    DATA_OBJECT computeResult;
-   struct deftemplate *templatePtr;
+   Deftemplate *templatePtr;
    struct templateSlot *slotPtr;
    int i, position;
    bool found;
@@ -627,7 +630,7 @@ void DuplicateCommand(
          return;
         }
 
-      oldFact = (struct fact *) EnvGetNextFact(theEnv,NULL);
+      oldFact = EnvGetNextFact(theEnv,NULL);
       while (oldFact != NULL)
         {
          if (oldFact->factIndex == factNum)
@@ -651,7 +654,7 @@ void DuplicateCommand(
    /*==========================================*/
 
    else if (computeResult.type == FACT_ADDRESS)
-     { oldFact = (struct fact *) computeResult.value; }
+     { oldFact = (Fact *) computeResult.value; }
 
    /*===========================================*/
    /* Otherwise, the first argument is invalid. */
@@ -676,7 +679,7 @@ void DuplicateCommand(
    /* Duplicate the values from the old fact (skipping multifields). */
    /*================================================================*/
 
-   newFact = (struct fact *) CreateFactBySize(theEnv,oldFact->theProposition.multifieldLength);
+   newFact = CreateFactBySize(theEnv,oldFact->theProposition.multifieldLength);
    newFact->whichDeftemplate = templatePtr;
    for (i = 0; i < (int) oldFact->theProposition.multifieldLength; i++)
      {
@@ -833,7 +836,7 @@ void DuplicateCommand(
    /* Perform the duplicate action. */
    /*===============================*/
 
-   theFact = (struct fact *) AssertDriver(theEnv,newFact,0,NULL,NULL,NULL);
+   theFact = AssertDriver(theEnv,newFact,0,NULL,NULL,NULL);
 
    /*========================================*/
    /* The asserted fact is the return value. */
@@ -844,7 +847,7 @@ void DuplicateCommand(
       SetpDOBegin(returnValue,1);
       SetpDOEnd(returnValue,theFact->theProposition.multifieldLength);
       SetpType(returnValue,FACT_ADDRESS);
-      SetpValue(returnValue,(void *) theFact);
+      SetpValue(returnValue,theFact);
      }
 
    return;
@@ -859,7 +862,7 @@ void DeftemplateSlotNamesFunction(
   DATA_OBJECT *returnValue)
   {
    const char *deftemplateName;
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    void *theEnv = UDFContextEnvironment(context);
 
    /*=============================================*/
@@ -882,7 +885,7 @@ void DeftemplateSlotNamesFunction(
    deftemplateName = GetConstructName(context,"deftemplate-slot-names","deftemplate name");
    if (deftemplateName == NULL) return;
 
-   theDeftemplate = (struct deftemplate *) EnvFindDeftemplate(theEnv,deftemplateName);
+   theDeftemplate = EnvFindDeftemplate(theEnv,deftemplateName);
    if (theDeftemplate == NULL)
      {
       CantFindItemErrorMessage(theEnv,"deftemplate",deftemplateName);
@@ -901,12 +904,11 @@ void DeftemplateSlotNamesFunction(
 /*   for the deftemplate-slot-names function. */
 /**********************************************/
 void EnvDeftemplateSlotNames(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   DATA_OBJECT *returnValue)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
-   struct multifield *theList;
+   Multifield *theList;
    struct templateSlot *theSlot;
    unsigned long count;
 
@@ -920,10 +922,10 @@ void EnvDeftemplateSlotNames(
       SetpType(returnValue,MULTIFIELD);
       SetpDOBegin(returnValue,1);
       SetpDOEnd(returnValue,1);
-      theList = (struct multifield *) EnvCreateMultifield(theEnv,(int) 1);
+      theList = EnvCreateMultifield(theEnv,(int) 1);
       SetMFType(theList,1,SYMBOL);
       SetMFValue(theList,1,EnvAddSymbol(theEnv,"implied"));
-      SetpValue(returnValue,(void *) theList);
+      SetpValue(returnValue,theList);
       return;
      }
 
@@ -943,8 +945,8 @@ void EnvDeftemplateSlotNames(
    SetpType(returnValue,MULTIFIELD);
    SetpDOBegin(returnValue,1);
    SetpDOEnd(returnValue,(long) count);
-   theList = (struct multifield *) EnvCreateMultifield(theEnv,count);
-   SetpValue(returnValue,(void *) theList);
+   theList = EnvCreateMultifield(theEnv,count);
+   SetpValue(returnValue,theList);
 
    /*===============================================*/
    /* Store the slot names in the multifield value. */
@@ -967,7 +969,7 @@ void DeftemplateSlotDefaultPFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    int defaultType;
    Environment *theEnv = UDFContextEnvironment(context);
@@ -1002,12 +1004,11 @@ void DeftemplateSlotDefaultPFunction(
 /*   for the deftemplate-slot-defaultp function. */
 /*************************************************/
 int EnvDeftemplateSlotDefaultP(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName)
   {
    short position;
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    struct templateSlot *theSlot;
     
    /*==================================================*/
@@ -1063,7 +1064,7 @@ void DeftemplateSlotDefaultValueFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -1090,13 +1091,12 @@ void DeftemplateSlotDefaultValueFunction(
 /*   for the deftemplate-slot-default-value function. */
 /******************************************************/
 bool EnvDeftemplateSlotDefaultValue(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName,
   DATA_OBJECT_PTR theValue)
   {
    short position;
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    struct templateSlot *theSlot;
    DATA_OBJECT tempDO;
    
@@ -1174,7 +1174,7 @@ void DeftemplateSlotCardinalityFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -1201,12 +1201,11 @@ void DeftemplateSlotCardinalityFunction(
 /*   for the deftemplate-slot-cardinality function. */
 /****************************************************/
 void EnvDeftemplateSlotCardinality(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName,
   DATA_OBJECT *result)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    short position;
    struct templateSlot *theSlot;
 
@@ -1292,7 +1291,7 @@ void DeftemplateSlotAllowedValuesFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -1319,12 +1318,11 @@ void DeftemplateSlotAllowedValuesFunction(
 /*   for the deftemplate-slot-allowed-values function. */
 /*******************************************************/
 void EnvDeftemplateSlotAllowedValues(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName,
   DATA_OBJECT *result)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    short position;
    struct templateSlot *theSlot;
    int i;
@@ -1402,7 +1400,7 @@ void DeftemplateSlotRangeFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -1429,12 +1427,11 @@ void DeftemplateSlotRangeFunction(
 /*   for the deftemplate-slot-range function. */
 /**********************************************/
 void EnvDeftemplateSlotRange(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName,
   DATA_OBJECT *result)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    short position;
    struct templateSlot *theSlot;
 
@@ -1514,7 +1511,7 @@ void DeftemplateSlotTypesFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -1541,12 +1538,11 @@ void DeftemplateSlotTypesFunction(
 /*   for the deftemplate-slot-types function. */
 /**********************************************/
 void EnvDeftemplateSlotTypes(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName,
   DATA_OBJECT *result)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    short position;
    struct templateSlot *theSlot = NULL;
    int numTypes, i;
@@ -1686,7 +1682,7 @@ void DeftemplateSlotMultiPFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    void *theEnv = UDFContextEnvironment(context);
 
@@ -1713,11 +1709,10 @@ void DeftemplateSlotMultiPFunction(
 /*   for the deftemplate-slot-multip function. */
 /***********************************************/
 bool EnvDeftemplateSlotMultiP(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    short position;
    struct templateSlot *theSlot;
 
@@ -1767,7 +1762,7 @@ void DeftemplateSlotSinglePFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    void *theEnv = UDFContextEnvironment(context);
 
@@ -1794,11 +1789,10 @@ void DeftemplateSlotSinglePFunction(
 /*   for the deftemplate-slot-singlep function. */
 /************************************************/
 bool EnvDeftemplateSlotSingleP(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    short position;
    struct templateSlot *theSlot;
 
@@ -1848,7 +1842,7 @@ void DeftemplateSlotExistPFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    void *theEnv = UDFContextEnvironment(context);
 
@@ -1875,11 +1869,10 @@ void DeftemplateSlotExistPFunction(
 /*   for the deftemplate-slot-existp function. */
 /************************************************/
 bool EnvDeftemplateSlotExistP(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    short position;
 
    /*===============================================*/
@@ -1918,7 +1911,7 @@ void DeftemplateSlotFacetExistPFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    DATA_OBJECT facetName;
    Environment *theEnv = UDFContextEnvironment(context);
@@ -1956,12 +1949,11 @@ void DeftemplateSlotFacetExistPFunction(
 /*   for the deftemplate-slot-facet-existp function. */
 /*****************************************************/
 bool EnvDeftemplateSlotFacetExistP(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName,
   const char *facetName)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    short position;
    struct templateSlot *theSlot;
    SYMBOL_HN *facetHN;
@@ -2010,7 +2002,7 @@ void DeftemplateSlotFacetValueFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    SYMBOL_HN *slotName;
    CLIPSValue facetName;
    Environment *theEnv = UDFContextEnvironment(context);
@@ -2048,13 +2040,12 @@ void DeftemplateSlotFacetValueFunction(
 /*   for the deftemplate-slot-facet-value function. */
 /****************************************************/
 bool EnvDeftemplateSlotFacetValue(
-  void *theEnv,
-  void *vTheDeftemplate,
+  Environment *theEnv,
+  Deftemplate *theDeftemplate,
   const char *slotName,
   const char *facetName,
   DATA_OBJECT *rv)
   {
-   struct deftemplate *theDeftemplate = (struct deftemplate *) vTheDeftemplate;
    short position;
    struct templateSlot *theSlot;
    SYMBOL_HN *facetHN;
@@ -2102,10 +2093,10 @@ bool EnvDeftemplateSlotFacetValue(
 /* CheckDeftemplateAndSlotArguments: Checks the deftemplate */
 /*   and slot arguments for various functions.              */
 /************************************************************/
-static SYMBOL_HN *CheckDeftemplateAndSlotArguments( // TBD Convert UDF API
-  void *theEnv,
+static SYMBOL_HN *CheckDeftemplateAndSlotArguments(
+  Environment *theEnv,
   const char *functionName,
-  struct deftemplate **theDeftemplate,
+  Deftemplate **theDeftemplate,
   int expectedArgs)
   {
    DATA_OBJECT tempDO;
@@ -2116,14 +2107,14 @@ static SYMBOL_HN *CheckDeftemplateAndSlotArguments( // TBD Convert UDF API
    /*============================================*/
 
    if (EnvArgCountCheck(theEnv,functionName,EXACTLY,expectedArgs) == -1) 
-     { return(NULL); }
+     { return NULL; }
 
    /*=====================================*/
    /* There must be at least 2 arguments. */
    /*=====================================*/
 
    if (EnvArgCountCheck(theEnv,functionName,AT_LEAST,2) == -1) 
-     { return(NULL); }
+     { return NULL; }
 
    /*=======================================*/
    /* Get the reference to the deftemplate. */
@@ -2134,16 +2125,16 @@ static SYMBOL_HN *CheckDeftemplateAndSlotArguments( // TBD Convert UDF API
    if (GetType(tempDO) != SYMBOL)
      {
       ExpectedTypeError1(theEnv,functionName,1,"deftemplate name");
-      return(NULL);
+      return NULL;
      }
      
    deftemplateName = DOToString(tempDO);
 
-   *theDeftemplate = (struct deftemplate *) EnvFindDeftemplate(theEnv,deftemplateName);
+   *theDeftemplate = EnvFindDeftemplate(theEnv,deftemplateName);
    if (*theDeftemplate == NULL)
      {
       CantFindItemErrorMessage(theEnv,"deftemplate",deftemplateName);
-      return(NULL);
+      return NULL;
      }
 
    /*===========================*/
@@ -2151,7 +2142,7 @@ static SYMBOL_HN *CheckDeftemplateAndSlotArguments( // TBD Convert UDF API
    /*===========================*/
 
    if (EnvArgTypeCheck(theEnv,functionName,2,SYMBOL,&tempDO) == false)
-     { return(NULL); }
+     { return NULL; }
      
    return((SYMBOL_HN *) GetValue(tempDO));
   }
@@ -2169,14 +2160,14 @@ static SYMBOL_HN *CheckDeftemplateAndSlotArguments( // TBD Convert UDF API
 /*   until you actually do the replacement of slots).          */
 /***************************************************************/
 bool UpdateModifyDuplicate(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *top,
   const char *name,
   void *vTheLHS)
   {
    struct expr *functionArgs, *tempArg;
    SYMBOL_HN *templateName;
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    struct templateSlot *slotPtr;
    short position;
 
@@ -2202,7 +2193,7 @@ bool UpdateModifyDuplicate(
    /* has a corresponding deftemplate.       */
    /*========================================*/
 
-   theDeftemplate = (struct deftemplate *)
+   theDeftemplate = (Deftemplate *)
                     LookupConstruct(theEnv,DeftemplateData(theEnv)->DeftemplateConstruct,
                                     ValueToString(templateName),
                                     false);
@@ -2274,7 +2265,7 @@ bool UpdateModifyDuplicate(
       /*=============================================*/
 
       tempArg->type = INTEGER;
-      tempArg->value = (void *) EnvAddLong(theEnv,(long long) (FindSlotPosition(theDeftemplate,(SYMBOL_HN *) tempArg->value) - 1));
+      tempArg->value = EnvAddLong(theEnv,(long long) (FindSlotPosition(theDeftemplate,(SYMBOL_HN *) tempArg->value) - 1));
 
       tempArg = tempArg->nextArg;
      }
@@ -2310,7 +2301,7 @@ SYMBOL_HN *FindTemplateForFactAddress(
         { theLHS = theLHS->bottom; }
      }
 
-   if (thePattern == NULL) return(NULL);
+   if (thePattern == NULL) return NULL;
 
    /*=====================================*/
    /* Verify that just a symbol is stored */
@@ -2319,13 +2310,13 @@ SYMBOL_HN *FindTemplateForFactAddress(
 
    thePattern = thePattern->right;
    if ((thePattern->type != SF_WILDCARD) || (thePattern->bottom == NULL))
-     { return(NULL); }
+     { return NULL; }
 
    thePattern = thePattern->bottom;
    if ((thePattern->type != SYMBOL) ||
             (thePattern->right != NULL) ||
             (thePattern->bottom != NULL))
-    { return(NULL); }
+    { return NULL; }
 
    /*==============================*/
    /* Return the deftemplate name. */
@@ -2338,7 +2329,7 @@ SYMBOL_HN *FindTemplateForFactAddress(
 /* ModifyParse: Parses the modify command. */
 /*******************************************/
 struct expr *ModifyParse(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *top,
   const char *logicalName)
   {
@@ -2349,7 +2340,7 @@ struct expr *ModifyParse(
 /* DuplicateParse: Parses the duplicate command. */
 /*************************************************/
 struct expr *DuplicateParse(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *top,
   const char *logicalName)
   {
@@ -2360,7 +2351,7 @@ struct expr *DuplicateParse(
 /* ModAndDupParse: Parses the modify and duplicate commands. */
 /*************************************************************/
 static struct expr *ModAndDupParse(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *top,
   const char *logicalName,
   const char *name)
@@ -2390,7 +2381,7 @@ static struct expr *ModAndDupParse(
          EnvPrintRouter(theEnv,WERROR,name);
          EnvPrintRouter(theEnv,WERROR," as a top level command.\n");
          ReturnExpression(theEnv,top);
-         return(NULL);
+         return NULL;
         }
 
       nextOne = GenConstant(theEnv,INTEGER,theToken.value);
@@ -2399,7 +2390,7 @@ static struct expr *ModAndDupParse(
      {
       ExpectedTypeError2(theEnv,name,1);
       ReturnExpression(theEnv,top);
-      return(NULL);
+      return NULL;
      }
 
    nextOne->nextArg = NULL;
@@ -2426,7 +2417,7 @@ static struct expr *ModAndDupParse(
         {
          SyntaxErrorMessage(theEnv,"duplicate/modify function");
          ReturnExpression(theEnv,top);
-         return(NULL);
+         return NULL;
         }
 
       /*=================================*/
@@ -2438,7 +2429,7 @@ static struct expr *ModAndDupParse(
         {
          SyntaxErrorMessage(theEnv,"duplicate/modify function");
          ReturnExpression(theEnv,top);
-         return(NULL);
+         return NULL;
         }
 
       /*=================================*/
@@ -2453,7 +2444,7 @@ static struct expr *ModAndDupParse(
            {
             AlreadyParsedErrorMessage(theEnv,"slot ",ValueToString(theToken.value));
             ReturnExpression(theEnv,top);
-            return(NULL);
+            return NULL;
            }
         }
 
@@ -2481,7 +2472,7 @@ static struct expr *ModAndDupParse(
            {
             if (printError) SyntaxErrorMessage(theEnv,"deftemplate pattern");
             ReturnExpression(theEnv,top);
-            return(NULL);
+            return NULL;
            }
 
          if (newField == NULL)
@@ -2503,7 +2494,7 @@ static struct expr *ModAndDupParse(
          SyntaxErrorMessage(theEnv,"duplicate/modify function");
          ReturnExpression(theEnv,top);
          ReturnExpression(theEnv,firstField);
-         return(NULL);
+         return NULL;
         }
       else
         {

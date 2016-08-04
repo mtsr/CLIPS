@@ -76,7 +76,7 @@
 /************/    
 - (void) dealloc
   {
-   void *theEnvironment = [environment environment];
+   Environment *theEnvironment = [environment environment];
    struct priorCommand *nextCommand;
    
    /*=================================*/
@@ -102,7 +102,7 @@
 /*****************/
 - (void) awakeFromNib
   {
-   void *theEnvironment = [environment environment];
+   Environment *theEnvironment = [environment environment];
    AppController *theDelegate = [NSApp delegate];
 
    [textView setEnvironment: environment];
@@ -666,7 +666,7 @@
 
    NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
-   void *theEnv = [environment environment];
+   Environment *theEnv = [environment environment];
    AppController *theDelegate = [NSApp delegate];
       
    if ([filesToOpen count] != 1) return;
@@ -761,7 +761,7 @@
 
    NSArray *filesToOpen = [sheet URLs];
    NSString *theFileName;
-   void *theEnv = [environment environment];
+   Environment *theEnv = [environment environment];
       
    if ([filesToOpen count] != 1) return;
       
@@ -897,7 +897,7 @@
   {
    char *theCString;
    NSString *theStr;
-   void *theEnvironment = [environment environment];
+   Environment *theEnvironment = [environment environment];
    
    /*==============================================*/
    /* Select all of the text in the dialog window. */
@@ -967,7 +967,7 @@
 - (void) setWatchFlagsFromPreferences
   {
    NSUserDefaultsController *theValues;
-   void *theEnv = [environment environment];
+   Environment *theEnv = [environment environment];
 
    theValues = [[NSUserDefaultsController sharedUserDefaultsController] values];
    
@@ -1173,7 +1173,7 @@
    unsigned lineIncrease = 0;
    unichar theChar;
    
-   if (length == 0) return(0);
+   if (length == 0) return 0;
    
    for (lineIncrease = 0; position < length; lineIncrease++)
      {

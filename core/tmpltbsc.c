@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*          DEFTEMPLATE BASIC COMMANDS MODULE          */
    /*******************************************************/
@@ -45,6 +45,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Removed initial-fact support.                  */
 /*                                                           */
 /*************************************************************/
@@ -82,13 +85,13 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    SaveDeftemplates(void *,void *,const char *);
+   static void                    SaveDeftemplates(Environment *,Defmodule *,const char *);
 
 /*********************************************************************/
 /* DeftemplateBasicCommands: Initializes basic deftemplate commands. */
 /*********************************************************************/
 void DeftemplateBasicCommands(
-  void *theEnv)
+  Environment *theEnv)
   {
    AddSaveFunction(theEnv,"deftemplate",SaveDeftemplates,10);
 
@@ -118,8 +121,8 @@ void DeftemplateBasicCommands(
 /*   for use with the save command.           */
 /**********************************************/
 static void SaveDeftemplates(
-  void *theEnv,
-  void *theModule,
+  Environment *theEnv,
+  Defmodule *theModule,
   const char *logicalName)
   {   
    SaveConstruct(theEnv,theModule,logicalName,DeftemplateData(theEnv)->DeftemplateConstruct);
@@ -142,8 +145,8 @@ void UndeftemplateCommand(
 /*   for the undeftemplate command.   */
 /**************************************/
 bool EnvUndeftemplate(
-  void *theEnv,
-  void *theDeftemplate)
+  Environment *theEnv,
+  Deftemplate *theDeftemplate)
   {   
    return(Undefconstruct(theEnv,theDeftemplate,DeftemplateData(theEnv)->DeftemplateConstruct)); 
   }
@@ -165,11 +168,11 @@ void GetDeftemplateListFunction(
 /*   the get-deftemplate-list function.        */
 /***********************************************/
 void EnvGetDeftemplateList(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT_PTR returnValue,
-  void *theModule)
+  Defmodule *theModule)
   {   
-   GetConstructList(theEnv,returnValue,DeftemplateData(theEnv)->DeftemplateConstruct,(struct defmodule *) theModule); 
+   GetConstructList(theEnv,returnValue,DeftemplateData(theEnv)->DeftemplateConstruct,theModule); 
   }
 
 /***************************************************/
@@ -202,8 +205,8 @@ void PPDeftemplateCommand(
 /* PPDeftemplate: C access routine for */
 /*   the ppdeftemplate command.        */
 /***************************************/
-int PPDeftemplate(
-  void *theEnv,
+bool PPDeftemplate(
+  Environment *theEnv,
   const char *deftemplateName,
   const char *logicalName)
   {   
@@ -227,11 +230,11 @@ void ListDeftemplatesCommand(
 /*   for the list-deftemplates command.  */
 /*****************************************/
 void EnvListDeftemplates(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
-  void *theModule)
+  Defmodule *theModule)
   {   
-   ListConstruct(theEnv,DeftemplateData(theEnv)->DeftemplateConstruct,logicalName,(struct defmodule *) theModule); 
+   ListConstruct(theEnv,DeftemplateData(theEnv)->DeftemplateConstruct,logicalName,theModule);
   }
 
 /***********************************************************/
@@ -239,14 +242,14 @@ void EnvListDeftemplates(
 /*   the current watch value of a deftemplate.             */
 /***********************************************************/
 bool EnvGetDeftemplateWatch(
-  void *theEnv,
-  void *theTemplate)
+  Environment *theEnv,
+  Deftemplate *theTemplate)
   { 
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
-   return(((struct deftemplate *) theTemplate)->watch); 
+   return theTemplate->watch; 
   }
 
 /*********************************************************/
@@ -254,15 +257,15 @@ bool EnvGetDeftemplateWatch(
 /*   the current watch value of a deftemplate.           */
 /*********************************************************/
 void EnvSetDeftemplateWatch(
-  void *theEnv,
+  Environment *theEnv,
   bool newState,
-  void *theTemplate)
+  Deftemplate *theTemplate)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
-   ((struct deftemplate *) theTemplate)->watch = newState; 
+   theTemplate->watch = newState;
   }
 
 /**********************************************************/
@@ -270,7 +273,7 @@ void EnvSetDeftemplateWatch(
 /*   watch flag of a deftemplate via the watch command.   */
 /**********************************************************/
 bool DeftemplateWatchAccess(
-  void *theEnv,
+  Environment *theEnv,
   int code,
   bool newState,
   EXPRESSION *argExprs)
@@ -280,7 +283,8 @@ bool DeftemplateWatchAccess(
 #endif
 
    return(ConstructSetWatchAccess(theEnv,DeftemplateData(theEnv)->DeftemplateConstruct,newState,argExprs,
-                                  EnvGetDeftemplateWatch,EnvSetDeftemplateWatch));
+                                  ((bool (*)(Environment *,void *)) EnvGetDeftemplateWatch),
+                                  ((void (*)(Environment *,bool,void *)) EnvSetDeftemplateWatch)));
   }
 
 /*************************************************************************/
@@ -288,7 +292,7 @@ bool DeftemplateWatchAccess(
 /*   have their watch flag set via the list-watch-items command.         */
 /*************************************************************************/
 bool DeftemplateWatchPrint(
-  void *theEnv,
+  Environment *theEnv,
   const char *logName,
   int code,
   EXPRESSION *argExprs)
@@ -298,7 +302,8 @@ bool DeftemplateWatchPrint(
 #endif
 
    return(ConstructPrintWatchAccess(theEnv,DeftemplateData(theEnv)->DeftemplateConstruct,logName,argExprs,
-                                    EnvGetDeftemplateWatch,EnvSetDeftemplateWatch));
+                                    ((bool (*)(Environment *,void *)) EnvGetDeftemplateWatch),
+                                    ((void (*)(Environment *,bool,void *)) EnvSetDeftemplateWatch)));
   }
 
 #endif /* DEBUGGING_FUNCTIONS */

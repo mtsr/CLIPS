@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*             DEFRULE COMMANDS HEADER FILE            */
    /*******************************************************/
@@ -53,6 +53,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_rulecom
@@ -78,22 +81,22 @@ struct joinInformation
 #define SUCCINCT 1
 #define TERSE    2
 
-   bool                           EnvGetBetaMemoryResizing(void *);
-   bool                           EnvSetBetaMemoryResizing(void *,bool);
+   bool                           EnvGetBetaMemoryResizing(Environment *);
+   bool                           EnvSetBetaMemoryResizing(Environment *,bool);
    void                           GetBetaMemoryResizingCommand(UDFContext *,CLIPSValue *);
    void                           SetBetaMemoryResizingCommand(UDFContext *,CLIPSValue *);
-   void                           EnvMatches(void *,void *,int,DATA_OBJECT *);
-   void                           EnvJoinActivity(void *,void *,int,DATA_OBJECT *);
-   void                           DefruleCommands(void *);
+   void                           EnvMatches(Environment *,Defrule *,int,DATA_OBJECT *);
+   void                           EnvJoinActivity(Environment *,Defrule *,int,DATA_OBJECT *);
+   void                           DefruleCommands(Environment *);
    void                           MatchesCommand(UDFContext *,CLIPSValue *);
    void                           JoinActivityCommand(UDFContext *,CLIPSValue *);
    void                           TimetagFunction(UDFContext *,CLIPSValue *);
-   long                           EnvAlphaJoinCount(void *,void *);
-   long                           EnvBetaJoinCount(void *,void *);
-   struct joinInformation        *EnvCreateJoinArray(void *,long);
-   void                           EnvFreeJoinArray(void *,struct joinInformation *,long);
-   void                           EnvAlphaJoins(void *,void *,long,struct joinInformation *);
-   void                           EnvBetaJoins(void *,void *,long,struct joinInformation *);
+   long                           EnvAlphaJoinCount(Environment *,Defrule *);
+   long                           EnvBetaJoinCount(Environment *,Defrule *);
+   struct joinInformation        *EnvCreateJoinArray(Environment *,long);
+   void                           EnvFreeJoinArray(Environment *,struct joinInformation *,long);
+   void                           EnvAlphaJoins(Environment *,Defrule *,long,struct joinInformation *);
+   void                           EnvBetaJoins(Environment *,Defrule *,long,struct joinInformation *);
    void                           JoinActivityResetCommand(UDFContext *,CLIPSValue *);
 #if DEVELOPER
    void                           ShowJoinsCommand(UDFContext *,CLIPSValue *);

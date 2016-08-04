@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/05/16            */
+   /*             CLIPS Version 6.50  07/30/16            */
    /*                                                     */
    /*        FACT RETE FUNCTION GENERATION HEADER FILE    */
    /*******************************************************/
@@ -26,6 +26,9 @@
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
 /*                                                           */
 /*      6.50: Fact ?var:slot references in deffunctions and  */
 /*            defrule actions.                               */
@@ -213,19 +216,19 @@ struct factCheckLengthPNCall
 /* GLOBAL EXTERNAL FUNCTION DEFINITIONS */
 /****************************************/
 
-   void                       InitializeFactReteFunctions(void *);
-   struct expr               *FactPNVariableComparison(void *,struct lhsParseNode *,
+   void                       InitializeFactReteFunctions(Environment *);
+   struct expr               *FactPNVariableComparison(Environment *,struct lhsParseNode *,
                                                               struct lhsParseNode *);
-   struct expr               *FactJNVariableComparison(void *,struct lhsParseNode *,
+   struct expr               *FactJNVariableComparison(Environment *,struct lhsParseNode *,
                                                               struct lhsParseNode *,bool);
-   void                       FactReplaceGetvar(void *,struct expr *,struct lhsParseNode *,int);
-   void                       FactReplaceGetfield(void *,struct expr *,struct lhsParseNode *);
-   struct expr               *FactGenPNConstant(void *,struct lhsParseNode *);
-   struct expr               *FactGenGetfield(void *,struct lhsParseNode *);
-   struct expr               *FactGenGetvar(void *,struct lhsParseNode *,int);
-   struct expr               *FactGenCheckLength(void *,struct lhsParseNode *);
-   struct expr               *FactGenCheckZeroLength(void *,unsigned);
-   int                        FactSlotReferenceVar(void *,EXPRESSION *,void *);
-   int                        RuleFactSlotReferenceVar(void *,EXPRESSION *,struct lhsParseNode *);
+   void                       FactReplaceGetvar(Environment *,struct expr *,struct lhsParseNode *,int);
+   void                       FactReplaceGetfield(Environment *,struct expr *,struct lhsParseNode *);
+   struct expr               *FactGenPNConstant(Environment *,struct lhsParseNode *);
+   struct expr               *FactGenGetfield(Environment *,struct lhsParseNode *);
+   struct expr               *FactGenGetvar(Environment *,struct lhsParseNode *,int);
+   struct expr               *FactGenCheckLength(Environment *,struct lhsParseNode *);
+   struct expr               *FactGenCheckZeroLength(Environment *,unsigned);
+   int                        FactSlotReferenceVar(Environment *,EXPRESSION *,void *);
+   int                        RuleFactSlotReferenceVar(Environment *,EXPRESSION *,struct lhsParseNode *);
 
 #endif /* _H_factgen */

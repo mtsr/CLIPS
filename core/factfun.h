@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*              FACT FUNCTIONS HEADER FILE             */
    /*******************************************************/
@@ -40,6 +40,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_factfun
@@ -50,20 +53,20 @@
 
 #include "factmngr.h"
 
-   void                           FactFunctionDefinitions(void *);
+   void                           FactFunctionDefinitions(Environment *);
    void                           FactRelationFunction(UDFContext *,CLIPSValue *);
-   void                          *FactRelation(void *);
-   void                          *EnvFactDeftemplate(void *,void *);
+   struct symbolHashNode         *FactRelation(Fact *);
+   Deftemplate                   *EnvFactDeftemplate(Environment *,Fact *);
    void                           FactExistpFunction(UDFContext *,CLIPSValue *);
-   bool                           EnvFactExistp(void *,void *);
+   bool                           EnvFactExistp(Environment *,Fact *);
    void                           FactSlotValueFunction(UDFContext *,CLIPSValue *);
-   void                           FactSlotValue(void *,void *,const char *,CLIPSValue *);
+   void                           FactSlotValue(Environment *,Fact *,const char *,CLIPSValue *);
    void                           FactSlotNamesFunction(UDFContext *,CLIPSValue *);
-   void                           EnvFactSlotNames(void *,void *,DATA_OBJECT *);
+   void                           EnvFactSlotNames(Environment *,Fact *,DATA_OBJECT *);
    void                           GetFactListFunction(UDFContext *,CLIPSValue *);
-   void                           EnvGetFactList(void *,DATA_OBJECT *,void *);
+   void                           EnvGetFactList(Environment *,DATA_OBJECT *,Defmodule *);
    void                           PPFactFunction(UDFContext *,CLIPSValue *);
-   void                           EnvPPFact(void *,void *,const char *,bool);
+   void                           EnvPPFact(Environment *,Fact *,const char *,bool);
    struct fact                   *GetFactAddressOrIndexArgument(UDFContext *,bool);
 
 #endif /* _H_factfun */

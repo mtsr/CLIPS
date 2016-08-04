@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -36,6 +36,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_factqury
@@ -50,7 +53,7 @@
 
 typedef struct query_template
   {
-   struct deftemplate *templatePtr;
+   Deftemplate *templatePtr;
    struct query_template *chain, *nxt;
   } QUERY_TEMPLATE;
 
@@ -89,7 +92,7 @@ struct factQueryData
 
 #define QUERY_DELIMETER_STRING     "(QDS)"
 
-   void                           SetupFactQuery(void *);
+   void                           SetupFactQuery(Environment *);
    void                           GetQueryFact(UDFContext *,CLIPSValue *);
    void                           GetQueryFactSlot(UDFContext *,CLIPSValue *);
    void                           AnyFacts(UDFContext *,CLIPSValue *);

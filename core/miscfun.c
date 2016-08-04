@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*            MISCELLANEOUS FUNCTIONS MODULE           */
    /*******************************************************/
@@ -83,6 +83,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Fact ?var:slot reference support.              */
 /*                                                           */
 /*************************************************************/
@@ -126,16 +129,16 @@ struct miscFunctionData
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    ExpandFuncMultifield(void *,DATA_OBJECT *,EXPRESSION *,
+   static void                    ExpandFuncMultifield(Environment *,DATA_OBJECT *,EXPRESSION *,
                                                        EXPRESSION **,void *);
-   static int                     FindLanguageType(void *,const char *);
-   static void                    ConvertTime(void *,CLIPSValue *,struct tm *);
+   static int                     FindLanguageType(Environment *,const char *);
+   static void                    ConvertTime(Environment *,CLIPSValue *,struct tm *);
 
 /*****************************************************************/
 /* MiscFunctionDefinitions: Initializes miscellaneous functions. */
 /*****************************************************************/
 void MiscFunctionDefinitions(
-  void *theEnv)
+  Environment *theEnv)
   {
    AllocateEnvironmentData(theEnv,MISCFUN_DATA,sizeof(struct miscFunctionData),NULL);
    MiscFunctionData(theEnv)->GensymNumber = 1;
@@ -284,7 +287,7 @@ void GensymStarFunction(
 /*   the gensym* function.          */
 /************************************/
 void GensymStar(
-  void *theEnv,
+  Environment *theEnv,
   CLIPSValue *returnValue)
   {
    char genstring[128];
@@ -874,7 +877,7 @@ void ExpandFuncCall(
       ====================================================================== */
    newargexp = CopyExpression(theEnv,GetFirstArgument()->argList);
    ExpandFuncMultifield(theEnv,returnValue,newargexp,&newargexp,
-                        (void *) FindFunction(theEnv,"expand$"));
+                        FindFunction(theEnv,"expand$"));
 
    /* ===================================================================
       Build the new function call expression with the expanded arguments.
@@ -958,14 +961,14 @@ void DummyExpandFuncMultifield(
                  SURE THAT THE EXPRESSION PASSED IS SAFE TO CHANGE!!
  **********************************************************************/
 static void ExpandFuncMultifield(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *result,
   EXPRESSION *theExp,
   EXPRESSION **sto,
   void *expmult)
   {
    EXPRESSION *newexp,*top,*bot;
-   register long i; /* 6.04 Bug Fix */
+   long i; /* 6.04 Bug Fix */
 
    while (theExp != NULL)
      {
@@ -978,7 +981,7 @@ static void ExpandFuncMultifield(
             theExp->argList = NULL;
             if ((EvaluationData(theEnv)->EvaluationError == false) && (result->type != MULTIFIELD))
               ExpectedTypeError2(theEnv,"expand$",1);
-            theExp->value = (void *) FindFunction(theEnv,"(set-evaluation-error)");
+            theExp->value = FindFunction(theEnv,"(set-evaluation-error)");
             EvaluationData(theEnv)->EvaluationError = false;
             EvaluationData(theEnv)->HaltExecution = false;
             return;
@@ -1169,7 +1172,7 @@ void GetFunctionListFunction(
   DATA_OBJECT *returnValue)
   {
    struct FunctionDefinition *theFunction;
-   struct multifield *theList;
+   Multifield *theList;
    unsigned long functionCount = 0;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -1181,8 +1184,8 @@ void GetFunctionListFunction(
    SetpType(returnValue,MULTIFIELD);
    SetpDOBegin(returnValue,1);
    SetpDOEnd(returnValue,functionCount);
-   theList = (struct multifield *) EnvCreateMultifield(theEnv,functionCount);
-   SetpValue(returnValue,(void *) theList);
+   theList = EnvCreateMultifield(theEnv,functionCount);
+   SetpValue(returnValue,theList);
 
    for (theFunction = GetFunctionList(theEnv), functionCount = 1;
         theFunction != NULL;
@@ -1266,7 +1269,7 @@ void FuncallFunction(
       switch(GetType(theArg))
         {
          case MULTIFIELD:
-           nextAdd = GenConstant(theEnv,FCALL,(void *) FindFunction(theEnv,"create$"));
+           nextAdd = GenConstant(theEnv,FCALL,FindFunction(theEnv,"create$"));
 
            if (lastAdd == NULL)
              { theReference.argList = nextAdd; }
@@ -1492,11 +1495,11 @@ void CallFunction(
    ExpectedTypeError1(theEnv,"call",1,"external language symbol or external address");
   }
 
-/************************************/
-/* FindLanguageType:    */
-/************************************/
+/*********************/
+/* FindLanguageType: */
+/*********************/
 static int FindLanguageType(
-  void *theEnv,
+  Environment *theEnv,
   const char *languageName)
   {
    int theType;
@@ -1530,7 +1533,7 @@ void TimeFunction(
 /*   time for local-time and gm-time.   */
 /****************************************/
 static void ConvertTime(
-  void *theEnv,
+  Environment *theEnv,
   CLIPSValue *returnValue,
   struct tm *info)
   {

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/04/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*     CLASS INFO PROGRAMMATIC ACCESS HEADER FILE      */
    /*******************************************************/
@@ -36,6 +36,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_classinf
@@ -50,7 +53,7 @@
 #if DEFRULE_CONSTRUCT
    void                           ClassReactivePCommand(UDFContext *,CLIPSValue *);
 #endif
-   void                          *ClassInfoFnxArgs(UDFContext *,const char *,bool *);
+   Defclass                      *ClassInfoFnxArgs(UDFContext *,const char *,bool *);
    void                           ClassSlotsCommand(UDFContext *,CLIPSValue *);
    void                           ClassSuperclassesCommand(UDFContext *,CLIPSValue *);
    void                           ClassSubclassesCommand(UDFContext *,CLIPSValue *);
@@ -62,22 +65,22 @@
    void                           SlotAllowedClassesCommand(UDFContext *,CLIPSValue *);
    void                           SlotRangeCommand(UDFContext *,CLIPSValue *);
    void                           SlotCardinalityCommand(UDFContext *,CLIPSValue *);
-   bool                           EnvClassAbstractP(void *,void *);
+   bool                           EnvClassAbstractP(Environment *,Defclass *);
 #if DEFRULE_CONSTRUCT
-   bool                           EnvClassReactiveP(void *,void *);
+   bool                           EnvClassReactiveP(Environment *,Defclass *);
 #endif
-   void                           EnvClassSlots(void *,void *,DATA_OBJECT *,bool);
-   void                           EnvGetDefmessageHandlerList(void *,void *,DATA_OBJECT *,bool);
-   void                           EnvClassSuperclasses(void *,void *,DATA_OBJECT *,bool);
-   void                           EnvClassSubclasses(void *,void *,DATA_OBJECT *,bool);
-   void                           ClassSubclassAddresses(void *,void *,DATA_OBJECT *,bool);
-   void                           EnvSlotFacets(void *,void *,const char *,DATA_OBJECT *);
-   void                           EnvSlotSources(void *,void *,const char *,DATA_OBJECT *);
-   void                           EnvSlotTypes(void *,void *,const char *,DATA_OBJECT *);
-   void                           EnvSlotAllowedValues(void *,void *,const char *,DATA_OBJECT *);
-   void                           EnvSlotAllowedClasses(void *,void *,const char *,DATA_OBJECT *);
-   void                           EnvSlotRange(void *,void *,const char *,DATA_OBJECT *);
-   void                           EnvSlotCardinality(void *,void *,const char *,DATA_OBJECT *);
+   void                           EnvClassSlots(Environment *,Defclass *,DATA_OBJECT *,bool);
+   void                           EnvGetDefmessageHandlerList(Environment *,Defclass *,DATA_OBJECT *,bool);
+   void                           EnvClassSuperclasses(Environment *,Defclass *,DATA_OBJECT *,bool);
+   void                           EnvClassSubclasses(Environment *,Defclass *,DATA_OBJECT *,bool);
+   void                           ClassSubclassAddresses(Environment *,Defclass *,DATA_OBJECT *,bool);
+   void                           EnvSlotFacets(Environment *,Defclass *,const char *,DATA_OBJECT *);
+   void                           EnvSlotSources(Environment *,Defclass *,const char *,DATA_OBJECT *);
+   void                           EnvSlotTypes(Environment *,Defclass *,const char *,DATA_OBJECT *);
+   void                           EnvSlotAllowedValues(Environment *,Defclass *,const char *,DATA_OBJECT *);
+   void                           EnvSlotAllowedClasses(Environment *,Defclass *,const char *,DATA_OBJECT *);
+   void                           EnvSlotRange(Environment *,Defclass *,const char *,DATA_OBJECT *);
+   void                           EnvSlotCardinality(Environment *,Defclass *,const char *,DATA_OBJECT *);
 
 #endif /* _H_classinf */
 

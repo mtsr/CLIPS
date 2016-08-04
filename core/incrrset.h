@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/05/16            */
+   /*             CLIPS Version 6.50  07/30/16            */
    /*                                                     */
    /*            INCREMENTAL RESET HEADER FILE            */
    /*******************************************************/
@@ -42,6 +42,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
@@ -54,7 +57,7 @@
 
 #include "ruledef.h"
 
-   void                           IncrementalReset(void *,struct defrule *);
+   void                           IncrementalReset(Environment *,Defrule *);
 
 #endif /* _H_incrrset */
 

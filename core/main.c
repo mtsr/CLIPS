@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*               CLIPS Version 6.40  07/30/16          */
    /*                                                     */
    /*                     MAIN MODULE                     */
    /*******************************************************/
@@ -19,7 +19,10 @@
 /*      6.24: Moved UserFunctions and EnvUserFunctions to    */
 /*            the new userfunctions.c file.                  */
 /*                                                           */
-/*      6.40: Moved CatchCtrlC functionality into this file. */
+/*      6.40: Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
+/*      6.50: Moved CatchCtrlC functionality into this file. */
 /*                                                           */
 /*************************************************************/
 
@@ -61,7 +64,7 @@
 /* LOCAL INTERNAL VARIABLE DEFINITIONS */
 /***************************************/
 
-   static void                   *mainEnv;
+   static Environment            *mainEnv;
 
 /****************************************/
 /* main: Starts execution of the expert */

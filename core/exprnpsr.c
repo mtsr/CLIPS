@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*              EXPRESSION PARSER MODULE               */
    /*******************************************************/
@@ -47,6 +47,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
 /*************************************************************/
@@ -91,7 +94,7 @@
 /*   none of the function has been parsed yet.     */
 /***************************************************/
 struct expr *Function0Parse(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName)
   {
    struct token theToken;
@@ -105,7 +108,7 @@ struct expr *Function0Parse(
    if (theToken.type != LPAREN)
      {
       SyntaxErrorMessage(theEnv,"function calls");
-      return(NULL);
+      return NULL;
      }
 
    /*=================================*/
@@ -121,7 +124,7 @@ struct expr *Function0Parse(
 /*   opening left parenthesis has already been parsed. */
 /*******************************************************/
 struct expr *Function1Parse(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName)
   {
    struct token theToken;
@@ -136,7 +139,7 @@ struct expr *Function1Parse(
      {
       PrintErrorID(theEnv,"EXPRNPSR",1,true);
       EnvPrintRouter(theEnv,WERROR,"A function name must be a symbol\n");
-      return(NULL);
+      return NULL;
      }
 
    /*=================================*/
@@ -153,7 +156,7 @@ struct expr *Function1Parse(
 /*   have already been parsed.                      */
 /****************************************************/
 struct expr *Function2Parse(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   const char *name)
   {
@@ -163,10 +166,10 @@ struct expr *Function2Parse(
    unsigned position;
    struct symbolHashNode *moduleName = NULL, *constructName = NULL;
 #if DEFGENERIC_CONSTRUCT
-   void *gfunc;
+   Defgeneric *gfunc;
 #endif
 #if DEFFUNCTION_CONSTRUCT
-   void *dptr;
+   Deffunction *dptr;
 #endif
 
    /*=========================================================*/
@@ -191,12 +194,12 @@ struct expr *Function2Parse(
      { 
       if (ConstructExported(theEnv,"defgeneric",moduleName,constructName) ||
           EnvGetCurrentModule(theEnv) == EnvFindDefmodule(theEnv,ValueToString(moduleName)))
-        { gfunc = (void *) EnvFindDefgenericInModule(theEnv,name); }
+        { gfunc = EnvFindDefgenericInModule(theEnv,name); }
       else
         { gfunc = NULL; }
      }
    else
-     { gfunc = (void *) LookupDefgenericInScope(theEnv,name); }
+     { gfunc = LookupDefgenericInScope(theEnv,name); }
 #endif
 
 #if DEFFUNCTION_CONSTRUCT
@@ -210,12 +213,12 @@ struct expr *Function2Parse(
        { 
         if (ConstructExported(theEnv,"deffunction",moduleName,constructName) ||
             EnvGetCurrentModule(theEnv) == EnvFindDefmodule(theEnv,ValueToString(moduleName)))
-          { dptr = (void *) EnvFindDeffunctionInModule(theEnv,name); }
+          { dptr = EnvFindDeffunctionInModule(theEnv,name); }
         else
           { dptr = NULL; }
        }
      else
-       { dptr = (void *) LookupDeffunctionInScope(theEnv,name); }
+       { dptr = LookupDeffunctionInScope(theEnv,name); }
    else
      dptr = NULL;
 #endif
@@ -242,7 +245,7 @@ struct expr *Function2Parse(
       EnvPrintRouter(theEnv,WERROR,"Missing function declaration for ");
       EnvPrintRouter(theEnv,WERROR,name);
       EnvPrintRouter(theEnv,WERROR,".\n");
-      return(NULL);
+      return NULL;
      }
 
    /*=======================================================*/
@@ -261,12 +264,12 @@ struct expr *Function2Parse(
         {
          top = (*theFunction->parser)(theEnv,top,logicalName);
          PopRtnBrkContexts(theEnv);
-         if (top == NULL) return(NULL);
+         if (top == NULL) return NULL;
          if (ReplaceSequenceExpansionOps(theEnv,top->argList,top,FindFunction(theEnv,"(expansion-call)"),
                                          FindFunction(theEnv,"expand$")))
            {
             ReturnExpression(theEnv,top);
-            return(NULL);
+            return NULL;
            }
          return(top);
         }
@@ -278,13 +281,13 @@ struct expr *Function2Parse(
 
    top = CollectArguments(theEnv,top,logicalName);
    PopRtnBrkContexts(theEnv);
-   if (top == NULL) return(NULL);
+   if (top == NULL) return NULL;
 
    if (ReplaceSequenceExpansionOps(theEnv,top->argList,top,FindFunction(theEnv,"(expansion-call)"),
                                     FindFunction(theEnv,"expand$")))
      {
       ReturnExpression(theEnv,top);
-      return(NULL);
+      return NULL;
      }
 
    /*============================================================*/
@@ -292,7 +295,7 @@ struct expr *Function2Parse(
    /* its arguments cannot be checked until runtime.             */
    /*============================================================*/
 
-   if (top->value == (void *) FindFunction(theEnv,"(expansion-call)"))
+   if (top->value == FindFunction(theEnv,"(expansion-call)"))
      { return(top); }
 
    /*============================*/
@@ -304,7 +307,7 @@ struct expr *Function2Parse(
       if (CheckExpressionAgainstRestrictions(theEnv,top,theFunction,name))
         {
          ReturnExpression(theEnv,top);
-         return(NULL);
+         return NULL;
         }
      }
 
@@ -314,7 +317,7 @@ struct expr *Function2Parse(
       if (CheckDeffunctionCall(theEnv,top->value,CountArguments(top->argList)) == false)
         {
          ReturnExpression(theEnv,top);
-         return(NULL);
+         return NULL;
         }
      }
 #endif
@@ -347,7 +350,7 @@ struct expr *Function2Parse(
                    being treated as a special expansion operator)
  **********************************************************************/
 bool ReplaceSequenceExpansionOps(
-  void *theEnv,
+  Environment *theEnv,
   EXPRESSION *actions,
   EXPRESSION *fcallexp,
   void *expcall,
@@ -412,7 +415,7 @@ bool ReplaceSequenceExpansionOps(
 /*   for the break/return functions.             */
 /*************************************************/
 void PushRtnBrkContexts(
-  void *theEnv)
+  Environment *theEnv)
   {
    SAVED_CONTEXTS *svtmp;
 
@@ -428,7 +431,7 @@ void PushRtnBrkContexts(
 /*   for the break/return functions.               */
 /***************************************************/
 void PopRtnBrkContexts(
-  void *theEnv)
+  Environment *theEnv)
   {
    SAVED_CONTEXTS *svtmp;
 
@@ -581,7 +584,7 @@ bool RestrictionExists(
 /*   true is returned, otherwise false is returned.              */
 /*****************************************************************/
 bool CheckExpressionAgainstRestrictions(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *theExpression,
   struct FunctionDefinition *theFunction,
   const char *functionName)
@@ -761,7 +764,7 @@ bool CheckExpressionAgainstRestrictions(
 /*   the arguments for a function call expression.     */
 /*******************************************************/
 struct expr *CollectArguments(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *top,
   const char *logicalName)
   {
@@ -784,7 +787,7 @@ struct expr *CollectArguments(
       if (errorFlag == true)
         {
          ReturnExpression(theEnv,top);
-         return(NULL);
+         return NULL;
         }
 
       if (nextOne == NULL)
@@ -809,7 +812,7 @@ struct expr *CollectArguments(
 /*   a function call expression.            */
 /********************************************/
 struct expr *ArgumentParse(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   bool *errorFlag)
   {
@@ -827,7 +830,7 @@ struct expr *ArgumentParse(
    /*============================*/
 
    if (theToken.type == RPAREN)
-     { return(NULL); }
+     { return NULL; }
 
    /*================================*/
    /* Parse constants and variables. */
@@ -854,7 +857,7 @@ struct expr *ArgumentParse(
       PrintErrorID(theEnv,"EXPRNPSR",2,true);
       EnvPrintRouter(theEnv,WERROR,"Expected a constant, variable, or expression.\n");
       *errorFlag = true;
-      return(NULL);
+      return NULL;
      }
 
    top = Function1Parse(theEnv,logicalName);
@@ -868,7 +871,7 @@ struct expr *ArgumentParse(
 /*   or variable (local or global).                         */
 /************************************************************/
 struct expr *ParseAtomOrExpression(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   struct token *useToken)
   {
@@ -896,13 +899,13 @@ struct expr *ParseAtomOrExpression(
    else if (thisToken->type == LPAREN)
      {
       rv = Function1Parse(theEnv,logicalName);
-      if (rv == NULL) return(NULL);
+      if (rv == NULL) return NULL;
      }
    else
      {
       PrintErrorID(theEnv,"EXPRNPSR",2,true);
       EnvPrintRouter(theEnv,WERROR,"Expected a constant, variable, or expression.\n");
-      return(NULL);
+      return NULL;
      }
 
    return(rv);
@@ -914,7 +917,7 @@ struct expr *ParseAtomOrExpression(
 /*   for example to parse the RHS of a rule. */
 /*********************************************/
 struct expr *GroupActions(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   struct token *theToken,
   bool readFirstToken,
@@ -1005,7 +1008,7 @@ struct expr *GroupActions(
                                          FindFunction(theEnv,"expand$")))
            {
             ReturnExpression(theEnv,top);
-            return(NULL);
+            return NULL;
            }
 
          return(top);
@@ -1020,7 +1023,7 @@ struct expr *GroupActions(
         {
          theToken->type = UNKNOWN_VALUE;
          ReturnExpression(theEnv,top);
-         return(NULL);
+         return NULL;
         }
 
       if (lastOne == NULL)
@@ -1041,24 +1044,24 @@ struct expr *GroupActions(
 /*   for the set-sequence-operator-recognition function */
 /********************************************************/
 bool EnvSetSequenceOperatorRecognition(
-  void *theEnv,
+  Environment *theEnv,
   bool value)
   {
    bool ov;
 
    ov = ExpressionData(theEnv)->SequenceOpMode;
    ExpressionData(theEnv)->SequenceOpMode = value;
-   return(ov);
+   return ov;
   }
 
 /********************************************************/
-/* EnvSetSequenceOperatorRecognition: C access routine  */
+/* EnvGetSequenceOperatorRecognition: C access routine  */
 /*   for the Get-sequence-operator-recognition function */
 /********************************************************/
 bool EnvGetSequenceOperatorRecognition(
-  void *theEnv)
+  Environment *theEnv)
   {
-   return(ExpressionData(theEnv)->SequenceOpMode);
+   return ExpressionData(theEnv)->SequenceOpMode;
   }
 
 /*******************************************/
@@ -1066,7 +1069,7 @@ bool EnvGetSequenceOperatorRecognition(
 /*    into a set of constant expressions.  */
 /*******************************************/
 EXPRESSION *ParseConstantArguments(
-  void *theEnv,
+  Environment *theEnv,
   const char *argstr,
   bool *error)
   {
@@ -1076,7 +1079,7 @@ EXPRESSION *ParseConstantArguments(
 
    *error = false;
 
-   if (argstr == NULL) return(NULL);
+   if (argstr == NULL) return NULL;
 
    /*=====================================*/
    /* Open the string as an input source. */
@@ -1087,7 +1090,7 @@ EXPRESSION *ParseConstantArguments(
       PrintErrorID(theEnv,"EXPRNPSR",6,false);
       EnvPrintRouter(theEnv,WERROR,"Cannot read arguments for external call.\n");
       *error = true;
-      return(NULL);
+      return NULL;
      }
 
    /*======================*/
@@ -1106,7 +1109,7 @@ EXPRESSION *ParseConstantArguments(
          ReturnExpression(theEnv,top);
          *error = true;
          CloseStringSource(theEnv,router);
-         return(NULL);
+         return NULL;
         }
       tmp = GenConstant(theEnv,tkn.type,tkn.value);
       if (top == NULL)
@@ -1134,7 +1137,7 @@ EXPRESSION *ParseConstantArguments(
 /* RemoveUnneededProgn: */
 /************************/
 struct expr *RemoveUnneededProgn(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *theExpression)
   {
    struct FunctionDefinition *fptr;

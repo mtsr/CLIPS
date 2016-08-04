@@ -366,7 +366,7 @@
 /***************/
 - (void) insertText: (NSString *) theText replacementRange: (NSRange) replacementRange
   {
-   void *theEnvironment = [environment environment];
+   Environment *theEnvironment = [environment environment];
    
    /*================================================*/
    /* If the environment is executing a command (the */
@@ -775,7 +775,7 @@
    if (([theEvent modifierFlags] & NSCommandKeyMask) &&
        [[theEvent characters] isEqual: @"."])
      {
-      void *theEnvironment = [environment environment];
+      Environment *theEnvironment = [environment environment];
       
       if ([theEvent modifierFlags] & NSShiftKeyMask)
         {

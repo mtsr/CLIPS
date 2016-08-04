@@ -390,7 +390,7 @@
    /* Move the text to a C string. */
    /*==============================*/
    
-   void *theEnvironment = [[theDelegate mainEnvironment] environment];
+   Environment *theEnvironment = [[theDelegate mainEnvironment] environment];
 
    length = [theSelection lengthOfBytesUsingEncoding: NSUTF8StringEncoding];
    
@@ -449,7 +449,7 @@
    /* Move the text to a C string. */
    /*==============================*/
    
-   void *theEnvironment = [[theDelegate mainEnvironment] environment];
+   Environment *theEnvironment = [[theDelegate mainEnvironment] environment];
 
    length = [theSelection lengthOfBytesUsingEncoding: NSUTF8StringEncoding];
    
@@ -485,7 +485,7 @@
    /* Move the text to a C string. */
    /*==============================*/
    
-   void *theEnvironment = [[theDelegate mainEnvironment] environment];
+   Environment *theEnvironment = [[theDelegate mainEnvironment] environment];
 
    length = [entireString lengthOfBytesUsingEncoding: NSUTF8StringEncoding];
 

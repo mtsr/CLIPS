@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*          FACT RETE FUNCTION GENERATION MODULE       */
    /*******************************************************/
@@ -29,6 +29,9 @@
 /*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
 /*                                                           */
 /*      6.50: Fact ?var:slot references in deffunctions and  */
 /*            defrule actions.                               */
@@ -92,15 +95,15 @@ struct factgenData
 /***************************************/
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
-   static void                      *FactGetVarJN1(void *,struct lhsParseNode *,int);
-   static void                      *FactGetVarJN2(void *,struct lhsParseNode *,int);
-   static void                      *FactGetVarJN3(void *,struct lhsParseNode *,int);
-   static void                      *FactGetVarPN1(void *,struct lhsParseNode *);
-   static void                      *FactGetVarPN2(void *,struct lhsParseNode *);
-   static void                      *FactGetVarPN3(void *,struct lhsParseNode *);
-   static SYMBOL_HN                 *ExtractSlotName(void *,unsigned,const char *);
-   static SYMBOL_HN                 *ExtractVariableName(void *,unsigned,const char *);
-   static void                       ReplaceVarSlotReference(void *,EXPRESSION *,SYMBOL_HN *,SYMBOL_HN *,SYMBOL_HN *);
+   static void                      *FactGetVarJN1(Environment *,struct lhsParseNode *,int);
+   static void                      *FactGetVarJN2(Environment *,struct lhsParseNode *,int);
+   static void                      *FactGetVarJN3(Environment *,struct lhsParseNode *,int);
+   static void                      *FactGetVarPN1(Environment *,struct lhsParseNode *);
+   static void                      *FactGetVarPN2(Environment *,struct lhsParseNode *);
+   static void                      *FactGetVarPN3(Environment *,struct lhsParseNode *);
+   static SYMBOL_HN                 *ExtractSlotName(Environment *,unsigned,const char *);
+   static SYMBOL_HN                 *ExtractVariableName(Environment *,unsigned,const char *);
+   static void                       ReplaceVarSlotReference(Environment *,EXPRESSION *,SYMBOL_HN *,SYMBOL_HN *,SYMBOL_HN *);
 #endif
 
 /*******************************************************************/
@@ -108,7 +111,7 @@ struct factgenData
 /*   and value access routines as primitive operations.            */
 /*******************************************************************/
 void InitializeFactReteFunctions(
-  void *theEnv)
+  Environment *theEnv)
   {
 #if DEFRULE_CONSTRUCT
    struct entityRecord   factJNGV1Info = { "FACT_JN_VAR1", FACT_JN_VAR1,0,1,0,
@@ -168,7 +171,7 @@ void InitializeFactReteFunctions(
    struct entityRecord   factStoreMFInfo = { "FACT_STORE_MULTIFIELD",
                                                     FACT_STORE_MULTIFIELD,0,1,0,
                                                     NULL,NULL,NULL,
-                                                    FactStoreMultifield,
+                                                    (EntityEvaluationFunction *) FactStoreMultifield,
                                                     NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL };
 
    struct entityRecord   factSlotLengthInfo = { "FACT_SLOT_LENGTH",
@@ -233,7 +236,7 @@ void InitializeFactReteFunctions(
 /*   multifield slot against a constant.                          */
 /******************************************************************/
 struct expr *FactGenPNConstant(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theField)
   {
    struct expr *top;
@@ -332,7 +335,7 @@ struct expr *FactGenPNConstant(
 /*   from a single or multifield slot.                 */
 /*******************************************************/
 struct expr *FactGenGetfield(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theNode)
   {
    /*===================================================*/
@@ -373,7 +376,7 @@ struct expr *FactGenGetfield(
 /*   from a single or multifield slot of a fact.  */
 /**************************************************/
 struct expr *FactGenGetvar(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theNode,
   int side)
   {
@@ -418,7 +421,7 @@ struct expr *FactGenGetvar(
 /*   unless the foo slot contained at least 3 fields.         */
 /**************************************************************/
 struct expr *FactGenCheckLength(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theNode)
   {
    struct factCheckLengthPNCall hack;
@@ -431,7 +434,7 @@ struct expr *FactGenCheckLength(
    if ((theNode->singleFieldsAfter == 0) &&
        (theNode->type != SF_VARIABLE) &&
        (theNode->type != SF_WILDCARD))
-     { return(NULL); }
+     { return NULL; }
 
    /*=======================================*/
    /* Initialize the length test arguments. */
@@ -475,7 +478,7 @@ struct expr *FactGenCheckLength(
 /*   a multifield slot is a zero length multifield value.     */
 /**************************************************************/
 struct expr *FactGenCheckZeroLength(
-  void *theEnv,
+  Environment *theEnv,
   unsigned theSlot)
   {
    struct factCheckLengthPNCall hack;
@@ -495,7 +498,7 @@ struct expr *FactGenCheckZeroLength(
 /*   network variable access functions for facts.                    */
 /*********************************************************************/
 void FactReplaceGetvar(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *theItem,
   struct lhsParseNode *theNode,
   int side)
@@ -551,7 +554,7 @@ void FactReplaceGetvar(
 /*   network variable access functions for facts.                      */
 /***********************************************************************/
 void FactReplaceGetfield(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *theItem,
   struct lhsParseNode *theNode)
   {
@@ -609,7 +612,7 @@ void FactReplaceGetfield(
 /*   rule.                                                   */
 /*************************************************************/
 static void *FactGetVarJN1(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theNode,
   int side)
   {
@@ -702,7 +705,7 @@ static void *FactGetVarJN1(
 /*   rule.                                                    */
 /**************************************************************/
 static void *FactGetVarJN2(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theNode,
   int side)
   {
@@ -760,7 +763,7 @@ static void *FactGetVarJN2(
 /*   rule.                                                   */
 /*************************************************************/
 static void *FactGetVarJN3(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theNode,
   int side)
   {
@@ -872,7 +875,7 @@ static void *FactGetVarJN3(
 /*   network.                                                 */
 /**************************************************************/
 static void *FactGetVarPN1(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theNode)
   {
    struct factGetVarPN1Call hack;
@@ -940,7 +943,7 @@ static void *FactGetVarPN1(
 /*   only used by expressions in the pattern network.          */
 /***************************************************************/
 static void *FactGetVarPN2(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theNode)
   {
    struct factGetVarPN2Call hack;
@@ -977,7 +980,7 @@ static void *FactGetVarPN2(
 /*   used by expressions in the pattern network.             */
 /*************************************************************/
 static void *FactGetVarPN3(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theNode)
   {
    struct factGetVarPN3Call hack;
@@ -1062,7 +1065,7 @@ static void *FactGetVarPN3(
 /*   the same name found in the same pattern.                */
 /*************************************************************/
 struct expr *FactPNVariableComparison(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *selfNode,
   struct lhsParseNode *referringNode)
   {
@@ -1124,7 +1127,7 @@ struct expr *FactPNVariableComparison(
 /*   the same name found in different patterns.          */
 /*********************************************************/
 struct expr *FactJNVariableComparison(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *selfNode,
   struct lhsParseNode *referringNode,
   bool nandJoin)
@@ -1278,7 +1281,7 @@ struct expr *FactJNVariableComparison(
 /*   name cannot be extracted).                               */
 /**************************************************************/
 static SYMBOL_HN *ExtractSlotName(
-  void *theEnv,
+  Environment *theEnv,
   unsigned thePosition,
   const char *theString)
   {
@@ -1297,7 +1300,7 @@ static SYMBOL_HN *ExtractSlotName(
    /* string (and thus there is no slot name).       */
    /*================================================*/
 
-   if (theLength == (thePosition + 1)) return(NULL);
+   if (theLength == (thePosition + 1)) return NULL;
 
    /*===================================*/
    /* Allocate a temporary string large */
@@ -1340,7 +1343,7 @@ static SYMBOL_HN *ExtractSlotName(
 /*   name cannot be extracted).                                   */
 /******************************************************************/
 static SYMBOL_HN *ExtractVariableName(
-  void *theEnv,
+  Environment *theEnv,
   unsigned thePosition,
   const char *theString)
   {
@@ -1352,7 +1355,7 @@ static SYMBOL_HN *ExtractVariableName(
    /* that a variable name can't be extracted.   */
    /*============================================*/
 
-   if (thePosition == 0) return(NULL);
+   if (thePosition == 0) return NULL;
 
    /*==========================================*/
    /* Allocate storage for a temporary string. */
@@ -1396,7 +1399,7 @@ static SYMBOL_HN *ExtractVariableName(
 /* ReplaceVarSlotReference: */
 /****************************/
 static void ReplaceVarSlotReference(
-  void *theEnv,
+  Environment *theEnv,
   EXPRESSION *theExpr,
   SYMBOL_HN *variableName,
   SYMBOL_HN *slotName,
@@ -1415,7 +1418,7 @@ static void ReplaceVarSlotReference(
 /* FactSlotReferenceVar: */
 /*************************/
 int FactSlotReferenceVar(
-  void *theEnv,
+  Environment *theEnv,
   EXPRESSION *varexp,
   void *userBuffer)
   {
@@ -1458,7 +1461,7 @@ int FactSlotReferenceVar(
 /* RuleFactSlotReferenceVar: */
 /*****************************/
 int RuleFactSlotReferenceVar(
-  void *theEnv,
+  Environment *theEnv,
   EXPRESSION *varexp,
   struct lhsParseNode *theLHS)
   {

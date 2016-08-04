@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -46,6 +46,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_msgcom
@@ -86,27 +89,28 @@ struct messageHandlerData
 #define PRINT_STRING  "print"
 #define CREATE_STRING "create"
 
-   void             SetupMessageHandlers(void *);
-   const char      *EnvGetDefmessageHandlerName(void *,void *,int);
-   const char      *EnvGetDefmessageHandlerType(void *,void *,int);
-   int              EnvGetNextDefmessageHandler(void *,void *,int);
-   HANDLER         *GetDefmessageHandlerPointer(void *,int);
+   void             SetupMessageHandlers(Environment *);
+   const char      *EnvGetDefmessageHandlerName(Environment *,Defclass *,int);
+   const char      *EnvGetDefmessageHandlerType(Environment *,Defclass *,int);
+   int              EnvGetNextDefmessageHandler(Environment *,Defclass *,int);
+   DefmessageHandler
+                   *GetDefmessageHandlerPointer(Defclass *,int);
 #if DEBUGGING_FUNCTIONS
-   bool             EnvGetDefmessageHandlerWatch(void *,void *,int);
-   void             EnvSetDefmessageHandlerWatch(void *,bool,void *,int);
+   bool             EnvGetDefmessageHandlerWatch(Environment *,Defclass *,int);
+   void             EnvSetDefmessageHandlerWatch(Environment *,bool,Defclass *,int);
 #endif
-   unsigned         EnvFindDefmessageHandler(void *,void *,const char *,const char *);
-   bool             EnvIsDefmessageHandlerDeletable(void *,void *,int);
+   unsigned         EnvFindDefmessageHandler(Environment *,Defclass *,const char *,const char *);
+   bool             EnvIsDefmessageHandlerDeletable(Environment *,Defclass *,int);
    void             UndefmessageHandlerCommand(UDFContext *,CLIPSValue *);
-   bool             EnvUndefmessageHandler(void *,void *,int);
+   bool             EnvUndefmessageHandler(Environment *,Defclass *,int);
 #if DEBUGGING_FUNCTIONS
    void             PPDefmessageHandlerCommand(UDFContext *,CLIPSValue *);
    void             ListDefmessageHandlersCommand(UDFContext *,CLIPSValue *);
    void             PreviewSendCommand(UDFContext *,CLIPSValue *);
-   const char      *EnvGetDefmessageHandlerPPForm(void *,void *,int);
-   void             EnvListDefmessageHandlers(void *,const char *,void *,bool);
-   void             EnvPreviewSend(void *,const char *,void *,const char *);
-   long             DisplayHandlersInLinks(void *,const char *,PACKED_CLASS_LINKS *,int);
+   const char      *EnvGetDefmessageHandlerPPForm(Environment *,Defclass *,int);
+   void             EnvListDefmessageHandlers(Environment *,const char *,Defclass *,bool);
+   void             EnvPreviewSend(Environment *,const char *,Defclass *,const char *);
+   long             DisplayHandlersInLinks(Environment *,const char *,PACKED_CLASS_LINKS *,int);
 #endif
 
 #endif /* _H_msgcom */

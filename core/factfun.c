@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*               FACT FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -72,6 +72,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
@@ -98,7 +101,7 @@
 /* FactFunctionDefinitions: Defines fact functions. */
 /****************************************************/
 void FactFunctionDefinitions(
-  void *theEnv)
+  Environment *theEnv)
   {
 #if ! RUN_TIME
    EnvAddUDF(theEnv,"fact-existp",  "b",  FactExistpFunction,  "FactExistpFunction", 1,1,"lf",NULL);
@@ -139,29 +142,25 @@ void FactRelationFunction(
 /* FactRelation: C access routine for */
 /*   the fact-relation function.      */
 /**************************************/
-void *FactRelation(
-  void *vTheFact)
+struct symbolHashNode *FactRelation(
+  Fact *theFact)
   {
-   struct fact *theFact = (struct fact *) vTheFact;
-
-   return((void *) theFact->whichDeftemplate->header.name);
+   return theFact->whichDeftemplate->header.name;
   }
   
 /****************************************/
 /* EnvFactDeftemplate: C access routine */
 /*   to retrieve a fact's deftemplate.  */
 /****************************************/
-void *EnvFactDeftemplate(
-  void *theEnv,
-  void *vTheFact)
+Deftemplate *EnvFactDeftemplate(
+  Environment *theEnv,
+  Fact *theFact)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
-   struct fact *theFact = (struct fact *) vTheFact;
-
-   return((void *) theFact->whichDeftemplate);
+   return theFact->whichDeftemplate;
   }
 
 /********************************************/
@@ -184,14 +183,12 @@ void FactExistpFunction(
 /*   for the fact-existp function. */
 /***********************************/
 bool EnvFactExistp(
-  void *theEnv,
-  void *vTheFact)
+  Environment *theEnv,
+  Fact *theFact)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
-   struct fact *theFact = (struct fact *) vTheFact;
-
    if (theFact == NULL) return false;
 
    if (theFact->garbage) return false;
@@ -240,12 +237,11 @@ void FactSlotValueFunction(
 /*   the fact-slot-value function.     */
 /***************************************/
 void FactSlotValue(
-  void *theEnv,
-  void *vTheFact,
+  Environment *theEnv,
+  Fact *theFact,
   const char *theSlotName,
   CLIPSValue *returnValue)
   {
-   struct fact *theFact = (struct fact *) vTheFact;
    short position;
 
    /*==================================================*/
@@ -317,12 +313,11 @@ void FactSlotNamesFunction(
 /*   for the fact-slot-names function. */
 /***************************************/
 void EnvFactSlotNames(
-  void *theEnv,
-  void *vTheFact,
+  Environment *theEnv,
+  Fact *theFact,
   DATA_OBJECT *returnValue)
   {
-   struct fact *theFact = (struct fact *) vTheFact;
-   struct multifield *theList;
+   Multifield *theList;
    struct templateSlot *theSlot;
    unsigned long count;
 
@@ -336,10 +331,10 @@ void EnvFactSlotNames(
       SetpType(returnValue,MULTIFIELD);
       SetpDOBegin(returnValue,1);
       SetpDOEnd(returnValue,1);
-      theList = (struct multifield *) EnvCreateMultifield(theEnv,(int) 1);
+      theList = EnvCreateMultifield(theEnv,(int) 1);
       SetMFType(theList,1,SYMBOL);
       SetMFValue(theList,1,EnvAddSymbol(theEnv,"implied"));
-      SetpValue(returnValue,(void *) theList);
+      SetpValue(returnValue,theList);
       return;
      }
 
@@ -359,8 +354,8 @@ void EnvFactSlotNames(
    SetpType(returnValue,MULTIFIELD);
    SetpDOBegin(returnValue,1);
    SetpDOEnd(returnValue,(long) count);
-   theList = (struct multifield *) EnvCreateMultifield(theEnv,count);
-   SetpValue(returnValue,(void *) theList);
+   theList = EnvCreateMultifield(theEnv,count);
+   SetpValue(returnValue,theList);
 
    /*===============================================*/
    /* Store the slot names in the multifield value. */
@@ -383,7 +378,7 @@ void GetFactListFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct defmodule *theModule;
+   Defmodule *theModule;
    CLIPSValue theArg;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -396,7 +391,7 @@ void GetFactListFunction(
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
 
-      if ((theModule = (struct defmodule *) EnvFindDefmodule(theEnv,mCVToString(&theArg))) == NULL)
+      if ((theModule = EnvFindDefmodule(theEnv,mCVToString(&theArg))) == NULL)
         {
          if (strcmp("*",mCVToString(&theArg)) != 0)
            {
@@ -409,7 +404,7 @@ void GetFactListFunction(
         }
      }
    else
-     { theModule = ((struct defmodule *) EnvGetCurrentModule(theEnv)); }
+     { theModule = EnvGetCurrentModule(theEnv); }
 
    /*=====================*/
    /* Get the constructs. */
@@ -423,14 +418,13 @@ void GetFactListFunction(
 /*   for the get-fact-list function. */
 /*************************************/
 void EnvGetFactList(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT_PTR returnValue,
-  void *vTheModule)
+  Defmodule *theModule)
   {
-   struct fact *theFact;
+   Fact *theFact;
    unsigned long count;
-   struct multifield *theList;
-   struct defmodule *theModule = (struct defmodule *) vTheModule;
+   Multifield *theList;
 
    /*==========================*/
    /* Save the current module. */
@@ -444,18 +438,18 @@ void EnvGetFactList(
 
    if (theModule == NULL)
      {
-      for (theFact = (struct fact *) EnvGetNextFact(theEnv,NULL), count = 0;
+      for (theFact = EnvGetNextFact(theEnv,NULL), count = 0;
            theFact != NULL;
-           theFact = (struct fact *) EnvGetNextFact(theEnv,theFact), count++)
+           theFact = EnvGetNextFact(theEnv,theFact), count++)
         { /* Do Nothing */ }
      }
    else
      {
-      EnvSetCurrentModule(theEnv,(void *) theModule);
+      EnvSetCurrentModule(theEnv,theModule);
       UpdateDeftemplateScope(theEnv);
-      for (theFact = (struct fact *) GetNextFactInScope(theEnv,NULL), count = 0;
+      for (theFact = GetNextFactInScope(theEnv,NULL), count = 0;
            theFact != NULL;
-           theFact = (struct fact *) GetNextFactInScope(theEnv,theFact), count++)
+           theFact = GetNextFactInScope(theEnv,theFact), count++)
         { /* Do Nothing */ }
      }
 
@@ -466,8 +460,8 @@ void EnvGetFactList(
    SetpType(returnValue,MULTIFIELD);
    SetpDOBegin(returnValue,1);
    SetpDOEnd(returnValue,(long) count);
-   theList = (struct multifield *) EnvCreateMultifield(theEnv,count);
-   SetpValue(returnValue,(void *) theList);
+   theList = EnvCreateMultifield(theEnv,count);
+   SetpValue(returnValue,theList);
 
    /*==================================================*/
    /* Store the fact pointers in the multifield value. */
@@ -475,22 +469,22 @@ void EnvGetFactList(
 
    if (theModule == NULL)
      {
-      for (theFact = (struct fact *) EnvGetNextFact(theEnv,NULL), count = 1;
+      for (theFact = EnvGetNextFact(theEnv,NULL), count = 1;
            theFact != NULL;
-           theFact = (struct fact *) EnvGetNextFact(theEnv,theFact), count++)
+           theFact = EnvGetNextFact(theEnv,theFact), count++)
         {
          SetMFType(theList,count,FACT_ADDRESS);
-         SetMFValue(theList,count,(void *) theFact);
+         SetMFValue(theList,count,theFact);
         }
      }
    else
      {
-      for (theFact = (struct fact *) GetNextFactInScope(theEnv,NULL), count = 1;
+      for (theFact = GetNextFactInScope(theEnv,NULL), count = 1;
            theFact != NULL;
-           theFact = (struct fact *) GetNextFactInScope(theEnv,theFact), count++)
+           theFact = GetNextFactInScope(theEnv,theFact), count++)
         {
          SetMFType(theList,count,FACT_ADDRESS);
-         SetMFValue(theList,count,(void *) theFact);
+         SetMFValue(theList,count,theFact);
         }
      }
 
@@ -575,15 +569,14 @@ void PPFactFunction(
 /*   for the ppfact function.  */
 /*******************************/
 void EnvPPFact(
-  void *theEnv,
-  void *vTheFact,
+  Environment *theEnv,
+  Fact *theFact,
   const char *logicalName,
   bool ignoreDefaults)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
-   struct fact *theFact = (struct fact *) vTheFact;
 
    if (theFact == NULL) return;
 
@@ -604,17 +597,17 @@ struct fact *GetFactAddressOrIndexArgument(
   {
    CLIPSValue theArg;
    long long factIndex;
-   struct fact *theFact;
+   Fact *theFact;
    Environment *theEnv = UDFContextEnvironment(context);
    char tempBuffer[20];
 
    if (! UDFNextArgument(context,ANY_TYPE,&theArg))
-     { return(NULL); }
+     { return NULL; }
 
    if (GetType(theArg) == FACT_ADDRESS)
      {
-      if (((struct fact *) GetValue(theArg))->garbage) return(NULL);
-      else return (((struct fact *) GetValue(theArg)));
+      if (((Fact *) GetValue(theArg))->garbage) return NULL;
+      else return (((Fact *) GetValue(theArg)));
      }
    else if (GetType(theArg) == INTEGER)
      {
@@ -622,7 +615,7 @@ struct fact *GetFactAddressOrIndexArgument(
       if (factIndex < 0)
         {
          UDFInvalidArgumentMessage(context,"fact-address or fact-index");
-         return(NULL);
+         return NULL;
         }
 
       theFact = FindIndexedFact(theEnv,factIndex);
@@ -630,14 +623,14 @@ struct fact *GetFactAddressOrIndexArgument(
         {
          gensprintf(tempBuffer,"f-%lld",factIndex);
          CantFindItemErrorMessage(theEnv,"fact",tempBuffer);
-         return(NULL);
+         return NULL;
         }
 
       return(theFact);
      }
 
    UDFInvalidArgumentMessage(context,"fact-address or fact-index");
-   return(NULL);
+   return NULL;
   }
 
 #endif /* DEFTEMPLATE_CONSTRUCT */

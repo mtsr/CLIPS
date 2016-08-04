@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*                  EVALUATION MODULE                  */
    /*******************************************************/
@@ -52,6 +52,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
@@ -96,9 +99,9 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    DeallocateEvaluationData(void *);
-   static void                    PrintCAddress(void *,const char *,void *);
-   static void                    NewCAddress(void *,DATA_OBJECT *);
+   static void                    DeallocateEvaluationData(Environment *);
+   static void                    PrintCAddress(Environment *,const char *,void *);
+   static void                    NewCAddress(Environment *,DATA_OBJECT *);
    /*
    static bool                    DiscardCAddress(void *,void *);
    */
@@ -108,7 +111,7 @@
 /*    data for expression evaluation.             */
 /**************************************************/
 void InitializeEvaluationData(
-  void *theEnv)
+  Environment *theEnv)
   {
    struct externalAddressType cPointer = { "C", PrintCAddress, PrintCAddress, NULL, NewCAddress, NULL };
    
@@ -122,7 +125,7 @@ void InitializeEvaluationData(
 /*    data for evaluation data.                      */
 /*****************************************************/
 static void DeallocateEvaluationData(
-  void *theEnv)
+  Environment *theEnv)
   {
    int i;
    
@@ -135,7 +138,7 @@ static void DeallocateEvaluationData(
 /*   if no errors occurred during evaluation, otherwise true. */
 /**************************************************************/
 bool EvaluateExpression(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *problem,
   DATA_OBJECT_PTR returnValue)
   {
@@ -279,7 +282,7 @@ bool EvaluateExpression(
                cbuff[0] = (* (char (*)(void *)) fptr->functionPointer)(theEnv);
                cbuff[1] = EOS;
                returnValue->type = SYMBOL;
-               returnValue->value = (void *) EnvAddSymbol(theEnv,cbuff);
+               returnValue->value = EnvAddSymbol(theEnv,cbuff);
                break;
               }
 
@@ -383,7 +386,7 @@ bool EvaluateExpression(
 /*   data type in the primitives array.   */
 /******************************************/
 void InstallPrimitive(
-  void *theEnv,
+  Environment *theEnv,
   struct entityRecord *thePrimitive,
   int whichPosition)
   {
@@ -401,7 +404,7 @@ void InstallPrimitive(
 /*   address type in the external address type array. */
 /******************************************************/
 int InstallExternalAddressType(
-  void *theEnv,
+  Environment *theEnv,
   struct externalAddressType *theAddressType)
   {
    struct externalAddressType *copyEAT;
@@ -425,7 +428,7 @@ int InstallExternalAddressType(
 /* EnvSetEvaluationError: Sets the EvaluationError flag. */
 /*********************************************************/
 void EnvSetEvaluationError(
-  void *theEnv,
+  Environment *theEnv,
   bool value)
   {
    EvaluationData(theEnv)->EvaluationError = value;
@@ -437,7 +440,7 @@ void EnvSetEvaluationError(
 /* EnvGetEvaluationError: Returns the EvaluationError flag. */
 /************************************************************/
 bool EnvGetEvaluationError(
-  void *theEnv)
+  Environment *theEnv)
   {
    return(EvaluationData(theEnv)->EvaluationError);
   }
@@ -446,7 +449,7 @@ bool EnvGetEvaluationError(
 /* EnvSetHaltExecution: Sets the HaltExecution flag. */
 /*****************************************************/
 void EnvSetHaltExecution(
-  void *theEnv,
+  Environment *theEnv,
   bool value)
   { 
    EvaluationData(theEnv)->HaltExecution = value; 
@@ -456,7 +459,7 @@ void EnvSetHaltExecution(
 /* EnvGetHaltExecution: Returns the HaltExecution flag. */
 /********************************************************/
 bool EnvGetHaltExecution(
-  void *theEnv)
+  Environment *theEnv)
   {
    return(EvaluationData(theEnv)->HaltExecution);
   }
@@ -466,7 +469,7 @@ bool EnvGetHaltExecution(
 /*   structures to the pool of free memory.           */
 /******************************************************/
 void ReturnValues(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT_PTR garbagePtr,
   bool decrementSupplementalInfo)
   {
@@ -488,7 +491,7 @@ void ReturnValues(
 /*   to the specified logical name.                */
 /***************************************************/
 void PrintDataObject(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileid,
   DATA_OBJECT_PTR argPtr)
   {
@@ -543,7 +546,7 @@ void PrintDataObject(
 /*   value of length zero for error returns.        */
 /****************************************************/
 void EnvSetMultifieldErrorValue(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
    returnValue->type = MULTIFIELD;
@@ -558,7 +561,7 @@ void EnvSetMultifieldErrorValue(
 /*   (in use) values for a DATA_OBJECT structure. */
 /**************************************************/
 void ValueInstall(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *vPtr)
   {
    if (vPtr->type == MULTIFIELD) MultifieldInstall(theEnv,(struct multifield *) vPtr->value);
@@ -570,7 +573,7 @@ void ValueInstall(
 /*   (in use) values for a DATA_OBJECT structure.   */
 /****************************************************/
 void ValueDeinstall(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *vPtr)
   {
    if (vPtr->type == MULTIFIELD) MultifieldDeinstall(theEnv,(struct multifield *) vPtr->value);
@@ -582,7 +585,7 @@ void ValueDeinstall(
 /*   count of an atomic data type.       */
 /*****************************************/
 void AtomInstall(
-  void *theEnv,
+  Environment *theEnv,
   int type,
   void *vPtr)
   {
@@ -632,7 +635,7 @@ void AtomInstall(
 /*   count of an atomic data type.         */
 /*******************************************/
 void AtomDeinstall(
-  void *theEnv,
+  Environment *theEnv,
   int type,
   void *vPtr)
   {
@@ -684,7 +687,7 @@ void AtomDeinstall(
 /*   Allows only constants as arguments.    */
 /********************************************/
 bool EnvFunctionCall(
-  void *theEnv,
+  Environment *theEnv,
   const char *name,
   const char *args,
   DATA_OBJECT *result)
@@ -717,7 +720,7 @@ bool EnvFunctionCall(
 /*   Allows only constants as arguments.    */
 /********************************************/
 bool FunctionCall2(
-  void *theEnv,
+  Environment *theEnv,
   FUNCTION_REFERENCE *theReference,
   const char *args,
   DATA_OBJECT *result)
@@ -786,7 +789,7 @@ bool FunctionCall2(
 /*   DATA_OBJECT to a destination DATA_OBJECT.     */
 /***************************************************/
 void CopyDataObject(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *dst,
   DATA_OBJECT *src,
   int garbageMultifield)
@@ -828,7 +831,7 @@ void TransferDataObjectValues(
 /*   single field value, a single expression is created.                */
 /************************************************************************/
 struct expr *ConvertValueToExpression(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *theValue)
   {
    long i;
@@ -847,7 +850,7 @@ struct expr *ConvertValueToExpression(
      }
 
    if (head == NULL)
-     return(GenConstant(theEnv,FCALL,(void *) FindFunction(theEnv,"create$")));
+     return(GenConstant(theEnv,FCALL,FindFunction(theEnv,"create$")));
 
    return(head);
   }
@@ -920,14 +923,14 @@ unsigned long GetAtomicHashValue(
 /*   or user/system defined function.                      */
 /***********************************************************/
 struct expr *FunctionReferenceExpression(
-  void *theEnv,
+  Environment *theEnv,
   const char *name)
   {
 #if DEFGENERIC_CONSTRUCT
-   void *gfunc;
+   Defgeneric *gfunc;
 #endif
 #if DEFFUNCTION_CONSTRUCT
-   void *dptr;
+   Deffunction *dptr;
 #endif
    struct FunctionDefinition *fptr;
 
@@ -936,7 +939,7 @@ struct expr *FunctionReferenceExpression(
    /*=====================================================*/
 
 #if DEFFUNCTION_CONSTRUCT
-   if ((dptr = (void *) LookupDeffunctionInScope(theEnv,name)) != NULL)
+   if ((dptr = LookupDeffunctionInScope(theEnv,name)) != NULL)
      { return(GenConstant(theEnv,PCALL,dptr)); }
 #endif
 
@@ -945,7 +948,7 @@ struct expr *FunctionReferenceExpression(
    /*====================================================*/
 
 #if DEFGENERIC_CONSTRUCT
-   if ((gfunc = (void *) LookupDefgenericInScope(theEnv,name)) != NULL)
+   if ((gfunc = LookupDefgenericInScope(theEnv,name)) != NULL)
      { return(GenConstant(theEnv,GCALL,gfunc)); }
 #endif
 
@@ -962,7 +965,7 @@ struct expr *FunctionReferenceExpression(
    /* defgeneric, or user/system defined function.      */
    /*===================================================*/
 
-   return(NULL);
+   return NULL;
   }
 
 /******************************************************************/
@@ -972,15 +975,15 @@ struct expr *FunctionReferenceExpression(
 /*   function.                                                    */
 /******************************************************************/
 bool GetFunctionReference(
-  void *theEnv,
+  Environment *theEnv,
   const char *name,
   FUNCTION_REFERENCE *theReference)
   {
 #if DEFGENERIC_CONSTRUCT
-   void *gfunc;
+   Defgeneric *gfunc;
 #endif
 #if DEFFUNCTION_CONSTRUCT
-   void *dptr;
+   Deffunction *dptr;
 #endif
    struct FunctionDefinition *fptr;
 
@@ -994,7 +997,7 @@ bool GetFunctionReference(
    /*=====================================================*/
 
 #if DEFFUNCTION_CONSTRUCT
-   if ((dptr = (void *) LookupDeffunctionInScope(theEnv,name)) != NULL)
+   if ((dptr = LookupDeffunctionInScope(theEnv,name)) != NULL)
      {
       theReference->type = PCALL;
       theReference->value = dptr;
@@ -1007,7 +1010,7 @@ bool GetFunctionReference(
    /*====================================================*/
 
 #if DEFGENERIC_CONSTRUCT
-   if ((gfunc = (void *) LookupDefgenericInScope(theEnv,name)) != NULL)
+   if ((gfunc = LookupDefgenericInScope(theEnv,name)) != NULL)
      {
       theReference->type = GCALL;
       theReference->value = gfunc;
@@ -1072,7 +1075,7 @@ bool DOsEqual(
   NOTES        : None
  ***********************************************************/
 bool EvaluateAndStoreInDataObject(
-  void *theEnv,
+  Environment *theEnv,
   bool mfp,
   EXPRESSION *theExp,
   DATA_OBJECT *val,
@@ -1357,7 +1360,7 @@ void MFNthValue(
 /* PrintCAddress: */
 /******************/
 static void PrintCAddress(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   void *theValue)
   {
@@ -1374,7 +1377,7 @@ static void PrintCAddress(
 /* NewCAddress: */
 /****************/
 static void NewCAddress(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *rv)
   {
    int numberOfArguments;
@@ -1398,7 +1401,7 @@ static void NewCAddress(
 /*******************************/
 /*
 static bool DiscardCAddress(
-  void *theEnv,
+  Environment *theEnv,
   void *theValue)
   {
    EnvPrintRouter(theEnv,WDISPLAY,"Discarding C Address\n");

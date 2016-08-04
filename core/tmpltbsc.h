@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*       DEFTEMPLATE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -47,6 +47,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_tmpltbsc
@@ -57,21 +60,21 @@
 
 #include "evaluatn.h"
 
-   void                           DeftemplateBasicCommands(void *);
+   void                           DeftemplateBasicCommands(Environment *);
    void                           UndeftemplateCommand(UDFContext *,CLIPSValue *);
-   bool                           EnvUndeftemplate(void *,void *);
+   bool                           EnvUndeftemplate(Environment *,Deftemplate *);
    void                           GetDeftemplateListFunction(UDFContext *,CLIPSValue *);
-   void                           EnvGetDeftemplateList(void *,DATA_OBJECT_PTR,void *);
+   void                           EnvGetDeftemplateList(Environment *,DATA_OBJECT_PTR,Defmodule *);
    void                           DeftemplateModuleFunction(UDFContext *,CLIPSValue *);
 #if DEBUGGING_FUNCTIONS
    void                           PPDeftemplateCommand(UDFContext *,CLIPSValue *);
-   int                            PPDeftemplate(void *,const char *,const char *);
+   bool                           PPDeftemplate(Environment *,const char *,const char *);
    void                           ListDeftemplatesCommand(UDFContext *,CLIPSValue *);
-   void                           EnvListDeftemplates(void *,const char *,void *);
-   bool                           EnvGetDeftemplateWatch(void *,void *);
-   void                           EnvSetDeftemplateWatch(void *,bool,void *);
-   bool                           DeftemplateWatchAccess(void *,int,bool,struct expr *);
-   bool                           DeftemplateWatchPrint(void *,const char *,int,struct expr *);
+   void                           EnvListDeftemplates(Environment *,const char *,Defmodule *);
+   bool                           EnvGetDeftemplateWatch(Environment *,Deftemplate *);
+   void                           EnvSetDeftemplateWatch(Environment *,bool,Deftemplate *);
+   bool                           DeftemplateWatchAccess(Environment *,int,bool,struct expr *);
+   bool                           DeftemplateWatchPrint(Environment *,const char *,int,struct expr *);
 #endif
 
 #endif /* _H_tmpltbsc */

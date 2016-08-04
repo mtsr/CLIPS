@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*                 FACT MATCH MODULE                   */
    /*******************************************************/
@@ -38,6 +38,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
@@ -68,22 +71,22 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static bool                     EvaluatePatternExpression(void *,struct factPatternNode *,struct expr *);
-   static void                     TraceErrorToJoin(void *,struct factPatternNode *,bool);
-   static void                     ProcessFactAlphaMatch(void *,struct fact *,struct multifieldMarker *,struct factPatternNode *);
-   static struct factPatternNode  *GetNextFactPatternNode(void *,bool,struct factPatternNode *);
-   static bool                     SkipFactPatternNode(void *,struct factPatternNode *);
-   static void                     ProcessMultifieldNode(void *,
+   static bool                     EvaluatePatternExpression(Environment *,struct factPatternNode *,struct expr *);
+   static void                     TraceErrorToJoin(Environment *,struct factPatternNode *,bool);
+   static void                     ProcessFactAlphaMatch(Environment *,struct fact *,struct multifieldMarker *,struct factPatternNode *);
+   static struct factPatternNode  *GetNextFactPatternNode(Environment *,bool,struct factPatternNode *);
+   static bool                     SkipFactPatternNode(Environment *,struct factPatternNode *);
+   static void                     ProcessMultifieldNode(Environment *,
                                                          struct factPatternNode *,
                                                          struct multifieldMarker *,
                                                          struct multifieldMarker *,int);
-   static void                     PatternNetErrorMessage(void *,struct factPatternNode *);
+   static void                     PatternNetErrorMessage(Environment *,struct factPatternNode *);
 
 /*************************************************************************/
 /* FactPatternMatch: Implements the core loop for fact pattern matching. */
 /*************************************************************************/
 void FactPatternMatch(
-  void *theEnv,
+  Environment *theEnv,
   struct fact *theFact,
   struct factPatternNode *patternPtr,
   int offset,
@@ -281,7 +284,7 @@ void FactPatternMatch(
 /*  wildcard or variable.                                     */
 /**************************************************************/
 static void ProcessMultifieldNode(
-  void *theEnv,
+  Environment *theEnv,
   struct factPatternNode *thePattern,
   struct multifieldMarker *markers,
   struct multifieldMarker *endMark,
@@ -455,7 +458,7 @@ static void ProcessMultifieldNode(
 /*   node is computed using a depth first traversal.  */
 /******************************************************/
 static struct factPatternNode *GetNextFactPatternNode(
-  void *theEnv,
+  Environment *theEnv,
   bool finishedMatching,
   struct factPatternNode *thePattern)
   {
@@ -490,7 +493,7 @@ static struct factPatternNode *GetNextFactPatternNode(
       /* entire tree has been traversed.      */
       /*======================================*/
 
-      if (thePattern == NULL) return(NULL);
+      if (thePattern == NULL) return NULL;
       
       /*======================================*/
       /* Skip selector constants and pop back */
@@ -509,7 +512,7 @@ static struct factPatternNode *GetNextFactPatternNode(
       /* above the multifield node in the pattern network. */
       /*===================================================*/
 
-      if (thePattern->header.multifieldNode) return(NULL);
+      if (thePattern->header.multifieldNode) return NULL;
      }
 
    /*==================================*/
@@ -526,7 +529,7 @@ static struct factPatternNode *GetNextFactPatternNode(
 /*   new alpha match through the join network.         */
 /*******************************************************/
 static void ProcessFactAlphaMatch(
-  void *theEnv,
+  Environment *theEnv,
   struct fact *theFact,
   struct multifieldMarker *theMarks,
   struct factPatternNode *thePattern)
@@ -554,7 +557,7 @@ static void ProcessFactAlphaMatch(
   /*=======================================================*/
 
   listOfMatches = (struct patternMatch *) theFact->list;
-  theFact->list = (void *) get_struct(theEnv,patternMatch);
+  theFact->list = get_struct(theEnv,patternMatch);
   ((struct patternMatch *) theFact->list)->next = listOfMatches;
   ((struct patternMatch *) theFact->list)->matchingPattern = (struct patternNodeHeader *) thePattern;
   ((struct patternMatch *) theFact->list)->theMatch = theMatch;
@@ -575,7 +578,7 @@ static void ProcessFactAlphaMatch(
 /*   were used directly.                                         */
 /*****************************************************************/
 static bool EvaluatePatternExpression(
-  void *theEnv,
+  Environment *theEnv,
   struct factPatternNode *patternPtr,
   struct expr *theTest)
   {
@@ -705,7 +708,7 @@ static bool EvaluatePatternExpression(
 /*   be printed.                                                        */
 /************************************************************************/
 static void PatternNetErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   struct factPatternNode *patternPtr)
   {
    char buffer[60];
@@ -757,7 +760,7 @@ static void PatternNetErrorMessage(
 /*   that the name of the rule(s) containing the pattern can be printed.   */
 /***************************************************************************/
 static void TraceErrorToJoin(
-  void *theEnv,
+  Environment *theEnv,
   struct factPatternNode *patternPtr,
   bool traceRight)
   {
@@ -788,7 +791,7 @@ static void TraceErrorToJoin(
 /*   the node should be skipped.                                       */
 /***********************************************************************/
 static bool SkipFactPatternNode(
-  void *theEnv,
+  Environment *theEnv,
   struct factPatternNode *thePattern)
   {
 #if (! RUN_TIME) && (! BLOAD_ONLY)
@@ -810,7 +813,7 @@ static bool SkipFactPatternNode(
 /*  incremental reset.                                         */
 /***************************************************************/
 void MarkFactPatternForIncrementalReset(
-  void *theEnv,
+  Environment *theEnv,
   struct patternNodeHeader *thePattern,
   int value)
   {
@@ -865,13 +868,13 @@ void MarkFactPatternForIncrementalReset(
 /*   only active patterns in the fact pattern network.        */
 /**************************************************************/
 void FactsIncrementalReset(
-  void *theEnv)
+  Environment *theEnv)
   {
-   struct fact *factPtr;
+   Fact *factPtr;
 
-   for (factPtr = (struct fact *) EnvGetNextFact(theEnv,NULL);
+   for (factPtr = EnvGetNextFact(theEnv,NULL);
         factPtr != NULL;
-        factPtr = (struct fact *) EnvGetNextFact(theEnv,factPtr))
+        factPtr = EnvGetNextFact(theEnv,factPtr))
      {
       EngineData(theEnv)->JoinOperationInProgress = true;
       FactPatternMatch(theEnv,factPtr,

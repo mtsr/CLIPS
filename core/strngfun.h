@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*             STRING FUNCTIONS HEADER FILE            */
    /*******************************************************/
@@ -42,6 +42,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_strngfun
@@ -52,9 +55,9 @@
 
 #include "evaluatn.h"
 
-   bool                           EnvBuild(void *,const char *);
-   bool                           EnvEval(void *,const char *,DATA_OBJECT_PTR);
-   void                           StringFunctionDefinitions(void *);
+   bool                           EnvBuild(Environment *,const char *);
+   bool                           EnvEval(Environment *,const char *,DATA_OBJECT_PTR);
+   void                           StringFunctionDefinitions(Environment *);
    void                           StrCatFunction(UDFContext *,CLIPSValue *);
    void                           SymCatFunction(UDFContext *,CLIPSValue *);
    void                           StrLengthFunction(UDFContext *,CLIPSValue *);
@@ -66,7 +69,7 @@
    void                           EvalFunction(UDFContext *,CLIPSValue *);
    void                           BuildFunction(UDFContext *,CLIPSValue *);
    void                           StringToFieldFunction(UDFContext *,CLIPSValue *);
-   void                           StringToField(void *,const char *,DATA_OBJECT *);
+   void                           StringToField(Environment *,const char *,DATA_OBJECT *);
 
 #endif /* _H_strngfun */
 

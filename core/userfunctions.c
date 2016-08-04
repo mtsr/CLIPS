@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  01/06/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*                USER FUNCTIONS MODULE                */
    /*******************************************************/
@@ -22,6 +22,9 @@
 /*      6.30: Removed conditional code for unsupported       */
 /*            compilers/operating systems (IBM_MCW,          */
 /*            MAC_MCW, and IBM_TBC).                         */
+/*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -47,8 +50,21 @@
 
 #include "clips.h"
 
+#include <math.h>
+
 void UserFunctions(void);
-void EnvUserFunctions(void *);
+void EnvUserFunctions(Environment *);
+
+   void                           RTA(UDFContext *,CLIPSValue *);
+   void                           MUL(UDFContext *,CLIPSValue *);
+   void                           Positivep(UDFContext *,CLIPSValue *);
+   void                           Cube(UDFContext *,CLIPSValue *);
+   void                           TripleNumber(UDFContext *,CLIPSValue *);
+   void                           Reverse(UDFContext *,CLIPSValue *);
+   void                           MFL(UDFContext *,CLIPSValue *);
+   void                           CntMFChars(UDFContext *,CLIPSValue *);
+   void                           Sample4(UDFContext *,CLIPSValue *);
+   void                           Rest(UDFContext *,CLIPSValue *);
 
 /*********************************************************/
 /* UserFunctions: Informs the expert system environment  */
@@ -75,10 +91,388 @@ void UserFunctions()
 /*   included in another file.                             */
 /***********************************************************/
 void EnvUserFunctions(
-  void *environment)
+  Environment *environment)
   {
 #if MAC_XCD
 #pragma unused(environment)
 #endif
+   EnvAddUDF(environment,"rta","d",RTA,"RTA",2,2,"ld",NULL);
+   EnvAddUDF(environment,"mul","l",MUL,"MUL",2,2,"ld",NULL);
+   EnvAddUDF(environment,"positivep","b",Positivep,"Positivep",1,1,"ld",NULL);
+   EnvAddUDF(environment,"cube","bld",Cube,"Cube",1,1,"ld",NULL);
+   EnvAddUDF(environment,"triple","ld",TripleNumber,"TripleNumber",1,1,"ld",NULL);
+   EnvAddUDF(environment,"reverse","syn",Reverse,"Reverse",1,1,"syn",NULL);
+   EnvAddUDF(environment,"mfl","l",MFL,"MFL",1,1,"m",NULL);
+   EnvAddUDF(environment,"cmfc","l",CntMFChars,"CntMFChars",1,1,"m",NULL);
+   EnvAddUDF(environment,"sample4","m",Sample4,"Sample4",0,0,NULL,NULL);
+   EnvAddUDF(environment,"rest","m",Rest,"Rest",1,1,"m",NULL);
+  }
+
+/*******/
+/* RTA */
+/*******/
+void RTA(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSValue base, height;
+
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&base))
+     { return; }
+
+   if (! UDFNextArgument(context,NUMBER_TYPES,&height))
+     { return; }
+
+   CVSetFloat(returnValue,0.5 * CVToFloat(&base) * CVToFloat(&height));
+  }
+
+/*******/
+/* MUL */
+/*******/
+void MUL(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSValue theArg;
+   CLIPSInteger firstNumber, secondNumber;
+   
+   /*=============================================================*/
+   /* Get the first argument using the UDFFirstArgument function. */
+   /* Return if the correct type has not been passed.             */
+   /*=============================================================*/
+
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
+     { return; }
+
+   /*========================================================*/
+   /* Convert the first argument to an integer. If it's not  */
+   /* an integer, then it must be a float (so round it to    */
+   /* the nearest integer using the C library ceil function. */
+   /*========================================================*/
+
+   if (mCVIsType(&theArg,INTEGER_TYPE))
+     { firstNumber = CVToInteger(&theArg); }
+   else /* the type must be FLOAT */
+     { firstNumber = (CLIPSInteger) ceil(CVToFloat(&theArg) - 0.5); }
+
+   /*=============================================================*/
+   /* Get the second argument using the UDFNextArgument function. */
+   /* Return if the correct type has not been passed.             */
+   /*=============================================================*/
+   
+   if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
+     { return; }
+
+   /*========================================================*/
+   /* Convert the second argument to an integer. If it's not */
+   /* an integer, then it must be a float (so round it to    */
+   /* the nearest integer using the C library ceil function. */
+   /*========================================================*/
+
+   if (mCVIsType(&theArg,INTEGER_TYPE))
+     { secondNumber = CVToInteger(&theArg); }
+   else /* the type must be FLOAT */
+     { secondNumber = (CLIPSInteger) ceil(CVToFloat(&theArg) - 0.5); }
+
+   /*=========================================================*/
+   /* Multiply the two values together and return the result. */
+   /*=========================================================*/
+
+   CVSetInteger(returnValue,firstNumber * secondNumber);
+  }
+
+/*************/
+/* Positivep */
+/*************/
+void Positivep(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSValue theArg;
+
+   /*==================================*/
+   /* Get the first argument using the */
+   /* UDFFirstArgument function.       */
+   /*==================================*/
+
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
+     { return; }
+
+   /*=====================================*/
+   /* Determine if the value is positive. */
+   /*=====================================*/
+
+   if (CVIsType(&theArg,INTEGER_TYPE))
+     {
+      if (CVToInteger(&theArg) <= 0L)
+        { CVSetBoolean(returnValue,false); }
+      else
+        { CVSetBoolean(returnValue,true); }
+     }
+   else /* the type must be FLOAT */
+     {
+      if (CVToFloat(&theArg) <= 0.0)
+        { CVSetBoolean(returnValue,false); }
+      else
+        { CVSetBoolean(returnValue,true); }
+     }
+  }
+
+/********/
+/* Cube */
+/********/
+void Cube(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSValue theArg;
+   CLIPSInteger integerValue;
+   CLIPSFloat floatValue;
+
+   /*==================================*/
+   /* Get the first argument using the */
+   /* UDFFirstArgument function.       */
+   /*==================================*/
+
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
+     {
+      CVSetBoolean(returnValue,false);
+      return;
+     }
+
+   /*====================*/
+   /* Cube the argument. */
+   /*====================*/
+
+   if (CVIsType(&theArg,INTEGER_TYPE))
+     {
+      integerValue = CVToInteger(&theArg);
+      CVSetInteger(returnValue,integerValue * integerValue * integerValue);
+     }
+   else /* the type must be FLOAT */
+     {
+      floatValue = CVToFloat(&theArg);
+      CVSetFloat(returnValue,floatValue * floatValue * floatValue);
+     }
+  }
+
+/****************/
+/* TripleNumber */
+/****************/
+void TripleNumber( 
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSValue theArg;
+
+   /*==================================*/
+   /* Get the first argument using the */
+   /* UDFFirstArgument function.       */
+   /*==================================*/
+
+   if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
+     { return; }
+
+   /*======================*/
+   /* Triple the argument. */
+   /*======================*/
+
+   if (CVIsType(&theArg,INTEGER_TYPE))
+     { CVSetInteger(returnValue,3 * CVToInteger(&theArg)); }
+   else /* the type must be FLOAT */
+     { CVSetFloat(returnValue,3.0 * CVToFloat(&theArg)); }
+  }
+
+/***********/
+/* Reverse */
+/***********/
+void Reverse(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSValue theArg;
+   const char *theString;
+   char *tempString;
+   size_t length, i;
+
+   /*=========================================================*/
+   /* Get the first argument using the ArgTypeCheck function. */
+   /*=========================================================*/
+
+   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
+     { return; }
+
+   theString = mCVToString(&theArg);
+
+   /*========================================================*/
+   /* Allocate temporary space to store the reversed string. */
+   /*========================================================*/
+
+   length = strlen(theString);
+   tempString = (char *) malloc(length + 1);
+
+   /*=====================*/
+   /* Reverse the string. */
+   /*=====================*/
+
+   for (i = 0; i < length; i++)
+     { tempString[length - (i + 1)] = theString[i]; }
+   tempString[length] = '\0';
+
+   /*=====================================*/
+   /* Set the return value before deallocating */
+   /* the temporary reversed string.           */
+   /*==========================================*/
+ 
+   switch(CVType(&theArg))
+     {
+      case STRING_TYPE:
+        CVSetString(returnValue,tempString);
+        break;
+
+      case SYMBOL_TYPE:
+        CVSetSymbol(returnValue,tempString);
+        break;
+        
+      case INSTANCE_NAME_TYPE:
+        CVSetInstanceName(returnValue,tempString);
+        break;
+     }
+     
+   free(tempString);
+  }
+
+/*******/
+/* MFL */
+/*******/
+void MFL(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSValue theArg;
+
+   /*======================================================*/
+   /* Check that the first argument is a multifield value. */
+   /*======================================================*/
+
+   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
+     {
+      CVSetInteger(returnValue,-1);
+      return;
+     }
+   
+   /*============================================*/
+   /* Return the length of the multifield value. */
+   /*============================================*/
+    
+   CVSetInteger(returnValue,MFLength(&theArg));
+  }
+
+/**************/
+/* CntMFChars */
+/**************/
+void CntMFChars(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSValue theArg, theValue;
+   CLIPSInteger i, count = 0;
+   CLIPSInteger mfLength;
+
+   /*======================================================*/
+   /* Check that the first argument is a multifield value. */
+   /*======================================================*/
+
+   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
+     { return; }
+     
+   /*=====================================*/
+   /* Count the characters in each field. */
+   /*=====================================*/
+
+   mfLength = MFLength(&theArg);
+   for (i = 1; i <= mfLength; i++)
+     {
+      MFNthValue(&theArg,i,&theValue);
+      if (CVIsType(&theValue,LEXEME_TYPES))
+        { count += strlen(CVToString(&theValue)); }
+     }
+     
+   /*=============================*/
+   /* Return the character count. */
+   /*=============================*/
+    
+   CVSetInteger(returnValue,count);
+  }
+
+/***********/
+/* Sample4 */
+/***********/
+void Sample4(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSValue mfValue, theValue;
+
+   /*======================================*/
+   /* Initialize the CLIPSValue variables. */
+   /*======================================*/
+   
+   UDFCVInit(context,&mfValue);
+   UDFCVInit(context,&theValue);
+
+   /*=======================================*/
+   /* Create a multifield value of length 2 */
+   /*=======================================*/
+
+   CVCreateMultifield(&mfValue,2);
+
+   /*============================================*/
+   /* The first field in the multi-field value   */
+   /* will be a SYMBOL. Its value will be        */
+   /* "altitude".                                */
+   /*============================================*/
+
+   CVSetSymbol(&theValue,"altitude");
+   MFSetNthValue(&mfValue,1,&theValue);
+   
+   /*===========================================*/
+   /* The second field in the multi-field value */
+   /* will be a FLOAT. Its value will be 900.   */
+   /*===========================================*/
+
+   CVSetFloat(&theValue,900.0);
+   MFSetNthValue(&mfValue,2,&theValue);
+
+   /*=====================================================*/
+   /* Assign the type and value to the return CLIPSValue. */
+   /*=====================================================*/
+
+   CVSetValue(returnValue,&mfValue);
+  }
+
+/********/
+/* Rest */
+/********/
+void Rest(
+  UDFContext *context,
+  CLIPSValue *returnValue)
+  {
+   CLIPSInteger mfLength;
+   
+   /*======================================================*/
+   /* Check that the first argument is a multifield value. */
+   /*======================================================*/
+
+   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,returnValue))
+     { return; }
+
+   /*===========================================*/
+   /* Set the range to exclude the first value. */
+   /*===========================================*/
+   
+   mfLength = MFLength(returnValue);
+   if (mfLength != 0)
+     { MFSetRange(returnValue,2,mfLength); }
   }
 

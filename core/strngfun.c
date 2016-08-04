@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*               STRING FUNCTIONS MODULE               */
    /*******************************************************/
@@ -60,6 +60,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: The eval function can now access any local     */
 /*            variables that have been defined.              */
 /*                                                           */
@@ -105,7 +108,7 @@
 /*   the string manipulation functions.   */
 /******************************************/
 void StringFunctionDefinitions(
-  void *theEnv)
+  Environment *theEnv)
   {
 #if ! RUN_TIME
    EnvAddUDF(theEnv,"str-cat",        "sy", StrCatFunction, "StrCatFunction", 1, UNBOUNDED, "synld" ,NULL);
@@ -175,12 +178,12 @@ static void StrOrSymCatFunction(
    if (returnType == STRING)
      {
       functionName = "str-cat";
-      SetpValue(returnValue,(void *) EnvAddSymbol(theEnv,""));
+      SetpValue(returnValue,EnvAddSymbol(theEnv,""));
      }
    else
      {
       functionName = "sym-cat";
-      SetpValue(returnValue,(void *) EnvAddSymbol(theEnv,"nil"));
+      SetpValue(returnValue,EnvAddSymbol(theEnv,"nil"));
      }
 
    /*===============================================*/
@@ -271,7 +274,7 @@ static void StrOrSymCatFunction(
    /* up the temporary memory used.           */
    /*=========================================*/
 
-   SetpValue(returnValue,(void *) EnvAddSymbol(theEnv,theString));
+   SetpValue(returnValue,EnvAddSymbol(theEnv,theString));
    rm(theEnv,theString,sizeof(char) * total);
 
    for (i = 0; i < numArgs; i++)
@@ -351,7 +354,7 @@ void UpcaseFunction(
    /* up the temporary memory used.          */
    /*========================================*/
 
-   CVSetRawValue(returnValue,(void *) EnvAddSymbol(theEnv,nsptr));
+   CVSetRawValue(returnValue,EnvAddSymbol(theEnv,nsptr));
    rm(theEnv,nsptr,slen);
   }
 
@@ -399,7 +402,7 @@ void LowcaseFunction(
    /* up the temporary memory used.          */
    /*========================================*/
 
-   CVSetRawValue(returnValue,(void *) EnvAddSymbol(theEnv,nsptr));
+   CVSetRawValue(returnValue,EnvAddSymbol(theEnv,nsptr));
    rm(theEnv,nsptr,slen);
   }
 
@@ -627,7 +630,7 @@ void StringToFieldFunction(
 /* StringToField: Converts a string to an atomic data value. */
 /*************************************************************/
 void StringToField(
-  void *theEnv,
+  Environment *theEnv,
   const char *theString,
   DATA_OBJECT *returnValue)
   {
@@ -656,17 +659,17 @@ void StringToField(
    else if (theToken.type == STOP)
      {
       returnValue->type = SYMBOL;
-      returnValue->value = (void *) EnvAddSymbol(theEnv,"EOF");
+      returnValue->value = EnvAddSymbol(theEnv,"EOF");
      }
    else if (theToken.type == UNKNOWN_VALUE)
      {
       returnValue->type = STRING;
-      returnValue->value = (void *) EnvAddSymbol(theEnv,"*** ERROR ***");
+      returnValue->value = EnvAddSymbol(theEnv,"*** ERROR ***");
      }
    else
      {
       returnValue->type = STRING;
-      returnValue->value = (void *) EnvAddSymbol(theEnv,theToken.printForm);
+      returnValue->value = EnvAddSymbol(theEnv,theToken.printForm);
      }
   }
   
@@ -701,7 +704,7 @@ void EvalFunction(
 /*   for the eval function.  */
 /*****************************/
 bool EnvEval(
-  void *theEnv,
+  Environment *theEnv,
   const char *theString,
   DATA_OBJECT_PTR returnValue)
   {
@@ -840,7 +843,7 @@ bool EnvEval(
 /*   provided for use with a run-time version.   */
 /*************************************************/
 void EvalFunction(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT_PTR returnValue)
   {
    returnValue->environment = theEnv;
@@ -854,7 +857,7 @@ void EvalFunction(
 /*   for use with a run-time version.                */
 /*****************************************************/
 bool EnvEval(
-  void *theEnv,
+  Environment *theEnv,
   const char *theString,
   DATA_OBJECT_PTR returnValue)
   {
@@ -897,7 +900,7 @@ void BuildFunction(
 /*   for the build function.  */
 /******************************/
 bool EnvBuild(
-  void *theEnv,
+  Environment *theEnv,
   const char *theString)
   {
    const char *constructType;
@@ -1023,7 +1026,7 @@ void BuildFunction(
 /*   for use with a run-time version.                 */
 /******************************************************/
 bool EnvBuild(
-  void *theEnv,
+  Environment *theEnv,
   const char *theString)
   { 
    PrintErrorID(theEnv,"STRNGFUN",1,false);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*                 FILE COMMANDS MODULE                */
    /*******************************************************/
@@ -58,6 +58,9 @@
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
 /*            Changed return values for router functions.    */
+/*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
 /*                                                           */
 /*************************************************************/
 
@@ -118,7 +121,7 @@ struct fileCommandData
    char *DribbleBuffer;
    size_t DribbleCurrentPosition;
    size_t DribbleMaximumPosition;
-   int (*DribbleStatusFunction)(void *,bool);
+   int (*DribbleStatusFunction)(Environment *,bool);
 #endif
    int BatchType;
    FILE *BatchFileSource;
@@ -138,26 +141,26 @@ struct fileCommandData
 /***************************************/
 
 #if DEBUGGING_FUNCTIONS
-   static bool                    FindDribble(void *,const char *);
-   static int                     GetcDribble(void *,const char *);
-   static int                     UngetcDribble(void *,int,const char *);
-   static void                    ExitDribble(void *,int);
-   static void                    PrintDribble(void *,const char *,const char *);
-   static void                    PutcDribbleBuffer(void *,int);
+   static bool                    FindDribble(Environment *,const char *);
+   static int                     GetcDribble(Environment *,const char *);
+   static int                     UngetcDribble(Environment *,int,const char *);
+   static void                    ExitDribble(Environment *,int);
+   static void                    PrintDribble(Environment *,const char *,const char *);
+   static void                    PutcDribbleBuffer(Environment *,int);
 #endif
-   static bool                    FindBatch(void *,const char *);
-   static int                     GetcBatch(void *,const char *);
-   static int                     UngetcBatch(void *,int,const char *);
-   static void                    ExitBatch(void *,int);
-   static void                    AddBatch(void *,bool,FILE *,const char *,int,const char *,const char *);
-   static void                    DeallocateFileCommandData(void *);
+   static bool                    FindBatch(Environment *,const char *);
+   static int                     GetcBatch(Environment *,const char *);
+   static int                     UngetcBatch(Environment *,int,const char *);
+   static void                    ExitBatch(Environment *,int);
+   static void                    AddBatch(Environment *,bool,FILE *,const char *,int,const char *,const char *);
+   static void                    DeallocateFileCommandData(Environment *);
 
 /***************************************/
 /* FileCommandDefinitions: Initializes */
 /*   file commands.                    */
 /***************************************/
 void FileCommandDefinitions(
-  void *theEnv)
+  Environment *theEnv)
   {
    AllocateEnvironmentData(theEnv,FILECOM_DATA,sizeof(struct fileCommandData),DeallocateFileCommandData);
 
@@ -187,7 +190,7 @@ void FileCommandDefinitions(
 /*    data for file commands.                         */
 /******************************************************/
 static void DeallocateFileCommandData(
-  void *theEnv)
+  Environment *theEnv)
   {
    struct batchEntry *theEntry, *nextEntry;
    
@@ -227,7 +230,7 @@ static void DeallocateFileCommandData(
 /* FindDribble: Find routine for the dribble router. */
 /*****************************************************/
 static bool FindDribble(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName)
   {
 #if MAC_XCD
@@ -251,7 +254,7 @@ static bool FindDribble(
 /* PrintDribble: Print routine for the dribble router. */
 /*******************************************************/
 static void PrintDribble(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   const char *str)
   {
@@ -277,7 +280,7 @@ static void PrintDribble(
 /* GetcDribble: Getc routine for the dribble router. */
 /*****************************************************/
 static int GetcDribble(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName)
   {
    int rv;
@@ -309,7 +312,7 @@ static int GetcDribble(
 /* PutcDribbleBuffer: Putc routine for the dribble router. */
 /***********************************************************/
 static void PutcDribbleBuffer(
-  void *theEnv,
+  Environment *theEnv,
   int rv)
   {
    /*===================================================*/
@@ -366,7 +369,7 @@ static void PutcDribbleBuffer(
 /* UngetcDribble: Ungetc routine for the dribble router. */
 /*********************************************************/
 static int UngetcDribble(
-  void *theEnv,
+  Environment *theEnv,
   int ch,
   const char *logicalName)
   {
@@ -399,7 +402,7 @@ static int UngetcDribble(
 /* ExitDribble: Exit routine for the dribble router. */
 /*****************************************************/
 static void ExitDribble(
-  void *theEnv,
+  Environment *theEnv,
   int num)
   {
 #if MAC_XCD
@@ -436,7 +439,7 @@ void DribbleOnCommand(
 /*   for the dribble-on command.  */
 /**********************************/
 bool EnvDribbleOn(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileName)
   {
    /*==============================*/
@@ -493,7 +496,7 @@ bool EnvDribbleOn(
 /*   router is active, otherwise false.          */
 /*************************************************/
 bool EnvDribbleActive(
-  void *theEnv)
+  Environment *theEnv)
   {
    if (FileCommandData(theEnv)->DribbleFP != NULL) return true;
 
@@ -516,7 +519,7 @@ void DribbleOffCommand(
 /*   for the dribble-off command.  */
 /***********************************/
 bool EnvDribbleOff(
-  void *theEnv)
+  Environment *theEnv)
   {
    bool rv = false;
 
@@ -575,8 +578,8 @@ bool EnvDribbleOff(
 /*   on or off.                                      */
 /*****************************************************/
 void SetDribbleStatusFunction(
-  void *theEnv,
-  int (*fnptr)(void *,bool))
+  Environment *theEnv,
+  int (*fnptr)(Environment *,bool))
   {
    FileCommandData(theEnv)->DribbleStatusFunction = fnptr;
   }
@@ -587,7 +590,7 @@ void SetDribbleStatusFunction(
 /* FindBatch: Find routine for the batch router. */
 /*************************************************/
 static bool FindBatch(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName)
   {
 #if MAC_XCD
@@ -604,7 +607,7 @@ static bool FindBatch(
 /* GetcBatch: Getc routine for the batch router. */
 /*************************************************/
 static int GetcBatch(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName)
   {
    return(LLGetcBatch(theEnv,logicalName,false));
@@ -615,7 +618,7 @@ static int GetcBatch(
 /*   a character when a batch file is active.      */
 /***************************************************/
 int LLGetcBatch(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   bool returnOnEOF)
   {
@@ -699,7 +702,7 @@ int LLGetcBatch(
 /* UngetcBatch: Ungetc routine for the batch router. */
 /*****************************************************/
 static int UngetcBatch(
-  void *theEnv,
+  Environment *theEnv,
   int ch,
   const char *logicalName)
   {
@@ -719,7 +722,7 @@ static int UngetcBatch(
 /* ExitBatch: Exit routine for the batch router. */
 /*************************************************/
 static void ExitBatch(
-  void *theEnv,
+  Environment *theEnv,
   int num)
   {
 #if MAC_XCD
@@ -751,7 +754,7 @@ void BatchCommand(
 /* Batch: C access routine for the batch command. */
 /**************************************************/
 bool Batch(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileName)
   { return(OpenBatch(theEnv,fileName,false)); }
 
@@ -760,7 +763,7 @@ bool Batch(
 /*   opened with the batch command.            */
 /***********************************************/
 bool OpenBatch(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileName,
   bool placeAtEnd)
   {
@@ -840,7 +843,7 @@ bool OpenBatch(
 /*   processing for the  string is completed.                    */
 /*****************************************************************/
 bool OpenStringBatch(
-  void *theEnv,
+  Environment *theEnv,
   const char *stringName,
   const char *theString,
   bool placeAtEnd)
@@ -866,7 +869,7 @@ bool OpenStringBatch(
 /*   adds it to the list of opened batch files.        */
 /*******************************************************/
 static void AddBatch(
-  void *theEnv,
+  Environment *theEnv,
   bool placeAtEnd,
   FILE *theFileSource,
   const char *theLogicalSource,
@@ -922,7 +925,7 @@ static void AddBatch(
 /* RemoveBatch: Removes the top entry on the list of batch files. */
 /******************************************************************/
 bool RemoveBatch(
-  void *theEnv)
+  Environment *theEnv)
   {
    struct batchEntry *bptr;
    bool rv, fileBatch = false;
@@ -1027,7 +1030,7 @@ bool RemoveBatch(
 /*   file is open, otherwise false.     */
 /****************************************/
 bool BatchActive(
-  void *theEnv)
+  Environment *theEnv)
   {
    if (FileCommandData(theEnv)->TopOfBatchList != NULL) return true;
 
@@ -1038,7 +1041,7 @@ bool BatchActive(
 /* CloseAllBatchSources: Closes all open batch files. */
 /******************************************************/
 void CloseAllBatchSources(
-  void *theEnv)
+  Environment *theEnv)
   {   
    /*================================================*/
    /* Free the batch buffer if it contains anything. */
@@ -1092,7 +1095,7 @@ void BatchStarCommand(
 /* EnvBatchStar: C access routine for the batch* command. */
 /**********************************************************/
 bool EnvBatchStar(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileName)
   {
    int inchar;
@@ -1200,7 +1203,7 @@ bool EnvBatchStar(
 /*   provided for use with a run-time version.    */
 /**************************************************/
 bool EnvBatchStar(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileName)
   {
    PrintErrorID(theEnv,"FILECOM",1,false);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/04/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*                 AGENDA HEADER FILE                  */
    /*******************************************************/
@@ -47,6 +47,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_agenda
@@ -54,6 +57,8 @@
 #pragma once
 
 #define _H_agenda
+
+typedef struct activation Activation;
 
 #include "ruledef.h"
 #include "symbol.h"
@@ -72,7 +77,7 @@
 
 struct activation
   {
-   struct defrule *theRule;
+   Defrule *theRule;
    struct partialMatch *basis;
    int salience;
    unsigned long long timetag;
@@ -89,8 +94,6 @@ struct salienceGroup
    struct salienceGroup *next;
    struct salienceGroup *prev;
   };
-
-typedef struct activation ACTIVATION;
 
 #define AGENDA_DATA 17
 
@@ -112,35 +115,35 @@ struct agendaData
 /* GLOBAL EXTERNAL FUNCTION DEFINITIONS */
 /****************************************/
 
-   void                    AddActivation(void *,void *,void *);
-   void                    ClearRuleFromAgenda(void *,void *);
-   void                   *EnvGetNextActivation(void *,void *);
-   struct partialMatch    *EnvGetActivationBasis(void *,void *);
-   const char             *EnvGetActivationName(void *,void *);
-   struct defrule         *EnvGetActivationRule(void *,void *);
-   int                     EnvGetActivationSalience(void *,void *);
-   int                     EnvSetActivationSalience(void *,void *,int);
-   void                    EnvGetActivationPPForm(void *,char *,size_t,void *);
-   void                    EnvGetActivationBasisPPForm(void *,char *,size_t,void *);
-   bool                    MoveActivationToTop(void *,void *);
-   bool                    EnvDeleteActivation(void *,void *);
-   bool                    DetachActivation(void *,void *);
-   void                    EnvAgenda(void *,const char *,void *);
-   void                    RemoveActivation(void *,void *,bool,bool);
-   void                    RemoveAllActivations(void *);
-   bool                    EnvGetAgendaChanged(void *);
-   void                    EnvSetAgendaChanged(void *,bool);
-   unsigned long           GetNumberOfActivations(void *);
-   int                     EnvGetSalienceEvaluation(void *);
-   int                     EnvSetSalienceEvaluation(void *,int);
-   void                    EnvRefreshAgenda(void *,void *);
-   void                    EnvReorderAgenda(void *,void *);
-   void                    InitializeAgenda(void *);
+   void                    AddActivation(Environment *,Defrule *,PartialMatch *);
+   void                    ClearRuleFromAgenda(Environment *,Defrule *);
+   Activation             *EnvGetNextActivation(Environment *,Activation *);
+   struct partialMatch    *EnvGetActivationBasis(Environment *,Activation *);
+   const char             *EnvGetActivationName(Environment *,Activation *);
+   Defrule                *EnvGetActivationRule(Environment *,Activation *);
+   int                     EnvGetActivationSalience(Environment *,Activation *);
+   int                     EnvSetActivationSalience(Environment *,Activation *,int);
+   void                    EnvGetActivationPPForm(Environment *,char *,size_t,Activation *);
+   void                    EnvGetActivationBasisPPForm(Environment *,char *,size_t,Activation *);
+   bool                    MoveActivationToTop(Environment *,Activation *);
+   bool                    EnvDeleteActivation(Environment *,Activation *);
+   bool                    DetachActivation(Environment *,Activation *);
+   void                    EnvAgenda(Environment *,const char *,Defmodule *);
+   void                    RemoveActivation(Environment *,Activation *,bool,bool);
+   void                    RemoveAllActivations(Environment *);
+   bool                    EnvGetAgendaChanged(Environment *);
+   void                    EnvSetAgendaChanged(Environment *,bool);
+   unsigned long           GetNumberOfActivations(Environment *);
+   int                     EnvGetSalienceEvaluation(Environment *);
+   int                     EnvSetSalienceEvaluation(Environment *,int);
+   void                    EnvRefreshAgenda(Environment *,Defmodule *);
+   void                    EnvReorderAgenda(Environment *,Defmodule *);
+   void                    InitializeAgenda(Environment *);
    void                    SetSalienceEvaluationCommand(UDFContext *,CLIPSValue *);
    void                    GetSalienceEvaluationCommand(UDFContext *,CLIPSValue *);
    void                    RefreshAgendaCommand(UDFContext *,CLIPSValue *);
    void                    RefreshCommand(UDFContext *,CLIPSValue *);
-   bool                    EnvRefresh(void *,void *);
+   bool                    EnvRefresh(Environment *,Defrule *);
 #if DEBUGGING_FUNCTIONS
    void                    AgendaCommand(UDFContext *,CLIPSValue *);
 #endif

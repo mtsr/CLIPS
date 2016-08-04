@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/04/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*                     BSAVE MODULE                    */
    /*******************************************************/
@@ -39,6 +39,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #include "setup.h"
@@ -60,21 +63,21 @@
 /***************************************/
 
 #if BLOAD_AND_BSAVE
-   static void                        FindNeededItems(void *);
-   static void                        InitializeFunctionNeededFlags(void *);
-   static void                        WriteNeededFunctions(void *,FILE *);
-   static size_t                      FunctionBinarySize(void *);
-   static void                        WriteBinaryHeader(void *,FILE *);
-   static void                        WriteBinaryFooter(void *,FILE *);
+   static void                        FindNeededItems(Environment *);
+   static void                        InitializeFunctionNeededFlags(Environment *);
+   static void                        WriteNeededFunctions(Environment *,FILE *);
+   static size_t                      FunctionBinarySize(Environment *);
+   static void                        WriteBinaryHeader(Environment *,FILE *);
+   static void                        WriteBinaryFooter(Environment *,FILE *);
 #endif
-   static void                        DeallocateBsaveData(void *);
+   static void                        DeallocateBsaveData(Environment *);
 
 /**********************************************/
 /* InitializeBsaveData: Allocates environment */
 /*    data for the bsave command.             */
 /**********************************************/
 void InitializeBsaveData(
-  void *theEnv)
+  Environment *theEnv)
   {
    AllocateEnvironmentData(theEnv,BSAVE_DATA,sizeof(struct bsaveData),DeallocateBsaveData);
   }
@@ -84,7 +87,7 @@ void InitializeBsaveData(
 /*    data for the bsave command.               */
 /************************************************/
 static void DeallocateBsaveData(
-  void *theEnv)
+  Environment *theEnv)
   {
    struct BinaryItem *tmpPtr, *nextPtr;
    
@@ -132,7 +135,7 @@ void BsaveCommand(
 /*   for the bsave command.   */
 /******************************/
 bool EnvBsave(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileName)
   {
    FILE *fp;
@@ -200,7 +203,7 @@ bool EnvBsave(
    /* structures in the binary image.         */
    /*=========================================*/
 
-   GenWrite((void *) &ExpressionData(theEnv)->ExpressionCount,(unsigned long) sizeof(unsigned long),fp);
+   GenWrite(&ExpressionData(theEnv)->ExpressionCount,sizeof(unsigned long),fp);
 
    /*===========================================*/
    /* Save the numbers indicating the amount of */
@@ -294,7 +297,7 @@ bool EnvBsave(
 /*   being unneeded by this binary image.    */
 /*********************************************/
 static void InitializeFunctionNeededFlags(
-  void *theEnv)
+  Environment *theEnv)
   {
    struct FunctionDefinition *functionList;
 
@@ -311,7 +314,7 @@ static void InitializeFunctionNeededFlags(
 /*   number of expressions in use (through a global).     */
 /**********************************************************/
 static void FindNeededItems(
-  void *theEnv)
+  Environment *theEnv)
   {
    struct BinaryItem *biPtr;
 
@@ -326,7 +329,7 @@ static void FindNeededItems(
 /*   functions to the binary save file.             */
 /****************************************************/
 static void WriteNeededFunctions(
-  void *theEnv,
+  Environment *theEnv,
   FILE *fp)
   {
    unsigned long int count = 0;
@@ -388,7 +391,7 @@ static void WriteNeededFunctions(
 /*   function names in the binary save file. */
 /*********************************************/
 static size_t FunctionBinarySize(
-  void *theEnv)
+  Environment *theEnv)
   {
    size_t size = 0;
    struct FunctionDefinition *functionList;
@@ -410,7 +413,7 @@ static size_t FunctionBinarySize(
 /*   issued when a binary image is loaded.         */
 /***************************************************/
 void SaveBloadCount(
-  void *theEnv,
+  Environment *theEnv,
   long cnt)
   {
    BLOADCNTSV *tmp, *prv;
@@ -436,7 +439,7 @@ void SaveBloadCount(
 /*   completed when a binary image is loaded.     */
 /**************************************************/
 void RestoreBloadCount(
-  void *theEnv,
+  Environment *theEnv,
   long *cnt)
   {
    BLOADCNTSV *tmp;
@@ -453,7 +456,7 @@ void RestoreBloadCount(
 /*   an expression as part of a binary image. */
 /**********************************************/
 void MarkNeededItems(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *testPtr)
   {
    while (testPtr != NULL)
@@ -502,7 +505,7 @@ void MarkNeededItems(
 /*   verification when a binary image is loaded.      */
 /******************************************************/
 static void WriteBinaryHeader(
-  void *theEnv,
+  Environment *theEnv,
   FILE *fp)
   {
    GenWrite((void *) BloadData(theEnv)->BinaryPrefixID,(unsigned long) strlen(BloadData(theEnv)->BinaryPrefixID) + 1,fp);
@@ -514,7 +517,7 @@ static void WriteBinaryHeader(
 /*   verification when a binary image is loaded.      */
 /******************************************************/
 static void WriteBinaryFooter(
-  void *theEnv,
+  Environment *theEnv,
   FILE *fp)
   {
    char footerBuffer[CONSTRUCT_HEADER_SIZE];
@@ -534,16 +537,16 @@ static void WriteBinaryFooter(
 /*   binary file.                                         */
 /**********************************************************/
 bool AddBinaryItem(
-  void *theEnv,
+  Environment *theEnv,
   const char *name,
   int priority,
-  void (*findFunction)(void *),
-  void (*expressionFunction)(void *,FILE *),
-  void (*bsaveStorageFunction)(void *,FILE *),
-  void (*bsaveFunction)(void *,FILE *),
-  void (*bloadStorageFunction)(void *),
-  void (*bloadFunction)(void *),
-  void (*clearFunction)(void *))
+  void (*findFunction)(Environment *),
+  void (*expressionFunction)(Environment *,FILE *),
+  void (*bsaveStorageFunction)(Environment *,FILE *),
+  void (*bsaveFunction)(Environment *,FILE *),
+  void (*bloadStorageFunction)(Environment *),
+  void (*bloadFunction)(Environment *),
+  void (*clearFunction)(Environment *))
   {
    struct BinaryItem *newPtr, *currentPtr, *lastPtr = NULL;
 

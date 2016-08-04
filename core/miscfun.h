@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/05/16            */
+   /*             CLIPS Version 6.50  07/30/16            */
    /*                                                     */
    /*          MISCELLANEOUS FUNCTIONS HEADER FILE        */
    /*******************************************************/
@@ -68,6 +68,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Fact ?var:slot reference support.              */
 /*                                                           */
 /*************************************************************/
@@ -78,7 +81,7 @@
 
 #define _H_miscfun
 
-   void                           MiscFunctionDefinitions(void *);
+   void                           MiscFunctionDefinitions(Environment *);
    void                           CreateFunction(UDFContext *,CLIPSValue *);
    void                           SetgenFunction(UDFContext *,CLIPSValue *);
    void                           GensymFunction(UDFContext *,CLIPSValue *);
@@ -99,7 +102,7 @@
    void                           GetSORCommand(UDFContext *,CLIPSValue *);
    void                           GetFunctionRestrictions(UDFContext *,CLIPSValue *);
    void                           AproposCommand(UDFContext *,CLIPSValue *);
-   void                           GensymStar(void *,CLIPSValue *);
+   void                           GensymStar(Environment *,CLIPSValue *);
    void                           GetFunctionListFunction(UDFContext *,CLIPSValue *);
    void                           FuncallFunction(UDFContext *,CLIPSValue *);
    void                           NewFunction(UDFContext *,CLIPSValue *);

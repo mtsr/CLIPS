@@ -358,7 +358,7 @@
      { [theDelegate setValue: nil forKey: @"constructInspectorText"]; }
    else
      {   
-      void *theEnvironment = [environment environment];
+      Environment *theEnvironment = [environment environment];
       NSArray *theArray = [focusStackController valueForKeyPath: @"selection.agenda"];
          
       struct activation *theActivation = (struct activation *) [[theArray objectAtIndex: theRow] activation];

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*         DEFGLOBAL BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -44,6 +44,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_globlbsc
@@ -53,22 +56,23 @@
 #define _H_globlbsc
 
 #include "evaluatn.h"
+#include "globldef.h"
 
-   void                           DefglobalBasicCommands(void *);
+   void                           DefglobalBasicCommands(Environment *);
    void                           UndefglobalCommand(UDFContext *,CLIPSValue *);
-   bool                           EnvUndefglobal(void *,void *);
+   bool                           EnvUndefglobal(Environment *,Defglobal *);
    void                           GetDefglobalListFunction(UDFContext *,CLIPSValue *);
-   void                           EnvGetDefglobalList(void *,DATA_OBJECT_PTR,void *);
+   void                           EnvGetDefglobalList(Environment *,DATA_OBJECT_PTR,Defmodule *);
    void                           DefglobalModuleFunction(UDFContext *,CLIPSValue *);
    void                           PPDefglobalCommand(UDFContext *,CLIPSValue *);
-   int                            PPDefglobal(void *,const char *,const char *);
+   bool                           PPDefglobal(Environment *,const char *,const char *);
    void                           ListDefglobalsCommand(UDFContext *,CLIPSValue *);
 #if DEBUGGING_FUNCTIONS
-   bool                           EnvGetDefglobalWatch(void *,void *);
-   void                           EnvListDefglobals(void *,const char *,void *);
-   void                           EnvSetDefglobalWatch(void *,bool,void *);
+   bool                           EnvGetDefglobalWatch(Environment *,Defglobal *);
+   void                           EnvListDefglobals(Environment *,const char *,Defmodule *);
+   void                           EnvSetDefglobalWatch(Environment *,bool,Defglobal *);
 #endif
-   void                           ResetDefglobals(void *);
+   void                           ResetDefglobals(Environment *);
 
 #endif /* _H_globlbsc */
 

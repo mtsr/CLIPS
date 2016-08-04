@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/05/16            */
+   /*             CLIPS Version 6.50  07/30/16            */
    /*                                                     */
    /*                 ROUTER HEADER FILE                  */
    /*******************************************************/
@@ -49,6 +49,9 @@
 /*                                                           */
 /*            Changed return values for router functions.    */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
@@ -62,6 +65,13 @@
 #include "prntutil.h"
 
 #include <stdio.h>
+
+typedef struct router Router;
+typedef bool RouterQueryFunction(Environment *,const char *);
+typedef void RouterPrintFunction(Environment *,const char *,const char *);
+typedef void RouterExitFunction(Environment *,int);
+typedef int RouterGetcFunction(Environment *,const char *);
+typedef int RouterUngetcFunction(Environment *,int,const char *);
 
 #define WWARNING "wwarning"
 #define WERROR "werror"
@@ -80,12 +90,12 @@ struct router
    bool active;
    int priority;
    void *context;
-   bool (*query)(void *,const char *);
-   void (*printer)(void *,const char *,const char *);
-   void (*exiter)(void *,int);
-   int (*charget)(void *,const char *);
-   int (*charunget)(void *,int,const char *);
-   struct router *next;
+   RouterQueryFunction *queryCallback;
+   RouterPrintFunction *printCallback;
+   RouterExitFunction *exitCallback;
+   RouterGetcFunction *getcCallback;
+   RouterUngetcFunction *ungetcCallback;
+   Router *next;
   };
 
 struct routerData
@@ -104,39 +114,39 @@ struct routerData
 
 #define RouterData(theEnv) ((struct routerData *) GetEnvironmentData(theEnv,ROUTER_DATA))
 
-   void                           InitializeDefaultRouters(void *);
-   int                            EnvPrintRouter(void *,const char *,const char *);
-   int                            EnvGetcRouter(void *,const char *);
-   int                            EnvUngetcRouter(void *,int,const char *);
-   void                           EnvExitRouter(void *,int);
-   void                           AbortExit(void *);
-   bool                           EnvAddRouterWithContext(void *,
-                                                   const char *,int,
-                                                   bool (*)(void *,const char *),
-                                                   void (*)(void *,const char *,const char *),
-                                                   int (*)(void *,const char *),
-                                                   int (*)(void *,int,const char *),
-                                                   void (*)(void *,int),
-                                                   void *);
-   bool                           EnvAddRouter(void *,
-                                                   const char *,int,
-                                                   bool (*)(void *,const char *),
-                                                   void (*)(void *,const char *,const char *),
-                                                   int (*)(void *,const char *),
-                                                   int (*)(void *,int,const char *),
-                                                   void (*)(void *,int));
-   bool                           EnvDeleteRouter(void *,const char *);
-   bool                           QueryRouters(void *,const char *);
-   bool                           EnvDeactivateRouter(void *,const char *);
-   bool                           EnvActivateRouter(void *,const char *);
-   void                           SetFastLoad(void *,FILE *);
-   void                           SetFastSave(void *,FILE *);
-   FILE                          *GetFastLoad(void *);
-   FILE                          *GetFastSave(void *);
-   void                           UnrecognizedRouterMessage(void *,const char *);
+   void                           InitializeDefaultRouters(Environment *);
+   int                            EnvPrintRouter(Environment *,const char *,const char *);
+   int                            EnvGetcRouter(Environment *,const char *);
+   int                            EnvUngetcRouter(Environment *,int,const char *);
+   void                           EnvExitRouter(Environment *,int);
+   void                           AbortExit(Environment *);
+   bool                           EnvAddRouterWithContext(Environment *,
+                                                          const char *,int,
+                                                          RouterQueryFunction *,
+                                                          RouterPrintFunction *,
+                                                          RouterGetcFunction *,
+                                                          RouterUngetcFunction *,
+                                                          RouterExitFunction *,
+                                                          void *);
+   bool                           EnvAddRouter(Environment *,
+                                               const char *,int,
+                                               RouterQueryFunction *,
+                                               RouterPrintFunction *,
+                                               RouterGetcFunction *,
+                                               RouterUngetcFunction *,
+                                               RouterExitFunction *);
+   bool                           EnvDeleteRouter(Environment *,const char *);
+   bool                           QueryRouters(Environment *,const char *);
+   bool                           EnvDeactivateRouter(Environment *,const char *);
+   bool                           EnvActivateRouter(Environment *,const char *);
+   void                           SetFastLoad(Environment *,FILE *);
+   void                           SetFastSave(Environment *,FILE *);
+   FILE                          *GetFastLoad(Environment *);
+   FILE                          *GetFastSave(Environment *);
+   void                           UnrecognizedRouterMessage(Environment *,const char *);
    void                           ExitCommand(UDFContext *,CLIPSValue *);
-   int                            PrintNRouter(void *,const char *,const char *,unsigned long);
-   size_t                         EnvInputBufferCount(void *);
-   struct router                 *EnvFindRouter(void *,const char *);
+   int                            PrintNRouter(Environment *,const char *,const char *,unsigned long);
+   size_t                         EnvInputBufferCount(Environment *);
+   Router                        *EnvFindRouter(Environment *,const char *);
 
 #endif /* _H_router */

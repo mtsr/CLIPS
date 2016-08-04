@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*              DEFFUNCTION HEADER FILE                */
    /*******************************************************/
@@ -54,6 +54,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_dffnxfun
@@ -62,8 +65,8 @@
 
 #define _H_dffnxfun
 
-typedef struct deffunctionStruct DEFFUNCTION;
-typedef struct deffunctionModule DEFFUNCTION_MODULE;
+typedef struct deffunction Deffunction;
+typedef struct deffunctionModuleData DeffunctionModuleData;
 
 #include "conscomp.h"
 #include "cstrccom.h"
@@ -72,21 +75,21 @@ typedef struct deffunctionModule DEFFUNCTION_MODULE;
 #include "moduldef.h"
 #include "symbol.h"
 
-struct deffunctionModule
+struct deffunctionModuleData
   {
    struct defmoduleItemHeader header;
   };
 
-struct deffunctionStruct
+struct deffunction
   {
    struct constructHeader header;
-   unsigned busy,
-            executing;
+   unsigned busy;
+   unsigned executing;
    bool trace;
    EXPRESSION *code;
-   int minNumberOfParameters,
-       maxNumberOfParameters,
-       numberOfLocalVars;
+   int minNumberOfParameters;
+   int maxNumberOfParameters;
+   int numberOfLocalVars;
   };
   
 #define DEFFUNCTION_DATA 23
@@ -100,7 +103,7 @@ struct deffunctionData
    bool WatchDeffunctions;
 #endif
    struct CodeGeneratorItem *DeffunctionCodeItem;
-   DEFFUNCTION *ExecutingDeffunction;
+   Deffunction *ExecutingDeffunction;
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    struct token DFInputToken;
 #endif
@@ -108,34 +111,34 @@ struct deffunctionData
 
 #define DeffunctionData(theEnv) ((struct deffunctionData *) GetEnvironmentData(theEnv,DEFFUNCTION_DATA))
 
-   bool                           CheckDeffunctionCall(void *,void *,int);
+   bool                           CheckDeffunctionCall(Environment *,Deffunction *,int);
    void                           DeffunctionGetBind(DATA_OBJECT *);
    void                           DFRtnUnknown(DATA_OBJECT *);
    void                           DFWildargs(DATA_OBJECT *);
-   const char                    *EnvDeffunctionModule(void *,void *);
-   void                          *EnvFindDeffunction(void *,const char *);
-   void                          *EnvFindDeffunctionInModule(void *,const char *);
-   void                           EnvGetDeffunctionList(void *,DATA_OBJECT *,struct defmodule *);
-   const char                    *EnvGetDeffunctionName(void *,void *);
-   SYMBOL_HN                     *EnvGetDeffunctionNamePointer(void *,void *);
-   const char                    *EnvGetDeffunctionPPForm(void *,void *);
-   void                          *EnvGetNextDeffunction(void *,void *);
-   bool                           EnvIsDeffunctionDeletable(void *,void *);
-   void                           EnvSetDeffunctionPPForm(void *,void *,const char *);
-   bool                           EnvUndeffunction(void *,void *);
+   const char                    *EnvDeffunctionModule(Environment *,Deffunction *);
+   Deffunction                   *EnvFindDeffunction(Environment *,const char *);
+   Deffunction                   *EnvFindDeffunctionInModule(Environment *,const char *);
+   void                           EnvGetDeffunctionList(Environment *,DATA_OBJECT *,Defmodule *);
+   const char                    *EnvGetDeffunctionName(Environment *,Deffunction *);
+   SYMBOL_HN                     *EnvGetDeffunctionNamePointer(Environment *,Deffunction *);
+   const char                    *EnvGetDeffunctionPPForm(Environment *,Deffunction *);
+   Deffunction                   *EnvGetNextDeffunction(Environment *,Deffunction *);
+   bool                           EnvIsDeffunctionDeletable(Environment *,Deffunction *);
+   void                           EnvSetDeffunctionPPForm(Environment *,Deffunction *,const char *);
+   bool                           EnvUndeffunction(Environment *,Deffunction *);
    void                           GetDeffunctionListFunction(UDFContext *,CLIPSValue *);
    void                           GetDeffunctionModuleCommand(UDFContext *,CLIPSValue *);
-   DEFFUNCTION                   *LookupDeffunctionByMdlOrScope(void *,const char *);
-   DEFFUNCTION                   *LookupDeffunctionInScope(void *,const char *);
+   Deffunction                   *LookupDeffunctionByMdlOrScope(Environment *,const char *);
+   Deffunction                   *LookupDeffunctionInScope(Environment *,const char *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
-   void                           RemoveDeffunction(void *,void *);
+   void                           RemoveDeffunction(Environment *,Deffunction *);
 #endif
-   void                           SetupDeffunctions(void *);
+   void                           SetupDeffunctions(Environment *);
    void                           UndeffunctionCommand(UDFContext *,CLIPSValue *);
 #if DEBUGGING_FUNCTIONS
-   bool                           EnvGetDeffunctionWatch(void *,void *);
-   void                           EnvListDeffunctions(void *,const char *,struct defmodule *);
-   void                           EnvSetDeffunctionWatch(void *,bool,void *);
+   bool                           EnvGetDeffunctionWatch(Environment *,Deffunction *);
+   void                           EnvListDeffunctions(Environment *,const char *,Defmodule *);
+   void                           EnvSetDeffunctionWatch(Environment *,bool,Deffunction *);
    void                           ListDeffunctionsCommand(UDFContext *,CLIPSValue *);
    void                           PPDeffunctionCommand(UDFContext *,CLIPSValue *);
 #endif

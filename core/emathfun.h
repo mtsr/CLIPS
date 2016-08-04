@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/20/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*          EXTENDED MATH FUNCTIONS HEADER FILE        */
    /*******************************************************/
@@ -37,6 +37,9 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_emathfun
@@ -45,7 +48,7 @@
 
 #define _H_emathfun
 
-   void                           ExtendedMathFunctionDefinitions(void *theEnv);
+   void                           ExtendedMathFunctionDefinitions(Environment *);
 #if EXTENDED_MATH_FUNCTIONS
    void                           CosFunction(UDFContext *,CLIPSValue *);
    void                           SinFunction(UDFContext *,CLIPSValue *);

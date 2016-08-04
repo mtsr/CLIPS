@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*             OBJECT MESSAGE DISPATCH CODE            */
    /*******************************************************/
@@ -48,6 +48,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Option printing of carriage return for the     */
 /*            SlotVisibilityViolationError function.         */
 /*                                                           */
@@ -87,16 +90,14 @@
 
 #include "msgpass.h"
 
-/* =========================================
-   *****************************************
-      INTERNALLY VISIBLE FUNCTION HEADERS
-   =========================================
-   ***************************************** */
+/***************************************/
+/* LOCAL INTERNAL FUNCTION DEFINITIONS */
+/***************************************/
 
-static bool PerformMessage(void *,DATA_OBJECT *,EXPRESSION *,SYMBOL_HN *);
-static HANDLER_LINK *FindApplicableHandlers(void *,DEFCLASS *,SYMBOL_HN *);
-static void CallHandlers(void *,DATA_OBJECT *);
-static void EarlySlotBindError(void *,INSTANCE_TYPE *,DEFCLASS *,unsigned);
+   static bool                    PerformMessage(Environment *,DATA_OBJECT *,EXPRESSION *,SYMBOL_HN *);
+   static HANDLER_LINK           *FindApplicableHandlers(Environment *,Defclass *,SYMBOL_HN *);
+   static void                    CallHandlers(Environment *,DATA_OBJECT *);
+   static void                    EarlySlotBindError(Environment *,Instance *,Defclass *,unsigned);
 
 /* =========================================
    *****************************************
@@ -119,9 +120,9 @@ static void EarlySlotBindError(void *,INSTANCE_TYPE *,DEFCLASS *,unsigned);
   NOTES        : None
  *****************************************************/
 bool DirectMessage(
-  void *theEnv,
+  Environment *theEnv,
   SYMBOL_HN *msg,
-  INSTANCE_TYPE *ins,
+  Instance *ins,
   DATA_OBJECT *resultbuf,
   EXPRESSION *remargs)
   {
@@ -130,10 +131,12 @@ bool DirectMessage(
 
    if (resultbuf == NULL)
      resultbuf = &temp;
+     
    args.nextArg = remargs;
    args.argList = NULL;
    args.type = INSTANCE_ADDRESS;
-   args.value = (void *) ins;
+   args.value = ins;
+   
    return PerformMessage(theEnv,resultbuf,&args,msg);
   }
 
@@ -152,7 +155,7 @@ bool DirectMessage(
   NOTES        : None
  ***************************************************/
 void EnvSend(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *idata,
   const char *msg,
   const char *args,
@@ -200,7 +203,7 @@ void EnvSend(
   NOTES        : None
  *****************************************************/
 void DestroyHandlerLinks(
-  void *theEnv,
+  Environment *theEnv,
   HANDLER_LINK *mhead)
   {
    HANDLER_LINK *tmp;
@@ -210,7 +213,7 @@ void DestroyHandlerLinks(
       tmp = mhead;
       mhead = mhead->nxt;
       tmp->hnd->busy--;
-      DecrementDefclassBusyCount(theEnv,(void *) tmp->hnd->cls);
+      DecrementDefclassBusyCount(theEnv,tmp->hnd->cls);
       rtn_struct(theEnv,messageHandlerLink,tmp);
      }
   }
@@ -264,7 +267,7 @@ void SendCommand(
                  the call frame of the message
  ***************************************************/
 DATA_OBJECT *GetNthMessageArgument(
-  void *theEnv,
+  Environment *theEnv,
   int n)
   {
    return(&ProceduralPrimitiveData(theEnv)->ProcParamArray[n]);
@@ -292,14 +295,18 @@ void NextHandlerAvailableFunction(
   NOTES        : H/L Syntax: (next-handlerp)
  *****************************************************/
 bool NextHandlerAvailable(
-  void *theEnv)
+  Environment *theEnv)
   {
    if (MessageHandlerData(theEnv)->CurrentCore == NULL)
-     return false;
+     { return false; }
+   
    if (MessageHandlerData(theEnv)->CurrentCore->hnd->type == MAROUND)
-     return((MessageHandlerData(theEnv)->NextInCore != NULL) ? true : false);
-   if ((MessageHandlerData(theEnv)->CurrentCore->hnd->type == MPRIMARY) && (MessageHandlerData(theEnv)->NextInCore != NULL))
-     return((MessageHandlerData(theEnv)->NextInCore->hnd->type == MPRIMARY) ? true : false);
+     { return (MessageHandlerData(theEnv)->NextInCore != NULL) ? true : false; }
+   
+   if ((MessageHandlerData(theEnv)->CurrentCore->hnd->type == MPRIMARY) &&
+       (MessageHandlerData(theEnv)->NextInCore != NULL))
+     { return (MessageHandlerData(theEnv)->NextInCore->hnd->type == MPRIMARY) ? true : false; }
+   
    return false;
   }
 
@@ -355,9 +362,9 @@ void CallNextHandler(
       overridep = 1;
       args.type = ProceduralPrimitiveData(theEnv)->ProcParamArray[0].type;
       if (args.type != MULTIFIELD)
-        args.value = (void *) ProceduralPrimitiveData(theEnv)->ProcParamArray[0].value;
+        args.value = ProceduralPrimitiveData(theEnv)->ProcParamArray[0].value;
       else
-        args.value = (void *) &ProceduralPrimitiveData(theEnv)->ProcParamArray[0];
+        args.value = &ProceduralPrimitiveData(theEnv)->ProcParamArray[0];
       args.nextArg = GetFirstArgument();
       args.argList = NULL;
       PushProcParameters(theEnv,&args,CountArguments(&args),
@@ -458,15 +465,15 @@ void CallNextHandler(
   NOTES        : None
  *************************************************************************/
 void FindApplicableOfName(
-  void *theEnv,
-  DEFCLASS *cls,
+  Environment *theEnv,
+  Defclass *cls,
   HANDLER_LINK *tops[4],
   HANDLER_LINK *bots[4],
   SYMBOL_HN *mname)
   {
-   register int i;
-   register int e;
-   HANDLER *hnd;
+   int i;
+   int e;
+   DefmessageHandler *hnd;
    unsigned *arr;
    HANDLER_LINK *tmp;
 
@@ -483,7 +490,7 @@ void FindApplicableOfName(
 
       tmp = get_struct(theEnv,messageHandlerLink);
       hnd[arr[i]].busy++;
-      IncrementDefclassBusyCount(theEnv,(void *) hnd[arr[i]].cls);
+      IncrementDefclassBusyCount(theEnv,hnd[arr[i]].cls);
       tmp->hnd = &hnd[arr[i]];
       if (tops[tmp->hnd->type] == NULL)
         {
@@ -518,12 +525,12 @@ void FindApplicableOfName(
   NOTES        : None
  *************************************************************************/
 HANDLER_LINK *JoinHandlerLinks(
-  void *theEnv,
+  Environment *theEnv,
   HANDLER_LINK *tops[4],
   HANDLER_LINK *bots[4],
   SYMBOL_HN *mname)
   {
-   register int i;
+   int i;
    HANDLER_LINK *mlink;
 
    if (tops[MPRIMARY] == NULL)
@@ -532,7 +539,7 @@ HANDLER_LINK *JoinHandlerLinks(
      for (i = MAROUND ; i <= MAFTER ; i++)
        DestroyHandlerLinks(theEnv,tops[i]);
      EnvSetEvaluationError(theEnv,true);
-     return(NULL);
+     return NULL;
     }
 
    mlink = tops[MPRIMARY];
@@ -566,14 +573,14 @@ HANDLER_LINK *JoinHandlerLinks(
   NOTES        : None
  ***************************************************/
 void PrintHandlerSlotGetFunction(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   void *theValue)
   {
 #if DEVELOPER
    HANDLER_SLOT_REFERENCE *theReference;
-   DEFCLASS *theDefclass;
-   SLOT_DESC *sd;
+   Defclass *theDefclass;
+   SlotDescriptor *sd;
 
    theReference = (HANDLER_SLOT_REFERENCE *) ValueToBitMap(theValue);
    EnvPrintRouter(theEnv,logicalName,"?self:[");
@@ -617,18 +624,18 @@ void PrintHandlerSlotGetFunction(
                   overrode the original slot)
  ***************************************************/
 bool HandlerSlotGetFunction(
-  void *theEnv,
+  Environment *theEnv,
   void *theValue,
   DATA_OBJECT *theResult)
   {
    HANDLER_SLOT_REFERENCE *theReference;
-   DEFCLASS *theDefclass;
-   INSTANCE_TYPE *theInstance;
+   Defclass *theDefclass;
+   Instance *theInstance;
    INSTANCE_SLOT *sp;
    unsigned instanceSlotIndex;
 
    theReference = (HANDLER_SLOT_REFERENCE *) ValueToBitMap(theValue);
-   theInstance = (INSTANCE_TYPE *) ProceduralPrimitiveData(theEnv)->ProcParamArray[0].value;
+   theInstance = (Instance *) ProceduralPrimitiveData(theEnv)->ProcParamArray[0].value;
    theDefclass = DefclassData(theEnv)->ClassIDMap[theReference->classID];
 
    if (theInstance->garbage)
@@ -686,14 +693,14 @@ HandlerGetError:
   NOTES        : None
  ***************************************************/
 void PrintHandlerSlotPutFunction(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   void *theValue)
   {
 #if DEVELOPER
    HANDLER_SLOT_REFERENCE *theReference;
-   DEFCLASS *theDefclass;
-   SLOT_DESC *sd;
+   Defclass *theDefclass;
+   SlotDescriptor *sd;
 
    theReference = (HANDLER_SLOT_REFERENCE *) ValueToBitMap(theValue);
    EnvPrintRouter(theEnv,logicalName,"(bind ?self:[");
@@ -743,19 +750,19 @@ void PrintHandlerSlotPutFunction(
                   overrode the original slot)
  ***************************************************/
 bool HandlerSlotPutFunction(
-  void *theEnv,
+  Environment *theEnv,
   void *theValue,
   DATA_OBJECT *theResult)
   {
    HANDLER_SLOT_REFERENCE *theReference;
-   DEFCLASS *theDefclass;
-   INSTANCE_TYPE *theInstance;
+   Defclass *theDefclass;
+   Instance *theInstance;
    INSTANCE_SLOT *sp;
    unsigned instanceSlotIndex;
    DATA_OBJECT theSetVal;
 
    theReference = (HANDLER_SLOT_REFERENCE *) ValueToBitMap(theValue);
-   theInstance = (INSTANCE_TYPE *) ProceduralPrimitiveData(theEnv)->ProcParamArray[0].value;
+   theInstance = (Instance *) ProceduralPrimitiveData(theEnv)->ProcParamArray[0].value;
    theDefclass = DefclassData(theEnv)->ClassIDMap[theReference->classID];
 
    if (theInstance->garbage)
@@ -794,7 +801,7 @@ bool HandlerSlotPutFunction(
    if (sp->desc->initializeOnly && (!theInstance->initializeInProgress))
      {
       SlotAccessViolationError(theEnv,ValueToString(sp->desc->slotName->name),
-                               true,(void *) theInstance);
+                               true,theInstance);
       goto HandlerPutError2;
      }
 
@@ -845,7 +852,7 @@ void DynamicHandlerGetSlot(
   CLIPSValue *returnValue)
   {
    INSTANCE_SLOT *sp;
-   INSTANCE_TYPE *ins;
+   Instance *ins;
    DATA_OBJECT temp;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -898,7 +905,7 @@ void DynamicHandlerPutSlot(
   CLIPSValue *returnValue)
   {
    INSTANCE_SLOT *sp;
-   INSTANCE_TYPE *ins;
+   Instance *ins;
    DATA_OBJECT temp;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -924,7 +931,7 @@ void DynamicHandlerPutSlot(
        ((sp->desc->initializeOnly == 0) || (!ins->initializeInProgress)))
      {
       SlotAccessViolationError(theEnv,ValueToString(sp->desc->slotName->name),
-                               true,(void *) ins);
+                               true,ins);
       EnvSetEvaluationError(theEnv,true);
       return;
      }
@@ -973,15 +980,15 @@ void DynamicHandlerPutSlot(
                  to an instance of that class.
  *****************************************************/
 static bool PerformMessage(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *result,
   EXPRESSION *args,
   SYMBOL_HN *mname)
   {
    int oldce;
    /* HANDLER_LINK *oldCore; */
-   DEFCLASS *cls = NULL;
-   INSTANCE_TYPE *ins = NULL;
+   Defclass *cls = NULL;
+   Instance *ins = NULL;
    SYMBOL_HN *oldName;
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
@@ -1021,13 +1028,13 @@ static bool PerformMessage(
 
    if (ProceduralPrimitiveData(theEnv)->ProcParamArray->type == INSTANCE_ADDRESS)
      {
-      ins = (INSTANCE_TYPE *) ProceduralPrimitiveData(theEnv)->ProcParamArray->value;
+      ins = (Instance *) ProceduralPrimitiveData(theEnv)->ProcParamArray->value;
       if (ins->garbage == 1)
         {
          StaleInstanceAddress(theEnv,"send",0);
          EnvSetEvaluationError(theEnv,true);
         }
-      //else if (DefclassInScope(theEnv,ins->cls,(struct defmodule *) EnvGetCurrentModule(theEnv)) == false)
+      //else if (DefclassInScope(theEnv,ins->cls,EnvGetCurrentModule(theEnv)) == false)
       //  NoInstanceError(theEnv,ValueToString(ins->name),"send");
       else
         {
@@ -1048,7 +1055,7 @@ static bool PerformMessage(
         }
       else
         {
-         ProceduralPrimitiveData(theEnv)->ProcParamArray->value = (void *) ins;
+         ProceduralPrimitiveData(theEnv)->ProcParamArray->value = ins;
          ProceduralPrimitiveData(theEnv)->ProcParamArray->type = INSTANCE_ADDRESS;
          cls = ins->cls;
          ins->busy++;
@@ -1199,11 +1206,11 @@ static bool PerformMessage(
                  The number of arguments is in ProcParamArraySize
  *****************************************************************************/
 static HANDLER_LINK *FindApplicableHandlers(
-  void *theEnv,
-  DEFCLASS *cls,
+  Environment *theEnv,
+  Defclass *cls,
   SYMBOL_HN *mname)
   {
-   register int i;
+   int i;
    HANDLER_LINK *tops[4],*bots[4];
 
    for (i = MAROUND ; i <= MAFTER ; i++)
@@ -1234,7 +1241,7 @@ static HANDLER_LINK *FindApplicableHandlers(
                  pointing to the first handler to be executed.
  ***************************************************************/
 static void CallHandlers(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT *result)
   {
    HANDLER_LINK *oldCurrent = NULL,*oldNext = NULL;  /* prevents warning */
@@ -1402,12 +1409,12 @@ static void CallHandlers(
   NOTES        : None
  ********************************************************/
 static void EarlySlotBindError(
-  void *theEnv,
-  INSTANCE_TYPE *theInstance,
-  DEFCLASS *theDefclass,
+  Environment *theEnv,
+  Instance *theInstance,
+  Defclass *theDefclass,
   unsigned slotID)
   {
-   SLOT_DESC *sd;
+   SlotDescriptor *sd;
 
    sd = theDefclass->instanceTemplate[theDefclass->slotNameMap[slotID] - 1];
    PrintErrorID(theEnv,"MSGPASS",3,false);

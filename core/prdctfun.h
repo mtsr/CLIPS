@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*            PREDICATE FUNCTIONS HEADER FILE          */
    /*******************************************************/
@@ -32,6 +32,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_prdctfun
@@ -40,7 +43,7 @@
 
 #define _H_prdctfun
 
-   void                           PredicateFunctionDefinitions(void *);
+   void                           PredicateFunctionDefinitions(Environment *);
    void                           EqFunction(UDFContext *,CLIPSValue *);
    void                           NeqFunction(UDFContext *,CLIPSValue *);
    void                           StringpFunction(UDFContext *,CLIPSValue *);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/04/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*             BASIC MATH FUNCTIONS MODULE             */
    /*******************************************************/
@@ -37,6 +37,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Auto-float-dividend always enabled.            */
 /*                                                           */
 /*************************************************************/
@@ -56,7 +59,7 @@
 /* BasicMathFunctionDefinitions: Defines basic math functions. */
 /***************************************************************/
 void BasicMathFunctionDefinitions(
-  void *theEnv)
+  Environment *theEnv)
   {
 #if ! RUN_TIME
    EnvAddUDF(theEnv,"+",        "ld", AdditionFunction, "AdditionFunction", 2,UNBOUNDED, "ld" ,NULL);

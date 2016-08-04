@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/04/16            */
+   /*             CLIPS Version 6.50  07/30/16            */
    /*                                                     */
    /*                CONSTRAINT HEADER FILE               */
    /*******************************************************/
@@ -38,6 +38,9 @@
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
 /*                                                           */
 /*      6.50: Static constraint checking is always enabled.  */
 /*                                                           */
@@ -104,17 +107,17 @@ struct constraintData
 
 #define ConstraintData(theEnv) ((struct constraintData *) GetEnvironmentData(theEnv,CONSTRAINT_DATA))
 
-   void                           InitializeConstraints(void *);
+   void                           InitializeConstraints(Environment *);
    void                           GDCCommand(UDFContext *,CLIPSValue *);
    void                           SDCCommand(UDFContext *,CLIPSValue *);
-   bool                           EnvSetDynamicConstraintChecking(void *,bool);
-   bool                           EnvGetDynamicConstraintChecking(void *);
+   bool                           EnvSetDynamicConstraintChecking(Environment *,bool);
+   bool                           EnvGetDynamicConstraintChecking(Environment *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    unsigned long                  HashConstraint(struct constraintRecord *);
-   struct constraintRecord       *AddConstraint(void *,struct constraintRecord *);
+   struct constraintRecord       *AddConstraint(Environment *,struct constraintRecord *);
 #endif
 #if (! RUN_TIME)
-   void                           RemoveConstraint(void *,struct constraintRecord *);
+   void                           RemoveConstraint(Environment *,struct constraintRecord *);
 #endif
 
 #endif

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*         IMPLICIT SYSTEM METHODS PARSING MODULE      */
    /*******************************************************/
@@ -39,6 +39,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -71,11 +74,11 @@
    =========================================
    ***************************************** */
 
-static void FormMethodsFromRestrictions(void *,DEFGENERIC *,struct FunctionDefinition *,EXPRESSION *);
-static RESTRICTION *ParseRestrictionType(void *,int);
-static RESTRICTION *ParseRestrictionType2(void *,unsigned);
-static EXPRESSION *GenTypeExpression(void *,EXPRESSION *,int,int,const char *);
-static EXPRESSION *ParseRestrictionCreateTypes(void *,CONSTRAINT_RECORD *);
+   static void                    FormMethodsFromRestrictions(Environment *,Defgeneric *,struct FunctionDefinition *,EXPRESSION *);
+   static RESTRICTION            *ParseRestrictionType(Environment *,int);
+   static RESTRICTION            *ParseRestrictionType2(Environment *,unsigned);
+   static EXPRESSION             *GenTypeExpression(Environment *,EXPRESSION *,int,int,const char *);
+   static EXPRESSION             *ParseRestrictionCreateTypes(Environment *,CONSTRAINT_RECORD *);
 
 /* =========================================
    *****************************************
@@ -94,8 +97,8 @@ static EXPRESSION *ParseRestrictionCreateTypes(void *,CONSTRAINT_RECORD *);
                  Assumes no other methods already present
  ********************************************************/
 void AddImplicitMethods(
-  void *theEnv,
-  DEFGENERIC *gfunc)
+  Environment *theEnv,
+  Defgeneric *gfunc)
   {
    struct FunctionDefinition *sysfunc;
    EXPRESSION action;
@@ -104,7 +107,7 @@ void AddImplicitMethods(
    if (sysfunc == NULL)
      return;
    action.type = FCALL;
-   action.value = (void *) sysfunc;
+   action.value = sysfunc;
    action.nextArg = NULL;
    action.argList = NULL;
    FormMethodsFromRestrictions(theEnv,gfunc,sysfunc,&action);
@@ -129,19 +132,19 @@ void AddImplicitMethods(
   NOTES        : None
  **********************************************************************/
 static void FormMethodsFromRestrictions(
-  void *theEnv,
-  DEFGENERIC *gfunc,
+  Environment *theEnv,
+  Defgeneric *gfunc,
   struct FunctionDefinition *sysfunc,
   EXPRESSION *actions)
   {
-   DEFMETHOD *meth;
+   Defmethod *meth;
    EXPRESSION *plist,*tmp,*bot,*svBot;
    RESTRICTION *rptr;
    char theChar[2],defaultc;
    unsigned defaultc2, argRestriction2;
    int min,max,mposn;
    bool needMinimumMethod;
-   register int i,j;
+   int i,j;
    const char *rstring;
    
    if (sysfunc->restrictions == NULL)
@@ -327,11 +330,11 @@ static void FormMethodsFromRestrictions(
         
       if (max != -1)
         {
-         rptr->query = GenConstant(theEnv,FCALL,(void *) FindFunction(theEnv,"<="));
-         rptr->query->argList = GenConstant(theEnv,FCALL,(void *) FindFunction(theEnv,"length$"));
+         rptr->query = GenConstant(theEnv,FCALL,FindFunction(theEnv,"<="));
+         rptr->query->argList = GenConstant(theEnv,FCALL,FindFunction(theEnv,"length$"));
          rptr->query->argList->argList = GenProcWildcardReference(theEnv,min + i + 1);
          rptr->query->argList->nextArg =
-               GenConstant(theEnv,INTEGER,(void *) EnvAddLong(theEnv,(long long) (max - min - i)));
+               GenConstant(theEnv,INTEGER,EnvAddLong(theEnv,(long long) (max - min - i)));
         }
       tmp = get_struct(theEnv,expr);
       tmp->argList = (EXPRESSION *) rptr;
@@ -374,7 +377,7 @@ static void FormMethodsFromRestrictions(
 /* ParseRestrictionCreateTypes */
 /*******************************/
 static EXPRESSION *ParseRestrictionCreateTypes(
-  void *theEnv,
+  Environment *theEnv,
   CONSTRAINT_RECORD *rv)
   {
    EXPRESSION *types = NULL;
@@ -433,7 +436,7 @@ static EXPRESSION *ParseRestrictionCreateTypes(
   NOTES        : None
  *******************************************************************/
 static RESTRICTION *ParseRestrictionType(
-  void *theEnv,
+  Environment *theEnv,
   int code)
   {
    RESTRICTION *rptr;
@@ -451,7 +454,7 @@ static RESTRICTION *ParseRestrictionType(
   }
 
 static RESTRICTION *ParseRestrictionType2(
-  void *theEnv,
+  Environment *theEnv,
   unsigned code)
   {
    RESTRICTION *rptr;
@@ -490,7 +493,7 @@ static RESTRICTION *ParseRestrictionType2(
                  to classes
  ***************************************************/
 static EXPRESSION *GenTypeExpression(
-  void *theEnv,
+  Environment *theEnv,
   EXPRESSION *top,
   int nonCOOLCode,
   int primitiveCode,
@@ -510,9 +513,9 @@ static EXPRESSION *GenTypeExpression(
 
 #if OBJECT_SYSTEM
    if (primitiveCode != -1)
-     tmp = GenConstant(theEnv,0,(void *) DefclassData(theEnv)->PrimitiveClassMap[primitiveCode]);
+     tmp = GenConstant(theEnv,0,DefclassData(theEnv)->PrimitiveClassMap[primitiveCode]);
    else
-     tmp = GenConstant(theEnv,0,(void *) LookupDefclassByMdlOrScope(theEnv,COOLName));
+     tmp = GenConstant(theEnv,0,LookupDefclassByMdlOrScope(theEnv,COOLName));
 #else
    tmp = GenConstant(theEnv,0,EnvAddLong(theEnv,(long long) nonCOOLCode));
 #endif

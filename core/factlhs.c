@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*           FACT LHS PATTERN PARSING MODULE           */
    /*******************************************************/
@@ -32,6 +32,9 @@
 /*      6.40: Pragma once and other inclusion changes.       */
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
+/*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
 /*                                                           */
 /*      6.50: Removed initial-fact support.                  */
 /*                                                           */
@@ -65,7 +68,7 @@
 /*             ::= (<symbol> <constraint>+)    */
 /***********************************************/
 struct lhsParseNode *SequenceRestrictionParse(
-  void *theEnv,
+  Environment *theEnv,
   const char *readSource,
   struct token *theToken)
   {
@@ -86,7 +89,7 @@ struct lhsParseNode *SequenceRestrictionParse(
    topNode->bottom->type = SYMBOL;
    topNode->bottom->negated = false;
    topNode->bottom->exists = false;
-   topNode->bottom->value = (void *) theToken->value;
+   topNode->bottom->value = theToken->value;
 
    /*======================================================*/
    /* Connective constraints cannot be used in conjunction */
@@ -99,7 +102,7 @@ struct lhsParseNode *SequenceRestrictionParse(
      {
       ReturnLHSParseNodes(theEnv,topNode);
       SyntaxErrorMessage(theEnv,"the first field of a pattern");
-      return(NULL);
+      return NULL;
      }
 
    /*============================================================*/
@@ -111,7 +114,7 @@ struct lhsParseNode *SequenceRestrictionParse(
    if (nextField == NULL)
      {
       ReturnLHSParseNodes(theEnv,topNode);
-      return(NULL);
+      return NULL;
      }
    topNode->right = nextField;
 
@@ -126,7 +129,7 @@ struct lhsParseNode *SequenceRestrictionParse(
       SavePPBuffer(theEnv,theToken->printForm);
       SyntaxErrorMessage(theEnv,"fact patterns");
       ReturnLHSParseNodes(theEnv,topNode);
-      return(NULL);
+      return NULL;
      }
 
    /*====================================*/
@@ -170,11 +173,11 @@ bool FactPatternParserFind(
 /*  both deftemplate and ordered fact patterns.       */
 /******************************************************/
 struct lhsParseNode *FactPatternParse(
-  void *theEnv,
+  Environment *theEnv,
   const char *readSource,
   struct token *theToken)
   {
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    int count;
 
    /*=========================================*/
@@ -185,21 +188,21 @@ struct lhsParseNode *FactPatternParse(
    if (FindModuleSeparator(ValueToString(theToken->value)))
      {
       IllegalModuleSpecifierMessage(theEnv);
-      return(NULL);
+      return NULL;
      }
 
    /*=========================================================*/
    /* Find the deftemplate associated with the relation name. */
    /*=========================================================*/
 
-   theDeftemplate = (struct deftemplate *)
+   theDeftemplate = (Deftemplate *)
                     FindImportedConstruct(theEnv,"deftemplate",NULL,ValueToString(theToken->value),
                                           &count,true,NULL);
 
    if (count > 1)
      {
       AmbiguousReferenceErrorMessage(theEnv,"deftemplate",ValueToString(theToken->value));
-      return(NULL);
+      return NULL;
      }
 
    /*======================================================*/
@@ -210,10 +213,10 @@ struct lhsParseNode *FactPatternParse(
    if (theDeftemplate == NULL)
      {
 #if DEFMODULE_CONSTRUCT
-      if (FindImportExportConflict(theEnv,"deftemplate",((struct defmodule *) EnvGetCurrentModule(theEnv)),ValueToString(theToken->value)))
+      if (FindImportExportConflict(theEnv,"deftemplate",EnvGetCurrentModule(theEnv),ValueToString(theToken->value)))
         {
          ImportExportConflictMessage(theEnv,"implied deftemplate",ValueToString(theToken->value),NULL,NULL);
-         return(NULL);
+         return NULL;
         }
 #endif /* DEFMODULE_CONSTRUCT */
 

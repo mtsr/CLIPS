@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*            EXTENDED MATH FUNCTIONS MODULE           */
    /*******************************************************/
@@ -42,6 +42,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #include "setup.h"
@@ -77,9 +80,9 @@
 
    static bool                    SingleNumberCheck(UDFContext *,const char *,CLIPSValue *);
    static bool                    TestProximity(double,double);
-   static void                    DomainErrorMessage(void *,const char *);
-   static void                    ArgumentOverflowErrorMessage(void *,const char *);
-   static void                    SingularityErrorMessage(void *,const char *);
+   static void                    DomainErrorMessage(Environment *,const char *);
+   static void                    ArgumentOverflowErrorMessage(Environment *,const char *);
+   static void                    SingularityErrorMessage(Environment *,const char *);
    static double                  genacosh(double);
    static double                  genasinh(double);
    static double                  genatanh(double);
@@ -92,7 +95,7 @@
 /*   the extended math functions.               */
 /************************************************/
 void ExtendedMathFunctionDefinitions(
-  void *theEnv)
+  Environment *theEnv)
   {
 #if ! RUN_TIME
    EnvAddUDF(theEnv,"cos",      "d",   CosFunction,      "CosFunction",     1,1,"ld",NULL);
@@ -177,7 +180,7 @@ static bool TestProximity(
 /*   the extended math functions.                       */
 /********************************************************/
 static void DomainErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName)
   {
    PrintErrorID(theEnv,"EMATHFUN",1,false);
@@ -194,7 +197,7 @@ static void DomainErrorMessage(
 /*   one of the extended math functions.                    */
 /************************************************************/
 static void ArgumentOverflowErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName)
   {
    PrintErrorID(theEnv,"EMATHFUN",2,false);
@@ -211,7 +214,7 @@ static void ArgumentOverflowErrorMessage(
 /*   extended math functions.                               */
 /************************************************************/
 static void SingularityErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName)
   {
    PrintErrorID(theEnv,"EMATHFUN",3,false);

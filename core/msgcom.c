@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*                OBJECT MESSAGE COMMANDS              */
    /*******************************************************/
@@ -47,6 +47,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -88,35 +91,33 @@
 
 #include "msgcom.h"
 
-/* =========================================
-   *****************************************
-      INTERNALLY VISIBLE FUNCTION HEADERS
-   =========================================
-   ***************************************** */
+/***************************************/
+/* LOCAL INTERNAL FUNCTION DEFINITIONS */
+/***************************************/
 
 #if ! RUN_TIME
-static void CreateSystemHandlers(void *);
+   static void                    CreateSystemHandlers(Environment *);
 #endif
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
-static bool WildDeleteHandler(void *,DEFCLASS *,SYMBOL_HN *,const char *);
+   static bool                    WildDeleteHandler(Environment *,Defclass *,SYMBOL_HN *,const char *);
 #endif
 
 #if DEBUGGING_FUNCTIONS
-static bool DefmessageHandlerWatchAccess(void *,int,bool,EXPRESSION *);
-static bool DefmessageHandlerWatchPrint(void *,const char *,int,EXPRESSION *);
-static bool DefmessageHandlerWatchSupport(void *,const char *,const char *,bool,
-                                              void (*)(void *,const char *,void *,int),
-                                              void (*)(void *,bool,void *,int),
-                                              EXPRESSION *);
-static bool WatchClassHandlers(void *,void *,const char *,int,const char *,bool,bool,
-                                  void (*)(void *,const char *,void *,int),
-                                  void (*)(void *,bool,void *,int));
-static void PrintHandlerWatchFlag(void *,const char *,void *,int);
+   static bool                    DefmessageHandlerWatchAccess(Environment *,int,bool,EXPRESSION *);
+   static bool                    DefmessageHandlerWatchPrint(Environment *,const char *,int,EXPRESSION *);
+   static bool                    DefmessageHandlerWatchSupport(Environment *,const char *,const char *,bool,
+                                                                void (*)(Environment *,const char *,void *,int),
+                                                                void (*)(Environment *,bool,Defclass *,int),
+                                                                EXPRESSION *);
+   static bool                    WatchClassHandlers(Environment *,Defclass *,const char *,int,const char *,bool,bool,
+                                                     void (*)(Environment *,const char *,void *,int),
+                                                     void (*)(Environment *,bool,Defclass *,int));
+   static void                    PrintHandlerWatchFlag(Environment *,const char *,void *,int);
 #endif
 
-static void DeallocateMessageHandlerData(void *);
-  
+   static void                    DeallocateMessageHandlerData(Environment *);
+
 /* =========================================
    *****************************************
           EXTERNALLY VISIBLE FUNCTIONS
@@ -138,7 +139,7 @@ static void DeallocateMessageHandlerData(void *);
                  INSMODDP.C
  ***************************************************/
 void SetupMessageHandlers(
-  void *theEnv)
+  Environment *theEnv)
   {
    ENTITY_RECORD handlerGetInfo = { "HANDLER_GET", HANDLER_GET,0,1,1,
                                         PrintHandlerSlotGetFunction,
@@ -226,7 +227,7 @@ void SetupMessageHandlers(
 /*    data for the message handler functionality.        */
 /******************************************************/
 static void DeallocateMessageHandlerData(
-  void *theEnv)
+  Environment *theEnv)
   {
    HANDLER_LINK *tmp, *mhead, *chead;
     
@@ -264,15 +265,15 @@ static void DeallocateMessageHandlerData(
   NOTES        : None
  *****************************************************/
 const char *EnvGetDefmessageHandlerName(
-  void *theEnv,
-  void *ptr,
+  Environment *theEnv,
+  Defclass *theDefclass,
   int theIndex)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
-   return(ValueToString(((DEFCLASS *) ptr)->handlers[theIndex-1].name));
+   return ValueToString(theDefclass->handlers[theIndex-1].name);
   }
 
 /*****************************************************
@@ -286,11 +287,11 @@ const char *EnvGetDefmessageHandlerName(
   NOTES        : None
  *****************************************************/
 const char *EnvGetDefmessageHandlerType(
-  void *theEnv,
-  void *ptr,
+  Environment *theEnv,
+  Defclass *theDefclass,
   int theIndex)
   {
-   return(MessageHandlerData(theEnv)->hndquals[((DEFCLASS *) ptr)->handlers[theIndex-1].type]);
+   return MessageHandlerData(theEnv)->hndquals[theDefclass->handlers[theIndex-1].type];
   }
 
 /**************************************************************
@@ -305,21 +306,21 @@ const char *EnvGetDefmessageHandlerType(
                  (i.e. 1) returned
  **************************************************************/
 int EnvGetNextDefmessageHandler(
-  void *theEnv,
-  void *ptr,
+  Environment *theEnv,
+  Defclass *theDefclass,
   int theIndex)
   {
-   DEFCLASS *cls;
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
-   cls = (DEFCLASS *) ptr;
    if (theIndex == 0)
-     return((cls->handlers != NULL) ? 1 : 0);
-   if (theIndex == cls->handlerCount)
+     { return (theDefclass->handlers != NULL) ? 1 : 0; }
+     
+   if (theIndex == theDefclass->handlerCount)
      { return 0; }
-   return(theIndex+1);
+   
+   return theIndex+1;
   }
 
 /*****************************************************
@@ -332,11 +333,11 @@ int EnvGetNextDefmessageHandler(
   SIDE EFFECTS : None
   NOTES        : None
  *****************************************************/
-HANDLER *GetDefmessageHandlerPointer(
-  void *ptr,
+DefmessageHandler *GetDefmessageHandlerPointer(
+  Defclass *theDefclass,
   int theIndex)
   {
-   return(&((DEFCLASS *) ptr)->handlers[theIndex-1]);
+   return &theDefclass->handlers[theIndex-1];
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -353,15 +354,15 @@ HANDLER *GetDefmessageHandlerPointer(
   NOTES        : None
  *********************************************************/
 bool EnvGetDefmessageHandlerWatch(
-  void *theEnv,
-  void *theClass,
+  Environment *theEnv,
+  Defclass *theDefclass,
   int theIndex)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
-   return(((DEFCLASS *) theClass)->handlers[theIndex-1].trace);
+   return theDefclass->handlers[theIndex-1].trace;
   }
 
 /*********************************************************
@@ -377,16 +378,16 @@ bool EnvGetDefmessageHandlerWatch(
   NOTES        : None
  *********************************************************/
 void EnvSetDefmessageHandlerWatch(
-  void *theEnv,
+  Environment *theEnv,
   bool newState,
-  void *theClass,
+  Defclass *theClass,
   int theIndex)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
-   ((DEFCLASS *) theClass)->handlers[theIndex-1].trace = newState;
+   theClass->handlers[theIndex-1].trace = newState;
   }
 
 #endif
@@ -405,25 +406,25 @@ void EnvSetDefmessageHandlerWatch(
   NOTES        : None
  ***************************************************/
 unsigned EnvFindDefmessageHandler(
-  void *theEnv,
-  void *ptr,
+  Environment *theEnv,
+  Defclass *theDefclass,
   const char *hname,
   const char *htypestr)
   {
    unsigned htype;
    SYMBOL_HN *hsym;
-   DEFCLASS *cls;
    int theIndex;
 
    htype = HandlerType(theEnv,"handler-lookup",htypestr);
    if (htype == MERROR)
      { return 0; }
+   
    hsym = FindSymbolHN(theEnv,hname);
    if (hsym == NULL)
      { return 0; }
-   cls = (DEFCLASS *) ptr;
-   theIndex = FindHandlerByIndex(cls,hsym,(unsigned) htype);
-   return((unsigned) (theIndex+1));
+
+   theIndex = FindHandlerByIndex(theDefclass,hsym,(unsigned) htype);
+   return (unsigned) (theIndex+1);
   }
 
 /***************************************************
@@ -437,21 +438,18 @@ unsigned EnvFindDefmessageHandler(
   NOTES        : None
  ***************************************************/
 bool EnvIsDefmessageHandlerDeletable(
-  void *theEnv,
-  void *ptr,
+  Environment *theEnv,
+  Defclass *theDefclass,
   int theIndex)
   {
-   DEFCLASS *cls;
-
    if (! ConstructsDeletable(theEnv))
      { return false; }
 
-   cls = (DEFCLASS *) ptr;
-   if (cls->handlers[theIndex-1].system == 1)
-     return false;
+   if (theDefclass->handlers[theIndex-1].system == 1)
+     { return false; }
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
-   return((HandlersExecuting(cls) == false) ? true : false);
+   return (HandlersExecuting(theDefclass) == false) ? true : false;
 #else
    return false;
 #endif
@@ -477,7 +475,7 @@ void UndefmessageHandlerCommand(
    SYMBOL_HN *mname;
    const char *tname;
    CLIPSValue theArg;
-   DEFCLASS *cls;
+   Defclass *cls;
 
 #if BLOAD || BLOAD_AND_BSAVE
    if (Bloaded(theEnv))
@@ -522,8 +520,8 @@ void UndefmessageHandlerCommand(
   NOTES        : None
  ***********************************************************/
 bool EnvUndefmessageHandler(
-  void *theEnv,
-  void *vptr,
+  Environment *theEnv,
+  Defclass *theDefclass,
   int mhi)
   {
 #if RUN_TIME || BLOAD_ONLY
@@ -531,7 +529,6 @@ bool EnvUndefmessageHandler(
    EnvPrintRouter(theEnv,WERROR,"Unable to delete message-handlers.\n");
    return false;
 #else
-   DEFCLASS *cls;
 
 #if BLOAD || BLOAD_AND_BSAVE
    if (Bloaded(theEnv))
@@ -541,7 +538,7 @@ bool EnvUndefmessageHandler(
       return false;
      }
 #endif
-   if (vptr == NULL)
+   if (theDefclass == NULL)
      {
       if (mhi != 0)
         {
@@ -549,18 +546,20 @@ bool EnvUndefmessageHandler(
          EnvPrintRouter(theEnv,WERROR,"Incomplete message-handler specification for deletion.\n");
          return false;
         }
-      return(WildDeleteHandler(theEnv,NULL,NULL,NULL));
+      return WildDeleteHandler(theEnv,NULL,NULL,NULL);
      }
+
    if (mhi == 0)
-     return(WildDeleteHandler(theEnv,(DEFCLASS *) vptr,NULL,NULL));
-   cls = (DEFCLASS *) vptr;
-   if (HandlersExecuting(cls))
+     { return WildDeleteHandler(theEnv,theDefclass,NULL,NULL); }
+
+   if (HandlersExecuting(theDefclass))
      {
-      HandlerDeleteError(theEnv,EnvGetDefclassName(theEnv,(void *) cls));
+      HandlerDeleteError(theEnv,EnvGetDefclassName(theEnv,theDefclass));
       return false;
      }
-   cls->handlers[mhi-1].mark = 1;
-   DeallocateMarkedHandlers(theEnv,cls);
+     
+   theDefclass->handlers[mhi-1].mark = 1;
+   DeallocateMarkedHandlers(theEnv,theDefclass);
    return true;
 #endif
   }
@@ -582,9 +581,9 @@ void PPDefmessageHandlerCommand(
    CLIPSValue theArg;
    SYMBOL_HN *csym,*msym;
    const char *tname;
-   DEFCLASS *cls = NULL;
+   Defclass *cls = NULL;
    unsigned mtype;
-   HANDLER *hnd;
+   DefmessageHandler *hnd;
    Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
@@ -672,7 +671,7 @@ void PreviewSendCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DEFCLASS *cls;
+   Defclass *cls;
    CLIPSValue theArg;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -707,15 +706,15 @@ void PreviewSendCommand(
   NOTES        : None
  ********************************************************/
 const char *EnvGetDefmessageHandlerPPForm(
-  void *theEnv,
-  void *ptr,
+  Environment *theEnv,
+  Defclass *theDefclass,
   int theIndex)
   {
 #if MAC_XCD
 #pragma unused(theEnv)
 #endif
 
-   return(((DEFCLASS *) ptr)->handlers[theIndex-1].ppForm);
+   return theDefclass->handlers[theIndex-1].ppForm;
   }
 
 /*******************************************************************
@@ -730,24 +729,22 @@ const char *EnvGetDefmessageHandlerPPForm(
   NOTES        : None
  *******************************************************************/
 void EnvListDefmessageHandlers(
-  void *theEnv,
+  Environment *theEnv,
   const char *logName,
-  void *vptr,
+  Defclass *theDefclass,
   bool inhp)
   {
-   DEFCLASS *cls;
    long cnt;
    PACKED_CLASS_LINKS plinks;
 
-   if (vptr != NULL)
+   if (theDefclass != NULL)
      {
-      cls = (DEFCLASS *) vptr;
       if (inhp)
-        cnt = DisplayHandlersInLinks(theEnv,logName,&cls->allSuperclasses,0);
+        { cnt = DisplayHandlersInLinks(theEnv,logName,&theDefclass->allSuperclasses,0); }
       else
         {
          plinks.classCount = 1;
-         plinks.classArray = &cls;
+         plinks.classArray = &theDefclass;
          cnt = DisplayHandlersInLinks(theEnv,logName,&plinks,0);
         }
      }
@@ -755,11 +752,11 @@ void EnvListDefmessageHandlers(
      {
       plinks.classCount = 1;
       cnt = 0L;
-      for (cls = (DEFCLASS *) EnvGetNextDefclass(theEnv,NULL) ;
-           cls != NULL ;
-           cls = (DEFCLASS *) EnvGetNextDefclass(theEnv,(void *) cls))
+      for (theDefclass = EnvGetNextDefclass(theEnv,NULL) ;
+           theDefclass != NULL ;
+           theDefclass = EnvGetNextDefclass(theEnv,theDefclass))
         {
-         plinks.classArray = &cls;
+         plinks.classArray = &theDefclass;
          cnt += DisplayHandlersInLinks(theEnv,logName,&plinks,0);
         }
      }
@@ -778,9 +775,9 @@ void EnvListDefmessageHandlers(
   NOTES        : None
  ********************************************************************/
 void EnvPreviewSend(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
-  void *clsptr,
+  Defclass *theDefclass,
   const char *msgname)
   {
    HANDLER_LINK *core;
@@ -788,8 +785,9 @@ void EnvPreviewSend(
 
    msym = FindSymbolHN(theEnv,msgname);
    if (msym == NULL)
-     return;
-   core = FindPreviewApplicableHandlers(theEnv,(DEFCLASS *) clsptr,msym);
+     { return; }
+     
+   core = FindPreviewApplicableHandlers(theEnv,theDefclass,msym);
    if (core != NULL)
      {
       DisplayCore(theEnv,logicalName,core,0);
@@ -809,7 +807,7 @@ void EnvPreviewSend(
   NOTES        : Used by DescribeClass()
  ****************************************************/
 long DisplayHandlersInLinks(
-  void *theEnv,
+  Environment *theEnv,
   const char *logName,
   PACKED_CLASS_LINKS *plinks,
   int theIndex)
@@ -845,7 +843,7 @@ long DisplayHandlersInLinks(
   NOTES        : Must be called after CreateSystemClasses()
  **********************************************************/
 static void CreateSystemHandlers(
-  void *theEnv)
+  Environment *theEnv)
   {
    NewSystemHandler(theEnv,USER_TYPE_NAME,INIT_STRING,"init-slots",0);
    NewSystemHandler(theEnv,USER_TYPE_NAME,DELETE_STRING,"delete-instance",0);
@@ -876,8 +874,8 @@ static void CreateSystemHandlers(
   NOTES        : None
  ************************************************************/
 static bool WildDeleteHandler(
-  void *theEnv,
-  DEFCLASS *cls,
+  Environment *theEnv,
+  Defclass *cls,
   SYMBOL_HN *msym,
   const char *tname)
   {
@@ -897,9 +895,9 @@ static bool WildDeleteHandler(
      {
       bool success = true;
 
-      for (cls = (DEFCLASS *) EnvGetNextDefclass(theEnv,NULL) ;
+      for (cls = EnvGetNextDefclass(theEnv,NULL) ;
            cls != NULL ;
-           cls = (DEFCLASS *) EnvGetNextDefclass(theEnv,(void *) cls))
+           cls = EnvGetNextDefclass(theEnv,cls))
         if (DeleteHandler(theEnv,cls,msym,mtype,false) == false)
           success = false;
       return(success);
@@ -926,7 +924,7 @@ static bool WildDeleteHandler(
   NOTES        : Accessory function for AddWatchItem()
  ******************************************************************/
 static bool DefmessageHandlerWatchAccess(
-  void *theEnv,
+  Environment *theEnv,
   int code,
   bool newState,
   EXPRESSION *argExprs)
@@ -957,7 +955,7 @@ static bool DefmessageHandlerWatchAccess(
   NOTES        : Accessory function for AddWatchItem()
  ***********************************************************************/
 static bool DefmessageHandlerWatchPrint(
-  void *theEnv,
+  Environment *theEnv,
   const char *logName,
   int code,
   EXPRESSION *argExprs)
@@ -985,16 +983,16 @@ static bool DefmessageHandlerWatchPrint(
   NOTES        : None
  *******************************************************/
 static bool DefmessageHandlerWatchSupport(
-  void *theEnv,
+  Environment *theEnv,
   const char *funcName,
   const char *logName,
   bool newState,
-  void (*printFunc)(void *,const char *,void *,int),
-  void (*traceFunc)(void *,bool,void *,int),
+  void (*printFunc)(Environment *,const char *,void *,int),
+  void (*traceFunc)(Environment *,bool,Defclass *,int),
   EXPRESSION *argExprs)
   {
-   struct defmodule *theModule;
-   void *theClass;
+   Defmodule *theModule;
+   Defclass *theClass;
    const char *theHandlerStr;
    int theType;
    int argIndex = 2;
@@ -1008,13 +1006,13 @@ static bool DefmessageHandlerWatchSupport(
    if (argExprs == NULL)
      {
       SaveCurrentModule(theEnv);
-      theModule = (struct defmodule *) EnvGetNextDefmodule(theEnv,NULL);
+      theModule = EnvGetNextDefmodule(theEnv,NULL);
       while (theModule != NULL)
         {
-         EnvSetCurrentModule(theEnv,(void *) theModule);
+         EnvSetCurrentModule(theEnv,theModule);
          if (traceFunc == NULL)
            {
-            EnvPrintRouter(theEnv,logName,EnvGetDefmoduleName(theEnv,(void *) theModule));
+            EnvPrintRouter(theEnv,logName,EnvGetDefmoduleName(theEnv,theModule));
             EnvPrintRouter(theEnv,logName,":\n");
            }
          theClass = EnvGetNextDefclass(theEnv,NULL);
@@ -1025,7 +1023,7 @@ static bool DefmessageHandlerWatchSupport(
                  return false;
              theClass = EnvGetNextDefclass(theEnv,theClass);
             }
-          theModule = (struct defmodule *) EnvGetNextDefmodule(theEnv,(void *) theModule);
+          theModule = EnvGetNextDefmodule(theEnv,theModule);
          }
       RestoreCurrentModule(theEnv);
       return true;
@@ -1043,7 +1041,7 @@ static bool DefmessageHandlerWatchSupport(
          ExpectedTypeError1(theEnv,funcName,argIndex,"class name");
          return false;
         }
-      theClass = (void *) LookupDefclassByMdlOrScope(theEnv,DOToString(tmpData));
+      theClass = LookupDefclassByMdlOrScope(theEnv,DOToString(tmpData));
       if (theClass == NULL)
         {
          ExpectedTypeError1(theEnv,funcName,argIndex,"class name");
@@ -1112,15 +1110,15 @@ static bool DefmessageHandlerWatchSupport(
   NOTES        : None
  *******************************************************/
 static bool WatchClassHandlers(
-  void *theEnv,
-  void *theClass,
+  Environment *theEnv,
+  Defclass *theClass,
   const char *theHandlerStr,
   int theType,
   const char *logName,
   bool newState,
   bool indentp,
-  void (*printFunc)(void *,const char *,void *,int),
-  void (*traceFunc)(void *,bool,void *,int))
+  void (*printFunc)(Environment *,const char *,void *,int),
+  void (*traceFunc)(Environment *,bool,Defclass *,int))
   {
    unsigned theHandler;
    bool found = false;
@@ -1129,7 +1127,7 @@ static bool WatchClassHandlers(
    while (theHandler != 0)
      {
       if ((theType == -1) ? true :
-          (theType == (int) ((DEFCLASS *) theClass)->handlers[theHandler-1].type))
+          (theType == (int) theClass->handlers[theHandler-1].type))
         {
          if ((theHandlerStr == NULL) ? true :
              (strcmp(theHandlerStr,EnvGetDefmessageHandlerName(theEnv,theClass,theHandler)) == 0))
@@ -1163,7 +1161,7 @@ static bool WatchClassHandlers(
   NOTES        : None
  ***************************************************/
 static void PrintHandlerWatchFlag(
-  void *theEnv,
+  Environment *theEnv,
   const char *logName,
   void *theClass,
   int theHandler)

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*                   DEVELOPER MODULE                  */
    /*******************************************************/
@@ -41,6 +41,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -75,14 +78,14 @@
 #if DEVELOPER
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-static void PrintOPNLevel(void *theEnv,OBJECT_PATTERN_NODE *,char *,int);
+   static void                    PrintOPNLevel(Environment *,OBJECT_PATTERN_NODE *,char *,int);
 #endif
 
 /**************************************************/
 /* DeveloperCommands: Sets up developer commands. */
 /**************************************************/
 void DeveloperCommands(
-  void *theEnv)
+  Environment *theEnv)
   {
 #if ! RUN_TIME
    EnvAddUDF(theEnv,"primitives-info","v",  PrimitiveTablesInfo,"PrimitiveTablesInfo",0,0,NULL,NULL);
@@ -294,7 +297,7 @@ void ValidateFactIntegrity(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct fact *theFact;
+   Fact *theFact;
    struct multifield *theSegment;
    int i;
    SYMBOL_HN *theSymbol;
@@ -302,15 +305,15 @@ void ValidateFactIntegrity(
    INTEGER_HN *theInteger;
    Environment *theEnv = UDFContextEnvironment(context);
      
-   if (theEnv->initialized == false)
+   if (((struct environmentData *) theEnv)->initialized == false)
      {
-      mCVSetBoolean(returnValue,false);
+      mCVSetBoolean(returnValue,true);
       return;
      }
 
-   for (theFact = (struct fact *) EnvGetNextFact(theEnv,NULL);
+   for (theFact = EnvGetNextFact(theEnv,NULL);
         theFact != NULL;
-        theFact = (struct fact *) EnvGetNextFact(theEnv,theFact))
+        theFact = EnvGetNextFact(theEnv,theFact))
      {
       if (theFact->factHeader.busyCount <= 0)
         {
@@ -369,14 +372,14 @@ void ShowFactPatternNetwork(
   {
    void *theEnv = UDFContextEnvironment(context);
    struct factPatternNode *patternPtr;
-   struct deftemplate *theDeftemplate;
+   Deftemplate *theDeftemplate;
    const char *theName;
    int depth = 0, i;
 
    theName = GetConstructName(theEnv,"show-fpn","template name");
    if (theName == NULL) return;
 
-   theDeftemplate = (struct deftemplate *) EnvFindDeftemplate(theEnv,theName);
+   theDeftemplate = EnvFindDeftemplate(theEnv,theName);
    if (theDeftemplate == NULL) return;
 
    patternPtr = theDeftemplate->patternNetwork;
@@ -460,14 +463,14 @@ void PrintObjectPatternNetwork(
   NOTES        : None
  **********************************************************/
 static void PrintOPNLevel(
-  void *theEnv,
+  Environment *theEnv,
   OBJECT_PATTERN_NODE *pptr,
   char *indentbuf,
   int ilen)
   {
    CLASS_BITMAP *cbmp;
    SLOT_BITMAP *sbmp;
-   register unsigned i;
+   unsigned i;
    OBJECT_PATTERN_NODE *uptr;
    OBJECT_ALPHA_NODE *alphaPtr;
 
@@ -497,7 +500,7 @@ static void PrintOPNLevel(
            if (TestBitMap(cbmp->map,i))
              {
               EnvPrintRouter(theEnv,WDISPLAY," ");
-              EnvPrintRouter(theEnv,WDISPLAY,EnvGetDefclassName(theEnv,(void *) DefclassData(theEnv)->ClassIDMap[i]));
+              EnvPrintRouter(theEnv,WDISPLAY,EnvGetDefclassName(theEnv,DefclassData(theEnv)->ClassIDMap[i]));
              }
          if (alphaPtr->slotbmp != NULL)
            {
@@ -550,7 +553,7 @@ void InstanceTableUsage(
   {
    unsigned long i;
    int instanceCounts[COUNT_SIZE];
-   INSTANCE_TYPE *ins;
+   Instance *ins;
    unsigned long int instanceCount, totalInstanceCount = 0;
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -600,7 +603,7 @@ void InstanceTableUsage(
 /* ExamineMemory: */
 /******************/
 static void ExamineMemory(
-  void *theEnv,
+  Environment *theEnv,
   struct joinNode *theJoin,
   struct betaMemory *theMemory)  
   {
@@ -617,7 +620,7 @@ static void ExamineMemory(
 /* TraverseBetaMemories: */
 /*************************/
 static void TraverseBetaMemories(
-  void *theEnv,
+  Environment *theEnv,
   struct joinNode *theJoin)
   {
    if (theJoin == NULL) 
@@ -641,16 +644,16 @@ static void TraverseBetaMemories(
 /* ValidateRuleBetaMemoriesAction: */
 /***********************************/  
 static void ValidateRuleBetaMemoriesAction(
-  void *theEnv,
+  Environment *theEnv,
   struct constructHeader *theConstruct,
   void *buffer)
   {
 #if MAC_XCD
 #pragma unused(buffer)
 #endif
-   struct defrule *rulePtr, *tmpPtr;
+   Defrule *rulePtr, *tmpPtr;
 
-   for (rulePtr = (struct defrule *) theConstruct, tmpPtr = rulePtr;
+   for (rulePtr = (Defrule *) theConstruct, tmpPtr = rulePtr;
         rulePtr != NULL;
         rulePtr = rulePtr->disjunct)
      {
@@ -662,7 +665,7 @@ static void ValidateRuleBetaMemoriesAction(
 /* ValidateBetaMemories */
 /************************/
 void ValidateBetaMemories(
-  void *theEnv)
+  Environment *theEnv)
   {
    EnvPrintRouter(theEnv,WPROMPT,"ValidateBetaMemories");
    DoForAllConstructs(theEnv,ValidateRuleBetaMemoriesAction,DefruleData(theEnv)->DefruleModuleIndex,false,NULL);

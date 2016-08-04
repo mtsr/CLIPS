@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/04/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*               ARGUMENT ACCESS MODULE                */
    /*******************************************************/
@@ -42,6 +42,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #include "setup.h"
@@ -66,8 +69,8 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    NonexistantError(void *,const char *,const char *,int);
-   static void                    ExpectedTypeError3(void *,const char *,const char *,int,const char *);
+   static void                    NonexistantError(Environment *,const char *,const char *,int);
+   static void                    ExpectedTypeError3(Environment *,const char *,const char *,int,const char *);
 
 /*******************************************************************/
 /* EnvRtnLexeme: Access function to retrieve the nth argument from */
@@ -78,7 +81,7 @@
 /*   be returned for a, "a", and [a]).                             */
 /*******************************************************************/
 const char *EnvRtnLexeme(
-  void *theEnv,
+  Environment *theEnv,
   int argumentPosition)
   {
    int count = 1;
@@ -101,7 +104,7 @@ const char *EnvRtnLexeme(
                        argumentPosition);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      return(NULL);
+      return NULL;
      }
 
    /*============================================*/
@@ -127,7 +130,7 @@ const char *EnvRtnLexeme(
                   argumentPosition,"symbol, string, or instance name");
    EnvSetHaltExecution(theEnv,true);
    EnvSetEvaluationError(theEnv,true);
-   return(NULL);
+   return NULL;
   }
 
 /*******************************************************************/
@@ -140,7 +143,7 @@ const char *EnvRtnLexeme(
 /*   returned for 3.0 and 3).                                      */
 /*******************************************************************/
 double EnvRtnDouble(
-  void *theEnv,
+  Environment *theEnv,
   int argumentPosition)
   {
    int count = 1;
@@ -200,7 +203,7 @@ double EnvRtnDouble(
 /*   would be returned for 4.3 and 4).                           */
 /*****************************************************************/
 long long EnvRtnLong(
-  void *theEnv,
+  Environment *theEnv,
   int argumentPosition)
   {
    int count = 1;
@@ -258,7 +261,7 @@ long long EnvRtnLong(
 /*   structure provided by the calling function.                    */
 /********************************************************************/
 DATA_OBJECT_PTR EnvRtnUnknown(
-  void *theEnv,
+  Environment *theEnv,
   int argumentPosition,
   DATA_OBJECT_PTR returnValue)
   {
@@ -282,7 +285,7 @@ DATA_OBJECT_PTR EnvRtnUnknown(
                        argumentPosition);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      return(NULL);
+      return NULL;
      }
 
    /*=======================================*/
@@ -298,7 +301,7 @@ DATA_OBJECT_PTR EnvRtnUnknown(
 /*   for the function call currently being evaluated.      */
 /***********************************************************/
 int EnvRtnArgCount(
-  void *theEnv)
+  Environment *theEnv)
   {
    int count = 0;
    struct expr *argPtr;
@@ -322,7 +325,7 @@ int EnvRtnArgCount(
 /*   otherwise -1 is returned.                                          */
 /************************************************************************/
 int EnvArgCountCheck(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName,
   int countRelation,
   int expectedNumber)
@@ -368,7 +371,7 @@ int EnvArgCountCheck(
 /*   returned if no error occurs, otherwise -1 is returned.     */
 /****************************************************************/
 int EnvArgRangeCheck(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName,
   int min,
   int max)
@@ -402,7 +405,7 @@ int EnvArgRangeCheck(
 /*   appropriate type, otherwise returns false.              */
 /*************************************************************/
 bool EnvArgTypeCheck(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName,
   int argumentPosition,
   int expectedType,
@@ -461,14 +464,14 @@ bool EnvArgTypeCheck(
    if ((returnValue->type == INTEGER) && (expectedType == FLOAT))
      {
       returnValue->type = FLOAT;
-      returnValue->value = (void *) EnvAddDouble(theEnv,(double) ValueToLong(returnValue->value));
+      returnValue->value = EnvAddDouble(theEnv,(double) ValueToLong(returnValue->value));
       return true;
      }
 
    if ((returnValue->type == FLOAT) && (expectedType == INTEGER))
      {
       returnValue->type = INTEGER;
-      returnValue->value = (void *) EnvAddLong(theEnv,(long long) ValueToDouble(returnValue->value));
+      returnValue->value = EnvAddLong(theEnv,(long long) ValueToDouble(returnValue->value));
       return true;
      }
 
@@ -506,7 +509,7 @@ bool EnvArgTypeCheck(
 /*  retrieved, otherwise false is returned.                       */
 /******************************************************************/
 bool GetNumericArgument(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *theArgument,
   const char *functionName,
   DATA_OBJECT *result,
@@ -547,7 +550,7 @@ bool GetNumericArgument(
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
       result->type = INTEGER;
-      result->value = (void *) EnvAddLong(theEnv,0LL);
+      result->value = EnvAddLong(theEnv,0LL);
       return false;
      }
 
@@ -559,7 +562,7 @@ bool GetNumericArgument(
    if ((convertToFloat) && (theType == INTEGER))
      {
       theType = FLOAT;
-      theValue = (void *) EnvAddDouble(theEnv,(double) ValueToLong(theValue));
+      theValue = EnvAddDouble(theEnv,(double) ValueToLong(theValue));
      }
 
    /*============================================================*/
@@ -588,7 +591,7 @@ const char *GetLogicalName(
    void *theEnv = UDFContextEnvironment(context);
 
    if (! UDFNextArgument(context,ANY_TYPE,&theArg))
-     { return(NULL); }
+     { return NULL; }
 
    if (mCVIsType(&theArg,LEXEME_TYPES) ||
        mCVIsType(&theArg,INSTANCE_NAME_TYPE))
@@ -623,7 +626,7 @@ const char *GetFileName(
    CLIPSValue theArg;
    
    if (! UDFNextArgument(context,LEXEME_TYPES,&theArg))
-     { return(NULL); }
+     { return NULL; }
 
    return(mCVToString(&theArg));
   }
@@ -632,7 +635,7 @@ const char *GetFileName(
 /* OpenErrorMessage: Generalized error message for opening files. */
 /******************************************************************/
 void OpenErrorMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName,
   const char *fileName)
   {
@@ -651,14 +654,14 @@ void OpenErrorMessage(
 /*   name is returned or NULL is returned to indicate all   */
 /*   modules.                                               */
 /************************************************************/
-struct defmodule *GetModuleName(
-  void *theEnv,
+Defmodule *GetModuleName(
+  Environment *theEnv,
   const char *functionName,
   int whichArgument,
   bool *error)
   {
    DATA_OBJECT result;
-   struct defmodule *theModule;
+   Defmodule *theModule;
 
    *error = false;
 
@@ -676,7 +679,7 @@ struct defmodule *GetModuleName(
      {
       ExpectedTypeError1(theEnv,functionName,whichArgument,"defmodule name");
       *error = true;
-      return(NULL);
+      return NULL;
      }
 
    /*=======================================*/
@@ -684,14 +687,14 @@ struct defmodule *GetModuleName(
    /* corresponds to a defined module.      */
    /*=======================================*/
 
-   if ((theModule = (struct defmodule *) EnvFindDefmodule(theEnv,DOToString(result))) == NULL)
+   if ((theModule = EnvFindDefmodule(theEnv,DOToString(result))) == NULL)
      {
       if (strcmp("*",DOToString(result)) != 0)
         {
          ExpectedTypeError1(theEnv,functionName,whichArgument,"defmodule name");
          *error = true;
         }
-      return(NULL);
+      return NULL;
      }
 
    /*=================================*/
@@ -717,12 +720,12 @@ const char *GetConstructName(
    CLIPSValue result;
 
    if (! UDFFirstArgument(context,ANY_TYPE,&result))
-     { return(NULL); }
+     { return NULL; }
 
    if (! mCVIsType(&result,SYMBOL_TYPE))
      {
       UDFInvalidArgumentMessage(context,constructType);
-      return(NULL);
+      return NULL;
      }
 
    return(mCVToString(&result));
@@ -732,7 +735,7 @@ const char *GetConstructName(
 /* NonexistantError: Prints the error message for a nonexistant argument. */
 /**************************************************************************/
 static void NonexistantError(
-  void *theEnv,
+  Environment *theEnv,
   const char *accessFunction,
   const char *functionName,
   int argumentPosition)
@@ -752,7 +755,7 @@ static void NonexistantError(
 /*   incorrect number of arguments passed to a function. */
 /*********************************************************/
 void ExpectedCountError(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName,
   int countRelation,
   int expectedNumber)
@@ -789,7 +792,7 @@ void ExpectedCountError(
 /*                 expansion operator in their argument list */
 /*************************************************************/
 bool CheckFunctionArgCount(
-  void *theEnv,
+  Environment *theEnv,
   struct FunctionDefinition *func,
   int argumentCount)
   {
@@ -910,7 +913,7 @@ bool CheckFunctionArgCount(
 /*   of argument passed to a user or system defined function.      */
 /*******************************************************************/
 void ExpectedTypeError0(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName,
   int whichArg)
   {
@@ -928,7 +931,7 @@ void ExpectedTypeError0(
 /*   expected type is passed as a string to this function.         */
 /*******************************************************************/
 void ExpectedTypeError1(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName,
   int whichArg,
   const char *expectedType)
@@ -945,7 +948,7 @@ void ExpectedTypeError1(
 /*   function's argument restriction list.                    */
 /**************************************************************/
 void ExpectedTypeError2(
-  void *theEnv,
+  Environment *theEnv,
   const char *functionName,
   int whichArg)
   {
@@ -968,7 +971,7 @@ void ExpectedTypeError2(
 /*   RtnDouble.                                                    */
 /*******************************************************************/
 static void ExpectedTypeError3(
-  void *theEnv,
+  Environment *theEnv,
   const char *accessFunction,
   const char *functionName,
   int argumentPosition,
@@ -991,7 +994,7 @@ static void ExpectedTypeError3(
 /*   retrieving a fact or instance argument        */
 /***************************************************/
 void *GetFactOrInstanceArgument(
-  void *theEnv,
+  Environment *theEnv,
   int thePosition,
   DATA_OBJECT *item,
   const char *functionName)
@@ -1053,7 +1056,7 @@ void *GetFactOrInstanceArgument(
    /*========================================*/
 
    ExpectedTypeError2(theEnv,functionName,thePosition);
-   return(NULL);
+   return NULL;
   }
 
 /****************************************************/
@@ -1061,7 +1064,7 @@ void *GetFactOrInstanceArgument(
 /*   for illegal logical names.                     */
 /****************************************************/
 void IllegalLogicalNameMessage(
-  void *theEnv,
+  Environment *theEnv,
   const char *theFunction)
   {
    PrintErrorID(theEnv,"IOFUN",1,false);

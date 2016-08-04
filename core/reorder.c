@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/05/16             */
+   /*            CLIPS Version 6.50  07/30/16             */
    /*                                                     */
    /*                    REORDER MODULE                   */
    /*******************************************************/
@@ -50,6 +50,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Removed initial-fact support.                  */
 /*                                                           */
 /*************************************************************/
@@ -94,14 +97,14 @@ struct groupReference
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static struct lhsParseNode    *ReverseAndOr(void *,struct lhsParseNode *,struct lhsParseNode *,int);
-   static struct lhsParseNode    *PerformReorder1(void *,struct lhsParseNode *,bool *,int);
-   static struct lhsParseNode    *PerformReorder2(void *,struct lhsParseNode *,bool *,int);
-   static struct lhsParseNode    *CompressCEs(void *,struct lhsParseNode *,bool *,int);
-   static void                    IncrementNandDepth(void *,struct lhsParseNode *,bool);
-   static struct lhsParseNode    *CreateInitialPattern(void *);
-   static struct lhsParseNode    *ReorderDriver(void *,struct lhsParseNode *,bool *,int,int);
-   static struct lhsParseNode    *AddRemainingInitialPatterns(void *,struct lhsParseNode *);
+   static struct lhsParseNode    *ReverseAndOr(Environment *,struct lhsParseNode *,struct lhsParseNode *,int);
+   static struct lhsParseNode    *PerformReorder1(Environment *,struct lhsParseNode *,bool *,int);
+   static struct lhsParseNode    *PerformReorder2(Environment *,struct lhsParseNode *,bool *,int);
+   static struct lhsParseNode    *CompressCEs(Environment *,struct lhsParseNode *,bool *,int);
+   static void                    IncrementNandDepth(Environment *,struct lhsParseNode *,bool);
+   static struct lhsParseNode    *CreateInitialPattern(Environment *);
+   static struct lhsParseNode    *ReorderDriver(Environment *,struct lhsParseNode *,bool *,int,int);
+   static struct lhsParseNode    *AddRemainingInitialPatterns(Environment *,struct lhsParseNode *);
    static struct lhsParseNode    *AssignPatternIndices(struct lhsParseNode *,short,int,short);
    static void                    PropagateIndexSlotPatternValues(struct lhsParseNode *,
                                                                   short,short,
@@ -120,7 +123,7 @@ struct groupReference
 /*   to accommodate KB Rete topology.       */
 /********************************************/
 struct lhsParseNode *ReorderPatterns(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theLHS,
   bool *anyChange)
   {
@@ -238,7 +241,7 @@ struct lhsParseNode *ReorderPatterns(
 /*   to accommodate KB Rete topology.     */
 /******************************************/
 static struct lhsParseNode *ReorderDriver(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theLHS,
   bool *anyChange,
   int pass,
@@ -389,7 +392,7 @@ static void MarkExistsNands(
 /*   CE within an "and" CE).                                    */
 /****************************************************************/
 void AddInitialPatterns(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theLHS)
   {
    struct lhsParseNode *thePattern;
@@ -422,7 +425,7 @@ void AddInitialPatterns(
 /*   transforms or CEs into equivalent forms.              */
 /***********************************************************/
 static struct lhsParseNode *PerformReorder1(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theLHS,
   bool *newChange,
   int depth)
@@ -555,7 +558,7 @@ static struct lhsParseNode *PerformReorder1(
 /*   transformations not associated with the or CE.        */
 /***********************************************************/
 static struct lhsParseNode *PerformReorder2(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theLHS,
   bool *newChange,
   int depth)
@@ -731,7 +734,7 @@ static struct lhsParseNode *PerformReorder2(
 /*   if the "or" CE being expanded was (or a b).  */
 /**************************************************/
 static struct lhsParseNode *ReverseAndOr(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *listOfCEs,
   struct lhsParseNode *orCE,
   int orPosition)
@@ -837,7 +840,7 @@ static struct lhsParseNode *ReverseAndOr(
 /* CompressCEs: */
 /****************/
 static struct lhsParseNode *CompressCEs(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theLHS,
   bool *newChange,
   int depth)
@@ -1084,13 +1087,13 @@ static struct lhsParseNode *CompressCEs(
 /* CopyLHSParseNodes: Copies a linked group of conditional elements. */
 /*********************************************************************/
 struct lhsParseNode *CopyLHSParseNodes(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *listOfCEs)
   {
    struct lhsParseNode *newList;
 
    if (listOfCEs == NULL)
-     { return(NULL); }
+     { return NULL; }
 
    newList = get_struct(theEnv,lhsParseNode);
    CopyLHSParseNode(theEnv,newList,listOfCEs,true);
@@ -1105,7 +1108,7 @@ struct lhsParseNode *CopyLHSParseNodes(
 /* CopyLHSParseNode: Copies a single conditional element. */
 /**********************************************************/
 void CopyLHSParseNode(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *dest,
   struct lhsParseNode *src,
   bool duplicate)
@@ -1191,7 +1194,7 @@ void CopyLHSParseNode(
 /*   used for building conditional elements.        */
 /****************************************************/
 struct lhsParseNode *GetLHSParseNode(
-  void *theEnv)
+  Environment *theEnv)
   {
    struct lhsParseNode *newNode;
 
@@ -1247,7 +1250,7 @@ struct lhsParseNode *GetLHSParseNode(
 /*   of lhsParseNode structures to the memory manager.  */
 /********************************************************/
 void ReturnLHSParseNodes(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *waste)
   {
    if (waste != NULL)
@@ -1279,7 +1282,7 @@ void ReturnLHSParseNodes(
 /*   the equivalent lhsParseNode data structures.       */
 /********************************************************/
 struct lhsParseNode *ExpressionToLHSParseNodes(
-  void *theEnv,
+  Environment *theEnv,
   struct expr *expressionList)
   {
    struct lhsParseNode *newList, *theList;
@@ -1291,7 +1294,7 @@ struct lhsParseNode *ExpressionToLHSParseNodes(
    /* A NULL expression requires no conversion. */
    /*===========================================*/
 
-   if (expressionList == NULL) return(NULL);
+   if (expressionList == NULL) return NULL;
 
    /*====================================*/
    /* Recursively convert the expression */
@@ -1346,13 +1349,13 @@ struct lhsParseNode *ExpressionToLHSParseNodes(
 /*   into the equivalent expression data structures.              */
 /******************************************************************/
 struct expr *LHSParseNodesToExpression(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *nodeList)
   {
    struct expr *newList;
 
    if (nodeList == NULL)
-     { return(NULL); }
+     { return NULL; }
 
    newList = get_struct(theEnv,expr);
    newList->type = nodeList->type;
@@ -1382,7 +1385,7 @@ struct expr *LHSParseNodesToExpression(
 /*   CE.                                                    */
 /************************************************************/
 static void IncrementNandDepth(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theLHS,
   bool lastCE)
   {
@@ -1442,7 +1445,7 @@ static void IncrementNandDepth(
 /*  CE or when no CEs are specified in the LHS of a rule.  */
 /***********************************************************/
 static struct lhsParseNode *CreateInitialPattern(
-  void *theEnv)
+  Environment *theEnv)
   {
    struct lhsParseNode *topNode;
 
@@ -1465,7 +1468,7 @@ static struct lhsParseNode *CreateInitialPattern(
 /*   was needed.                                                 */
 /*****************************************************************/
 static struct lhsParseNode *AddRemainingInitialPatterns(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *theLHS)
   {
    struct lhsParseNode *lastNode = NULL, *thePattern, *rv = theLHS;
@@ -1608,7 +1611,7 @@ static struct lhsParseNode *AssignPatternIndices(
    /* Return to the previous level.          */
    /*========================================*/
 
-   return(NULL);
+   return NULL;
   }
 
 /***********************************************************/
@@ -1800,7 +1803,7 @@ bool IsExistsSubjoin(
 /*   expressions to the list of arguments for the other and expression).   */
 /***************************************************************************/
 struct lhsParseNode *CombineLHSParseNodes(
-  void *theEnv,
+  Environment *theEnv,
   struct lhsParseNode *expr1,
   struct lhsParseNode *expr2)
   {
@@ -1909,7 +1912,7 @@ struct lhsParseNode *CombineLHSParseNodes(
 /**********************************************/
 /*
 static void PrintNodes(
-  void *theEnv,
+  Environment *theEnv,
   const char *fileid,
   struct lhsParseNode *theNode)
   {

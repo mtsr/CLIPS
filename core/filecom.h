@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*              FILE COMMANDS HEADER FILE              */
    /*******************************************************/
@@ -45,6 +45,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_filecom
@@ -53,21 +56,21 @@
 
 #define _H_filecom
 
-   void                           FileCommandDefinitions(void *);
-   bool                           EnvDribbleOn(void *,const char *);
-   bool                           EnvDribbleActive(void *);
-   bool                           EnvDribbleOff(void *);
-   void                           SetDribbleStatusFunction(void *,int (*)(void *,bool));
-   int                            LLGetcBatch(void *,const char *,bool);
-   bool                           Batch(void *,const char *);
-   bool                           OpenBatch(void *,const char *,bool);
-   bool                           OpenStringBatch(void *,const char *,const char *,bool);
-   bool                           RemoveBatch(void *);
-   bool                           BatchActive(void *);
-   void                           CloseAllBatchSources(void *);
+   void                           FileCommandDefinitions(Environment *);
+   bool                           EnvDribbleOn(Environment *,const char *);
+   bool                           EnvDribbleActive(Environment *);
+   bool                           EnvDribbleOff(Environment *);
+   void                           SetDribbleStatusFunction(Environment *,int (*)(Environment *,bool));
+   int                            LLGetcBatch(Environment *,const char *,bool);
+   bool                           Batch(Environment *,const char *);
+   bool                           OpenBatch(Environment *,const char *,bool);
+   bool                           OpenStringBatch(Environment *,const char *,const char *,bool);
+   bool                           RemoveBatch(Environment *);
+   bool                           BatchActive(Environment *);
+   void                           CloseAllBatchSources(Environment *);
    void                           BatchCommand(UDFContext *,CLIPSValue *);
    void                           BatchStarCommand(UDFContext *,CLIPSValue *);
-   bool                           EnvBatchStar(void *,const char *);
+   bool                           EnvBatchStar(Environment *,const char *);
    void                           LoadCommand(UDFContext *,CLIPSValue *);
    void                           LoadStarCommand(UDFContext *,CLIPSValue *);
    void                           SaveCommand(UDFContext *,CLIPSValue *);

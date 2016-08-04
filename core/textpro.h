@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/20/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*             TEXT PROCESSING HEADER FILE             */
    /*******************************************************/
@@ -47,6 +47,9 @@
 /*                                                           */
 /*            Pragma once and other inclusion changes.       */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_textpro
@@ -62,7 +65,7 @@
    void                           TossCommand(UDFContext *,CLIPSValue *);
 #endif
 
-   void                           HelpFunctionDefinitions(void *);
+   void                           HelpFunctionDefinitions(Environment *);
 
 #endif /* _H_textpro */
 

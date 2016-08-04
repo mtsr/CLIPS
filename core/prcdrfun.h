@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*          PROCEDURAL FUNCTIONS HEADER FILE           */
    /*******************************************************/
@@ -38,6 +38,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_prcdrfun
@@ -66,7 +69,7 @@ struct procedureFunctionData
 
 #define ProcedureFunctionData(theEnv) ((struct procedureFunctionData *) GetEnvironmentData(theEnv,PRCDRFUN_DATA))
 
-   void                           ProceduralFunctionDefinitions(void *);
+   void                           ProceduralFunctionDefinitions(Environment *);
    void                           WhileFunction(UDFContext *,CLIPSValue *);
    void                           LoopForCountFunction(UDFContext *,CLIPSValue *);
    void                           GetLoopCount(UDFContext *,CLIPSValue *);
@@ -76,8 +79,8 @@ struct procedureFunctionData
    void                           ReturnFunction(UDFContext *,CLIPSValue *);
    void                           BreakFunction(UDFContext *,CLIPSValue *);
    void                           SwitchFunction(UDFContext *,CLIPSValue *);
-   bool                           GetBoundVariable(void *,struct dataObject *,struct symbolHashNode *);
-   void                           FlushBindList(void *);
+   bool                           GetBoundVariable(Environment *,struct dataObject *,struct symbolHashNode *);
+   void                           FlushBindList(Environment *);
 
 #endif /* _H_prcdrfun */
 

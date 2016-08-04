@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/05/16            */
+   /*             CLIPS Version 6.50  07/30/16            */
    /*                                                     */
    /*               I/O FUNCTIONS HEADER FILE             */
    /*******************************************************/
@@ -62,6 +62,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*      6.50: Added print and println functions.             */
 /*                                                           */
 /*************************************************************/
@@ -72,9 +75,9 @@
 
 #define _H_iofun
 
-   void                           IOFunctionDefinitions(void *);
+   void                           IOFunctionDefinitions(Environment *);
 #if IO_FUNCTIONS
-   bool                           SetFullCRLF(void *,bool);
+   bool                           SetFullCRLF(Environment *,bool);
    void                           PrintoutFunction(UDFContext *,CLIPSValue *);
    void                           PrintFunction(UDFContext *,CLIPSValue *);
    void                           PrintlnFunction(UDFContext *,CLIPSValue *);

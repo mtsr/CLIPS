@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*               DEFTEMPLATE HEADER FILE               */
    /*******************************************************/
@@ -50,6 +50,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_tmpltdef
@@ -58,7 +61,8 @@
 
 #define _H_tmpltdef
 
-struct deftemplate;
+typedef struct deftemplate Deftemplate;
+
 struct templateSlot;
 struct deftemplateModule;
 
@@ -126,23 +130,23 @@ struct deftemplateData
 
 #define DeftemplateData(theEnv) ((struct deftemplateData *) GetEnvironmentData(theEnv,DEFTEMPLATE_DATA))
 
-   void                           InitializeDeftemplates(void *);
-   void                          *EnvFindDeftemplate(void *,const char *);
-   void                          *EnvFindDeftemplateInModule(void *,const char *);
-   void                          *EnvGetNextDeftemplate(void *,void *);
-   bool                           EnvIsDeftemplateDeletable(void *,void *);
-   void                          *EnvGetNextFactInTemplate(void *,void *,void *);
-   struct deftemplateModule      *GetDeftemplateModuleItem(void *,struct defmodule *);
-   void                           ReturnSlots(void *,struct templateSlot *);
-   void                           IncrementDeftemplateBusyCount(void *,void *);
-   void                           DecrementDeftemplateBusyCount(void *,void *);
-   void                          *CreateDeftemplateScopeMap(void *,struct deftemplate *);
+   void                           InitializeDeftemplates(Environment *);
+   Deftemplate                   *EnvFindDeftemplate(Environment *,const char *);
+   Deftemplate                   *EnvFindDeftemplateInModule(Environment *,const char *);
+   Deftemplate                   *EnvGetNextDeftemplate(Environment *,Deftemplate *);
+   bool                           EnvIsDeftemplateDeletable(Environment *,Deftemplate *);
+   Fact                          *EnvGetNextFactInTemplate(Environment *,Deftemplate *,Fact *);
+   struct deftemplateModule      *GetDeftemplateModuleItem(Environment *,Defmodule *);
+   void                           ReturnSlots(Environment *,struct templateSlot *);
+   void                           IncrementDeftemplateBusyCount(Environment *,Deftemplate *);
+   void                           DecrementDeftemplateBusyCount(Environment *,Deftemplate *);
+   void                          *CreateDeftemplateScopeMap(Environment *,Deftemplate *);
 #if RUN_TIME
-   void                           DeftemplateRunTimeInitialize(void *);
+   void                           DeftemplateRunTimeInitialize(Environment *);
 #endif
-   const char                    *EnvDeftemplateModule(void *,void *);
-   const char                    *EnvGetDeftemplateName(void *,void *);
-   const char                    *EnvGetDeftemplatePPForm(void *,void *);
+   const char                    *EnvDeftemplateModule(Environment *,Deftemplate *);
+   const char                    *EnvGetDeftemplateName(Environment *,Deftemplate *);
+   const char                    *EnvGetDeftemplatePPForm(Environment *,Deftemplate *);
 
 #endif /* _H_tmpltdef */
 

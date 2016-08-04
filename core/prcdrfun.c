@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/05/16             */
+   /*            CLIPS Version 6.40  07/30/16             */
    /*                                                     */
    /*             PROCEDURAL FUNCTIONS MODULE             */
    /*******************************************************/
@@ -41,6 +41,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -70,14 +73,14 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static void                    DeallocateProceduralFunctionData(void *);
+   static void                    DeallocateProceduralFunctionData(Environment *);
 
 /**********************************************/
 /* ProceduralFunctionDefinitions: Initializes */
 /*   the procedural functions.                */
 /**********************************************/
 void ProceduralFunctionDefinitions(
-  void *theEnv)
+  Environment *theEnv)
   {
    AllocateEnvironmentData(theEnv,PRCDRFUN_DATA,sizeof(struct procedureFunctionData),DeallocateProceduralFunctionData);
 
@@ -111,7 +114,7 @@ void ProceduralFunctionDefinitions(
 /*    data for procedural functions.                         */
 /*************************************************************/
 static void DeallocateProceduralFunctionData(
-  void *theEnv)
+  Environment *theEnv)
   {
    DATA_OBJECT_PTR nextPtr, garbagePtr;
 
@@ -433,7 +436,7 @@ void BindFunction(
        unbindVar = false;
    SYMBOL_HN *variableName = NULL;
 #if DEFGLOBAL_CONSTRUCT
-   struct defglobal *theGlobal = NULL;
+   Defglobal *theGlobal = NULL;
 #endif
    Environment *theEnv = UDFContextEnvironment(context);
 
@@ -443,7 +446,7 @@ void BindFunction(
 
 #if DEFGLOBAL_CONSTRUCT
    if (GetFirstArgument()->type == DEFGLOBAL_PTR)
-     { theGlobal = (struct defglobal *) GetFirstArgument()->value; }
+     { theGlobal = (Defglobal *) GetFirstArgument()->value; }
    else
 #endif
      {
@@ -549,7 +552,7 @@ void BindFunction(
 /*   for a specified variable.             */
 /*******************************************/
 bool GetBoundVariable(
-  void *theEnv,
+  Environment *theEnv,
   DATA_OBJECT_PTR vPtr,
   SYMBOL_HN *varName)
   {
@@ -575,7 +578,7 @@ bool GetBoundVariable(
 /*   list of currently bound local variables.    */
 /*************************************************/
 void FlushBindList(
-  void *theEnv)
+  Environment *theEnv)
   {
    ReturnValues(theEnv,ProcedureFunctionData(theEnv)->BindList,true);
    ProcedureFunctionData(theEnv)->BindList = NULL;

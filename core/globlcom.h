@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/05/16            */
+   /*             CLIPS Version 6.40  07/30/16            */
    /*                                                     */
    /*            DEFGLOBAL COMMANDS HEADER FILE           */
    /*******************************************************/
@@ -36,6 +36,9 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            Removed use of void pointers for specific      */
+/*            data structures.                               */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_globlcom
@@ -44,13 +47,13 @@
 
 #define _H_globlcom
 
-   void                           DefglobalCommandDefinitions(void *);
+   void                           DefglobalCommandDefinitions(Environment *);
    void                           SetResetGlobalsCommand(UDFContext *,CLIPSValue *);
-   bool                           EnvSetResetGlobals(void *,bool);
+   bool                           EnvSetResetGlobals(Environment *,bool);
    void                           GetResetGlobalsCommand(UDFContext *,CLIPSValue *);
-   bool                           EnvGetResetGlobals(void *);
+   bool                           EnvGetResetGlobals(Environment *);
    void                           ShowDefglobalsCommand(UDFContext *,CLIPSValue *);
-   void                           EnvShowDefglobals(void *,const char *,void *);
+   void                           EnvShowDefglobals(Environment *,const char *,Defmodule *);
 
 #endif /* _H_globlcom */
 
