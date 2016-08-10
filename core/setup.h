@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  06/29/16            */
+   /*             CLIPS Version 6.40  08/06/16            */
    /*                                                     */
    /*                  SETUP HEADER FILE                  */
    /*******************************************************/
@@ -82,7 +82,7 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
-/*      6.50: ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Removed VAX_VMS support.                       */
 /*                                                           */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*               CLIPS Version 6.40  07/30/16          */
+   /*               CLIPS Version 6.40  08/06/16          */
    /*                                                     */
    /*                     MAIN MODULE                     */
    /*******************************************************/
@@ -22,7 +22,7 @@
 /*      6.40: Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
-/*      6.50: Moved CatchCtrlC functionality into this file. */
+/*            Moved CatchCtrlC to main.c.                    */
 /*                                                           */
 /*************************************************************/
 
@@ -75,17 +75,13 @@ int main(
   char *argv[])
   {
    mainEnv = CreateEnvironment();
+
+#if UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC
+   signal(SIGINT,CatchCtrlC);
+#endif
+
    RerouteStdin(mainEnv,argc,argv);
-
-#if UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC
-   signal(SIGINT,CatchCtrlC);
-#endif
-
    CommandLoop(mainEnv);
-
-#if UNIX_V || LINUX || DARWIN || UNIX_7 || WIN_GCC || WIN_MVC
-   signal(SIGINT,CatchCtrlC);
-#endif
 
    /*==================================================================*/
    /* Control does not normally return from the CommandLoop function.  */

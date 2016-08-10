@@ -201,7 +201,7 @@ static void UpdateExpression(
 
 #if DEFTEMPLATE_CONSTRUCT
       case FACT_ADDRESS:
-        ExpressionData(theEnv)->ExpressionArray[obji].value = (void *) &FactData(theEnv)->DummyFact;
+        ExpressionData(theEnv)->ExpressionArray[obji].value = &FactData(theEnv)->DummyFact;
         EnvIncrementFactCount(theEnv,ExpressionData(theEnv)->ExpressionArray[obji].value);
         break;
 #endif
