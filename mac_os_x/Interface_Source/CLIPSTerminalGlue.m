@@ -176,7 +176,7 @@ void MacPeriodicFunction(
 /**************************************/
 /* MacBeforeOpenFunction:             */
 /**************************************/
-int MacBeforeOpenFunction( // TBD bool?
+int MacBeforeOpenFunction(
   Environment *theEnv)
   {
    AppController *theDelegate = [NSApp delegate];

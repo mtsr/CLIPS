@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/06/16             */
+   /*            CLIPS Version 6.50  08/10/16             */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -76,9 +76,9 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
-/*      6.50: Callbacks must be environment aware.           */
+/*            Callbacks must be environment aware.           */
 /*                                                           */
-/*            Incremental reset is always enabled.           */
+/*      6.50: Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 
@@ -1131,7 +1131,7 @@ void EnvShowBreaks(
   {
    ListItemsDriver(theEnv,logicalName,theModule,
                    NULL,NULL,
-                   (void *(*)(Environment *,void *)) EnvGetNextDefrule,
+                   (GetNextItemFunction *) EnvGetNextDefrule,
                    (const char *(*)(void *)) GetConstructNameString,
                    NULL,
                    (bool (*)(Environment *,void *)) EnvDefruleHasBreakpoint);

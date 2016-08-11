@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/06/16             */
+   /*            CLIPS Version 6.50  08/10/16             */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -64,9 +64,9 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
-/*      6.50: Modified EnvClear to return completion status. */
-/*                                                           */
 /*            Callbacks must be environment aware.           */
+/*                                                           */
+/*      6.50: Modified EnvClear to return completion status. */
 /*                                                           */
 /*            Compilation watch flag defaults to off.        */
 /*                                                           */

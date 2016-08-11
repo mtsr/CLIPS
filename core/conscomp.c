@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/06/16            */
+   /*             CLIPS Version 6.50  08/10/16            */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -68,7 +68,7 @@
 /*                                                           */
 /*            Removed VAX_VMS support.                       */
 /*                                                           */
-/*      6.50: Callbacks must be environment aware.           */
+/*            Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 
@@ -634,7 +634,7 @@ static void WriteFunctionExternDeclarations(
          case 'x':
          case 'y':
          case 'v':
-           fprintf(fp,"void *");
+           fprintf(fp,"Environment *");
            break;
 
          case 'm':
@@ -643,7 +643,7 @@ static void WriteFunctionExternDeclarations(
          case 'j':
          case 'k':
          case 'z':
-           fprintf(fp,"void *,DATA_OBJECT_PTR_ARG");
+           fprintf(fp,"Environment *,DATA_OBJECT_PTR_ARG");
            break;
         }
 
@@ -798,7 +798,7 @@ static bool WriteInitializationFunction(
    fprintf(fp,"#include \"rulebld.h\"\n\n");
 
    fprintf(ConstructCompilerData(theEnv)->HeaderFP,"   void *InitCImage_%d(void);\n",ConstructCompilerData(theEnv)->ImageID);
-   fprintf(ConstructCompilerData(theEnv)->HeaderFP,"   void FixupCImage_%d(void *);\n",ConstructCompilerData(theEnv)->ImageID);
+   fprintf(ConstructCompilerData(theEnv)->HeaderFP,"   void FixupCImage_%d(Environment *);\n",ConstructCompilerData(theEnv)->ImageID);
 
    /*============================================*/
    /* Begin writing the initialization function. */

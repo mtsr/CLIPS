@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/30/16             */
+   /*            CLIPS Version 6.50  08/10/16             */
    /*                                                     */
    /*              DEFMODULE PARSER MODULE                */
    /*******************************************************/
@@ -34,7 +34,7 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
-/*      6.50: Callbacks must be environment aware.           */
+/*            Callbacks must be environment aware.           */
 /*                                                           */
 /*************************************************************/
 
