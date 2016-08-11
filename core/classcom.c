@@ -842,7 +842,7 @@ void GetClassDefaultsModeCommand(
 /* SetClassDefaultsModeCommand: H/L access routine */
 /*   for the set-class-defaults-mode command.      */
 /***************************************************/
-void SetClassDefaultsModeCommand( // TBD enum?
+void SetClassDefaultsModeCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
