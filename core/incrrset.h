@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/06/16            */
+   /*             CLIPS Version 6.50  08/11/16            */
    /*                                                     */
    /*            INCREMENTAL RESET HEADER FILE            */
    /*******************************************************/
@@ -47,7 +47,7 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
-/*      6.50: Incremental reset is always enabled.           */
+/*            Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 

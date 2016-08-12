@@ -1845,5 +1845,3 @@ void *EnvTrueSymbol(
   {
    return SymbolData(theEnv)->TrueSymbolHN;
   }
-
-

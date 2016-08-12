@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/30/16             */
+   /*            CLIPS Version 6.40  08/11/16             */
    /*                                                     */
    /*                  RULE BUILD MODULE                  */
    /*******************************************************/
@@ -39,7 +39,7 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
-/*      6.50: Incremental reset is always enabled.           */
+/*            Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 

@@ -278,7 +278,7 @@ bool EnvSetWatchItem(
 /*   for on) if the watch item is found in the list of watch      */
 /*   items, otherwise -1 is returned.                             */
 /******************************************************************/
-int EnvGetWatchItem( // TBD bool?
+int EnvGetWatchItem(
   Environment *theEnv,
   const char *itemName)
   {

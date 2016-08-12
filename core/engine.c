@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/10/16             */
+   /*            CLIPS Version 6.50  08/11/16             */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -78,7 +78,7 @@
 /*                                                           */
 /*            Callbacks must be environment aware.           */
 /*                                                           */
-/*      6.50: Incremental reset is always enabled.           */
+/*            Incremental reset is always enabled.           */
 /*                                                           */
 /*************************************************************/
 
