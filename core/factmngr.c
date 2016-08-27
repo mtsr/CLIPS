@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/10/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -74,6 +74,8 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Callbacks must be environment aware.           */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Removed initial-fact support.                  */
 /*                                                           */
@@ -1043,7 +1045,7 @@ bool EnvGetFactSlot(
   Environment *theEnv,
   Fact *theFact,
   const char *slotName,
-  DATA_OBJECT *theValue)
+  CLIPSValue *theValue)
   {
    Deftemplate *theDeftemplate;
    short whichSlot;
@@ -1105,7 +1107,7 @@ bool EnvPutFactSlot(
   Environment *theEnv,
   Fact *theFact,
   const char *slotName,
-  DATA_OBJECT *theValue)
+  CLIPSValue *theValue)
   {
    Deftemplate *theDeftemplate;
    struct templateSlot *theSlot;
@@ -1183,7 +1185,7 @@ bool EnvAssignFactSlotDefaults(
    Deftemplate *theDeftemplate;
    struct templateSlot *slotPtr;
    int i;
-   DATA_OBJECT theResult;
+   CLIPSValue theResult;
 
    /*===============================================*/
    /* Get the deftemplate associated with the fact. */
@@ -1241,7 +1243,7 @@ bool DeftemplateSlotDefault(
   Environment *theEnv,
   Deftemplate *theDeftemplate,
   struct templateSlot *slotPtr,
-  DATA_OBJECT *theResult,
+  CLIPSValue *theResult,
   bool garbageMultifield)
   {
    /*================================================*/

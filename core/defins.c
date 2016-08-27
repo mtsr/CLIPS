@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/06/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                  DEFINSTANCES MODULE                */
    /*******************************************************/
@@ -55,6 +55,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Removed initial-object support.                */
 /*                                                           */
@@ -198,20 +200,18 @@ void SetupDefinstances(
    AddClearReadyFunction(theEnv,"definstances",ClearDefinstancesReady,0);
 
 #if ! BLOAD_ONLY
-   EnvAddUDF(theEnv,"undefinstances","v", UndefinstancesCommand,"UndefinstancesCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"undefinstances","v",1,1,"y",UndefinstancesCommand,"UndefinstancesCommand",NULL);
    AddSaveFunction(theEnv,"definstances",SaveDefinstances,0);
 
 #endif
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"ppdefinstances","v", PPDefinstancesCommand ,"PPDefinstancesCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"list-definstances","v", ListDefinstancesCommand,"ListDefinstancesCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"ppdefinstances","v",1,1,"y",PPDefinstancesCommand,"PPDefinstancesCommand",NULL);
+   EnvAddUDF(theEnv,"list-definstances","v",0,1,"y",ListDefinstancesCommand,"ListDefinstancesCommand",NULL);
 #endif
 
-   EnvAddUDF(theEnv,"get-definstances-list","m",GetDefinstancesListFunction,
-                   "GetDefinstancesListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"definstances-module","y", GetDefinstancesModuleCommand,
-                   "GetDefinstancesModuleCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-definstances-list","m",0,1,"y",GetDefinstancesListFunction,"GetDefinstancesListFunction",NULL);
+   EnvAddUDF(theEnv,"definstances-module","y",1,1,"y",GetDefinstancesModuleCommand,"GetDefinstancesModuleCommand",NULL);
 
 #endif
    EnvAddResetFunction(theEnv,"definstances",ResetDefinstances,0);
@@ -369,11 +369,10 @@ bool EnvIsDefinstancesDeletable(
   NOTES        : H/L Syntax : (undefinstances <name> | *)
  ***********************************************************/
 void UndefinstancesCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
-   
    UndefconstructCommand(context,"undefinstances",DefinstancesData(theEnv)->DefinstancesConstruct);
   }
 
@@ -386,10 +385,10 @@ void UndefinstancesCommand(
   NOTES        : H/L Syntax: (definstances-module <defins-name>)
  *****************************************************************/
 void GetDefinstancesModuleCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"definstances-module",DefinstancesData(theEnv)->DefinstancesConstruct));
   }
 
@@ -441,10 +440,10 @@ bool EnvUndefinstances(
   NOTES        : H/L Syntax : (ppdefinstances <name>)
  ***************************************************************/
 void PPDefinstancesCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    PPConstructCommand(context,"ppdefinstances",DefinstancesData(theEnv)->DefinstancesConstruct);
   }
 
@@ -457,10 +456,10 @@ void PPDefinstancesCommand(
   NOTES        : H/L Interface
  ***************************************************/
 void ListDefinstancesCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    ListConstructCommand(context,"list-definstances",DefinstancesData(theEnv)->DefinstancesConstruct);
   }
 
@@ -494,10 +493,10 @@ void EnvListDefinstances(
   NOTES        : H/L Syntax: (get-definstances-list [<module>])
  ****************************************************************/
 void GetDefinstancesListFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    GetConstructListFunction(context,"get-definstances-list",returnValue,DefinstancesData(theEnv)->DefinstancesConstruct);
   }
 
@@ -514,7 +513,7 @@ void GetDefinstancesListFunction(
  ***************************************************************/
 void EnvGetDefinstancesList(
   Environment *theEnv,
-  DATA_OBJECT *returnValue,
+  CLIPSValue *returnValue,
   Defmodule *theModule)
   {
    GetConstructList(theEnv,returnValue,DefinstancesData(theEnv)->DefinstancesConstruct,theModule);
@@ -923,7 +922,7 @@ static void ResetDefinstancesAction(
 #endif
    Definstances *theDefinstances = (Definstances *) vDefinstances;
    EXPRESSION *theExp;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
 
    SaveCurrentModule(theEnv);
    EnvSetCurrentModule(theEnv,vDefinstances->whichModule->theModule);

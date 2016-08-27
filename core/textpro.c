@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*               TEXT PROCESSING MODULE                */
    /*******************************************************/
@@ -56,6 +56,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -1035,12 +1037,12 @@ struct topics
 /*          returns a (float) boolean flag indicating failure or success.  */
 /***************************************************************************/
 void FetchCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    int load_ct;          /*Number of entries loaded */
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
  
@@ -1080,6 +1082,7 @@ void FetchCommand(
 /* For usage, see the external documentation.                                 */
 /******************************************************************************/
 void PrintRegionCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1090,7 +1093,6 @@ void PrintRegionCommand(
    char *menu[1];            /*Buffer for the current menu name        */
    int status;               /*Lookup status return code               */
    bool com_code;            /*Completion flag                         */
-   Environment *theEnv = UDFContextEnvironment(context);
 
    params = GetCommandLineTopics(theEnv);
    fp = FindTopicInEntries(theEnv,params->next->name,params->next->next,menu,&status);
@@ -1133,6 +1135,7 @@ void PrintRegionCommand(
 /* GetRegionCommand : (H/L functionget-region) */
 /***********************************************/
 void GetRegionCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1146,7 +1149,6 @@ void GetRegionCommand(
    size_t oldPos = 0;
    size_t oldMax = 0;
    size_t sLength;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    params = GetCommandLineTopics(theEnv);
    fp = FindTopicInEntries(theEnv,params->name,params->next,menu,&status);
@@ -1202,6 +1204,7 @@ void GetRegionCommand(
 /*          returns a (float) boolean flag indicating failure or success.  */
 /***************************************************************************/
 void TossCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1213,7 +1216,7 @@ void TossCommand(
    
    file = mCVToString(&value);
 
-   mCVSetBoolean(returnValue,TextLookupToss(UDFContextEnvironment(context),file));
+   mCVSetBoolean(returnValue,TextLookupToss(theEnv,file));
   }
 
 #endif
@@ -1240,7 +1243,7 @@ static struct topics *GetCommandLineTopics(
    struct topics *head,   /*Address of the top of the topic list   */
                  *tnode,  /*Address of new topic node              */
                  *tptr;   /*Used to attach new node to the list    */
-   DATA_OBJECT val;       /*Unknown-type H/L data structure        */
+   CLIPSValue val;       /*Unknown-type H/L data structure        */
 
    head = NULL;
    topic_num = EnvRtnArgCount(theEnv);
@@ -1347,10 +1350,10 @@ void HelpFunctionDefinitions(
    AllocateEnvironmentData(theEnv,TEXTPRO_DATA,sizeof(struct textProcessingData),DeallocateTextProcessingData);
 #if ! RUN_TIME
 #if TEXTPRO_FUNCTIONS
-   EnvAddUDF(theEnv,"fetch",      "bl", FetchCommand,"FetchCommand",1,1,"sy" ,NULL);
-   EnvAddUDF(theEnv,"toss",        "b",  TossCommand,"TossCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"print-region","b",  PrintRegionCommand,"PrintRegionCommand",2,UNBOUNDED, "*;y;sy",NULL);
-   EnvAddUDF(theEnv,"get-region",  "s", GetRegionCommand,"GetRegionCommand",1,UNBOUNDED, "*;sy", NULL);
+   EnvAddUDF(theEnv,"fetch","bl",1,1,"sy",FetchCommand,"FetchCommand",NULL);
+   EnvAddUDF(theEnv,"toss","b",1,1,"sy",TossCommand,"TossCommand",NULL);
+   EnvAddUDF(theEnv,"print-region","b",2,UNBOUNDED,"*;y;sy",PrintRegionCommand,"PrintRegionCommand",NULL);
+   EnvAddUDF(theEnv,"get-region","s",1,UNBOUNDED,"*;sy",GetRegionCommand,"GetRegionCommand", NULL);
 #endif
 #endif
   }

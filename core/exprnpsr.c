@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/11/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*              EXPRESSION PARSER MODULE               */
    /*******************************************************/
@@ -53,6 +53,8 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Static constraint checking is always enabled.  */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -591,13 +593,10 @@ bool CheckExpressionAgainstRestrictions(
   struct FunctionDefinition *theFunction,
   const char *functionName)
   {
-   char theChar[2];
-   int i = 0, j = 1;
+   int j = 1;
    int number1, number2;
    int argCount;
-   char defaultRestriction, argRestriction;
    struct expr *argPtr;
-   int theRestriction;
    const char *restrictions;
    unsigned defaultRestriction2, argRestriction2;
 
@@ -605,17 +604,6 @@ bool CheckExpressionAgainstRestrictions(
      { restrictions = NULL; }
    else
      { restrictions = theFunction->restrictions->contents; }
-
-   theChar[0] = '0';
-   theChar[1] = '\0';
-
-   /*============================================*/
-   /* If there are no restrictions, then there's */
-   /* no need to check the function.             */
-   /*============================================*/
-   
-   if (theFunction->returnValueType !='z')
-     { if (restrictions == NULL) return false; }
 
    /*=========================================*/
    /* Count the number of function arguments. */
@@ -627,36 +615,13 @@ bool CheckExpressionAgainstRestrictions(
    /* Get the minimum number of arguments. */
    /*======================================*/
 
-   if (theFunction->returnValueType !='z')
-     {
-      theChar[0] = restrictions[i++];
-
-      if (isdigit(theChar[0]))
-        { number1 = atoi(theChar); }
-      else if (theChar[0] == '*')
-        { number1 = UNBOUNDED; }
-      else
-        { return false; }
-     }
-   else
-     { number1 = theFunction->minArgs; }
+   number1 = theFunction->minArgs;
      
    /*======================================*/
    /* Get the maximum number of arguments. */
    /*======================================*/
 
-   if (theFunction->returnValueType !='z')
-     {
-      theChar[0] = restrictions[i++];
-      if (isdigit(theChar[0]))
-        { number2 = atoi(theChar); }
-      else if (theChar[0] == '*')
-        { number2 = UNBOUNDED; }
-      else
-        { return false; }
-     }
-   else
-     { number2 = theFunction->maxArgs; }
+   number2 = theFunction->maxArgs;
 
    /*============================================*/
    /* Check for the correct number of arguments. */
@@ -693,71 +658,28 @@ bool CheckExpressionAgainstRestrictions(
    /* Check for the default argument types. */
    /*=======================================*/
 
-   if (theFunction->returnValueType !='z')
-     {
-      defaultRestriction = restrictions[i];
-      if (defaultRestriction == '\0')
-        { defaultRestriction = 'u'; }
-      else if (defaultRestriction == '*')
-        {
-         defaultRestriction = 'u';
-         i++;
-        }
-      else
-        { i++; }
-     }
-   else
-     { PopulateRestriction(theEnv,&defaultRestriction2,ANY_TYPE,restrictions,0); }
+   PopulateRestriction(theEnv,&defaultRestriction2,ANY_TYPE,restrictions,0);
      
    /*======================*/
    /* Check each argument. */
    /*======================*/
 
-   if (theFunction->returnValueType !='z')
+   for (argPtr = theExpression->argList;
+        argPtr != NULL;
+        argPtr = argPtr->nextArg)
      {
-      for (argPtr = theExpression->argList;
-           argPtr != NULL;
-           argPtr = argPtr->nextArg)
+      PopulateRestriction(theEnv,&argRestriction2,defaultRestriction2,restrictions,j);
+
+      if (CheckArgumentAgainstRestriction(theEnv,argPtr,argRestriction2))
         {
-         argRestriction = restrictions[i];
-         if (argRestriction == '\0')
-           { argRestriction = defaultRestriction; }
-         else
-           { i++; }
-
-         if (argRestriction != '*')
-           { theRestriction = (int) argRestriction; }
-         else
-           { theRestriction = (int) defaultRestriction; }
-
-         if (CheckArgumentAgainstRestriction(theEnv,argPtr,theRestriction))
-           {
-            ExpectedTypeError1(theEnv,functionName,j,GetArgumentTypeName(theRestriction));
-            return true;
-           }
-   
-         j++;
+         ExpectedTypeError0(theEnv,functionName,j);
+         PrintTypesString(theEnv,WERROR,argRestriction2,true);
+         return true;
         }
+
+      j++;
      }
-   else
-     {
-      for (argPtr = theExpression->argList;
-           argPtr != NULL;
-           argPtr = argPtr->nextArg)
-        {
-         PopulateRestriction(theEnv,&argRestriction2,defaultRestriction2,restrictions,j);
 
-         if (CheckArgumentAgainstRestriction2(theEnv,argPtr,argRestriction2))
-           {
-            ExpectedTypeError0(theEnv,functionName,j);
-            PrintTypesString(theEnv,WERROR,argRestriction2,true);
-            return true;
-           }
-   
-         j++;
-        }
-      }
-     
    return false;
   }
 

@@ -2,7 +2,7 @@ TRUE
 CLIPS> (batch "dfnxexe.bat")
 TRUE
 CLIPS> (deffunction print-args (?a ?b $?c)
-   (printout t ?a " " ?b " and " (length ?c) " extras: " ?c crlf))
+   (printout t ?a " " ?b " and " (length$ ?c) " extras: " ?c crlf))
 CLIPS> (print-args 1 2)
 1 2 and 0 extras: ()
 CLIPS> (print-args 1 2 3 4)

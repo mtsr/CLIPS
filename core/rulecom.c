@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/11/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                RULE COMMANDS MODULE                 */
    /*******************************************************/
@@ -67,6 +67,8 @@
 /*                                                           */
 /*            Incremental reset is always enabled.           */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -111,7 +113,7 @@
 #if DEBUGGING_FUNCTIONS
    static long long               ListAlphaMatches(Environment *,struct joinInformation *,int);
    static long long               ListBetaMatches(Environment *,struct joinInformation *,long,long,int);
-   static void                    ListBetaJoinActivity(Environment *,struct joinInformation *,long,long,int,DATA_OBJECT *);
+   static void                    ListBetaJoinActivity(Environment *,struct joinInformation *,long,long,int,CLIPSValue *);
    static long                    AlphaJoinCountDriver(Environment *,struct joinNode *);
    static long                    BetaJoinCountDriver(Environment *,struct joinNode *);
    static void                    AlphaJoinsDriver(Environment *,struct joinNode *,long,struct joinInformation *);
@@ -129,51 +131,37 @@ void DefruleCommands(
   Environment *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"run","v", RunCommand,"RunCommand", 0,1,"l",NULL);
-   EnvAddUDF(theEnv,"halt","v", HaltCommand,"HaltCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"focus","b",  FocusCommand,"FocusCommand",1,UNBOUNDED,"y", NULL);
-   EnvAddUDF(theEnv,"clear-focus-stack","v", ClearFocusStackCommand,
-                                       "ClearFocusStackCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"get-focus-stack","m", GetFocusStackFunction,
-                                     "GetFocusStackFunction",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"pop-focus","y", PopFocusFunction,
-                               "PopFocusFunction",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"get-focus","y", GetFocusFunction,
-                               "GetFocusFunction",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"run","v",0,1,"l",RunCommand,"RunCommand",NULL);
+   EnvAddUDF(theEnv,"halt","v",0,0,NULL,HaltCommand,"HaltCommand",NULL);
+   EnvAddUDF(theEnv,"focus","b",1,UNBOUNDED,"y",FocusCommand,"FocusCommand",NULL);
+   EnvAddUDF(theEnv,"clear-focus-stack","v",0,0,NULL,ClearFocusStackCommand,"ClearFocusStackCommand",NULL);
+   EnvAddUDF(theEnv,"get-focus-stack","m",0,0,NULL,GetFocusStackFunction,"GetFocusStackFunction",NULL);
+   EnvAddUDF(theEnv,"pop-focus","y",0,0,NULL,PopFocusFunction,"PopFocusFunction",NULL);
+   EnvAddUDF(theEnv,"get-focus","y",0,0,NULL,GetFocusFunction,"GetFocusFunction",NULL);
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"set-break","v", SetBreakCommand,
-                               "SetBreakCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"remove-break","v", RemoveBreakCommand,
-                                  "RemoveBreakCommand", 0,1,"y",NULL);
-   EnvAddUDF(theEnv,"show-breaks","v", ShowBreaksCommand,
-                                 "ShowBreaksCommand", 0,1,"y",NULL);
-   EnvAddUDF(theEnv,"matches","bm", MatchesCommand,"MatchesCommand",1,2,"y",NULL);
-   EnvAddUDF(theEnv,"join-activity","bm", JoinActivityCommand,"JoinActivityCommand",1,2,"y",NULL);
-   EnvAddUDF(theEnv,"join-activity-reset","v",  JoinActivityResetCommand,
-                                  "JoinActivityResetCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"list-focus-stack","v", ListFocusStackCommand,
-                                      "ListFocusStackCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"dependencies", "v", DependenciesCommand,
-                                   "DependenciesCommand", 1,1,"infly",NULL);
-   EnvAddUDF(theEnv,"dependents",  "v",  DependentsCommand,
-                                   "DependentsCommand", 1,1,"infly",NULL);
+   EnvAddUDF(theEnv,"set-break","v",1,1,"y",SetBreakCommand,"SetBreakCommand",NULL);
+   EnvAddUDF(theEnv,"remove-break","v",0,1,"y",RemoveBreakCommand,"RemoveBreakCommand",NULL);
+   EnvAddUDF(theEnv,"show-breaks","v",0,1,"y",ShowBreaksCommand,"ShowBreaksCommand",NULL);
+   EnvAddUDF(theEnv,"matches","bm",1,2,"y",MatchesCommand,"MatchesCommand",NULL);
+   EnvAddUDF(theEnv,"join-activity","bm",1,2,"y",JoinActivityCommand,"JoinActivityCommand",NULL);
+   EnvAddUDF(theEnv,"join-activity-reset","v",0,0,NULL,JoinActivityResetCommand,"JoinActivityResetCommand",NULL);
+   EnvAddUDF(theEnv,"list-focus-stack","v",0,0,NULL,ListFocusStackCommand,"ListFocusStackCommand",NULL);
+   EnvAddUDF(theEnv,"dependencies","v",1,1,"infly",DependenciesCommand,"DependenciesCommand",NULL);
+   EnvAddUDF(theEnv,"dependents","v",1,1,"infly",DependentsCommand,"DependentsCommand",NULL);
       
-   EnvAddUDF(theEnv,"timetag","l",TimetagFunction,
-                                   "TimetagFunction", 1,1,"infly" ,NULL);
+   EnvAddUDF(theEnv,"timetag","l",1,1,"infly" ,TimetagFunction,"TimetagFunction",NULL);
 #endif /* DEBUGGING_FUNCTIONS */
 
-   EnvAddUDF(theEnv,"get-beta-memory-resizing","b",
-                    GetBetaMemoryResizingCommand,"GetBetaMemoryResizingCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-beta-memory-resizing","b",
-                    SetBetaMemoryResizingCommand,"SetBetaMemoryResizingCommand",1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"get-beta-memory-resizing","b",0,0,NULL,GetBetaMemoryResizingCommand,"GetBetaMemoryResizingCommand",NULL);
+   EnvAddUDF(theEnv,"set-beta-memory-resizing","b",1,1,NULL,SetBetaMemoryResizingCommand,"SetBetaMemoryResizingCommand",NULL);
 
-   EnvAddUDF(theEnv,"get-strategy", "y", GetStrategyCommand,  "GetStrategyCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-strategy", "y", SetStrategyCommand,  "SetStrategyCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-strategy","y",0,0,NULL,GetStrategyCommand,"GetStrategyCommand",NULL);
+   EnvAddUDF(theEnv,"set-strategy","y",1,1,"y",SetStrategyCommand,"SetStrategyCommand",NULL);
 
 #if DEVELOPER && (! BLOAD_ONLY)
-   EnvAddUDF(theEnv,"rule-complexity","l", RuleComplexityCommand,"RuleComplexityCommand", 1,1,"y",NULL);
-   EnvAddUDF(theEnv,"show-joins",  "v", ShowJoinsCommand,    "ShowJoinsCommand", 1,1,"y",NULL);
-   EnvAddUDF(theEnv,"show-aht",   "v", ShowAlphaHashTable,    "ShowAlphaHashTable", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"rule-complexity","l",1,1,"y",RuleComplexityCommand,"RuleComplexityCommand",NULL);
+   EnvAddUDF(theEnv,"show-joins","v",1,1,"y",ShowJoinsCommand,"ShowJoinsCommand",NULL);
+   EnvAddUDF(theEnv,"show-aht","v",0,0,NULL,ShowAlphaHashTable,"ShowAlphaHashTable",NULL);
 #if DEBUGGING_FUNCTIONS
    AddWatchItem(theEnv,"rule-analysis",0,&DefruleData(theEnv)->WatchRuleAnalysis,0,NULL,NULL);
 #endif
@@ -218,11 +206,11 @@ bool EnvSetBetaMemoryResizing(
 /*   for the set-beta-memory-resizing command.      */
 /****************************************************/
 void SetBetaMemoryResizingCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,EnvGetBetaMemoryResizing(theEnv));
 
@@ -245,10 +233,11 @@ void SetBetaMemoryResizingCommand(
 /*   for the get-beta-memory-resizing command.      */
 /****************************************************/
 void GetBetaMemoryResizingCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,EnvGetBetaMemoryResizing(UDFContextEnvironment(context)));
+   mCVSetBoolean(returnValue,EnvGetBetaMemoryResizing(theEnv));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -258,6 +247,7 @@ void GetBetaMemoryResizingCommand(
 /*   for the matches command.           */
 /****************************************/
 void MatchesCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -265,7 +255,6 @@ void MatchesCommand(
    void *rulePtr;
    CLIPSValue theArg;
    int output;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
@@ -313,7 +302,7 @@ void EnvMatches(
   Environment *theEnv,
   Defrule *theRule,
   int output,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
    Defrule *rulePtr;
    Defrule *topDisjunct = theRule;
@@ -329,17 +318,17 @@ void EnvMatches(
    /* Set up the return value. */
    /*==========================*/
    
-   result->type = MULTIFIELD;
-   result->begin = 0;
-   result->end = 2;
-   result->value = EnvCreateMultifield(theEnv,3L);
+   returnValue->type = MULTIFIELD;
+   returnValue->begin = 0;
+   returnValue->end = 2;
+   returnValue->value = EnvCreateMultifield(theEnv,3L);
    
-   SetMFType(result->value,1,INTEGER);
-   SetMFValue(result->value,1,SymbolData(theEnv)->Zero);
-   SetMFType(result->value,2,INTEGER);
-   SetMFValue(result->value,2,SymbolData(theEnv)->Zero);
-   SetMFType(result->value,3,INTEGER);
-   SetMFValue(result->value,3,SymbolData(theEnv)->Zero);
+   SetMFType(returnValue->value,1,INTEGER);
+   SetMFValue(returnValue->value,1,SymbolData(theEnv)->Zero);
+   SetMFType(returnValue->value,2,INTEGER);
+   SetMFValue(returnValue->value,2,SymbolData(theEnv)->Zero);
+   SetMFType(returnValue->value,3,INTEGER);
+   SetMFValue(returnValue->value,3,SymbolData(theEnv)->Zero);
 
    /*=================================================*/
    /* Loop through each of the disjuncts for the rule */
@@ -366,8 +355,8 @@ void EnvMatches(
         {
          alphaMatchCount += ListAlphaMatches(theEnv,&theInfo[joinIndex],output);
          
-         SetMFType(result->value,1,INTEGER);
-         SetMFValue(result->value,1,EnvAddLong(theEnv,alphaMatchCount));
+         SetMFType(returnValue->value,1,INTEGER);
+         SetMFValue(returnValue->value,1,EnvAddLong(theEnv,alphaMatchCount));
         }
 
       /*================================*/
@@ -397,8 +386,8 @@ void EnvMatches(
         {
          betaMatchCount += ListBetaMatches(theEnv,theInfo,joinIndex,arraySize,output);
          
-         SetMFType(result->value,2,INTEGER);
-         SetMFValue(result->value,2,EnvAddLong(theEnv,betaMatchCount));
+         SetMFType(returnValue->value,2,INTEGER);
+         SetMFValue(returnValue->value,2,EnvAddLong(theEnv,betaMatchCount));
         }
 
       /*================================*/
@@ -442,8 +431,8 @@ void EnvMatches(
      
    if ((activations == 0) && (output == VERBOSE)) EnvPrintRouter(theEnv,WDISPLAY," None\n");
 
-   SetMFType(result->value,3,INTEGER);
-   SetMFValue(result->value,3,EnvAddLong(theEnv,activations));
+   SetMFType(returnValue->value,3,INTEGER);
+   SetMFValue(returnValue->value,3,EnvAddLong(theEnv,activations));
   }
 
 /****************************************************/
@@ -971,6 +960,7 @@ static int CountPatterns(
 /*   for the join-activity command.        */
 /*******************************************/
 void JoinActivityCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -978,7 +968,6 @@ void JoinActivityCommand(
    void *rulePtr;
    CLIPSValue theArg;
    int output;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
@@ -1026,7 +1015,7 @@ void EnvJoinActivity(
   Environment *theEnv,
   Defrule *theRule,
   int output,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
    Defrule *rulePtr;
    long disjunctCount, disjunctIndex, joinIndex;
@@ -1037,17 +1026,17 @@ void EnvJoinActivity(
    /* Set up the return value. */
    /*==========================*/
    
-   result->type = MULTIFIELD;
-   result->begin = 0;
-   result->end = 2;
-   result->value = EnvCreateMultifield(theEnv,3L);
+   returnValue->type = MULTIFIELD;
+   returnValue->begin = 0;
+   returnValue->end = 2;
+   returnValue->value = EnvCreateMultifield(theEnv,3L);
    
-   SetMFType(result->value,1,INTEGER);
-   SetMFValue(result->value,1,SymbolData(theEnv)->Zero);
-   SetMFType(result->value,2,INTEGER);
-   SetMFValue(result->value,2,SymbolData(theEnv)->Zero);
-   SetMFType(result->value,3,INTEGER);
-   SetMFValue(result->value,3,SymbolData(theEnv)->Zero);
+   SetMFType(returnValue->value,1,INTEGER);
+   SetMFValue(returnValue->value,1,SymbolData(theEnv)->Zero);
+   SetMFType(returnValue->value,2,INTEGER);
+   SetMFValue(returnValue->value,2,SymbolData(theEnv)->Zero);
+   SetMFType(returnValue->value,3,INTEGER);
+   SetMFValue(returnValue->value,3,SymbolData(theEnv)->Zero);
 
    /*=================================================*/
    /* Loop through each of the disjuncts for the rule */
@@ -1077,7 +1066,7 @@ void EnvJoinActivity(
       /*======================================*/
 
       for (joinIndex = 0; joinIndex < arraySize; joinIndex++)
-        { ListBetaJoinActivity(theEnv,theInfo,joinIndex,arraySize,output,result); }
+        { ListBetaJoinActivity(theEnv,theInfo,joinIndex,arraySize,output,returnValue); }
 
       /*================================*/
       /* Free the array of alpha joins. */
@@ -1170,7 +1159,7 @@ static void ListBetaJoinActivity(
   long joinIndex,
   long arraySize,
   int output,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
    long long activity = 0;
    long long compares, adds, deletes;
@@ -1225,16 +1214,16 @@ static void ListBetaJoinActivity(
       EnvPrintRouter(theEnv,WDISPLAY,"\n");
      }
 
-   compares += ValueToLong(GetMFValue(result->value,1));
-   adds += ValueToLong(GetMFValue(result->value,2));
-   deletes += ValueToLong(GetMFValue(result->value,3));
+   compares += ValueToLong(GetMFValue(returnValue->value,1));
+   adds += ValueToLong(GetMFValue(returnValue->value,2));
+   deletes += ValueToLong(GetMFValue(returnValue->value,3));
    
-   SetMFType(result->value,1,INTEGER);
-   SetMFValue(result->value,1,EnvAddLong(theEnv,compares));
-   SetMFType(result->value,2,INTEGER);
-   SetMFValue(result->value,2,EnvAddLong(theEnv,adds));
-   SetMFType(result->value,3,INTEGER);
-   SetMFValue(result->value,3,EnvAddLong(theEnv,deletes));
+   SetMFType(returnValue->value,1,INTEGER);
+   SetMFValue(returnValue->value,1,EnvAddLong(theEnv,compares));
+   SetMFType(returnValue->value,2,INTEGER);
+   SetMFValue(returnValue->value,2,EnvAddLong(theEnv,adds));
+   SetMFType(returnValue->value,3,INTEGER);
+   SetMFValue(returnValue->value,3,EnvAddLong(theEnv,deletes));
   }
 
 /*********************************************/
@@ -1272,10 +1261,10 @@ static void JoinActivityReset(
 /*   for the reset-join-activity command.       */
 /************************************************/
 void JoinActivityResetCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    DoForAllConstructs(theEnv,JoinActivityReset,DefruleData(theEnv)->DefruleModuleIndex,true,NULL);
   }
 
@@ -1284,13 +1273,14 @@ void JoinActivityResetCommand(
 /*   for the timetag function.         */
 /***************************************/
 void TimetagFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
    void *ptr;
 
-   ptr = GetFactOrInstanceArgument(UDFContextEnvironment(context),1,&theArg,"timetag");
+   ptr = GetFactOrInstanceArgument(theEnv,1,&theArg,"timetag");
 
    if (ptr == NULL)
      {
@@ -1309,14 +1299,14 @@ void TimetagFunction(
 /*   for the rule-complexity function.         */
 /***********************************************/
 void RuleComplexityCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    const char *ruleName;
    Defrule *rulePtr;
-   void *theEnv = UDFContextEnvironment(context);
 
-   ruleName = GetConstructName(context,"rule-complexity","rule name");
+   ruleName = GetConstructName(theEnv,context,"rule-complexity","rule name");
    if (ruleName == NULL)
      {
       mCVSetInteger(returnValue,-1);
@@ -1339,14 +1329,14 @@ void RuleComplexityCommand(
 /*   for the show-joins command.          */
 /******************************************/
 void ShowJoinsCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    const char *ruleName;
-   void *rulePtr;
-   void *theEnv = UDFContextEnvironment(context);
-
-   ruleName = GetConstructName(context,"show-joins","rule name");
+   Defrule *rulePtr;
+   
+   ruleName = GetConstructName(theEnv,context,"show-joins","rule name");
    if (ruleName == NULL) return;
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);
@@ -1512,15 +1502,15 @@ static void ShowJoins(
 /*   in each slot of the alpha hash table.            */
 /******************************************************/
 void ShowAlphaHashTable(
-   UDFContext *context,
-   CLIPSValue *returnValue)
+  Environment *theEnv,
+  UDFContext *context,
+  CLIPSValue *returnValue)
    {
     int i, count;
     long totalCount = 0;
     struct alphaMemoryHash *theEntry;
     struct partialMatch *theMatch;
     char buffer[40];
-    Environment *theEnv = UDFContextEnvironment(context);
 
     for (i = 0; i < ALPHA_MEMORY_HASH_SIZE; i++)
       {

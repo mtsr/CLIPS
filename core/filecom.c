@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/06/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*                 FILE COMMANDS MODULE                */
    /*******************************************************/
@@ -63,6 +63,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -168,21 +170,21 @@ void FileCommandDefinitions(
 
 #if ! RUN_TIME
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"batch","b", BatchCommand,"BatchCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"batch*","b", BatchStarCommand,"BatchStarCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"dribble-on","b", DribbleOnCommand,"DribbleOnCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"dribble-off","b", DribbleOffCommand,"DribbleOffCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"save","b", SaveCommand,"SaveCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"batch","b",1,1,"sy",BatchCommand,"BatchCommand",NULL);
+   EnvAddUDF(theEnv,"batch*","b",1,1,"sy",BatchStarCommand,"BatchStarCommand",NULL);
+   EnvAddUDF(theEnv,"dribble-on","b",1,1,"sy",DribbleOnCommand,"DribbleOnCommand",NULL);
+   EnvAddUDF(theEnv,"dribble-off","b",0,0,NULL,DribbleOffCommand,"DribbleOffCommand",NULL);
+   EnvAddUDF(theEnv,"save","b",1,1,"sy",SaveCommand,"SaveCommand",NULL);
 #endif
-   EnvAddUDF(theEnv,"load","b", LoadCommand,"LoadCommand",1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"load*","b", LoadStarCommand,"LoadStarCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"load","b",1,1,"sy",LoadCommand,"LoadCommand",NULL);
+   EnvAddUDF(theEnv,"load*","b",1,1,"sy",LoadStarCommand,"LoadStarCommand",NULL);
 #if BLOAD_AND_BSAVE
-   EnvAddUDF(theEnv,"bsave","b", BsaveCommand,"BsaveCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"bsave","b",1,1,"sy",BsaveCommand,"BsaveCommand",NULL);
 #endif
 #if BLOAD || BLOAD_ONLY || BLOAD_AND_BSAVE
    InitializeBsaveData(theEnv);
    InitializeBloadData(theEnv);
-   EnvAddUDF(theEnv,"bload","b", BloadCommand,"BloadCommand",1,1,"sy",NULL);
+   EnvAddUDF(theEnv,"bload","b",1,1,"sy",BloadCommand,"BloadCommand",NULL);
 #endif
 #endif
   }
@@ -422,6 +424,7 @@ static void ExitDribble(
 /*   for the dribble-on command.          */
 /******************************************/
 void DribbleOnCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -433,7 +436,7 @@ void DribbleOnCommand(
       return;
      }
 
-   mCVSetBoolean(returnValue,EnvDribbleOn(UDFContextEnvironment(context),fileName));
+   mCVSetBoolean(returnValue,EnvDribbleOn(theEnv,fileName));
   }
 
 /**********************************/
@@ -510,10 +513,11 @@ bool EnvDribbleActive(
 /*   for the dribble-off command.          */
 /*******************************************/
 void DribbleOffCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,EnvDribbleOff(UDFContextEnvironment(context)));
+   mCVSetBoolean(returnValue,EnvDribbleOff(theEnv));
   }
 
 /***********************************/
@@ -738,6 +742,7 @@ static void ExitBatch(
 /*   for the batch command.           */
 /**************************************/
 void BatchCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -749,7 +754,7 @@ void BatchCommand(
       return;
      }
 
-   mCVSetBoolean(returnValue,OpenBatch(UDFContextEnvironment(context),fileName,false));
+   mCVSetBoolean(returnValue,OpenBatch(theEnv,fileName,false));
   }
 
 /**************************************************/
@@ -1077,6 +1082,7 @@ void CloseAllBatchSources(
 /*   for the batch* command.              */
 /******************************************/
 void BatchStarCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1088,7 +1094,7 @@ void BatchStarCommand(
       return;
      }
      
-   mCVSetBoolean(returnValue,EnvBatchStar(UDFContextEnvironment(context),fileName));
+   mCVSetBoolean(returnValue,EnvBatchStar(theEnv,fileName));
   }
 
 #if ! RUN_TIME
@@ -1219,10 +1225,10 @@ bool EnvBatchStar(
 /* LoadCommand: H/L access routine for the load command.   */
 /***********************************************************/
 void LoadCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    const char *theFileName;
    int rv;
@@ -1257,10 +1263,10 @@ void LoadCommand(
 /* LoadStarCommand: H/L access routine for the load* command.   */
 /****************************************************************/
 void LoadStarCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    const char *theFileName;
    int rv;
@@ -1291,10 +1297,10 @@ void LoadStarCommand(
 /* SaveCommand: H/L access routine for the save command. */
 /*********************************************************/
 void SaveCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    const char *theFileName;
 

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/30/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*               CLASS INITIALIZATION MODULE           */
    /*******************************************************/
@@ -47,6 +47,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Removed initial-object support.                 */
 /*                                                            */
@@ -293,7 +295,7 @@ static void DeallocateDefclassData(
              {
               if ((cls->slots[i].defaultValue != NULL) && (cls->slots[i].dynamicDefault == 0))
                 {
-                 tmpexp = ((DATA_OBJECT *) cls->slots[i].defaultValue)->supplementalInfo;
+                 tmpexp = ((CLIPSValue *) cls->slots[i].defaultValue)->supplementalInfo;
                  rtn_struct(theEnv,dataObject,cls->slots[i].defaultValue);
                  cls->slots[i].defaultValue = tmpexp;
                 }
@@ -367,8 +369,8 @@ void ObjectsRunTimeInitialize(
                  ===================================================================== */
               if ((cls->slots[i].defaultValue != NULL) && (cls->slots[i].dynamicDefault == 0))
                 {
-                 tmpexp = ((DATA_OBJECT *) cls->slots[i].defaultValue)->supplementalInfo;
-                 ValueDeinstall(theEnv,(DATA_OBJECT *) cls->slots[i].defaultValue);
+                 tmpexp = ((CLIPSValue *) cls->slots[i].defaultValue)->supplementalInfo;
+                 ValueDeinstall(theEnv,(CLIPSValue *) cls->slots[i].defaultValue);
                  rtn_struct(theEnv,dataObject,cls->slots[i].defaultValue);
                  cls->slots[i].defaultValue = tmpexp;
                 }
@@ -416,9 +418,9 @@ void ObjectsRunTimeInitialize(
             tmpexp = cls->slots[i].defaultValue;
             cls->slots[i].defaultValue = get_struct(theEnv,dataObject);
             EvaluateAndStoreInDataObject(theEnv,(int) cls->slots[i].multiple,(EXPRESSION *) tmpexp,
-                                         (DATA_OBJECT *) cls->slots[i].defaultValue,true);
-            ValueInstall(theEnv,(DATA_OBJECT *) cls->slots[i].defaultValue);
-            ((DATA_OBJECT *) cls->slots[i].defaultValue)->supplementalInfo = tmpexp;
+                                         (CLIPSValue *) cls->slots[i].defaultValue,true);
+            ValueInstall(theEnv,(CLIPSValue *) cls->slots[i].defaultValue);
+            ((CLIPSValue *) cls->slots[i].defaultValue)->supplementalInfo = tmpexp;
            }
         }
      }
@@ -611,55 +613,47 @@ static void SetupDefclasses(
    AddPortConstructItem(theEnv,"defclass",SYMBOL);
    AddAfterModuleDefinedFunction(theEnv,"defclass",UpdateDefclassesScope,0);
 #endif
-   EnvAddUDF(theEnv,"undefclass","v",UndefclassCommand,"UndefclassCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"undefclass","v",1,1,"y",UndefclassCommand,"UndefclassCommand",NULL);
 
    AddSaveFunction(theEnv,"defclass",SaveDefclasses,10);
 #endif
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"list-defclasses","v",ListDefclassesCommand,"ListDefclassesCommand",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"ppdefclass","v", PPDefclassCommand,"PPDefclassCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"describe-class","v", DescribeClassCommand,"DescribeClassCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"browse-classes","v", BrowseClassesCommand,"BrowseClassesCommand",0,1,"y",NULL);
+   EnvAddUDF(theEnv,"list-defclasses","v",0,1,"y",ListDefclassesCommand,"ListDefclassesCommand",NULL);
+   EnvAddUDF(theEnv,"ppdefclass","v",1,1,"y",PPDefclassCommand,"PPDefclassCommand",NULL);
+   EnvAddUDF(theEnv,"describe-class","v",1,1,"y",DescribeClassCommand,"DescribeClassCommand",NULL);
+   EnvAddUDF(theEnv,"browse-classes","v",0,1,"y",BrowseClassesCommand,"BrowseClassesCommand",NULL);
 #endif
 
-   EnvAddUDF(theEnv,"get-defclass-list","m",GetDefclassListFunction,
-                   "GetDefclassListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"superclassp","b", SuperclassPCommand,"SuperclassPCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"subclassp","b", SubclassPCommand,"SubclassPCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"class-existp","b", ClassExistPCommand,"ClassExistPCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"message-handler-existp","b",
-                MessageHandlerExistPCommand,"MessageHandlerExistPCommand",2,3,"y",NULL);
-   EnvAddUDF(theEnv,"class-abstractp","b", ClassAbstractPCommand,"ClassAbstractPCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"get-defclass-list","m",0,1,"y",GetDefclassListFunction,"GetDefclassListFunction",NULL);
+   EnvAddUDF(theEnv,"superclassp","b",2,2,"y",SuperclassPCommand,"SuperclassPCommand",NULL);
+   EnvAddUDF(theEnv,"subclassp","b",2,2,"y",SubclassPCommand,"SubclassPCommand",NULL);
+   EnvAddUDF(theEnv,"class-existp","b", 1,1,"y",ClassExistPCommand,"ClassExistPCommand",NULL);
+   EnvAddUDF(theEnv,"message-handler-existp","b",2,3,"y",MessageHandlerExistPCommand,"MessageHandlerExistPCommand",NULL);
+   EnvAddUDF(theEnv,"class-abstractp","b",1,1,"y",ClassAbstractPCommand,"ClassAbstractPCommand",NULL);
 #if DEFRULE_CONSTRUCT
-   EnvAddUDF(theEnv,"class-reactivep","b", ClassReactivePCommand,"ClassReactivePCommand",1,1,"y",NULL);
+   EnvAddUDF(theEnv,"class-reactivep","b",1,1,"y",ClassReactivePCommand,"ClassReactivePCommand",NULL);
 #endif
-   EnvAddUDF(theEnv,"class-slots","m", ClassSlotsCommand,"ClassSlotsCommand",1,2,"y",NULL);
-   EnvAddUDF(theEnv,"class-superclasses","m",
-                    ClassSuperclassesCommand,"ClassSuperclassesCommand",1,2,"y",NULL);
-   EnvAddUDF(theEnv,"class-subclasses","m",
-                    ClassSubclassesCommand,"ClassSubclassesCommand",1,2,"y",NULL);
-   EnvAddUDF(theEnv,"get-defmessage-handler-list","m",
-                    GetDefmessageHandlersListCmd,"GetDefmessageHandlersListCmd",0,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-existp","b",SlotExistPCommand,"SlotExistPCommand",2,3,"y",NULL);
-   EnvAddUDF(theEnv,"slot-facets","m", SlotFacetsCommand,"SlotFacetsCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-sources","m", SlotSourcesCommand,"SlotSourcesCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-types","m", SlotTypesCommand,"SlotTypesCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-allowed-values","m", SlotAllowedValuesCommand,"SlotAllowedValuesCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-allowed-classes","m", SlotAllowedClassesCommand,"SlotAllowedClassesCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-range","m", SlotRangeCommand,"SlotRangeCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-cardinality","m", SlotCardinalityCommand,"SlotCardinalityCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-writablep","b", SlotWritablePCommand,"SlotWritablePCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-initablep","b", SlotInitablePCommand,"SlotInitablePCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-publicp","b", SlotPublicPCommand,"SlotPublicPCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-direct-accessp","b", SlotDirectAccessPCommand,
-                   "SlotDirectAccessPCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"slot-default-value","*", SlotDefaultValueCommand,
-                   "SlotDefaultValueCommand",2,2,"y",NULL);
-   EnvAddUDF(theEnv,"defclass-module","y", GetDefclassModuleCommand,
-                   "GetDefclassModuleCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"get-class-defaults-mode", "y", GetClassDefaultsModeCommand,  "GetClassDefaultsModeCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-class-defaults-mode", "y", SetClassDefaultsModeCommand,  "SetClassDefaultsModeCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"class-slots","m",1,2,"y",ClassSlotsCommand,"ClassSlotsCommand",NULL);
+   EnvAddUDF(theEnv,"class-superclasses","m",1,2,"y",ClassSuperclassesCommand,"ClassSuperclassesCommand",NULL);
+   EnvAddUDF(theEnv,"class-subclasses","m",1,2,"y",ClassSubclassesCommand,"ClassSubclassesCommand",NULL);
+   EnvAddUDF(theEnv,"get-defmessage-handler-list","m",0,2,"y",GetDefmessageHandlersListCmd,"GetDefmessageHandlersListCmd",NULL);
+   EnvAddUDF(theEnv,"slot-existp","b",2,3,"y",SlotExistPCommand,"SlotExistPCommand",NULL);
+   EnvAddUDF(theEnv,"slot-facets","m",2,2,"y",SlotFacetsCommand,"SlotFacetsCommand",NULL);
+   EnvAddUDF(theEnv,"slot-sources","m",2,2,"y",SlotSourcesCommand,"SlotSourcesCommand",NULL);
+   EnvAddUDF(theEnv,"slot-types","m",2,2,"y",SlotTypesCommand,"SlotTypesCommand",NULL);
+   EnvAddUDF(theEnv,"slot-allowed-values","m",2,2,"y",SlotAllowedValuesCommand,"SlotAllowedValuesCommand",NULL);
+   EnvAddUDF(theEnv,"slot-allowed-classes","m",2,2,"y",SlotAllowedClassesCommand,"SlotAllowedClassesCommand",NULL);
+   EnvAddUDF(theEnv,"slot-range","m",2,2,"y",SlotRangeCommand,"SlotRangeCommand",NULL);
+   EnvAddUDF(theEnv,"slot-cardinality","m",2,2,"y",SlotCardinalityCommand,"SlotCardinalityCommand",NULL);
+   EnvAddUDF(theEnv,"slot-writablep","b",2,2,"y",SlotWritablePCommand,"SlotWritablePCommand",NULL);
+   EnvAddUDF(theEnv,"slot-initablep","b",2,2,"y",SlotInitablePCommand,"SlotInitablePCommand",NULL);
+   EnvAddUDF(theEnv,"slot-publicp","b",2,2,"y",SlotPublicPCommand,"SlotPublicPCommand",NULL);
+   EnvAddUDF(theEnv,"slot-direct-accessp","b",2,2,"y",SlotDirectAccessPCommand,"SlotDirectAccessPCommand",NULL);
+   EnvAddUDF(theEnv,"slot-default-value","*",2,2,"y",SlotDefaultValueCommand,"SlotDefaultValueCommand",NULL);
+   EnvAddUDF(theEnv,"defclass-module","y",1,1,"y",GetDefclassModuleCommand,"GetDefclassModuleCommand",NULL);
+   EnvAddUDF(theEnv,"get-class-defaults-mode","y",0,0,NULL,GetClassDefaultsModeCommand,"GetClassDefaultsModeCommand",NULL);
+   EnvAddUDF(theEnv,"set-class-defaults-mode","y",1,1,"y",SetClassDefaultsModeCommand,"SetClassDefaultsModeCommand",NULL);
 #endif
 
 #if DEBUGGING_FUNCTIONS

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/11/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                 CONSTRAINT MODULE                   */
    /*******************************************************/
@@ -44,6 +44,8 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Static constraint checking is always enabled.  */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -103,8 +105,8 @@ void InitializeConstraints(
 #endif
 
 #if (! RUN_TIME)
-   EnvAddUDF(theEnv,"get-dynamic-constraint-checking","b", GDCCommand,"GDCCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-dynamic-constraint-checking","b", SDCCommand,"SDCCommand", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"get-dynamic-constraint-checking","b",0,0,NULL,GDCCommand,"GDCCommand",NULL);
+   EnvAddUDF(theEnv,"set-dynamic-constraint-checking","b",1,1,NULL,SDCCommand,"SDCCommand",NULL);
 #endif
   }
   
@@ -503,11 +505,11 @@ static void InstallConstraintRecord(
 /*   set-dynamic-constraint-checking command. */
 /**********************************************/
 void SDCCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
 
@@ -522,10 +524,10 @@ void SDCCommand(
 /*   get-dynamic-constraint-checking command. */
 /**********************************************/
 void GDCCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
    mCVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
   }
 

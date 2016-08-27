@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/11/16            */
+   /*             CLIPS Version 6.50  08/25/16            */
    /*                                                     */
    /*                 ENGINE HEADER FILE                  */
    /*******************************************************/
@@ -70,6 +70,8 @@
 /*                                                           */
 /*            Incremental reset is always enabled.           */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_engine
@@ -137,14 +139,14 @@ struct engineData
 
    long long               EnvRun(Environment *,long long);
    bool                    EnvAddRunFunction(Environment *,const char *,
-                                                    void (*)(Environment *),int);
+                                             void (*)(Environment *),int);
    bool                    EnvAddRunFunctionWithContext(Environment *,const char *,
-                                                               void (*)(Environment *),int,void *);
+                                                        void (*)(Environment *),int,void *);
    bool                    EnvRemoveRunFunction(Environment *,const char *);
    bool                    EnvAddBeforeRunFunction(Environment *,const char *,
-                                                    void (*)(Environment *,void *),int);
+                                                   void (*)(Environment *,void *),int);
    bool                    EnvAddBeforeRunFunctionWithContext(Environment *,const char *,
-                                                               void (*)(Environment *, void *),int,void *);
+                                                              void (*)(Environment *, void *),int,void *);
    bool                    EnvRemoveBeforeRunFunction(Environment *,const char *);
    void                    InitializeEngine(Environment *);
    void                    EnvSetBreak(Environment *,Defrule *);
@@ -153,24 +155,24 @@ struct engineData
    void                    RemoveAllBreakpoints(Environment *);
    void                    EnvShowBreaks(Environment *,const char *,Defmodule *);
    bool                    EnvDefruleHasBreakpoint(Environment *,Defrule *);
-   void                    RunCommand(UDFContext *,CLIPSValue *);
-   void                    SetBreakCommand(UDFContext *,CLIPSValue *);
-   void                    RemoveBreakCommand(UDFContext *,CLIPSValue *);
-   void                    ShowBreaksCommand(UDFContext *,CLIPSValue *);
-   void                    HaltCommand(UDFContext *,CLIPSValue *);
-   void                    FocusCommand(UDFContext *,CLIPSValue *);
-   void                    ClearFocusStackCommand(UDFContext *,CLIPSValue *);
+   void                    RunCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                    SetBreakCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                    RemoveBreakCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                    ShowBreaksCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                    HaltCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                    FocusCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                    ClearFocusStackCommand(Environment *,UDFContext *,CLIPSValue *);
    void                    EnvClearFocusStack(Environment *);
    struct focus           *EnvGetNextFocus(Environment *,struct focus *);
    void                    EnvFocus(Environment *,Defmodule *);
    bool                    EnvGetFocusChanged(Environment *);
    void                    EnvSetFocusChanged(Environment *,bool);
-   void                    ListFocusStackCommand(UDFContext *,CLIPSValue *);
+   void                    ListFocusStackCommand(Environment *,UDFContext *,CLIPSValue *);
    void                    EnvListFocusStack(Environment *,const char *);
-   void                    GetFocusStackFunction(UDFContext *,CLIPSValue *);
+   void                    GetFocusStackFunction(Environment *,UDFContext *,CLIPSValue *);
    void                    EnvGetFocusStack(Environment *,CLIPSValue *);
-   void                    PopFocusFunction(UDFContext *,CLIPSValue *);
-   void                    GetFocusFunction(UDFContext *,CLIPSValue *);
+   void                    PopFocusFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    GetFocusFunction(Environment *,UDFContext *,CLIPSValue *);
    Defmodule              *EnvPopFocus(Environment *);
    Defmodule              *EnvGetFocus(Environment *);
    bool                    EnvGetHaltRules(Environment *);

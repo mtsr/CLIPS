@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/30/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -51,6 +51,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Generic error message no longer printed when    */
 /*            an alternate variable handling function         */
@@ -105,10 +107,10 @@ typedef struct
 /***************************************/
 
    static void                    EvaluateProcParameters(Environment *,EXPRESSION *,int,const char *,const char *);
-   static bool                    RtnProcParam(Environment *,void *,DATA_OBJECT *);
-   static bool                    GetProcBind(Environment *,void *,DATA_OBJECT *);
-   static bool                    PutProcBind(Environment *,void *,DATA_OBJECT *);
-   static bool                    RtnProcWild(Environment *,void *,DATA_OBJECT *);
+   static bool                    RtnProcParam(Environment *,void *,CLIPSValue *);
+   static bool                    GetProcBind(Environment *,void *,CLIPSValue *);
+   static bool                    PutProcBind(Environment *,void *,CLIPSValue *);
+   static bool                    RtnProcWild(Environment *,void *,CLIPSValue *);
    static void                    DeallocateProceduralPrimitiveData(Environment *);
    static void                    ReleaseProcParameters(Environment *);
 
@@ -120,7 +122,7 @@ typedef struct
 #endif
 
 #if (! DEFFUNCTION_CONSTRUCT) || (! DEFGENERIC_CONSTRUCT)
-   static bool                    EvaluateBadCall(Environment *,void *,DATA_OBJECT *);
+   static bool                    EvaluateBadCall(Environment *,void *,CLIPSValue *);
 #endif
 
 /* =========================================
@@ -678,7 +680,7 @@ EXPRESSION *GenProcWildcardReference(
   RETURNS      : Nothing useful
   SIDE EFFECTS : Any side-effects of the evaluation of the
                    parameter expressions
-                 DATA_OBJECT array allocated (deallocated on errors)
+                 CLIPSValue array allocated (deallocated on errors)
                  ProcParamArray set
   NOTES        : EvaluationError set on errors
  *******************************************************************/
@@ -736,7 +738,7 @@ void PopProcParameters(
    PROC_PARAM_STACK *ptmp;
 
    if (ProceduralPrimitiveData(theEnv)->ProcParamArray != NULL)
-     rm(theEnv,ProceduralPrimitiveData(theEnv)->ProcParamArray,(sizeof(DATA_OBJECT) * ProceduralPrimitiveData(theEnv)->ProcParamArraySize));
+     rm(theEnv,ProceduralPrimitiveData(theEnv)->ProcParamArray,(sizeof(CLIPSValue) * ProceduralPrimitiveData(theEnv)->ProcParamArraySize));
 
 #if DEFGENERIC_CONSTRUCT
    if (ProceduralPrimitiveData(theEnv)->ProcParamExpressions != NULL)
@@ -778,7 +780,7 @@ static void ReleaseProcParameters(
    PROC_PARAM_STACK *ptmp, *next;
 
    if (ProceduralPrimitiveData(theEnv)->ProcParamArray != NULL)
-     rm(theEnv,ProceduralPrimitiveData(theEnv)->ProcParamArray,(sizeof(DATA_OBJECT) * ProceduralPrimitiveData(theEnv)->ProcParamArraySize));
+     rm(theEnv,ProceduralPrimitiveData(theEnv)->ProcParamArray,(sizeof(CLIPSValue) * ProceduralPrimitiveData(theEnv)->ProcParamArraySize));
 
 
    if (ProceduralPrimitiveData(theEnv)->WildcardValue != NULL)
@@ -801,7 +803,7 @@ static void ReleaseProcParameters(
       next = ptmp->nxt;
 
       if (ptmp->ParamArray != NULL)
-        { rm(theEnv,ptmp->ParamArray,(sizeof(DATA_OBJECT) * ptmp->ParamArraySize)); }
+        { rm(theEnv,ptmp->ParamArray,(sizeof(CLIPSValue) * ptmp->ParamArraySize)); }
 
 #if DEFGENERIC_CONSTRUCT
       if (ptmp->ParamExpressions != NULL)
@@ -884,10 +886,10 @@ void EvaluateProcActions(
   Defmodule *theModule,
   EXPRESSION *actions,
   int lvarcnt,
-  DATA_OBJECT *result,
+  CLIPSValue *returnValue,
   void (*crtproc)(Environment *))
   {
-   DATA_OBJECT *oldLocalVarArray;
+   CLIPSValue *oldLocalVarArray;
    int i;
    Defmodule *oldModule;
    EXPRESSION *oldActions;
@@ -895,10 +897,10 @@ void EvaluateProcActions(
 
    oldLocalVarArray = ProceduralPrimitiveData(theEnv)->LocalVarArray;
    ProceduralPrimitiveData(theEnv)->LocalVarArray = (lvarcnt == 0) ? NULL :
-                   (DATA_OBJECT *) gm2(theEnv,(sizeof(DATA_OBJECT) * lvarcnt));
+                   (CLIPSValue *) gm2(theEnv,(sizeof(CLIPSValue) * lvarcnt));
 
    if (lvarcnt != 0)
-     { theTM = AddTrackedMemory(theEnv,ProceduralPrimitiveData(theEnv)->LocalVarArray,sizeof(DATA_OBJECT) * lvarcnt); }
+     { theTM = AddTrackedMemory(theEnv,ProceduralPrimitiveData(theEnv)->LocalVarArray,sizeof(CLIPSValue) * lvarcnt); }
    else
      { theTM = NULL; }
      
@@ -911,10 +913,10 @@ void EvaluateProcActions(
    oldActions = ProceduralPrimitiveData(theEnv)->CurrentProcActions;
    ProceduralPrimitiveData(theEnv)->CurrentProcActions = actions;
 
-   if (EvaluateExpression(theEnv,actions,result))
+   if (EvaluateExpression(theEnv,actions,returnValue))
      {
-      result->type = SYMBOL;
-      result->value = EnvFalseSymbol(theEnv);
+      returnValue->type = SYMBOL;
+      returnValue->value = EnvFalseSymbol(theEnv);
      }
 
    ProceduralPrimitiveData(theEnv)->CurrentProcActions = oldActions;
@@ -926,7 +928,7 @@ void EvaluateProcActions(
       EnvPrintRouter(theEnv,WERROR,"Execution halted during the actions of ");
       (*crtproc)(theEnv);
      }
-   if ((ProceduralPrimitiveData(theEnv)->WildcardValue != NULL) ? (result->value == ProceduralPrimitiveData(theEnv)->WildcardValue->value) : false)
+   if ((ProceduralPrimitiveData(theEnv)->WildcardValue != NULL) ? (returnValue->value == ProceduralPrimitiveData(theEnv)->WildcardValue->value) : false)
      {
       MultifieldDeinstall(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
@@ -941,7 +943,7 @@ void EvaluateProcActions(
       for (i = 0 ; i < lvarcnt ; i++)
         if (ProceduralPrimitiveData(theEnv)->LocalVarArray[i].supplementalInfo == EnvTrueSymbol(theEnv))
           ValueDeinstall(theEnv,&ProceduralPrimitiveData(theEnv)->LocalVarArray[i]);
-      rm(theEnv,ProceduralPrimitiveData(theEnv)->LocalVarArray,(sizeof(DATA_OBJECT) * lvarcnt));
+      rm(theEnv,ProceduralPrimitiveData(theEnv)->LocalVarArray,(sizeof(CLIPSValue) * lvarcnt));
      }
 
    ProceduralPrimitiveData(theEnv)->LocalVarArray = oldLocalVarArray;
@@ -987,16 +989,16 @@ void PrintProcParamArray(
  ****************************************************************/
 void GrabProcWildargs(
   Environment *theEnv,
-  DATA_OBJECT *result,
+  CLIPSValue *returnValue,
   int theIndex)
   {
    int i,j;
    long k; /* 6.04 Bug Fix */
    long size;
-   DATA_OBJECT *val;
+   CLIPSValue *val;
 
-   result->type = MULTIFIELD;
-   result->begin = 0;
+   returnValue->type = MULTIFIELD;
+   returnValue->begin = 0;
    if (ProceduralPrimitiveData(theEnv)->WildcardValue == NULL)
      {
       ProceduralPrimitiveData(theEnv)->WildcardValue = get_struct(theEnv,dataObject);
@@ -1004,8 +1006,8 @@ void GrabProcWildargs(
      }
    else if (theIndex == ProceduralPrimitiveData(theEnv)->Oldindex)
      {
-      result->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end;
-      result->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value;
+      returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end;
+      returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value;
       return;
      }
    else
@@ -1018,8 +1020,8 @@ void GrabProcWildargs(
    size = ProceduralPrimitiveData(theEnv)->ProcParamArraySize - theIndex + 1;
    if (size <= 0)
      {
-      result->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = -1;
-      result->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = ProceduralPrimitiveData(theEnv)->NoParamValue;
+      returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = -1;
+      returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = ProceduralPrimitiveData(theEnv)->NoParamValue;
       MultifieldInstall(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
       return;
      }
@@ -1028,14 +1030,14 @@ void GrabProcWildargs(
       if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type == MULTIFIELD)
         size += ProceduralPrimitiveData(theEnv)->ProcParamArray[i].end - ProceduralPrimitiveData(theEnv)->ProcParamArray[i].begin;
      }
-   result->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = size-1;
-   result->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = CreateMultifield2(theEnv,(unsigned long) size);
+   returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = size-1;
+   returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = CreateMultifield2(theEnv,(unsigned long) size);
    for (i = theIndex-1 , j = 1 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
      {
       if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type != MULTIFIELD)
         {
-         SetMFType(result->value,j,(short) ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type);
-         SetMFValue(result->value,j,ProceduralPrimitiveData(theEnv)->ProcParamArray[i].value);
+         SetMFType(returnValue->value,j,(short) ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type);
+         SetMFValue(returnValue->value,j,ProceduralPrimitiveData(theEnv)->ProcParamArray[i].value);
          j++;
         }
       else
@@ -1043,8 +1045,8 @@ void GrabProcWildargs(
          val = &ProceduralPrimitiveData(theEnv)->ProcParamArray[i];
          for (k = val->begin + 1 ; k <= val->end + 1 ; k++ , j++)
            {
-            SetMFType(result->value,j,GetMFType(val->value,k));
-            SetMFValue(result->value,j,GetMFValue(val->value,k));
+            SetMFType(returnValue->value,j,GetMFType(val->value,k));
+            SetMFValue(returnValue->value,j,GetMFValue(val->value,k));
            }
         }
      }
@@ -1073,7 +1075,7 @@ void GrabProcWildargs(
   RETURNS      : Nothing useful
   SIDE EFFECTS : Any side-effects of the evaluation of the
                    parameter expressions
-                 DATA_OBJECT array allocated (deallocated on errors)
+                 CLIPSValue array allocated (deallocated on errors)
                  ProcParamArray set
   NOTES        : EvaluationError set on errors
  *******************************************************************/
@@ -1084,7 +1086,7 @@ static void EvaluateProcParameters(
   const char *pname,
   const char *bodytype)
   {
-   DATA_OBJECT *rva,temp;
+   CLIPSValue *rva,temp;
    int i = 0;
 
    if (numberOfParameters == 0)
@@ -1094,7 +1096,7 @@ static void EvaluateProcParameters(
       return;
      }
 
-   rva = (DATA_OBJECT *) gm2(theEnv,(sizeof(DATA_OBJECT) * numberOfParameters));
+   rva = (CLIPSValue *) gm2(theEnv,(sizeof(CLIPSValue) * numberOfParameters));
    while (parameterList != NULL)
      {
       if ((EvaluateExpression(theEnv,parameterList,&temp) == true) ? true :
@@ -1115,7 +1117,7 @@ static void EvaluateProcParameters(
          EnvPrintRouter(theEnv,WERROR," ");
          EnvPrintRouter(theEnv,WERROR,pname);
          EnvPrintRouter(theEnv,WERROR,".\n");
-         rm(theEnv,rva,(sizeof(DATA_OBJECT) * numberOfParameters));
+         rm(theEnv,rva,(sizeof(CLIPSValue) * numberOfParameters));
          return;
         }
       rva[i].type = temp.type;
@@ -1145,15 +1147,15 @@ static void EvaluateProcParameters(
 static bool RtnProcParam(
   Environment *theEnv,
   void *value,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT *src;
+   CLIPSValue *src;
    
    src = &ProceduralPrimitiveData(theEnv)->ProcParamArray[*((int *) ValueToBitMap(value)) - 1];
-   result->type = src->type;
-   result->value = src->value;
-   result->begin = src->begin;
-   result->end = src->end;
+   returnValue->type = src->type;
+   returnValue->value = src->value;
+   returnValue->begin = src->begin;
+   returnValue->end = src->end;
    return true;
   }
 
@@ -1173,24 +1175,24 @@ static bool RtnProcParam(
 static bool GetProcBind(
   Environment *theEnv,
   void *value,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT *src;
+   CLIPSValue *src;
    PACKED_PROC_VAR *pvar;
 
    pvar = (PACKED_PROC_VAR *) ValueToBitMap(value);
    src = &ProceduralPrimitiveData(theEnv)->LocalVarArray[pvar->first - 1];
    if (src->supplementalInfo == EnvTrueSymbol(theEnv))
      {
-      result->type = src->type;
-      result->value = src->value;
-      result->begin = src->begin;
-      result->end = src->end;
+      returnValue->type = src->type;
+      returnValue->value = src->value;
+      returnValue->begin = src->begin;
+      returnValue->end = src->end;
       return true;
      }
    if (GetFirstArgument()->nextArg != NULL)
      {
-      EvaluateExpression(theEnv,GetFirstArgument()->nextArg,result);
+      EvaluateExpression(theEnv,GetFirstArgument()->nextArg,returnValue);
       return true;
      }
    if (pvar->second == 0)
@@ -1206,20 +1208,20 @@ static bool GetProcBind(
         }
       else
         EnvPrintRouter(theEnv,WERROR," unbound.\n");
-      result->type = SYMBOL;
-      result->value = EnvFalseSymbol(theEnv);
+      returnValue->type = SYMBOL;
+      returnValue->value = EnvFalseSymbol(theEnv);
       return true;
      }
    if (pvar->secondFlag == 0)
      {
       src = &ProceduralPrimitiveData(theEnv)->ProcParamArray[pvar->second - 1];
-      result->type = src->type;
-      result->value = src->value;
-      result->begin = src->begin;
-      result->end = src->end;
+      returnValue->type = src->type;
+      returnValue->value = src->value;
+      returnValue->begin = src->begin;
+      returnValue->end = src->end;
      }
    else
-     GrabProcWildargs(theEnv,result,(int) pvar->second);
+     GrabProcWildargs(theEnv,returnValue,(int) pvar->second);
    return true;
   }
 
@@ -1238,9 +1240,9 @@ static bool GetProcBind(
 static bool PutProcBind(
   Environment *theEnv,
   void *value,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
-   DATA_OBJECT *dst;
+   CLIPSValue *dst;
 
    dst = &ProceduralPrimitiveData(theEnv)->LocalVarArray[*((int *) ValueToBitMap(value)) - 1];
    if (GetFirstArgument() == NULL)
@@ -1248,22 +1250,22 @@ static bool PutProcBind(
       if (dst->supplementalInfo == EnvTrueSymbol(theEnv))
         ValueDeinstall(theEnv,dst);
       dst->supplementalInfo = EnvFalseSymbol(theEnv);
-      result->type = SYMBOL;
-      result->value = EnvFalseSymbol(theEnv);
+      returnValue->type = SYMBOL;
+      returnValue->value = EnvFalseSymbol(theEnv);
      }
    else
      {
       if (GetFirstArgument()->nextArg != NULL)
-        StoreInMultifield(theEnv,result,GetFirstArgument(),true);
+        StoreInMultifield(theEnv,returnValue,GetFirstArgument(),true);
       else
-        EvaluateExpression(theEnv,GetFirstArgument(),result);
+        EvaluateExpression(theEnv,GetFirstArgument(),returnValue);
       if (dst->supplementalInfo == EnvTrueSymbol(theEnv))
         ValueDeinstall(theEnv,dst);
       dst->supplementalInfo = EnvTrueSymbol(theEnv);
-      dst->type = result->type;
-      dst->value = result->value;
-      dst->begin = result->begin;
-      dst->end = result->end;
+      dst->type = returnValue->type;
+      dst->value = returnValue->value;
+      dst->begin = returnValue->begin;
+      dst->end = returnValue->end;
       ValueInstall(theEnv,dst);
      }
    return true;
@@ -1285,9 +1287,9 @@ static bool PutProcBind(
 static bool RtnProcWild(
   Environment *theEnv,
   void *value,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
-   GrabProcWildargs(theEnv,result,*(int *) ValueToBitMap(value));
+   GrabProcWildargs(theEnv,returnValue,*(int *) ValueToBitMap(value));
    return true;
   }
 
@@ -1452,7 +1454,7 @@ static EXPRESSION *CompactActions(
 static bool EvaluateBadCall(
   Environment *theEnv,
   void *value,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
 #if MAC_XCD
 #pragma unused(value)

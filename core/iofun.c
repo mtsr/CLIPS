@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/30/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                I/O FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -82,6 +82,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Added print and println functions.             */
 /*                                                           */
@@ -165,20 +167,20 @@ void IOFunctionDefinitions(
 
 #if ! RUN_TIME
 #if IO_FUNCTIONS
-   EnvAddUDF(theEnv,"printout",    "v",        PrintoutFunction,  "PrintoutFunction",  1,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"print",       "v",        PrintFunction,     "PrintFunction",     0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"println",     "v",        PrintlnFunction,   "PrintlnFunction",   0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"read",        "synldfie", ReadFunction,      "ReadFunction",      0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"open",        "b",        OpenFunction,      "OpenFunction",      2,3,"*;sy",NULL);
-   EnvAddUDF(theEnv,"close",       "b",        CloseFunction,     "CloseFunction",     0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"get-char",    "l",        GetCharFunction,   "GetCharFunction",   0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"put-char",    "v",        PutCharFunction,   "PutCharFunction",   1,2,NULL,NULL);
-   EnvAddUDF(theEnv,"remove",      "b",        RemoveFunction,    "RemoveFunction",    1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"rename",      "b",        RenameFunction,    "RenameFunction",    2,2,"sy",NULL);
-   EnvAddUDF(theEnv,"format",      "s",        FormatFunction,    "FormatFunction",    2,UNBOUNDED, "*;*;s",NULL);
-   EnvAddUDF(theEnv,"readline",    "sy",       ReadlineFunction,  "ReadlineFunction",  0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"set-locale",  "sy",       SetLocaleFunction, "SetLocaleFunction", 0,1,NULL,NULL);
-   EnvAddUDF(theEnv,"read-number", "syld",     ReadNumberFunction, "ReadNumberFunction", 0,1,NULL,NULL);
+   EnvAddUDF(theEnv,"printout","v",1,UNBOUNDED,NULL,PrintoutFunction,"PrintoutFunction",NULL);
+   EnvAddUDF(theEnv,"print","v",0,UNBOUNDED,NULL,PrintFunction,"PrintFunction",NULL);
+   EnvAddUDF(theEnv,"println","v",0,UNBOUNDED,NULL,PrintlnFunction,"PrintlnFunction",NULL);
+   EnvAddUDF(theEnv,"read","synldfie",0,1,NULL,ReadFunction,"ReadFunction",NULL);
+   EnvAddUDF(theEnv,"open","b",2,3,"*;sy",OpenFunction,"OpenFunction",NULL);
+   EnvAddUDF(theEnv,"close","b",0,1,NULL,CloseFunction,"CloseFunction",NULL);
+   EnvAddUDF(theEnv,"get-char","l",0,1,NULL,GetCharFunction,"GetCharFunction",NULL);
+   EnvAddUDF(theEnv,"put-char","v",1,2,NULL,PutCharFunction,"PutCharFunction",NULL);
+   EnvAddUDF(theEnv,"remove","b",1,1,"sy",RemoveFunction,"RemoveFunction",NULL);
+   EnvAddUDF(theEnv,"rename","b",2,2,"sy",RenameFunction,"RenameFunction",NULL);
+   EnvAddUDF(theEnv,"format","s",2,UNBOUNDED,"*;*;s",FormatFunction,"FormatFunction",NULL);
+   EnvAddUDF(theEnv,"readline","sy",0,1,NULL,ReadlineFunction,"ReadlineFunction",NULL);
+   EnvAddUDF(theEnv,"set-locale","sy",0,1,NULL,SetLocaleFunction,"SetLocaleFunction",NULL);
+   EnvAddUDF(theEnv,"read-number","syld",0,1,NULL,ReadNumberFunction,"ReadNumberFunction",NULL);
 #endif
 #else
 #if MAC_XCD
@@ -194,11 +196,11 @@ void IOFunctionDefinitions(
 /*   for the printout function.           */
 /******************************************/
 void PrintoutFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    const char *logicalName;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*=====================================================*/
    /* Get the logical name to which output is to be sent. */
@@ -237,6 +239,7 @@ void PrintoutFunction(
 /*   for the print function.         */
 /*************************************/
 void PrintFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -248,6 +251,7 @@ void PrintFunction(
 /*   for the println function.         */
 /*************************************/
 void PrintlnFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -335,12 +339,12 @@ bool SetFullCRLF(
 /* ReadFunction: H/L access routine for the read function.   */
 /*************************************************************/
 void ReadFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    struct token theToken;
    const char *logicalName = NULL;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*======================================================*/
    /* Determine the logical name from which input is read. */
@@ -515,12 +519,12 @@ static void ReadTokenFromStdin(
 /* OpenFunction: H/L access routine for the open function.   */
 /*************************************************************/
 void OpenFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    const char *fileName, *logicalName, *accessMode = NULL;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*====================*/
    /* Get the file name. */
@@ -608,11 +612,11 @@ void OpenFunction(
 /* CloseFunction: H/L access routine for the close function.   */
 /***************************************************************/
 void CloseFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    const char *logicalName;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*=====================================================*/
    /* If no arguments are specified, then close all files */
@@ -654,11 +658,11 @@ void CloseFunction(
 /*   for the get-char function.        */
 /***************************************/
 void GetCharFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    const char *logicalName;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFHasNextArgument(context))
      { logicalName = STDIN; }
@@ -692,6 +696,7 @@ void GetCharFunction(
 /*   for the put-char function.        */
 /***************************************/
 void PutCharFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -700,7 +705,6 @@ void PutCharFunction(
    CLIPSValue theArg;
    long long theChar;
    FILE *theFile;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    numberOfArguments = UDFArgumentCount(context);
      
@@ -756,6 +760,7 @@ void PutCharFunction(
 /*   for the remove function.           */
 /****************************************/
 void RemoveFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -784,6 +789,7 @@ void RemoveFunction(
 /*   for the rename function.           */
 /****************************************/
 void RenameFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -818,6 +824,7 @@ void RenameFunction(
 /*   for the format function.           */
 /****************************************/
 void FormatFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -834,7 +841,6 @@ void FormatFunction(
    size_t fpos = 0;
    void *hptr;
    const char *theString;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*======================================*/
    /* Set default return value for errors. */
@@ -950,7 +956,7 @@ static const char *ControlStringCheck(
   Environment *theEnv,
   int argCount)
   {
-   DATA_OBJECT t_ptr;
+   CLIPSValue t_ptr;
    const char *str_array;
    char print_buff[FLAG_MAX];
    size_t i;
@@ -1120,7 +1126,7 @@ static const char *PrintFormatFlag(
   int whichArg,
   int formatType)
   {
-   DATA_OBJECT theResult;
+   CLIPSValue theResult;
    const char *theString;
    char *printBuffer;
    size_t theLength;
@@ -1216,13 +1222,13 @@ static const char *PrintFormatFlag(
 /*   for the readline function.           */
 /******************************************/
 void ReadlineFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    char *buffer;
    size_t line_max = 0;
    const char *logicalName;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFHasNextArgument(context))
      { logicalName = STDIN; }
@@ -1319,11 +1325,11 @@ static char *FillBuffer(
 /*   for the set-locale function.        */
 /*****************************************/
 void SetLocaleFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
+   CLIPSValue theArg;
    
    /*=================================*/
    /* If there are no arguments, just */
@@ -1363,12 +1369,12 @@ void SetLocaleFunction(
 /*   for the read-number function.        */
 /******************************************/
 void ReadNumberFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    struct token theToken;
    const char *logicalName = NULL;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*======================================================*/
    /* Determine the logical name from which input is read. */

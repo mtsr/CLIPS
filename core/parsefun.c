@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*               PARSING FUNCTIONS MODULE              */
    /*******************************************************/
@@ -46,6 +46,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #include "setup.h"
@@ -87,7 +89,7 @@ struct parseFunctionData
    static bool                    FindErrorCapture(Environment *,const char *);
    static void                    PrintErrorCapture(Environment *,const char *,const char *);
    static void                    DeactivateErrorCapture(Environment *);
-   static void                    SetErrorCaptureValues(Environment *,DATA_OBJECT_PTR);
+   static void                    SetErrorCaptureValues(Environment *,CLIPSValue *);
 #endif
 
 /*****************************************/
@@ -100,7 +102,7 @@ void ParseFunctionDefinitions(
    AllocateEnvironmentData(theEnv,PARSEFUN_DATA,sizeof(struct parseFunctionData),NULL);
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"check-syntax","ym", CheckSyntaxFunction,"CheckSyntaxFunction",1,1,"s",NULL);
+   EnvAddUDF(theEnv,"check-syntax","ym",1,1,"s",CheckSyntaxFunction,"CheckSyntaxFunction",NULL);
 #endif
   }
 
@@ -110,6 +112,7 @@ void ParseFunctionDefinitions(
 /*   for the check-syntax function.        */
 /*******************************************/
 void CheckSyntaxFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -126,7 +129,7 @@ void CheckSyntaxFunction(
    /* Check the syntax. */
    /*===================*/
 
-   CheckSyntax(UDFContextEnvironment(context),mCVToString(&theArg),returnValue);
+   CheckSyntax(theEnv,mCVToString(&theArg),returnValue);
   }
 
 /*********************************/
@@ -136,7 +139,7 @@ void CheckSyntaxFunction(
 bool CheckSyntax(
   Environment *theEnv,
   const char *theString,
-  DATA_OBJECT_PTR returnValue)
+  CLIPSValue *returnValue)
   {
    const char *name;
    struct token theToken;
@@ -305,7 +308,7 @@ static void DeactivateErrorCapture(
 /*******************************************************************/
 static void SetErrorCaptureValues(
   Environment *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  CLIPSValue *returnValue)
   {
    Multifield *theMultifield;
 
@@ -388,7 +391,8 @@ static void PrintErrorCapture(
 /****************************************************/
 void CheckSyntaxFunction(
   Environment *theEnv,
-  DATA_OBJECT *returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    PrintErrorID(theEnv,"PARSEFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function check-syntax does not work in run time modules.\n");
@@ -403,7 +407,7 @@ void CheckSyntaxFunction(
 bool CheckSyntax(
   Environment *theEnv,
   const char *theString,
-  DATA_OBJECT_PTR returnValue)
+  CLIPSValue *returnValue)
   {
    PrintErrorID(theEnv,"PARSEFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function check-syntax does not work in run time modules.\n");

@@ -5,7 +5,7 @@
 ;;;     This expert system diagnoses some simple
 ;;;     problems with a car.
 ;;;
-;;;     CLIPS Version 6.3 Example
+;;;     CLIPS Version 6.4 Example
 ;;;
 ;;;     To execute, merely load, reset and run.
 ;;;======================================================
@@ -19,7 +19,7 @@
    (bind ?answer (read))
    (if (lexemep ?answer) 
        then (bind ?answer (lowcase ?answer)))
-   (while (not (member ?answer ?allowed-values)) do
+   (while (not (member$ ?answer ?allowed-values)) do
       (printout t ?question)
       (bind ?answer (read))
       (if (lexemep ?answer) 

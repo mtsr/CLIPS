@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -73,7 +75,7 @@
    static void                    PopQueryCore(Environment *);
    static QUERY_CORE             *FindQueryCore(Environment *,int);
    static QUERY_TEMPLATE         *DetermineQueryTemplates(Environment *,EXPRESSION *,const char *,unsigned *);
-   static QUERY_TEMPLATE         *FormChain(Environment *,const char *,DATA_OBJECT *);
+   static QUERY_TEMPLATE         *FormChain(Environment *,const char *,CLIPSValue *);
    static void                    DeleteQueryTemplates(Environment *,QUERY_TEMPLATE *);
    static bool                    TestForFirstInChain(Environment *,QUERY_TEMPLATE *,int);
    static bool                    TestForFirstFactInTemplate(Environment *,Deftemplate *,QUERY_TEMPLATE *,int);
@@ -104,34 +106,26 @@ void SetupFactQuery(
    FactQueryData(theEnv)->QUERY_DELIMETER_SYMBOL = (SYMBOL_HN *) EnvAddSymbol(theEnv,QUERY_DELIMETER_STRING);
    IncrementSymbolCount(FactQueryData(theEnv)->QUERY_DELIMETER_SYMBOL);
 
-   EnvAddUDF(theEnv,"(query-fact)","f",
-                   GetQueryFact,"GetQueryFact",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(query-fact)","f",0,UNBOUNDED,NULL,GetQueryFact,"GetQueryFact",NULL);
 
-   EnvAddUDF(theEnv,"(query-fact-slot)","*",
-                   GetQueryFactSlot,"GetQueryFactSlot",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(query-fact-slot)","*",0,UNBOUNDED,NULL,GetQueryFactSlot,"GetQueryFactSlot",NULL);
 
-   EnvAddUDF(theEnv,"any-factp","b", AnyFacts,"AnyFacts",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"any-factp","b",0,UNBOUNDED,NULL,AnyFacts,"AnyFacts",NULL);
    AddFunctionParser(theEnv,"any-factp",FactParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"find-fact","m",
-                  QueryFindFact,"QueryFindFact",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"find-fact","m",0,UNBOUNDED,NULL,QueryFindFact,"QueryFindFact",NULL);
    AddFunctionParser(theEnv,"find-fact",FactParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"find-all-facts","m",
-                  QueryFindAllFacts,"QueryFindAllFacts",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"find-all-facts","m",0,UNBOUNDED,NULL,QueryFindAllFacts,"QueryFindAllFacts",NULL);
    AddFunctionParser(theEnv,"find-all-facts",FactParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"do-for-fact","*",
-                  QueryDoForFact,"QueryDoForFact",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"do-for-fact","*",0,UNBOUNDED,NULL,QueryDoForFact,"QueryDoForFact",NULL);
    AddFunctionParser(theEnv,"do-for-fact",FactParseQueryAction);
 
-   EnvAddUDF(theEnv,"do-for-all-facts","*",
-                  QueryDoForAllFacts,"QueryDoForAllFacts",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"do-for-all-facts","*",0,UNBOUNDED,NULL,QueryDoForAllFacts,"QueryDoForAllFacts",NULL);
    AddFunctionParser(theEnv,"do-for-all-facts",FactParseQueryAction);
 
-   EnvAddUDF(theEnv,"delayed-do-for-all-facts","*",
-                  DelayedQueryDoForAllFacts,
-                  "DelayedQueryDoForAllFacts",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"delayed-do-for-all-facts","*",0,UNBOUNDED,NULL,DelayedQueryDoForAllFacts,"DelayedQueryDoForAllFacts",NULL);
    AddFunctionParser(theEnv,"delayed-do-for-all-facts",FactParseQueryAction);
 #endif
   }
@@ -146,11 +140,11 @@ void SetupFactQuery(
   NOTES        : H/L Syntax : ((query-fact) <index>)
  *************************************************************/
 void GetQueryFact(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_CORE *core;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    core = FindQueryCore(theEnv,ValueToInteger(GetpValue(GetFirstArgument())));
    
@@ -167,14 +161,14 @@ void GetQueryFact(
   NOTES        : H/L Syntax : ((query-fact-slot) <index> <slot-name>)
  **************************************************************************/
 void GetQueryFactSlot(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    struct fact *theFact;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    QUERY_CORE *core;
    short position;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
 
@@ -279,13 +273,13 @@ void GetQueryFactSlot(
   NOTES        : H/L Syntax : See FactParseQueryNoAction()
  ******************************************************************************/
 void AnyFacts(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_TEMPLATE *qtemplates;
    unsigned rcnt;
    bool testResult;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    qtemplates = DetermineQueryTemplates(theEnv,GetFirstArgument()->nextArg,
                                       "any-factp",&rcnt);
@@ -321,12 +315,12 @@ void AnyFacts(
   NOTES        : H/L Syntax : See ParseQueryNoAction()
  ******************************************************************************/
 void QueryFindFact(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_TEMPLATE *qtemplates;
    unsigned rcnt,i;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    returnValue->type = MULTIFIELD;
    returnValue->begin = 0;
@@ -381,13 +375,13 @@ void QueryFindFact(
   NOTES        : H/L Syntax : See ParseQueryNoAction()
  ******************************************************************************/
 void QueryFindAllFacts(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_TEMPLATE *qtemplates;
    unsigned rcnt;
    unsigned i,j;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    returnValue->type = MULTIFIELD;
    returnValue->begin = 0;
@@ -441,12 +435,12 @@ void QueryFindAllFacts(
   NOTES        : H/L Syntax : See ParseQueryAction()
  ******************************************************************************/
 void QueryDoForFact(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_TEMPLATE *qtemplates;
    unsigned rcnt;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    returnValue->type = SYMBOL;
    returnValue->value = EnvFalseSymbol(theEnv);
@@ -483,12 +477,12 @@ void QueryDoForFact(
   NOTES        : H/L Syntax : See FactParseQueryAction()
  ******************************************************************************/
 void QueryDoForAllFacts(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_TEMPLATE *qtemplates;
    unsigned rcnt;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    
@@ -533,6 +527,7 @@ void QueryDoForAllFacts(
   NOTES        : H/L Syntax : See FactParseQueryNoAction()
  ******************************************************************************/
 void DelayedQueryDoForAllFacts(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -540,7 +535,6 @@ void DelayedQueryDoForAllFacts(
    unsigned rcnt;
    unsigned i;
    struct CLIPSBlock gcBlock;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    returnValue->type = SYMBOL;
    returnValue->value = EnvFalseSymbol(theEnv);
@@ -694,7 +688,7 @@ static QUERY_TEMPLATE *DetermineQueryTemplates(
   {
    QUERY_TEMPLATE *clist = NULL,*cnxt = NULL,*cchain = NULL,*tmp;
    bool new_list = false;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
 
    *rcnt = 0;
    while (templateExp != NULL)
@@ -752,7 +746,7 @@ static QUERY_TEMPLATE *DetermineQueryTemplates(
 static QUERY_TEMPLATE *FormChain(
   Environment *theEnv,
   const char *func,
-  DATA_OBJECT *val)
+  CLIPSValue *val)
   {
    Deftemplate *templatePtr;
    QUERY_TEMPLATE *head,*bot,*tmp;
@@ -920,7 +914,7 @@ static bool TestForFirstFactInTemplate(
   int indx)
   {
    struct fact *theFact;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    struct CLIPSBlock gcBlock;
    
    CLIPSBlockStart(theEnv,&gcBlock);
@@ -1023,7 +1017,7 @@ static void TestEntireTemplate(
   int indx)
   {
    struct fact *theFact;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    struct CLIPSBlock gcBlock;
    
    CLIPSBlockStart(theEnv,&gcBlock);

@@ -1,6 +1,6 @@
 (clear)                            ; DR0602
-(subset (create$ bar)              ; DR0602
-        (create$ "bar"))           ; DR0602 - FALSE
+(subsetp (create$ bar)             ; DR0602
+         (create$ "bar"))          ; DR0602 - FALSE
 (member$ fox (create$ "fox"))      ; DR0602 - FALSE
 (clear)                            ; DR0604
 (defrule foo => (assert (x)))      ; DR0604
@@ -169,7 +169,7 @@
    (result $?input # $?response)
    =>
    (while (neq ?response (create$)) do
-      (nth 1 ?response)
+      (nth$ 1 ?response)
       (bind ?response (create$))))
 (reset)                            ; DR0645
 (run)                              ; DR0645
@@ -399,7 +399,7 @@
 (clear)
 (defglobal ?*x* = 0) ;; DR0698 and DR0701
 (deffunction create-number-2 ()
-  (bind ?*x* (nth 1 (explode$ "2.0")))
+  (bind ?*x* (nth$ 1 (explode$ "2.0")))
   BOGUS)
 (deffunction create-number ()
   (create-number-2))

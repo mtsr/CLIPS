@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -41,6 +41,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -75,7 +77,7 @@
    static void                    PopQueryCore(Environment *);
    static QUERY_CORE             *FindQueryCore(Environment *,int);
    static QUERY_CLASS            *DetermineQueryClasses(Environment *,EXPRESSION *,const char *,unsigned *);
-   static QUERY_CLASS            *FormChain(Environment *,const char *,DATA_OBJECT *);
+   static QUERY_CLASS            *FormChain(Environment *,const char *,CLIPSValue *);
    static void                    DeleteQueryClasses(Environment *,QUERY_CLASS *);
    static bool                    TestForFirstInChain(Environment *,QUERY_CLASS *,int);
    static bool                    TestForFirstInstanceInClass(Environment *,Defmodule *,int,Defclass *,QUERY_CLASS *,int);
@@ -102,34 +104,26 @@ void SetupQuery(
    InstanceQueryData(theEnv)->QUERY_DELIMETER_SYMBOL = (SYMBOL_HN *) EnvAddSymbol(theEnv,QUERY_DELIMETER_STRING);
    IncrementSymbolCount(InstanceQueryData(theEnv)->QUERY_DELIMETER_SYMBOL);
 
-   EnvAddUDF(theEnv,"(query-instance)","n",
-                   GetQueryInstance,"GetQueryInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(query-instance)","n",0,UNBOUNDED,NULL,GetQueryInstance,"GetQueryInstance",NULL);
 
-   EnvAddUDF(theEnv,"(query-instance-slot)","*",
-                   GetQueryInstanceSlot,"GetQueryInstanceSlot",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"(query-instance-slot)","*",0,UNBOUNDED,NULL,GetQueryInstanceSlot,"GetQueryInstanceSlot",NULL);
 
-   EnvAddUDF(theEnv,"any-instancep","b", AnyInstances,"AnyInstances",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"any-instancep","b",0,UNBOUNDED,NULL,AnyInstances,"AnyInstances",NULL);
    AddFunctionParser(theEnv,"any-instancep",ParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"find-instance","m",
-                   QueryFindInstance,"QueryFindInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"find-instance","m",0,UNBOUNDED,NULL,QueryFindInstance,"QueryFindInstance",NULL);
    AddFunctionParser(theEnv,"find-instance",ParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"find-all-instances","m",
-                   QueryFindAllInstances,"QueryFindAllInstances",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"find-all-instances","m",0,UNBOUNDED,NULL,QueryFindAllInstances,"QueryFindAllInstances",NULL);
    AddFunctionParser(theEnv,"find-all-instances",ParseQueryNoAction);
 
-   EnvAddUDF(theEnv,"do-for-instance","*",
-                   QueryDoForInstance,"QueryDoForInstance",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"do-for-instance","*",0,UNBOUNDED,NULL,QueryDoForInstance,"QueryDoForInstance",NULL);
    AddFunctionParser(theEnv,"do-for-instance",ParseQueryAction);
 
-   EnvAddUDF(theEnv,"do-for-all-instances","*",
-                   QueryDoForAllInstances,"QueryDoForAllInstances",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"do-for-all-instances","*",0,UNBOUNDED,NULL,QueryDoForAllInstances,"QueryDoForAllInstances",NULL);
    AddFunctionParser(theEnv,"do-for-all-instances",ParseQueryAction);
 
-   EnvAddUDF(theEnv,"delayed-do-for-all-instances","*",
-                   DelayedQueryDoForAllInstances,
-                  "DelayedQueryDoForAllInstances",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"delayed-do-for-all-instances","*",0,UNBOUNDED,NULL,DelayedQueryDoForAllInstances,"DelayedQueryDoForAllInstances",NULL);
    AddFunctionParser(theEnv,"delayed-do-for-all-instances",ParseQueryAction);
 #endif
   }
@@ -144,11 +138,11 @@ void SetupQuery(
   NOTES        : H/L Syntax : ((query-instance) <index>)
  *************************************************************/
 void GetQueryInstance(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_CORE *core;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    core = FindQueryCore(theEnv,ValueToInteger(GetpValue(GetFirstArgument())));
    CVSetCLIPSInstanceName(returnValue,GetFullInstanceName(theEnv,core->solns[ValueToInteger(GetpValue(GetFirstArgument()->nextArg))]));
@@ -164,14 +158,14 @@ void GetQueryInstance(
   NOTES        : H/L Syntax : ((query-instance-slot) <index> <slot-name>)
  **************************************************************************/
 void GetQueryInstanceSlot(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Instance *ins;
    INSTANCE_SLOT *sp;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    QUERY_CORE *core;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
 
@@ -264,13 +258,13 @@ void GetQueryInstanceSlot(
   NOTES        : H/L Syntax : See ParseQueryNoAction()
  ******************************************************************************/
 void AnyInstances(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_CLASS *qclasses;
    unsigned rcnt;
    bool testResult;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    qclasses = DetermineQueryClasses(theEnv,GetFirstArgument()->nextArg,
                                       "any-instancep",&rcnt);
@@ -307,12 +301,12 @@ void AnyInstances(
   NOTES        : H/L Syntax : See ParseQueryNoAction()
  ******************************************************************************/
 void QueryFindInstance(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_CLASS *qclasses;
    unsigned rcnt,i;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    returnValue->type = MULTIFIELD;
    returnValue->begin = 0;
@@ -367,13 +361,13 @@ void QueryFindInstance(
   NOTES        : H/L Syntax : See ParseQueryNoAction()
  ******************************************************************************/
 void QueryFindAllInstances(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_CLASS *qclasses;
    unsigned rcnt;
    unsigned i,j;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    returnValue->type = MULTIFIELD;
    returnValue->begin = 0;
@@ -427,12 +421,12 @@ void QueryFindAllInstances(
   NOTES        : H/L Syntax : See ParseQueryAction()
  ******************************************************************************/
 void QueryDoForInstance(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_CLASS *qclasses;
    unsigned rcnt;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    qclasses = DetermineQueryClasses(theEnv,GetFirstArgument()->nextArg->nextArg,
@@ -468,12 +462,12 @@ void QueryDoForInstance(
   NOTES        : H/L Syntax : See ParseQueryAction()
  ******************************************************************************/
 void QueryDoForAllInstances(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    QUERY_CLASS *qclasses;
    unsigned rcnt;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    qclasses = DetermineQueryClasses(theEnv,GetFirstArgument()->nextArg->nextArg,
@@ -517,6 +511,7 @@ void QueryDoForAllInstances(
   NOTES        : H/L Syntax : See ParseQueryNoAction()
  ******************************************************************************/
 void DelayedQueryDoForAllInstances(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -524,7 +519,6 @@ void DelayedQueryDoForAllInstances(
    unsigned rcnt;
    unsigned i;
    struct CLIPSBlock gcBlock;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    qclasses = DetermineQueryClasses(theEnv,GetFirstArgument()->nextArg->nextArg,
@@ -676,7 +670,7 @@ static QUERY_CLASS *DetermineQueryClasses(
   {
    QUERY_CLASS *clist = NULL,*cnxt = NULL,*cchain = NULL,*tmp;
    bool new_list = false;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
 
    *rcnt = 0;
    while (classExp != NULL)
@@ -734,7 +728,7 @@ static QUERY_CLASS *DetermineQueryClasses(
 static QUERY_CLASS *FormChain(
   Environment *theEnv,
   const char *func,
-  DATA_OBJECT *val)
+  CLIPSValue *val)
   {
    Defclass *cls;
    QUERY_CLASS *head,*bot,*tmp;
@@ -916,7 +910,7 @@ static bool TestForFirstInstanceInClass(
   {
    long i;
    Instance *ins;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    struct CLIPSBlock gcBlock;
    
    if (TestTraversalID(cls->traversalRecord,id))
@@ -1039,7 +1033,7 @@ static void TestEntireClass(
   {
    long i;
    Instance *ins;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    struct CLIPSBlock gcBlock;
    
    if (TestTraversalID(cls->traversalRecord,id))

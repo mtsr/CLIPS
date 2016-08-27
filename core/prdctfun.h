@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/30/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*            PREDICATE FUNCTIONS HEADER FILE          */
    /*******************************************************/
@@ -35,6 +35,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_prdctfun
@@ -44,27 +46,27 @@
 #define _H_prdctfun
 
    void                           PredicateFunctionDefinitions(Environment *);
-   void                           EqFunction(UDFContext *,CLIPSValue *);
-   void                           NeqFunction(UDFContext *,CLIPSValue *);
-   void                           StringpFunction(UDFContext *,CLIPSValue *);
-   void                           SymbolpFunction(UDFContext *,CLIPSValue *);
-   void                           LexemepFunction(UDFContext *,CLIPSValue *);
-   void                           NumberpFunction(UDFContext *,CLIPSValue *);
-   void                           FloatpFunction(UDFContext *,CLIPSValue *);
-   void                           IntegerpFunction(UDFContext *,CLIPSValue *);
-   void                           MultifieldpFunction(UDFContext *,CLIPSValue *);
-   void                           PointerpFunction(UDFContext *,CLIPSValue *);
-   void                           NotFunction(UDFContext *,CLIPSValue *);
-   void                           AndFunction(UDFContext *,CLIPSValue *);
-   void                           OrFunction(UDFContext *,CLIPSValue *);
-   void                           LessThanOrEqualFunction(UDFContext *,CLIPSValue *);
-   void                           GreaterThanOrEqualFunction(UDFContext *,CLIPSValue *);
-   void                           LessThanFunction(UDFContext *,CLIPSValue *);
-   void                           GreaterThanFunction(UDFContext *,CLIPSValue *);
-   void                           NumericEqualFunction(UDFContext *,CLIPSValue *);
-   void                           NumericNotEqualFunction(UDFContext *,CLIPSValue *);
-   void                           OddpFunction(UDFContext *,CLIPSValue *);
-   void                           EvenpFunction(UDFContext *,CLIPSValue *);
+   void                           EqFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           NeqFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           StringpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SymbolpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           LexemepFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           NumberpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           FloatpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           IntegerpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           MultifieldpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           PointerpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           NotFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AndFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           OrFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           LessThanOrEqualFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           GreaterThanOrEqualFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           LessThanFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           GreaterThanFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           NumericEqualFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           NumericNotEqualFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           OddpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           EvenpFunction(Environment *,UDFContext *,CLIPSValue *);
 
 #endif /* _H_prdctfun */
 

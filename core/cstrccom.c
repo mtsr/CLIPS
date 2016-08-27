@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*              CONSTRUCT COMMANDS MODULE              */
    /*******************************************************/
@@ -56,6 +56,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -327,7 +329,7 @@ void UndefconstructCommand(
 
    gensprintf(buffer,"%s name",constructClass->constructName);
 
-   constructName = GetConstructName(context,command,buffer);
+   constructName = GetConstructName(theEnv,context,command,buffer);
    if (constructName == NULL) return;
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
@@ -375,7 +377,7 @@ void PPConstructCommand(
   struct construct *constructClass)
   {
    const char *constructName;
-   void *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = UDFContextEnvironment(context);
    char buffer[80];
 
    /*===============================*/
@@ -385,7 +387,7 @@ void PPConstructCommand(
 
    gensprintf(buffer,"%s name",constructClass->constructName);
 
-   constructName = GetConstructName(context,command,buffer);
+   constructName = GetConstructName(theEnv,context,command,buffer);
    if (constructName == NULL) return;
 
    /*================================*/
@@ -452,7 +454,7 @@ SYMBOL_HN *GetConstructModuleCommand(
   struct construct *constructClass)
   {
    const char *constructName;
-   void *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = UDFContextEnvironment(context);
    char buffer[80];
    Defmodule *constructModule;
 
@@ -463,7 +465,7 @@ SYMBOL_HN *GetConstructModuleCommand(
 
    gensprintf(buffer,"%s name",constructClass->constructName);
 
-   constructName = GetConstructName(context,command,buffer);
+   constructName = GetConstructName(theEnv,context,command,buffer);
    if (constructName == NULL) return((SYMBOL_HN *) EnvFalseSymbol(theEnv));
 
    /*==========================================*/
@@ -755,13 +757,13 @@ SYMBOL_HN *GetConstructNamePointer(
 void GetConstructListFunction(
   UDFContext *context,
   const char *functionName,
-  DATA_OBJECT_PTR returnValue,
+  CLIPSValue *returnValue,
   struct construct *constructClass)
   {
    Defmodule *theModule;
    CLIPSValue result;
    int numArgs;
-   void *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* If an argument was given, check to */
@@ -819,7 +821,7 @@ void GetConstructListFunction(
 /********************************************/
 void GetConstructList(
   Environment *theEnv,
-  DATA_OBJECT_PTR returnValue,
+  CLIPSValue *returnValue,
   struct construct *constructClass,
   Defmodule *theModule)
   {
@@ -1000,9 +1002,9 @@ void ListConstructCommand(
   struct construct *constructClass)
   {
    Defmodule *theModule;
-   DATA_OBJECT result;
+   CLIPSValue result;
    int numArgs;
-   void *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* If an argument was given, check to */
@@ -1494,7 +1496,7 @@ static bool ConstructWatchSupport(
   {
    Defmodule *theModule;
    void *theConstruct;
-   DATA_OBJECT constructName;
+   CLIPSValue constructName;
    int argIndex = 2;
 
    /*========================================*/

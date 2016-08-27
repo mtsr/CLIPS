@@ -2,8 +2,8 @@ TRUE
 CLIPS> (batch "drtest07.bat")
 TRUE
 CLIPS> (clear)                            ; DR0602
-CLIPS> (subset (create$ bar)              ; DR0602
-        (create$ "bar"))           ; DR0602 - FALSE
+CLIPS> (subsetp (create$ bar)             ; DR0602
+         (create$ "bar"))          ; DR0602 - FALSE
 FALSE
 CLIPS> (member$ fox (create$ "fox"))      ; DR0602 - FALSE
 FALSE
@@ -312,7 +312,7 @@ CLIPS> (defrule print-responses
    (result $?input # $?response)
    =>
    (while (neq ?response (create$)) do
-      (nth 1 ?response)
+      (nth$ 1 ?response)
       (bind ?response (create$))))
 CLIPS> (reset)                            ; DR0645
 CLIPS> (run)                              ; DR0645
@@ -874,7 +874,7 @@ CLIPS> (send [quoxnar] print)
 CLIPS> (clear)
 CLIPS> (defglobal ?*x* = 0) ;; DR0698 and DR0701
 CLIPS> (deffunction create-number-2 ()
-  (bind ?*x* (nth 1 (explode$ "2.0")))
+  (bind ?*x* (nth$ 1 (explode$ "2.0")))
   BOGUS)
 CLIPS> (deffunction create-number ()
   (create-number-2))

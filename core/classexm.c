@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/06/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                 CLASS EXAMINATION MODULE            */
    /*******************************************************/
@@ -59,6 +59,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /**************************************************************/
 
@@ -124,12 +126,12 @@
   NOTES        : Syntax : (browse-classes [<class>])
  ****************************************************************/
 void BrowseClassesCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Defclass *cls;
-   Environment *theEnv = UDFContextEnvironment(context);
-   
+
    if (UDFArgumentCount(context) == 0)
       /* ================================================
          Find the OBJECT root class (has no superclasses)
@@ -179,13 +181,13 @@ void EnvBrowseClasses(
   NOTES        : Syntax : (describe-class <class-name>)
  ****************************************************************/
 void DescribeClassCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    const char *className;
    Defclass *theDefclass;
-   Environment *theEnv = UDFContextEnvironment(context);
-   
+
    className = GetClassNameArgument(theEnv,"describe-class");
    
    if (className == NULL)
@@ -340,10 +342,10 @@ const char *GetCreateAccessorString(
   NOTES        : H/L Syntax: (defclass-module <class-name>)
  ************************************************************/
 void GetDefclassModuleCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"defclass-module",DefclassData(theEnv)->DefclassConstruct));
   }
 
@@ -356,6 +358,7 @@ void GetDefclassModuleCommand(
   NOTES        : H/L Syntax : (superclassp <class-1> <class-2>)
  *********************************************************************/
 void SuperclassPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -367,7 +370,7 @@ void SuperclassPCommand(
       return;
      }
      
-   mCVSetBoolean(returnValue,EnvSuperclassP(UDFContextEnvironment(context),(void *) c1,(void *) c2));
+   mCVSetBoolean(returnValue,EnvSuperclassP(theEnv,c1,c2));
   }
 
 /***************************************************
@@ -403,6 +406,7 @@ bool EnvSuperclassP(
   NOTES        : H/L Syntax : (subclassp <class-1> <class-2>)
  *********************************************************************/
 void SubclassPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -414,7 +418,7 @@ void SubclassPCommand(
       return;
      }
      
-   mCVSetBoolean(returnValue,EnvSubclassP(UDFContextEnvironment(context),(void *) c1,(void *) c2));
+   mCVSetBoolean(returnValue,EnvSubclassP(theEnv,c1,c2));
   }
 
 /***************************************************
@@ -450,6 +454,7 @@ bool EnvSubclassP(
   NOTES        : H/L Syntax : (slot-existp <class> <slot> [inherit])
  *********************************************************************/
 void SlotExistPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -457,7 +462,6 @@ void SlotExistPCommand(
    SlotDescriptor *sd;
    bool inheritFlag = false;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    sd = CheckSlotExists(context,"slot-existp",&cls,false,true);
    if (sd == NULL)
@@ -465,6 +469,7 @@ void SlotExistPCommand(
       mCVSetBoolean(returnValue,false);
       return;
      }
+      
    if (EnvRtnArgCount(theEnv) == 3)
      {
       if (! UDFNthArgument(context,3,SYMBOL_TYPE,&theArg))
@@ -514,14 +519,14 @@ bool EnvSlotExistP(
   NOTES        : H/L Syntax : (message-handler-existp <class> <hnd> [<type>])
  ************************************************************************************/
 void MessageHandlerExistPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Defclass *cls;
    SYMBOL_HN *mname;
-   DATA_OBJECT theArg;
+   CLIPSValue theArg;
    unsigned mtype = MPRIMARY;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
@@ -566,6 +571,7 @@ void MessageHandlerExistPCommand(
   NOTES        : H/L Syntax : (slot-writablep <class> <slot>)
  **********************************************************************/
 void SlotWritablePCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -611,6 +617,7 @@ bool EnvSlotWritableP(
   NOTES        : H/L Syntax : (slot-initablep <class> <slot>)
  **********************************************************************/
 void SlotInitablePCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -656,6 +663,7 @@ bool EnvSlotInitableP(
   NOTES        : H/L Syntax : (slot-publicp <class> <slot>)
  **********************************************************************/
 void SlotPublicPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -732,6 +740,7 @@ int EnvSlotDefaultP(
   NOTES        : H/L Syntax : (slot-direct-accessp <class> <slot>)
  **********************************************************************/
 void SlotDirectAccessPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -780,6 +789,7 @@ bool EnvSlotDirectAccessP(
   NOTES        : H/L Syntax : (slot-default-value <class> <slot>)
  **********************************************************************/
 void SlotDefaultValueCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -799,11 +809,11 @@ void SlotDefaultValueCommand(
      }
      
    if (sd->dynamicDefault)
-     EvaluateAndStoreInDataObject(UDFContextEnvironment(context),(int) sd->multiple,
+     EvaluateAndStoreInDataObject(theEnv,(int) sd->multiple,
                                   (EXPRESSION *) sd->defaultValue,
                                   returnValue,true);
    else
-     GenCopyMemory(DATA_OBJECT,1,returnValue,sd->defaultValue);
+     GenCopyMemory(CLIPSValue,1,returnValue,sd->defaultValue);
   }
 
 /*********************************************************
@@ -822,7 +832,7 @@ bool EnvSlotDefaultValue(
   Environment *theEnv,
   Defclass *theDefclass,
   const char *slotName,
-  DATA_OBJECT_PTR theValue)
+  CLIPSValue *theValue)
   {
    SlotDescriptor *sd;
 
@@ -842,7 +852,7 @@ bool EnvSlotDefaultValue(
      return(EvaluateAndStoreInDataObject(theEnv,(int) sd->multiple,
                                          (EXPRESSION *) sd->defaultValue,
                                          theValue,true));
-   GenCopyMemory(DATA_OBJECT,1,theValue,sd->defaultValue);
+   GenCopyMemory(CLIPSValue,1,theValue,sd->defaultValue);
    return true;
   }
 
@@ -855,11 +865,11 @@ bool EnvSlotDefaultValue(
   NOTES        : H/L Syntax : (class-existp <arg>)
  ********************************************************/
 void ClassExistPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
@@ -1053,7 +1063,7 @@ static const char *GetClassNameArgument(
   Environment *theEnv,
   const char *fname)
   {
-   DATA_OBJECT temp;
+   CLIPSValue temp;
 
    if (EnvArgTypeCheck(theEnv,fname,1,SYMBOL,&temp) == false)
      return NULL;

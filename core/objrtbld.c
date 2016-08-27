@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/11/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -47,6 +47,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            Static constraint checking is always enabled.  */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Removed initial-object support.                */
 /*                                                           */
@@ -240,8 +242,7 @@ void SetupObjectPatternStuff(
 
    AddPatternParser(theEnv,newPtr);
    
-   EnvAddUDF(theEnv,"object-pattern-match-delay","*",
-                     ObjectMatchDelay,"ObjectMatchDelay",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"object-pattern-match-delay","*",0,UNBOUNDED,NULL,ObjectMatchDelay,"ObjectMatchDelay",NULL);
 
    AddFunctionParser(theEnv,"object-pattern-match-delay",ObjectMatchDelayParse);
    FuncSeqOvlFlags(theEnv,"object-pattern-match-delay",false,false);

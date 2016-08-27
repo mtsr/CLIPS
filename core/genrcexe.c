@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -37,6 +37,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -92,7 +94,7 @@
 #endif
 
 #if OBJECT_SYSTEM
-   static Defclass               *DetermineRestrictionClass(Environment *,DATA_OBJECT *);
+   static Defclass               *DetermineRestrictionClass(Environment *,CLIPSValue *);
 #endif
 
 /* =========================================
@@ -136,7 +138,7 @@ void GenericDispatch(
   Defmethod *prevmeth,
   Defmethod *meth,
   EXPRESSION *params,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
    Defgeneric *previousGeneric;
    Defmethod *previousMethod;
@@ -146,8 +148,8 @@ void GenericDispatch(
 #endif
    struct CLIPSBlock gcBlock;
    
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
+   returnValue->type = SYMBOL;
+   returnValue->value = EnvFalseSymbol(theEnv);
    EvaluationData(theEnv)->EvaluationError = false;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
@@ -171,7 +173,7 @@ void GenericDispatch(
       DefgenericData(theEnv)->CurrentMethod = previousMethod;
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
       
-      CLIPSBlockEnd(theEnv,&gcBlock,result);
+      CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
       CallPeriodicTasks(theEnv);
      
       SetExecutingConstruct(theEnv,oldce);
@@ -214,7 +216,7 @@ void GenericDispatch(
          fcall.value = DefgenericData(theEnv)->CurrentMethod->actions->value;
          fcall.nextArg = NULL;
          fcall.argList = GetProcParamExpressions(theEnv);
-         EvaluateExpression(theEnv,&fcall,result);
+         EvaluateExpression(theEnv,&fcall,returnValue);
         }
       else
         {
@@ -226,7 +228,7 @@ void GenericDispatch(
 
          EvaluateProcActions(theEnv,DefgenericData(theEnv)->CurrentGeneric->header.whichModule->theModule,
                              DefgenericData(theEnv)->CurrentMethod->actions,DefgenericData(theEnv)->CurrentMethod->localVarCount,
-                             result,UnboundMethodErr);
+                             returnValue,UnboundMethodErr);
 
 #if PROFILING_FUNCTIONS
          EndProfile(theEnv,&profileFrame);
@@ -255,7 +257,7 @@ void GenericDispatch(
    DefgenericData(theEnv)->CurrentMethod = previousMethod;
    EvaluationData(theEnv)->CurrentEvaluationDepth--;
 
-   CLIPSBlockEnd(theEnv,&gcBlock,result);
+   CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
    CallPeriodicTasks(theEnv);
    
    SetExecutingConstruct(theEnv,oldce);
@@ -296,7 +298,7 @@ bool IsMethodApplicable(
   Environment *theEnv,
   Defmethod *meth)
   {
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    short i,j,k;
    RESTRICTION *rp;
 #if OBJECT_SYSTEM
@@ -385,21 +387,24 @@ bool NextMethodP(
    Defmethod *meth;
 
    if (DefgenericData(theEnv)->CurrentMethod == NULL)
-     return false;
+     { return false; }
+
    meth = FindApplicableMethod(theEnv,DefgenericData(theEnv)->CurrentGeneric,DefgenericData(theEnv)->CurrentMethod);
    if (meth != NULL)
      {
       meth->busy--;
       return true;
      }
-   return false;
+   else
+     { return false; }
   }
 
 void NextMethodPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,NextMethodP(UDFContextEnvironment(context)));
+   mCVSetBoolean(returnValue,NextMethodP(theEnv));
   }
 
 /****************************************************
@@ -414,11 +419,11 @@ void NextMethodPCommand(
   NOTES        : H/L Syntax: (call-next-method)
  ****************************************************/
 void CallNextMethod(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Defmethod *oldMethod;
-   Environment *theEnv = UDFContextEnvironment(context);
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
@@ -492,13 +497,13 @@ void CallNextMethod(
                                 <generic-function> <method-index> <args>)
  **************************************************************************/
 void CallSpecificMethod(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
    Defgeneric *gfunc;
    int mi;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    mCVSetBoolean(returnValue,false);
    
@@ -528,11 +533,10 @@ void CallSpecificMethod(
   NOTES        : H/L Syntax: (override-next-method <args>)
  ***********************************************************************/
 void OverrideNextMethod(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
-  {
-   Environment *theEnv = UDFContextEnvironment(context);
-   
+  {   
    mCVSetBoolean(returnValue,false);
    if (EvaluationData(theEnv)->HaltExecution)
      return;
@@ -558,11 +562,10 @@ void OverrideNextMethod(
   NOTES        : Useful for queries in wildcard restrictions
  ***********************************************************/
 void GetGenericCurrentArgument(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
-   
    returnValue->type = DefgenericData(theEnv)->GenericCurrentArgument->type;
    returnValue->value = DefgenericData(theEnv)->GenericCurrentArgument->value;
    returnValue->begin = DefgenericData(theEnv)->GenericCurrentArgument->begin;
@@ -690,7 +693,7 @@ static void WatchMethod(
  ***************************************************/
 static Defclass *DetermineRestrictionClass(
   Environment *theEnv,
-  DATA_OBJECT *dobj)
+  CLIPSValue *dobj)
   {
    Instance *ins;
    Defclass *cls;

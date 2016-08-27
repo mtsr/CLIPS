@@ -162,7 +162,7 @@ CLIPS> (eval "(defrule foo =>)")          ; 10.4.5
 FALSE
 CLIPS> (eval "(+ 3 4)")                   ; 10.4.5
 7
-CLIPS> (eval "(create$ a b c)")         ; 10.4.5
+CLIPS> (eval "(create$ a b c)")           ; 10.4.5
 (a b c)
 CLIPS> (build)                            ; 10.4.6
 [ARGACCES4] Function build expected exactly 1 argument(s)

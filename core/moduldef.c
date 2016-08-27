@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/10/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                  DEFMODULE MODULE                   */
    /*******************************************************/
@@ -47,6 +47,8 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Callbacks must be environment aware.           */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -192,13 +194,9 @@ void InitializeDefmodules(
 #endif
 
 #if (! RUN_TIME) && DEFMODULE_CONSTRUCT
-   EnvAddUDF(theEnv,"get-current-module", "y",
-                    GetCurrentModuleCommand,
-                   "GetCurrentModuleCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"get-current-module","y",0,0,NULL,GetCurrentModuleCommand,"GetCurrentModuleCommand",NULL);
 
-   EnvAddUDF(theEnv,"set-current-module", "y",
-                    SetCurrentModuleCommand,
-                   "SetCurrentModuleCommand", 1,1,"y",NULL);
+   EnvAddUDF(theEnv,"set-current-module","y",1,1,"y",SetCurrentModuleCommand,"SetCurrentModuleCommand",NULL);
 #endif
   }
 
@@ -704,11 +702,11 @@ Defmodule *EnvFindDefmodule(
 /*   for the get-current-module command.         */
 /*************************************************/
 void GetCurrentModuleCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Defmodule *theModule;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    theModule = EnvGetCurrentModule(theEnv);
 
@@ -726,6 +724,7 @@ void GetCurrentModuleCommand(
 /*   for the set-current-module command.         */
 /*************************************************/
 void SetCurrentModuleCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -733,7 +732,6 @@ void SetCurrentModuleCommand(
    const char *argument;
    Defmodule *theModule;
    SYMBOL_HN *oldModuleName;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*=======================*/
    /* Set the return value. */

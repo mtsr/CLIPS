@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/06/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*              DEFGLOBAL COMMANDS MODULE              */
    /*******************************************************/
@@ -69,14 +69,11 @@ void DefglobalCommandDefinitions(
   Environment *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"set-reset-globals","b",
-                   SetResetGlobalsCommand,"SetResetGlobalsCommand", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"get-reset-globals","b",
-                    GetResetGlobalsCommand,"GetResetGlobalsCommand", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"set-reset-globals","b",1,1,NULL,SetResetGlobalsCommand,"SetResetGlobalsCommand",NULL);
+   EnvAddUDF(theEnv,"get-reset-globals","b",0,0,NULL,GetResetGlobalsCommand,"GetResetGlobalsCommand",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"show-defglobals","v",
-                    ShowDefglobalsCommand,"ShowDefglobalsCommand", 0,1,"y",NULL);
+   EnvAddUDF(theEnv,"show-defglobals","v",0,1,"y",ShowDefglobalsCommand,"ShowDefglobalsCommand",NULL);
 #endif
 
 #else
@@ -91,12 +88,12 @@ void DefglobalCommandDefinitions(
 /*   for the get-reset-globals command.         */
 /************************************************/
 void SetResetGlobalsCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    bool oldValue;
-   DATA_OBJECT result;
-   void *theEnv = UDFContextEnvironment(context);
+   CLIPSValue result;
 
    /*===========================================*/
    /* Remember the old value of this attribute. */
@@ -143,10 +140,11 @@ bool EnvSetResetGlobals(
 /*   for the get-reset-globals command.         */
 /************************************************/
 void GetResetGlobalsCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,EnvGetResetGlobals(UDFContextEnvironment(context)));
+   mCVSetBoolean(returnValue,EnvGetResetGlobals(theEnv));
   }
 
 /****************************************/
@@ -166,13 +164,13 @@ bool EnvGetResetGlobals(
 /*   for the show-defglobals command.          */
 /***********************************************/
 void ShowDefglobalsCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Defmodule *theModule;
    int numArgs;
    bool error;
-   void *theEnv = UDFContextEnvironment(context);
 
    numArgs = UDFArgumentCount(context);
    if (numArgs == 1)

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/30/16            */
+   /*             CLIPS Version 6.50  08/25/16            */
    /*                                                     */
    /*          MISCELLANEOUS FUNCTIONS HEADER FILE        */
    /*******************************************************/
@@ -71,6 +71,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*      6.50: Fact ?var:slot reference support.              */
 /*                                                           */
 /*************************************************************/
@@ -82,37 +84,37 @@
 #define _H_miscfun
 
    void                           MiscFunctionDefinitions(Environment *);
-   void                           CreateFunction(UDFContext *,CLIPSValue *);
-   void                           SetgenFunction(UDFContext *,CLIPSValue *);
-   void                           GensymFunction(UDFContext *,CLIPSValue *);
-   void                           GensymStarFunction(UDFContext *,CLIPSValue *);
-   void                           RandomFunction(UDFContext *,CLIPSValue *);
-   void                           SeedFunction(UDFContext *,CLIPSValue *);
-   void                           LengthFunction(UDFContext *,CLIPSValue *);
-   void                           ConserveMemCommand(UDFContext *,CLIPSValue *);
-   void                           ReleaseMemCommand(UDFContext *,CLIPSValue *);
-   void                           MemUsedCommand(UDFContext *,CLIPSValue *);
-   void                           MemRequestsCommand(UDFContext *,CLIPSValue *);
-   void                           OptionsCommand(UDFContext *,CLIPSValue *);
-   void                           OperatingSystemFunction(UDFContext *,CLIPSValue *);
-   void                           ExpandFuncCall(UDFContext *,CLIPSValue *);
-   void                           DummyExpandFuncMultifield(UDFContext *,CLIPSValue *);
-   void                           CauseEvaluationError(UDFContext *,CLIPSValue *);
-   void                           SetSORCommand(UDFContext *,CLIPSValue *);
-   void                           GetSORCommand(UDFContext *,CLIPSValue *);
-   void                           GetFunctionRestrictions(UDFContext *,CLIPSValue *);
-   void                           AproposCommand(UDFContext *,CLIPSValue *);
+   void                           CreateFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SetgenFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           GensymFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           GensymStarFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           RandomFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SeedFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           LengthFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           ConserveMemCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           ReleaseMemCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           MemUsedCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           MemRequestsCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           OptionsCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           OperatingSystemFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           ExpandFuncCall(Environment *,UDFContext *,CLIPSValue *);
+   void                           DummyExpandFuncMultifield(Environment *,UDFContext *,CLIPSValue *);
+   void                           CauseEvaluationError(Environment *,UDFContext *,CLIPSValue *);
+   void                           SetSORCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           GetSORCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           GetFunctionRestrictions(Environment *,UDFContext *,CLIPSValue *);
+   void                           AproposCommand(Environment *,UDFContext *,CLIPSValue *);
    void                           GensymStar(Environment *,CLIPSValue *);
-   void                           GetFunctionListFunction(UDFContext *,CLIPSValue *);
-   void                           FuncallFunction(UDFContext *,CLIPSValue *);
-   void                           NewFunction(UDFContext *,CLIPSValue *);
-   void                           CallFunction(UDFContext *,CLIPSValue *);
-   void                           TimerFunction(UDFContext *,CLIPSValue *);
-   void                           TimeFunction(UDFContext *,CLIPSValue *);
-   void                           SystemCommand(UDFContext *,CLIPSValue *);
-   void                           SlotValueFunction(UDFContext *,CLIPSValue *);
-   void                           LocalTimeFunction(UDFContext *,CLIPSValue *);
-   void                           GMTimeFunction(UDFContext *,CLIPSValue *);
+   void                           GetFunctionListFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           FuncallFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           NewFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           CallFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           TimerFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           TimeFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SystemCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           SlotValueFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           LocalTimeFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           GMTimeFunction(Environment *,UDFContext *,CLIPSValue *);
 
 #endif /* _H_miscfun */
 

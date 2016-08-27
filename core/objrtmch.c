@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*          OBJECT PATTERN MATCHER MODULE              */
    /*******************************************************/
@@ -53,6 +53,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /**************************************************************/
 /* =========================================
@@ -121,11 +123,11 @@
   NOTES        : H/L Syntax: (object-pattern-match-delay <action>*)
  ***************************************************************************/
 void ObjectMatchDelay(
+  Environment *theEnv,
   UDFContext *context,
-  DATA_OBJECT *returnValue)
+  CLIPSValue *returnValue)
   {
    bool ov;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    ov = SetDelayObjectPatternMatching(theEnv,true);
    
@@ -914,7 +916,7 @@ static void ProcessPatternNode(
    int repeatCount;
    INSTANCE_SLOT *objectSlot;
    struct multifieldMarker *newMark;
-   DATA_OBJECT theResult;
+   CLIPSValue theResult;
    OBJECT_PATTERN_NODE *tempPtr;
 
    patternSlotField = patternNode->whichField;
@@ -1186,7 +1188,7 @@ static bool EvaluateObjectPatternTest(
   EXPRESSION *networkTest,
   OBJECT_PATTERN_NODE *patternNode)
   {
-   DATA_OBJECT vresult;
+   CLIPSValue vresult;
    int rv;
 
    if (networkTest == NULL) return true;

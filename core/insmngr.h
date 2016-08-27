@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/30/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*          INSTANCE PRIMITIVE SUPPORT MODULE          */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*                                                           */
 /*            Added support for booleans with <stdbool.h>.   */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_insmngr
@@ -50,16 +52,16 @@
 
 #include "object.h"
 
-   void                           InitializeInstanceCommand(UDFContext *,CLIPSValue *);
-   void                           MakeInstanceCommand(UDFContext *,CLIPSValue *);
+   void                           InitializeInstanceCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           MakeInstanceCommand(Environment *,UDFContext *,CLIPSValue *);
    SYMBOL_HN                     *GetFullInstanceName(Environment *,Instance *);
    Instance                      *BuildInstance(Environment *,SYMBOL_HN *,Defclass *,bool);
-   void                           InitSlotsCommand(UDFContext *,CLIPSValue *);
+   void                           InitSlotsCommand(Environment *,UDFContext *,CLIPSValue *);
    bool                           QuashInstance(Environment *,Instance *);
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-   void                           InactiveInitializeInstance(UDFContext *,CLIPSValue *);
-   void                           InactiveMakeInstance(UDFContext *,CLIPSValue *);
+   void                           InactiveInitializeInstance(Environment *,UDFContext *,CLIPSValue *);
+   void                           InactiveMakeInstance(Environment *,UDFContext *,CLIPSValue *);
 #endif
 
 #endif /* _H_insmngr */

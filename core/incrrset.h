@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/11/16            */
+   /*             CLIPS Version 6.40  08/11/16            */
    /*                                                     */
    /*            INCREMENTAL RESET HEADER FILE            */
    /*******************************************************/

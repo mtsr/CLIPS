@@ -323,7 +323,7 @@
   (bind ?*sources* (find-all-instances ((?x SOURCE)) TRUE))
   (do-for-all-instances ((?x SOURCE)) TRUE
      (bind ?*gray-code* (create$ ?*gray-code* 0)))
-  (bind ?*max-iterations* (round (** 2 (length ?*sources*))))
+  (bind ?*max-iterations* (round (** 2 (length$ ?*sources*))))
   ;; Do the first response.
   (assert (current-iteration 0)))
 
@@ -343,10 +343,10 @@
    =>
    ;; Change the gray code, saving the changed bit value.
    (bind ?pos (change-which-bit ?n))
-   (bind ?nv (- 1 (nth ?pos ?*gray-code*)))
+   (bind ?nv (- 1 (nth$ ?pos ?*gray-code*)))
    (bind ?*gray-code* (replace$ ?*gray-code* ?pos ?pos ?nv))
    ;; Change the single changed source
-   (send (nth ?pos ?*sources*) put-output-1 ?nv)   
+   (send (nth$ ?pos ?*sources*) put-output-1 ?nv)   
    ;; Determine the LED response to the input.
    (assert (result ?*gray-code* =(implode$ (LED-response))))
    ;; Assert the new iteration fact
@@ -382,12 +382,12 @@
    (retract ?f)
    ;; Print the input from the sources.
    (while (neq ?input (create$)) do
-      (printout t "  " (nth 1 ?input) "  ")
+      (printout t "  " (nth$ 1 ?input) "  ")
       (bind ?input (rest$ ?input)))
    ;; Print the output from the LEDs.
    (printout t " | ")
    (bind ?response (explode$ ?response))
    (while (neq ?response (create$)) do
-      (printout t "  " (nth 1 ?response) "  ")
+      (printout t "  " (nth$ 1 ?response) "  ")
       (bind ?response (rest$ ?response)))
    (printout t crlf))

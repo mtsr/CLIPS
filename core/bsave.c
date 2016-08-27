@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/06/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                     BSAVE MODULE                    */
    /*******************************************************/
@@ -43,6 +43,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -107,6 +109,7 @@ static void DeallocateBsaveData(
 /*   for the bsave command.           */
 /**************************************/
 void BsaveCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -116,7 +119,7 @@ void BsaveCommand(
    fileName = GetFileName(context);
    if (fileName != NULL)
      {
-      if (EnvBsave(UDFContextEnvironment(context),fileName))
+      if (EnvBsave(theEnv,fileName))
         {
          mCVSetBoolean(returnValue,true);
          return;

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/10/16            */
+   /*             CLIPS Version 6.50  08/25/16            */
    /*                                                     */
    /*                 UTILITY HEADER FILE                 */
    /*******************************************************/
@@ -58,6 +58,8 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Callbacks must be environment aware.           */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Added CLIPSBlockStart and CLIPSBlockEnd        */
 /*            functions for garbage collection blocks.       */
@@ -116,7 +118,7 @@ struct CLIPSBlock
   {
    struct garbageFrame newGarbageFrame;
    struct garbageFrame *oldGarbageFrame;
-   DATA_OBJECT *result;
+   CLIPSValue *result;
   };
 
 #define UTILITY_DATA 55
@@ -187,12 +189,12 @@ struct utilityData
    size_t                         UTF8Offset(const char *,size_t);
    size_t                         UTF8Length(const char *);
    size_t                         UTF8CharNum(const char *,size_t);
-   void                           RestorePriorGarbageFrame(Environment *,struct garbageFrame *,struct garbageFrame *,struct dataObject *);
+   void                           RestorePriorGarbageFrame(Environment *,struct garbageFrame *,struct garbageFrame *,CLIPSValue *);
    void                           CallCleanupFunctions(Environment *);
    void                           CallPeriodicTasks(Environment *);
-   void                           CleanCurrentGarbageFrame(Environment *,struct dataObject *);
+   void                           CleanCurrentGarbageFrame(Environment *,CLIPSValue *);
    void                           CLIPSBlockStart(void *,struct CLIPSBlock *);
-   void                           CLIPSBlockEnd(void *,struct CLIPSBlock *,struct dataObject *);
+   void                           CLIPSBlockEnd(void *,struct CLIPSBlock *,CLIPSValue *);
 
 #endif /* _H_utility */
 

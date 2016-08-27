@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/06/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                OBJECT MESSAGE COMMANDS              */
    /*******************************************************/
@@ -51,6 +51,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -185,36 +187,30 @@ void SetupMessageHandlers(
 
    AddConstruct(theEnv,"defmessage-handler","defmessage-handlers",
                 ParseDefmessageHandler,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-   EnvAddUDF(theEnv,"undefmessage-handler","v", UndefmessageHandlerCommand,
-                  "UndefmessageHandlerCommand",2,3,"y",NULL);
+   EnvAddUDF(theEnv,"undefmessage-handler","v",2,3,"y",UndefmessageHandlerCommand,"UndefmessageHandlerCommand",NULL);
 
 #endif
 
-   EnvAddUDF(theEnv,"send","*", SendCommand,"SendCommand",2,UNBOUNDED,"*;*;y",NULL);
+   EnvAddUDF(theEnv,"send","*",2,UNBOUNDED,"*;*;y",SendCommand,"SendCommand",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"preview-send","v", PreviewSendCommand,"PreviewSendCommand",2,2,"y",NULL);
+   EnvAddUDF(theEnv,"preview-send","v",2,2,"y",PreviewSendCommand,"PreviewSendCommand",NULL);
 
-   EnvAddUDF(theEnv,"ppdefmessage-handler","v", PPDefmessageHandlerCommand,
-                  "PPDefmessageHandlerCommand",2,3,"y",NULL);
-   EnvAddUDF(theEnv,"list-defmessage-handlers","v", ListDefmessageHandlersCommand,
-                  "ListDefmessageHandlersCommand",0,2,"y",NULL);
+   EnvAddUDF(theEnv,"ppdefmessage-handler","v",2,3,"y",PPDefmessageHandlerCommand,"PPDefmessageHandlerCommand",NULL);
+   EnvAddUDF(theEnv,"list-defmessage-handlers","v",0,2,"y",ListDefmessageHandlersCommand,"ListDefmessageHandlersCommand",NULL);
 #endif
 
-   EnvAddUDF(theEnv,"next-handlerp","b", NextHandlerAvailableFunction,
-                    "NextHandlerAvailableFunction",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"next-handlerp","b",0,0,NULL,NextHandlerAvailableFunction,"NextHandlerAvailableFunction",NULL);
    FuncSeqOvlFlags(theEnv,"next-handlerp",true,false);
-   EnvAddUDF(theEnv,"call-next-handler","*",
-                   CallNextHandler,"CallNextHandler",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"call-next-handler","*",0,0,NULL,CallNextHandler,"CallNextHandler",NULL);
    FuncSeqOvlFlags(theEnv,"call-next-handler",true,false);
-   EnvAddUDF(theEnv,"override-next-handler","*",
-                   CallNextHandler,"CallNextHandler",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"override-next-handler","*",0,UNBOUNDED,NULL,CallNextHandler,"CallNextHandler",NULL);
    FuncSeqOvlFlags(theEnv,"override-next-handler",true,false);
 
-   EnvAddUDF(theEnv,"dynamic-get", "*", DynamicHandlerGetSlot,"DynamicHandlerGetSlot",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"dynamic-put", "*", DynamicHandlerPutSlot,"DynamicHandlerPutSlot",1,UNBOUNDED,"*;y",NULL);
-   EnvAddUDF(theEnv,"get",         "*", DynamicHandlerGetSlot,"DynamicHandlerGetSlot",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"put",         "*", DynamicHandlerPutSlot,"DynamicHandlerPutSlot",1,UNBOUNDED,"*;y",NULL);
+   EnvAddUDF(theEnv,"dynamic-get","*",1,1,"y",DynamicHandlerGetSlot,"DynamicHandlerGetSlot",NULL);
+   EnvAddUDF(theEnv,"dynamic-put","*",1,UNBOUNDED,"*;y",DynamicHandlerPutSlot,"DynamicHandlerPutSlot",NULL);
+   EnvAddUDF(theEnv,"get","*",1,1,"y",DynamicHandlerGetSlot,"DynamicHandlerGetSlot",NULL);
+   EnvAddUDF(theEnv,"put","*",1,UNBOUNDED,"*;y",DynamicHandlerPutSlot,"DynamicHandlerPutSlot",NULL);
 #endif
 
 #if DEBUGGING_FUNCTIONS
@@ -466,10 +462,10 @@ bool EnvIsDefmessageHandlerDeletable(
   NOTES        : H/L Syntax: (undefmessage-handler <class> <handler> [<type>])
  ******************************************************************************/
 void UndefmessageHandlerCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
 #if RUN_TIME || BLOAD_ONLY
    PrintErrorID(theEnv,"MSGCOM",3,false);
    EnvPrintRouter(theEnv,WERROR,"Unable to delete message-handlers.\n");
@@ -577,6 +573,7 @@ bool EnvUndefmessageHandler(
   NOTES        : H/L Syntax: (ppdefmessage-handler <class> <message> [<type>])
  *******************************************************************************/
 void PPDefmessageHandlerCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -586,7 +583,6 @@ void PPDefmessageHandlerCommand(
    Defclass *cls = NULL;
    unsigned mtype;
    DefmessageHandler *hnd;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
@@ -642,12 +638,12 @@ void PPDefmessageHandlerCommand(
   NOTES        : H/L Syntax: (list-defmessage-handlers [<class> [inherit]]))
  *****************************************************************************/
 void ListDefmessageHandlersCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    bool inhp;
    void *clsptr;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    if (UDFArgumentCount(context) == 0)
      EnvListDefmessageHandlers(theEnv,WDISPLAY,NULL,0);
@@ -670,12 +666,12 @@ void ListDefmessageHandlersCommand(
   NOTES        : H/L Syntax: (preview-send <class> <msg>)
  ********************************************************************/
 void PreviewSendCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Defclass *cls;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /* =============================
       Get the class for the message
@@ -998,7 +994,7 @@ static bool DefmessageHandlerWatchSupport(
    const char *theHandlerStr;
    int theType;
    int argIndex = 2;
-   DATA_OBJECT tmpData;
+   CLIPSValue tmpData;
 
    /* ===============================
       If no handlers are specified,

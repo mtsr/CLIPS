@@ -9,7 +9,7 @@
 ;;;     then used to simulate a backward chaining inference
 ;;;     engine.
 ;;;
-;;;     CLIPS Version 6.3 Example
+;;;     CLIPS Version 6.4 Example
 ;;; 
 ;;;     To execute, merely load, reset, and run.
 ;;;     Answer questions yes or no.
@@ -162,7 +162,7 @@
    (if (lexemep ?reply)
       then
       (bind ?reply (lowcase ?reply)))
-   (if (member ?reply ?answers) 
+   (if (member$ ?reply ?answers) 
      then (assert (variable (name ?variable) (value ?reply)))
      else (assert (goal (variable ?variable)))))
 

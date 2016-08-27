@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/06/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*               FACT FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -77,6 +77,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
@@ -106,12 +108,12 @@ void FactFunctionDefinitions(
   Environment *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"fact-existp",  "b",  FactExistpFunction,  "FactExistpFunction", 1,1,"lf",NULL);
-   EnvAddUDF(theEnv,"fact-relation","y",  FactRelationFunction,"FactRelationFunction",  1,1,"lf",NULL);
-   EnvAddUDF(theEnv,"fact-slot-value","*",  FactSlotValueFunction,"FactSlotValueFunction",2,2 ,";lf;y", NULL);
-   EnvAddUDF(theEnv,"fact-slot-names","*",  FactSlotNamesFunction,"FactSlotNamesFunction",  1,1,"lf",NULL);
-   EnvAddUDF(theEnv,"get-fact-list","m", GetFactListFunction,"GetFactListFunction",0,1,"y",NULL);
-   EnvAddUDF(theEnv,"ppfact","v", PPFactFunction,"PPFactFunction",1,3, "*;lf" , NULL);
+   EnvAddUDF(theEnv,"fact-existp","b",1,1,"lf",FactExistpFunction,"FactExistpFunction",NULL);
+   EnvAddUDF(theEnv,"fact-relation","y",1,1,"lf",FactRelationFunction,"FactRelationFunction",NULL);
+   EnvAddUDF(theEnv,"fact-slot-value","*",2,2,";lf;y",FactSlotValueFunction,"FactSlotValueFunction",NULL);
+   EnvAddUDF(theEnv,"fact-slot-names","*",1,1,"lf",FactSlotNamesFunction,"FactSlotNamesFunction",NULL);
+   EnvAddUDF(theEnv,"get-fact-list","m",0,1,"y",GetFactListFunction,"GetFactListFunction",NULL);
+   EnvAddUDF(theEnv,"ppfact","v",1,3,"*;lf",PPFactFunction,"PPFactFunction",NULL);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -124,6 +126,7 @@ void FactFunctionDefinitions(
 /*   for the fact-relation function.          */
 /**********************************************/
 void FactRelationFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -170,14 +173,15 @@ Deftemplate *EnvFactDeftemplate(
 /*   for the fact-existp function.          */
 /********************************************/
 void FactExistpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   struct fact *theFact;
+   Fact *theFact;
 
    theFact = GetFactAddressOrIndexArgument(context,false);
 
-   mCVSetBoolean(returnValue,EnvFactExistp(UDFContextEnvironment(context),theFact));
+   mCVSetBoolean(returnValue,EnvFactExistp(theEnv,theFact));
   }
 
 /***********************************/
@@ -203,6 +207,7 @@ bool EnvFactExistp(
 /*   for the fact-slot-value function.         */
 /***********************************************/
 void FactSlotValueFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -231,7 +236,7 @@ void FactSlotValueFunction(
    /* Get the slot's value. */
    /*=======================*/
 
-   FactSlotValue(UDFContextEnvironment(context),theFact,mCVToString(&theArg),returnValue);
+   FactSlotValue(theEnv,theFact,mCVToString(&theArg),returnValue);
   }
 
 /***************************************/
@@ -287,6 +292,7 @@ void FactSlotValue(
 /*   for the fact-slot-names function.         */
 /***********************************************/
 void FactSlotNamesFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -307,7 +313,7 @@ void FactSlotNamesFunction(
    /* Get the slot names. */
    /*=====================*/
 
-   EnvFactSlotNames(UDFContextEnvironment(context),theFact,returnValue);
+   EnvFactSlotNames(theEnv,theFact,returnValue);
   }
 
 /***************************************/
@@ -317,7 +323,7 @@ void FactSlotNamesFunction(
 void EnvFactSlotNames(
   Environment *theEnv,
   Fact *theFact,
-  DATA_OBJECT *returnValue)
+  CLIPSValue *returnValue)
   {
    Multifield *theList;
    struct templateSlot *theSlot;
@@ -377,12 +383,12 @@ void EnvFactSlotNames(
 /*   for the get-fact-list function.         */
 /*********************************************/
 void GetFactListFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Defmodule *theModule;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===========================================*/
    /* Determine if a module name was specified. */
@@ -421,7 +427,7 @@ void GetFactListFunction(
 /*************************************/
 void EnvGetFactList(
   Environment *theEnv,
-  DATA_OBJECT_PTR returnValue,
+  CLIPSValue *returnValue,
   Defmodule *theModule)
   {
    Fact *theFact;
@@ -503,6 +509,7 @@ void EnvGetFactList(
 /*   for the ppfact function.         */
 /**************************************/
 void PPFactFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -510,8 +517,7 @@ void PPFactFunction(
    int numberOfArguments;
    const char *logicalName = NULL;      /* Avoids warning */
    bool ignoreDefaults = false;
-   DATA_OBJECT theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
+   CLIPSValue theArg;
 
    numberOfArguments = UDFArgumentCount(context);
 

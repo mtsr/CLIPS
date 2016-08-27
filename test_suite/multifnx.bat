@@ -87,18 +87,18 @@
 (delete$ (create$ computer printer hard-disk floppy-drive) 2 4)
 (delete$ (create$ computer printer hard-disk floppy-drive) 3 4)
 (delete$ (create$ computer printer hard-disk floppy-drive) 3 2)
-(length)                           ; 10.3.6
-(length "x" 3)                     ; 10.3.6
-(length [def])                     ; 10.3.6
-(length 4.3)                       ; 10.3.6
-(length 567)                       ; 10.3.6
-(length blah-blah-blah)            ; 10.3.6
-(length "")                        ; 10.3.6
-(length "Hello world")             ; 10.3.6
-(length (create$))                 ; 10.3.6
-(length (create$ a b c))           ; 10.3.6
-(length (create$ a b c d e f g)) ; 10.3.6
-(length "cat")                     ; 10.3.6
+(length$)                           ; 10.3.6
+(length$ "x" 3)                     ; 10.3.6
+(length$ [def])                     ; 10.3.6
+(length$ 4.3)                       ; 10.3.6
+(length$ 567)                       ; 10.3.6
+(length$ blah-blah-blah)            ; 10.3.6
+(length$ "")                        ; 10.3.6
+(length$ "Hello world")             ; 10.3.6
+(length$ (create$))                 ; 10.3.6
+(length$ (create$ a b c))           ; 10.3.6
+(length$ (create$ a b c d e f g))   ; 10.3.6
+(length$ "cat")                     ; 10.3.6
 (explode$)                      ; 10.3.7
 (explode$ "x" 3)                ; 10.3.7
 (explode$ [jocko])              ; 10.3.7

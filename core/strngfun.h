@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/06/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*             STRING FUNCTIONS HEADER FILE            */
    /*******************************************************/
@@ -47,6 +47,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_strngfun
@@ -58,20 +60,20 @@
 #include "evaluatn.h"
 
    bool                           EnvBuild(Environment *,const char *);
-   bool                           EnvEval(Environment *,const char *,DATA_OBJECT_PTR);
+   bool                           EnvEval(Environment *,const char *,CLIPSValue *);
    void                           StringFunctionDefinitions(Environment *);
-   void                           StrCatFunction(UDFContext *,CLIPSValue *);
-   void                           SymCatFunction(UDFContext *,CLIPSValue *);
-   void                           StrLengthFunction(UDFContext *,CLIPSValue *);
-   void                           UpcaseFunction(UDFContext *,CLIPSValue *);
-   void                           LowcaseFunction(UDFContext *,CLIPSValue *);
-   void                           StrCompareFunction(UDFContext *,CLIPSValue *);
-   void                           SubStringFunction(UDFContext *,CLIPSValue *);
-   void                           StrIndexFunction(UDFContext *,CLIPSValue *);
-   void                           EvalFunction(UDFContext *,CLIPSValue *);
-   void                           BuildFunction(UDFContext *,CLIPSValue *);
-   void                           StringToFieldFunction(UDFContext *,CLIPSValue *);
-   void                           StringToField(Environment *,const char *,DATA_OBJECT *);
+   void                           StrCatFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SymCatFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           StrLengthFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           UpcaseFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           LowcaseFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           StrCompareFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SubStringFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           StrIndexFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           EvalFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           BuildFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           StringToFieldFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           StringToField(Environment *,const char *,CLIPSValue *);
 
 #endif /* _H_strngfun */
 

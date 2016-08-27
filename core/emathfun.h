@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/30/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*          EXTENDED MATH FUNCTIONS HEADER FILE        */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_emathfun
@@ -50,42 +52,42 @@
 
    void                           ExtendedMathFunctionDefinitions(Environment *);
 #if EXTENDED_MATH_FUNCTIONS
-   void                           CosFunction(UDFContext *,CLIPSValue *);
-   void                           SinFunction(UDFContext *,CLIPSValue *);
-   void                           TanFunction(UDFContext *,CLIPSValue *);
-   void                           SecFunction(UDFContext *,CLIPSValue *);
-   void                           CscFunction(UDFContext *,CLIPSValue *);
-   void                           CotFunction(UDFContext *,CLIPSValue *);
-   void                           AcosFunction(UDFContext *,CLIPSValue *);
-   void                           AsinFunction(UDFContext *,CLIPSValue *);
-   void                           AtanFunction(UDFContext *,CLIPSValue *);
-   void                           AsecFunction(UDFContext *,CLIPSValue *);
-   void                           AcscFunction(UDFContext *,CLIPSValue *);
-   void                           AcotFunction(UDFContext *,CLIPSValue *);
-   void                           CoshFunction(UDFContext *,CLIPSValue *);
-   void                           SinhFunction(UDFContext *,CLIPSValue *);
-   void                           TanhFunction(UDFContext *,CLIPSValue *);
-   void                           SechFunction(UDFContext *,CLIPSValue *);
-   void                           CschFunction(UDFContext *,CLIPSValue *);
-   void                           CothFunction(UDFContext *,CLIPSValue *);
-   void                           AcoshFunction(UDFContext *,CLIPSValue *);
-   void                           AsinhFunction(UDFContext *,CLIPSValue *);
-   void                           AtanhFunction(UDFContext *,CLIPSValue *);
-   void                           AsechFunction(UDFContext *,CLIPSValue *);
-   void                           AcschFunction(UDFContext *,CLIPSValue *);
-   void                           AcothFunction(UDFContext *,CLIPSValue *);
-   void                           RoundFunction(UDFContext *,CLIPSValue *);
-   void                           ModFunction(UDFContext *,CLIPSValue *);
-   void                           ExpFunction(UDFContext *,CLIPSValue *);
-   void                           LogFunction(UDFContext *,CLIPSValue *);
-   void                           Log10Function(UDFContext *,CLIPSValue *);
-   void                           SqrtFunction(UDFContext *,CLIPSValue *);
-   void                           PiFunction(UDFContext *,CLIPSValue *);
-   void                           DegRadFunction(UDFContext *,CLIPSValue *);
-   void                           RadDegFunction(UDFContext *,CLIPSValue *);
-   void                           DegGradFunction(UDFContext *,CLIPSValue *);
-   void                           GradDegFunction(UDFContext *,CLIPSValue *);
-   void                           PowFunction(UDFContext *,CLIPSValue *);
+   void                           CosFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SinFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           TanFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SecFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           CscFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           CotFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AcosFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AsinFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AtanFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AsecFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AcscFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AcotFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           CoshFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SinhFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           TanhFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SechFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           CschFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           CothFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AcoshFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AsinhFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AtanhFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AsechFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AcschFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           AcothFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           RoundFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           ModFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           ExpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           LogFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           Log10Function(Environment *,UDFContext *,CLIPSValue *);
+   void                           SqrtFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           PiFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           DegRadFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           RadDegFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           DegGradFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           GradDegFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           PowFunction(Environment *,UDFContext *,CLIPSValue *);
 #endif
 
 #endif /* _H_emathfun */

@@ -13,7 +13,7 @@
 (defmessage-handler A2 print-args ($?any)
   (printout t "A2: " ?any crlf)
   (if (next-handlerp) then
-     (override-next-handler (subseq$ ?any 2 (length ?any)))))
+     (override-next-handler (subseq$ ?any 2 (length$ ?any)))))
 (defclass B1 (is-a A1 A2))
 (defmessage-handler USER print-args ($?any)
   (printout t "USER: " ?any crlf))

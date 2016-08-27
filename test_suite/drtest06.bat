@@ -22,7 +22,7 @@
 (defglobal ?*global-list* = (create$ 1 2 3 4))
 (defrule foo                       ; DR0503
    (items $?list)
-   (test (subset ?list ?*global-list*))
+   (test (subsetp ?list ?*global-list*))
    =>
    (printout t "Success!" crlf))
 (assert (items 2 3))               ; DR0503

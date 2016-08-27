@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/06/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*         CONFLICT RESOLUTION STRATEGY MODULE         */
    /*******************************************************/
@@ -47,6 +47,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -979,11 +981,10 @@ int EnvGetStrategy(
 /*   for the get-strategy command.          */
 /********************************************/
 void GetStrategyCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
-   
    mCVSetSymbol(returnValue,GetStrategyName(EnvGetStrategy(theEnv)));
   }
 
@@ -992,13 +993,13 @@ void GetStrategyCommand(
 /*   for the set-strategy command.          */
 /********************************************/
 void SetStrategyCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
    const char *argument;
    int oldStrategy;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    /*=======================*/
    /* Set the return value. */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*             CONSTRAINT CHECKING MODULE              */
    /*******************************************************/
@@ -46,6 +46,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -73,8 +75,7 @@
 /***************************************/
 
    static bool                    CheckRangeAgainstCardinalityConstraint(Environment *,int,int,CONSTRAINT_RECORD *);
-   static bool                    CheckFunctionReturnType(int,CONSTRAINT_RECORD *);
-   static bool                    CheckFunctionReturnType2(unsigned,CONSTRAINT_RECORD *);
+   static bool                    CheckFunctionReturnType(unsigned,CONSTRAINT_RECORD *);
    static bool                    CheckTypeConstraint(int,CONSTRAINT_RECORD *);
    static bool                    CheckRangeConstraint(Environment *,int,void *,CONSTRAINT_RECORD *);
    static void                    PrintRange(Environment *,const char *,CONSTRAINT_RECORD *);
@@ -86,89 +87,6 @@
 /*   among the permissible values, otherwise false.   */
 /******************************************************/
 static bool CheckFunctionReturnType(
-  int functionReturnType,
-  CONSTRAINT_RECORD *constraints)
-  {
-   if (constraints == NULL) return true;
-
-   if (constraints->anyAllowed) return true;
-
-   switch(functionReturnType)
-     {
-      case 'c':
-      case 'w':
-      case 'b':
-        if (constraints->symbolsAllowed) return true;
-        else return false;
-
-      case 's':
-        if (constraints->stringsAllowed) return true;
-        else return false;
-
-      case 'j':
-        if ((constraints->symbolsAllowed) ||
-            (constraints->stringsAllowed) ||
-            (constraints->instanceNamesAllowed)) return true;
-        else return false;
-
-      case 'k':
-        if ((constraints->symbolsAllowed) || (constraints->stringsAllowed)) return true;
-        else return false;
-
-      case 'd':
-      case 'f':
-        if (constraints->floatsAllowed) return true;
-        else return false;
-
-      case 'i':
-      case 'l':
-        if (constraints->integersAllowed) return true;
-        else return false;
-
-      case 'n':
-        if ((constraints->integersAllowed) || (constraints->floatsAllowed)) return true;
-        else return false;
-
-      case 'm':
-        if (constraints->multifieldsAllowed) return true;
-        else return false;
-
-      case 'a':
-        if (constraints->externalAddressesAllowed) return true;
-        else return false;
-
-      case 'x':
-        if (constraints->instanceAddressesAllowed) return true;
-        else return false;
-
-      case 'y':
-        if (constraints->factAddressesAllowed) return true;
-        else return false;
-
-      case 'o':
-        if (constraints->instanceNamesAllowed) return true;
-        else return false;
-
-      case 'u':
-        return true;
-
-      case 'z':
-        return true;
-
-      case 'v':
-        if (constraints->voidAllowed) return true;
-     }
-
-   return true;
-  }
-
-/*******************************************************/
-/* CheckFunctionReturnType2: Checks a functions return */
-/*   type against a set of permissable return values.  */
-/*   Returns true if the return type is included       */
-/*   among the permissible values, otherwise false.    */
-/*******************************************************/
-static bool CheckFunctionReturnType2(
   unsigned functionReturnType,
   CONSTRAINT_RECORD *constraints)
   {
@@ -729,7 +647,7 @@ static void PrintRange(
 /*************************************************************/
 int ConstraintCheckDataObject(
   Environment *theEnv,
-  DATA_OBJECT *theData,
+  CLIPSValue *theData,
   CONSTRAINT_RECORD *theConstraints)
   {
    long i; /* 6.04 Bug Fix */
@@ -786,16 +704,8 @@ int ConstraintCheckValue(
 
    else if (theType == FCALL)
      {
-      if (ValueFunctionType(theValue) != 'z')
-        {
-         if (CheckFunctionReturnType((int) ValueFunctionType(theValue),theConstraints) == false)
-           { return(FUNCTION_RETURN_TYPE_VIOLATION); }
-        }
-      else
-        {
-         if (CheckFunctionReturnType2((unsigned) UnknownFunctionType(theValue),theConstraints) == false)
-           { return(FUNCTION_RETURN_TYPE_VIOLATION); }
-        }
+      if (CheckFunctionReturnType((unsigned) UnknownFunctionType(theValue),theConstraints) == false)
+        { return(FUNCTION_RETURN_TYPE_VIOLATION); }
      }
 
    return(NO_VIOLATION);
@@ -824,18 +734,9 @@ int ConstraintCheckExpressionChain(
       if (ConstantType(theExp->type)) min++;
       else if (theExp->type == FCALL)
         {
-         if (ExpressionFunctionType(theExp) == 'm')
+         unsigned restriction = ExpressionUnknownFunctionType(theExp);
+         if (restriction & MULTIFIELD_TYPE)
            { max = -1; }
-         else if (ExpressionFunctionType(theExp) == 'u')
-           { max = -1; }
-         else if (ExpressionFunctionType(theExp) == 'z')
-           {
-            unsigned restriction = ExpressionUnknownFunctionType(theExp);
-            if (restriction & MULTIFIELD_TYPE)
-              { max = -1; }
-            else
-              { min++; }
-           }
          else
            { min++; }
         }

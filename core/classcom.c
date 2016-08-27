@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/06/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                  CLASS COMMANDS MODULE              */
    /*******************************************************/
@@ -47,6 +47,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /**************************************************************/
 
@@ -388,10 +390,10 @@ bool EnvIsDefclassDeletable(
   NOTES        : Syntax : (undefclass <class-name> | *)
  *************************************************************/
 void UndefclassCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    UndefconstructCommand(context,"undefclass",DefclassData(theEnv)->DefclassConstruct);
   }
 
@@ -435,10 +437,10 @@ bool EnvUndefclass(
   NOTES        : Syntax : (ppdefclass <class-name>)
  *********************************************************/
 void PPDefclassCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    PPConstructCommand(context,"ppdefclass",DefclassData(theEnv)->DefclassConstruct);
   }
 
@@ -451,10 +453,10 @@ void PPDefclassCommand(
   NOTES        : H/L Interface
  ***************************************************/
 void ListDefclassesCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    ListConstructCommand(context,"list-defclasses",DefclassData(theEnv)->DefclassConstruct);
   }
 
@@ -641,10 +643,10 @@ bool DefclassWatchPrint(
   NOTES        : None
  *********************************************************/
 void GetDefclassListFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    GetConstructListFunction(context,"get-defclass-list",returnValue,DefclassData(theEnv)->DefclassConstruct);
   }
 
@@ -661,7 +663,7 @@ void GetDefclassListFunction(
  ***************************************************************/
 void EnvGetDefclassList(
   Environment *theEnv,
-  DATA_OBJECT *returnValue,
+  CLIPSValue *returnValue,
   Defmodule *theModule)
   {
    GetConstructList(theEnv,returnValue,DefclassData(theEnv)->DefclassConstruct,theModule);
@@ -831,10 +833,10 @@ unsigned short EnvGetClassDefaultsMode(
 /*   for the get-class-defaults-mode command.      */
 /***************************************************/
 void GetClassDefaultsModeCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
    mCVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
   }
 
@@ -843,13 +845,13 @@ void GetClassDefaultsModeCommand(
 /*   for the set-class-defaults-mode command.      */
 /***************************************************/
 void SetClassDefaultsModeCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
    const char *argument;
    unsigned short oldMode;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    oldMode = DefclassData(theEnv)->ClassDefaultsMode;
 

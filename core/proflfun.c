@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*         CONSTRUCT PROFILING FUNCTIONS MODULE        */
    /*******************************************************/
@@ -44,6 +44,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -103,14 +105,12 @@ void ConstructProfilingFunctionDefinitions(
    ProfileFunctionData(theEnv)->OutputString = OUTPUT_STRING;
 
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"profile","v",  ProfileCommand,"ProfileCommand",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"profile-info","v",  ProfileInfoCommand,"ProfileInfoCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"profile-reset","v",  ProfileResetCommand,"ProfileResetCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"profile","v",1,1,"y",ProfileCommand,"ProfileCommand",NULL);
+   EnvAddUDF(theEnv,"profile-info","v",0,0,NULL, ProfileInfoCommand,"ProfileInfoCommand",NULL);
+   EnvAddUDF(theEnv,"profile-reset","v",0,0,NULL,ProfileResetCommand,"ProfileResetCommand",NULL);
 
-   EnvAddUDF(theEnv,"set-profile-percent-threshold","d",SetProfilePercentThresholdCommand,
-                   "SetProfilePercentThresholdCommand",1,1,"ld",NULL);
-   EnvAddUDF(theEnv,"get-profile-percent-threshold","d",
-                    GetProfilePercentThresholdCommand,"GetProfilePercentThresholdCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"set-profile-percent-threshold","d",1,1,"ld",SetProfilePercentThresholdCommand,"SetProfilePercentThresholdCommand",NULL);
+   EnvAddUDF(theEnv,"get-profile-percent-threshold","d",0,0,NULL,GetProfilePercentThresholdCommand,"GetProfilePercentThresholdCommand",NULL);
                    
    ProfileFunctionData(theEnv)->ProfileDataID = InstallUserDataRecord(theEnv,&ProfileFunctionData(theEnv)->ProfileDataInfo);
    
@@ -154,6 +154,7 @@ void DeleteProfileData(
 /*   for the profile command.         */
 /**************************************/
 void ProfileCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -163,7 +164,7 @@ void ProfileCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
    argument = mCVToString(&theValue);
 
-   if (! Profile(UDFContextEnvironment(context),argument))
+   if (! Profile(theEnv,argument))
      {
       UDFInvalidArgumentMessage(context,"symbol with value constructs, user-functions, or off");
       return;
@@ -233,10 +234,10 @@ bool Profile(
 /*   for the profile-info command.        */
 /******************************************/
 void ProfileInfoCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
    char buffer[512];
    
    /*==================================*/
@@ -425,10 +426,10 @@ static bool OutputProfileInfo(
 /*   for the profile-reset command.        */
 /*******************************************/
 void ProfileResetCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
    struct FunctionDefinition *theFunction;
    int i;
 #if DEFFUNCTION_CONSTRUCT
@@ -704,12 +705,12 @@ static void OutputConstructsCodeInfo(
 /*   for the set-profile-percent-threshold command.      */
 /*********************************************************/
 void SetProfilePercentThresholdCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theValue;
    double newThreshold;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theValue))
      { return; }
@@ -750,10 +751,11 @@ double SetProfilePercentThreshold(
 /*   for the get-profile-percent-threshold command.      */
 /*********************************************************/
 void GetProfilePercentThresholdCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetFloat(returnValue,ProfileFunctionData(UDFContextEnvironment(context))->PercentThreshold);
+   mCVSetFloat(returnValue,ProfileFunctionData(theEnv)->PercentThreshold);
   }
 
 /****************************************************/

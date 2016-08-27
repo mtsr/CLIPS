@@ -55,16 +55,16 @@
 void UserFunctions(void);
 void EnvUserFunctions(Environment *);
 
-   void                           RTA(UDFContext *,CLIPSValue *);
-   void                           MUL(UDFContext *,CLIPSValue *);
-   void                           Positivep(UDFContext *,CLIPSValue *);
-   void                           Cube(UDFContext *,CLIPSValue *);
-   void                           TripleNumber(UDFContext *,CLIPSValue *);
-   void                           Reverse(UDFContext *,CLIPSValue *);
-   void                           MFL(UDFContext *,CLIPSValue *);
-   void                           CntMFChars(UDFContext *,CLIPSValue *);
-   void                           Sample4(UDFContext *,CLIPSValue *);
-   void                           Rest(UDFContext *,CLIPSValue *);
+   void                           RTA(Environment *,UDFContext *,CLIPSValue *);
+   void                           MUL(Environment *,UDFContext *,CLIPSValue *);
+   void                           Positivep(Environment *,UDFContext *,CLIPSValue *);
+   void                           Cube(Environment *,UDFContext *,CLIPSValue *);
+   void                           TripleNumber(Environment *,UDFContext *,CLIPSValue *);
+   void                           Reverse(Environment *,UDFContext *,CLIPSValue *);
+   void                           MFL(Environment *,UDFContext *,CLIPSValue *);
+   void                           CntMFChars(Environment *,UDFContext *,CLIPSValue *);
+   void                           Sample4(Environment *,UDFContext *,CLIPSValue *);
+   void                           Rest(Environment *,UDFContext *,CLIPSValue *);
 
 /*********************************************************/
 /* UserFunctions: Informs the expert system environment  */
@@ -96,22 +96,23 @@ void EnvUserFunctions(
 #if MAC_XCD
 #pragma unused(environment)
 #endif
-   EnvAddUDF(environment,"rta","d",RTA,"RTA",2,2,"ld",NULL);
-   EnvAddUDF(environment,"mul","l",MUL,"MUL",2,2,"ld",NULL);
-   EnvAddUDF(environment,"positivep","b",Positivep,"Positivep",1,1,"ld",NULL);
-   EnvAddUDF(environment,"cube","bld",Cube,"Cube",1,1,"ld",NULL);
-   EnvAddUDF(environment,"triple","ld",TripleNumber,"TripleNumber",1,1,"ld",NULL);
-   EnvAddUDF(environment,"reverse","syn",Reverse,"Reverse",1,1,"syn",NULL);
-   EnvAddUDF(environment,"mfl","l",MFL,"MFL",1,1,"m",NULL);
-   EnvAddUDF(environment,"cmfc","l",CntMFChars,"CntMFChars",1,1,"m",NULL);
-   EnvAddUDF(environment,"sample4","m",Sample4,"Sample4",0,0,NULL,NULL);
-   EnvAddUDF(environment,"rest","m",Rest,"Rest",1,1,"m",NULL);
+   EnvAddUDF(environment,"rta","d",2,2,"ld",RTA,"RTA",NULL);
+   EnvAddUDF(environment,"mul","l",2,2,"ld",MUL,"MUL",NULL);
+   EnvAddUDF(environment,"positivep","b",1,1,"ld",Positivep,"Positivep",NULL);
+   EnvAddUDF(environment,"cube","bld",1,1,"ld",Cube,"Cube",NULL);
+   EnvAddUDF(environment,"triple","ld",1,1,"ld",TripleNumber,"TripleNumber",NULL);
+   EnvAddUDF(environment,"reverse","syn",1,1,"syn",Reverse,"Reverse",NULL);
+   EnvAddUDF(environment,"mfl","l",1,1,"m",MFL,"MFL",NULL);
+   EnvAddUDF(environment,"cmfc","l",1,1,"m",CntMFChars,"CntMFChars",NULL);
+   EnvAddUDF(environment,"sample4","m",0,0,NULL,Sample4,"Sample4",NULL);
+   EnvAddUDF(environment,"rest","m",1,1,"m",Rest,"Rest",NULL);
   }
 
 /*******/
 /* RTA */
 /*******/
 void RTA(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -130,6 +131,7 @@ void RTA(
 /* MUL */
 /*******/
 void MUL(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -185,6 +187,7 @@ void MUL(
 /* Positivep */
 /*************/
 void Positivep(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -222,6 +225,7 @@ void Positivep(
 /* Cube */
 /********/
 void Cube(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -260,6 +264,7 @@ void Cube(
 /* TripleNumber */
 /****************/
 void TripleNumber( 
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -287,6 +292,7 @@ void TripleNumber(
 /* Reverse */
 /***********/
 void Reverse(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -346,6 +352,7 @@ void Reverse(
 /* MFL */
 /*******/
 void MFL(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -372,6 +379,7 @@ void MFL(
 /* CntMFChars */
 /**************/
 void CntMFChars(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -409,6 +417,7 @@ void CntMFChars(
 /* Sample4 */
 /***********/
 void Sample4(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -455,6 +464,7 @@ void Sample4(
 /* Rest */
 /********/
 void Rest(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {

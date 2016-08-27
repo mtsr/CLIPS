@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/06/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*         DEFMODULE BASIC COMMANDS HEADER FILE        */
    /*******************************************************/
@@ -39,6 +39,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_modulbsc
@@ -50,11 +52,11 @@
 #include "evaluatn.h"
 
    void                           DefmoduleBasicCommands(Environment *);
-   void                           EnvGetDefmoduleListFunction(UDFContext *,CLIPSValue *);
-   void                           EnvGetDefmoduleList(Environment *,DATA_OBJECT_PTR);
-   void                           PPDefmoduleCommand(UDFContext *,CLIPSValue *);
+   void                           GetDefmoduleListFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           EnvGetDefmoduleList(Environment *,CLIPSValue *);
+   void                           PPDefmoduleCommand(Environment *,UDFContext *,CLIPSValue *);
    bool                           PPDefmodule(Environment *,const char *,const char *);
-   void                           ListDefmodulesCommand(UDFContext *,CLIPSValue *);
+   void                           ListDefmodulesCommand(Environment *,UDFContext *,CLIPSValue *);
    void                           EnvListDefmodules(Environment *,const char *);
 
 #endif /* _H_modulbsc */

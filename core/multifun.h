@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/30/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*           MULTIFIELD FUNCTIONS HEADER FILE          */
    /*******************************************************/
@@ -49,6 +49,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_multifun
@@ -61,37 +63,34 @@
 
    void                    MultifieldFunctionDefinitions(Environment *);
 #if MULTIFIELD_FUNCTIONS
-   void                    DeleteFunction(UDFContext *,CLIPSValue *);
-   void                    MVDeleteFunction(Environment *,DATA_OBJECT_PTR);
-   void                    ReplaceFunction(UDFContext *,CLIPSValue *);
-   void                    MVReplaceFunction(Environment *,DATA_OBJECT_PTR);
-   void                    DeleteMemberFunction(UDFContext *,CLIPSValue *);
-   void                    ReplaceMemberFunction(UDFContext *,CLIPSValue *);
-   void                    InsertFunction(UDFContext *,CLIPSValue *);
-   void                    ExplodeFunction(UDFContext *,CLIPSValue *);
-   void                    ImplodeFunction(UDFContext *,CLIPSValue *);
-   void                    SubseqFunction(UDFContext *,CLIPSValue *);
-   void                    MVSubseqFunction(Environment *,DATA_OBJECT_PTR);
-   void                    FirstFunction(UDFContext *,CLIPSValue *);
-   void                    RestFunction(UDFContext *,CLIPSValue *);
-   void                    NthFunction(UDFContext *,CLIPSValue *);
-   void                    SubsetpFunction(UDFContext *,CLIPSValue *);
-   void                    MemberFunction(UDFContext *,CLIPSValue *);
-   void                    MultifieldPrognFunction(UDFContext *,CLIPSValue *);
-   void                    ForeachFunction(UDFContext *,CLIPSValue *);
-   void                    GetMvPrognField(UDFContext *,CLIPSValue *);
-   void                    GetMvPrognIndex(UDFContext *,CLIPSValue *);
-   bool                    FindDOsInSegment(DATA_OBJECT_PTR,int,DATA_OBJECT_PTR,
+   void                    DeleteFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    ReplaceFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    DeleteMemberFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    ReplaceMemberFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    InsertFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    ExplodeFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    ImplodeFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    SubseqFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    FirstFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    RestFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    NthFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    SubsetpFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    MemberFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    MultifieldPrognFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    ForeachFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    GetMvPrognField(Environment *,UDFContext *,CLIPSValue *);
+   void                    GetMvPrognIndex(Environment *,UDFContext *,CLIPSValue *);
+   bool                    FindDOsInSegment(CLIPSValue *,int,CLIPSValue *,
                                             long *,long *,long *,int);
 #endif
-   bool                    ReplaceMultiValueField(Environment *,struct dataObject *,
-                                                  struct dataObject *,
+   bool                    ReplaceMultiValueField(Environment *,CLIPSValue *,
+                                                  CLIPSValue *,
                                                   long,long,
-                                                  struct dataObject *,const char *);
-   bool                    InsertMultiValueField(Environment *,struct dataObject *,
-                                                 struct dataObject *,
-                                                 long,struct dataObject *,const char *);
-   bool                    DeleteMultiValueField(Environment *,struct dataObject *,struct dataObject *,
+                                                  CLIPSValue *,const char *);
+   bool                    InsertMultiValueField(Environment *,CLIPSValue *,
+                                                 CLIPSValue *,
+                                                 long,CLIPSValue *,const char *);
+   bool                    DeleteMultiValueField(Environment *,CLIPSValue *,CLIPSValue *,
                                                  long,long,const char *);
 
 #endif /* _H_multifun */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/06/16            */
+   /*             CLIPS Version 6.50  08/25/16            */
    /*                                                     */
    /*                 FACT HASHING MODULE                 */
    /*******************************************************/
@@ -39,6 +39,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*      6.50: Modify command preserves fact id and address.  */
 /*                                                           */
 /*************************************************************/
@@ -67,7 +69,7 @@ struct factHashEntry
    bool                           EnvGetFactDuplication(Environment *);
    bool                           EnvSetFactDuplication(Environment *,bool);
    void                           InitializeFactHashTable(Environment *);
-   void                           ShowFactHashTable(UDFContext *,CLIPSValue *);
+   void                           ShowFactHashTableCommand(Environment *,UDFContext *,CLIPSValue *);
    unsigned long                  HashFact(Fact *);
    bool                           FactWillBeAsserted(Environment *,Fact *);
 

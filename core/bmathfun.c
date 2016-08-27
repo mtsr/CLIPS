@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/06/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*             BASIC MATH FUNCTIONS MODULE             */
    /*******************************************************/
@@ -42,6 +42,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*      6.50: Auto-float-dividend always enabled.            */
 /*                                                           */
 /*************************************************************/
@@ -64,17 +66,16 @@ void BasicMathFunctionDefinitions(
   Environment *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"+",        "ld", AdditionFunction, "AdditionFunction", 2,UNBOUNDED, "ld" ,NULL);
-   EnvAddUDF(theEnv, "*",       "ld", MultiplicationFunction, "MultiplicationFunction",  2,UNBOUNDED, "ld", NULL);
-   EnvAddUDF(theEnv, "-",       "ld", SubtractionFunction, "SubtractionFunction",  2,UNBOUNDED, "ld", NULL);
-   EnvAddUDF(theEnv, "/",       "d",  DivisionFunction, "DivisionFunction", 2,UNBOUNDED, "ld", NULL);
-   EnvAddUDF(theEnv, "div",     "l",  DivFunction, "DivFunction",  2,UNBOUNDED, "ld", NULL);
-   
-   EnvAddUDF(theEnv, "integer", "l",  IntegerFunction,"IntegerFunction",1,1,"ld",NULL);
-   EnvAddUDF(theEnv, "float",   "d",  FloatFunction,"FloatFunction",1,1,"ld",NULL);
-   EnvAddUDF(theEnv, "abs",     "ld", AbsFunction,"AbsFunction",1,1,"ld",NULL);
-   EnvAddUDF(theEnv, "min",     "ld", MinFunction,"MinFunction",1,UNBOUNDED,"ld",NULL);
-   EnvAddUDF(theEnv, "max",     "ld", MaxFunction,"MaxFunction",1,UNBOUNDED,"ld",NULL);
+   EnvAddUDF(theEnv,"+","ld",2,UNBOUNDED,"ld",AdditionFunction,"AdditionFunction",NULL);
+   EnvAddUDF(theEnv,"*","ld",2,UNBOUNDED,"ld",MultiplicationFunction,"MultiplicationFunction",NULL);
+   EnvAddUDF(theEnv,"-","ld",2,UNBOUNDED,"ld",SubtractionFunction,"SubtractionFunction",NULL);
+   EnvAddUDF(theEnv,"/","d",2,UNBOUNDED,"ld",DivisionFunction,"DivisionFunction",NULL);
+   EnvAddUDF(theEnv,"div","l",2,UNBOUNDED,"ld",DivFunction,"DivFunction",NULL);
+   EnvAddUDF(theEnv,"integer","l",1,1,"ld",IntegerFunction,"IntegerFunction",NULL);
+   EnvAddUDF(theEnv,"float","d",1,1,"ld",FloatFunction,"FloatFunction",NULL);
+   EnvAddUDF(theEnv,"abs","ld",1,1,"ld",AbsFunction,"AbsFunction",NULL);
+   EnvAddUDF(theEnv,"min","ld",1,UNBOUNDED,"ld",MinFunction,"MinFunction",NULL);
+   EnvAddUDF(theEnv,"max","ld",1,UNBOUNDED,"ld",MaxFunction,"MaxFunction",NULL);
 #endif
   }
 
@@ -83,6 +84,7 @@ void BasicMathFunctionDefinitions(
 /*   routine for the + function.  */
 /**********************************/
 void AdditionFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -133,6 +135,7 @@ void AdditionFunction(
 /*   routine for the * function.        */
 /****************************************/
 void MultiplicationFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -183,6 +186,7 @@ void MultiplicationFunction(
 /*   routine for the - function.     */
 /*************************************/
 void SubtractionFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -250,13 +254,13 @@ void SubtractionFunction(
 /*   routine for the / function.   */
 /***********************************/
 void DivisionFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSFloat ftotal = 1.0;
    CLIPSFloat theNumber;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    /*===================================================*/
    /* Get the first argument. This number which will be */
@@ -310,13 +314,13 @@ void DivisionFunction(
 /*   for the div function.           */
 /*************************************/
 void DivFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSInteger total = 1LL;
-   DATA_OBJECT theArg;
+   CLIPSValue theArg;
    CLIPSInteger theNumber;
-   void *theEnv = UDFContextEnvironment(context);
 
    /*===================================================*/
    /* Get the first argument. This number which will be */
@@ -365,6 +369,7 @@ void DivFunction(
 /*   for the integer function.           */
 /*****************************************/
 void IntegerFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -389,6 +394,7 @@ void IntegerFunction(
 /*   for the float function.           */
 /***************************************/
 void FloatFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -413,6 +419,7 @@ void FloatFunction(
 /*   for the abs function.           */
 /*************************************/
 void AbsFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -444,6 +451,7 @@ void AbsFunction(
 /*   for the min function.           */
 /*************************************/
 void MinFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -491,6 +499,7 @@ void MinFunction(
 /*   for the max function.           */
 /*************************************/
 void MaxFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*              PREDICATE FUNCTIONS MODULE             */
    /*******************************************************/
@@ -37,6 +37,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -59,33 +61,33 @@ void PredicateFunctionDefinitions(
   Environment *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"not", "b", NotFunction, "NotFunction",   1,1,          NULL,NULL);
-   EnvAddUDF(theEnv,"and", "b", AndFunction, "AndFunction",   2,UNBOUNDED , NULL,NULL);
-   EnvAddUDF(theEnv,"or",  "b", OrFunction,  "OrFunction",    2,UNBOUNDED , NULL,NULL);
+   EnvAddUDF(theEnv,"not","b",1,1,NULL,NotFunction,"NotFunction",NULL);
+   EnvAddUDF(theEnv,"and","b",2,UNBOUNDED ,NULL,AndFunction,"AndFunction",NULL);
+   EnvAddUDF(theEnv,"or","b",2,UNBOUNDED ,NULL,OrFunction,"OrFunction",NULL);
 
-   EnvAddUDF(theEnv,"eq",  "b", EqFunction,  "EqFunction",  2, UNBOUNDED, NULL, NULL);
-   EnvAddUDF(theEnv,"neq", "b", NeqFunction, "NeqFunction", 2, UNBOUNDED, NULL, NULL);
+   EnvAddUDF(theEnv,"eq","b",2,UNBOUNDED,NULL,EqFunction,"EqFunction",NULL);
+   EnvAddUDF(theEnv,"neq","b",2,UNBOUNDED,NULL,NeqFunction,"NeqFunction",NULL);
 
-   EnvAddUDF(theEnv,"<=", "b", LessThanOrEqualFunction,    "LessThanOrEqualFunction",    2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,">=", "b", GreaterThanOrEqualFunction, "GreaterThanOrEqualFunction", 2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,"<",  "b", LessThanFunction,           "LessThanFunction",           2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,">",  "b", GreaterThanFunction,        "GreaterThanFunction",        2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,"=",  "b", NumericEqualFunction,       "NumericEqualFunction",       2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,"<>", "b", NumericNotEqualFunction,    "NumericNotEqualFunction",    2,UNBOUNDED , "ld",NULL);
-   EnvAddUDF(theEnv,"!=", "b", NumericNotEqualFunction,    "NumericNotEqualFunction",    2,UNBOUNDED , "ld",NULL);
+   EnvAddUDF(theEnv,"<=","b",2,UNBOUNDED ,"ld",LessThanOrEqualFunction,"LessThanOrEqualFunction",NULL);
+   EnvAddUDF(theEnv,">=","b",2,UNBOUNDED ,"ld",GreaterThanOrEqualFunction,"GreaterThanOrEqualFunction",NULL);
+   EnvAddUDF(theEnv,"<","b",2,UNBOUNDED ,"ld",LessThanFunction,"LessThanFunction",NULL);
+   EnvAddUDF(theEnv,">","b",2,UNBOUNDED ,"ld",GreaterThanFunction,"GreaterThanFunction",NULL);
+   EnvAddUDF(theEnv,"=","b",2,UNBOUNDED ,"ld",NumericEqualFunction,"NumericEqualFunction",NULL);
+   EnvAddUDF(theEnv,"<>","b",2,UNBOUNDED ,"ld",NumericNotEqualFunction,"NumericNotEqualFunction",NULL);
+   EnvAddUDF(theEnv,"!=","b",2,UNBOUNDED ,"ld",NumericNotEqualFunction,"NumericNotEqualFunction",NULL);
 
-   EnvAddUDF(theEnv,"symbolp",     "b",  SymbolpFunction,     "SymbolpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"wordp",       "b",  SymbolpFunction,     "SymbolpFunction", 1,1,NULL,NULL);  // TBD Remove?
-   EnvAddUDF(theEnv,"stringp",     "b",  StringpFunction,     "StringpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"lexemep",     "b",  LexemepFunction,     "LexemepFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"numberp",     "b",  NumberpFunction,     "NumberpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"integerp",    "b",  IntegerpFunction,    "IntegerpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"floatp",      "b",  FloatpFunction,      "FloatpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"oddp",        "b",  OddpFunction,        "OddpFunction", 1,1,"l", NULL);
-   EnvAddUDF(theEnv,"evenp",       "b",  EvenpFunction,       "EvenpFunction",  1,1,"l", NULL);
-   EnvAddUDF(theEnv,"multifieldp", "b",  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"sequencep",   "b",  MultifieldpFunction, "MultifieldpFunction", 1,1,NULL,NULL); // TBD Remove?
-   EnvAddUDF(theEnv,"pointerp",    "b",  PointerpFunction,    "PointerpFunction", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"symbolp","b",1,1,NULL,SymbolpFunction,"SymbolpFunction",NULL);
+   EnvAddUDF(theEnv,"wordp","b",1,1,NULL,SymbolpFunction,"SymbolpFunction",NULL);  // TBD Remove?
+   EnvAddUDF(theEnv,"stringp","b",1,1,NULL,StringpFunction,"StringpFunction",NULL);
+   EnvAddUDF(theEnv,"lexemep","b",1,1,NULL,LexemepFunction,"LexemepFunction",NULL);
+   EnvAddUDF(theEnv,"numberp","b",1,1,NULL,NumberpFunction,"NumberpFunction",NULL);
+   EnvAddUDF(theEnv,"integerp","b",1,1,NULL,IntegerpFunction,"IntegerpFunction",NULL);
+   EnvAddUDF(theEnv,"floatp","b",1,1,NULL,FloatpFunction,"FloatpFunction",NULL);
+   EnvAddUDF(theEnv,"oddp","b",1,1,"l",OddpFunction,"OddpFunction",NULL);
+   EnvAddUDF(theEnv,"evenp","b",1,1,"l",EvenpFunction,"EvenpFunction",NULL);
+   EnvAddUDF(theEnv,"multifieldp","b",1,1,NULL,MultifieldpFunction,"MultifieldpFunction",NULL);
+   EnvAddUDF(theEnv,"sequencep","b",1,1,NULL,MultifieldpFunction,"MultifieldpFunction",NULL); // TBD Remove?
+   EnvAddUDF(theEnv,"pointerp","b",1,1,NULL,PointerpFunction,"PointerpFunction",NULL);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -98,13 +100,13 @@ void PredicateFunctionDefinitions(
 /*   for the eq function.           */
 /************************************/
 void EqFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT item, nextItem;
+   CLIPSValue item, nextItem;
    int numArgs, i;
    struct expr *theExpression;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* Determine the number of arguments. */
@@ -171,13 +173,13 @@ void EqFunction(
 /*   for the neq function.           */
 /*************************************/
 void NeqFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT item, nextItem;
+   CLIPSValue item, nextItem;
    int numArgs, i;
    struct expr *theExpression;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* Determine the number of arguments. */
@@ -238,6 +240,7 @@ void NeqFunction(
 /*   for the stringp function.           */
 /*****************************************/
 void StringpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -257,6 +260,7 @@ void StringpFunction(
 /*   for the symbolp function.           */
 /*****************************************/
 void SymbolpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -276,6 +280,7 @@ void SymbolpFunction(
 /*   for the lexemep function.           */
 /*****************************************/
 void LexemepFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -295,6 +300,7 @@ void LexemepFunction(
 /*   for the numberp function.           */
 /*****************************************/
 void NumberpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -314,6 +320,7 @@ void NumberpFunction(
 /*   for the floatp function.           */
 /****************************************/
 void FloatpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -333,6 +340,7 @@ void FloatpFunction(
 /*   for the integerp function.           */
 /******************************************/
 void IntegerpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -352,6 +360,7 @@ void IntegerpFunction(
 /*   for the multifieldp function.           */
 /*********************************************/
 void MultifieldpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -371,6 +380,7 @@ void MultifieldpFunction(
 /*   for the pointerp function.           */
 /******************************************/
 void PointerpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -390,21 +400,19 @@ void PointerpFunction(
 /*   for the not function.         */
 /***********************************/
 void NotFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT result;
+   CLIPSValue theArg;
 
-   if (! UDFFirstArgument(context,ANY_TYPE,&result))
+   if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
 
-   if (mCVIsFalseSymbol(&result))
-     {
-      mCVSetBoolean(returnValue,true);
-      return;
-     }
-
-   mCVSetBoolean(returnValue,false);
+   if (mCVIsFalseSymbol(&theArg))
+     { mCVSetBoolean(returnValue,true); }
+   else
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /*************************************/
@@ -412,17 +420,18 @@ void NotFunction(
 /*   for the and function.           */
 /*************************************/
 void AndFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT result;
+   CLIPSValue theArg;
 
    while (UDFHasNextArgument(context))
      {
-      if (! UDFNextArgument(context,ANY_TYPE,&result))
+      if (! UDFNextArgument(context,ANY_TYPE,&theArg))
         { return; }
         
-      if (mCVIsFalseSymbol(&result))
+      if (mCVIsFalseSymbol(&theArg))
         {
          mCVSetBoolean(returnValue,false);
          return;
@@ -437,17 +446,18 @@ void AndFunction(
 /*   for the or function.           */
 /************************************/
 void OrFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT result;
+   CLIPSValue theArg;
 
    while (UDFHasNextArgument(context))
      {
-      if (! UDFNextArgument(context,ANY_TYPE,&result))
+      if (! UDFNextArgument(context,ANY_TYPE,&theArg))
         { return; }
         
-      if (! mCVIsFalseSymbol(&result))
+      if (! mCVIsFalseSymbol(&theArg))
         {
          mCVSetBoolean(returnValue,true);
          return;
@@ -462,10 +472,11 @@ void OrFunction(
 /*   routine for the <= function.        */
 /*****************************************/
 void LessThanOrEqualFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT rv1, rv2;
+   CLIPSValue rv1, rv2;
 
    /*=========================*/
    /* Get the first argument. */
@@ -517,10 +528,11 @@ void LessThanOrEqualFunction(
 /*   routine for the >= function.           */
 /********************************************/
 void GreaterThanOrEqualFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT rv1, rv2;
+   CLIPSValue rv1, rv2;
 
    /*=========================*/
    /* Get the first argument. */
@@ -572,6 +584,7 @@ void GreaterThanOrEqualFunction(
 /*   routine for the < function.  */
 /**********************************/
 void LessThanFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -628,6 +641,7 @@ void LessThanFunction(
 /*   routine for the > function.     */
 /*************************************/
 void GreaterThanFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -684,6 +698,7 @@ void GreaterThanFunction(
 /*   routine for the = function.      */
 /**************************************/
 void NumericEqualFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -737,6 +752,7 @@ void NumericEqualFunction(
 /*   routine for the <> function.        */
 /*****************************************/
 void NumericNotEqualFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -790,6 +806,7 @@ void NumericNotEqualFunction(
 /*   for the oddp function.           */
 /**************************************/
 void OddpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -819,6 +836,7 @@ void OddpFunction(
 /*   for the evenp function.           */
 /***************************************/
 void EvenpFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {

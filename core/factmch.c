@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/30/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                 FACT MATCH MODULE                   */
    /*******************************************************/
@@ -40,6 +40,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
@@ -95,7 +97,7 @@ void FactPatternMatch(
   {
    int theSlotField;
    int offsetSlot;
-   DATA_OBJECT theResult;
+   CLIPSValue theResult;
    struct factPatternNode *tempPtr;
    
    /*=========================================================*/
@@ -293,7 +295,7 @@ static void ProcessMultifieldNode(
    struct multifieldMarker *newMark, *oldMark;
    int repeatCount;
    struct multifield *theSlotValue;
-   DATA_OBJECT theResult;
+   CLIPSValue theResult;
    struct factPatternNode *tempPtr;
    bool success;
 
@@ -582,7 +584,7 @@ static bool EvaluatePatternExpression(
   struct factPatternNode *patternPtr,
   struct expr *theTest)
   {
-   DATA_OBJECT theResult;
+   CLIPSValue theResult;
    struct expr *oldArgument;
    bool rv;
 

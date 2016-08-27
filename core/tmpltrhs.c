@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*          DEFTEMPLATE RHS PARSING HEADER FILE        */
    /*******************************************************/
@@ -32,6 +32,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -312,9 +314,7 @@ static struct expr *ParseAssertSlotValues(
         }
       else if (newField->type == FCALL)
        {
-        if ((ExpressionFunctionType(newField) == 'm') ||
-            ((ExpressionFunctionType(newField) == 'z') &&
-             ((ExpressionUnknownFunctionType(newField) & SINGLEFIELD_TYPES) == 0)))
+        if ((ExpressionUnknownFunctionType(newField) & SINGLEFIELD_TYPES) == 0)
           {
            *error = true;
            SingleFieldSlotCardinalityError(theEnv,slotPtr->slotName->contents);
@@ -483,7 +483,7 @@ static struct expr *GetSlotAssertValues(
   {
    struct expr *slotItem;
    struct expr *newArg, *tempArg;
-   DATA_OBJECT theDefault;
+   CLIPSValue theDefault;
    const char *nullBitMap = "\0";
 
    /*==================================================*/

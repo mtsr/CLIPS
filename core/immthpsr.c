@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*         IMPLICIT SYSTEM METHODS PARSING MODULE      */
    /*******************************************************/
@@ -42,6 +42,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 /* =========================================
@@ -75,8 +77,7 @@
    ***************************************** */
 
    static void                    FormMethodsFromRestrictions(Environment *,Defgeneric *,struct FunctionDefinition *,EXPRESSION *);
-   static RESTRICTION            *ParseRestrictionType(Environment *,int);
-   static RESTRICTION            *ParseRestrictionType2(Environment *,unsigned);
+   static RESTRICTION            *ParseRestrictionType(Environment *,unsigned);
    static EXPRESSION             *GenTypeExpression(Environment *,EXPRESSION *,int,int,const char *);
    static EXPRESSION             *ParseRestrictionCreateTypes(Environment *,CONSTRAINT_RECORD *);
 
@@ -140,11 +141,10 @@ static void FormMethodsFromRestrictions(
    Defmethod *meth;
    EXPRESSION *plist,*tmp,*bot,*svBot;
    RESTRICTION *rptr;
-   char theChar[2],defaultc;
    unsigned defaultc2, argRestriction2;
    int min,max,mposn;
    bool needMinimumMethod;
-   int i,j;
+   int i;
    const char *rstring;
    
    if (sysfunc->restrictions == NULL)
@@ -152,68 +152,14 @@ static void FormMethodsFromRestrictions(
    else
      { rstring = sysfunc->restrictions->contents; }
    
-   /*=====================================*/
-   /* The system function will accept any */
-   /* number of any type of arguments.    */
-   /*=====================================*/
-   
-   if ((rstring == NULL) && (sysfunc->returnValueType != 'z'))
-     {
-      tmp = get_struct(theEnv,expr);
-      rptr = get_struct(theEnv,restriction);
-      PackRestrictionTypes(theEnv,rptr,NULL);
-      rptr->query = NULL;
-      tmp->argList = (EXPRESSION *) rptr;
-      tmp->nextArg = NULL;
-      meth = AddMethod(theEnv,gfunc,NULL,0,0,tmp,1,0,(SYMBOL_HN *) EnvTrueSymbol(theEnv),
-                       PackExpression(theEnv,actions),NULL,false);
-      meth->system = 1;
-      DeleteTempRestricts(theEnv,tmp);
-      return;
-     }
-
    /*================================*/
    /* Extract the range of arguments */
    /* from the restriction string.   */
    /*================================*/
-   
-   theChar[1] = '\0';
-   
-   if (sysfunc->returnValueType !='z')
-     {
-      if (rstring[0] == '*')
-        { min = 0; }
-      else
-        {
-         theChar[0] = rstring[0];
-         min = atoi(theChar);
-        }
-   
-      if (rstring[1] == '*')
-        { max = -1; }
-      else
-        {
-         theChar[0] = rstring[1];
-         max = atoi(theChar);
-        }
-     
-      if (rstring[2] != '\0')
-        {
-         defaultc = rstring[2];
-         j = 3;
-        }
-      else
-        {
-         defaultc = 'u';
-         j= 2;
-        }
-     }
-   else
-     {
-      min = sysfunc->minArgs;
-      max = sysfunc->maxArgs;
-      PopulateRestriction(theEnv,&defaultc2,ANY_TYPE,rstring,0);
-     }
+      
+   min = sysfunc->minArgs;
+   max = sysfunc->maxArgs;
+   PopulateRestriction(theEnv,&defaultc2,ANY_TYPE,rstring,0);
      
    /*==================================================*/
    /* Form a list of method restrictions corresponding */
@@ -223,16 +169,8 @@ static void FormMethodsFromRestrictions(
    plist = bot = NULL;
    for (i = 0 ; i < min ; i++)
      {
-      if (sysfunc->returnValueType !='z')
-        {
-         theChar[0] = (rstring[j] != '\0') ? rstring[j++] : defaultc;
-         rptr = ParseRestrictionType(theEnv,(int) theChar[0]);
-        }
-      else
-        {
-         PopulateRestriction(theEnv,&argRestriction2,defaultc2,rstring,i+1);
-         rptr = ParseRestrictionType2(theEnv,argRestriction2);
-        }
+      PopulateRestriction(theEnv,&argRestriction2,defaultc2,rstring,i+1);
+      rptr = ParseRestrictionType(theEnv,argRestriction2);
       tmp = get_struct(theEnv,expr);
       tmp->argList = (EXPRESSION *) rptr;
       tmp->nextArg = NULL;
@@ -258,32 +196,19 @@ static void FormMethodsFromRestrictions(
    /*=====================================================*/
    
    i = 0;
-   while (((sysfunc->returnValueType !='z') && (rstring[j] != '\0')) ||
-          ((sysfunc->returnValueType =='z') && (RestrictionExists(rstring,min+i+1))))
+   while (RestrictionExists(rstring,min+i+1))
      {
       if ((min + i + 1) == max)
         {
-         if ((sysfunc->returnValueType !='z') &&
-             (rstring[j+1] == '\0'))
-           {
-            defaultc = rstring[j];
-            break;
-           }
-          else if ((sysfunc->returnValueType =='z') &&
-                   (! RestrictionExists(rstring,min+i+2)))
+         if (! RestrictionExists(rstring,min+i+2))
            {
             PopulateRestriction(theEnv,&defaultc2,ANY_TYPE,rstring,min+i+1);
             break;
            }
         }
 
-      if (sysfunc->returnValueType !='z')
-        { rptr = ParseRestrictionType(theEnv,(int) rstring[j]); }
-      else
-        {
-         PopulateRestriction(theEnv,&argRestriction2,defaultc2,rstring,min+i+1);
-         rptr = ParseRestrictionType2(theEnv,argRestriction2);
-        }
+      PopulateRestriction(theEnv,&argRestriction2,defaultc2,rstring,min+i+1);
+      rptr = ParseRestrictionType(theEnv,argRestriction2);
       
       tmp = get_struct(theEnv,expr);
       tmp->argList = (EXPRESSION *) rptr;
@@ -294,9 +219,7 @@ static void FormMethodsFromRestrictions(
         bot->nextArg = tmp;
       bot = tmp;
       i++;
-      j++;
-      if (((sysfunc->returnValueType !='z') && (rstring[j] != '\0')) ||
-          ((sysfunc->returnValueType =='z') && RestrictionExists(rstring,min+i+1)) ||
+      if (RestrictionExists(rstring,min+i+1) ||
           ((min + i) == max))
         {
          FindMethodByRestrictions(gfunc,plist,min + i,NULL,&mposn);
@@ -323,10 +246,7 @@ static void FormMethodsFromRestrictions(
       if (i == 0)
         { needMinimumMethod = false; }
 
-      if (sysfunc->returnValueType !='z')
-        { rptr = ParseRestrictionType(theEnv,(int) defaultc); }
-      else
-        { rptr = ParseRestrictionType2(theEnv,defaultc2); }
+      rptr = ParseRestrictionType(theEnv,defaultc2);
         
       if (max != -1)
         {
@@ -437,24 +357,6 @@ static EXPRESSION *ParseRestrictionCreateTypes(
  *******************************************************************/
 static RESTRICTION *ParseRestrictionType(
   Environment *theEnv,
-  int code)
-  {
-   RESTRICTION *rptr;
-   CONSTRAINT_RECORD *rv;
-   EXPRESSION *types = NULL;
-
-   rptr = get_struct(theEnv,restriction);
-   rptr->query = NULL;
-   rv = ArgumentTypeToConstraintRecord(theEnv,code);
-   
-   types = ParseRestrictionCreateTypes(theEnv,rv);
-   RemoveConstraint(theEnv,rv);
-   PackRestrictionTypes(theEnv,rptr,types);
-   return(rptr);
-  }
-
-static RESTRICTION *ParseRestrictionType2(
-  Environment *theEnv,
   unsigned code)
   {
    RESTRICTION *rptr;
@@ -463,7 +365,7 @@ static RESTRICTION *ParseRestrictionType2(
 
    rptr = get_struct(theEnv,restriction);
    rptr->query = NULL;
-   rv = ArgumentTypeToConstraintRecord2(theEnv,code);
+   rv = ArgumentTypeToConstraintRecord(theEnv,code);
    
    types = ParseRestrictionCreateTypes(theEnv,rv);
    RemoveConstraint(theEnv,rv);

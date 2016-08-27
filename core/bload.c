@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/10/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                    BLOAD MODULE                     */
    /*******************************************************/
@@ -43,6 +43,8 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Callbacks must be environment aware.           */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -814,6 +816,7 @@ void CannotLoadWithBloadMessage(
 /*   for the bload command.           */
 /**************************************/
 void BloadCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -823,7 +826,7 @@ void BloadCommand(
    fileName = GetFileName(context);
    if (fileName != NULL)
      {
-      mCVSetBoolean(returnValue,EnvBload(UDFContextEnvironment(context),fileName));
+      mCVSetBoolean(returnValue,EnvBload(theEnv,fileName));
       return;
      }
 #else

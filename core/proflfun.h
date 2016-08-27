@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/30/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*      CONSTRUCT PROFILING FUNCTIONS HEADER FILE      */
    /*******************************************************/
@@ -46,6 +46,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_proflfun
@@ -85,7 +87,7 @@ struct profileFunctionData
    double PercentThreshold;
    struct userDataRecord ProfileDataInfo;
    unsigned char ProfileDataID;
-   bool ProfileUserFunctions; // TBD bit fields?
+   bool ProfileUserFunctions;
    bool ProfileConstructs;
    struct constructProfileInfo *ActiveProfileFrame;
    const char *OutputString;
@@ -94,19 +96,17 @@ struct profileFunctionData
 #define ProfileFunctionData(theEnv) ((struct profileFunctionData *) GetEnvironmentData(theEnv,PROFLFUN_DATA))
 
    void                           ConstructProfilingFunctionDefinitions(Environment *);
-   void                           ProfileCommand(UDFContext *,CLIPSValue *);
-   void                           ProfileInfoCommand(UDFContext *,CLIPSValue *);
-   void                           StartProfile(Environment *,
-                                                      struct profileFrameInfo *,
-                                                      struct userData **,
-                                                      bool);
+   void                           ProfileCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           ProfileInfoCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           StartProfile(Environment *,struct profileFrameInfo *,
+                                               struct userData **,bool);
    void                           EndProfile(Environment *,struct profileFrameInfo *);
-   void                           ProfileResetCommand(UDFContext *,CLIPSValue *);
+   void                           ProfileResetCommand(Environment *,UDFContext *,CLIPSValue *);
    void                           ResetProfileInfo(struct constructProfileInfo *);
 
-   void                           SetProfilePercentThresholdCommand(UDFContext *,CLIPSValue *);
+   void                           SetProfilePercentThresholdCommand(Environment *,UDFContext *,CLIPSValue *);
    double                         SetProfilePercentThreshold(Environment *,double);
-   void                           GetProfilePercentThresholdCommand(UDFContext *,CLIPSValue *);
+   void                           GetProfilePercentThresholdCommand(Environment *,UDFContext *,CLIPSValue *);
    double                         GetProfilePercentThreshold(Environment *);
    bool                           Profile(Environment *,const char *);
    void                           DeleteProfileData(Environment *,void *);

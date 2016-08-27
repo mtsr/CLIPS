@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/10/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -59,6 +59,8 @@
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
 /*            Callbacks must be environment aware.           */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Added CLIPSBlockStart and CLIPSBlockEnd        */
 /*            functions for garbage collection blocks.       */
@@ -218,7 +220,7 @@ static void DeallocateUtilityData(
 /*****************************/
 void CleanCurrentGarbageFrame(
   Environment *theEnv,
-  DATA_OBJECT *returnValue)
+  CLIPSValue *returnValue)
   {
    struct garbageFrame *currentGarbageFrame;
    
@@ -252,7 +254,7 @@ void RestorePriorGarbageFrame(
   Environment *theEnv,
   struct garbageFrame *newGarbageFrame,
   struct garbageFrame *oldGarbageFrame,
-  DATA_OBJECT *returnValue)
+  CLIPSValue *returnValue)
   {
    if (newGarbageFrame->dirty)
      {
@@ -303,7 +305,7 @@ void CLIPSBlockStart(
 void CLIPSBlockEnd(
   void *theEnv,
   struct CLIPSBlock *theBlock,
-  DATA_OBJECT *rv)
+  CLIPSValue *rv)
   {
    RestorePriorGarbageFrame(theEnv,&theBlock->newGarbageFrame,theBlock->oldGarbageFrame,rv);
   }

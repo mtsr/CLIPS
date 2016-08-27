@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/30/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*          PROCEDURAL FUNCTIONS HEADER FILE           */
    /*******************************************************/
@@ -41,6 +41,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_prcdrfun
@@ -64,22 +66,22 @@ struct procedureFunctionData
    bool ReturnFlag;
    bool BreakFlag;
    LOOP_COUNTER_STACK *LoopCounterStack;
-   struct dataObject *BindList;
+   CLIPSValue *BindList;
   };
 
 #define ProcedureFunctionData(theEnv) ((struct procedureFunctionData *) GetEnvironmentData(theEnv,PRCDRFUN_DATA))
 
    void                           ProceduralFunctionDefinitions(Environment *);
-   void                           WhileFunction(UDFContext *,CLIPSValue *);
-   void                           LoopForCountFunction(UDFContext *,CLIPSValue *);
-   void                           GetLoopCount(UDFContext *,CLIPSValue *);
-   void                           IfFunction(UDFContext *,CLIPSValue *);
-   void                           BindFunction(UDFContext *,CLIPSValue *);
-   void                           PrognFunction(UDFContext *,CLIPSValue *);
-   void                           ReturnFunction(UDFContext *,CLIPSValue *);
-   void                           BreakFunction(UDFContext *,CLIPSValue *);
-   void                           SwitchFunction(UDFContext *,CLIPSValue *);
-   bool                           GetBoundVariable(Environment *,struct dataObject *,struct symbolHashNode *);
+   void                           WhileFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           LoopForCountFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           GetLoopCount(Environment *,UDFContext *,CLIPSValue *);
+   void                           IfFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           BindFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           PrognFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           ReturnFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           BreakFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           SwitchFunction(Environment *,UDFContext *,CLIPSValue *);
+   bool                           GetBoundVariable(Environment *,CLIPSValue *,struct symbolHashNode *);
    void                           FlushBindList(Environment *);
 
 #endif /* _H_prcdrfun */

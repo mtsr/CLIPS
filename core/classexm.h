@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/06/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*             CLASS EXAMINATION HEADER FILE           */
    /*******************************************************/
@@ -50,6 +50,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_classexm
@@ -60,33 +62,33 @@
 
 #if DEBUGGING_FUNCTIONS
 
-   void                           BrowseClassesCommand(UDFContext *,CLIPSValue *);
+   void                           BrowseClassesCommand(Environment *,UDFContext *,CLIPSValue *);
    void                           EnvBrowseClasses(Environment *,const char *,Defclass *);
-   void                           DescribeClassCommand(UDFContext *,CLIPSValue *);
+   void                           DescribeClassCommand(Environment *,UDFContext *,CLIPSValue *);
    void                           EnvDescribeClass(Environment *,const char *,Defclass *);
 
 #endif /* DEBUGGING_FUNCTIONS */
 
    const char                    *GetCreateAccessorString(SlotDescriptor *);
-   void                           GetDefclassModuleCommand(UDFContext *,CLIPSValue *);
-   void                           SuperclassPCommand(UDFContext *,CLIPSValue *);
+   void                           GetDefclassModuleCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           SuperclassPCommand(Environment *,UDFContext *,CLIPSValue *);
    bool                           EnvSuperclassP(Environment *,Defclass *,Defclass *);
-   void                           SubclassPCommand(UDFContext *,CLIPSValue *);
+   void                           SubclassPCommand(Environment *,UDFContext *,CLIPSValue *);
    bool                           EnvSubclassP(Environment *,Defclass *,Defclass *);
-   void                           SlotExistPCommand(UDFContext *,CLIPSValue *);
+   void                           SlotExistPCommand(Environment *,UDFContext *,CLIPSValue *);
    bool                           EnvSlotExistP(Environment *,Defclass *,const char *,bool);
-   void                           MessageHandlerExistPCommand(UDFContext *,CLIPSValue *);
-   void                           SlotWritablePCommand(UDFContext *,CLIPSValue *);
+   void                           MessageHandlerExistPCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           SlotWritablePCommand(Environment *,UDFContext *,CLIPSValue *);
    bool                           EnvSlotWritableP(Environment *,Defclass *,const char *);
-   void                           SlotInitablePCommand(UDFContext *,CLIPSValue *);
+   void                           SlotInitablePCommand(Environment *,UDFContext *,CLIPSValue *);
    bool                           EnvSlotInitableP(Environment *,Defclass *,const char *);
-   void                           SlotPublicPCommand(UDFContext *,CLIPSValue *);
+   void                           SlotPublicPCommand(Environment *,UDFContext *,CLIPSValue *);
    bool                           EnvSlotPublicP(Environment *,Defclass *,const char *);
-   void                           SlotDirectAccessPCommand(UDFContext *,CLIPSValue *);
+   void                           SlotDirectAccessPCommand(Environment *,UDFContext *,CLIPSValue *);
    bool                           EnvSlotDirectAccessP(Environment *,Defclass *,const char *);
-   void                           SlotDefaultValueCommand(UDFContext *,CLIPSValue *);
-   bool                           EnvSlotDefaultValue(Environment *,Defclass *,const char *,DATA_OBJECT_PTR);
-   void                           ClassExistPCommand(UDFContext *,CLIPSValue *);
+   void                           SlotDefaultValueCommand(Environment *,UDFContext *,CLIPSValue *);
+   bool                           EnvSlotDefaultValue(Environment *,Defclass *,const char *,CLIPSValue *);
+   void                           ClassExistPCommand(Environment *,UDFContext *,CLIPSValue *);
    int                            EnvSlotDefaultP(Environment *,Defclass *,const char *);
   
 #endif /* _H_classexm */

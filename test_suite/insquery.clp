@@ -48,7 +48,7 @@
      (bind ?count (+ ?count 1)))
   ?count)
 (deffunction count-instances-2 (?class)
-  (length (find-all-instances ((?ins ?class)) TRUE)))
+  (length$ (find-all-instances ((?ins ?class)) TRUE)))
 (defclass A (is-a USER) (role concrete))
 (defclass B (is-a A) (role concrete))
 (defclass C (is-a A) (role concrete))

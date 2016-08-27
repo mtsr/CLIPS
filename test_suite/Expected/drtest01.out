@@ -148,7 +148,7 @@ CLIPS> (clear)                           ; DR0063
 CLIPS> (defrule foo                      ; DR0063
   (data foo $?x)
   =>
-  (printout t (nth 3 ?x) crlf))  ; DR0063
+  (printout t (nth$ 3 ?x) crlf))  ; DR0063
 CLIPS> (assert (data foo a b here d))    ; DR0063
 <Fact-1>
 CLIPS> (run)                             ; DR0063
@@ -229,7 +229,7 @@ CLIPS> (sub-string)                      ; DR0092
 [ARGACCES4] Function sub-string expected exactly 3 argument(s)
 CLIPS> (explode$ "a b c")                ; DR0093
 (a b c)
-CLIPS> (length (explode$ "a b c"))       ; DR0093
+CLIPS> (length$ (explode$ "a b c"))      ; DR0093
 3
 CLIPS> (tan 0)                           ; DR0096
 0.0

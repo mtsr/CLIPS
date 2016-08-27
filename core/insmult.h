@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  07/30/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -34,6 +34,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_insmult
@@ -48,12 +50,12 @@
    void                           SetupInstanceMultifieldCommands(Environment *);
 #endif
 
-   void                           MVSlotReplaceCommand(UDFContext *,CLIPSValue *);
-   void                           MVSlotInsertCommand(UDFContext *,CLIPSValue *);
-   void                           MVSlotDeleteCommand(UDFContext *,CLIPSValue *);
-   void                           DirectMVReplaceCommand(UDFContext *,CLIPSValue *);
-   void                           DirectMVInsertCommand(UDFContext *,CLIPSValue *);
-   void                           DirectMVDeleteCommand(UDFContext *,CLIPSValue *);
+   void                           MVSlotReplaceCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           MVSlotInsertCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           MVSlotDeleteCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           DirectMVReplaceCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           DirectMVInsertCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           DirectMVDeleteCommand(Environment *,UDFContext *,CLIPSValue *);
 
 #endif /* _H_insmult */
 

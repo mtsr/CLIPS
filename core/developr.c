@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                   DEVELOPER MODULE                  */
    /*******************************************************/
@@ -43,6 +43,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -88,23 +90,22 @@ void DeveloperCommands(
   Environment *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"primitives-info","v",  PrimitiveTablesInfo,"PrimitiveTablesInfo",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"primitives-usage","v",  PrimitiveTablesUsage,"PrimitiveTablesUsage",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"primitives-info","v",0,0,NULL,PrimitiveTablesInfoCommand,"PrimitiveTablesInfoCommand",NULL);
+   EnvAddUDF(theEnv,"primitives-usage","v",0,0,NULL,PrimitiveTablesUsageCommand,"PrimitiveTablesUsageCommand",NULL);
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
-   EnvAddUDF(theEnv,"validate-fact-integrity", "b", ValidateFactIntegrity, "ValidateFactIntegrity", 0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"validate-fact-integrity","b", 0,0,NULL,ValidateFactIntegrityCommand,"ValidateFactIntegrityCommand",NULL);
 
-   EnvAddUDF(theEnv,"show-fpn","v", ShowFactPatternNetwork,"ShowFactPatternNetwork",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"show-fht","v", ShowFactHashTable,"ShowFactHashTable",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"show-fpn","v",1,1,"y",ShowFactPatternNetworkCommand,"ShowFactPatternNetworkCommand",NULL);
+   EnvAddUDF(theEnv,"show-fht","v",0,0,NULL,ShowFactHashTableCommand,"ShowFactHashTableCommand",NULL);
 #endif
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-   EnvAddUDF(theEnv,"show-opn","v", PrintObjectPatternNetwork,
-                   "PrintObjectPatternNetwork",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"show-opn","v",0,0,NULL,PrintObjectPatternNetworkCommand,"PrintObjectPatternNetworkCommand",NULL);
 #endif
 
 #if OBJECT_SYSTEM
-   EnvAddUDF(theEnv,"instance-table-usage","v",  InstanceTableUsage,"InstanceTableUsage",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"instance-table-usage","v",0,0,NULL,InstanceTableUsageCommand,"InstanceTableUsageCommand",NULL);
 #endif
 
 #endif
@@ -114,7 +115,8 @@ void DeveloperCommands(
 /* PrimitiveTablesInfo: Prints information about the  */
 /*   symbol, float, integer, and bitmap tables.       */
 /******************************************************/
-void PrimitiveTablesInfo(
+void PrimitiveTablesInfoCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -125,7 +127,6 @@ void PrimitiveTablesInfo(
    BITMAP_HN **bitMapArray, *bitMapPtr;
    unsigned long int symbolCount = 0, integerCount = 0;
    unsigned long int floatCount = 0, bitMapCount = 0;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*====================================*/
    /* Count entries in the symbol table. */
@@ -196,11 +197,12 @@ void PrimitiveTablesInfo(
   
 #define COUNT_SIZE 21
 
-/******************************************************/
-/* PrimitiveTablesUsage: Prints information about the  */
-/*   symbol, float, integer, and bitmap tables.       */
-/******************************************************/
-void PrimitiveTablesUsage(
+/*********************************************************/
+/* PrimitiveTablesUsageCommand: Prints information about */
+/*   the symbol, float, integer, and bitmap tables.      */
+/*********************************************************/
+void PrimitiveTablesUsageCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -210,7 +212,6 @@ void PrimitiveTablesUsage(
    FLOAT_HN **floatArray, *floatPtr;
    unsigned long int symbolCount, totalSymbolCount = 0;
    unsigned long int floatCount, totalFloatCount = 0;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    for (i = 0; i < 21; i++)
      {
@@ -289,11 +290,12 @@ void PrimitiveTablesUsage(
 
 #if DEFRULE_CONSTRUCT && DEFTEMPLATE_CONSTRUCT
 
-/***********************************************/
-/* ValidateFactIntegrity: Command for checking */
-/*   the facts for atom value integrity.       */
-/***********************************************/
-void ValidateFactIntegrity(
+/******************************************************/
+/* ValidateFactIntegrityCommand: Command for checking */
+/*   the facts for atom value integrity.              */
+/******************************************************/
+void ValidateFactIntegrityCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -303,7 +305,6 @@ void ValidateFactIntegrity(
    SYMBOL_HN *theSymbol;
    FLOAT_HN *theFloat;
    INTEGER_HN *theInteger;
-   Environment *theEnv = UDFContextEnvironment(context);
      
    if (((struct environmentData *) theEnv)->initialized == false)
      {
@@ -362,21 +363,21 @@ void ValidateFactIntegrity(
    mCVSetBoolean(returnValue,true);
   }
   
-/*******************************************************/
-/* ShowFactPatternNetwork: Command for displaying the  */
-/*   fact pattern network for a specified deftemplate. */
-/*******************************************************/
-void ShowFactPatternNetwork(
+/*************************************************************/
+/* ShowFactPatternNetworkCommand: Command for displaying the */
+/*   fact pattern network for a specified deftemplate.       */
+/*************************************************************/
+void ShowFactPatternNetworkCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   void *theEnv = UDFContextEnvironment(context);
    struct factPatternNode *patternPtr;
    Deftemplate *theDeftemplate;
    const char *theName;
    int depth = 0, i;
 
-   theName = GetConstructName(theEnv,"show-fpn","template name");
+   theName = GetConstructName(theEnv,context,"show-fpn","template name");
    if (theName == NULL) return;
 
    theDeftemplate = EnvFindDeftemplate(theEnv,theName);
@@ -432,7 +433,7 @@ void ShowFactPatternNetwork(
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
 
 /***************************************************
-  NAME         : PrintObjectPatternNetwork
+  NAME         : PrintObjectPatternNetworkCommand
   DESCRIPTION  : Displays an indented printout of
                  the object pattern network
   INPUTS       : None
@@ -440,11 +441,11 @@ void ShowFactPatternNetwork(
   SIDE EFFECTS : Object pattern network displayed
   NOTES        : None
  ***************************************************/
-void PrintObjectPatternNetwork(
+void PrintObjectPatternNetworkCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
    char indentbuf[80];
 
    indentbuf[0] = '\0';
@@ -543,11 +544,12 @@ static void PrintOPNLevel(
 
 #if OBJECT_SYSTEM
 
-/******************************************************/
-/* InstanceTableUsage: Prints information about the  */
-/*   instances in the instance hash table.       */
-/******************************************************/
-void InstanceTableUsage(
+/*******************************************************/
+/* InstanceTableUsageCommand: Prints information about */
+/*   the instances in the instance hash table.         */
+/*******************************************************/
+void InstanceTableUsageCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -555,7 +557,6 @@ void InstanceTableUsage(
    int instanceCounts[COUNT_SIZE];
    Instance *ins;
    unsigned long int instanceCount, totalInstanceCount = 0;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    for (i = 0; i < COUNT_SIZE; i++)
      { instanceCounts[i] = 0; }
@@ -661,11 +662,13 @@ static void ValidateRuleBetaMemoriesAction(
      }
   }
   
-/************************/
-/* ValidateBetaMemories */
-/************************/
-void ValidateBetaMemories(
-  Environment *theEnv)
+/*******************************/
+/* ValidateBetaMemoriesCommand */
+/*******************************/
+void ValidateBetaMemoriesCommand(
+  Environment *theEnv,
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    EnvPrintRouter(theEnv,WPROMPT,"ValidateBetaMemories");
    DoForAllConstructs(theEnv,ValidateRuleBetaMemoriesAction,DefruleData(theEnv)->DefruleModuleIndex,false,NULL);

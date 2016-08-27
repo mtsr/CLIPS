@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -31,6 +31,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -98,7 +100,7 @@ void CallDeffunction(
   Environment *theEnv,
   Deffunction *dptr,
   EXPRESSION *args,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
    int oldce;
    Deffunction *previouslyExecutingDeffunction;
@@ -107,8 +109,8 @@ void CallDeffunction(
    struct profileFrameInfo profileFrame;
 #endif
 
-   result->type = SYMBOL;
-   result->value = EnvFalseSymbol(theEnv);
+   returnValue->type = SYMBOL;
+   returnValue->value = EnvFalseSymbol(theEnv);
    EvaluationData(theEnv)->EvaluationError = false;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
@@ -129,7 +131,7 @@ void CallDeffunction(
       DeffunctionData(theEnv)->ExecutingDeffunction = previouslyExecutingDeffunction;
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
       
-      CLIPSBlockEnd(theEnv,&gcBlock,result);
+      CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
       CallPeriodicTasks(theEnv);
 
       SetExecutingConstruct(theEnv,oldce);
@@ -149,7 +151,7 @@ void CallDeffunction(
 
    EvaluateProcActions(theEnv,dptr->header.whichModule->theModule,
                        dptr->code,dptr->numberOfLocalVars,
-                       result,UnboundDeffunctionErr);
+                       returnValue,UnboundDeffunctionErr);
 
 #if PROFILING_FUNCTIONS
     EndProfile(theEnv,&profileFrame);
@@ -166,7 +168,7 @@ void CallDeffunction(
    DeffunctionData(theEnv)->ExecutingDeffunction = previouslyExecutingDeffunction;
    EvaluationData(theEnv)->CurrentEvaluationDepth--;
    
-   CLIPSBlockEnd(theEnv,&gcBlock,result);
+   CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
    CallPeriodicTasks(theEnv);
    
    SetExecutingConstruct(theEnv,oldce);

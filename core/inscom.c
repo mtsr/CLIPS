@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/06/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*               INSTANCE COMMAND MODULE               */
    /*******************************************************/
@@ -59,6 +59,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -174,54 +176,41 @@ void SetupInstances(
 #if ! RUN_TIME
 
 #if DEFRULE_CONSTRUCT && OBJECT_SYSTEM
-   EnvAddUDF(theEnv,"initialize-instance","bn",
-                InactiveInitializeInstance,"InactiveInitializeInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"active-initialize-instance","bn",
-                   InitializeInstanceCommand,"InitializeInstanceCommand",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"initialize-instance","bn",0,UNBOUNDED,NULL,InactiveInitializeInstance,"InactiveInitializeInstance",NULL);
+   EnvAddUDF(theEnv,"active-initialize-instance","bn",0,UNBOUNDED,NULL,InitializeInstanceCommand,"InitializeInstanceCommand",NULL);
    AddFunctionParser(theEnv,"active-initialize-instance",ParseInitializeInstance);
 
-   EnvAddUDF(theEnv,"make-instance","bn", InactiveMakeInstance,"InactiveMakeInstance",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"active-make-instance","bn", MakeInstanceCommand,"MakeInstanceCommand",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"make-instance","bn",0,UNBOUNDED,NULL,InactiveMakeInstance,"InactiveMakeInstance",NULL);
+   EnvAddUDF(theEnv,"active-make-instance","bn",0,UNBOUNDED,NULL,MakeInstanceCommand,"MakeInstanceCommand",NULL);
    AddFunctionParser(theEnv,"active-make-instance",ParseInitializeInstance);
 
 #else
-   EnvAddUDF(theEnv,"initialize-instance","bn",
-                   InitializeInstanceCommand,"InitializeInstanceCommand",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"make-instance","bn", MakeInstanceCommand,"MakeInstanceCommand",0,UNBOUNDED,NULL,NULL);
+   EnvAddUDF(theEnv,"initialize-instance","bn",0,UNBOUNDED,NULL,InitializeInstanceCommand,"InitializeInstanceCommand",NULL);
+   EnvAddUDF(theEnv,"make-instance","bn",0,UNBOUNDED,NULL,MakeInstanceCommand,"MakeInstanceCommand",NULL);
 #endif
    AddFunctionParser(theEnv,"initialize-instance",ParseInitializeInstance);
    AddFunctionParser(theEnv,"make-instance",ParseInitializeInstance);
 
-   EnvAddUDF(theEnv,"init-slots","*", InitSlotsCommand,"InitSlotsCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"init-slots","*",0,0,NULL,InitSlotsCommand,"InitSlotsCommand",NULL);
 
-   EnvAddUDF(theEnv,"delete-instance","b", DeleteInstanceCommand,
-                   "DeleteInstanceCommand",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"(create-instance)","b", CreateInstanceHandler,
-                   "CreateInstanceHandler",0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"unmake-instance","b", UnmakeInstanceCommand,
-                   "UnmakeInstanceCommand",1,UNBOUNDED,"iny",NULL);
+   EnvAddUDF(theEnv,"delete-instance","b",0,0,NULL,DeleteInstanceCommand,"DeleteInstanceCommand",NULL);
+   EnvAddUDF(theEnv,"(create-instance)","b",0,0,NULL,CreateInstanceHandler,"CreateInstanceHandler",NULL);
+   EnvAddUDF(theEnv,"unmake-instance","b",1,UNBOUNDED,"iny",UnmakeInstanceCommand,"UnmakeInstanceCommand",NULL);
 
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"instances","v", InstancesCommand,"InstancesCommand",0,3,"y",NULL);
-   EnvAddUDF(theEnv,"ppinstance","v", PPInstanceCommand,"PPInstanceCommand",0,0,NULL,NULL);
+   EnvAddUDF(theEnv,"instances","v",0,3,"y",InstancesCommand,"InstancesCommand",NULL);
+   EnvAddUDF(theEnv,"ppinstance","v",0,0,NULL,PPInstanceCommand,"PPInstanceCommand",NULL);
 #endif
 
-   EnvAddUDF(theEnv,"symbol-to-instance-name","*",
-                   SymbolToInstanceName,"SymbolToInstanceName",1,1,"y",NULL);
-   EnvAddUDF(theEnv,"instance-name-to-symbol","y",
-                   InstanceNameToSymbol,"InstanceNameToSymbol",1,1,"ny",NULL);
-   EnvAddUDF(theEnv,"instance-address","bn", InstanceAddressCommand,
-                   "InstanceAddressCommand",1,2,";iyn;yn",NULL);
-   EnvAddUDF(theEnv,"instance-addressp","b", InstanceAddressPCommand,
-                   "InstanceAddressPCommand",1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"instance-namep","b", InstanceNamePCommand,
-                   "InstanceNamePCommand",1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"instance-name","bn", InstanceNameCommand,
-                   "InstanceNameCommand",1,1,"yin",NULL);
-   EnvAddUDF(theEnv,"instancep","b", InstancePCommand,"InstancePCommand",1,1,NULL,NULL);
-   EnvAddUDF(theEnv,"instance-existp","b", InstanceExistPCommand,
-                   "InstanceExistPCommand",1,1,"niy",NULL);
-   EnvAddUDF(theEnv,"class","*", ClassCommand,"ClassCommand",1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"symbol-to-instance-name","*",1,1,"y",SymbolToInstanceNameFunction,"SymbolToInstanceNameFunction",NULL);
+   EnvAddUDF(theEnv,"instance-name-to-symbol","y",1,1,"ny",InstanceNameToSymbolFunction,"InstanceNameToSymbolFunction",NULL);
+   EnvAddUDF(theEnv,"instance-address","bn",1,2,";iyn;yn",InstanceAddressCommand,"InstanceAddressCommand",NULL);
+   EnvAddUDF(theEnv,"instance-addressp","b",1,1,NULL,InstanceAddressPCommand,"InstanceAddressPCommand",NULL);
+   EnvAddUDF(theEnv,"instance-namep","b",1,1,NULL,InstanceNamePCommand,"InstanceNamePCommand",NULL);
+   EnvAddUDF(theEnv,"instance-name","bn",1,1,"yin",InstanceNameCommand,"InstanceNameCommand",NULL);
+   EnvAddUDF(theEnv,"instancep","b",1,1,NULL,InstancePCommand,"InstancePCommand",NULL);
+   EnvAddUDF(theEnv,"instance-existp","b",1,1,"niy",InstanceExistPCommand,"InstanceExistPCommand",NULL);
+   EnvAddUDF(theEnv,"class","*",1,1,NULL,ClassCommand,"ClassCommand",NULL);
 
    SetupInstanceModDupCommands(theEnv);
    /* SetupInstanceFileCommands(theEnv); DR0866 */
@@ -425,6 +414,7 @@ bool EnvUnmakeInstance(
   NOTES        : H/L Syntax : (instances [<class-name> [inherit]])
  *******************************************************************/
 void InstancesCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -432,7 +422,6 @@ void InstancesCommand(
    Defmodule *theDefmodule;
    const char *className = NULL;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    theDefmodule = EnvGetCurrentModule(theEnv);
 
@@ -489,11 +478,11 @@ void InstancesCommand(
   NOTES        : H/L Syntax : (ppinstance <instance>)
  ********************************************************/
 void PPInstanceCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Instance *ins;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    if (CheckCurrentMessage(theEnv,"ppinstance",true) == false)
      return;
@@ -599,10 +588,10 @@ Instance *EnvMakeInstance(
    const char *router = "***MKINS***";
    struct token tkn;
    EXPRESSION *top;
-   DATA_OBJECT result;
+   CLIPSValue returnValue;
 
-   result.type = SYMBOL;
-   result.value = EnvFalseSymbol(theEnv);
+   returnValue.type = SYMBOL;
+   returnValue.value = EnvFalseSymbol(theEnv);
    if (OpenStringSource(theEnv,router,mkstr,0) == 0)
      return NULL;
    GetToken(theEnv,router,&tkn);
@@ -615,7 +604,7 @@ Instance *EnvMakeInstance(
          if (tkn.type == STOP)
            {
             ExpressionInstall(theEnv,top);
-            EvaluateExpression(theEnv,top,&result);
+            EvaluateExpression(theEnv,top,&returnValue);
             ExpressionDeinstall(theEnv,top);
            }
          else
@@ -634,10 +623,10 @@ Instance *EnvMakeInstance(
       CallPeriodicTasks(theEnv);
      }
 
-   if ((result.type == SYMBOL) && (result.value == EnvFalseSymbol(theEnv)))
+   if ((returnValue.type == SYMBOL) && (returnValue.value == EnvFalseSymbol(theEnv)))
      return NULL;
 
-   return FindInstanceBySymbol(theEnv,(SYMBOL_HN *) result.value);
+   return FindInstanceBySymbol(theEnv,(SYMBOL_HN *) returnValue.value);
   }
 
 /***************************************************************
@@ -720,36 +709,36 @@ void EnvDirectGetSlot(
   Environment *theEnv,
   Instance *theInstance,
   const char *sname,
-  DATA_OBJECT *result)
+  CLIPSValue *returnValue)
   {
    INSTANCE_SLOT *sp;
 
    if (theInstance->garbage == 1)
      {
       EnvSetEvaluationError(theEnv,true);
-      result->type = SYMBOL;
-      result->value = EnvFalseSymbol(theEnv);
+      returnValue->type = SYMBOL;
+      returnValue->value = EnvFalseSymbol(theEnv);
       return;
      }
    sp = FindISlotByName(theEnv,theInstance,sname);
    if (sp == NULL)
      {
       EnvSetEvaluationError(theEnv,true);
-      result->type = SYMBOL;
-      result->value = EnvFalseSymbol(theEnv);
+      returnValue->type = SYMBOL;
+      returnValue->value = EnvFalseSymbol(theEnv);
       return;
      }
-   result->type = (unsigned short) sp->type;
-   result->value = sp->value;
+   returnValue->type = (unsigned short) sp->type;
+   returnValue->value = sp->value;
    if (sp->type == MULTIFIELD)
      {
-      result->begin = 0;
-      SetpDOEnd(result,GetInstanceSlotLength(sp));
+      returnValue->begin = 0;
+      SetpDOEnd(returnValue,GetInstanceSlotLength(sp));
      }
    if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL) && (UtilityData(theEnv)->GarbageCollectionLocks == 0))
      {
-      CleanCurrentGarbageFrame(theEnv,result);
+      CleanCurrentGarbageFrame(theEnv,returnValue);
       CallPeriodicTasks(theEnv);
      }
   }
@@ -768,10 +757,10 @@ bool EnvDirectPutSlot(
   Environment *theEnv,
   Instance *theInstance,
   const char *sname,
-  DATA_OBJECT *val)
+  CLIPSValue *val)
   {
    INSTANCE_SLOT *sp;
-   DATA_OBJECT junk;
+   CLIPSValue junk;
 
    if ((theInstance->garbage == 1) || (val == NULL))
      {
@@ -960,7 +949,7 @@ Instance *EnvGetNextInstanceInClassAndSubclasses(
   Environment *theEnv,
   Defclass **cptr,
   Instance *theInstance,
-  DATA_OBJECT *iterationInfo)
+  CLIPSValue *iterationInfo)
   {
    Instance *nextInstance;
    Defclass *theClass;
@@ -1032,13 +1021,14 @@ void EnvGetInstancePPForm(
                    if you have generic functions installed
  *********************************************************/
 void ClassCommand(
+   Environment *theEnv,
+
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Instance *ins;
    const char *func;
-   DATA_OBJECT temp;
-   Environment *theEnv = UDFContextEnvironment(context);
+   CLIPSValue temp;
 
    func = ValueToString(((struct FunctionDefinition *)
                        EvaluationData(theEnv)->CurrentExpression->value)->callFunctionName);
@@ -1101,6 +1091,7 @@ void ClassCommand(
   NOTES        : Does nothing. Provided so it can be overridden.
  ******************************************************/
 void CreateInstanceHandler(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1124,11 +1115,10 @@ void CreateInstanceHandler(
                    only be called by a handler
  ******************************************************/
 void DeleteInstanceCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
-   
    if (CheckCurrentMessage(theEnv,"delete-instance",true))
      { mCVSetBoolean(returnValue,QuashInstance(theEnv,GetActiveInstance(theEnv))); }
    else
@@ -1145,6 +1135,7 @@ void DeleteInstanceCommand(
   NOTES        : Syntax: (unmake-instance <instance-expression>+ | *)
  ********************************************************************/
 void UnmakeInstanceCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1152,7 +1143,6 @@ void UnmakeInstanceCommand(
    Instance *ins;
    int argNumber = 1;
    bool rtn = true;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    while (UDFHasNextArgument(context))
      {
@@ -1201,7 +1191,7 @@ void UnmakeInstanceCommand(
   }
 
 /*****************************************************************
-  NAME         : SymbolToInstanceName
+  NAME         : SymbolToInstanceNameFunction
   DESCRIPTION  : Converts a symbol from type SYMBOL
                    to type INSTANCE_NAME
   INPUTS       : The address of the value buffer
@@ -1209,7 +1199,8 @@ void UnmakeInstanceCommand(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (symbol-to-instance-name <symbol>)
  *****************************************************************/
-void SymbolToInstanceName(
+void SymbolToInstanceNameFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1220,7 +1211,7 @@ void SymbolToInstanceName(
   }
 
 /*****************************************************************
-  NAME         : InstanceNameToSymbol
+  NAME         : InstanceNameToSymbolFunction
   DESCRIPTION  : Converts a symbol from type INSTANCE_NAME
                    to type SYMBOL
   INPUTS       : None
@@ -1228,7 +1219,8 @@ void SymbolToInstanceName(
   SIDE EFFECTS : None
   NOTES        : H/L Syntax : (instance-name-to-symbol <iname>)
  *****************************************************************/
-void InstanceNameToSymbol(
+void InstanceNameToSymbolFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1249,14 +1241,14 @@ void InstanceNameToSymbol(
   NOTES        : H/L Syntax : (instance-address [<module-name>] <instance-name>)
  *********************************************************************************/
 void InstanceAddressCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Instance *ins;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    Defmodule *theModule;
    bool searchImports;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    if (EnvRtnArgCount(theEnv) > 1)
@@ -1320,12 +1312,12 @@ void InstanceAddressCommand(
   NOTES        : H/L Syntax : (instance-name <instance>)
  ***************************************************************/
 void InstanceNameCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Instance *ins;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    if (! UDFFirstArgument(context,INSTANCE_TYPES | SYMBOL_TYPE,&theArg))
@@ -1363,6 +1355,7 @@ void InstanceNameCommand(
   NOTES        : H/L Syntax : (instance-addressp <arg>)
  **************************************************************/
 void InstanceAddressPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1383,6 +1376,7 @@ void InstanceAddressPCommand(
   NOTES        : H/L Syntax : (instance-namep <arg>)
  **************************************************************/
 void InstanceNamePCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1405,6 +1399,7 @@ void InstanceNamePCommand(
   NOTES        : H/L Syntax : (instancep <arg>)
  *****************************************************************/
 void InstancePCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1425,11 +1420,11 @@ void InstancePCommand(
   NOTES        : H/L Syntax : (instance-existp <arg>)
  ********************************************************/
 void InstanceExistPCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }

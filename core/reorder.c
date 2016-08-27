@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/30/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                    REORDER MODULE                   */
    /*******************************************************/
@@ -1287,7 +1287,7 @@ struct lhsParseNode *ExpressionToLHSParseNodes(
   {
    struct lhsParseNode *newList, *theList;
    struct FunctionDefinition *theFunction;
-   int i, theRestriction;
+   int i;
    unsigned theRestriction2;
 
    /*===========================================*/
@@ -1322,17 +1322,8 @@ struct lhsParseNode *ExpressionToLHSParseNodes(
      {
       if (theList->type == SF_VARIABLE)
         {
-         if (theFunction->returnValueType != 'z')
-           {
-            theRestriction = GetNthRestriction(theFunction,i);
-            theList->constraints = ArgumentTypeToConstraintRecord(theEnv,theRestriction);
-           }
-         else
-           {
-            theRestriction2 = GetNthRestriction2(theEnv,theFunction,i);
-            theList->constraints = ArgumentTypeToConstraintRecord2(theEnv,theRestriction2);
-           }
-         
+         theRestriction2 = GetNthRestriction2(theEnv,theFunction,i);
+         theList->constraints = ArgumentTypeToConstraintRecord(theEnv,theRestriction2);         
          theList->derivedConstraints = true;
         }
      }

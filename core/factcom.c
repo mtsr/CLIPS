@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/06/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                FACT COMMANDS MODULE                 */
    /*******************************************************/
@@ -60,6 +60,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*      6.50: Watch facts for modify command only prints     */
 /*            changed slots.                                 */
 /*                                                           */
@@ -113,7 +115,7 @@
    static long long               GetFactsArgument(UDFContext *);
 #endif
    static struct expr            *StandardLoadFact(Environment *,const char *,struct token *);
-   static DATA_OBJECT_PTR         GetSaveFactsDeftemplateNames(Environment *,struct expr *,int,int *,bool *);
+   static CLIPSValue             *GetSaveFactsDeftemplateNames(Environment *,struct expr *,int,int *,bool *);
 
 /***************************************/
 /* FactCommandDefinitions: Initializes */
@@ -124,22 +126,20 @@ void FactCommandDefinitions(
   {
 #if ! RUN_TIME
 #if DEBUGGING_FUNCTIONS
-   EnvAddUDF(theEnv,"facts", "v",  FactsCommand,        "FactsCommand",0,4,"l;*" ,NULL);
+   EnvAddUDF(theEnv,"facts","v",0,4,"l;*",FactsCommand,"FactsCommand",NULL);
 #endif
 
-   EnvAddUDF(theEnv,"assert", "bf", AssertCommand,  "AssertCommand",0,UNBOUNDED,NULL,NULL);
-   EnvAddUDF(theEnv,"retract", "v", RetractCommand, "RetractCommand",1,UNBOUNDED,"fly",NULL);
-   EnvAddUDF(theEnv,"assert-string", "bf",  AssertStringFunction,   "AssertStringFunction", 1,1,"s",NULL);
-   EnvAddUDF(theEnv,"str-assert", "bf",  AssertStringFunction,   "AssertStringFunction", 1,1,"s",NULL);
+   EnvAddUDF(theEnv,"assert","bf",0,UNBOUNDED,NULL,AssertCommand,"AssertCommand",NULL);
+   EnvAddUDF(theEnv,"retract", "v",1,UNBOUNDED,"fly",RetractCommand,"RetractCommand",NULL);
+   EnvAddUDF(theEnv,"assert-string","bf",1,1,"s",AssertStringFunction,"AssertStringFunction",NULL);
+   EnvAddUDF(theEnv,"str-assert","bf",1,1,"s",AssertStringFunction,"AssertStringFunction",NULL);
 
-   EnvAddUDF(theEnv,"get-fact-duplication","b",
-                    GetFactDuplicationCommand,"GetFactDuplicationCommand", 0,0,NULL,NULL);
-   EnvAddUDF(theEnv,"set-fact-duplication","b",
-                    SetFactDuplicationCommand,"SetFactDuplicationCommand", 1,1,NULL,NULL);
+   EnvAddUDF(theEnv,"get-fact-duplication","b",0,0,NULL,GetFactDuplicationCommand,"GetFactDuplicationCommand", NULL);
+   EnvAddUDF(theEnv,"set-fact-duplication","b",1,1,NULL,SetFactDuplicationCommand,"SetFactDuplicationCommand", NULL);
 
-   EnvAddUDF(theEnv,"save-facts", "b",  SaveFactsCommand, "SaveFactsCommand", 1,UNBOUNDED, "y;sy" , NULL);
-   EnvAddUDF(theEnv,"load-facts", "b",  LoadFactsCommand, "LoadFactsCommand", 1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"fact-index", "l", FactIndexFunction,"FactIndexFunction", 1,1,"f",NULL);
+   EnvAddUDF(theEnv,"save-facts","b",1,UNBOUNDED,"y;sy",SaveFactsCommand,"SaveFactsCommand",NULL);
+   EnvAddUDF(theEnv,"load-facts","b",1,1,"sy",LoadFactsCommand,"LoadFactsCommand",NULL);
+   EnvAddUDF(theEnv,"fact-index","l",1,1,"f",FactIndexFunction,"FactIndexFunction",NULL);
 
    AddFunctionParser(theEnv,"assert",AssertParse);
    FuncSeqOvlFlags(theEnv,"assert",false,false);
@@ -155,19 +155,19 @@ void FactCommandDefinitions(
 /*   for the assert function.          */
 /***************************************/
 void AssertCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Deftemplate *theDeftemplate;
    struct field *theField;
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
    struct expr *theExpression;
    struct templateSlot *slotPtr;
    Fact *newFact;
    bool error = false;
    int i;
    Fact *theFact;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    /*================================*/
    /* Get the deftemplate associated */
@@ -285,13 +285,13 @@ void AssertCommand(
 /*   for the retract command.           */
 /****************************************/
 void RetractCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSInteger factIndex;
    Fact *ptr;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*================================*/
    /* Iterate through each argument. */
@@ -384,11 +384,11 @@ void RetractCommand(
 /*   for the set-fact-duplication command.         */
 /***************************************************/
 void SetFactDuplicationCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   Environment *theEnv= UDFContextEnvironment(context);
 
    /*=====================================================*/
    /* Get the old value of the fact duplication behavior. */
@@ -416,11 +416,10 @@ void SetFactDuplicationCommand(
 /*   for the get-fact-duplication command.         */
 /***************************************************/
 void GetFactDuplicationCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
-
    mCVSetBoolean(returnValue,EnvGetFactDuplication(theEnv));
   }
 
@@ -429,6 +428,7 @@ void GetFactDuplicationCommand(
 /*   for the fact-index function.          */
 /*******************************************/
 void FactIndexFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -453,7 +453,7 @@ void FactIndexFunction(
       return;
      }
 
-   mCVSetInteger(returnValue,EnvFactIndex(UDFContextEnvironment(context),GetValue(theArg)));
+   mCVSetInteger(returnValue,EnvFactIndex(theEnv,GetValue(theArg)));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -463,13 +463,13 @@ void FactIndexFunction(
 /*   for the facts command.           */
 /**************************************/
 void FactsCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    long long start = UNSPECIFIED, end = UNSPECIFIED, max = UNSPECIFIED;
    Defmodule *theModule;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*==================================*/
    /* The default module for the facts */
@@ -704,6 +704,7 @@ static long long GetFactsArgument(
 /*   for the assert-string function.          */
 /**********************************************/
 void AssertStringFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -722,7 +723,7 @@ void AssertStringFunction(
    /* string to a fact and then assert it.     */
    /*==========================================*/
 
-   theFact = EnvAssertString(UDFContextEnvironment(context),mCVToString(&theArg));
+   theFact = EnvAssertString(theEnv,mCVToString(&theArg));
    if (theFact != NULL)
      { mCVSetFactAddress(returnValue,theFact); }
    else
@@ -734,15 +735,15 @@ void AssertStringFunction(
 /*   for the save-facts command.          */
 /******************************************/
 void SaveFactsCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    const char *fileName;
    int numArgs, saveCode = LOCAL_SAVE;
    const char *argument;
-   DATA_OBJECT theValue;
+   CLIPSValue theValue;
    struct expr *theList = NULL;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*============================================*/
    /* Check for the correct number of arguments. */
@@ -759,7 +760,7 @@ void SaveFactsCommand(
       mCVSetBoolean(returnValue,false);
       return;
      }
-     
+
    /*=============================================================*/
    /* If specified, the second argument to save-facts indicates   */
    /* whether just facts local to the current module or all facts */
@@ -811,6 +812,7 @@ void SaveFactsCommand(
 /*   for the load-facts command.          */
 /******************************************/
 void LoadFactsCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -830,7 +832,7 @@ void LoadFactsCommand(
    /* Call the LoadFacts driver routine. */
    /*====================================*/
 
-   if (EnvLoadFacts(UDFContextEnvironment(context),fileName) == false)
+   if (EnvLoadFacts(theEnv,fileName) == false)
      {
       mCVSetBoolean(returnValue,false);
       return;
@@ -863,7 +865,7 @@ bool EnvSaveFactsDriver(
    struct fact *theFact;
    FILE *filePtr;
    Defmodule *theModule;
-   DATA_OBJECT_PTR theDOArray;
+   CLIPSValue *theDOArray;
    int count, i;
    bool printFact, error;
 
@@ -986,7 +988,7 @@ bool EnvSaveFactsDriver(
    /* Free the deftemplate name array. */
    /*==================================*/
 
-   if (theList != NULL) rm3(theEnv,theDOArray,(long) sizeof(DATA_OBJECT) * count);
+   if (theList != NULL) rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * count);
 
    /*===================================*/
    /* Return true to indicate no errors */
@@ -1000,7 +1002,7 @@ bool EnvSaveFactsDriver(
 /* GetSaveFactsDeftemplateNames: Retrieves the list of deftemplate */
 /*   names for saving specific facts with the save-facts command.  */
 /*******************************************************************/
-static DATA_OBJECT_PTR GetSaveFactsDeftemplateNames(
+static CLIPSValue *GetSaveFactsDeftemplateNames(
   Environment *theEnv,
   struct expr *theList,
   int saveCode,
@@ -1008,7 +1010,7 @@ static DATA_OBJECT_PTR GetSaveFactsDeftemplateNames(
   bool *error)
   {
    struct expr *tempList;
-   DATA_OBJECT_PTR theDOArray;
+   CLIPSValue *theDOArray;
    int i, tempCount;
    Deftemplate *theDeftemplate = NULL;
 
@@ -1043,7 +1045,7 @@ static DATA_OBJECT_PTR GetSaveFactsDeftemplateNames(
    /* Allocate the storage for the name list. */
    /*=========================================*/
 
-   theDOArray = (DATA_OBJECT_PTR) gm3(theEnv,(long) sizeof(DATA_OBJECT) * *count);
+   theDOArray = (CLIPSValue *) gm3(theEnv,(long) sizeof(CLIPSValue) * *count);
 
    /*=====================================*/
    /* Loop through each of the arguments. */
@@ -1062,7 +1064,7 @@ static DATA_OBJECT_PTR GetSaveFactsDeftemplateNames(
       if (EvaluationData(theEnv)->EvaluationError)
         {
          *error = true;
-         rm3(theEnv,theDOArray,(long) sizeof(DATA_OBJECT) * *count);
+         rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * *count);
          return NULL;
         }
 
@@ -1074,7 +1076,7 @@ static DATA_OBJECT_PTR GetSaveFactsDeftemplateNames(
         {
          *error = true;
          ExpectedTypeError1(theEnv,"save-facts",3+i,"symbol");
-         rm3(theEnv,theDOArray,(long) sizeof(DATA_OBJECT) * *count);
+         rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * *count);
          return NULL;
         }
 
@@ -1091,7 +1093,7 @@ static DATA_OBJECT_PTR GetSaveFactsDeftemplateNames(
            {
             *error = true;
             ExpectedTypeError1(theEnv,"save-facts",3+i,"local deftemplate name");
-            rm3(theEnv,theDOArray,(long) sizeof(DATA_OBJECT) * *count);
+            rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * *count);
             return NULL;
            }
         }
@@ -1105,7 +1107,7 @@ static DATA_OBJECT_PTR GetSaveFactsDeftemplateNames(
            {
             *error = true;
             ExpectedTypeError1(theEnv,"save-facts",3+i,"visible deftemplate name");
-            rm3(theEnv,theDOArray,(long) sizeof(DATA_OBJECT) * *count);
+            rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * *count);
             return NULL;
            }
         }
@@ -1136,7 +1138,7 @@ bool EnvLoadFacts(
    FILE *filePtr;
    struct token theToken;
    struct expr *testPtr;
-   DATA_OBJECT rv;
+   CLIPSValue rv;
 
    /*======================================================*/
    /* Open the file. Use either "fast save" or I/O Router. */
@@ -1190,7 +1192,7 @@ bool EnvLoadFactsFromString(
    const char *theStrRouter = "*** load-facts-from-string ***";
    struct token theToken;
    struct expr *testPtr;
-   DATA_OBJECT rv;
+   CLIPSValue rv;
 
    /*==========================*/
    /* Initialize string router */

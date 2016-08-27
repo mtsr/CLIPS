@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*           INSTANCE MULTIFIELD SLOT MODULE           */
    /*******************************************************/
@@ -34,6 +34,12 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            Removed direct-mv-replace, direct-mv-insert,   */
+/*            direct-mv-delete, mv-slot-replace,             */
+/*            mv-slot-insert, and mv-slot-delete functions.  */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -72,8 +78,8 @@
 
    static Instance               *CheckMultifieldSlotInstance(Environment *,const char *);
    static INSTANCE_SLOT          *CheckMultifieldSlotModify(Environment *,int,const char *,Instance *,
-                                                            EXPRESSION *,long *,long *,DATA_OBJECT *);
-   static void                    AssignSlotToDataObject(DATA_OBJECT *,INSTANCE_SLOT *);
+                                                            EXPRESSION *,long *,long *,CLIPSValue *);
+   static void                    AssignSlotToDataObject(CLIPSValue *,INSTANCE_SLOT *);
 
 /* =========================================
    *****************************************
@@ -95,18 +101,12 @@
 void SetupInstanceMultifieldCommands(
   Environment *theEnv)
   {
-   EnvAddUDF(theEnv,"slot-direct-replace$","b", DirectMVReplaceCommand,
-                    "DirectMVReplaceCommand",4,UNBOUNDED,"*;y;l;l",NULL);
-   EnvAddUDF(theEnv,"slot-direct-insert$","b", DirectMVInsertCommand,
-                    "DirectMVInsertCommand",3,UNBOUNDED,"*;y;l",NULL);
-   EnvAddUDF(theEnv,"slot-direct-delete$","b", DirectMVDeleteCommand,
-                    "DirectMVDeleteCommand",3,3,"l;y",NULL);
-   EnvAddUDF(theEnv,"slot-replace$","*", MVSlotReplaceCommand,
-                    "MVSlotReplaceCommand",5, UNBOUNDED, "*;iny;y;l;l",NULL);
-   EnvAddUDF(theEnv,"slot-insert$","*", MVSlotInsertCommand,
-                    "MVSlotInsertCommand",4,UNBOUNDED,"*;iny;y;l",NULL);
-   EnvAddUDF(theEnv,"slot-delete$","*", MVSlotDeleteCommand,
-                    "MVSlotDeleteCommand",4,4, "l;iny;y" ,NULL);
+   EnvAddUDF(theEnv,"slot-direct-replace$","b",4,UNBOUNDED,"*;y;l;l",DirectMVReplaceCommand,"DirectMVReplaceCommand",NULL);
+   EnvAddUDF(theEnv,"slot-direct-insert$","b",3,UNBOUNDED,"*;y;l",DirectMVInsertCommand,"DirectMVInsertCommand",NULL);
+   EnvAddUDF(theEnv,"slot-direct-delete$","b",3,3,"l;y",DirectMVDeleteCommand,"DirectMVDeleteCommand",NULL);
+   EnvAddUDF(theEnv,"slot-replace$","*",5,UNBOUNDED,"*;iny;y;l;l",MVSlotReplaceCommand,"MVSlotReplaceCommand",NULL);
+   EnvAddUDF(theEnv,"slot-insert$","*",4,UNBOUNDED,"*;iny;y;l",MVSlotInsertCommand,"MVSlotInsertCommand",NULL);
+   EnvAddUDF(theEnv,"slot-delete$","*",4,4,"l;iny;y",MVSlotDeleteCommand,"MVSlotDeleteCommand",NULL);
   }
 
 #endif
@@ -125,15 +125,15 @@ void SetupInstanceMultifieldCommands(
                                  <range-begin> <range-end> <value>)
  ***********************************************************************************/
 void MVSlotReplaceCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT newval,newseg,oldseg;
+   CLIPSValue newval,newseg,oldseg;
    Instance *ins;
    INSTANCE_SLOT *sp;
    long rb,re;
    EXPRESSION arg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    ins = CheckMultifieldSlotInstance(theEnv,"slot-replace$");
@@ -165,15 +165,15 @@ void MVSlotReplaceCommand(
   NOTES        : H/L Syntax : (slot-insert$ <instance> <slot> <index> <value>)
  ***********************************************************************************/
 void MVSlotInsertCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT newval,newseg,oldseg;
+   CLIPSValue newval,newseg,oldseg;
    Instance *ins;
    INSTANCE_SLOT *sp;
    long theIndex;
    EXPRESSION arg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    ins = CheckMultifieldSlotInstance(theEnv,"slot-insert$");
@@ -206,15 +206,15 @@ void MVSlotInsertCommand(
                                  <range-begin> <range-end>)
  ***********************************************************************************/
 void MVSlotDeleteCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT newseg,oldseg;
+   CLIPSValue newseg,oldseg;
    Instance *ins;
    INSTANCE_SLOT *sp;
    long rb,re;
    EXPRESSION arg;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    ins = CheckMultifieldSlotInstance(theEnv,"slot-delete$");
@@ -244,21 +244,21 @@ void MVSlotDeleteCommand(
                                 <range-begin> <range-end> <value>)
  *****************************************************************/
 void DirectMVReplaceCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    INSTANCE_SLOT *sp;
    Instance *ins;
    long rb,re;
-   DATA_OBJECT newval,newseg,oldseg;
-   Environment *theEnv = UDFContextEnvironment(context);
+   CLIPSValue newval,newseg,oldseg;
 
    if (CheckCurrentMessage(theEnv,"direct-slot-replace$",true) == false)
      {
       mCVSetBoolean(returnValue,false);
       return;
      }
-     
+
    ins = GetActiveInstance(theEnv);
    sp = CheckMultifieldSlotModify(theEnv,REPLACE,"direct-slot-replace$",ins,
                             GetFirstArgument(),&rb,&re,&newval);
@@ -267,7 +267,7 @@ void DirectMVReplaceCommand(
       mCVSetBoolean(returnValue,false);
       return;
      }
-     
+
    AssignSlotToDataObject(&oldseg,sp);
    if (! ReplaceMultiValueField(theEnv,&newseg,&oldseg,rb,re,&newval,"direct-slot-replace$"))
      {
@@ -290,14 +290,14 @@ void DirectMVReplaceCommand(
   NOTES        : H/L Syntax: (direct-slot-insert$ <slot> <index> <value>)
  ************************************************************************/
 void DirectMVInsertCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    INSTANCE_SLOT *sp;
    Instance *ins;
    long theIndex;
-   DATA_OBJECT newval,newseg,oldseg;
-   Environment *theEnv = UDFContextEnvironment(context);
+   CLIPSValue newval,newseg,oldseg;
 
    if (CheckCurrentMessage(theEnv,"direct-slot-insert$",true) == false)
      { mCVSetBoolean(returnValue,false); }
@@ -327,14 +327,14 @@ void DirectMVInsertCommand(
                                 <range-begin> <range-end>)
  *****************************************************************/
 void DirectMVDeleteCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    INSTANCE_SLOT *sp;
    Instance *ins;
    long rb,re;
-   DATA_OBJECT newseg,oldseg;
-   Environment *theEnv = UDFContextEnvironment(context);
+   CLIPSValue newseg,oldseg;
 
    if (CheckCurrentMessage(theEnv,"direct-slot-delete$",true) == false)
      { mCVSetBoolean(returnValue,false); }
@@ -375,7 +375,7 @@ static Instance *CheckMultifieldSlotInstance(
   const char *func)
   {
    Instance *ins;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
 
    if (EnvArgTypeCheck(theEnv,func,1,INSTANCE_OR_INSTANCE_NAME,&temp) == false)
      {
@@ -437,9 +437,9 @@ static INSTANCE_SLOT *CheckMultifieldSlotModify(
   EXPRESSION *args,
   long *rb,
   long *re,
-  DATA_OBJECT *newval)
+  CLIPSValue *newval)
   {
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    INSTANCE_SLOT *sp;
    int start;
 
@@ -511,7 +511,7 @@ static INSTANCE_SLOT *CheckMultifieldSlotModify(
   NOTES        : Assumes slot is a multislot
  ***************************************************/
 static void AssignSlotToDataObject(
-  DATA_OBJECT *theDataObject,
+  CLIPSValue *theDataObject,
   INSTANCE_SLOT *theSlot)
   {
    theDataObject->type = (unsigned short) theSlot->type;

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/06/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                 FACT HASHING MODULE                 */
    /*******************************************************/
@@ -38,6 +38,8 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*      6.50: Modify command preserves fact id and address.  */
 /*                                                           */
@@ -395,17 +397,17 @@ static void ResetFactHashTable(
       
 #if DEVELOPER
 
-/*****************************************************/
-/* ShowFactHashTable: Displays the number of entries */
-/*   in each slot of the fact hash table.            */
-/*****************************************************/
-void ShowFactHashTable(
+/****************************************************/
+/* ShowFactHashTableCommand: Displays the number of */
+/*   entries in each slot of the fact hash table.   */
+/****************************************************/
+void ShowFactHashTableCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    int i, count;
    struct factHashEntry *theEntry;
-   Environment *theEnv = UDFContextEnvironment(context);
    char buffer[20];
 
    for (i = 0; i < FactData(theEnv)->FactHashTableSize; i++)

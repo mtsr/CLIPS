@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/06/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*               STRING FUNCTIONS MODULE               */
    /*******************************************************/
@@ -63,6 +63,8 @@
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*      6.50: The eval function can now access any local     */
 /*            variables that have been defined.              */
 /*                                                           */
@@ -111,17 +113,17 @@ void StringFunctionDefinitions(
   Environment *theEnv)
   {
 #if ! RUN_TIME
-   EnvAddUDF(theEnv,"str-cat",        "sy", StrCatFunction, "StrCatFunction", 1, UNBOUNDED, "synld" ,NULL);
-   EnvAddUDF(theEnv,"sym-cat",        "sy", SymCatFunction, "SymCatFunction",  1, UNBOUNDED, "synld" ,NULL);
-   EnvAddUDF(theEnv,"str-length",      "l", StrLengthFunction, "StrLengthFunction", 1,1,"syn",NULL);
-   EnvAddUDF(theEnv,"str-compare",     "l", StrCompareFunction, "StrCompareFunction", 2,3, "*;syn;syn;l" ,NULL);
-   EnvAddUDF(theEnv,"upcase",        "syn", UpcaseFunction, "UpcaseFunction", 1,1,"syn",NULL);
-   EnvAddUDF(theEnv,"lowcase",       "syn",  LowcaseFunction, "LowcaseFunction", 1,1,"syn",NULL);
-   EnvAddUDF(theEnv,"sub-string",      "s", SubStringFunction, "SubStringFunction",3,3, "*;l;l;syn",NULL);
-   EnvAddUDF(theEnv,"str-index",      "bl", StrIndexFunction, "StrIndexFunction", 2,2,"syn",NULL);
-   EnvAddUDF(theEnv,"eval",            "*", EvalFunction, "EvalFunction", 1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"build",           "b", BuildFunction, "BuildFunction", 1,1,"sy",NULL);
-   EnvAddUDF(theEnv,"string-to-field", "*",  StringToFieldFunction, "StringToFieldFunction", 1,1,"syn",NULL);
+   EnvAddUDF(theEnv,"str-cat","sy",1,UNBOUNDED,"synld" ,StrCatFunction,"StrCatFunction",NULL);
+   EnvAddUDF(theEnv,"sym-cat","sy",1,UNBOUNDED,"synld" ,SymCatFunction,"SymCatFunction",NULL);
+   EnvAddUDF(theEnv,"str-length","l",1,1,"syn",StrLengthFunction,"StrLengthFunction",NULL);
+   EnvAddUDF(theEnv,"str-compare","l",2,3,"*;syn;syn;l" ,StrCompareFunction,"StrCompareFunction",NULL);
+   EnvAddUDF(theEnv,"upcase","syn",1,1,"syn",UpcaseFunction,"UpcaseFunction",NULL);
+   EnvAddUDF(theEnv,"lowcase","syn",1,1,"syn",LowcaseFunction,"LowcaseFunction",NULL);
+   EnvAddUDF(theEnv,"sub-string","s",3,3,"*;l;l;syn",SubStringFunction,"SubStringFunction",NULL);
+   EnvAddUDF(theEnv,"str-index","bl",2,2,"syn",StrIndexFunction,"StrIndexFunction",NULL);
+   EnvAddUDF(theEnv,"eval","*",1,1,"sy",EvalFunction,"EvalFunction",NULL);
+   EnvAddUDF(theEnv,"build","b",1,1,"sy",BuildFunction,"BuildFunction",NULL);
+   EnvAddUDF(theEnv,"string-to-field","*",1,1,"syn",StringToFieldFunction,"StringToFieldFunction",NULL);
 #else
 #if MAC_XCD
 #pragma unused(theEnv)
@@ -134,6 +136,7 @@ void StringFunctionDefinitions(
 /*   for the str-cat function.          */
 /****************************************/
 void StrCatFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {   
@@ -145,6 +148,7 @@ void StrCatFunction(
 /*   for the sym-cat function.          */
 /****************************************/
 void SymCatFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -160,13 +164,13 @@ static void StrOrSymCatFunction(
   CLIPSValue *returnValue,
   unsigned short returnType)
   {
-   DATA_OBJECT theArg;
+   CLIPSValue theArg;
    int numArgs, i, total, j;
    char *theString;
    SYMBOL_HN **arrayOfStrings;
    SYMBOL_HN *hashPtr;
    const char *functionName;
-   void *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = UDFContextEnvironment(context);
 
    /*============================================*/
    /* Determine the calling function name.       */
@@ -291,6 +295,7 @@ static void StrOrSymCatFunction(
 /*   for the str-length function.          */
 /*******************************************/
 void StrLengthFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -315,6 +320,7 @@ void StrLengthFunction(
 /*   for the upcase function.           */
 /****************************************/
 void UpcaseFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -322,7 +328,6 @@ void UpcaseFunction(
    size_t slen;
    const char *osptr;
    char *nsptr;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*==================================================*/
    /* The argument should be of type symbol or string. */
@@ -363,6 +368,7 @@ void UpcaseFunction(
 /*   for the lowcase function.           */
 /*****************************************/
 void LowcaseFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -370,7 +376,6 @@ void LowcaseFunction(
    size_t slen;
    const char *osptr;
    char *nsptr;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*==================================================*/
    /* The argument should be of type symbol or string. */
@@ -411,10 +416,11 @@ void LowcaseFunction(
 /*   for the str-compare function.          */
 /********************************************/
 void StrCompareFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT arg1, arg2, arg3;
+   CLIPSValue arg1, arg2, arg3;
    int compareResult;
 
    /*=============================================================*/
@@ -463,6 +469,7 @@ void StrCompareFunction(
 /*   for the sub-string function.          */
 /*******************************************/
 void SubStringFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -470,7 +477,6 @@ void SubStringFunction(
    const char *tempString;
    char *returnString;
    size_t start, end, i, j, length;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    /*===================================*/
    /* Check and retrieve the arguments. */
@@ -550,6 +556,7 @@ void SubStringFunction(
 /*   for the sub-index function.          */
 /******************************************/
 void StrIndexFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -604,6 +611,7 @@ void StrIndexFunction(
 /*   for the string-to-field function.       */
 /********************************************/
 void StringToFieldFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -623,7 +631,7 @@ void StringToFieldFunction(
    /* Convert the string to an atom. */
    /*================================*/
 
-   StringToField(UDFContextEnvironment(context),mCVToString(&theArg),returnValue);
+   StringToField(theEnv,mCVToString(&theArg),returnValue);
   }
 
 /*************************************************************/
@@ -632,7 +640,7 @@ void StringToFieldFunction(
 void StringToField(
   Environment *theEnv,
   const char *theString,
-  DATA_OBJECT *returnValue)
+  CLIPSValue *returnValue)
   {
    struct token theToken;
 
@@ -680,6 +688,7 @@ void StringToField(
 /*   for the eval function.           */
 /**************************************/
 void EvalFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -696,7 +705,7 @@ void EvalFunction(
    /* Evaluate the string. */
    /*======================*/
 
-   EnvEval(UDFContextEnvironment(context),mCVToString(&theArg),returnValue);
+   EnvEval(theEnv,mCVToString(&theArg),returnValue);
   }
   
 /*****************************/
@@ -706,7 +715,7 @@ void EvalFunction(
 bool EnvEval(
   Environment *theEnv,
   const char *theString,
-  DATA_OBJECT_PTR returnValue)
+  CLIPSValue *returnValue)
   {
    struct expr *top;
    bool ov;
@@ -844,7 +853,8 @@ bool EnvEval(
 /*************************************************/
 void EvalFunction(
   Environment *theEnv,
-  DATA_OBJECT_PTR returnValue)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
    returnValue->environment = theEnv;
    PrintErrorID(theEnv,"STRNGFUN",1,false);
@@ -859,7 +869,7 @@ void EvalFunction(
 bool EnvEval(
   Environment *theEnv,
   const char *theString,
-  DATA_OBJECT_PTR returnValue)
+  CLIPSValue *returnValue)
   {
    returnValue->environment = theEnv;
    PrintErrorID(theEnv,"STRNGFUN",1,false);
@@ -876,10 +886,11 @@ bool EnvEval(
 /*   for the build function.           */
 /***************************************/
 void BuildFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DATA_OBJECT theArg;
+   CLIPSValue theArg;
 
    /*==================================================*/
    /* The argument should be of type SYMBOL or STRING. */
@@ -892,7 +903,7 @@ void BuildFunction(
    /* Build the construct. */
    /*======================*/
 
-   mCVSetBoolean(returnValue,(EnvBuild(UDFContextEnvironment(context),mCVToString(&theArg))));
+   mCVSetBoolean(returnValue,(EnvBuild(theEnv,mCVToString(&theArg))));
   }
   
 /******************************/

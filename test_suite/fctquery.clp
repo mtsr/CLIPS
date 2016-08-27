@@ -81,7 +81,7 @@
      (bind ?count (+ ?count 1)))
   ?count)
 (deffunction count-facts-2 (?template)
-  (length (find-all-facts ((?fct ?template)) TRUE)))
+  (length$ (find-all-facts ((?fct ?template)) TRUE)))
 (deftemplate A (slot name)) ; (is-a USER))
 (deftemplate B) ; (is-a A))
 (deftemplate C) ; (is-a A))

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  07/30/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*          INSTANCE PRIMITIVE SUPPORT MODULE          */
    /*******************************************************/
@@ -48,6 +48,8 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
+/*                                                           */
+/*            UDF redesign.                                  */
 /*                                                           */
 /*************************************************************/
 
@@ -129,11 +131,11 @@
                     <slot-override>*)
  ***********************************************************/
 void InitializeInstanceCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    Instance *ins;
-   Environment *theEnv = UDFContextEnvironment(context);
    
    mCVSetBoolean(returnValue,false);
    ins = CheckInstance(theEnv,"initialize-instance");
@@ -157,14 +159,14 @@ void InitializeInstanceCommand(
                  is specified.
  ****************************************************************/
 void MakeInstanceCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    SYMBOL_HN *iname;
    Instance *ins;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
    Defclass *cls;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    mCVSetBoolean(returnValue,false);
    EvaluateExpression(theEnv,GetFirstArgument(),&temp);
@@ -295,7 +297,7 @@ Instance *BuildInstance(
    unsigned hashTableIndex;
    unsigned modulePosition;
    SYMBOL_HN *moduleName;
-   DATA_OBJECT temp;
+   CLIPSValue temp;
 
 #if DEFRULE_CONSTRUCT
    if (EngineData(theEnv)->JoinOperationInProgress && cls->reactive)
@@ -470,18 +472,17 @@ Instance *BuildInstance(
                  by overrides (sp->override == 1) are ignored)
   INPUTS       : 1) Instance address
   RETURNS      : Nothing useful
-  SIDE EFFECTS : Each DATA_OBJECT slot in the instance's slot array is replaced
+  SIDE EFFECTS : Each CLIPSValue slot in the instance's slot array is replaced
                    by the evaluation (by EvaluateExpression) of the expression
                    in the slot list.  The old expression-values
                    are deleted.
   NOTES        : H/L Syntax: (init-slots <instance>)
  *****************************************************************************/
 void InitSlotsCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
-   
    EvaluationData(theEnv)->EvaluationError = false;
    
    if (CheckCurrentMessage(theEnv,"init-slots",true) == false)
@@ -635,14 +636,14 @@ bool QuashInstance(
                     <slot-override>*)
  ****************************************************/
 void InactiveInitializeInstance(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    bool ov;
-   Environment *theEnv = UDFContextEnvironment(context);
-   
+
    ov = SetDelayObjectPatternMatching(theEnv,true);
-   InitializeInstanceCommand(context,returnValue);
+   InitializeInstanceCommand(theEnv,context,returnValue);
    SetDelayObjectPatternMatching(theEnv,ov);
   }
 
@@ -660,14 +661,14 @@ void InactiveInitializeInstance(
                     <slot-override>*)
  **************************************************************/
 void InactiveMakeInstance(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    bool ov;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    ov = SetDelayObjectPatternMatching(theEnv,true);
-   MakeInstanceCommand(context,returnValue);
+   MakeInstanceCommand(theEnv,context,returnValue);
    SetDelayObjectPatternMatching(theEnv,ov);
   }
 
@@ -927,7 +928,7 @@ static bool CoreInitializeInstance(
   Instance *ins,
   EXPRESSION *ovrexp)
   {
-   DATA_OBJECT temp;
+   CLIPSValue temp;
 
    if (ins->installed == 0)
      {
@@ -1002,7 +1003,7 @@ static bool InsertSlotOverrides(
   EXPRESSION *slot_exp)
   {
    INSTANCE_SLOT *slot;
-   DATA_OBJECT temp,junk;
+   CLIPSValue temp,junk;
 
    EvaluationData(theEnv)->EvaluationError = false;
    while (slot_exp != NULL)
@@ -1060,7 +1061,7 @@ static bool InsertSlotOverrides(
                  by overrides (sp->override == 1) are ignored)
   INPUTS       : 1) Instance address
   RETURNS      : Nothing useful
-  SIDE EFFECTS : Each DATA_OBJECT slot in the instance's slot array is replaced
+  SIDE EFFECTS : Each CLIPSValue slot in the instance's slot array is replaced
                    by the evaluation (by EvaluateExpression) of the expression
                    in the slot list.  The old expression-values
                    are deleted.
@@ -1071,7 +1072,7 @@ static void EvaluateClassDefaults(
   Instance *ins)
   {
    INSTANCE_SLOT *slot;
-   DATA_OBJECT temp,junk;
+   CLIPSValue temp,junk;
    long i;
 
    if (ins->initializeInProgress == 0)
@@ -1101,7 +1102,7 @@ static void EvaluateClassDefaults(
            }
          else if (((slot->desc->shared == 0) || (slot->desc->sharedCount == 1)) &&
                   (slot->desc->noDefault == 0))
-           DirectPutSlotValue(theEnv,ins,slot,(DATA_OBJECT *) slot->desc->defaultValue,&junk);
+           DirectPutSlotValue(theEnv,ins,slot,(CLIPSValue *) slot->desc->defaultValue,&junk);
          else if (slot->valueRequired)
            {
             PrintErrorID(theEnv,"INSMNGR",14,false);

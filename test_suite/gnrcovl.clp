@@ -1,8 +1,8 @@
 (defmethod + ((?a SYMBOL) $?any)
   (bind ?i 1)
-  (bind ?len (length ?any))
+  (bind ?len (length$ ?any))
   (while (<= ?i ?len) do
-     (bind ?a (sym-cat ?a (nth ?i ?any)))
+     (bind ?a (sym-cat ?a (nth$ ?i ?any)))
      (bind ?i (+ ?i 1)))
   ?a)
 
@@ -11,9 +11,9 @@
 
 (defmethod + ((?a STRING) $?any)
   (bind ?i 1)
-  (bind ?len (length ?any))
+  (bind ?len (length$ ?any))
   (while (<= ?i ?len) do
-     (bind ?a (str-cat ?a (nth ?i ?any)))
+     (bind ?a (str-cat ?a (nth$ ?i ?any)))
      (bind ?i (+ ?i 1)))
   ?a)
 

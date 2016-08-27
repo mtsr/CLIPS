@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/10/16             */
+   /*            CLIPS Version 6.50  08/25/16             */
    /*                                                     */
    /*                  I/O ROUTER MODULE                  */
    /*******************************************************/
@@ -55,6 +55,8 @@
 /*                                                           */
 /*            Callbacks must be environment aware.           */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -93,7 +95,7 @@ void InitializeDefaultRouters(
    RouterData(theEnv)->AwaitingInput = true;
    
 #if (! RUN_TIME)
-   EnvAddUDF(theEnv,"exit",   "v", ExitCommand,    "ExitCommand", 0,1,"l",NULL);
+   EnvAddUDF(theEnv,"exit","v",0,1,"l",ExitCommand,"ExitCommand",NULL);
 #endif
    InitializeFileRouter(theEnv);
    InitializeStringRouter(theEnv);
@@ -338,13 +340,13 @@ int EnvUngetcRouter(
 /* ExitCommand: H/L command for exiting the program. */
 /*****************************************************/
 void ExitCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
    int argCnt;
    int status;
    CLIPSValue value;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    argCnt = UDFArgumentCount(context);
    if (argCnt == 0)

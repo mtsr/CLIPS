@@ -1485,9 +1485,9 @@ y)))
  (close text-file)
  (data $?x)
 =>
- (assert (length =(length ?x)))
- (assert (second-element =(nth 2 ?x)))
- (assert (member-center =(member Center ?x)))
+ (assert (length =(length$ ?x)))
+ (assert (second-element =(nth$ 2 ?x)))
+ (assert (member-center =(member$ Center ?x)))
  (assert (multifield one two three)))
 
 (defrule clean-up-action-functions
@@ -1561,7 +1561,7 @@ y)))
  (data-0 $?x $?y)
  (data-1 $?z)
 =>
- (if (subset ?x ?z)
+ (if (subsetp ?x ?z)
   then
    (assert (set ?x is-a-subset-of ?z))
   else
@@ -1573,7 +1573,7 @@ y)))
  (data-2 $?x $?y)
  (data-1 $?z)
 =>
- (if (subset ?x ?z)
+ (if (subsetp ?x ?z)
   then
    (assert (set ?x is-a-subset-of ?z))
   else

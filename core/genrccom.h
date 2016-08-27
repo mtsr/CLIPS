@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/06/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -50,6 +50,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #ifndef _H_genrccom
@@ -74,14 +76,14 @@
    long                           EnvGetNextDefmethod(Environment *,Defgeneric *,long);
    bool                           EnvIsDefgenericDeletable(Environment *,Defgeneric *);
    bool                           EnvIsDefmethodDeletable(Environment *,Defgeneric *,long);
-   void                           UndefgenericCommand(UDFContext *,CLIPSValue *);
-   void                           GetDefgenericModuleCommand(UDFContext *,CLIPSValue *);
-   void                           UndefmethodCommand(UDFContext *,CLIPSValue *);
+   void                           UndefgenericCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           GetDefgenericModuleCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           UndefmethodCommand(Environment *,UDFContext *,CLIPSValue *);
    Defmethod                     *GetDefmethodPointer(Defgeneric *,long);
    bool                           EnvUndefgeneric(Environment *,Defgeneric *);
    bool                           EnvUndefmethod(Environment *,Defgeneric *,long);
 #if ! OBJECT_SYSTEM
-   void                           TypeCommand(UDFContext *,CLIPSValue *);
+   void                           TypeCommand(Environment *,UDFContext *,CLIPSValue *);
 #endif
 #if DEBUGGING_FUNCTIONS || PROFILING_FUNCTIONS
    void                           EnvGetDefmethodDescription(Environment *,char *,size_t,Defgeneric *,long);
@@ -91,20 +93,20 @@
    void                           EnvSetDefgenericWatch(Environment *,bool,Defgeneric *);
    bool                           EnvGetDefmethodWatch(Environment *,Defgeneric *,long);
    void                           EnvSetDefmethodWatch(Environment *,bool,Defgeneric *,long);
-   void                           PPDefgenericCommand(UDFContext *,CLIPSValue *);
-   void                           PPDefmethodCommand(UDFContext *,CLIPSValue *);
-   void                           ListDefmethodsCommand(UDFContext *,CLIPSValue *);
+   void                           PPDefgenericCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           PPDefmethodCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           ListDefmethodsCommand(Environment *,UDFContext *,CLIPSValue *);
    const char                    *EnvGetDefmethodPPForm(Environment *,Defgeneric *,long);
-   void                           ListDefgenericsCommand(UDFContext *,CLIPSValue *);
+   void                           ListDefgenericsCommand(Environment *,UDFContext *,CLIPSValue *);
    void                           EnvListDefgenerics(Environment *,const char *,Defmodule *);
    void                           EnvListDefmethods(Environment *,const char *,Defgeneric *);
 #endif
-   void                           GetDefgenericListFunction(UDFContext *,CLIPSValue *);
-   void                           EnvGetDefgenericList(Environment *,DATA_OBJECT *,Defmodule *);
-   void                           GetDefmethodListCommand(UDFContext *,CLIPSValue *);
-   void                           EnvGetDefmethodList(Environment *,Defgeneric *,DATA_OBJECT *);
-   void                           GetMethodRestrictionsCommand(UDFContext *,CLIPSValue *);
-   void                           EnvGetMethodRestrictions(Environment *,Defgeneric *,long,DATA_OBJECT *);
+   void                           GetDefgenericListFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                           EnvGetDefgenericList(Environment *,CLIPSValue *,Defmodule *);
+   void                           GetDefmethodListCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           EnvGetDefmethodList(Environment *,Defgeneric *,CLIPSValue *);
+   void                           GetMethodRestrictionsCommand(Environment *,UDFContext *,CLIPSValue *);
+   void                           EnvGetMethodRestrictions(Environment *,Defgeneric *,long,CLIPSValue *);
    SYMBOL_HN                     *GetDefgenericNamePointer(Defgeneric *);
    void                           SetNextDefgeneric(Defgeneric *,Defgeneric *);
    const char                    *EnvDefgenericModule(Environment *,Defgeneric *);

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/06/16            */
+   /*             CLIPS Version 6.50  08/25/16            */
    /*                                                     */
    /*             BASIC MATH FUNCTIONS MODULE             */
    /*******************************************************/
@@ -33,6 +33,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*      6.50: Auto-float-dividend always enabled.            */
 /*                                                           */
 /*************************************************************/
@@ -46,16 +48,16 @@
 #include "evaluatn.h"
 
    void                    BasicMathFunctionDefinitions(Environment *);
-   void                    AdditionFunction(UDFContext *,CLIPSValue *);
-   void                    MultiplicationFunction(UDFContext *,CLIPSValue *);
-   void                    SubtractionFunction(UDFContext *,CLIPSValue *);
-   void                    DivisionFunction(UDFContext *,CLIPSValue *);
-   void                    DivFunction(UDFContext *,CLIPSValue *);
-   void                    IntegerFunction(UDFContext *,CLIPSValue *);
-   void                    FloatFunction(UDFContext *,CLIPSValue *);
-   void                    AbsFunction(UDFContext *,CLIPSValue *);
-   void                    MinFunction(UDFContext *,CLIPSValue *);
-   void                    MaxFunction(UDFContext *,CLIPSValue *);
+   void                    AdditionFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    MultiplicationFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    SubtractionFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    DivisionFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    DivFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    IntegerFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    FloatFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    AbsFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    MinFunction(Environment *,UDFContext *,CLIPSValue *);
+   void                    MaxFunction(Environment *,UDFContext *,CLIPSValue *);
 
 #endif
 
