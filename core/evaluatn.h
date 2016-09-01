@@ -85,7 +85,6 @@ typedef void EntityBusyCountFunction(Environment *,void *);
 
 struct dataObject
   {
-   void *environment;
    void *supplementalInfo;
    unsigned short type;
    unsigned bitType;
@@ -93,6 +92,7 @@ struct dataObject
    long begin;
    long end;
    struct dataObject *next;
+   Environment *environment;
   };
 
 #define C_POINTER_EXTERNAL_ADDRESS 0
@@ -126,8 +126,8 @@ struct externalAddressType
    void (*shortPrintFunction)(Environment *,const char *,void *);
    void (*longPrintFunction)(Environment *,const char *,void *);
    bool (*discardFunction)(Environment *,void *);
-   void (*newFunction)(Environment *,CLIPSValue *);
-   bool (*callFunction)(Environment *,CLIPSValue *,CLIPSValue *);
+   void (*newFunction)(UDFContext *,CLIPSValue *);
+   bool (*callFunction)(UDFContext *,CLIPSValue *,CLIPSValue *);
   };
 
 typedef struct entityRecord ENTITY_RECORD;

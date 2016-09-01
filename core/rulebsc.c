@@ -301,7 +301,7 @@ void GetDefruleListFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   GetConstructListFunction(context,"get-defrule-list",returnValue,DefruleData(theEnv)->DefruleConstruct);
+   GetConstructListFunction(context,returnValue,DefruleData(theEnv)->DefruleConstruct);
   }
 
 /****************************************/
@@ -313,7 +313,7 @@ void EnvGetDefruleList(
   CLIPSValue *returnValue,
   Defmodule *theModule)
   {
-   GetConstructList(theEnv,returnValue,DefruleData(theEnv)->DefruleConstruct,(struct defmodule *) theModule);
+   GetConstructList(theEnv,returnValue,DefruleData(theEnv)->DefruleConstruct,theModule);
   }
 
 /*********************************************/
@@ -363,7 +363,7 @@ void ListDefrulesCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   ListConstructCommand(context,"list-defrules",DefruleData(theEnv)->DefruleConstruct);
+   ListConstructCommand(context,DefruleData(theEnv)->DefruleConstruct); 
   }
 
 /*************************************/

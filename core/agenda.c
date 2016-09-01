@@ -906,7 +906,7 @@ void RefreshCommand(
    /* Get the name of the rule. */
    /*===========================*/
 
-   ruleName = GetConstructName(theEnv,context,"refresh","rule name");
+   ruleName = GetConstructName(context,"refresh","rule name");
    if (ruleName == NULL) return;
 
    /*===============================*/
@@ -1004,7 +1004,7 @@ void RefreshAgendaCommand(
 
    if (numArgs == 1)
      {
-      theModule = GetModuleName(theEnv,"refresh-agenda",1,&error);
+      theModule = GetModuleName(context,1,&error);
       if (error) return;
      }
    else
@@ -1137,7 +1137,7 @@ void SetSalienceEvaluationCommand(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&value))
      { return; }
- 
+
    /*=============================================================*/
    /* The allowed symbols to pass as an argument to this function */
    /* are when-defined, when-activated, and every-cycle.          */
@@ -1340,7 +1340,7 @@ void AgendaCommand(
    numArgs = UDFArgumentCount(context);
    if (numArgs == 1)
      {
-      theModule = GetModuleName(theEnv,"agenda",1,&error);
+      theModule = GetModuleName(context,1,&error);
       if (error) return;
      }
    else

@@ -105,7 +105,7 @@
 
    static void                    DeallocateEvaluationData(Environment *);
    static void                    PrintCAddress(Environment *,const char *,void *);
-   static void                    NewCAddress(Environment *,CLIPSValue *);
+   static void                    NewCAddress(UDFContext *,CLIPSValue *);
    /*
    static bool                    DiscardCAddress(void *,void *);
    */
@@ -1274,12 +1274,13 @@ static void PrintCAddress(
 /* NewCAddress: */
 /****************/
 static void NewCAddress(
-  Environment *theEnv,
+  UDFContext *context,
   CLIPSValue *rv)
   {
    int numberOfArguments;
+   Environment *theEnv = context->environment;
 
-   numberOfArguments = EnvRtnArgCount(theEnv);
+   numberOfArguments = UDFArgumentCount(context);
       
    if (numberOfArguments != 1)
      {

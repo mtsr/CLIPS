@@ -109,7 +109,7 @@ void ClassAbstractPCommand(
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
-     
+
    cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (cls == NULL)
      {
@@ -178,7 +178,7 @@ Defclass *ClassInfoFnxArgs(
   {
    Defclass *clsptr;
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = context->environment;
 
    *inhp = false;
 
@@ -191,13 +191,14 @@ Defclass *ClassInfoFnxArgs(
       ClassExistError(theEnv,fnx,mCVToString(&theArg));
       return NULL;
      }
+     
    if (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return NULL; }
         
       if (strcmp(mCVToString(&theArg),"inherit") == 0)
-        *inhp = true;
+        { *inhp = true; }
       else
         {
          SyntaxErrorMessage(theEnv,fnx);
@@ -309,7 +310,7 @@ void GetDefmessageHandlersListCmd(
    Defclass *clsptr;
    
    if (! UDFHasNextArgument(context))
-      EnvGetDefmessageHandlerList(theEnv,NULL,returnValue,false);
+     { EnvGetDefmessageHandlerList(theEnv,NULL,returnValue,false); }
    else
      {
       clsptr = ClassInfoFnxArgs(context,"get-defmessage-handler-list",&inhp);
@@ -1091,15 +1092,14 @@ static void SlotInfoSupportFunction(
   {
    SYMBOL_HN *ssym;
    Defclass *cls;
-   Environment *theEnv = UDFContextEnvironment(context);
 
    ssym = CheckClassAndSlot(context,fnxname,&cls);
    if (ssym == NULL)
      {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
+      EnvSetMultifieldErrorValue(context->environment,returnValue);
       return;
      }
-   (*fnx)(theEnv,cls,ValueToString(ssym),returnValue);
+   (*fnx)(context->environment,cls,ValueToString(ssym),returnValue);
   }
 
 /*****************************************************************

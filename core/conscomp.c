@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/25/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*              CONSTRUCT COMPILER MODULE              */
    /*******************************************************/
@@ -231,7 +231,7 @@ void ConstructsToCCommand(
    /* Get the name of the file in which to place C code. */
    /*====================================================*/
 
-   if (EnvArgTypeCheck(theEnv,"constructs-to-c",1,SYMBOL_OR_STRING,&theArg) == false)
+   if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
      { return; }
 
    fileName = DOToString(theArg);
@@ -292,7 +292,7 @@ void ConstructsToCCommand(
    /* Get the runtime image ID argument. */
    /*====================================*/
 
-   if (EnvArgTypeCheck(theEnv,"constructs-to-c",2,INTEGER,&theArg) == false)
+   if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return; }
 
    id = DOToLong(theArg);
@@ -306,9 +306,9 @@ void ConstructsToCCommand(
    /* Get the path name argument if one was specified. */
    /*==================================================*/
    
-   if (argCount == 3)
+   if (UDFHasNextArgument(context))
      {
-      if (EnvArgTypeCheck(theEnv,"constructs-to-c",3,SYMBOL_OR_STRING,&theArg) == false)
+      if (! UDFNextArgument(context,LEXEME_TYPES,&theArg))
         { return; }
 
       pathName = DOToString(theArg);
@@ -325,9 +325,9 @@ void ConstructsToCCommand(
    /* to store per file argument (if supplied). */
    /*===========================================*/
 
-   if (argCount == 4)
+   if (UDFHasNextArgument(context))
      {
-      if (EnvArgTypeCheck(theEnv,"constructs-to-c",4,INTEGER,&theArg) == false)
+      if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
         { return; }
 
       max = DOToLong(theArg);

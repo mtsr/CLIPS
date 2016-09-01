@@ -711,7 +711,7 @@ int ParseConstruct(
    /*==========================================*/
 
    CLIPSBlockStart(theEnv,&gcBlock);
-   
+
    /*==================================*/
    /* Prepare the parsing environment. */
    /*==================================*/

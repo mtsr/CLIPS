@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/25/16            */
+   /*             CLIPS Version 6.40  08/25/16            */
    /*                                                     */
    /*               I/O FUNCTIONS HEADER FILE             */
    /*******************************************************/
@@ -67,7 +67,7 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
-/*      6.50: Added print and println functions.             */
+/*            Added print and println functions.             */
 /*                                                           */
 /*************************************************************/
 

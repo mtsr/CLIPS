@@ -82,7 +82,7 @@
 #if (! RUN_TIME)
    static bool                    RemoveHashFunction(Environment *,struct FunctionDefinition *);
 #endif
-   static void                    PrintType(void *,const char *,int,int *,const char *);
+   static void                    PrintType(Environment *,const char *,int,int *,const char *);
    static void                    AssignErrorValue(UDFContext *);
    static bool                    DefineFunction(Environment *,const char *,unsigned,
                                                  void (*)(Environment *,UDFContext *,CLIPSValue *),
@@ -157,7 +157,10 @@ bool EnvAddUDF(
   {
    unsigned returnTypeBits;
    
-   PopulateRestriction(theEnv,&returnTypeBits,ANY_TYPE,returnTypes,0);
+   if (returnTypes != NULL)
+     { PopulateRestriction(theEnv,&returnTypeBits,ANY_TYPE,returnTypes,0); }
+   else
+     { returnTypeBits = ANY_TYPE; }
 
    return DefineFunction(theEnv,clipsFunctionName,returnTypeBits,cFunctionPointer,
                          cFunctionName,minArgs,maxArgs,argumentTypes,context);
@@ -951,11 +954,9 @@ bool UDFNthArgument(
   unsigned expectedType,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
-   
    if (argumentPosition < context->lastPosition)
      {
-      context->lastArg = EvaluationData(theEnv)->CurrentExpression->argList;
+      context->lastArg = EvaluationData(context->environment)->CurrentExpression->argList;
       context->lastPosition = 1;
      }
 
@@ -973,7 +974,7 @@ void UDFInvalidArgumentMessage(
   UDFContext *context,
   const char *typeString)
   {
-   ExpectedTypeError1(UDFContextEnvironment(context),
+   ExpectedTypeError1(context->environment,
                       UDFContextFunctionName(context),
                       context->lastPosition-1,typeString);
   }
@@ -1031,7 +1032,7 @@ void UDFCVInit(
 /* PrintType: */
 /**************/
 static void PrintType(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   int typeCount,
   int *typesPrinted,
@@ -1059,7 +1060,7 @@ static void PrintType(
 /* PrintTypesString */
 /********************/
 void PrintTypesString(
-  void *theEnv,
+  Environment *theEnv,
   const char *logicalName,
   unsigned expectedType,
   bool printCRLF)
@@ -1108,4 +1109,3 @@ void PrintTypesString(
    if (printCRLF)
      { EnvPrintRouter(theEnv,logicalName,"\n"); }
   }
-

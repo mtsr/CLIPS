@@ -169,26 +169,7 @@ static void StrOrSymCatFunction(
    char *theString;
    SYMBOL_HN **arrayOfStrings;
    SYMBOL_HN *hashPtr;
-   const char *functionName;
-   Environment *theEnv = UDFContextEnvironment(context);
-
-   /*============================================*/
-   /* Determine the calling function name.       */
-   /* Store the null string or the symbol nil as */
-   /* the return value in the event of an error. */
-   /*============================================*/
-
-   SetpType(returnValue,returnType);
-   if (returnType == STRING)
-     {
-      functionName = "str-cat";
-      SetpValue(returnValue,EnvAddSymbol(theEnv,""));
-     }
-   else
-     {
-      functionName = "sym-cat";
-      SetpValue(returnValue,EnvAddSymbol(theEnv,"nil"));
-     }
+   Environment *theEnv = context->environment;
 
    /*===============================================*/
    /* Determine the number of arguments as create a */
@@ -196,7 +177,7 @@ static void StrOrSymCatFunction(
    /* the string representation of each argument.   */
    /*===============================================*/
 
-   numArgs = EnvRtnArgCount(theEnv);
+   numArgs = UDFArgumentCount(context);
    if (numArgs == 0) return;
    
    arrayOfStrings = (SYMBOL_HN **) gm1(theEnv,(int) sizeof(SYMBOL_HN *) * numArgs);
@@ -211,7 +192,7 @@ static void StrOrSymCatFunction(
    total = 1;
    for (i = 1 ; i <= numArgs ; i++)
      {
-      EnvRtnUnknown(theEnv,i,&theArg);
+      UDFNthArgument(context,i,ANY_TYPE,&theArg);
 
       switch(GetType(theArg))
         {
@@ -238,7 +219,7 @@ static void StrOrSymCatFunction(
            break;
 
          default:
-           ExpectedTypeError1(theEnv,functionName,i,"string, instance name, symbol, float, or integer");
+           UDFInvalidArgumentMessage(context,"string, instance name, symbol, float, or integer");
            EnvSetEvaluationError(theEnv,true);
            break;
         }
@@ -252,6 +233,12 @@ static void StrOrSymCatFunction(
            }
 
          rm(theEnv,arrayOfStrings,sizeof(SYMBOL_HN *) * numArgs);
+         
+         SetpType(returnValue,returnType);
+         if (returnType == STRING)
+           { SetpValue(returnValue,EnvAddSymbol(theEnv,"")); }
+         else
+           { SetpValue(returnValue,EnvAddSymbol(theEnv,"nil")); }
          return;
         }
 
@@ -278,6 +265,7 @@ static void StrOrSymCatFunction(
    /* up the temporary memory used.           */
    /*=========================================*/
 
+   SetpType(returnValue,returnType);
    SetpValue(returnValue,EnvAddSymbol(theEnv,theString));
    rm(theEnv,theString,sizeof(char) * total);
 
@@ -307,7 +295,7 @@ void StrLengthFunction(
 
    if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
      { return; }
-     
+
    /*============================================*/
    /* Return the length of the string or symbol. */
    /*============================================*/
@@ -324,6 +312,7 @@ void UpcaseFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
+   CLIPSValue theArg;
    unsigned i;
    size_t slen;
    const char *osptr;
@@ -333,7 +322,7 @@ void UpcaseFunction(
    /* The argument should be of type symbol or string. */
    /*==================================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,returnValue))
+   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
      { return; }
 
    /*======================================================*/
@@ -342,7 +331,7 @@ void UpcaseFunction(
    /* lower case alphabetic characters.                    */
    /*======================================================*/
 
-   osptr = mCVToString(returnValue);
+   osptr = mCVToString(&theArg);
    slen = strlen(osptr) + 1;
    nsptr = (char *) gm2(theEnv,slen);
 
@@ -358,7 +347,9 @@ void UpcaseFunction(
    /* Return the uppercased string and clean */
    /* up the temporary memory used.          */
    /*========================================*/
-
+   
+   returnValue->type = theArg.type;
+   returnValue->bitType = theArg.bitType;
    CVSetRawValue(returnValue,EnvAddSymbol(theEnv,nsptr));
    rm(theEnv,nsptr,slen);
   }
@@ -372,6 +363,7 @@ void LowcaseFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
+   CLIPSValue theArg;
    unsigned i;
    size_t slen;
    const char *osptr;
@@ -381,7 +373,7 @@ void LowcaseFunction(
    /* The argument should be of type symbol or string. */
    /*==================================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,returnValue))
+   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
      { return; }
 
    /*======================================================*/
@@ -390,7 +382,7 @@ void LowcaseFunction(
    /* upper case alphabetic characters.                    */
    /*======================================================*/
 
-   osptr = mCVToString(returnValue);
+   osptr = mCVToString(&theArg);
    slen = strlen(osptr) + 1;
    nsptr = (char *) gm2(theEnv,slen);
 
@@ -407,6 +399,8 @@ void LowcaseFunction(
    /* up the temporary memory used.          */
    /*========================================*/
 
+   returnValue->type = theArg.type;
+   returnValue->bitType = theArg.bitType;
    CVSetRawValue(returnValue,EnvAddSymbol(theEnv,nsptr));
    rm(theEnv,nsptr,slen);
   }
@@ -1024,6 +1018,7 @@ bool EnvBuild(
 /*   provided for use with a run-time version.    */
 /**************************************************/
 void BuildFunction(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {

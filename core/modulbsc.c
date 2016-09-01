@@ -217,7 +217,7 @@ void PPDefmoduleCommand(
   {
    const char *defmoduleName;
 
-   defmoduleName = GetConstructName(theEnv,context,"ppdefmodule","defmodule name");
+   defmoduleName = GetConstructName(context,"ppdefmodule","defmodule name");
    if (defmoduleName == NULL) return;
 
    PPDefmodule(theEnv,defmoduleName,WDISPLAY);

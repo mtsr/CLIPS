@@ -460,7 +460,7 @@ void ListDefinstancesCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   ListConstructCommand(context,"list-definstances",DefinstancesData(theEnv)->DefinstancesConstruct);
+   ListConstructCommand(context,DefinstancesData(theEnv)->DefinstancesConstruct);
   }
 
 /***************************************************
@@ -497,7 +497,7 @@ void GetDefinstancesListFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   GetConstructListFunction(context,"get-definstances-list",returnValue,DefinstancesData(theEnv)->DefinstancesConstruct);
+   GetConstructListFunction(context,returnValue,DefinstancesData(theEnv)->DefinstancesConstruct);
   }
 
 /***************************************************************

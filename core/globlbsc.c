@@ -194,8 +194,8 @@ void GetDefglobalListFunction(
   Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
-  {
-   GetConstructListFunction(context,"get-defglobal-list",returnValue,DefglobalData(theEnv)->DefglobalConstruct);
+  { 
+   GetConstructListFunction(context,returnValue,DefglobalData(theEnv)->DefglobalConstruct); 
   }
 
 /******************************************/
@@ -257,7 +257,7 @@ void ListDefglobalsCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   ListConstructCommand(context,"list-defglobals",DefglobalData(theEnv)->DefglobalConstruct);
+   ListConstructCommand(context,DefglobalData(theEnv)->DefglobalConstruct);
   }
 
 /***************************************/

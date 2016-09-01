@@ -138,7 +138,7 @@ void InitializeInstanceCommand(
    Instance *ins;
    
    mCVSetBoolean(returnValue,false);
-   ins = CheckInstance(theEnv,"initialize-instance");
+   ins = CheckInstance(context);
    if (ins == NULL)
      return;
    if (CoreInitializeInstance(theEnv,ins,GetFirstArgument()->nextArg) == true)

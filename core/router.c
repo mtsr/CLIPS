@@ -346,16 +346,18 @@ void ExitCommand(
   {
    int argCnt;
    int status;
-   CLIPSValue value;
+   CLIPSValue theArg;
 
    argCnt = UDFArgumentCount(context);
+
    if (argCnt == 0)
      { EnvExitRouter(theEnv,EXIT_SUCCESS); }
    else
     {
-     if (! UDFFirstArgument(context,INTEGER_TYPE,&value))
+     if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
        { EnvExitRouter(theEnv,EXIT_SUCCESS); }
-     status = (int) mCVToInteger(&value);
+
+     status = (int) mCVToInteger(&theArg);
      if (EnvGetEvaluationError(theEnv)) return;
      EnvExitRouter(theEnv,status);
     }

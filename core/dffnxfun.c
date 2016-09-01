@@ -550,7 +550,7 @@ void ListDeffunctionsCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   ListConstructCommand(context,"list-deffunctions",DeffunctionData(theEnv)->DeffunctionConstruct);
+   ListConstructCommand(context,DeffunctionData(theEnv)->DeffunctionConstruct);
   }
 
 /***************************************************
@@ -587,7 +587,7 @@ void GetDeffunctionListFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   GetConstructListFunction(context,"get-deffunction-list",returnValue,DeffunctionData(theEnv)->DeffunctionConstruct);
+   GetConstructListFunction(context,returnValue,DeffunctionData(theEnv)->DeffunctionConstruct);
   }
 
 /***************************************************************

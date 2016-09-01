@@ -203,7 +203,7 @@ void GetDeffactsListFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   GetConstructListFunction(context,"get-deffacts-list",returnValue,DeffactsData(theEnv)->DeffactsConstruct);
+   GetConstructListFunction(context,returnValue,DeffactsData(theEnv)->DeffactsConstruct);
   }
 
 /*****************************************/
@@ -265,7 +265,7 @@ void ListDeffactsCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   ListConstructCommand(context,"list-deffacts",DeffactsData(theEnv)->DeffactsConstruct);
+   ListConstructCommand(context,DeffactsData(theEnv)->DeffactsConstruct); 
   }
 
 /*************************************/

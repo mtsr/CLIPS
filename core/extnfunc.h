@@ -141,14 +141,13 @@ struct FunctionHash
    bool                           EnvRemoveUDF(Environment *,const char *);
    int                            GetMinimumArgs(struct FunctionDefinition *);
    int                            GetMaximumArgs(struct FunctionDefinition *);
-
    int                            UDFArgumentCount(UDFContext *);
    bool                           UDFNthArgument(UDFContext *,int,unsigned,CLIPSValue *);
    void                           UDFInvalidArgumentMessage(UDFContext *,const char *);
    Environment                   *UDFContextEnvironment(UDFContext *);
    void                          *UDFContextUserContext(UDFContext *);
    const char                    *UDFContextFunctionName(UDFContext *);
-   void                           PrintTypesString(void *,const char *,unsigned,bool);
+   void                           PrintTypesString(Environment *,const char *,unsigned,bool);
    bool                           UDFFirstArgument(UDFContext *,unsigned,CLIPSValue *);
    bool                           UDFNextArgument(UDFContext *,unsigned,CLIPSValue *);
    void                           UDFThrowError(UDFContext *);

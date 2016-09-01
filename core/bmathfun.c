@@ -44,7 +44,7 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
-/*      6.50: Auto-float-dividend always enabled.            */
+/*            Auto-float-dividend always enabled.            */
 /*                                                           */
 /*************************************************************/
 
@@ -353,7 +353,7 @@ void DivFunction(
          mCVSetInteger(returnValue,1L);
          return;
         }
-        
+
       total /= theNumber;
      }
 
@@ -463,7 +463,7 @@ void MinFunction(
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,returnValue))
      { return; }
-    
+
    /*===========================================================*/
    /* Loop through the remaining arguments, first checking each */
    /* argument to see that it is a number, and then determining */

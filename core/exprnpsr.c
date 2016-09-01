@@ -446,117 +446,6 @@ void PopRtnBrkContexts(
    rtn_struct(theEnv,saved_contexts,svtmp);
   }
 
-/************************/
-/* PopulateRestriction: */
-/************************/
-void PopulateRestriction(
-   Environment *theEnv,
-   unsigned *restriction,
-   unsigned defaultRestriction,
-   const char *restrictionString,
-   int position)
-   {
-    int i = 0, currentPosition = 0, valuesRead = 0;
-    char buffer[2];
-    
-    *restriction = 0;
-    
-    while (restrictionString[i] != '\0')
-      {
-       char theChar = restrictionString[i];
-       
-       switch(theChar)
-         {
-          case ';':
-            if (currentPosition == position) return;
-            currentPosition++;
-            *restriction = 0;
-            valuesRead = 0;
-            break;
-            
-          case 'l':
-            *restriction |= INTEGER_TYPE;
-            valuesRead++;
-            break;
-            
-          case 'd':
-            *restriction |= FLOAT_TYPE;
-            valuesRead++;
-            break;
-            
-          case 's':
-            *restriction |= STRING_TYPE;
-            valuesRead++;
-            break;
-            
-          case 'y':
-            *restriction |= SYMBOL_TYPE;
-            valuesRead++;
-            break;
-            
-          case 'n':
-            *restriction |= INSTANCE_NAME_TYPE;
-            valuesRead++;
-            break;
-            
-          case 'm':
-            *restriction |= MULTIFIELD_TYPE;
-            valuesRead++;
-            break;
-            
-          case 'f':
-            *restriction |= FACT_ADDRESS_TYPE;
-            valuesRead++;
-            break;
-
-          case 'i':
-            *restriction |= INSTANCE_ADDRESS_TYPE;
-            valuesRead++;
-            break;
-
-          case 'e':
-            *restriction |= EXTERNAL_ADDRESS_TYPE;
-            valuesRead++;
-            break;
-            
-          case 'v':
-            *restriction |= VOID_TYPE;
-            valuesRead++;
-            break;
-            
-          case 'b':
-            *restriction |= BOOLEAN_TYPE;
-            valuesRead++;
-            break;
-
-          case '*':
-            *restriction |= ANY_TYPE;
-            valuesRead++;
-            break;
-
-          default:
-            buffer[0] = theChar;
-            buffer[1] = 0;
-            EnvPrintRouter(theEnv,WERROR,"Invalid argument type character ");
-            EnvPrintRouter(theEnv,WERROR,buffer);
-            EnvPrintRouter(theEnv,WERROR,"\n");
-            valuesRead++;
-            break;
-         }
-       
-       i++;
-      }
-      
-    if (position == currentPosition)
-      {
-       if (valuesRead == 0)
-         { *restriction = defaultRestriction; }
-       return;
-      }
-    
-    *restriction = defaultRestriction;
-   }
-
 /**********************/
 /* RestrictionExists: */
 /**********************/
@@ -962,6 +851,117 @@ struct expr *GroupActions(
   }
 
 #endif /* (! RUN_TIME) */
+
+/************************/
+/* PopulateRestriction: */
+/************************/
+void PopulateRestriction(
+   Environment *theEnv,
+   unsigned *restriction,
+   unsigned defaultRestriction,
+   const char *restrictionString,
+   int position)
+   {
+    int i = 0, currentPosition = 0, valuesRead = 0;
+    char buffer[2];
+    
+    *restriction = 0;
+
+    while (restrictionString[i] != '\0')
+      {
+       char theChar = restrictionString[i];
+       
+       switch(theChar)
+         {
+          case ';':
+            if (currentPosition == position) return;
+            currentPosition++;
+            *restriction = 0;
+            valuesRead = 0;
+            break;
+            
+          case 'l':
+            *restriction |= INTEGER_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'd':
+            *restriction |= FLOAT_TYPE;
+            valuesRead++;
+            break;
+            
+          case 's':
+            *restriction |= STRING_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'y':
+            *restriction |= SYMBOL_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'n':
+            *restriction |= INSTANCE_NAME_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'm':
+            *restriction |= MULTIFIELD_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'f':
+            *restriction |= FACT_ADDRESS_TYPE;
+            valuesRead++;
+            break;
+
+          case 'i':
+            *restriction |= INSTANCE_ADDRESS_TYPE;
+            valuesRead++;
+            break;
+
+          case 'e':
+            *restriction |= EXTERNAL_ADDRESS_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'v':
+            *restriction |= VOID_TYPE;
+            valuesRead++;
+            break;
+            
+          case 'b':
+            *restriction |= BOOLEAN_TYPE;
+            valuesRead++;
+            break;
+
+          case '*':
+            *restriction |= ANY_TYPE;
+            valuesRead++;
+            break;
+
+          default:
+            buffer[0] = theChar;
+            buffer[1] = 0;
+            EnvPrintRouter(theEnv,WERROR,"Invalid argument type character ");
+            EnvPrintRouter(theEnv,WERROR,buffer);
+            EnvPrintRouter(theEnv,WERROR,"\n");
+            valuesRead++;
+            break;
+         }
+       
+       i++;
+      }
+      
+    if (position == currentPosition)
+      {
+       if (valuesRead == 0)
+         { *restriction = defaultRestriction; }
+       return;
+      }
+    
+    *restriction = defaultRestriction;
+   }
 
 /********************************************************/
 /* EnvSetSequenceOperatorRecognition: C access routine  */

@@ -100,7 +100,7 @@
 
 #if DEBUGGING_FUNCTIONS
    static Defclass               *CheckClass(Environment *,const char *,const char *);
-   static const char             *GetClassNameArgument(Environment *,const char *);
+   static const char             *GetClassNameArgument(UDFContext *);
    static void                    PrintClassBrowse(Environment *,const char *,Defclass *,long);
    static void                    DisplaySeparator(Environment *,const char *,char *,int,int);
    static void                    DisplaySlotBasicInfo(Environment *,const char *,const char *,const char *,char *,Defclass *);
@@ -188,7 +188,7 @@ void DescribeClassCommand(
    const char *className;
    Defclass *theDefclass;
 
-   className = GetClassNameArgument(theEnv,"describe-class");
+   className = GetClassNameArgument(context);
    
    if (className == NULL)
      { return; }
@@ -470,9 +470,9 @@ void SlotExistPCommand(
       return;
      }
       
-   if (EnvRtnArgCount(theEnv) == 3)
+   if (UDFHasNextArgument(context))
      {
-      if (! UDFNthArgument(context,3,SYMBOL_TYPE,&theArg))
+      if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
         
       if (strcmp(mCVToString(&theArg),"inherit") != 0)
@@ -537,7 +537,7 @@ void MessageHandlerExistPCommand(
       mCVSetBoolean(returnValue,false);
       return;
      }
-     
+
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
 
@@ -901,7 +901,7 @@ static bool CheckTwoClasses(
   Defclass **c2)
   {
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = context->environment;
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return false; }
@@ -954,7 +954,7 @@ static SlotDescriptor *CheckSlotExists(
    SYMBOL_HN *ssym;
    int slotIndex;
    SlotDescriptor *sd;
-   Environment *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = context->environment;
 
    ssym = CheckClassAndSlot(context,func,classBuffer);
    if (ssym == NULL)
@@ -1060,14 +1060,14 @@ static Defclass *CheckClass(
   NOTES        : Assumes only 1 argument
  *********************************************************/
 static const char *GetClassNameArgument(
-  Environment *theEnv,
-  const char *fname)
+  UDFContext *context)
   {
-   CLIPSValue temp;
+   CLIPSValue theArg;
 
-   if (EnvArgTypeCheck(theEnv,fname,1,SYMBOL,&temp) == false)
-     return NULL;
-   return(DOToString(temp));
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
+     { return NULL; }
+     
+   return(DOToString(theArg));
   }
 
 /****************************************************************

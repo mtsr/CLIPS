@@ -1463,8 +1463,8 @@ static bool EvaluateBadCall(
    EnvPrintRouter(theEnv,WERROR,"Attempted to call a deffunction/generic function ");
    EnvPrintRouter(theEnv,WERROR,"which does not exist.\n");
    EnvSetEvaluationError(theEnv,true);
-   SetpType(result,SYMBOL);
-   SetpValue(result,EnvFalseSymbol(theEnv));
+   SetpType(returnValue,SYMBOL);
+   SetpValue(returnValue,EnvFalseSymbol(theEnv));
    return false;
   }
 

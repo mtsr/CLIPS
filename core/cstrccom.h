@@ -70,12 +70,11 @@ typedef void ConstructActionFunction(Environment *,struct constructHeader *,void
    const char                    *EnvGetConstructNameString(Environment *,struct constructHeader *);
    const char                    *GetConstructModuleName(struct constructHeader *);
    SYMBOL_HN                     *GetConstructNamePointer(struct constructHeader *);
-   void                           GetConstructListFunction(UDFContext *,const char *,CLIPSValue *,
-                                                                  struct construct *);
+   void                           GetConstructListFunction(UDFContext *,CLIPSValue *,struct construct *);
    void                           GetConstructList(Environment *,CLIPSValue *,struct construct *,
                                                    Defmodule *);
-   void                           ListConstructCommand(UDFContext *,const char *,struct construct *);
-   void                           ListConstruct(Environment *,struct construct *,const char *,struct defmodule *);
+   void                           ListConstructCommand(UDFContext *,struct construct *);
+   void                           ListConstruct(Environment *,struct construct *,const char *,Defmodule *);
    void                           SetNextConstruct(struct constructHeader *,struct constructHeader *);
    struct defmoduleItemHeader    *GetConstructModuleItem(struct constructHeader *);
    const char                    *GetConstructPPForm(Environment *,struct constructHeader *);

@@ -643,7 +643,7 @@ void ListDefmessageHandlersCommand(
   CLIPSValue *returnValue)
   {
    bool inhp;
-   void *clsptr;
+   Defclass *clsptr;
 
    if (UDFArgumentCount(context) == 0)
      EnvListDefmessageHandlers(theEnv,WDISPLAY,NULL,0);
@@ -691,7 +691,7 @@ void PreviewSendCommand(
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
-   EnvPreviewSend(theEnv,WDISPLAY,(void *) cls,mCVToString(&theArg));
+   EnvPreviewSend(theEnv,WDISPLAY,cls,mCVToString(&theArg));
   }
 
 /********************************************************

@@ -76,7 +76,7 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static Instance               *CheckMultifieldSlotInstance(Environment *,const char *);
+   static Instance               *CheckMultifieldSlotInstance(UDFContext *);
    static INSTANCE_SLOT          *CheckMultifieldSlotModify(Environment *,int,const char *,Instance *,
                                                             EXPRESSION *,long *,long *,CLIPSValue *);
    static void                    AssignSlotToDataObject(CLIPSValue *,INSTANCE_SLOT *);
@@ -136,7 +136,7 @@ void MVSlotReplaceCommand(
    EXPRESSION arg;
 
    mCVSetBoolean(returnValue,false);
-   ins = CheckMultifieldSlotInstance(theEnv,"slot-replace$");
+   ins = CheckMultifieldSlotInstance(context);
    if (ins == NULL)
      return;
    sp = CheckMultifieldSlotModify(theEnv,REPLACE,"slot-replace$",ins,
@@ -176,7 +176,7 @@ void MVSlotInsertCommand(
    EXPRESSION arg;
 
    mCVSetBoolean(returnValue,false);
-   ins = CheckMultifieldSlotInstance(theEnv,"slot-insert$");
+   ins = CheckMultifieldSlotInstance(context);
    if (ins == NULL)
      return;
    sp = CheckMultifieldSlotModify(theEnv,INSERT,"slot-insert$",ins,
@@ -217,7 +217,7 @@ void MVSlotDeleteCommand(
    EXPRESSION arg;
 
    mCVSetBoolean(returnValue,false);
-   ins = CheckMultifieldSlotInstance(theEnv,"slot-delete$");
+   ins = CheckMultifieldSlotInstance(context);
    if (ins == NULL)
      return;
    sp = CheckMultifieldSlotModify(theEnv,DELETE_OP,"slot-delete$",ins,
@@ -307,6 +307,7 @@ void DirectMVInsertCommand(
                             GetFirstArgument(),&theIndex,NULL,&newval);
    if (sp == NULL)
      { mCVSetBoolean(returnValue,false); }
+
    AssignSlotToDataObject(&oldseg,sp);
    if (! InsertMultiValueField(theEnv,&newseg,&oldseg,theIndex,&newval,"direct-slot-insert$"))
      { mCVSetBoolean(returnValue,false); }
@@ -371,23 +372,21 @@ void DirectMVDeleteCommand(
   NOTES        : None
  **********************************************************************/
 static Instance *CheckMultifieldSlotInstance(
-  Environment *theEnv,
-  const char *func)
+  UDFContext *context)
   {
    Instance *ins;
    CLIPSValue temp;
+   Environment *theEnv = context->environment;
 
-   if (EnvArgTypeCheck(theEnv,func,1,INSTANCE_OR_INSTANCE_NAME,&temp) == false)
-     {
-      EnvSetEvaluationError(theEnv,true);
-      return NULL;
-     }
+   if (! UDFFirstArgument(context,INSTANCE_TYPES | SYMBOL_TYPE,&temp))
+     { return NULL; }
+     
    if (temp.type == INSTANCE_ADDRESS)
      {
       ins = (Instance *) temp.value;
       if (ins->garbage == 1)
         {
-         StaleInstanceAddress(theEnv,func,0);
+         StaleInstanceAddress(theEnv,UDFContextFunctionName(context),0);
          EnvSetEvaluationError(theEnv,true);
          return NULL;
         }
@@ -396,9 +395,9 @@ static Instance *CheckMultifieldSlotInstance(
      {
       ins = FindInstanceBySymbol(theEnv,(SYMBOL_HN *) temp.value);
       if (ins == NULL)
-        NoInstanceError(theEnv,ValueToString(temp.value),func);
+        NoInstanceError(theEnv,ValueToString(temp.value),UDFContextFunctionName(context));
      }
-   return(ins);
+   return ins;
   }
 
 /*********************************************************************

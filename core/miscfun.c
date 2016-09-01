@@ -355,8 +355,8 @@ void RandomFunction(
       
       if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
         { return; }
+
       end = mCVToInteger(&theArg);
-      
       if (end < begin)
         {
          PrintErrorID(theEnv,"MISCFUN",3,false);
@@ -388,7 +388,7 @@ void SeedFunction(
 
    if (! UDFFirstArgument(context,INTEGER_TYPE,&theValue))
      { return; }
-     
+
    /*=============================================================*/
    /* Seed the random number generator with the provided integer. */
    /*=============================================================*/
@@ -473,7 +473,7 @@ void ConserveMemCommand(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue))
      { return; }
-     
+
    argument = mCVToString(&theValue);
 
    /*====================================================*/
@@ -556,7 +556,7 @@ void AproposCommand(
   CLIPSValue *returnValue)
   {
    const char *argument;
-   CLIPSValue argPtr;
+   CLIPSValue theArg;
    struct symbolHashNode *hashPtr = NULL;
    size_t theLength;
 
@@ -564,14 +564,14 @@ void AproposCommand(
    /* The apropos command expects a single symbol argument. */
    /*=======================================================*/
 
-   if (! UDFFirstArgument(context,SYMBOL_TYPE,&argPtr))
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
    /*=======================================*/
    /* Determine the length of the argument. */
    /*=======================================*/
 
-   argument = mCVToString(&argPtr);
+   argument = mCVToString(&theArg);
    theLength = strlen(argument);
 
    /*====================================================================*/
@@ -1047,9 +1047,10 @@ void CauseEvaluationError(
    mCVSetBoolean(returnValue,false);
   }
 
-/*****************/
-/* GetSORCommand */
-/*****************/
+/************************************************/
+/* GetSORCommand: H/L access routine for the    */
+/*   get-sequence-operator-recognition command. */
+/************************************************/
 void GetSORCommand(
   Environment *theEnv,
   UDFContext *context,
@@ -1058,16 +1059,10 @@ void GetSORCommand(
    mCVSetBoolean(returnValue,EnvGetSequenceOperatorRecognition(theEnv));
   }
 
-/****************************************************************
-  NAME         : SetSORCommand
-  DESCRIPTION  : Toggles SequenceOpMode - if true, multifield
-                   references are replaced with sequence
-                   expansion operators
-  INPUTS       : None
-  RETURNS      : The old value of SequenceOpMode
-  SIDE EFFECTS : SequenceOpMode toggled
-  NOTES        : None
- ****************************************************************/
+/************************************************/
+/* SetSORCommand: H/L access routine for the    */
+/*   set-sequence-operator-recognition command. */
+/************************************************/
 void SetSORCommand(
   Environment *theEnv,
   UDFContext *context,
@@ -1116,7 +1111,7 @@ void GetFunctionRestrictions(
       mCVSetString(returnValue,"");
       return;
      }
-    
+
    if (fptr->minArgs == UNBOUNDED)
      {
       stringBuffer = AppendToString(theEnv,"0",
@@ -1138,7 +1133,7 @@ void GetFunctionRestrictions(
       stringBuffer = AppendToString(theEnv,LongIntegerToString(theEnv,fptr->maxArgs),
                                     stringBuffer,&bufferPosition,&bufferMaximum);
      }
-   
+
    if (fptr->restrictions == NULL)
      {
       stringBuffer = AppendToString(theEnv,"*",
@@ -1363,18 +1358,11 @@ void NewFunction(
    
    mCVSetBoolean(returnValue,false);
    
-   /*================================================================*/
-   /* The new function has at least two arguments: the language type */
-   /* of the class (e.g. java, .net, c++) and the name of the class. */
-   /*================================================================*/
-   
-   if (EnvArgCountCheck(theEnv,"new",AT_LEAST,1) == -1) return;
-   
    /*====================================*/
    /* Get the name of the language type. */
    /*====================================*/
    
-   if (EnvArgTypeCheck(theEnv,"new",1,SYMBOL,&theValue) == false)
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue))
      { return; }
    
    /*=========================*/
@@ -1397,7 +1385,7 @@ void NewFunction(
    
    if ((EvaluationData(theEnv)->ExternalAddressTypes[theType] != NULL) &&
        (EvaluationData(theEnv)->ExternalAddressTypes[theType]->newFunction != NULL))
-     { (*EvaluationData(theEnv)->ExternalAddressTypes[theType]->newFunction)(theEnv,returnValue); }
+     { (*EvaluationData(theEnv)->ExternalAddressTypes[theType]->newFunction)(context,returnValue); }
   }
   
 /************************************/
@@ -1412,7 +1400,6 @@ void CallFunction(
    int theType;
    CLIPSValue theValue;
    const char *name;
-   int argumentCount;
    struct externalAddressHashNode *theEA;
     
    /*==================================*/
@@ -1421,20 +1408,13 @@ void CallFunction(
    
    mCVSetBoolean(returnValue,false);
    
-   /*=====================================================*/
-   /* The call function has at least one argument: either */
-   /* an external address or the language type of the     */
-   /* method being called (e.g. java, .net, c++).         */
-   /*=====================================================*/
-   
-   if ((argumentCount = EnvArgCountCheck(theEnv,"call",AT_LEAST,1)) == -1) return;
-      
    /*=========================*/
    /* Get the first argument. */
    /*=========================*/
    
-   EnvRtnUnknown(theEnv,1,&theValue);
-
+   if (! UDFFirstArgument(context,SYMBOL_TYPE | EXTERNAL_ADDRESS_TYPE,&theValue))
+     { return; }
+     
    /*============================================*/
    /* If the first argument is a symbol, then it */
    /* should be an external language type.       */
@@ -1460,7 +1440,7 @@ void CallFunction(
       
       if ((EvaluationData(theEnv)->ExternalAddressTypes[theType] != NULL) &&
           (EvaluationData(theEnv)->ExternalAddressTypes[theType]->callFunction != NULL))
-        { (*EvaluationData(theEnv)->ExternalAddressTypes[theType]->callFunction)(theEnv,&theValue,returnValue); }
+        { (*EvaluationData(theEnv)->ExternalAddressTypes[theType]->callFunction)(context,&theValue,returnValue); }
         
       return;
      }
@@ -1479,12 +1459,10 @@ void CallFunction(
       
       if ((EvaluationData(theEnv)->ExternalAddressTypes[theType] != NULL) &&
           (EvaluationData(theEnv)->ExternalAddressTypes[theType]->callFunction != NULL))
-        { (*EvaluationData(theEnv)->ExternalAddressTypes[theType]->callFunction)(theEnv,&theValue,returnValue); }
+        { (*EvaluationData(theEnv)->ExternalAddressTypes[theType]->callFunction)(context,&theValue,returnValue); }
         
       return;
      }
-     
-   ExpectedTypeError1(theEnv,"call",1,"external language symbol or external address");
   }
 
 /*********************/
@@ -1729,45 +1707,51 @@ void SlotValueFunction(
    /* Get the name of the slot. */
    /*===========================*/
 
-   if (EnvArgTypeCheck(theEnv,"slot-value",3,SYMBOL,&variableSlotReference) == false)
-     { return; }
+   if (! UDFNthArgument(context,3,SYMBOL_TYPE,&variableSlotReference))
+     {
+      returnValue->type = SYMBOL;
+      returnValue->value = EnvFalseSymbol(theEnv);
+      return;
+     }
 
    /*================================*/
    /* Get the reference to the fact. */
    /*================================*/
-
-   EnvRtnUnknown(theEnv,1,&factReference);
-   if (GetType(factReference) == FACT_ADDRESS)
-     {
-      if (((struct fact *) GetValue(factReference))->garbage)
-        {
-         PrintErrorID(theEnv,"MISCFUN",5,false);
-         EnvPrintRouter(theEnv,WERROR,"The variable/slot reference ?");
-         EnvPrintRouter(theEnv,WERROR,DOToString(variableSlotReference));
-         EnvPrintRouter(theEnv,WERROR," can not be resolved because the referenced fact has been retracted\n");
-         EnvSetEvaluationError(theEnv,true);
-         return;
-        }
-      else
-        { theFact = ((struct fact *) GetValue(factReference)); }
-     }
-   else
+   
+   if (! UDFNthArgument(context,1,FACT_ADDRESS_TYPE,&factReference))
      {
       PrintErrorID(theEnv,"MISCFUN",6,false);
       EnvPrintRouter(theEnv,WERROR,"The variable/slot reference ?");
       EnvPrintRouter(theEnv,WERROR,DOToString(variableSlotReference));
       EnvPrintRouter(theEnv,WERROR," can not be resolved because the variable value is not a fact address\n");
+      returnValue->type = SYMBOL;
+      returnValue->value = EnvFalseSymbol(theEnv);
+      return;
+     }
+
+   if (((struct fact *) GetValue(factReference))->garbage)
+     {
+      PrintErrorID(theEnv,"MISCFUN",5,false);
+      EnvPrintRouter(theEnv,WERROR,"The variable/slot reference ?");
+      EnvPrintRouter(theEnv,WERROR,DOToString(variableSlotReference));
+      EnvPrintRouter(theEnv,WERROR," can not be resolved because the referenced fact has been retracted\n");
       EnvSetEvaluationError(theEnv,true);
       return;
      }
+   else
+     { theFact = ((struct fact *) GetValue(factReference)); }
    
    /*===========================*/
    /* Get the name of the slot. */
    /*===========================*/
-
-   if (EnvArgTypeCheck(theEnv,"slot-value",2,SYMBOL,&slotNameReference) == false)
-     { return; }
-
+   
+   if (! UDFNthArgument(context,2,SYMBOL_TYPE,&slotNameReference))
+     {
+      returnValue->type = SYMBOL;
+      returnValue->value = EnvFalseSymbol(theEnv);
+      return;
+     }
+     
    /*=================================================*/
    /* If the specified slot exists, return the value. */
    /*=================================================*/

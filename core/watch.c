@@ -376,9 +376,7 @@ void WatchCommand(
    /*========================================*/
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
-   
-   if (EnvArgTypeCheck(theEnv,"watch",1,SYMBOL,&theValue) == false) return;
-   
+      
    argument = mCVToString(&theValue);
    wPtr = ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
@@ -551,7 +549,7 @@ void GetWatchItemCommand(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue))
      { return; }
-     
+
    argument = mCVToString(&theValue);
    ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)

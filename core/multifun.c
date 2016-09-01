@@ -110,7 +110,7 @@ typedef struct fieldVarStack
 
 #if MULTIFIELD_FUNCTIONS
    static bool                    MVRangeCheck(long,long,long *,int);
-   static void                    MultifieldPrognDriver(Environment *,CLIPSValue *,const char *);
+   static void                    MultifieldPrognDriver(UDFContext *,CLIPSValue *,const char *);
 #if (! BLOAD_ONLY) && (! RUN_TIME)
    static struct expr            *MultifieldPrognParser(Environment *,struct expr *,const char *);
    static struct expr            *ForeachParser(Environment *,struct expr *,const char *);
@@ -256,7 +256,7 @@ void DeleteMemberFunction(
   CLIPSValue *returnValue)
   {
    CLIPSValue resultValue, *delVals, tmpVal;
-   int i,argCnt;
+   int i, argCnt;
    unsigned delSize;
    long j,k;
 
@@ -264,37 +264,27 @@ void DeleteMemberFunction(
    /* Check for the correct number of arguments. */
    /*============================================*/
 
-   argCnt = EnvArgCountCheck(theEnv,"delete-member$",AT_LEAST,2);
-   if (argCnt == -1)
-     {
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+   argCnt = UDFArgumentCount(context);
 
    /*=======================================*/
    /* Check for the correct argument types. */
    /*=======================================*/
-   if (EnvArgTypeCheck(theEnv,"delete-member$",1,MULTIFIELD,&resultValue) == false)
-     {
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+   
+   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&resultValue))
+     { return; }
 
-   /*=================================================
-     For every value specified, delete all occurrences
-     of those values from the multifield
-     ================================================= */
+   /*===================================================*/
+   /* For every value specified, delete all occurrences */
+   /* of those values from the multifield.              */
+   /*===================================================*/
+
    delSize = (sizeof(CLIPSValue) * (argCnt-1));
    delVals = (CLIPSValue *) gm2(theEnv,delSize);
    for (i = 2 ; i <= argCnt ; i++)
      {
-      if (!EnvRtnUnknown(theEnv,i,&delVals[i-2]))
+      if (! UDFNextArgument(context,ANY_TYPE,&delVals[i-2]))
         {
          rm(theEnv,delVals,delSize);
-         EnvSetEvaluationError(theEnv,true);
-         EnvSetMultifieldErrorValue(theEnv,returnValue);
          return;
         }
      }
@@ -333,47 +323,35 @@ void ReplaceMemberFunction(
    /*============================================*/
    /* Check for the correct number of arguments. */
    /*============================================*/
-   argCnt = EnvArgCountCheck(theEnv,"replace-member$",AT_LEAST,3);
-   if (argCnt == -1)
-     {
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+
+   argCnt = UDFArgumentCount(context);
 
    /*=======================================*/
    /* Check for the correct argument types. */
    /*=======================================*/
-   if (EnvArgTypeCheck(theEnv,"replace-member$",1,MULTIFIELD,&resultValue) == false)
-     {
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+   
+   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&resultValue))
+     { return; }
 
-   if (!EnvRtnUnknown(theEnv,2,&replVal))
-     {
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+   if (! UDFNextArgument(context,ANY_TYPE,&replVal))
+     { return; }
    if (GetType(replVal) == MULTIFIELD)
      replLen = GetDOLength(replVal);
 
-   /*=====================================================
-     For the value (or values from multifield ) specified,
-     replace all occurrences of those values with all
-     values specified
-     ===================================================== */
+   /*======================================================*/
+   /* For the value (or values from multifield) specified, */
+   /* replace all occurrences of those values with all     */
+   /* values specified.                                    */
+   /*======================================================*/
+   
    delSize = (sizeof(CLIPSValue) * (argCnt-2));
    delVals = (CLIPSValue *) gm2(theEnv,delSize);
+   
    for (i = 3 ; i <= argCnt ; i++)
      {
-      if (!EnvRtnUnknown(theEnv,i,&delVals[i-3]))
+      if (! UDFNthArgument(context,i,ANY_TYPE,&delVals[i-3]))
         {
          rm(theEnv,delVals,delSize);
-         EnvSetEvaluationError(theEnv,true);
-         EnvSetMultifieldErrorValue(theEnv,returnValue);
          return;
         }
      }
@@ -452,29 +430,12 @@ void ExplodeFunction(
    Multifield *theMultifield;
    unsigned long end;
 
-   /*=====================================*/
-   /* Explode$ expects a single argument. */
-   /*=====================================*/
-
-   if (EnvArgCountCheck(theEnv,"explode$",EXACTLY,1) == -1)
-     {
-      EnvSetHaltExecution(theEnv,true);
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
-
    /*==================================*/
    /* The argument should be a string. */
    /*==================================*/
 
-   if (EnvArgTypeCheck(theEnv,"explode$",1,STRING,&value) == false)
-     {
-      EnvSetHaltExecution(theEnv,true);
-      EnvSetEvaluationError(theEnv,true);
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+   if (! UDFFirstArgument(context,STRING_TYPE,&value))
+     { return; }
 
    /*=====================================*/
    /* Convert the string to a multifield. */
@@ -544,7 +505,7 @@ void SubseqFunction(
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
      { return; }
-     
+
    theList = (struct multifield *) DOToPointer(theArg);
    offset = GetDOBegin(theArg);
    length = GetDOLength(theArg);
@@ -556,7 +517,7 @@ void SubseqFunction(
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return; }
-     
+
    start = DOToLong(theArg);
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
@@ -608,7 +569,10 @@ void FirstFunction(
    /*===================================*/
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
-     { return; }
+     {
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
+      return;
+     }
 
    theList = (Multifield *) DOToPointer(theArg);
 
@@ -642,7 +606,10 @@ void RestFunction(
    /*===================================*/
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
-     { return; }
+     {
+      EnvSetMultifieldErrorValue(theEnv,returnValue);
+      return;
+     }
 
    theList = (Multifield *) DOToPointer(theArg);
 
@@ -737,7 +704,6 @@ void SubsetpFunction(
      {
       SetType(tmpItem,GetMFType((struct multifield *) GetValue(item1),i));
       SetValue(tmpItem,GetMFValue((struct multifield *) GetValue(item1),i));
-
 
       if (! FindDOsInSegment(&tmpItem,1,&item2,&j,&k,NULL,0))
         {
@@ -1143,7 +1109,7 @@ void MultifieldPrognFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   MultifieldPrognDriver(theEnv,returnValue,"progn$");
+   MultifieldPrognDriver(context,returnValue,"progn$");
   }
 
 /***************************************/
@@ -1155,7 +1121,7 @@ void ForeachFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   MultifieldPrognDriver(theEnv,returnValue,"foreach");
+   MultifieldPrognDriver(context,returnValue,"foreach");
   }
     
 /*******************************************/
@@ -1163,7 +1129,7 @@ void ForeachFunction(
 /*   for the progn$ and foreach functions. */
 /******************************************/
 static void MultifieldPrognDriver(
-  Environment *theEnv,
+  UDFContext *context,
   CLIPSValue *returnValue,
   const char *functionName)
   {
@@ -1172,6 +1138,7 @@ static void MultifieldPrognDriver(
    long i, end; /* 6.04 Bug Fix */
    FIELD_VAR_STACK *tmpField;
    struct CLIPSBlock gcBlock;
+   Environment *theEnv = context->environment;
    
    tmpField = get_struct(theEnv,fieldVarStack);
    tmpField->type = SYMBOL;
@@ -1180,10 +1147,13 @@ static void MultifieldPrognDriver(
    MultiFunctionData(theEnv)->FieldVarStack = tmpField;
    returnValue->type = SYMBOL;
    returnValue->value = EnvFalseSymbol(theEnv);
-   if (EnvArgTypeCheck(theEnv,functionName,1,MULTIFIELD,&argval) == false)
+   
+   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&argval))
      {
       MultiFunctionData(theEnv)->FieldVarStack = tmpField->nxt;
       rtn_struct(theEnv,fieldVarStack,tmpField);
+      returnValue->type = SYMBOL;
+      returnValue->value = EnvFalseSymbol(theEnv);
       return;
      }
      

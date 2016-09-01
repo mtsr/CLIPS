@@ -182,7 +182,7 @@ void ModifyInstance(
       Find the instance and make sure it
       wasn't deleted by the overrides
       ================================== */
-   ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
+   ins = CheckInstance(context);
    if (ins == NULL)
      {
       mCVSetBoolean(returnValue,false);
@@ -250,7 +250,7 @@ void MsgModifyInstance(
       Find the instance and make sure it
       wasn't deleted by the overrides
       ================================== */
-   ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
+   ins = CheckInstance(context);
    if (ins == NULL)
      {
       mCVSetBoolean(returnValue,false);
@@ -319,15 +319,15 @@ void DuplicateInstance(
       Find the instance and make sure it
       wasn't deleted by the overrides
       ================================== */
-   ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
+   ins = CheckInstance(context);
    if (ins == NULL)
      {
       mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
-   if (EnvArgTypeCheck(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)),
-                    2,INSTANCE_NAME,&newName) == false)
+     
+   if (! UDFNextArgument(context,INSTANCE_NAME_TYPE | SYMBOL_TYPE,&newName))
      {
       mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
@@ -399,15 +399,14 @@ void MsgDuplicateInstance(
       Find the instance and make sure it
       wasn't deleted by the overrides
       ================================== */
-   ins = CheckInstance(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)));
+   ins = CheckInstance(context);
    if (ins == NULL)
      {
       mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
-   if (EnvArgTypeCheck(theEnv,ValueToString(ExpressionFunctionCallName(EvaluationData(theEnv)->CurrentExpression)),
-                    2,INSTANCE_NAME,&newName) == false)
+   if (! UDFNextArgument(context,INSTANCE_NAME_TYPE | SYMBOL_TYPE,&newName))
      {
       mCVSetBoolean(returnValue,false);
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);

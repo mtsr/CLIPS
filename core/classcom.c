@@ -457,7 +457,7 @@ void ListDefclassesCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   ListConstructCommand(context,"list-defclasses",DefclassData(theEnv)->DefclassConstruct);
+   ListConstructCommand(context,DefclassData(theEnv)->DefclassConstruct);
   }
 
 /***************************************************
@@ -647,7 +647,7 @@ void GetDefclassListFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   GetConstructListFunction(context,"get-defclass-list",returnValue,DefclassData(theEnv)->DefclassConstruct);
+   GetConstructListFunction(context,returnValue,DefclassData(theEnv)->DefclassConstruct);
   }
 
 /***************************************************************
@@ -707,7 +707,7 @@ SYMBOL_HN *CheckClassAndSlot(
    Defclass **cls)
   {
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = context->environment;
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      return NULL;

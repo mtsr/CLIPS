@@ -80,11 +80,11 @@
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static bool                    SingleNumberCheck(UDFContext *,const char *,CLIPSValue *);
+   static bool                    SingleNumberCheck(UDFContext *,CLIPSValue *);
    static bool                    TestProximity(double,double);
-   static void                    DomainErrorMessage(Environment *,const char *);
-   static void                    ArgumentOverflowErrorMessage(Environment *,const char *);
-   static void                    SingularityErrorMessage(Environment *,const char *);
+   static void                    DomainErrorMessage(UDFContext *,CLIPSValue *);
+   static void                    ArgumentOverflowErrorMessage(UDFContext *,CLIPSValue *);
+   static void                    SingularityErrorMessage(UDFContext *,CLIPSValue *);
    static double                  genacosh(double);
    static double                  genasinh(double);
    static double                  genatanh(double);
@@ -151,7 +151,6 @@ void ExtendedMathFunctionDefinitions(
 /************************************************************/
 static bool SingleNumberCheck(
   UDFContext *context,
-  const char *functionName,
   CLIPSValue *returnValue)
   {
    /*======================================*/
@@ -159,7 +158,10 @@ static bool SingleNumberCheck(
    /*======================================*/
 
    if (! UDFNthArgument(context,1,NUMBER_TYPES,returnValue))
-     { return false; }
+     {
+      mCVSetFloat(returnValue,0.0);
+      return false;
+     }
   
    return true;
   }
@@ -182,15 +184,18 @@ static bool TestProximity(
 /*   the extended math functions.                       */
 /********************************************************/
 static void DomainErrorMessage(
-  Environment *theEnv,
-  const char *functionName)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = context->environment;
+   
    PrintErrorID(theEnv,"EMATHFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Domain error for ");
-   EnvPrintRouter(theEnv,WERROR,functionName);
+   EnvPrintRouter(theEnv,WERROR,UDFContextFunctionName(context));
    EnvPrintRouter(theEnv,WERROR," function.\n");
    EnvSetHaltExecution(theEnv,true);
    EnvSetEvaluationError(theEnv,true);
+   mCVSetFloat(returnValue,0.0);
   }
 
 /************************************************************/
@@ -199,15 +204,18 @@ static void DomainErrorMessage(
 /*   one of the extended math functions.                    */
 /************************************************************/
 static void ArgumentOverflowErrorMessage(
-  Environment *theEnv,
-  const char *functionName)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = context->environment;
+
    PrintErrorID(theEnv,"EMATHFUN",2,false);
    EnvPrintRouter(theEnv,WERROR,"Argument overflow for ");
-   EnvPrintRouter(theEnv,WERROR,functionName);
+   EnvPrintRouter(theEnv,WERROR,UDFContextFunctionName(context));
    EnvPrintRouter(theEnv,WERROR," function.\n");
    EnvSetHaltExecution(theEnv,true);
    EnvSetEvaluationError(theEnv,true);
+   mCVSetFloat(returnValue,0.0);
   }
 
 /************************************************************/
@@ -216,15 +224,18 @@ static void ArgumentOverflowErrorMessage(
 /*   extended math functions.                               */
 /************************************************************/
 static void SingularityErrorMessage(
-  Environment *theEnv,
-  const char *functionName)
+  UDFContext *context,
+  CLIPSValue *returnValue)
   {
+   Environment *theEnv = context->environment;
+
    PrintErrorID(theEnv,"EMATHFUN",3,false);
    EnvPrintRouter(theEnv,WERROR,"Singularity at asymptote in ");
-   EnvPrintRouter(theEnv,WERROR,functionName);
+   EnvPrintRouter(theEnv,WERROR,UDFContextFunctionName(context));
    EnvPrintRouter(theEnv,WERROR," function.\n");
    EnvSetHaltExecution(theEnv,true);
    EnvSetEvaluationError(theEnv,true);
+   mCVSetFloat(returnValue,0.0);
   }
 
 /*************************************/
@@ -236,11 +247,8 @@ void CosFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"cos",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
      
    mCVSetFloat(returnValue,cos(mCVToFloat(returnValue)));
   }
@@ -254,11 +262,8 @@ void SinFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"sin",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,sin(mCVToFloat(returnValue)));
   }
@@ -274,17 +279,13 @@ void TanFunction(
   {
    CLIPSFloat tv;
 
-   if (SingleNumberCheck(context,"tan",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    tv = cos(mCVToFloat(returnValue));
    if ((tv < SMALLEST_ALLOWED_NUMBER) && (tv > -SMALLEST_ALLOWED_NUMBER))
      {
-      SingularityErrorMessage(theEnv,"tan");
-      mCVSetFloat(returnValue,0.0);
+      SingularityErrorMessage(context,returnValue);
       return;
      }
 
@@ -302,17 +303,13 @@ void SecFunction(
   {
    double tv;
 
-   if (SingleNumberCheck(context,"sec",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    tv = cos(mCVToFloat(returnValue));
    if ((tv < SMALLEST_ALLOWED_NUMBER) && (tv > -SMALLEST_ALLOWED_NUMBER))
      {
-      SingularityErrorMessage(theEnv,"sec");
-      mCVSetFloat(returnValue,0.0);
+      SingularityErrorMessage(context,returnValue);
       return;
      }
 
@@ -330,17 +327,13 @@ void CscFunction(
   {
    double tv;
 
-   if (SingleNumberCheck(context,"csc",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    tv = sin(mCVToFloat(returnValue));
    if ((tv < SMALLEST_ALLOWED_NUMBER) && (tv > -SMALLEST_ALLOWED_NUMBER))
      {
-      SingularityErrorMessage(theEnv,"csc");
-      mCVSetFloat(returnValue,0.0);
+      SingularityErrorMessage(context,returnValue);
       return;
      }
 
@@ -356,19 +349,15 @@ void CotFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-    double tv;
+   double tv;
 
-    if (SingleNumberCheck(context,"cot",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
     tv = sin(mCVToFloat(returnValue));
     if ((tv < SMALLEST_ALLOWED_NUMBER) && (tv > -SMALLEST_ALLOWED_NUMBER))
       {
-       SingularityErrorMessage(theEnv,"cot");
-       mCVSetFloat(returnValue,0.0);
+       SingularityErrorMessage(context,returnValue);
        return;
       }
 
@@ -386,18 +375,14 @@ void AcosFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"acos",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    
    if ((num > 1.0) || (num < -1.0))
      {
-      DomainErrorMessage(theEnv,"acos");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -415,17 +400,13 @@ void AsinFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"asin",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if ((num > 1.0) || (num < -1.0))
      {
-      DomainErrorMessage(theEnv,"asin");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -441,11 +422,8 @@ void AtanFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"atan",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,atan(mCVToFloat(returnValue)));
   }
@@ -461,17 +439,13 @@ void AsecFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"asec",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if ((num < 1.0) && (num > -1.0))
      {
-      DomainErrorMessage(theEnv,"asec");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -490,17 +464,13 @@ void AcscFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"acsc",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if ((num < 1.0) && (num > -1.0))
      {
-      DomainErrorMessage(theEnv,"acsc");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -519,12 +489,9 @@ void AcotFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"acot",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
-     
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
+
    num = mCVToFloat(returnValue);
    if (TestProximity(num,1e-25) == true)
      {
@@ -545,11 +512,8 @@ void CoshFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"cosh",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,cosh(mCVToFloat(returnValue)));
   }
@@ -563,11 +527,8 @@ void SinhFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"sinh",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,sinh(mCVToFloat(returnValue)));
   }
@@ -581,11 +542,8 @@ void TanhFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"tanh",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,tanh(mCVToFloat(returnValue)));
   }
@@ -599,11 +557,8 @@ void SechFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"sech",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,1.0 / cosh(mCVToFloat(returnValue)));
   }
@@ -619,23 +574,18 @@ void CschFunction(
   {
    CLIPSFloat num;
    
-   if (SingleNumberCheck(context,"csch",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if (num == 0.0)
      {
-      SingularityErrorMessage(theEnv,"csch");
-      mCVSetFloat(returnValue,0.0);
+      SingularityErrorMessage(context,returnValue);
       return;
      }
    else if (TestProximity(num,1e-25) == true)
      {
-      ArgumentOverflowErrorMessage(theEnv,"csch");
-      mCVSetFloat(returnValue,0.0);
+      ArgumentOverflowErrorMessage(context,returnValue);
       return;
      }
      
@@ -653,23 +603,18 @@ void CothFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"coth",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if (num == 0.0)
      {
-      SingularityErrorMessage(theEnv,"coth");
-      mCVSetFloat(returnValue,0.0);
+      SingularityErrorMessage(context,returnValue);
       return;
      }
    else if (TestProximity(num,1e-25) == true)
      {
-      ArgumentOverflowErrorMessage(theEnv,"coth");
-      mCVSetFloat(returnValue,0.0);
+      ArgumentOverflowErrorMessage(context,returnValue);
       return;
      }
      
@@ -687,17 +632,13 @@ void AcoshFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"acosh",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if (num < 1.0)
      {
-      DomainErrorMessage(theEnv,"acosh");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -713,11 +654,8 @@ void AsinhFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"asinh",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,genasinh(mCVToFloat(returnValue)));
   }
@@ -733,17 +671,13 @@ void AtanhFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"atanh",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if ((num >= 1.0) || (num <= -1.0))
      {
-      DomainErrorMessage(theEnv,"atanh");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -761,17 +695,13 @@ void AsechFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"asech",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if ((num > 1.0) || (num <= 0.0))
      {
-      DomainErrorMessage(theEnv,"asech");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -789,17 +719,13 @@ void AcschFunction(
   {
    CLIPSFloat num;
    
-   if (SingleNumberCheck(context,"acsch",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
      
    num = mCVToFloat(returnValue);
    if (num == 0.0)
      {
-      DomainErrorMessage(theEnv,"acsch");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -817,17 +743,13 @@ void AcothFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"acoth",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if ((num <= 1.0) && (num >= -1.0))
      {
-      DomainErrorMessage(theEnv,"acoth");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -843,11 +765,8 @@ void ExpFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"exp",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,exp(mCVToFloat(returnValue)));
   }
@@ -863,23 +782,18 @@ void LogFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"log",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if (num < 0.0)
      {
-      DomainErrorMessage(theEnv,"log");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
    else if (num == 0.0)
      {
-      ArgumentOverflowErrorMessage(theEnv,"log");
-      mCVSetFloat(returnValue,0.0);
+      ArgumentOverflowErrorMessage(context,returnValue);
       return;
      }
 
@@ -897,23 +811,18 @@ void Log10Function(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"log10",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    num = mCVToFloat(returnValue);
    if (num < 0.0)
      {
-      DomainErrorMessage(theEnv,"log10");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
    else if (num == 0.0)
      {
-      ArgumentOverflowErrorMessage(theEnv,"log10");
-      mCVSetFloat(returnValue,0.0);
+      ArgumentOverflowErrorMessage(context,returnValue);
       return;
      }
 
@@ -931,17 +840,13 @@ void SqrtFunction(
   {
    CLIPSFloat num;
 
-   if (SingleNumberCheck(context,"sqrt",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
    
    num = mCVToFloat(returnValue);
    if (num < 0.00000)
      {
-      DomainErrorMessage(theEnv,"sqrt");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
      
@@ -980,8 +885,7 @@ void PowFunction(
     if (((num1 == 0.0) && (num2 <= 0.0)) ||
        ((num1 < 0.0) && (dtrunc(num2) != num2)))
      {
-      DomainErrorMessage(theEnv,"**");
-      mCVSetFloat(returnValue,0.0);
+      DomainErrorMessage(context,returnValue);
       return;
      }
 
@@ -1067,11 +971,8 @@ void DegRadFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"deg-rad",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,mCVToFloat(returnValue) * PI / 180.0);
   }
@@ -1085,11 +986,8 @@ void RadDegFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"rad-deg",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,mCVToFloat(returnValue) * 180.0 / PI);
   }
@@ -1103,11 +1001,8 @@ void DegGradFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"deg-grad",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,mCVToFloat(returnValue) / 0.9);
   }
@@ -1121,11 +1016,8 @@ void GradDegFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   if (SingleNumberCheck(context,"grad-deg",returnValue) == false)
-     {
-      mCVSetFloat(returnValue,0.0);
-      return;
-     }
+   if (! SingleNumberCheck(context,returnValue))
+     { return; }
 
    mCVSetFloat(returnValue,mCVToFloat(returnValue) * 0.9);
   }

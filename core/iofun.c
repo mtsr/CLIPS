@@ -85,7 +85,7 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
-/*      6.50: Added print and println functions.             */
+/*            Added print and println functions.             */
 /*                                                           */
 /*************************************************************/
 
@@ -142,9 +142,9 @@ struct IOFunctionData
 
 #if IO_FUNCTIONS
    static void             ReadTokenFromStdin(Environment *,struct token *);
-   static const char      *ControlStringCheck(Environment *,int);
+   static const char      *ControlStringCheck(UDFContext *,int);
    static char             FindFormatFlag(const char *,size_t *,char *,size_t);
-   static const char      *PrintFormatFlag(Environment *,const char *,int,int);
+   static const char      *PrintFormatFlag(UDFContext *,const char *,int,int);
    static char            *FillBuffer(Environment *,const char *,size_t *,size_t *);
    static void             ReadNumber(Environment *,const char *,struct token *,bool);
    static void             PrintDriver(UDFContext *,const char *,bool);
@@ -268,7 +268,7 @@ static void PrintDriver(
   bool endCRLF)
   {
    CLIPSValue theArg;
-   Environment *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = context->environment;
 
    /*==============================*/
    /* Print each of the arguments. */
@@ -883,7 +883,7 @@ void FormatFunction(
    /* present in the argument list.                       */
    /*=====================================================*/
 
-   if ((formatString = ControlStringCheck(theEnv,argCount)) == NULL)
+   if ((formatString = ControlStringCheck(context,argCount)) == NULL)
      {
       CVSetCLIPSString(returnValue,hptr);
       return;
@@ -910,7 +910,7 @@ void FormatFunction(
          formatFlagType = FindFormatFlag(formatString,&form_pos,percentBuffer,FLAG_MAX);
          if (formatFlagType != ' ')
            {
-            if ((theString = PrintFormatFlag(theEnv,percentBuffer,f_cur_arg,formatFlagType)) == NULL)
+            if ((theString = PrintFormatFlag(context,percentBuffer,f_cur_arg,formatFlagType)) == NULL)
               {
                if (fstr != NULL) rm(theEnv,fstr,fmaxm);
                CVSetCLIPSString(returnValue,hptr);
@@ -953,7 +953,7 @@ void FormatFunction(
 /*   control string to see if there are enough matching arguments.   */
 /*********************************************************************/
 static const char *ControlStringCheck(
-  Environment *theEnv,
+  UDFContext *context,
   int argCount)
   {
    CLIPSValue t_ptr;
@@ -962,8 +962,10 @@ static const char *ControlStringCheck(
    size_t i;
    int per_count;
    char formatFlag;
+   Environment *theEnv = context->environment;
 
-   if (EnvArgTypeCheck(theEnv,"format",2,STRING,&t_ptr) == false) return NULL;
+   if (! UDFNthArgument(context,2,STRING_TYPE,&t_ptr))
+     { return NULL; }
 
    per_count = 0;
    str_array = ValueToString(t_ptr.value);
@@ -1121,7 +1123,7 @@ static char FindFormatFlag(
 /*   with the argument for that part of the format string.            */
 /**********************************************************************/
 static const char *PrintFormatFlag(
-  Environment *theEnv,
+  UDFContext *context,
   const char *formatString,
   int whichArg,
   int formatType)
@@ -1131,6 +1133,7 @@ static const char *PrintFormatFlag(
    char *printBuffer;
    size_t theLength;
    void *oldLocale;
+   Environment *theEnv = context->environment;
       
    /*=================*/
    /* String argument */
@@ -1139,14 +1142,15 @@ static const char *PrintFormatFlag(
    switch (formatType)
      {
       case 's':
-        if (EnvArgTypeCheck(theEnv,"format",whichArg,SYMBOL_OR_STRING,&theResult) == false) return NULL;
+        if (! UDFNthArgument(context,whichArg,LEXEME_TYPES,&theResult))
+          { return(NULL); }
         theLength = strlen(formatString) + strlen(ValueToString(theResult.value)) + 200;
         printBuffer = (char *) gm2(theEnv,(sizeof(char) * theLength));
         gensprintf(printBuffer,formatString,ValueToString(theResult.value));
         break;
 
       case 'c':
-        EnvRtnUnknown(theEnv,whichArg,&theResult);
+        UDFNthArgument(context,whichArg,ANY_TYPE,&theResult);
         if ((GetType(theResult) == STRING) ||
             (GetType(theResult) == SYMBOL))
           {
@@ -1171,7 +1175,8 @@ static const char *PrintFormatFlag(
       case 'x':
       case 'o':
       case 'u':
-        if (EnvArgTypeCheck(theEnv,"format",whichArg,INTEGER_OR_FLOAT,&theResult) == false) return NULL;
+        if (! UDFNthArgument(context,whichArg,NUMBER_TYPES,&theResult))
+          { return(NULL); }
         theLength = strlen(formatString) + 200;
         printBuffer = (char *) gm2(theEnv,(sizeof(char) * theLength));
         
@@ -1189,7 +1194,8 @@ static const char *PrintFormatFlag(
       case 'f':
       case 'g':
       case 'e':
-        if (EnvArgTypeCheck(theEnv,"format",whichArg,INTEGER_OR_FLOAT,&theResult) == false) return NULL;
+        if (! UDFNthArgument(context,whichArg,NUMBER_TYPES,&theResult))
+          { return(NULL); }
         theLength = strlen(formatString) + 200;
         printBuffer = (char *) gm2(theEnv,(sizeof(char) * theLength));
 
@@ -1330,7 +1336,7 @@ void SetLocaleFunction(
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   
+
    /*=================================*/
    /* If there are no arguments, just */
    /* return the current locale.      */

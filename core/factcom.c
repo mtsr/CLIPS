@@ -503,7 +503,7 @@ void FactsCommand(
 
    if (mCVIsType(&theArg,SYMBOL_TYPE))
      {
-      theModule = (struct defmodule *) EnvFindDefmodule(theEnv,mCVToString(&theArg));
+      theModule = EnvFindDefmodule(theEnv,mCVToString(&theArg));
       if ((theModule == NULL) && (strcmp(mCVToString(&theArg),"*") != 0))
         {
          EnvSetEvaluationError(theEnv,true);
@@ -684,7 +684,7 @@ static long long GetFactsArgument(
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return(INVALID); }
-     
+
    factIndex = mCVToInteger(&theArg);
 
    if (factIndex < 0)
@@ -709,7 +709,7 @@ void AssertStringFunction(
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   struct fact *theFact;
+   Fact *theFact;
 
    /*=====================================================*/
    /* Check for the correct number and type of arguments. */
@@ -769,7 +769,7 @@ void SaveFactsCommand(
 
    if (numArgs > 1)
      {
-      if (EnvArgTypeCheck(theEnv,"save-facts",2,SYMBOL,&theValue) == false)
+      if (! UDFNextArgument(context,SYMBOL_TYPE,&theValue))
         {
          mCVSetBoolean(returnValue,false);
          return;

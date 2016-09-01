@@ -508,7 +508,7 @@ void CallSpecificMethod(
    mCVSetBoolean(returnValue,false);
    
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
-     
+
    gfunc = CheckGenericExists(theEnv,"call-specific-method",mCVToString(&theArg));
    if (gfunc == NULL) return;
    

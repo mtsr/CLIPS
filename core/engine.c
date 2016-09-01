@@ -1168,7 +1168,7 @@ void SetBreakCommand(
    const char *argument;
    Defrule *defrulePtr;
 
-   if (UDFFirstArgument(context,SYMBOL_TYPE,&theArg) == false) return;
+   if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
 
    argument = mCVToString(&theArg);
 
@@ -1235,7 +1235,7 @@ void ShowBreaksCommand(
    
    if (numArgs == 1)
      {
-      theModule = GetModuleName(theEnv,"show-breaks",1,&error);
+      theModule = GetModuleName(context,1,&error);
       if (error) return;
      }
    else

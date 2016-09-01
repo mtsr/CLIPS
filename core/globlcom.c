@@ -39,6 +39,8 @@
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
 /*                                                           */
+/*            UDF redesign.                                  */
+/*                                                           */
 /*************************************************************/
 
 #include "setup.h"
@@ -93,7 +95,7 @@ void SetResetGlobalsCommand(
   CLIPSValue *returnValue)
   {
    bool oldValue;
-   CLIPSValue result;
+   CLIPSValue theArg;
 
    /*===========================================*/
    /* Remember the old value of this attribute. */
@@ -105,10 +107,10 @@ void SetResetGlobalsCommand(
    /* Determine the new value of the attribute. */
    /*===========================================*/
 
-   if (! UDFFirstArgument(context,ANY_TYPE,&result))
+   if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
    
-   if (mCVIsFalseSymbol(&result))
+   if (mCVIsFalseSymbol(&theArg))
      { EnvSetResetGlobals(theEnv,false); }
    else
      { EnvSetResetGlobals(theEnv,true); }
@@ -173,9 +175,10 @@ void ShowDefglobalsCommand(
    bool error;
 
    numArgs = UDFArgumentCount(context);
+
    if (numArgs == 1)
      {
-      theModule = GetModuleName(theEnv,"show-defglobals",1,&error);
+      theModule = GetModuleName(context,1,&error);
       if (error) return;
      }
    else

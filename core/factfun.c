@@ -514,12 +514,9 @@ void PPFactFunction(
   CLIPSValue *returnValue)
   {
    struct fact *theFact;
-   int numberOfArguments;
    const char *logicalName = NULL;      /* Avoids warning */
    bool ignoreDefaults = false;
    CLIPSValue theArg;
-
-   numberOfArguments = UDFArgumentCount(context);
 
    theFact = GetFactAddressOrIndexArgument(context,true);
    if (theFact == NULL) return;
@@ -528,9 +525,7 @@ void PPFactFunction(
    /* Determine the logical name to which the fact will be printed. */
    /*===============================================================*/
 
-   if (numberOfArguments == 1)
-     { logicalName = STDOUT; }
-   else
+   if (UDFHasNextArgument(context))
      {
       logicalName = GetLogicalName(context,STDOUT);
       if (logicalName == NULL)
@@ -541,15 +536,17 @@ void PPFactFunction(
          return;
         }
      }
+   else
+     { logicalName = STDOUT; }
      
    /*=========================================*/
    /* Should slot values be printed if they   */
    /* are the same as the default slot value. */
    /*=========================================*/
    
-   if (numberOfArguments == 3)
+   if (UDFHasNextArgument(context))
      {
-      EnvRtnUnknown(theEnv,3,&theArg);
+      UDFNextArgument(context,ANY_TYPE,&theArg);
 
       if ((theArg.value == EnvFalseSymbol(theEnv)) && (theArg.type == SYMBOL))
         { ignoreDefaults = false; }
@@ -606,7 +603,7 @@ struct fact *GetFactAddressOrIndexArgument(
    CLIPSValue theArg;
    long long factIndex;
    Fact *theFact;
-   Environment *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = context->environment;
    char tempBuffer[20];
 
    if (! UDFNextArgument(context,ANY_TYPE,&theArg))

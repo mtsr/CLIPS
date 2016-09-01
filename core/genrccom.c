@@ -921,12 +921,12 @@ void PPDefmethodCommand(
    const char *gname;
    Defgeneric *gfunc;
    int gi;
-   
+
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
    gname = mCVToString(&theArg);
    
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg)) return;
- 
+
    gfunc = CheckGenericExists(theEnv,"ppdefmethod",gname);
    if (gfunc == NULL)
      return;
@@ -953,15 +953,16 @@ void ListDefmethodsCommand(
   {
    CLIPSValue theArg;
    Defgeneric *gfunc;
-   
+
    if (! UDFHasNextArgument(context))
-     EnvListDefmethods(theEnv,WDISPLAY,NULL);
+     { EnvListDefmethods(theEnv,WDISPLAY,NULL); }
    else
      {
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
+
       gfunc = CheckGenericExists(theEnv,"list-defmethods",mCVToString(&theArg));
       if (gfunc != NULL)
-        EnvListDefmethods(theEnv,WDISPLAY,gfunc);
+        { EnvListDefmethods(theEnv,WDISPLAY,gfunc); }
      }
   }
 
@@ -1001,7 +1002,7 @@ void ListDefgenericsCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   ListConstructCommand(context,"list-defgenerics",DefgenericData(theEnv)->DefgenericConstruct);
+   ListConstructCommand(context,DefgenericData(theEnv)->DefgenericConstruct);
   }
 
 /***************************************************
@@ -1073,7 +1074,7 @@ void GetDefgenericListFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   GetConstructListFunction(context,"get-defgeneric-list",returnValue,DefgenericData(theEnv)->DefgenericConstruct);
+   GetConstructListFunction(context,returnValue,DefgenericData(theEnv)->DefgenericConstruct);
   }
 
 /***************************************************************
@@ -1213,7 +1214,7 @@ void GetMethodRestrictionsCommand(
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return; }
-     
+
    if (CheckMethodExists(theEnv,"get-method-restrictions",gfunc,(long) mCVToInteger(&theArg)) == -1)
      {
       EnvSetMultifieldErrorValue(theEnv,returnValue);
@@ -1711,7 +1712,7 @@ static bool DefmethodWatchSupport(
    Defgeneric *theGeneric;
    unsigned long theMethod = 0;
    int argIndex = 2;
-   CLIPSValue genericName,methodIndex;
+   CLIPSValue genericName, methodIndex;
    Defmodule *theModule;
 
    /* ==============================
@@ -1852,11 +1853,10 @@ static void PrintMethodWatchFlag(
   NOTES        : H/L Syntax: (type <primitive>)
  ***************************************************/
 void TypeCommand(
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
-   
    EvaluateExpression(theEnv,GetFirstArgument(),result);
    
    mCVSetSymbol(returnValue,TypeName(theEnv,result->type));

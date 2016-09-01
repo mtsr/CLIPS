@@ -239,7 +239,7 @@ void ProfileInfoCommand(
   CLIPSValue *returnValue)
   {
    char buffer[512];
-   
+
    /*==================================*/
    /* If code is still being profiled, */
    /* update the profile end time.     */

@@ -428,7 +428,7 @@ void InstancesCommand(
    if (UDFHasNextArgument(context))
      {
       if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
-      
+
       theDefmodule = EnvFindDefmodule(theEnv,mCVToString(&theArg));
       if ((theDefmodule != NULL) ? false :
           (strcmp(mCVToString(&theArg),"*") != 0))
@@ -454,7 +454,7 @@ void InstancesCommand(
          if (UDFHasNextArgument(context))
            {
             if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg)) return;
-            
+
             if (strcmp(mCVToString(&theArg),ALL_QUALIFIER) != 0)
               {
                EnvSetEvaluationError(theEnv,true);
@@ -1021,8 +1021,7 @@ void EnvGetInstancePPForm(
                    if you have generic functions installed
  *********************************************************/
 void ClassCommand(
-   Environment *theEnv,
-
+  Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
   {
@@ -1179,6 +1178,7 @@ void UnmakeInstanceCommand(
         }
       if (EnvUnmakeInstance(theEnv,ins) == false)
         rtn = false;
+      
       if (ins == NULL)
         {
          mCVSetBoolean(returnValue,rtn);
@@ -1206,7 +1206,7 @@ void SymbolToInstanceNameFunction(
   {
    if (! UDFFirstArgument(context,SYMBOL_TYPE,returnValue))
      { return; }
-     
+
    CVSetCLIPSInstanceName(returnValue,CVToRawValue(returnValue));
   }
 
@@ -1251,10 +1251,14 @@ void InstanceAddressCommand(
    bool searchImports;
 
    mCVSetBoolean(returnValue,false);
-   if (EnvRtnArgCount(theEnv) > 1)
+   if (UDFArgumentCount(context) > 1)
      {
-      if (EnvArgTypeCheck(theEnv,"instance-address",1,SYMBOL,&temp) == false)
-        return;
+      if (! UDFFirstArgument(context,SYMBOL_TYPE,&temp))
+        {
+         mCVSetBoolean(returnValue,false);
+         return;
+        }
+        
       theModule = EnvFindDefmodule(theEnv,DOToString(temp));
       if ((theModule == NULL) ? (strcmp(DOToString(temp),"*") != 0) : false)
         {
@@ -1269,9 +1273,12 @@ void InstanceAddressCommand(
         }
       else
         searchImports = false;
-      if (EnvArgTypeCheck(theEnv,"instance-address",2,INSTANCE_NAME,&temp)
-             == false)
-        return;
+        
+      if (! UDFNextArgument(context,INSTANCE_NAME_TYPE | SYMBOL_TYPE,&temp))
+        {
+         mCVSetBoolean(returnValue,false);
+         return;
+        }
       ins = FindInstanceInModule(theEnv,(SYMBOL_HN *) temp.value,theModule,
                                  EnvGetCurrentModule(theEnv),searchImports);
       if (ins != NULL)
@@ -1279,7 +1286,7 @@ void InstanceAddressCommand(
       else
         NoInstanceError(theEnv,ValueToString(temp.value),"instance-address");
      }
-   else if (EnvArgTypeCheck(theEnv,"instance-address",1,INSTANCE_OR_INSTANCE_NAME,&temp))
+   else if (UDFFirstArgument(context,INSTANCE_TYPES | SYMBOL_TYPE,&temp))
      {
       if (temp.type == INSTANCE_ADDRESS)
         {
@@ -1301,6 +1308,8 @@ void InstanceAddressCommand(
            NoInstanceError(theEnv,ValueToString(temp.value),"instance-address");
         }
      }
+   else
+     { mCVSetBoolean(returnValue,false); }
   }
 
 /***************************************************************

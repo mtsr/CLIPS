@@ -164,7 +164,7 @@ void GetDeftemplateListFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   GetConstructListFunction(context,"get-deftemplate-list",returnValue,DeftemplateData(theEnv)->DeftemplateConstruct);
+   GetConstructListFunction(context,returnValue,DeftemplateData(theEnv)->DeftemplateConstruct);
   }
 
 /***********************************************/
@@ -226,7 +226,7 @@ void ListDeftemplatesCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   ListConstructCommand(context,"list-deftemplates",DeftemplateData(theEnv)->DeftemplateConstruct);
+   ListConstructCommand(context,DeftemplateData(theEnv)->DeftemplateConstruct); 
   }
 
 /*****************************************/

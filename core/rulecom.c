@@ -252,7 +252,7 @@ void MatchesCommand(
   CLIPSValue *returnValue)
   {
    const char *ruleName, *argument;
-   void *rulePtr;
+   Defrule *rulePtr;
    CLIPSValue theArg;
    int output;
 
@@ -1265,7 +1265,9 @@ void JoinActivityResetCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   DoForAllConstructs(theEnv,JoinActivityReset,DefruleData(theEnv)->DefruleModuleIndex,true,NULL);
+   DoForAllConstructs(theEnv,
+                      JoinActivityReset,
+                      DefruleData(theEnv)->DefruleModuleIndex,true,NULL);
   }
 
 /***************************************/
@@ -1280,7 +1282,7 @@ void TimetagFunction(
    CLIPSValue theArg;
    void *ptr;
 
-   ptr = GetFactOrInstanceArgument(theEnv,1,&theArg,"timetag");
+   ptr = GetFactOrInstanceArgument(context,1,&theArg);
 
    if (ptr == NULL)
      {
@@ -1306,7 +1308,7 @@ void RuleComplexityCommand(
    const char *ruleName;
    Defrule *rulePtr;
 
-   ruleName = GetConstructName(theEnv,context,"rule-complexity","rule name");
+   ruleName = GetConstructName(context,"rule-complexity","rule name");
    if (ruleName == NULL)
      {
       mCVSetInteger(returnValue,-1);
@@ -1336,7 +1338,7 @@ void ShowJoinsCommand(
    const char *ruleName;
    Defrule *rulePtr;
    
-   ruleName = GetConstructName(theEnv,context,"show-joins","rule name");
+   ruleName = GetConstructName(context,"show-joins","rule name");
    if (ruleName == NULL) return;
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);

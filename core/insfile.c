@@ -119,7 +119,7 @@ struct bsaveSlotValueAtom
 /* LOCAL INTERNAL FUNCTION DEFINITIONS */
 /***************************************/
 
-   static long                    InstancesSaveCommandParser(UDFContext *,const char *,
+   static long                    InstancesSaveCommandParser(UDFContext *,
                                                              long (*)(Environment *,const char *,int,EXPRESSION *,bool));
    static CLIPSValue             *ProcessSaveClassList(Environment *,const char *,EXPRESSION *,int,bool);
    static void                    ReturnSaveClassList(Environment *,CLIPSValue *);
@@ -205,7 +205,7 @@ void SaveInstancesCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetInteger(returnValue,InstancesSaveCommandParser(context,"save-instances",EnvSaveInstancesDriver));
+   mCVSetInteger(returnValue,InstancesSaveCommandParser(context,EnvSaveInstancesDriver));
   }
 
 /******************************************************
@@ -302,7 +302,7 @@ void RestoreInstancesCommand(
 
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
      { return; }
-     
+
    fileFound = mCVToString(&theArg);
 
    instanceCount = EnvRestoreInstances(theEnv,fileFound);
@@ -555,7 +555,7 @@ void BinarySaveInstancesCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetInteger(returnValue,InstancesSaveCommandParser(context,"bsave-instances",EnvBinarySaveInstancesDriver));
+   mCVSetInteger(returnValue,InstancesSaveCommandParser(context,EnvBinarySaveInstancesDriver));
   }
 
 /*******************************************************
@@ -660,7 +660,6 @@ long EnvBinarySaveInstancesDriver(
  ******************************************************/
 static long InstancesSaveCommandParser(
   UDFContext *context,
-  const char *functionName,
   long (*saveFunction)(Environment *,const char *,int,EXPRESSION *,bool))
   {
    const char *fileFound;
@@ -668,28 +667,25 @@ static long InstancesSaveCommandParser(
    int argCount,saveCode = LOCAL_SAVE;
    EXPRESSION *classList = NULL;
    bool inheritFlag = false;
-   Environment *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = context->environment;
 
-   if (EnvArgTypeCheck(theEnv,functionName,1,SYMBOL_OR_STRING,&temp) == false)
-     return(0L);
+   if (! UDFFirstArgument(context,LEXEME_TYPES,&temp))
+     { return 0L; }
    fileFound = DOToString(temp);
 
-   argCount = EnvRtnArgCount(theEnv);
+   argCount = UDFArgumentCount(context);
    if (argCount > 1)
      {
-      if (EnvArgTypeCheck(theEnv,functionName,2,SYMBOL,&temp) == false)
-        {
-         ExpectedTypeError1(theEnv,functionName,2,"symbol \"local\" or \"visible\"");
-         EnvSetEvaluationError(theEnv,true);
-         return(0L);
-        }
+      if (! UDFNextArgument(context,SYMBOL_TYPE,&temp))
+        { return 0L; }
+        
       if (strcmp(DOToString(temp),"local") == 0)
         saveCode = LOCAL_SAVE;
       else if (strcmp(DOToString(temp),"visible") == 0)
         saveCode = VISIBLE_SAVE;
       else
         {
-         ExpectedTypeError1(theEnv,functionName,2,"symbol \"local\" or \"visible\"");
+         UDFInvalidArgumentMessage(context,"symbol \"local\" or \"visible\"");
          EnvSetEvaluationError(theEnv,true);
          return(0L);
         }
@@ -1420,7 +1416,7 @@ static bool LoadSingleBinaryInstance(
    unsigned long totalValueCount;
    long i, j;
    INSTANCE_SLOT *sp;
-   CLIPSValue slotValue,junkValue;
+   CLIPSValue slotValue, junkValue;
 
    /* =====================
       Get the instance name

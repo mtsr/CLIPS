@@ -112,7 +112,7 @@ void EqFunction(
    /* Determine the number of arguments. */
    /*====================================*/
 
-   numArgs = EnvRtnArgCount(theEnv);
+   numArgs = UDFArgumentCount(context);
    if (numArgs == 0)
      {
       mCVSetBoolean(returnValue,false);
@@ -185,7 +185,7 @@ void NeqFunction(
    /* Determine the number of arguments. */
    /*====================================*/
 
-   numArgs = EnvRtnArgCount(theEnv);
+   numArgs = UDFArgumentCount(context);
    if (numArgs == 0)
      {
       mCVSetBoolean(returnValue,false);
@@ -596,13 +596,13 @@ void LessThanFunction(
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
      { return; }
-   
+
    /*==========================================*/
    /* Compare each of the subsequent arguments */
    /* to its predecessor. If any is greater or */
    /* equal, then return FALSE.                */
    /*==========================================*/
-   
+
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
@@ -653,13 +653,13 @@ void GreaterThanFunction(
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&rv1))
      { return; }
-   
+
    /*==========================================*/
    /* Compare each of the subsequent arguments */
    /* to its predecessor. If any is lesser or  */
    /* equal, then return FALSE.                */
    /*==========================================*/
-   
+
    while (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
@@ -819,7 +819,7 @@ void OddpFunction(
  
    if (! UDFFirstArgument(context,INTEGER_TYPE,&item))
      { return; }
-    
+
    /*===========================*/
    /* Compute the return value. */
    /*===========================*/
