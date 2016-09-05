@@ -80,7 +80,7 @@ void UserFunctions()
    // Use of UserFunctions is deprecated.
    // Use EnvUserFunctions instead.
   }
-  
+
 /***********************************************************/
 /* EnvUserFunctions: Informs the expert system environment */
 /*   of any user defined functions. In the default case,   */
@@ -137,7 +137,7 @@ void MUL(
   {
    CLIPSValue theArg;
    CLIPSInteger firstNumber, secondNumber;
-   
+
    /*=============================================================*/
    /* Get the first argument using the UDFFirstArgument function. */
    /* Return if the correct type has not been passed.             */
@@ -161,7 +161,7 @@ void MUL(
    /* Get the second argument using the UDFNextArgument function. */
    /* Return if the correct type has not been passed.             */
    /*=============================================================*/
-   
+
    if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
      { return; }
 
@@ -263,7 +263,7 @@ void Cube(
 /****************/
 /* TripleNumber */
 /****************/
-void TripleNumber( 
+void TripleNumber(
   Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
@@ -329,7 +329,7 @@ void Reverse(
    /* Set the return value before deallocating */
    /* the temporary reversed string.           */
    /*==========================================*/
- 
+
    switch(CVType(&theArg))
      {
       case STRING_TYPE:
@@ -339,12 +339,12 @@ void Reverse(
       case SYMBOL_TYPE:
         CVSetSymbol(returnValue,tempString);
         break;
-        
+
       case INSTANCE_NAME_TYPE:
         CVSetInstanceName(returnValue,tempString);
         break;
      }
-     
+
    free(tempString);
   }
 
@@ -367,11 +367,11 @@ void MFL(
       CVSetInteger(returnValue,-1);
       return;
      }
-   
+
    /*============================================*/
    /* Return the length of the multifield value. */
    /*============================================*/
-    
+
    CVSetInteger(returnValue,MFLength(&theArg));
   }
 
@@ -393,7 +393,7 @@ void CntMFChars(
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
      { return; }
-     
+
    /*=====================================*/
    /* Count the characters in each field. */
    /*=====================================*/
@@ -405,11 +405,11 @@ void CntMFChars(
       if (CVIsType(&theValue,LEXEME_TYPES))
         { count += strlen(CVToString(&theValue)); }
      }
-     
+
    /*=============================*/
    /* Return the character count. */
    /*=============================*/
-    
+
    CVSetInteger(returnValue,count);
   }
 
@@ -426,7 +426,7 @@ void Sample4(
    /*======================================*/
    /* Initialize the CLIPSValue variables. */
    /*======================================*/
-   
+
    UDFCVInit(context,&mfValue);
    UDFCVInit(context,&theValue);
 
@@ -444,7 +444,7 @@ void Sample4(
 
    CVSetSymbol(&theValue,"altitude");
    MFSetNthValue(&mfValue,1,&theValue);
-   
+
    /*===========================================*/
    /* The second field in the multi-field value */
    /* will be a FLOAT. Its value will be 900.   */
@@ -469,7 +469,7 @@ void Rest(
   CLIPSValue *returnValue)
   {
    CLIPSInteger mfLength;
-   
+
    /*======================================================*/
    /* Check that the first argument is a multifield value. */
    /*======================================================*/
@@ -480,7 +480,7 @@ void Rest(
    /*===========================================*/
    /* Set the range to exclude the first value. */
    /*===========================================*/
-   
+
    mfLength = MFLength(returnValue);
    if (mfLength != 0)
      { MFSetRange(returnValue,2,mfLength); }

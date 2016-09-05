@@ -23,7 +23,7 @@ void ClearEnvironmentWindowCommand(
   {
    CLIPSTerminalController *theObject;
    
-   theObject = (__bridge CLIPSTerminalController *) theEnv;
+   theObject = (__bridge CLIPSTerminalController *) GetEnvironmentContext(theEnv);
    
    [theObject clearScrollbackFunction];
   }

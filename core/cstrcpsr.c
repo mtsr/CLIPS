@@ -90,7 +90,7 @@
 /***************************************/
 
    static bool                    FindConstructBeginning(Environment *,const char *,struct token *,bool,bool *);
-  
+
 /************************************************************/
 /* EnvLoad: C access routine for the load command. Returns  */
 /*   0 if the file couldn't be opened, -1 if the file was   */
@@ -120,20 +120,20 @@ int EnvLoad(
    /*===================================================*/
 
    SetFastLoad(theEnv,theFile);
-   
+
    oldParsingFileName = CopyString(theEnv,EnvGetParsingFileName(theEnv));
    EnvSetParsingFileName(theEnv,fileName);
-   
+
    SetLoadInProgress(theEnv,true);
    noErrorsDetected = LoadConstructsFromLogicalName(theEnv,(char *) theFile);
    SetLoadInProgress(theEnv,false);
-   
+
    EnvSetParsingFileName(theEnv,oldParsingFileName);
    DeleteString(theEnv,oldParsingFileName);
 
    EnvSetWarningFileName(theEnv,NULL);
    EnvSetErrorFileName(theEnv,NULL);
-   
+
    SetFastLoad(theEnv,NULL);
 
    /*=================*/
@@ -162,7 +162,7 @@ void EnvSetParsingFileName(
   const char *fileName)
   {
    char *fileNameCopy = NULL;
-   
+
    if (fileName != NULL)
      {
       fileNameCopy = (char *) genalloc(theEnv,strlen(fileName) + 1);
@@ -171,7 +171,7 @@ void EnvSetParsingFileName(
 
    if (ConstructData(theEnv)->ParsingFileName != NULL)
      { genfree(theEnv,ConstructData(theEnv)->ParsingFileName,strlen(ConstructData(theEnv)->ParsingFileName) + 1); }
-     
+
    ConstructData(theEnv)->ParsingFileName = fileNameCopy;
   }
 
@@ -194,16 +194,16 @@ void EnvSetErrorFileName(
   const char *fileName)
   {
    char *fileNameCopy = NULL;
-   
+
    if (fileName != NULL)
      {
       fileNameCopy = (char *) genalloc(theEnv,strlen(fileName) + 1);
       genstrcpy(fileNameCopy,fileName);
      }
-   
+
    if (ConstructData(theEnv)->ErrorFileName != NULL)
      { genfree(theEnv,ConstructData(theEnv)->ErrorFileName,strlen(ConstructData(theEnv)->ErrorFileName) + 1); }
-     
+
    ConstructData(theEnv)->ErrorFileName = fileNameCopy;
   }
 
@@ -226,16 +226,16 @@ void EnvSetWarningFileName(
   const char *fileName)
   {
    char *fileNameCopy = NULL;
-   
+
    if (fileName != NULL)
      {
       fileNameCopy = (char *) genalloc(theEnv,strlen(fileName) + 1);
       genstrcpy(fileNameCopy,fileName);
      }
-   
+
    if (ConstructData(theEnv)->WarningFileName != NULL)
      { genfree(theEnv,ConstructData(theEnv)->WarningFileName,strlen(ConstructData(theEnv)->WarningFileName) + 1); }
-     
+
    ConstructData(theEnv)->WarningFileName = fileNameCopy;
   }
 
@@ -274,7 +274,7 @@ int LoadConstructsFromLogicalName(
    /*==============================*/
    /* Initialize the line counter. */
    /*==============================*/
-   
+
    oldLineCountValue = SetLineCount(theEnv,1);
    oldLineCountRouter = RouterData(theEnv)->LineCountRouter;
    RouterData(theEnv)->LineCountRouter = readSource;
@@ -292,7 +292,7 @@ int LoadConstructsFromLogicalName(
    /*==========================================*/
 
    CLIPSBlockStart(theEnv,&gcBlock);
-   
+
    /*========================================================*/
    /* Find the beginning of the first construct in the file. */
    /*========================================================*/
@@ -355,10 +355,10 @@ int LoadConstructsFromLogicalName(
 
       if (foundConstruct)
          { IncrementSymbolCount(theToken.value); }
-       
+
       CleanCurrentGarbageFrame(theEnv,NULL);
       CallPeriodicTasks(theEnv);
-      
+
       YieldTime(theEnv);
 
       if (foundConstruct)
@@ -386,18 +386,18 @@ int LoadConstructsFromLogicalName(
    /*=============================================================*/
 
    DestroyPPBuffer(theEnv);
-   
+
    /*======================================*/
    /* Remove the garbage collection frame. */
    /*======================================*/
-   
+
    CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
 
    /*==============================*/
    /* Deactivate the line counter. */
    /*==============================*/
-   
+
    SetLineCount(theEnv,oldLineCountValue);
    RouterData(theEnv)->LineCountRouter = oldLineCountRouter;
 
@@ -438,14 +438,14 @@ static bool FindConstructBeginning(
    /* is found or there are no more tokens.             */
    /*===================================================*/
 
-   while (theToken->type != STOP)
+   while (theToken->tknType != STOP_TOKEN)
      {
       /*=====================================================*/
       /* Constructs begin with a left parenthesis. Make note */
       /* that the opening parenthesis has been found.        */
       /*=====================================================*/
 
-      if (theToken->type == LPAREN)
+      if (theToken->tknType == LEFT_PARENTHESIS_TOKEN)
         { leftParenthesisFound = true; }
 
       /*=================================================================*/
@@ -457,7 +457,7 @@ static bool FindConstructBeginning(
       /* print an error message, otherwise, print an error message.      */
       /*=================================================================*/
 
-      else if ((theToken->type == SYMBOL) && (leftParenthesisFound == true))
+      else if ((theToken->tknType == SYMBOL_TOKEN) && (leftParenthesisFound == true))
         {
          /*===========================================================*/
          /* Is this a valid construct name (e.g., defrule, deffacts). */
@@ -583,20 +583,20 @@ void CreateErrorCaptureRouter(
    /* parser callback should be created before any routines     */
    /* which could generate errors are called.                   */
    /*===========================================================*/
-   
+
    if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
 
    /*=======================================================*/
    /* If the router hasn't already been created, create it. */
    /*=======================================================*/
-   
+
    if (ConstructData(theEnv)->errorCaptureRouterCount == 0)
      {
       EnvAddRouter(theEnv,"error-capture", 40,
                       FindError, PrintError,
                       NULL, NULL,NULL);
      }
-     
+
    /*==================================================*/
    /* Increment the count for the number of references */
    /* that want the error capture router functioning.  */
@@ -618,7 +618,7 @@ void DeleteErrorCaptureRouter(
    /* parser callback should be created before any routines     */
    /* which could generate errors are called.                   */
    /*===========================================================*/
-   
+
    if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
 
     ConstructData(theEnv)->errorCaptureRouterCount--;
@@ -640,14 +640,14 @@ void FlushParsingMessages(
    /* parser callback should be created before any routines     */
    /* which could generate errors are called.                   */
    /*===========================================================*/
-   
+
    if (ConstructData(theEnv)->ParserErrorCallback == NULL) return;
 
    /*=================================*/
    /* If an error occurred invoke the */
    /* parser error callback function. */
    /*=================================*/
-   
+
    if (ConstructData(theEnv)->ErrorString != NULL)
      {
       (*ConstructData(theEnv)->ParserErrorCallback)(theEnv,EnvGetErrorFileName(theEnv),
@@ -661,7 +661,7 @@ void FlushParsingMessages(
                                                            ConstructData(theEnv)->WarningString,NULL,
                                                            ConstructData(theEnv)->WrnLineNumber);
      }
-     
+
    /*===================================*/
    /* Delete the error capture strings. */
    /*===================================*/
@@ -672,7 +672,7 @@ void FlushParsingMessages(
    ConstructData(theEnv)->ErrorString = NULL;
    ConstructData(theEnv)->CurErrPos = 0;
    ConstructData(theEnv)->MaxErrChars = 0;
-   
+
    EnvSetWarningFileName(theEnv,NULL);
    if (ConstructData(theEnv)->WarningString != NULL)
      { genfree(theEnv,ConstructData(theEnv)->WarningString,strlen(ConstructData(theEnv)->WarningString) + 1); }
@@ -741,11 +741,11 @@ int ParseConstruct(
    ClearParsedBindNames(theEnv);
    SetPPBufferStatus(theEnv,false);
    EnvSetHaltExecution(theEnv,ov);
-      
+
    /*======================================*/
    /* Remove the garbage collection frame. */
    /*======================================*/
-   
+
    CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
 
@@ -790,7 +790,7 @@ SYMBOL_HN *GetConstructNameAndComment(
    /*==========================*/
 
    GetToken(theEnv,readSource,inputToken);
-   if (inputToken->type != SYMBOL)
+   if (inputToken->tknType != SYMBOL_TOKEN)
      {
       PrintErrorID(theEnv,"CSTRCPSR",2,true);
       EnvPrintRouter(theEnv,WERROR,"Missing name for ");
@@ -930,20 +930,20 @@ SYMBOL_HN *GetConstructNameAndComment(
    /*===============================*/
 
    GetToken(theEnv,readSource,inputToken);
-   if ((inputToken->type == STRING) && getComment)
+   if ((inputToken->tknType == STRING_TOKEN) && getComment)
      {
       PPBackup(theEnv);
       SavePPBuffer(theEnv," ");
       SavePPBuffer(theEnv,inputToken->printForm);
       GetToken(theEnv,readSource,inputToken);
-      if (inputToken->type != RPAREN)
+      if (inputToken->tknType != RIGHT_PARENTHESIS_TOKEN)
         {
          PPBackup(theEnv);
          SavePPBuffer(theEnv,"\n   ");
          SavePPBuffer(theEnv,inputToken->printForm);
         }
      }
-   else if (inputToken->type != RPAREN)
+   else if (inputToken->tknType != RIGHT_PARENTHESIS_TOKEN)
      {
       PPBackup(theEnv);
       SavePPBuffer(theEnv,"\n   ");

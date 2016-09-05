@@ -317,44 +317,22 @@
 /*********************/
 - (BOOL) validateMenuItem: (NSMenuItem *) menuItem
   {
-   AppController *theDelegate = [NSApp delegate];
-   CLIPSEnvironment *environment = [[theDelegate mainTerminal] environment];
-
    /*=========================================================*/
    /* The "Load Selection" and "Batch Selection" commands are */
-   /* only available if there is a selection in the window    */
-   /* and the window is attached to a CLIPS terminal.         */
+   /* only available if there is a selection in the window.   */
    /*=========================================================*/
    
    if (([menuItem action] == @selector(loadSelection:)) ||
        ([menuItem action] == @selector(batchSelection:)))
      {
-      if ([[environment executionLock] tryLock])
-        { [[environment executionLock] unlock]; }
-      else
-        { return NO; }
-
       NSRange selectedRange = [textView selectedRange];
       
       if (selectedRange.length < 1) return NO;
       
       return YES;
      }
-   
-   /*================================================*/
-   /* The "Load Buffer" command is only available if */
-   /* the window is attached to a CLIPS terminal.    */
-   /*================================================*/
-
    else if ([menuItem action] == @selector(loadBuffer:))
-     {
-      if ([[environment executionLock] tryLock])
-        { [[environment executionLock] unlock]; }
-      else
-        { return NO; }
-
-      return YES;
-     }
+     { return YES; }
 
    return [super validateMenuItem: menuItem];
   }

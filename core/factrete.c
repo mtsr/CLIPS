@@ -438,7 +438,7 @@ bool FactJNGetVar1(
      { theSlots = factPtr->basisSlots; }
    else
      { theSlots = &factPtr->theProposition; }
-     
+
    /*=========================================================*/
    /* Determine if we want to retrieve the entire slot value. */
    /*=========================================================*/
@@ -712,7 +712,7 @@ bool FactJNCompVars1(
 
    if (hack->p2rhs)
      { fact2 = (struct fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p2].gm.theMatch->matchingItem; }
-   else 
+   else
      { fact2 = (struct fact *) EngineData(theEnv)->GlobalLHSBinds->binds[p2].gm.theMatch->matchingItem; }
 
    /*=====================*/
@@ -770,10 +770,10 @@ bool FactJNCompVars2(
    s2 = (int) hack->slot2;
 
    fact1 = (struct fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p1].gm.theMatch->matchingItem;
-     
+
    if (hack->p2rhs)
      { fact2 = (struct fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p2].gm.theMatch->matchingItem; }
-   else 
+   else
      { fact2 = (struct fact *) EngineData(theEnv)->GlobalLHSBinds->binds[p2].gm.theMatch->matchingItem; }
 
    /*======================*/

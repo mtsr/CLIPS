@@ -261,7 +261,7 @@ void DivisionFunction(
    CLIPSFloat ftotal = 1.0;
    CLIPSFloat theNumber;
    CLIPSValue theArg;
-   
+
    /*===================================================*/
    /* Get the first argument. This number which will be */
    /* the starting product from which all subsequent    */
@@ -287,9 +287,9 @@ void DivisionFunction(
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
         { return; }
-        
+
       theNumber = mCVToFloat(&theArg);
-      
+
       if (theNumber == 0.0)
         {
          DivideByZeroErrorMessage(theEnv,"/");
@@ -475,12 +475,12 @@ void MinFunction(
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&nextPossible))
         { return; }
-      
+
       /*=============================================*/
       /* If either argument is a float, convert both */
       /* to floats. Otherwise compare two integers.  */
       /*=============================================*/
-      
+
       if (mCVIsType(returnValue,FLOAT_TYPE) || mCVIsType(&nextPossible,FLOAT_TYPE))
         {
          if (mCVToFloat(returnValue) > mCVToFloat(&nextPossible))
@@ -504,7 +504,7 @@ void MaxFunction(
   CLIPSValue *returnValue)
   {
    CLIPSValue nextPossible;
-   
+
    /*============================================*/
    /* Check that the first argument is a number. */
    /*============================================*/
@@ -523,12 +523,12 @@ void MaxFunction(
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&nextPossible))
         { return; }
-      
+
       /*=============================================*/
       /* If either argument is a float, convert both */
       /* to floats. Otherwise compare two integers.  */
       /*=============================================*/
-      
+
       if (mCVIsType(returnValue,FLOAT_TYPE) || mCVIsType(&nextPossible,FLOAT_TYPE))
         {
          if (mCVToFloat(returnValue) < mCVToFloat(&nextPossible))

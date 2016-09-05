@@ -158,7 +158,7 @@
  **********************************************************/
 void SetupObjectSystem(
   Environment *theEnv)
-  {   
+  {
    ENTITY_RECORD defclassEntityRecord = { "DEFCLASS_PTR", DEFCLASS_PTR,1,0,0,
                                               NULL,NULL,NULL,NULL,NULL,
                                               (EntityBusyCountFunction *) DecrementDefclassBusyCount,
@@ -168,7 +168,7 @@ void SetupObjectSystem(
    AllocateEnvironmentData(theEnv,DEFCLASS_DATA,sizeof(struct defclassData),NULL);
    AddEnvironmentCleanupFunction(theEnv,"defclasses",DeallocateDefclassData,-500);
 
-   memcpy(&DefclassData(theEnv)->DefclassEntityRecord,&defclassEntityRecord,sizeof(struct entityRecord));   
+   memcpy(&DefclassData(theEnv)->DefclassEntityRecord,&defclassEntityRecord,sizeof(struct entityRecord));
 
 #if ! RUN_TIME
    DefclassData(theEnv)->ClassDefaultsMode = CONVENIENCE_MODE;
@@ -202,7 +202,7 @@ void SetupObjectSystem(
    SetupObjectPatternStuff(theEnv);
 #endif
   }
-  
+
 /***************************************************/
 /* DeallocateDefclassData: Deallocates environment */
 /*    data for the defclass construct.             */
@@ -210,13 +210,13 @@ void SetupObjectSystem(
 static void DeallocateDefclassData(
   Environment *theEnv)
   {
-#if ! RUN_TIME   
+#if ! RUN_TIME
    SLOT_NAME *tmpSNPPtr, *nextSNPPtr;
    int i;
    struct defclassModule *theModuleItem;
    Defmodule *theModule;
    bool bloaded = false;
-   
+
 #if BLOAD || BLOAD_AND_BSAVE
    if (Bloaded(theEnv)) bloaded = true;
 #endif
@@ -224,7 +224,7 @@ static void DeallocateDefclassData(
    /*=============================*/
    /* Destroy all the defclasses. */
    /*=============================*/
-   
+
    if (! bloaded)
      {
       DoForAllConstructs(theEnv,DestroyDefclassAction,DefclassData(theEnv)->DefclassModuleIndex,false,NULL);
@@ -243,7 +243,7 @@ static void DeallocateDefclassData(
    /*==========================*/
    /* Remove the class tables. */
    /*==========================*/
-   
+
    if (! bloaded)
      {
       if (DefclassData(theEnv)->ClassIDMap != NULL)
@@ -251,7 +251,7 @@ static void DeallocateDefclassData(
          genfree(theEnv,DefclassData(theEnv)->ClassIDMap,DefclassData(theEnv)->AvailClassID * sizeof(Defclass *));
         }
      }
-     
+
    if (DefclassData(theEnv)->ClassTable != NULL)
      {
       genfree(theEnv,DefclassData(theEnv)->ClassTable,sizeof(Defclass *) * CLASS_TABLE_HASH_SIZE);
@@ -266,7 +266,7 @@ static void DeallocateDefclassData(
       for (i = 0; i < SLOT_NAME_TABLE_HASH_SIZE; i++)
         {
          tmpSNPPtr = DefclassData(theEnv)->SlotNameTable[i];
-      
+
          while (tmpSNPPtr != NULL)
            {
             nextSNPPtr = tmpSNPPtr->nxt;
@@ -275,7 +275,7 @@ static void DeallocateDefclassData(
            }
         }
      }
-          
+
    if (DefclassData(theEnv)->SlotNameTable != NULL)
      {
       genfree(theEnv,DefclassData(theEnv)->SlotNameTable,sizeof(SLOT_NAME *) * SLOT_NAME_TABLE_HASH_SIZE);
@@ -285,7 +285,7 @@ static void DeallocateDefclassData(
    void *tmpexp;
    unsigned int i;
    int j;
-   
+
    if (DefclassData(theEnv)->ClassTable != NULL)
      {
       for (j = 0 ; j < CLASS_TABLE_HASH_SIZE ; j++)
@@ -304,7 +304,7 @@ static void DeallocateDefclassData(
      }
 #endif
   }
-  
+
 #if ! RUN_TIME
 /*********************************************************/
 /* DestroyDefclassAction: Action used to remove defclass */
@@ -322,7 +322,7 @@ static void DestroyDefclassAction(
 
    if (theDefclass == NULL) return;
 
-#if (! BLOAD_ONLY) 
+#if (! BLOAD_ONLY)
    DestroyDefclass(theEnv,theDefclass);
 #else
 #if MAC_XCD
@@ -424,10 +424,10 @@ void ObjectsRunTimeInitialize(
            }
         }
      }
-     
+
    SearchForHashedPatternNodes(theEnv,ObjectReteData(theEnv)->ObjectPatternNetworkPointer);
   }
-  
+
 /********************************/
 /* SearchForHashedPatternNodes: */
 /********************************/
@@ -441,7 +441,7 @@ static void SearchForHashedPatternNodes(
         { AddHashedPatternNode(theEnv,theNode->lastLevel,theNode,theNode->networkTest->type,theNode->networkTest->value); }
 
        SearchForHashedPatternNodes(theEnv,theNode->nextLevel);
-      
+
        theNode = theNode->rightNode;
       }
    }
@@ -469,7 +469,7 @@ void CreateSystemClasses(
   Environment *theEnv)
   {
    Defclass *user,*any,*primitive,*number,*lexeme,*address,*instance;
-   
+
    /* ===================================
       Add canonical slot name entries for
       the is-a and name fields - used for
@@ -610,7 +610,7 @@ static void SetupDefclasses(
 
 #if ! BLOAD_ONLY
 #if DEFMODULE_CONSTRUCT
-   AddPortConstructItem(theEnv,"defclass",SYMBOL);
+   AddPortConstructItem(theEnv,"defclass",SYMBOL_TOKEN);
    AddAfterModuleDefinedFunction(theEnv,"defclass",UpdateDefclassesScope,0);
 #endif
    EnvAddUDF(theEnv,"undefclass","v",1,1,"y",UndefclassCommand,"UndefclassCommand",NULL);

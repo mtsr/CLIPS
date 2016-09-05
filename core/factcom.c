@@ -168,7 +168,7 @@ void AssertCommand(
    bool error = false;
    int i;
    Fact *theFact;
-   
+
    /*================================*/
    /* Get the deftemplate associated */
    /* with the fact being asserted.  */
@@ -247,7 +247,7 @@ void AssertCommand(
 
       if (slotPtr != NULL) slotPtr = slotPtr->next;
      }
-     
+
    EnvDecrementClearReadyLocks(theEnv);
 
    /*============================================*/
@@ -312,7 +312,7 @@ void RetractCommand(
       /*======================================*/
 
       if (mCVIsType(&theArg,FACT_ADDRESS_TYPE))
-        { EnvRetract(theEnv,CVToRawValue(&theArg)); }
+        { EnvRetract(theEnv,(Fact *) CVToRawValue(&theArg)); }
 
       /*===============================================*/
       /* If the argument evaluates to an integer, then */
@@ -453,7 +453,7 @@ void FactIndexFunction(
       return;
      }
 
-   mCVSetInteger(returnValue,EnvFactIndex(theEnv,GetValue(theArg)));
+   mCVSetInteger(returnValue,EnvFactIndex(theEnv,(Fact *) GetValue(theArg)));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -1156,11 +1156,11 @@ bool EnvLoadFacts(
    /* Load the facts. */
    /*=================*/
 
-   theToken.type = LPAREN;
-   while (theToken.type != STOP)
+   theToken.tknType = LEFT_PARENTHESIS_TOKEN;
+   while (theToken.tknType != STOP_TOKEN)
      {
       testPtr = StandardLoadFact(theEnv,(char *) filePtr,&theToken);
-      if (testPtr == NULL) theToken.type = STOP;
+      if (testPtr == NULL) theToken.tknType = STOP_TOKEN;
       else EvaluateExpression(theEnv,testPtr,&rv);
       ReturnExpression(theEnv,testPtr);
      }
@@ -1206,11 +1206,11 @@ bool EnvLoadFactsFromString(
    /* Load the facts. */
    /*=================*/
 
-   theToken.type = LPAREN;
-   while (theToken.type != STOP)
+   theToken.tknType = LEFT_PARENTHESIS_TOKEN;
+   while (theToken.tknType != STOP_TOKEN)
      {
       testPtr = StandardLoadFact(theEnv,theStrRouter,&theToken);
-      if (testPtr == NULL) theToken.type = STOP;
+      if (testPtr == NULL) theToken.tknType = STOP_TOKEN;
       else EvaluateExpression(theEnv,testPtr,&rv);
       ReturnExpression(theEnv,testPtr);
      }
@@ -1242,11 +1242,11 @@ static struct expr *StandardLoadFact(
    struct expr *temp;
 
    GetToken(theEnv,logicalName,theToken);
-   if (theToken->type != LPAREN) return NULL;
+   if (theToken->tknType != LEFT_PARENTHESIS_TOKEN) return NULL;
 
    temp = GenConstant(theEnv,FCALL,FindFunction(theEnv,"assert"));
    temp->argList = GetRHSPattern(theEnv,logicalName,theToken,&error,
-                                  true,false,true,RPAREN);
+                                  true,false,true,RIGHT_PARENTHESIS_TOKEN);
 
    if (error == true)
      {

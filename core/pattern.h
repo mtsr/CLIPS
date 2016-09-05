@@ -139,7 +139,7 @@ struct reservedSymbol
 #define PATTERN_DATA 19
 
 struct patternData
-  { 
+  {
    struct patternParser *ListOfPatternParsers;
    struct patternParser *PatternParserArray[MAX_POSITIONS];
    int NextPosition;

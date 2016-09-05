@@ -70,7 +70,7 @@
 #define FACTGEN_DATA 2
 
 struct factgenData
-  {    
+  {
    struct entityRecord   FactJNGV1Info;
    struct entityRecord   FactJNGV2Info;
    struct entityRecord   FactJNGV3Info;
@@ -85,7 +85,7 @@ struct factgenData
    struct entityRecord   FactPNConstant1Info;
    struct entityRecord   FactPNConstant2Info;
   };
-  
+
 #define FactgenData(theEnv) ((struct factgenData *) GetEnvironmentData(theEnv,FACTGEN_DATA))
 
 #define SLOT_REF ':'
@@ -196,21 +196,21 @@ void InitializeFactReteFunctions(
                                                         NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL };
 
    AllocateEnvironmentData(theEnv,FACTGEN_DATA,sizeof(struct factgenData),NULL);
-   
-   memcpy(&FactgenData(theEnv)->FactJNGV1Info,&factJNGV1Info,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactJNGV2Info,&factJNGV2Info,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactJNGV3Info,&factJNGV3Info,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactPNGV1Info,&factPNGV1Info,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactPNGV2Info,&factPNGV2Info,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactPNGV3Info,&factPNGV3Info,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactJNCV1Info,&factJNCV1Info,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactJNCV2Info,&factJNCV2Info,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactPNCV1Info,&factPNCV1Info,sizeof(struct entityRecord)); 
-   memcpy(&FactgenData(theEnv)->FactStoreMFInfo,&factStoreMFInfo,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactSlotLengthInfo,&factSlotLengthInfo,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactPNConstant1Info,&factPNConstant1Info,sizeof(struct entityRecord));   
-   memcpy(&FactgenData(theEnv)->FactPNConstant2Info,&factPNConstant2Info,sizeof(struct entityRecord));   
-                                                        
+
+   memcpy(&FactgenData(theEnv)->FactJNGV1Info,&factJNGV1Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactJNGV2Info,&factJNGV2Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactJNGV3Info,&factJNGV3Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactPNGV1Info,&factPNGV1Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactPNGV2Info,&factPNGV2Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactPNGV3Info,&factPNGV3Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactJNCV1Info,&factJNCV1Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactJNCV2Info,&factJNCV2Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactPNCV1Info,&factPNCV1Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactStoreMFInfo,&factStoreMFInfo,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactSlotLengthInfo,&factSlotLengthInfo,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactPNConstant1Info,&factPNConstant1Info,sizeof(struct entityRecord));
+   memcpy(&FactgenData(theEnv)->FactPNConstant2Info,&factPNConstant2Info,sizeof(struct entityRecord));
+
    InstallPrimitive(theEnv,(ENTITY_RECORD_PTR) &FactData(theEnv)->FactInfo,FACT_ADDRESS);
    InstallPrimitive(theEnv,&FactgenData(theEnv)->FactJNGV1Info,FACT_JN_VAR1);
    InstallPrimitive(theEnv,&FactgenData(theEnv)->FactJNGV2Info,FACT_JN_VAR2);
@@ -358,7 +358,7 @@ struct expr *FactGenGetfield(
         ((theNode->multiFieldsBefore == 1) && (theNode->multiFieldsAfter == 0))))
      { return(GenConstant(theEnv,FACT_PN_VAR3,FactGetVarPN3(theEnv,theNode))); }
 
-   if (((theNode->type == MF_WILDCARD) || (theNode->type == MF_VARIABLE)) && 
+   if (((theNode->type == MF_WILDCARD) || (theNode->type == MF_VARIABLE)) &&
        (theNode->multiFieldsBefore == 0) && (theNode->multiFieldsAfter == 0))
      { return(GenConstant(theEnv,FACT_PN_VAR3,FactGetVarPN3(theEnv,theNode))); }
 
@@ -630,23 +630,23 @@ static void *FactGetVarJN1(
    /*=========================================*/
 
    if (side == LHS)
-     { 
-      hack.lhs = 1; 
+     {
+      hack.lhs = 1;
       hack.whichPattern = (unsigned short) theNode->joinDepth;
      }
    else if (side == RHS)
-     { 
-      hack.rhs = 1; 
+     {
+      hack.rhs = 1;
       hack.whichPattern = (unsigned short) 0;
      }
    else if (side == NESTED_RHS)
-     { 
-      hack.rhs = 1; 
+     {
+      hack.rhs = 1;
       hack.whichPattern = (unsigned short) theNode->joinDepth;
      }
    else
      { hack.whichPattern = (unsigned short) theNode->joinDepth; }
-     
+
    /*========================================*/
    /* A slot value of zero indicates that we */
    /* want the pattern address returned.     */
@@ -726,18 +726,18 @@ static void *FactGetVarJN2(
    hack.whichSlot = (unsigned short) (theNode->slotNumber - 1);
 
    if (side == LHS)
-     { 
-      hack.lhs = 1; 
+     {
+      hack.lhs = 1;
       hack.whichPattern = (unsigned short) theNode->joinDepth;
      }
    else if (side == RHS)
-     { 
-      hack.rhs = 1; 
+     {
+      hack.rhs = 1;
       hack.whichPattern = (unsigned short) 0;
      }
    else if (side == NESTED_RHS)
-     { 
-      hack.rhs = 1; 
+     {
+      hack.rhs = 1;
       hack.whichPattern = (unsigned short) theNode->joinDepth;
      }
    else
@@ -784,18 +784,18 @@ static void *FactGetVarJN3(
    hack.whichSlot = (unsigned short) (theNode->slotNumber - 1);
 
    if (side == LHS)
-     { 
-      hack.lhs = 1; 
+     {
+      hack.lhs = 1;
       hack.whichPattern = (unsigned short) theNode->joinDepth;
      }
    else if (side == RHS)
-     { 
-      hack.rhs = 1; 
+     {
+      hack.rhs = 1;
       hack.whichPattern = (unsigned short) 0;
      }
    else if (side == NESTED_RHS)
-     { 
-      hack.rhs = 1; 
+     {
+      hack.rhs = 1;
       hack.whichPattern = (unsigned short) theNode->joinDepth;
      }
    else
@@ -1155,19 +1155,19 @@ struct expr *FactJNVariableComparison(
         { firstNode = referringNode; }
       else
         { firstNode = selfNode; }
-      
+
       hack1.slot1 = (unsigned short) (firstNode->slotNumber - 1);
-        
+
       if (nandJoin)
         { hack1.pattern1 = (unsigned short) referringNode->joinDepth; }
       else
         { hack1.pattern1 = 0; }
-        
+
       hack1.p1rhs = true;
       hack1.p2lhs = true;
 
-      hack1.pattern2 = (unsigned short) referringNode->joinDepth; 
-      
+      hack1.pattern2 = (unsigned short) referringNode->joinDepth;
+
       if (referringNode->index < 0) hack1.slot2 = 0;
       else hack1.slot2 = (unsigned short) (referringNode->slotNumber - 1);
 
@@ -1210,11 +1210,11 @@ struct expr *FactJNVariableComparison(
         { hack2.pattern1 = (unsigned short) referringNode->joinDepth; }
       else
         { hack2.pattern1 = 0; }
-      
+
       hack2.p1rhs = true;
       hack2.p2lhs = true;
-        
-      hack2.pattern2 = (unsigned short) referringNode->joinDepth; 
+
+      hack2.pattern2 = (unsigned short) referringNode->joinDepth;
       hack2.slot2 = (unsigned short) (referringNode->slotNumber - 1);
 
       if (firstNode->multiFieldsBefore == 0)
@@ -1262,7 +1262,7 @@ struct expr *FactJNVariableComparison(
         { top->argList = FactGenGetvar(theEnv,selfNode,NESTED_RHS); }
       else
         { top->argList = FactGenGetvar(theEnv,selfNode,RHS); }
-        
+
       top->argList->nextArg = FactGenGetvar(theEnv,referringNode,LHS);
      }
 
@@ -1426,22 +1426,22 @@ int FactSlotReferenceVar(
    char *result;
    size_t position;
    SYMBOL_HN *slotName, *variableName;
-   
+
    /*==============================================*/
    /* Reference should be a single field variable. */
    /*==============================================*/
-   
+
    if (varexp->type != SF_VARIABLE)
      { return(0); }
 
    fullVar = ValueToString(varexp->value);
-   
+
    result = strchr(fullVar,SLOT_REF);
    if (result == NULL)
      { return(0); }
-   
+
    position = result - fullVar;
-     
+
    slotName = ExtractSlotName(theEnv,position,fullVar);
 
    if (slotName == NULL)
@@ -1451,9 +1451,9 @@ int FactSlotReferenceVar(
 
    if (variableName == NULL)
      { return(-1);}
-    
-   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
-   
+
+   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
+
    return(1);
   }
 
@@ -1477,18 +1477,18 @@ int RuleFactSlotReferenceVar(
    /*==============================================*/
    /* Reference should be a single field variable. */
    /*==============================================*/
-   
+
    if (varexp->type != SF_VARIABLE)
      { return(0); }
 
    fullVar = ValueToString(varexp->value);
-   
+
    result = strchr(fullVar,SLOT_REF);
    if (result == NULL)
      { return(0); }
-   
+
    position = result - fullVar;
-     
+
    slotName = ExtractSlotName(theEnv,position,fullVar);
 
    if (slotName == NULL)
@@ -1503,26 +1503,26 @@ int RuleFactSlotReferenceVar(
    /* If the variable has been bound on the RHS, */
    /* then the slot name can not be validated.   */
    /*============================================*/
-   
+
    boundPosn = SearchParsedBindNames(theEnv,variableName);
 
    if (boundPosn != 0)
      {
-      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
+      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
       return (1);
      }
 
    /*======================================================*/
    /* Find the deftemplate type bound to the fact address. */
    /*======================================================*/
-   
+
    templateName = FindTemplateForFactAddress(variableName,theLHS);
    if (templateName == NULL)
      {
-      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
+      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
       return (1);
      }
-     
+
    theDeftemplate = (struct deftemplate *)
                     LookupConstruct(theEnv,DeftemplateData(theEnv)->DeftemplateConstruct,
                                     ValueToString(templateName),
@@ -1530,14 +1530,14 @@ int RuleFactSlotReferenceVar(
 
    if ((theDeftemplate == NULL) || (theDeftemplate->implied))
      {
-      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
+      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
       return (1);
      }
 
    /*====================================================*/
    /* Verify the slot name is valid for the deftemplate. */
    /*====================================================*/
-   
+
    if (FindSlot(theDeftemplate,slotName,&slotPosition) == NULL)
      {
       PrintErrorID(theEnv,"FACTGEN",1,true);
@@ -1547,12 +1547,12 @@ int RuleFactSlotReferenceVar(
       EnvSetEvaluationError(theEnv,true);
       return(-1);
      }
-     
+
    /*==================================================================*/
    /* Replace the ?var:slot reference with a slot-value function call. */
    /*==================================================================*/
-   
-   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,varexp->value);
+
+   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
 
    return(1);
   }

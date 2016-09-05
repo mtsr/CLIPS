@@ -162,7 +162,7 @@ static bool SingleNumberCheck(
       mCVSetFloat(returnValue,0.0);
       return false;
      }
-  
+
    return true;
   }
 
@@ -188,7 +188,7 @@ static void DomainErrorMessage(
   CLIPSValue *returnValue)
   {
    Environment *theEnv = context->environment;
-   
+
    PrintErrorID(theEnv,"EMATHFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Domain error for ");
    EnvPrintRouter(theEnv,WERROR,UDFContextFunctionName(context));
@@ -249,7 +249,7 @@ void CosFunction(
   {
    if (! SingleNumberCheck(context,returnValue))
      { return; }
-     
+
    mCVSetFloat(returnValue,cos(mCVToFloat(returnValue)));
   }
 
@@ -379,13 +379,13 @@ void AcosFunction(
      { return; }
 
    num = mCVToFloat(returnValue);
-   
+
    if ((num > 1.0) || (num < -1.0))
      {
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
     mCVSetFloat(returnValue,acos(num));
   }
 
@@ -409,7 +409,7 @@ void AsinFunction(
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
    mCVSetFloat(returnValue,asin(num));
   }
 
@@ -448,7 +448,7 @@ void AsecFunction(
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
     num = 1.0 / num;
     mCVSetFloat(returnValue,acos(num));
   }
@@ -473,7 +473,7 @@ void AcscFunction(
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
     num = 1.0 / num;
     mCVSetFloat(returnValue,asin(num));
   }
@@ -498,7 +498,7 @@ void AcotFunction(
       mCVSetFloat(returnValue,PID2);
       return;
      }
-     
+
    num = 1.0 / num;
    mCVSetFloat(returnValue,atan(num));
   }
@@ -573,7 +573,7 @@ void CschFunction(
   CLIPSValue *returnValue)
   {
    CLIPSFloat num;
-   
+
    if (! SingleNumberCheck(context,returnValue))
      { return; }
 
@@ -588,7 +588,7 @@ void CschFunction(
       ArgumentOverflowErrorMessage(context,returnValue);
       return;
      }
-     
+
    mCVSetFloat(returnValue,1.0 / sinh(num));
   }
 
@@ -617,7 +617,7 @@ void CothFunction(
       ArgumentOverflowErrorMessage(context,returnValue);
       return;
      }
-     
+
    mCVSetFloat(returnValue,1.0 / tanh(num));
   }
 
@@ -641,7 +641,7 @@ void AcoshFunction(
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
    mCVSetFloat(returnValue,genacosh(num));
   }
 
@@ -680,7 +680,7 @@ void AtanhFunction(
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
    mCVSetFloat(returnValue,genatanh(num));
   }
 
@@ -704,7 +704,7 @@ void AsechFunction(
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
    mCVSetFloat(returnValue,genasech(num));
   }
 
@@ -718,17 +718,17 @@ void AcschFunction(
   CLIPSValue *returnValue)
   {
    CLIPSFloat num;
-   
+
    if (! SingleNumberCheck(context,returnValue))
      { return; }
-     
+
    num = mCVToFloat(returnValue);
    if (num == 0.0)
      {
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
    mCVSetFloat(returnValue,genacsch(num));
   }
 
@@ -752,7 +752,7 @@ void AcothFunction(
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
    mCVSetFloat(returnValue,genacoth(num));
   }
 
@@ -842,14 +842,14 @@ void SqrtFunction(
 
    if (! SingleNumberCheck(context,returnValue))
      { return; }
-   
+
    num = mCVToFloat(returnValue);
    if (num < 0.00000)
      {
       DomainErrorMessage(context,returnValue);
       return;
      }
-     
+
    mCVSetFloat(returnValue,sqrt(num));
   }
 
@@ -878,10 +878,10 @@ void PowFunction(
     /*=====================*/
     /* Domain error check. */
     /*=====================*/
-    
+
     num1 = mCVToFloat(&value1);
     num2 = mCVToFloat(&value2);
-    
+
     if (((num1 == 0.0) && (num2 <= 0.0)) ||
        ((num1 < 0.0) && (dtrunc(num2) != num2)))
      {
@@ -892,7 +892,7 @@ void PowFunction(
    /*============================*/
    /* Compute and set the value. */
    /*============================*/
-   
+
    mCVSetFloat(returnValue,pow(num1,num2));
   }
 
@@ -912,7 +912,7 @@ void ModFunction(
    /*==================================*/
    /* Check for two numeric arguments. */
    /*==================================*/
-   
+
    if (! UDFNthArgument(context,1,NUMBER_TYPES,&item1))
      { return; }
 
@@ -935,7 +935,7 @@ void ModFunction(
    /*===========================*/
    /* Compute the return value. */
    /*===========================*/
-   
+
    if (mCVIsType(&item1,FLOAT_TYPE) || mCVIsType(&item2,FLOAT_TYPE))
      {
       fnum1 = mCVToFloat(&item1);
@@ -1030,7 +1030,7 @@ void RoundFunction(
   Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
-  {     
+  {
    /*======================================*/
    /* Check that the argument is a number. */
    /*======================================*/
@@ -1041,7 +1041,7 @@ void RoundFunction(
    /*==============================*/
    /* Round float type to integer. */
    /*==============================*/
-   
+
    if (mCVIsType(returnValue,FLOAT_TYPE))
      { mCVSetInteger(returnValue,ceil(mCVToFloat(returnValue) - 0.5)); }
   }

@@ -157,17 +157,17 @@ void SetupInstances(
                                                   NULL,NULL,NULL,NULL,NULL
 #endif
                                          };
-                                                
+
    Instance dummyInstance = { { NULL, NULL, 0, 0L },
                               NULL, NULL, 0, 1, 0, 0, 0,
                               NULL,  0, 0, NULL, NULL, NULL, NULL,
                               NULL, NULL, NULL, NULL, NULL };
 
    AllocateEnvironmentData(theEnv,INSTANCE_DATA,sizeof(struct instanceData),DeallocateInstanceData);
-   
+
    InstanceData(theEnv)->MkInsMsgPass = true;
-   memcpy(&InstanceData(theEnv)->InstanceInfo,&instanceInfo,sizeof(struct patternEntityRecord)); 
-   dummyInstance.header.theInfo = &InstanceData(theEnv)->InstanceInfo;    
+   memcpy(&InstanceData(theEnv)->InstanceInfo,&instanceInfo,sizeof(struct patternEntityRecord));
+   dummyInstance.header.theInfo = &InstanceData(theEnv)->InstanceInfo;
    memcpy(&InstanceData(theEnv)->DummyInstance,&dummyInstance,sizeof(Instance));
 
    InitializeInstanceTable(theEnv);
@@ -223,7 +223,7 @@ void SetupInstances(
    AddCleanupFunction(theEnv,"instances",CleanupInstances,0);
    EnvAddResetFunction(theEnv,"instances",DestroyAllInstances,60);
   }
-  
+
 /***************************************/
 /* DeallocateInstanceData: Deallocates */
 /*    environment data for instances.  */
@@ -236,24 +236,24 @@ static void DeallocateInstanceData(
    INSTANCE_SLOT *sp;
    IGARBAGE *tmpGPtr, *nextGPtr;
    struct patternMatch *theMatch, *tmpMatch;
-   
+
    /*=================================*/
    /* Remove the instance hash table. */
    /*=================================*/
-   
+
    rm(theEnv,InstanceData(theEnv)->InstanceTable,
       (int) (sizeof(Instance *) * INSTANCE_TABLE_HASH_SIZE));
-      
+
    /*=======================*/
    /* Return all instances. */
    /*=======================*/
-   
+
    tmpIPtr = InstanceData(theEnv)->InstanceList;
    while (tmpIPtr != NULL)
      {
       nextIPtr = tmpIPtr->nxtList;
-      
-      theMatch = (struct patternMatch *) tmpIPtr->partialMatchList;        
+
+      theMatch = (struct patternMatch *) tmpIPtr->partialMatchList;
       while (theMatch != NULL)
         {
          tmpMatch = theMatch->next;
@@ -275,7 +275,7 @@ static void DeallocateInstanceData(
               { ReturnMultifield(theEnv,(MULTIFIELD_PTR) sp->value); }
            }
         }
-     
+
       if (tmpIPtr->cls->instanceSlotCount != 0)
         {
          rm(theEnv,tmpIPtr->slotAddresses,
@@ -286,16 +286,16 @@ static void DeallocateInstanceData(
                (tmpIPtr->cls->localInstanceSlotCount * sizeof(INSTANCE_SLOT)));
            }
         }
-  
+
       rtn_struct(theEnv,instance,tmpIPtr);
 
       tmpIPtr = nextIPtr;
      }
-     
+
    /*===============================*/
    /* Get rid of garbage instances. */
    /*===============================*/
-   
+
    tmpGPtr = InstanceData(theEnv)->InstanceGarbageList;
    while (tmpGPtr != NULL)
      {
@@ -325,7 +325,7 @@ bool EnvDeleteInstance(
 
    if (theInstance != NULL)
      { return QuashInstance(theEnv,theInstance); }
-     
+
    ins = InstanceData(theEnv)->InstanceList;
    while (ins != NULL)
      {
@@ -379,16 +379,16 @@ bool EnvUnmakeInstance(
       while (theInstance != NULL)
         {
          DirectMessage(theEnv,MessageHandlerData(theEnv)->DELETE_SYMBOL,theInstance,NULL,NULL);
-         
+
          if (theInstance->garbage == 0)
            { success = false; }
-           
+
          theInstance = theInstance->nxtList;
          while ((theInstance != NULL) ? theInstance->garbage : false)
            theInstance = theInstance->nxtList;
         }
      }
-     
+
    InstanceData(theEnv)->MaintainGarbageInstances = svmaintain;
    CleanupInstances(theEnv);
 
@@ -520,7 +520,7 @@ void EnvInstances(
    /* Grab a traversal id to avoid printing out    */
    /* instances twice due to multiple inheritance. */
    /*==============================================*/
-   
+
    if ((id = GetTraversalID(theEnv)) == -1)
      { return; }
    SaveCurrentModule(theEnv);
@@ -529,7 +529,7 @@ void EnvInstances(
    /* For all modules, print out instances */
    /* of specified class(es).              */
    /*======================================*/
-   
+
    if (theModule == NULL)
      {
       theModule = EnvGetNextDefmodule(theEnv,NULL);
@@ -554,7 +554,7 @@ void EnvInstances(
    /* For the specified module, print out   */
    /* instances of the specified class(es). */
    /*=======================================*/
-   
+
    else
      {
       EnvSetCurrentModule(theEnv,theModule);
@@ -595,13 +595,13 @@ Instance *EnvMakeInstance(
    if (OpenStringSource(theEnv,router,mkstr,0) == 0)
      return NULL;
    GetToken(theEnv,router,&tkn);
-   if (tkn.type == LPAREN)
+   if (tkn.tknType == LEFT_PARENTHESIS_TOKEN)
      {
       top = GenConstant(theEnv,FCALL,FindFunction(theEnv,"make-instance"));
       if (ParseSimpleInstance(theEnv,top,router) != NULL)
         {
          GetToken(theEnv,router,&tkn);
-         if (tkn.type == STOP)
+         if (tkn.tknType == STOP_TOKEN)
            {
             ExpressionInstall(theEnv,top);
             EvaluateExpression(theEnv,top,&returnValue);
@@ -666,13 +666,13 @@ Instance *EnvFindInstance(
    SYMBOL_HN *isym;
 
    isym = FindSymbolHN(theEnv,iname);
-   
+
    if (isym == NULL)
      { return NULL; }
-     
+
    if (theModule == NULL)
      { theModule = EnvGetCurrentModule(theEnv); }
-     
+
    return FindInstanceInModule(theEnv,isym,theModule,EnvGetCurrentModule(theEnv),searchImports);
   }
 
@@ -805,7 +805,7 @@ const char *EnvGetInstanceName(
 
    if (theInstance->garbage == 1)
      { return NULL; }
-     
+
    return ValueToString(theInstance->name);
   }
 
@@ -827,7 +827,7 @@ Defclass *EnvGetInstanceClass(
 
    if (theInstance->garbage == 1)
      { return NULL; }
-   
+
    return theInstance->cls;
   }
 
@@ -862,10 +862,10 @@ Instance *EnvGetNextInstance(
   {
    if (theInstance == NULL)
      { return InstanceData(theEnv)->InstanceList; }
-   
+
    if (theInstance->garbage == 1)
      { return NULL; }
-   
+
    return theInstance->nxtList;
   }
 
@@ -892,15 +892,15 @@ Instance *GetNextInstanceInScope(
      { return NULL; }
    else
      { theInstance = theInstance->nxtList; }
-     
+
    while (theInstance != NULL)
      {
       if (DefclassInScope(theEnv,theInstance->cls,NULL))
         { return theInstance; }
-        
+
       theInstance = theInstance->nxtList;
      }
-     
+
    return NULL;
   }
 
@@ -926,10 +926,10 @@ Instance *EnvGetNextInstanceInClass(
 
    if (theInstance == NULL)
      { return theDefclass->instanceList; }
-   
+
    if (theInstance->garbage == 1)
      { return NULL; }
-   
+
    return theInstance->nxtClass;
   }
 
@@ -953,9 +953,9 @@ Instance *EnvGetNextInstanceInClassAndSubclasses(
   {
    Instance *nextInstance;
    Defclass *theClass;
-   
+
    theClass = *cptr;
-   
+
    if (theInstance == NULL)
      {
       ClassSubclassAddresses(theEnv,theClass,iterationInfo,true);
@@ -965,8 +965,8 @@ Instance *EnvGetNextInstanceInClassAndSubclasses(
      { nextInstance = NULL; }
    else
      { nextInstance = theInstance->nxtClass; }
-     
-   while ((nextInstance == NULL) && 
+
+   while ((nextInstance == NULL) &&
           (GetpDOBegin(iterationInfo) <= GetpDOEnd(iterationInfo)))
      {
       theClass = (Defclass *) GetMFValue(DOPToPointer(iterationInfo),
@@ -975,10 +975,10 @@ Instance *EnvGetNextInstanceInClassAndSubclasses(
       SetpDOBegin(iterationInfo,GetpDOBegin(iterationInfo) + 1);
       nextInstance = theClass->instanceList;
      }
-          
+
    return nextInstance;
   }
-  
+
 /***************************************************
   NAME         : EnvGetInstancePPForm
   DESCRIPTION  : Writes slot names and values to
@@ -1001,12 +1001,12 @@ void EnvGetInstancePPForm(
 
    if (theInstance->garbage == 1)
      { return; }
-     
+
    if (OpenStringDestination(theEnv,pbuf,buf,buflen+1) == 0)
      { return; }
-     
+
    PrintInstance(theEnv,pbuf,theInstance," ");
-   
+
    CloseStringDestination(theEnv,pbuf);
   }
 
@@ -1033,7 +1033,7 @@ void ClassCommand(
                        EvaluationData(theEnv)->CurrentExpression->value)->callFunctionName);
 
    mCVSetBoolean(returnValue,false);
-   
+
    EvaluateExpression(theEnv,GetFirstArgument(),&temp);
    if (temp.type == INSTANCE_ADDRESS)
      {
@@ -1079,7 +1079,7 @@ void ClassCommand(
         }
      }
   }
-  
+
 /******************************************************
   NAME         : CreateInstanceHandler
   DESCRIPTION  : Message handler called after instance creation
@@ -1147,7 +1147,7 @@ void UnmakeInstanceCommand(
      {
       if (! UDFNextArgument(context,INSTANCE_TYPES | SYMBOL_TYPE,&theArg))
         { return; }
-        
+
       if (mCVIsType(&theArg,INSTANCE_NAME_TYPE | SYMBOL_TYPE))
         {
          ins = FindInstanceBySymbol(theEnv,(SYMBOL_HN *) CVToRawValue(&theArg));
@@ -1178,7 +1178,7 @@ void UnmakeInstanceCommand(
         }
       if (EnvUnmakeInstance(theEnv,ins) == false)
         rtn = false;
-      
+
       if (ins == NULL)
         {
          mCVSetBoolean(returnValue,rtn);
@@ -1186,7 +1186,7 @@ void UnmakeInstanceCommand(
         }
       argNumber++;
      }
-     
+
    mCVSetBoolean(returnValue,rtn);
   }
 
@@ -1258,7 +1258,7 @@ void InstanceAddressCommand(
          mCVSetBoolean(returnValue,false);
          return;
         }
-        
+
       theModule = EnvFindDefmodule(theEnv,DOToString(temp));
       if ((theModule == NULL) ? (strcmp(DOToString(temp),"*") != 0) : false)
         {
@@ -1273,7 +1273,7 @@ void InstanceAddressCommand(
         }
       else
         searchImports = false;
-        
+
       if (! UDFNextArgument(context,INSTANCE_NAME_TYPE | SYMBOL_TYPE,&temp))
         {
          mCVSetBoolean(returnValue,false);
@@ -1331,7 +1331,7 @@ void InstanceNameCommand(
    mCVSetBoolean(returnValue,false);
    if (! UDFFirstArgument(context,INSTANCE_TYPES | SYMBOL_TYPE,&theArg))
      { return; }
-     
+
    if (mCVIsType(&theArg,INSTANCE_ADDRESS_TYPE))
      {
       ins = (Instance *) theArg.value;
@@ -1393,7 +1393,7 @@ void InstanceNamePCommand(
 
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
-   
+
    mCVSetBoolean(returnValue,mCVIsType(&theArg,INSTANCE_NAME_TYPE));
   }
 
@@ -1443,7 +1443,7 @@ void InstanceExistPCommand(
       mCVSetBoolean(returnValue,((((Instance *) theArg.value)->garbage == 0) ? true : false));
       return;
      }
-     
+
    if (mCVIsType(&theArg,INSTANCE_NAME_TYPE | SYMBOL_TYPE))
      {
       mCVSetBoolean(returnValue,((FindInstanceBySymbol(theEnv,(SYMBOL_HN *) theArg.value) != NULL) ?
@@ -1667,10 +1667,10 @@ static INSTANCE_SLOT *FindISlotByName(
    SYMBOL_HN *ssym;
 
    ssym = FindSymbolHN(theEnv,sname);
-   
+
    if (ssym == NULL)
      { return NULL; }
-     
+
    return FindInstanceSlot(theEnv,theInstance,ssym);
   }
 

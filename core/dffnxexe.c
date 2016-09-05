@@ -114,9 +114,9 @@ void CallDeffunction(
    EvaluationData(theEnv)->EvaluationError = false;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
-     
+
    CLIPSBlockStart(theEnv,&gcBlock);
-   
+
    oldce = ExecutingConstruct(theEnv);
    SetExecutingConstruct(theEnv,true);
    previouslyExecutingDeffunction = DeffunctionData(theEnv)->ExecutingDeffunction;
@@ -130,7 +130,7 @@ void CallDeffunction(
       dptr->executing--;
       DeffunctionData(theEnv)->ExecutingDeffunction = previouslyExecutingDeffunction;
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
-      
+
       CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
       CallPeriodicTasks(theEnv);
 
@@ -167,10 +167,10 @@ void CallDeffunction(
    PopProcParameters(theEnv);
    DeffunctionData(theEnv)->ExecutingDeffunction = previouslyExecutingDeffunction;
    EvaluationData(theEnv)->CurrentEvaluationDepth--;
-   
+
    CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
    CallPeriodicTasks(theEnv);
-   
+
    SetExecutingConstruct(theEnv,oldce);
   }
 

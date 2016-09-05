@@ -148,15 +148,15 @@ void InitializeFacts(
         NULL,
         (bool (*)(void *,void *)) FactIsDeleted
       };
-   
+
    Fact dummyFact = { { NULL, NULL, 0, 0L }, NULL, NULL, -1L, 0, 1,
                       NULL, NULL, NULL, NULL, NULL, { 1, 0UL, NULL, { { 0, NULL } } } };
 
    AllocateEnvironmentData(theEnv,FACTS_DATA,sizeof(struct factsData),DeallocateFactData);
 
-   memcpy(&FactData(theEnv)->FactInfo,&factInfo,sizeof(struct patternEntityRecord)); 
-   dummyFact.factHeader.theInfo = &FactData(theEnv)->FactInfo;    
-   memcpy(&FactData(theEnv)->DummyFact,&dummyFact,sizeof(struct fact));  
+   memcpy(&FactData(theEnv)->FactInfo,&factInfo,sizeof(struct patternEntityRecord));
+   dummyFact.factHeader.theInfo = &FactData(theEnv)->FactInfo;
+   memcpy(&FactData(theEnv)->DummyFact,&dummyFact,sizeof(struct fact));
    FactData(theEnv)->LastModuleIndex = -1;
 
    /*=========================================*/
@@ -203,11 +203,11 @@ void InitializeFacts(
 
    FactCommandDefinitions(theEnv);
    FactFunctionDefinitions(theEnv);
-   
+
    /*==============================*/
    /* Initialize fact set queries. */
    /*==============================*/
-  
+
 #if FACT_SET_QUERIES
    SetupFactQuery(theEnv);
 #endif
@@ -230,7 +230,7 @@ void InitializeFacts(
    FactPatternsCompilerSetup(theEnv);
 #endif
   }
-  
+
 /***********************************/
 /* DeallocateFactData: Deallocates */
 /*   environment data for facts.   */
@@ -242,11 +242,11 @@ static void DeallocateFactData(
    struct fact *tmpFactPtr, *nextFactPtr;
    unsigned long i;
    struct patternMatch *theMatch, *tmpMatch;
-   
-   for (i = 0; i < FactData(theEnv)->FactHashTableSize; i++) 
+
+   for (i = 0; i < FactData(theEnv)->FactHashTableSize; i++)
      {
       tmpFHEPtr = FactData(theEnv)->FactHashTable[i];
-      
+
       while (tmpFHEPtr != NULL)
         {
          nextFHEPtr = tmpFHEPtr->next;
@@ -254,10 +254,10 @@ static void DeallocateFactData(
          tmpFHEPtr = nextFHEPtr;
         }
      }
-  
+
    rm3(theEnv,FactData(theEnv)->FactHashTable,
        sizeof(struct factHashEntry *) * FactData(theEnv)->FactHashTableSize);
-                 
+
    tmpFactPtr = FactData(theEnv)->FactList;
    while (tmpFactPtr != NULL)
      {
@@ -274,18 +274,18 @@ static void DeallocateFactData(
       ReturnEntityDependencies(theEnv,(struct patternEntity *) tmpFactPtr);
 
       ReturnFact(theEnv,tmpFactPtr);
-      tmpFactPtr = nextFactPtr; 
+      tmpFactPtr = nextFactPtr;
      }
-     
+
    tmpFactPtr = FactData(theEnv)->GarbageFacts;
    while (tmpFactPtr != NULL)
      {
       nextFactPtr = tmpFactPtr->nextFact;
 
       ReturnFact(theEnv,tmpFactPtr);
-      tmpFactPtr = nextFactPtr; 
+      tmpFactPtr = nextFactPtr;
      }
-     
+
    DeallocateCallListWithArg(theEnv,FactData(theEnv)->ListOfAssertFunctions);
    DeallocateCallListWithArg(theEnv,FactData(theEnv)->ListOfRetractFunctions);
    DeallocateCallListWithArg(theEnv,FactData(theEnv)->ListOfModifyFunctions);
@@ -523,7 +523,7 @@ bool RetractDriver(
    /*======================================================*/
 
    if (theFact->garbage) return false;
-   
+
    /*===========================================*/
    /* Execute the list of functions that are    */
    /* to be called before each fact retraction. */
@@ -670,7 +670,7 @@ bool RetractDriver(
    if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL) && (UtilityData(theEnv)->GarbageCollectionLocks == 0))
      { CleanCurrentGarbageFrame(theEnv,NULL); }
-   
+
    /*==================================*/
    /* Update busy counts and ephemeral */
    /* garbage information.             */
@@ -811,7 +811,7 @@ Fact *AssertDriver(
 
    if (reuseIndex == 0)
      { factListPosition = FactData(theEnv)->LastFact; }
-     
+
    if (factListPosition == NULL)
      {
       theFact->nextFact = FactData(theEnv)->FactList;
@@ -838,7 +838,7 @@ Fact *AssertDriver(
 
    if (reuseIndex == 0)
      { templatePosition = theFact->whichDeftemplate->lastFact; }
-     
+
    if (templatePosition == NULL)
      {
       theFact->nextTemplateFact = theFact->whichDeftemplate->factList;
@@ -862,12 +862,12 @@ Fact *AssertDriver(
    /*==================================*/
    /* Set the fact index and time tag. */
    /*==================================*/
-   
+
    if (reuseIndex > 0)
      { theFact->factIndex = reuseIndex; }
    else
      { theFact->factIndex = FactData(theEnv)->NextFactIndex++; }
-     
+
    theFact->factHeader.timeTag = DefruleData(theEnv)->CurrentEntityTimeTag++;
 
    /*=====================*/
@@ -875,7 +875,7 @@ Fact *AssertDriver(
    /*=====================*/
 
    FactInstall(theEnv,theFact);
-   
+
    /*==========================================*/
    /* Execute the list of functions that are   */
    /* to be called before each fact assertion. */
@@ -1135,7 +1135,7 @@ bool EnvPutFactSlot(
 
       theFact->theProposition.theFields[0].type = theValue->type;
       theFact->theProposition.theFields[0].value = DOToMultifield(theEnv,theValue);
-      
+
       return true;
      }
 
@@ -1169,7 +1169,7 @@ bool EnvPutFactSlot(
      { theFact->theProposition.theFields[whichSlot-1].value = DOToMultifield(theEnv,theValue); }
    else
      { theFact->theProposition.theFields[whichSlot-1].value = theValue->value; }
-   
+
    return true;
   }
 
@@ -1219,7 +1219,7 @@ bool EnvAssignFactSlotDefaults(
       /*======================================================*/
       /* Assign the default value for the slot if one exists. */
       /*======================================================*/
-      
+
       if (DeftemplateSlotDefault(theEnv,theDeftemplate,slotPtr,&theResult,false))
         {
          theFact->theProposition.theFields[i].type = theResult.type;
@@ -1234,7 +1234,7 @@ bool EnvAssignFactSlotDefaults(
 
    return true;
   }
-  
+
 /********************************************************/
 /* DeftemplateSlotDefault: Determines the default value */
 /*   for the specified slot of a deftemplate.           */
@@ -1427,7 +1427,7 @@ void ReturnFact(
 
    if (theFact->theProposition.multifieldLength == 0) newSize = 1;
    else newSize = theFact->theProposition.multifieldLength;
-      
+
    rtn_var_struct(theEnv,fact,sizeof(struct field) * (newSize - 1),theFact);
   }
 
@@ -1630,7 +1630,7 @@ Fact *EnvAssertString(
    danglingConstructs = ConstructData(theEnv)->DanglingConstructs;
 
    if ((theFact = StringToFact(theEnv,theString)) == NULL) return NULL;
-   
+
    if ((! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
      { ConstructData(theEnv)->DanglingConstructs = danglingConstructs; }
@@ -1645,7 +1645,7 @@ Fact *EnvAssertString(
 bool EnvGetFactListChanged(
   Environment *theEnv)
   {
-   return(FactData(theEnv)->ChangeToFactList); 
+   return(FactData(theEnv)->ChangeToFactList);
   }
 
 /***********************************************************/
@@ -1665,8 +1665,8 @@ void EnvSetFactListChanged(
 /****************************************/
 unsigned long GetNumberOfFacts(
   Environment *theEnv)
-  {   
-   return(FactData(theEnv)->NumberOfFacts); 
+  {
+   return(FactData(theEnv)->NumberOfFacts);
   }
 
 /***********************************************************/
@@ -1703,7 +1703,7 @@ static bool ClearFactsReady(
    /*======================================*/
 
    if (EngineData(theEnv)->JoinOperationInProgress) return false;
-   
+
    /*====================================*/
    /* Initialize the fact index to zero. */
    /*====================================*/
@@ -1768,7 +1768,7 @@ bool EnvAddAssertFunction(
                                               FactData(theEnv)->ListOfAssertFunctions);
    return true;
   }
-    
+
 /********************************************/
 /* EnvAddAssertFunctionWithContext: Adds a  */
 /*   function to the ListOfAssertFunctions. */
@@ -1786,7 +1786,7 @@ bool EnvAddAssertFunctionWithContext(
                                        context);
    return true;
   }
-    
+
 /***********************************************/
 /* EnvRemoveAssertFunction: Removes a function */
 /*   from the ListOfAssertFunctions.           */
@@ -1804,7 +1804,7 @@ bool EnvRemoveAssertFunction(
 
    return false;
   }
-  
+
 /******************************************/
 /* EnvAddRetractFunction: Adds a function */
 /*   to the ListOfRetractFunctions.       */
@@ -1821,7 +1821,7 @@ bool EnvAddRetractFunction(
                                               FactData(theEnv)->ListOfRetractFunctions);
    return true;
   }
-    
+
 /*********************************************/
 /* EnvAddRetractFunctionWithContext: Adds a  */
 /*   function to the ListOfRetractFunctions. */
@@ -1839,7 +1839,7 @@ bool EnvAddRetractFunctionWithContext(
                                        context);
    return true;
   }
-    
+
 /************************************************/
 /* EnvRemoveRetractFunction: Removes a function */
 /*   from the ListOfRetractFunctions.           */
@@ -1874,7 +1874,7 @@ bool EnvAddModifyFunction(
                                               FactData(theEnv)->ListOfModifyFunctions);
    return true;
   }
-    
+
 /********************************************/
 /* EnvAddModifyFunctionWithContext: Adds a  */
 /*   function to the ListOfModifyFunctions. */
@@ -1893,7 +1893,7 @@ bool EnvAddModifyFunctionWithContext(
                                        context);
    return true;
   }
-    
+
 /***********************************************/
 /* EnvRemoveModifyFunction: Removes a function */
 /*   from the ListOfModifyFunctions.           */

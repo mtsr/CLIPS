@@ -86,7 +86,7 @@
 /***************************************/
 
    static void                     PrintTemplateSlot(Environment *,const char *,struct templateSlot *,struct field *);
-   static struct templateSlot     *GetNextTemplateSlotToPrint(void *,struct fact *,struct templateSlot *,int *,int,const char *);
+   static struct templateSlot     *GetNextTemplateSlotToPrint(Environment *,struct fact *,struct templateSlot *,int *,int,const char *);
 
 /********************************************************/
 /* InvalidDeftemplateSlotMessage: Generic error message */
@@ -348,7 +348,7 @@ static void PrintTemplateSlot(
 /* GetNextTemplateSloteToPrint: */
 /********************************/
 static struct templateSlot *GetNextTemplateSlotToPrint(
-  void *theEnv,
+  Environment *theEnv,
   struct fact *theFact,
   struct templateSlot *slotPtr,
   int *position,
@@ -366,7 +366,7 @@ static struct templateSlot *GetNextTemplateSlotToPrint(
       slotPtr = slotPtr->next;
       (*position)++;
      }
-     
+
    while (slotPtr != NULL)
      {
       if ((changeMap != NULL) && (TestBitMap(changeMap,*position) == 0))
@@ -379,12 +379,12 @@ static struct templateSlot *GetNextTemplateSlotToPrint(
       if (ignoreDefaults && (slotPtr->defaultDynamic == false))
         {
          DeftemplateSlotDefault(theEnv,theFact->whichDeftemplate,slotPtr,&tempDO,true);
-         
+
          if (slotPtr->multislot == false)
            {
             if ((GetType(tempDO) == sublist[*position].type) &&
                 (GetValue(tempDO) == sublist[*position].value))
-              {     
+              {
                (*position)++;
                slotPtr = slotPtr->next;
                continue;
@@ -398,10 +398,10 @@ static struct templateSlot *GetNextTemplateSlotToPrint(
             continue;
            }
         }
-        
+
       return slotPtr;
      }
-     
+
    return NULL;
   }
 
@@ -423,7 +423,7 @@ void PrintTemplateFact(
    Deftemplate *theDeftemplate;
    struct templateSlot *slotPtr, *lastPtr = NULL;
    bool slotPrinted = false;
-   
+
    /*==============================*/
    /* Initialize some information. */
    /*==============================*/
@@ -445,22 +445,22 @@ void PrintTemplateFact(
    i = 0;
    slotPtr = GetNextTemplateSlotToPrint(theEnv,theFact,lastPtr,&i,
                                         ignoreDefaults,changeMap);
-     
+
    if ((changeMap != NULL) &&
        (theFact->whichDeftemplate->slotList != slotPtr))
      { EnvPrintRouter(theEnv,logicalName," ..."); }
-   
+
    while (slotPtr != NULL)
      {
       /*===========================================*/
       /* Print the opening parenthesis of the slot */
       /* and the slot name.                        */
       /*===========================================*/
-     
-      if (! slotPrinted) 
-        { 
+
+      if (! slotPrinted)
+        {
          slotPrinted = true;
-         EnvPrintRouter(theEnv,logicalName," "); 
+         EnvPrintRouter(theEnv,logicalName," ");
         }
 
       if (separateLines)
@@ -469,20 +469,20 @@ void PrintTemplateFact(
       /*===================================*/
       /* Print the slot name and it value. */
       /*===================================*/
-      
+
       PrintTemplateSlot(theEnv,logicalName,slotPtr,&sublist[i]);
 
       /*===========================*/
       /* Move on to the next slot. */
       /*===========================*/
-      
+
       lastPtr = slotPtr;
       slotPtr = GetNextTemplateSlotToPrint(theEnv,theFact,lastPtr,&i,
                                            ignoreDefaults,changeMap);
 
       if ((changeMap != NULL) && (lastPtr->next != slotPtr))
         { EnvPrintRouter(theEnv,logicalName," ..."); }
-      
+
       if (slotPtr != NULL) EnvPrintRouter(theEnv,logicalName," ");
      }
 

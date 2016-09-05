@@ -301,7 +301,7 @@ void DirectMVInsertCommand(
 
    if (CheckCurrentMessage(theEnv,"direct-slot-insert$",true) == false)
      { mCVSetBoolean(returnValue,false); }
-     
+
    ins = GetActiveInstance(theEnv);
    sp = CheckMultifieldSlotModify(theEnv,INSERT,"direct-slot-insert$",ins,
                             GetFirstArgument(),&theIndex,NULL,&newval);
@@ -311,7 +311,7 @@ void DirectMVInsertCommand(
    AssignSlotToDataObject(&oldseg,sp);
    if (! InsertMultiValueField(theEnv,&newseg,&oldseg,theIndex,&newval,"direct-slot-insert$"))
      { mCVSetBoolean(returnValue,false); }
-     
+
    if (PutSlotValue(theEnv,ins,sp,&newseg,&newval,"function direct-slot-insert$"))
      { mCVSetBoolean(returnValue,true); }
    else
@@ -345,7 +345,7 @@ void DirectMVDeleteCommand(
                                   GetFirstArgument(),&rb,&re,NULL);
    if (sp == NULL)
      { mCVSetBoolean(returnValue,false); }
-     
+
    AssignSlotToDataObject(&oldseg,sp);
    if (! DeleteMultiValueField(theEnv,&newseg,&oldseg,rb,re,"direct-slot-delete$"))
      { mCVSetBoolean(returnValue,false); }
@@ -380,7 +380,7 @@ static Instance *CheckMultifieldSlotInstance(
 
    if (! UDFFirstArgument(context,INSTANCE_TYPES | SYMBOL_TYPE,&temp))
      { return NULL; }
-     
+
    if (temp.type == INSTANCE_ADDRESS)
      {
       ins = (Instance *) temp.value;

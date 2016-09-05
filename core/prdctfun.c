@@ -430,7 +430,7 @@ void AndFunction(
      {
       if (! UDFNextArgument(context,ANY_TYPE,&theArg))
         { return; }
-        
+
       if (mCVIsFalseSymbol(&theArg))
         {
          mCVSetBoolean(returnValue,false);
@@ -456,7 +456,7 @@ void OrFunction(
      {
       if (! UDFNextArgument(context,ANY_TYPE,&theArg))
         { return; }
-        
+
       if (! mCVIsFalseSymbol(&theArg))
         {
          mCVSetBoolean(returnValue,true);
@@ -607,7 +607,7 @@ void LessThanFunction(
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
-        
+
       if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
          if (mCVToInteger(&rv1) >= mCVToInteger(&rv2))
@@ -624,7 +624,7 @@ void LessThanFunction(
             return;
            }
         }
-        
+
       CVSetCLIPSValue(&rv1,&rv2);
      }
 
@@ -664,7 +664,7 @@ void GreaterThanFunction(
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
-        
+
       if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
          if (mCVToInteger(&rv1) <= mCVToInteger(&rv2))
@@ -681,7 +681,7 @@ void GreaterThanFunction(
             return;
            }
         }
-        
+
       CVSetCLIPSValue(&rv1,&rv2);
      }
 
@@ -720,7 +720,7 @@ void NumericEqualFunction(
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
-        
+
       if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
          if (mCVToInteger(&rv1) != mCVToInteger(&rv2))
@@ -774,7 +774,7 @@ void NumericNotEqualFunction(
      {
       if (! UDFNextArgument(context,NUMBER_TYPES,&rv2))
         { return; }
-        
+
       if (mCVIsType(&rv1,INTEGER_TYPE) && mCVIsType(&rv2,INTEGER_TYPE))
         {
          if (mCVToInteger(&rv1) == mCVToInteger(&rv2))
@@ -812,18 +812,18 @@ void OddpFunction(
   {
    CLIPSValue item;
    CLIPSInteger num, halfnum;
-      
+
    /*===========================================*/
    /* Check for the correct types of arguments. */
    /*===========================================*/
- 
+
    if (! UDFFirstArgument(context,INTEGER_TYPE,&item))
      { return; }
 
    /*===========================*/
    /* Compute the return value. */
    /*===========================*/
-   
+
    num = mCVToInteger(&item);
    halfnum = (num / 2) * 2;
 
@@ -842,21 +842,21 @@ void EvenpFunction(
   {
    CLIPSValue item;
    CLIPSInteger num, halfnum;
-   
+
    /*===========================================*/
    /* Check for the correct types of arguments. */
    /*===========================================*/
-     
+
    if (! UDFFirstArgument(context,INTEGER_TYPE,&item))
      { return; }
 
    /*===========================*/
    /* Compute the return value. */
    /*===========================*/
-   
+
    num = mCVToInteger(&item);
    halfnum = (num / 2) * 2;
-   
+
    if (num != halfnum) mCVSetBoolean(returnValue,false);
    else mCVSetBoolean(returnValue,true);
   }

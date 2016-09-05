@@ -118,11 +118,11 @@ void InitializeConstructData(
   {
    AllocateEnvironmentData(theEnv,CONSTRUCT_DATA,sizeof(struct constructData),DeallocateConstructData);
 
-#if (! RUN_TIME) && (! BLOAD_ONLY)   
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    ConstructData(theEnv)->WatchCompilations = true;
 #endif
   }
-  
+
 /****************************************************/
 /* DeallocateConstructData: Deallocates environment */
 /*    data for constructs.                          */
@@ -138,7 +138,7 @@ static void DeallocateConstructData(
    DeallocateCallList(theEnv,ConstructData(theEnv)->ListOfResetFunctions);
    DeallocateCallList(theEnv,ConstructData(theEnv)->ListOfClearFunctions);
    DeallocateCallList(theEnv,ConstructData(theEnv)->ListOfClearReadyFunctions);
-   
+
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    if (ConstructData(theEnv)->ErrorString != NULL)
      { genfree(theEnv,ConstructData(theEnv)->ErrorString,sizeof(ConstructData(theEnv)->ErrorString) + 1); }
@@ -153,7 +153,7 @@ static void DeallocateConstructData(
    EnvSetWarningFileName(theEnv,NULL);
    EnvSetErrorFileName(theEnv,NULL);
 #endif
-   
+
    tmpPtr = ConstructData(theEnv)->ListOfConstructs;
    while (tmpPtr != NULL)
      {
@@ -180,7 +180,7 @@ ParserErrorFunction *EnvSetParserErrorCallback(
    ConstructData(theEnv)->ParserErrorCallback = functionPtr;
    return(tmpPtr);
   }
-  
+
 /*************************************************/
 /* FindConstruct: Determines whether a construct */
 /*   type is in the ListOfConstructs.            */
@@ -263,19 +263,19 @@ bool EnvSave(
    /*================================*/
    /* Mark all modules as unvisited. */
    /*================================*/
-   
+
    MarkModulesAsUnvisited(theEnv);
-  
+
    /*===============================================*/
    /* Save the constructs. Repeatedly loop over the */
    /* modules until each module has been save.      */
    /*===============================================*/
-   
+
    while (unvisited)
      {
       unvisited = false;
       updated = false;
-      
+
       for (defmodulePtr = EnvGetNextDefmodule(theEnv,NULL);
            defmodulePtr != NULL;
            defmodulePtr = EnvGetNextDefmodule(theEnv,defmodulePtr))
@@ -286,7 +286,7 @@ bool EnvSave(
          /* dependencies in imported modules, this should save the modules  */
          /* that don't import anything first and then work back from those. */
          /*=================================================================*/
-         
+
          if (defmodulePtr->visitedFlag)
            { /* Module has already been saved. */ }
          else if (AllImportedModulesVisited(theEnv,defmodulePtr))
@@ -297,14 +297,14 @@ bool EnvSave(
               {
                ((* (void (*)(Environment *,void *,char *)) saveFunction->func))(theEnv,defmodulePtr,(char *) filePtr);
               }
-              
+
             updated = true;
             defmodulePtr->visitedFlag = true;
            }
          else
            { unvisited = true; }
         }
-        
+
       /*=====================================================================*/
       /* At least one module should be saved in every pass. If all have been */
       /* visited/saved, then both flags will be false. If all remaining      */
@@ -315,7 +315,7 @@ bool EnvSave(
       /* are remaining unvisited/unsaved modules, but none were              */
       /* visited/saved: unvisited is true and updated is false.              */
       /*=====================================================================*/
-      
+
       if (unvisited && (! updated))
         {
          SystemError(theEnv,"CONSTRCT",2);
@@ -379,8 +379,8 @@ void SetCompilationsWatch(
 /*************************************/
 unsigned GetCompilationsWatch(
   Environment *theEnv)
-  {   
-   return(ConstructData(theEnv)->WatchCompilations); 
+  {
+   return(ConstructData(theEnv)->WatchCompilations);
   }
 
 /**********************************/
@@ -623,7 +623,7 @@ bool EnvClear(
   Environment *theEnv)
   {
    struct callFunctionItem *theFunction;
-   
+
    /*==========================================*/
    /* Activate the watch router which captures */
    /* trace output so that it is not displayed */
@@ -690,7 +690,7 @@ bool EnvClear(
    /*===========================*/
 
    ConstructData(theEnv)->ClearInProgress = false;
-   
+
 #if DEFRULE_CONSTRUCT
    if ((DefruleData(theEnv)->RightPrimeJoins != NULL) ||
        (DefruleData(theEnv)->LeftPrimeJoins != NULL))
@@ -700,9 +700,9 @@ bool EnvClear(
    /*============================*/
    /* Perform reset after clear. */
    /*============================*/
-   
+
    EnvReset(theEnv);
-   
+
    return true;
   }
 

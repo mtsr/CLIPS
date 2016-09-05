@@ -210,7 +210,7 @@ void SetupObjectPatternStuff(
       =========================================================================== */
 
    newPtr = get_struct(theEnv,patternParser);
-   
+
    newPtr->name = "objects";
    newPtr->priority = 20;
    newPtr->entityType = &InstanceData(theEnv)->InstanceInfo;
@@ -218,7 +218,7 @@ void SetupObjectPatternStuff(
    newPtr->recognizeFunction = PatternParserFind;
    newPtr->parseFunction = ObjectLHSParse;
    newPtr->postAnalysisFunction = ReorderAndAnalyzeObjectPattern;
-   newPtr->addPatternFunction = PlaceObjectPattern;   
+   newPtr->addPatternFunction = PlaceObjectPattern;
    newPtr->removePatternFunction = DetachObjectPattern;
    newPtr->genJNConstantFunction = NULL;
    newPtr->replaceGetJNValueFunction = ReplaceGetJNObjectValue;
@@ -241,7 +241,7 @@ void SetupObjectPatternStuff(
 #endif
 
    AddPatternParser(theEnv,newPtr);
-   
+
    EnvAddUDF(theEnv,"object-pattern-match-delay","*",0,UNBOUNDED,NULL,ObjectMatchDelay,"ObjectMatchDelay",NULL);
 
    AddFunctionParser(theEnv,"object-pattern-match-delay",ObjectMatchDelayParse);
@@ -339,19 +339,19 @@ static struct lhsParseNode *ObjectLHSParse(
       Parse the class, name and slot restrictions
       =========================================== */
    GetToken(theEnv,readSource,&theToken);
-   while (theToken.type != RPAREN)
+   while (theToken.tknType != RIGHT_PARENTHESIS_TOKEN)
      {
       ppbackupReqd = true;
       PPBackup(theEnv);
       SavePPBuffer(theEnv," ");
       SavePPBuffer(theEnv,theToken.printForm);
-      if (theToken.type != LPAREN)
+      if (theToken.tknType != LEFT_PARENTHESIS_TOKEN)
         {
          SyntaxErrorMessage(theEnv,"object pattern");
          goto ObjectLHSParseERROR;
         }
       GetToken(theEnv,readSource,&theToken);
-      if (theToken.type != SYMBOL)
+      if (theToken.tknType != SYMBOL_TOKEN)
         {
          SyntaxErrorMessage(theEnv,"object pattern");
          goto ObjectLHSParseERROR;
@@ -659,7 +659,7 @@ static struct patternNodeHeader *PlaceObjectPattern(
    /* Get the top of the object pattern network and prepare  */
    /* for the traversal to look for shareable pattern nodes. */
    /*========================================================*/
-   
+
    currentLevel = ObjectNetworkPointer(theEnv);
    lastLevel = NULL;
 
@@ -668,13 +668,13 @@ static struct patternNodeHeader *PlaceObjectPattern(
    /* these are accounted for by the class bitmap and    */
    /* find the class and slot bitmaps.                   */
    /*====================================================*/
-      
+
    rightHash = thePattern->rightHash;
 
    newSlotBitMap = FormSlotBitMap(theEnv,thePattern->right);
    thePattern->right = RemoveSlotExistenceTests(theEnv,thePattern->right,&newClassBitMap);
    thePattern = thePattern->right;
-   
+
    /*=========================================================*/
    /* Loop until all fields in the pattern have been added to */
    /* the pattern network. Process the bitmap node ONLY if it */
@@ -705,14 +705,14 @@ static struct patternNodeHeader *PlaceObjectPattern(
       /* Is there a node in the pattern network */
       /* that can be reused (shared)?           */
       /*========================================*/
-      
+
       newNode = FindObjectPatternNode(currentLevel,thePattern,&nodeSlotGroup,endSlot,false);
 
       /*================================================*/
       /* If the pattern node cannot be shared, then add */
       /* a new pattern node to the pattern network.     */
       /*================================================*/
-      
+
       if (newNode == NULL)
         { newNode = CreateNewObjectPatternNode(theEnv,thePattern,nodeSlotGroup,lastLevel,endSlot,false); }
 
@@ -721,7 +721,7 @@ static struct patternNodeHeader *PlaceObjectPattern(
          currentLevel = newNode->nextLevel;
          lastLevel = newNode;
          newNode = FindObjectPatternNode(currentLevel,thePattern,&nodeSlotGroup,endSlot,true);
-         
+
          if (newNode == NULL)
            { newNode = CreateNewObjectPatternNode(theEnv,thePattern,nodeSlotGroup,lastLevel,endSlot,true); }
         }
@@ -729,7 +729,7 @@ static struct patternNodeHeader *PlaceObjectPattern(
       /*=======================================================*/
       /* Move on to the next field in the pattern to be added. */
       /*=======================================================*/
-      
+
       if ((thePattern->right == NULL) && (tempPattern != NULL))
         {
          thePattern = tempPattern;
@@ -745,7 +745,7 @@ static struct patternNodeHeader *PlaceObjectPattern(
    /*==================================================*/
    /* Return the leaf node of the newly added pattern. */
    /*==================================================*/
-   
+
    newAlphaNode = lastLevel->alphaNode;
    while (newAlphaNode != NULL)
      {
@@ -755,7 +755,7 @@ static struct patternNodeHeader *PlaceObjectPattern(
         return((struct patternNodeHeader *) newAlphaNode);
       newAlphaNode = newAlphaNode->nxtInGroup;
      }
-   
+
    newAlphaNode = get_struct(theEnv,objectAlphaNode);
    InitializePatternHeader(theEnv,&newAlphaNode->header);
    newAlphaNode->header.rightHash = AddHashedExpression(theEnv,rightHash);
@@ -815,7 +815,7 @@ static OBJECT_PATTERN_NODE *FindObjectPatternNode(
    /* Loop through the nodes at the given level in the pattern */
    /* network looking for a node that can be reused (shared).  */
    /*==========================================================*/
-   
+
    while (listOfNodes != NULL)
      {
       /*=========================================================*/
@@ -823,7 +823,7 @@ static OBJECT_PATTERN_NODE *FindObjectPatternNode(
       /* the same, the test is on the same field in the pattern, */
       /* and the network test expressions are the same.          */
       /*=========================================================*/
-      
+
       if (((thePattern->type == MF_WILDCARD) || (thePattern->type == MF_VARIABLE)) ?
           listOfNodes->multifieldNode : (listOfNodes->multifieldNode == 0))
         {
@@ -839,7 +839,7 @@ static OBJECT_PATTERN_NODE *FindObjectPatternNode(
       /* Find the beginning of a group of nodes with   */
       /* the same slot name testing on the same field. */
       /*===============================================*/
-      
+
       if ((*nodeSlotGroup == NULL) &&
           (thePattern->index == (int) listOfNodes->whichField) &&
           (thePattern->slotNumber == (int) listOfNodes->slotNameID))
@@ -850,7 +850,7 @@ static OBJECT_PATTERN_NODE *FindObjectPatternNode(
    /*==============================================*/
    /* A shareable pattern node could not be found. */
    /*==============================================*/
-      
+
    return NULL;
   }
 
@@ -906,14 +906,14 @@ static OBJECT_PATTERN_NODE *CreateNewObjectPatternNode(
      { newNode->networkTest = AddHashedExpression(theEnv,thePattern->constantSelector); }
    else
      { newNode->networkTest = AddHashedExpression(theEnv,thePattern->networkTest); }
-   
+
    newNode->whichField = thePattern->index;
    newNode->leaveFields = thePattern->singleFieldsAfter;
 
    /*=========================================*/
    /* Install the slot name for the new node. */
    /*=========================================*/
-   
+
    newNode->slotNameID = (unsigned) thePattern->slotNumber;
    if ((thePattern->type == MF_WILDCARD) || (thePattern->type == MF_VARIABLE))
      newNode->multifieldNode = true;
@@ -922,9 +922,9 @@ static OBJECT_PATTERN_NODE *CreateNewObjectPatternNode(
    /*===============================================*/
    /* Set the upper level pointer for the new node. */
    /*===============================================*/
-   
+
    newNode->lastLevel = upperLevel;
-   
+
    if ((upperLevel != NULL) && (upperLevel->selector))
      { AddHashedPatternNode(theEnv,upperLevel,newNode,newNode->networkTest->type,newNode->networkTest->value); }
 
@@ -932,7 +932,7 @@ static OBJECT_PATTERN_NODE *CreateNewObjectPatternNode(
    /* If there are no nodes with this slot name on */
    /* this level, simply prepend it to the front.  */
    /*==============================================*/
-   
+
    if (nodeSlotGroup == NULL)
      {
       if (upperLevel == NULL)
@@ -1037,16 +1037,16 @@ static void DetachObjectPattern(
    /*====================================================*/
    /* Get rid of any matches stored in the alpha memory. */
    /*====================================================*/
-   
+
    alphaPtr = (OBJECT_ALPHA_NODE *) thePattern;
    ClearObjectPatternMatches(theEnv,alphaPtr);
 
    /*========================================================*/
    /* Unmark the classes to which the pattern is applicable  */
    /* and unmark the class and slot id maps so that they can */
-   /* become ephemeral.                                      */                                               
+   /* become ephemeral.                                      */
    /*========================================================*/
-   
+
    MarkBitMapClassesBusy(theEnv,alphaPtr->classbmp,-1);
    DeleteClassBitMap(theEnv,alphaPtr->classbmp);
    if (alphaPtr->slotbmp != NULL)
@@ -1056,7 +1056,7 @@ static void DetachObjectPattern(
    /* Only continue deleting this pattern if  */
    /* this is the last alpha memory attached. */
    /*=========================================*/
-   
+
    prv = NULL;
    terminalPtr = ObjectNetworkTerminalPointer(theEnv);
    while (terminalPtr != alphaPtr)
@@ -1064,7 +1064,7 @@ static void DetachObjectPattern(
       prv = terminalPtr;
       terminalPtr = terminalPtr->nxtTerminal;
      }
-     
+
    if (prv == NULL)
      { SetObjectNetworkTerminalPointer(theEnv,terminalPtr->nxtTerminal); }
    else
@@ -1077,7 +1077,7 @@ static void DetachObjectPattern(
       prv = terminalPtr;
       terminalPtr = terminalPtr->nxtInGroup;
      }
-     
+
    if (prv == NULL)
      {
       if (alphaPtr->nxtInGroup != NULL)
@@ -1106,7 +1106,7 @@ static void DetachObjectPattern(
    /*==============================================================*/
    /* Loop until all appropriate pattern nodes have been detached. */
    /*==============================================================*/
-   
+
    while (upperLevel != NULL)
      {
       if ((upperLevel->leftNode == NULL) &&
@@ -1118,10 +1118,10 @@ static void DetachObjectPattern(
          /* above this one, because no other patterns are */
          /* dependent upon this node.                     */
          /*===============================================*/
-         
+
          patternPtr = upperLevel;
          upperLevel = patternPtr->lastLevel;
-         
+
          if (upperLevel == NULL)
            SetObjectNetworkPointer(theEnv,NULL);
          else
@@ -1133,7 +1133,7 @@ static void DetachObjectPattern(
             if (upperLevel->alphaNode != NULL)
               upperLevel = NULL;
            }
-           
+
          RemoveHashedExpression(theEnv,(EXPRESSION *) patternPtr->networkTest);
          rtn_struct(theEnv,objectPatternNode,patternPtr);
         }
@@ -1144,10 +1144,10 @@ static void DetachObjectPattern(
          /* be checked preceding it.  Remove the pattern node, */
          /* but do not detach any nodes above this one.        */
          /*====================================================*/
-         
+
          patternPtr = upperLevel;
-         
-         if ((patternPtr->lastLevel != NULL) && 
+
+         if ((patternPtr->lastLevel != NULL) &&
              (patternPtr->lastLevel->selector))
            { RemoveHashedPatternNode(theEnv,patternPtr->lastLevel,patternPtr,patternPtr->networkTest->type,patternPtr->networkTest->value); }
 
@@ -1166,17 +1166,17 @@ static void DetachObjectPattern(
          /* does have one succeeding it. Remove the pattern    */
          /* node, but do not detach any nodes above this one.  */
          /*====================================================*/
-         
+
          patternPtr = upperLevel;
          upperLevel = upperLevel->lastLevel;
          if (upperLevel == NULL)
            { SetObjectNetworkPointer(theEnv,patternPtr->rightNode); }
          else
-           { 
+           {
             if (upperLevel->selector)
               { RemoveHashedPatternNode(theEnv,upperLevel,patternPtr,patternPtr->networkTest->type,patternPtr->networkTest->value); }
 
-            upperLevel->nextLevel = patternPtr->rightNode; 
+            upperLevel->nextLevel = patternPtr->rightNode;
            }
          patternPtr->rightNode->leftNode = NULL;
 
@@ -1329,7 +1329,7 @@ static struct lhsParseNode *ParseClassRestriction(
    struct lhsParseNode *tmpNode;
    SYMBOL_HN *rln;
    CONSTRAINT_RECORD *rv;
-   
+
    rv = GetConstraintRecord(theEnv);
    rv->anyAllowed = 0;
    rv->symbolsAllowed = 1;
@@ -1342,12 +1342,12 @@ static struct lhsParseNode *ParseClassRestriction(
       RemoveConstraint(theEnv,rv);
       return NULL;
      }
-   if ((theToken->type != RPAREN) ||
+   if ((theToken->tknType != RIGHT_PARENTHESIS_TOKEN) ||
        (tmpNode->type == MF_WILDCARD) ||
        (tmpNode->type == MF_VARIABLE))
      {
       PPBackup(theEnv);
-      if (theToken->type != RPAREN)
+      if (theToken->tknType != RIGHT_PARENTHESIS_TOKEN)
         {
          SavePPBuffer(theEnv," ");
          SavePPBuffer(theEnv,theToken->printForm);
@@ -1381,7 +1381,7 @@ static struct lhsParseNode *ParseNameRestriction(
    struct lhsParseNode *tmpNode;
    SYMBOL_HN *rln;
    CONSTRAINT_RECORD *rv;
-   
+
    rv = GetConstraintRecord(theEnv);
    rv->anyAllowed = 0;
    rv->instanceNamesAllowed = 1;
@@ -1394,12 +1394,12 @@ static struct lhsParseNode *ParseNameRestriction(
       RemoveConstraint(theEnv,rv);
       return NULL;
      }
-   if ((theToken->type != RPAREN) ||
+   if ((theToken->tknType != RIGHT_PARENTHESIS_TOKEN) ||
        (tmpNode->type == MF_WILDCARD) ||
        (tmpNode->type == MF_VARIABLE))
      {
       PPBackup(theEnv);
-      if (theToken->type != RPAREN)
+      if (theToken->tknType != RIGHT_PARENTHESIS_TOKEN)
         {
          SavePPBuffer(theEnv," ");
          SavePPBuffer(theEnv,theToken->printForm);
@@ -1453,7 +1453,7 @@ static struct lhsParseNode *ParseSlotRestriction(
       RemoveConstraint(theEnv,slotConstraints);
       return NULL;
      }
-   if (theToken->type != RPAREN)
+   if (theToken->tknType != RIGHT_PARENTHESIS_TOKEN)
      {
       PPBackup(theEnv);
       SavePPBuffer(theEnv," ");
@@ -2298,7 +2298,7 @@ static void ObjectIncrementalReset(
   Environment *theEnv)
   {
    Instance *ins;
-   
+
    for (ins = InstanceData(theEnv)->InstanceList ; ins != NULL ; ins = ins->nxtList)
      ObjectNetworkAction(theEnv,OBJECT_ASSERT,(Instance *) ins,-1);
   }

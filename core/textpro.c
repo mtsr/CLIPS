@@ -33,7 +33,7 @@
 /*                                                           */
 /*            Used genstrcpy and genstrncpy instead of       */
 /*            strcpy and strncpy.                            */
-/*                                                           */             
+/*                                                           */
 /*            Support for long long integers.                */
 /*                                                           */
 /*            Changed integer type/precision.                */
@@ -157,7 +157,7 @@ struct lists
 #define TEXTPRO_DATA 8
 
 struct textProcessingData
-  { 
+  {
    struct lists *headings;
    struct entries *parent;
   };
@@ -232,7 +232,7 @@ static int TextLookupFetch(
       EnvPrintRouter(theEnv,WERROR,"\".\n");
       return(-1);
      }
-     
+
    if ((lnode = NewFetchFile(theEnv,file)) == NULL)
      {
       GenClose(theEnv,fp);
@@ -259,7 +259,7 @@ static int TextLookupFetch(
       /*=============================================================*/
       /*Forces the load function to ignore lines beginning with `$$' */
       /*=============================================================*/
-      
+
       if ((str[0] != LIT_DELIM) || (str[1] != LIT_DELIM))
         {
         if (findstr(str,EDELIM) >= 0)
@@ -316,12 +316,12 @@ static int TextLookupFetch(
    if (INFO_END == false)
      {
       TextLookupToss(theEnv,file);
-      
+
       PrintErrorID(theEnv,"TEXTPRO",4,false);
       EnvPrintRouter(theEnv,WERROR,"Line ");
       PrintLongInteger(theEnv,WERROR,line_ct);
       EnvPrintRouter(theEnv,WERROR," : Previous entry not closed.\n");
-      
+
       return(-1);
      }
    if (entries_ct == 0)
@@ -687,7 +687,7 @@ static struct entries *AllocateEntryNode(
    /*===============================================================*/
 
    ungetc(getc(fp),fp);
-   
+
    enode->offset = ftell(fp);
    enode->parent = NULL;
    enode->child  = NULL;
@@ -1045,10 +1045,10 @@ void FetchCommand(
    CLIPSValue theArg;
 
    mCVSetBoolean(returnValue,false);
- 
+
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
      { return; }
-     
+
    load_ct = TextLookupFetch(theEnv,mCVToString(&theArg));
    if (load_ct <= 0)
      {
@@ -1060,7 +1060,7 @@ void FetchCommand(
 
       return;
      }
-     
+
    mCVSetInteger(returnValue,load_ct);
   }
 
@@ -1127,7 +1127,7 @@ void PrintRegionCommand(
       params = params->next;
       rm(theEnv,tptr,(int) sizeof(struct topics));
      }
-     
+
    mCVSetBoolean(returnValue,com_code);
   }
 
@@ -1213,7 +1213,7 @@ void TossCommand(
 
    if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
      { return; }
-   
+
    file = mCVToString(&theArg);
 
    mCVSetBoolean(returnValue,TextLookupToss(theEnv,file));
@@ -1249,9 +1249,9 @@ static struct topics *GetCommandLineTopics(
    while (UDFHasNextArgument(context))
      {
       tnode = (struct topics *) gm2(theEnv,(int) sizeof(struct topics));
-      
+
       UDFNextArgument(context,ANY_TYPE,&val);
-      
+
       if ((GetType(val) == SYMBOL) || (GetType(val) == STRING))
         genstrncpy(tnode->name,DOToString(val),NAMESIZE-1);
       else if (GetType(val) == FLOAT)
@@ -1260,7 +1260,7 @@ static struct topics *GetCommandLineTopics(
         genstrncpy(tnode->name,LongIntegerToString(theEnv,DOToLong(val)),NAMESIZE-1);
       else
         genstrncpy(tnode->name,"***ERROR***",NAMESIZE-1);
-        
+
       tnode->next = NULL;
       tnode->end_list = NULL;
       if (head == NULL)
@@ -1359,7 +1359,7 @@ void HelpFunctionDefinitions(
 #endif
 #endif
   }
-  
+
 /*********************************************************/
 /* DeallocateTextProcessingData: Deallocates environment */
 /*    data for text processing routines.                 */
@@ -1373,7 +1373,7 @@ static void DeallocateTextProcessingData(
    while (clptr != NULL)
      {
       nextptr = clptr->next;
-     
+
       TossFunction(theEnv,clptr->topics);
       rm(theEnv,clptr,(int) sizeof(struct lists));
 

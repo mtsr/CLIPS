@@ -139,7 +139,7 @@ void StrCatFunction(
   Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
-  {   
+  {
    StrOrSymCatFunction(context,returnValue,STRING);
   }
 
@@ -179,9 +179,9 @@ static void StrOrSymCatFunction(
 
    numArgs = UDFArgumentCount(context);
    if (numArgs == 0) return;
-   
+
    arrayOfStrings = (SYMBOL_HN **) gm1(theEnv,(int) sizeof(SYMBOL_HN *) * numArgs);
-   for (i = 0; i < numArgs; i++)   
+   for (i = 0; i < numArgs; i++)
      { arrayOfStrings[i] = NULL; }
 
    /*=============================================*/
@@ -203,7 +203,7 @@ static void StrOrSymCatFunction(
          case SYMBOL:
            hashPtr = (SYMBOL_HN *) GetValue(theArg);
            arrayOfStrings[i-1] = hashPtr;
-           IncrementSymbolCount(hashPtr); 
+           IncrementSymbolCount(hashPtr);
            break;
 
          case FLOAT:
@@ -233,7 +233,7 @@ static void StrOrSymCatFunction(
            }
 
          rm(theEnv,arrayOfStrings,sizeof(SYMBOL_HN *) * numArgs);
-         
+
          SetpType(returnValue,returnType);
          if (returnType == STRING)
            { SetpValue(returnValue,EnvAddSymbol(theEnv,"")); }
@@ -299,7 +299,7 @@ void StrLengthFunction(
    /*============================================*/
    /* Return the length of the string or symbol. */
    /*============================================*/
-   
+
    mCVSetInteger(returnValue,UTF8Length(mCVToString(&theArg)));
   }
 
@@ -347,7 +347,7 @@ void UpcaseFunction(
    /* Return the uppercased string and clean */
    /* up the temporary memory used.          */
    /*========================================*/
-   
+
    returnValue->type = theArg.type;
    returnValue->bitType = theArg.bitType;
    CVSetRawValue(returnValue,EnvAddSymbol(theEnv,nsptr));
@@ -497,15 +497,15 @@ void SubStringFunction(
 
    if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
      { return; }
-   
+
    tempString = mCVToString(&theArg);
-   
+
    /*================================================*/
    /* If parameters are out of range return an error */
    /*================================================*/
-   
+
    length = UTF8Length(tempString);
-   
+
    if (end > length)
      { end = length; }
 
@@ -530,7 +530,7 @@ void SubStringFunction(
      {
       start = UTF8Offset(tempString,start);
       end = UTF8Offset(tempString,end + 1) - 1;
-      
+
       returnString = (char *) gm2(theEnv,(unsigned) (end - start + 2));  /* (end - start) inclusive + EOS */
       for(j=0, i=start;i <= end; i++, j++)
         { *(returnString+j) = *(tempString+i); }
@@ -583,7 +583,7 @@ void StrIndexFunction(
       mCVSetInteger(returnValue,(long long) UTF8Length(strg2) + 1LL);
       return;
      }
-     
+
    strg3 = strg2;
    for (i=1; *strg2; i++, strg2++)
      {
@@ -651,19 +651,21 @@ void StringToField(
    /* Copy the token to the return value data structure. */
    /*====================================================*/
 
-   returnValue->type = theToken.type;
-   if ((theToken.type == FLOAT) || (theToken.type == STRING) ||
+   if ((theToken.tknType == FLOAT_TOKEN) || (theToken.tknType == STRING_TOKEN) ||
 #if OBJECT_SYSTEM
-       (theToken.type == INSTANCE_NAME) ||
+       (theToken.tknType == INSTANCE_NAME_TOKEN) ||
 #endif
-       (theToken.type == SYMBOL) || (theToken.type == INTEGER))
-     { returnValue->value = theToken.value; }
-   else if (theToken.type == STOP)
+       (theToken.tknType == SYMBOL_TOKEN) || (theToken.tknType == INTEGER_TOKEN))
+     {
+      returnValue->type = TokenTypeToType(theToken.tknType);
+      returnValue->value = theToken.value;
+     }
+   else if (theToken.tknType == STOP_TOKEN)
      {
       returnValue->type = SYMBOL;
       returnValue->value = EnvAddSymbol(theEnv,"EOF");
      }
-   else if (theToken.type == UNKNOWN_VALUE)
+   else if (theToken.tknType == UNKNOWN_VALUE_TOKEN)
      {
       returnValue->type = STRING;
       returnValue->value = EnvAddSymbol(theEnv,"*** ERROR ***");
@@ -674,7 +676,7 @@ void StringToField(
       returnValue->value = EnvAddSymbol(theEnv,theToken.printForm);
      }
   }
-  
+
 #if (! RUN_TIME) && (! BLOAD_ONLY)
 
 /**************************************/
@@ -701,7 +703,7 @@ void EvalFunction(
 
    EnvEval(theEnv,mCVToString(&theArg),returnValue);
   }
-  
+
 /*****************************/
 /* EnvEval: C access routine */
 /*   for the eval function.  */
@@ -719,11 +721,11 @@ bool EnvEval(
    int danglingConstructs;
 
    returnValue->environment = theEnv;
-   
+
    /*=====================================*/
    /* If embedded, clear the error flags. */
    /*=====================================*/
-   
+
    if ((! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
      {
@@ -818,7 +820,7 @@ bool EnvEval(
    /*==============================================*/
    /* If embedded, reset dangling construct count. */
    /*==============================================*/
-   
+
    if ((! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
      { ConstructData(theEnv)->DanglingConstructs = danglingConstructs; }
@@ -830,7 +832,7 @@ bool EnvEval(
 
    if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL) && (UtilityData(theEnv)->GarbageCollectionLocks == 0))
-     { 
+     {
       CleanCurrentGarbageFrame(theEnv,returnValue);
       CallPeriodicTasks(theEnv);
      }
@@ -899,7 +901,7 @@ void BuildFunction(
 
    mCVSetBoolean(returnValue,(EnvBuild(theEnv,mCVToString(&theArg))));
   }
-  
+
 /******************************/
 /* EnvBuild: C access routine */
 /*   for the build function.  */
@@ -911,11 +913,11 @@ bool EnvBuild(
    const char *constructType;
    struct token theToken;
    int errorFlag;
-   
+
    /*=====================================*/
    /* If embedded, clear the error flags. */
    /*=====================================*/
-   
+
    if ((! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL))
      {
@@ -946,7 +948,7 @@ bool EnvBuild(
 
    GetToken(theEnv,"build",&theToken);
 
-   if (theToken.type != LPAREN)
+   if (theToken.tknType != LEFT_PARENTHESIS_TOKEN)
      {
       CloseStringSource(theEnv,"build");
       return false;
@@ -957,7 +959,7 @@ bool EnvBuild(
    /*==============================================*/
 
    GetToken(theEnv,"build",&theToken);
-   if (theToken.type != SYMBOL)
+   if (theToken.tknType != SYMBOL_TOKEN)
      {
       CloseStringSource(theEnv,"build");
       return false;
@@ -968,7 +970,7 @@ bool EnvBuild(
    /*======================*/
    /* Parse the construct. */
    /*======================*/
-   
+
    errorFlag = ParseConstruct(theEnv,constructType,"build");
 
    /*=================================*/
@@ -1034,7 +1036,7 @@ void BuildFunction(
 bool EnvBuild(
   Environment *theEnv,
   const char *theString)
-  { 
+  {
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function build does not work in run time modules.\n");
    return false;

@@ -23,7 +23,7 @@
 /*                                                           */
 /*            Added EvaluateAndStoreInDataObject function.   */
 /*                                                           */
-/*      6.30: Added support for passing context information  */ 
+/*      6.30: Added support for passing context information  */
 /*            to user defined functions.                     */
 /*                                                           */
 /*            Added support for external address hash table  */
@@ -109,7 +109,7 @@
    /*
    static bool                    DiscardCAddress(void *,void *);
    */
-   
+
 /**************************************************/
 /* InitializeEvaluationData: Allocates environment */
 /*    data for expression evaluation.             */
@@ -118,7 +118,7 @@ void InitializeEvaluationData(
   Environment *theEnv)
   {
    struct externalAddressType cPointer = { "C", PrintCAddress, PrintCAddress, NULL, NewCAddress, NULL };
-   
+
    AllocateEnvironmentData(theEnv,EVALUATION_DATA,sizeof(struct evaluationData),DeallocateEvaluationData);
 
    InstallExternalAddressType(theEnv,&cPointer);
@@ -132,7 +132,7 @@ static void DeallocateEvaluationData(
   Environment *theEnv)
   {
    int i;
-   
+
    for (i = 0; i < EvaluationData(theEnv)->numberOfAddressTypes; i++)
      { rtn_struct(theEnv,externalAddressType,EvaluationData(theEnv)->ExternalAddressTypes[i]); }
   }
@@ -157,7 +157,7 @@ bool EvaluateExpression(
    returnValue->environment = theEnv;
    returnValue->type = RVOID;
    returnValue->bitType = VOID_TYPE;
-   
+
    if (problem == NULL)
      {
       returnValue->type = SYMBOL;
@@ -190,7 +190,7 @@ bool EvaluateExpression(
          fptr = (struct FunctionDefinition *) problem->value;
          oldContext = SetEnvironmentFunctionContext(theEnv,fptr->context);
 
-#if PROFILING_FUNCTIONS   
+#if PROFILING_FUNCTIONS
          StartProfile(theEnv,&profileFrame,
                       &fptr->usrData,
                       ProfileFunctionData(theEnv)->ProfileUserFunctions);
@@ -206,7 +206,7 @@ bool EvaluateExpression(
          theUDFContext.returnValue = returnValue;
          fptr->functionPointer(theEnv,&theUDFContext,returnValue);
 
-#if PROFILING_FUNCTIONS 
+#if PROFILING_FUNCTIONS
         EndProfile(theEnv,&profileFrame);
 #endif
 
@@ -259,7 +259,7 @@ bool EvaluateExpression(
         oldArgument = EvaluationData(theEnv)->CurrentExpression;
         EvaluationData(theEnv)->CurrentExpression = problem;
 
-#if PROFILING_FUNCTIONS 
+#if PROFILING_FUNCTIONS
         StartProfile(theEnv,&profileFrame,
                      &EvaluationData(theEnv)->PrimitivesArray[problem->type]->usrData,
                      ProfileFunctionData(theEnv)->ProfileUserFunctions);
@@ -305,9 +305,9 @@ int InstallExternalAddressType(
   struct externalAddressType *theAddressType)
   {
    struct externalAddressType *copyEAT;
-   
+
    int rv = EvaluationData(theEnv)->numberOfAddressTypes;
-   
+
    if (EvaluationData(theEnv)->numberOfAddressTypes == MAXIMUM_EXTERNAL_ADDRESS_TYPES)
      {
       SystemError(theEnv,"EVALUATN",6);
@@ -315,9 +315,9 @@ int InstallExternalAddressType(
      }
 
    copyEAT = (struct externalAddressType *) genalloc(theEnv,sizeof(struct externalAddressType));
-   memcpy(copyEAT,theAddressType,sizeof(struct externalAddressType));   
+   memcpy(copyEAT,theAddressType,sizeof(struct externalAddressType));
    EvaluationData(theEnv)->ExternalAddressTypes[EvaluationData(theEnv)->numberOfAddressTypes++] = copyEAT;
-   
+
    return rv;
   }
 
@@ -348,8 +348,8 @@ bool EnvGetEvaluationError(
 void EnvSetHaltExecution(
   Environment *theEnv,
   bool value)
-  { 
-   EvaluationData(theEnv)->HaltExecution = value; 
+  {
+   EvaluationData(theEnv)->HaltExecution = value;
   }
 
 /********************************************************/
@@ -795,7 +795,7 @@ unsigned long GetAtomicHashValue(
          fis.vv = value;
          tvalue = (unsigned long) fis.liv;
          break;
-         
+
       case STRING:
 #if OBJECT_SYSTEM
       case INSTANCE_NAME:
@@ -981,7 +981,7 @@ bool EvaluateAndStoreInDataObject(
    val->type = MULTIFIELD;
    val->begin = 0;
    val->end = -1;
-   
+
    if (theExp == NULL)
      {
       if (garbageSegment) val->value = EnvCreateMultifield(theEnv,0L);
@@ -994,7 +994,7 @@ bool EvaluateAndStoreInDataObject(
      EvaluateExpression(theEnv,theExp,val);
    else
      StoreInMultifield(theEnv,val,theExp,garbageSegment);
-   
+
    return(EvaluationData(theEnv)->EvaluationError ? false : true);
   }
 
@@ -1235,7 +1235,7 @@ void MFNthValue(
   CLIPSValue *returnValue)
   {
    struct multifield *theMF;
-   
+
    if ((theMFValue->type != MULTIFIELD) ||
        (n < 0) ||
        (n >= (theMFValue->end - theMFValue->begin)))
@@ -1245,7 +1245,7 @@ void MFNthValue(
       returnValue->value = NULL;
       return;
      }
-     
+
    theMF = (struct multifield *) theMFValue->value;
    returnValue->type = theMF->theFields[theMFValue->begin + n - 1].type;
    returnValue->value = theMF->theFields[theMFValue->begin + n - 1].value;
@@ -1264,7 +1264,7 @@ static void PrintCAddress(
    char buffer[20];
 
    EnvPrintRouter(theEnv,logicalName,"<Pointer-C-");
-        
+
    gensprintf(buffer,"%p",ValueToExternalAddress(theValue));
    EnvPrintRouter(theEnv,logicalName,buffer);
    EnvPrintRouter(theEnv,logicalName,">");
@@ -1281,7 +1281,7 @@ static void NewCAddress(
    Environment *theEnv = context->environment;
 
    numberOfArguments = UDFArgumentCount(context);
-      
+
    if (numberOfArguments != 1)
      {
       PrintErrorID(theEnv,"NEW",1,false);
@@ -1303,7 +1303,7 @@ static bool DiscardCAddress(
   void *theValue)
   {
    EnvPrintRouter(theEnv,WDISPLAY,"Discarding C Address\n");
-   
+
    return true;
   }
 */

@@ -147,7 +147,7 @@ void GenericDispatch(
    struct profileFrameInfo profileFrame;
 #endif
    struct CLIPSBlock gcBlock;
-   
+
    returnValue->type = SYMBOL;
    returnValue->value = EnvFalseSymbol(theEnv);
    EvaluationData(theEnv)->EvaluationError = false;
@@ -155,7 +155,7 @@ void GenericDispatch(
      return;
 
    CLIPSBlockStart(theEnv,&gcBlock);
-   
+
    oldce = ExecutingConstruct(theEnv);
    SetExecutingConstruct(theEnv,true);
    previousGeneric = DefgenericData(theEnv)->CurrentGeneric;
@@ -172,10 +172,10 @@ void GenericDispatch(
       DefgenericData(theEnv)->CurrentGeneric = previousGeneric;
       DefgenericData(theEnv)->CurrentMethod = previousMethod;
       EvaluationData(theEnv)->CurrentEvaluationDepth--;
-      
+
       CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
       CallPeriodicTasks(theEnv);
-     
+
       SetExecutingConstruct(theEnv,oldce);
       return;
      }
@@ -259,7 +259,7 @@ void GenericDispatch(
 
    CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
    CallPeriodicTasks(theEnv);
-   
+
    SetExecutingConstruct(theEnv,oldce);
   }
 
@@ -429,7 +429,7 @@ void CallNextMethod(
 #endif
 
    mCVSetBoolean(returnValue,false);
-   
+
    if (EvaluationData(theEnv)->HaltExecution)
      return;
    oldMethod = DefgenericData(theEnv)->CurrentMethod;
@@ -504,14 +504,14 @@ void CallSpecificMethod(
    CLIPSValue theArg;
    Defgeneric *gfunc;
    int mi;
-   
+
    mCVSetBoolean(returnValue,false);
-   
+
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
 
    gfunc = CheckGenericExists(theEnv,"call-specific-method",mCVToString(&theArg));
    if (gfunc == NULL) return;
-   
+
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg)) return;
 
    mi = CheckMethodExists(theEnv,"call-specific-method",gfunc,(long) mCVToInteger(&theArg));
@@ -536,7 +536,7 @@ void OverrideNextMethod(
   Environment *theEnv,
   UDFContext *context,
   CLIPSValue *returnValue)
-  {   
+  {
    mCVSetBoolean(returnValue,false);
    if (EvaluationData(theEnv)->HaltExecution)
      return;

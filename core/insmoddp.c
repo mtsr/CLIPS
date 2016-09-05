@@ -326,7 +326,7 @@ void DuplicateInstance(
       DeleteSlotOverrideEvaluations(theEnv,overrides,overrideCount);
       return;
      }
-     
+
    if (! UDFNextArgument(context,INSTANCE_NAME_TYPE | SYMBOL_TYPE,&newName))
      {
       mCVSetBoolean(returnValue,false);

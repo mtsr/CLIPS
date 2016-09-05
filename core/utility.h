@@ -91,7 +91,7 @@ struct callFunctionItemWithArg
    struct callFunctionItemWithArg *next;
    void *context;
   };
-  
+
 struct trackedMemory
   {
    void *theMemory;
@@ -124,7 +124,7 @@ struct CLIPSBlock
 #define UTILITY_DATA 55
 
 struct utilityData
-  { 
+  {
    struct callFunctionItem *ListOfCleanupFunctions;
    struct callFunctionItem *ListOfPeriodicFunctions;
    short GarbageCollectionLocks;
@@ -193,8 +193,8 @@ struct utilityData
    void                           CallCleanupFunctions(Environment *);
    void                           CallPeriodicTasks(Environment *);
    void                           CleanCurrentGarbageFrame(Environment *,CLIPSValue *);
-   void                           CLIPSBlockStart(void *,struct CLIPSBlock *);
-   void                           CLIPSBlockEnd(void *,struct CLIPSBlock *,CLIPSValue *);
+   void                           CLIPSBlockStart(Environment *,struct CLIPSBlock *);
+   void                           CLIPSBlockEnd(Environment *,struct CLIPSBlock *,CLIPSValue *);
 
 #endif /* _H_utility */
 

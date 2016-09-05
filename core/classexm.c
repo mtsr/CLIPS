@@ -189,15 +189,15 @@ void DescribeClassCommand(
    Defclass *theDefclass;
 
    className = GetClassNameArgument(context);
-   
+
    if (className == NULL)
      { return; }
-     
+
    theDefclass = CheckClass(theEnv,"describe-class",className);
-   
+
    if (theDefclass == NULL)
      { return; }
-     
+
    EnvDescribeClass(theEnv,WDISPLAY,theDefclass);
   }
 
@@ -323,7 +323,7 @@ const char *GetCreateAccessorString(
   {
    if (sd->createReadAccessor && sd->createWriteAccessor)
      return("RW");
-     
+
    if ((sd->createReadAccessor == 0) && (sd->createWriteAccessor == 0))
      return("NIL");
    else
@@ -363,13 +363,13 @@ void SuperclassPCommand(
   CLIPSValue *returnValue)
   {
    Defclass *c1, *c2;
-   
+
    if (CheckTwoClasses(context,"superclassp",&c1,&c2) == false)
      {
       mCVSetBoolean(returnValue,false);
       return;
      }
-     
+
    mCVSetBoolean(returnValue,EnvSuperclassP(theEnv,c1,c2));
   }
 
@@ -411,13 +411,13 @@ void SubclassPCommand(
   CLIPSValue *returnValue)
   {
    Defclass *c1, *c2;
-   
+
    if (CheckTwoClasses(context,"subclassp",&c1,&c2) == false)
      {
       mCVSetBoolean(returnValue,false);
       return;
      }
-     
+
    mCVSetBoolean(returnValue,EnvSubclassP(theEnv,c1,c2));
   }
 
@@ -462,19 +462,19 @@ void SlotExistPCommand(
    SlotDescriptor *sd;
    bool inheritFlag = false;
    CLIPSValue theArg;
-   
+
    sd = CheckSlotExists(context,"slot-existp",&cls,false,true);
    if (sd == NULL)
      {
       mCVSetBoolean(returnValue,false);
       return;
      }
-      
+
    if (UDFHasNextArgument(context))
      {
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
-        
+
       if (strcmp(mCVToString(&theArg),"inherit") != 0)
         {
          UDFInvalidArgumentMessage(context,"keyword \"inherit\"");
@@ -484,7 +484,7 @@ void SlotExistPCommand(
         }
       inheritFlag = true;
      }
-     
+
    mCVSetBoolean(returnValue,((sd->cls == cls) ? true : inheritFlag));
   }
 
@@ -527,7 +527,7 @@ void MessageHandlerExistPCommand(
    SYMBOL_HN *mname;
    CLIPSValue theArg;
    unsigned mtype = MPRIMARY;
-   
+
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
    cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
@@ -546,7 +546,7 @@ void MessageHandlerExistPCommand(
      {
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
-        
+
       mtype = HandlerType(theEnv,"message-handler-existp",mCVToString(&theArg));
       if (mtype == MERROR)
         {
@@ -555,7 +555,7 @@ void MessageHandlerExistPCommand(
          return;
         }
      }
-     
+
    if (FindHandlerByAddress(cls,mname,mtype) != NULL)
      { mCVSetBoolean(returnValue,true); }
    else
@@ -577,7 +577,7 @@ void SlotWritablePCommand(
   {
    Defclass *theDefclass;
    SlotDescriptor *sd;
-   
+
    sd = CheckSlotExists(context,"slot-writablep",&theDefclass,true,true);
    if (sd == NULL)
      { mCVSetBoolean(returnValue,false); }
@@ -623,7 +623,7 @@ void SlotInitablePCommand(
   {
    Defclass *theDefclass;
    SlotDescriptor *sd;
-   
+
    sd = CheckSlotExists(context,"slot-initablep",&theDefclass,true,true);
    if (sd == NULL)
      { mCVSetBoolean(returnValue,false); }
@@ -669,7 +669,7 @@ void SlotPublicPCommand(
   {
    Defclass *theDefclass;
    SlotDescriptor *sd;
-   
+
    sd = CheckSlotExists(context,"slot-publicp",&theDefclass,true,false);
    if (sd == NULL)
      { mCVSetBoolean(returnValue,false); }
@@ -718,16 +718,16 @@ int EnvSlotDefaultP(
 
    if ((sd = LookupSlot(theEnv,theDefclass,slotName,false)) == NULL)
      return(NO_DEFAULT);
-     
+
    if (sd->noDefault)
      { return(NO_DEFAULT); }
    else if (sd->dynamicDefault)
      { return(DYNAMIC_DEFAULT); }
-   
+
    return(STATIC_DEFAULT);
   }
-  
-  
+
+
 /**********************************************************************
   NAME         : SlotDirectAccessPCommand
   DESCRIPTION  : Determines if an existing slot can be directly
@@ -746,7 +746,7 @@ void SlotDirectAccessPCommand(
   {
    Defclass *theDefclass;
    SlotDescriptor *sd;
-   
+
    sd = CheckSlotExists(context,"slot-direct-accessp",&theDefclass,true,true);
    if (sd == NULL)
      { mCVSetBoolean(returnValue,false); }
@@ -797,17 +797,17 @@ void SlotDefaultValueCommand(
    SlotDescriptor *sd;
 
    mCVSetBoolean(returnValue,false);
-   
+
    sd = CheckSlotExists(context,"slot-default-value",&theDefclass,true,true);
    if (sd == NULL)
      return;
-   
+
    if (sd->noDefault)
      {
       mCVSetSymbol(returnValue,"?NONE");
       return;
      }
-     
+
    if (sd->dynamicDefault)
      EvaluateAndStoreInDataObject(theEnv,(int) sd->multiple,
                                   (EXPRESSION *) sd->defaultValue,
@@ -840,14 +840,14 @@ bool EnvSlotDefaultValue(
    SetpValue(theValue,EnvFalseSymbol(theEnv));
    if ((sd = LookupSlot(theEnv,theDefclass,slotName,true)) == NULL)
      return false;
-   
+
    if (sd->noDefault)
      {
       SetpType(theValue,SYMBOL);
       SetpValue(theValue,EnvAddSymbol(theEnv,"?NONE"));
       return true;
      }
-     
+
    if (sd->dynamicDefault)
      return(EvaluateAndStoreInDataObject(theEnv,(int) sd->multiple,
                                          (EXPRESSION *) sd->defaultValue,
@@ -870,10 +870,10 @@ void ClassExistPCommand(
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   
+
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
-      
+
    mCVSetBoolean(returnValue,((LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg)) != NULL) ? true : false));
   }
 
@@ -905,24 +905,24 @@ static bool CheckTwoClasses(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return false; }
-     
+
    *c1 = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (*c1 == NULL)
      {
       ClassExistError(theEnv,func,mCVToString(&theArg));
       return false;
      }
-     
+
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
      { return false; }
-     
+
    *c2 = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
    if (*c2 == NULL)
      {
       ClassExistError(theEnv,func,mCVToString(&theArg));
       return false;
      }
-     
+
    return true;
   }
 
@@ -959,7 +959,7 @@ static SlotDescriptor *CheckSlotExists(
    ssym = CheckClassAndSlot(context,func,classBuffer);
    if (ssym == NULL)
      return NULL;
-     
+
    slotIndex = FindInstanceTemplateSlot(theEnv,*classBuffer,ssym);
    if (slotIndex == -1)
      {
@@ -970,11 +970,11 @@ static SlotDescriptor *CheckSlotExists(
         }
       return NULL;
      }
-     
+
    sd = (*classBuffer)->instanceTemplate[slotIndex];
    if ((sd->cls == *classBuffer) || inheritFlag)
      { return sd; }
-     
+
    PrintErrorID(theEnv,"CLASSEXM",1,false);
    EnvPrintRouter(theEnv,WERROR,"Inherited slot ");
    EnvPrintRouter(theEnv,WERROR,ValueToString(ssym));
@@ -1012,15 +1012,15 @@ static SlotDescriptor *LookupSlot(
    slotSymbol = FindSymbolHN(theEnv,slotName);
    if (slotSymbol == NULL)
      return NULL;
-     
+
    slotIndex = FindInstanceTemplateSlot(theEnv,theDefclass,slotSymbol);
    if (slotIndex == -1)
      return NULL;
-     
+
    sd = theDefclass->instanceTemplate[slotIndex];
    if ((sd->cls != theDefclass) && (inheritFlag == false))
      return NULL;
-     
+
    return sd;
   }
 
@@ -1066,7 +1066,7 @@ static const char *GetClassNameArgument(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return NULL; }
-     
+
    return(DOToString(theArg));
   }
 

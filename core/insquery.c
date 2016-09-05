@@ -273,7 +273,7 @@ void AnyInstances(
       mCVSetBoolean(returnValue,false);
       return;
      }
-     
+
    PushQueryCore(theEnv);
    InstanceQueryData(theEnv)->QueryCore = get_struct(theEnv,query_core);
    InstanceQueryData(theEnv)->QueryCore->solns = (Instance **) gm2(theEnv,(sizeof(Instance *) * rcnt));
@@ -284,7 +284,7 @@ void AnyInstances(
    rtn_struct(theEnv,query_core,InstanceQueryData(theEnv)->QueryCore);
    PopQueryCore(theEnv);
    DeleteQueryClasses(theEnv,qclasses);
-   
+
    mCVSetBoolean(returnValue,testResult);
   }
 
@@ -474,7 +474,7 @@ void QueryDoForAllInstances(
                                       "do-for-all-instances",&rcnt);
    if (qclasses == NULL)
      return;
- 
+
    PushQueryCore(theEnv);
    InstanceQueryData(theEnv)->QueryCore = get_struct(theEnv,query_core);
    InstanceQueryData(theEnv)->QueryCore->solns = (Instance **) gm2(theEnv,(sizeof(Instance *) * rcnt));
@@ -484,7 +484,7 @@ void QueryDoForAllInstances(
    ValueInstall(theEnv,InstanceQueryData(theEnv)->QueryCore->result);
    TestEntireChain(theEnv,qclasses,0);
    ValueDeinstall(theEnv,InstanceQueryData(theEnv)->QueryCore->result);
-      
+
    InstanceQueryData(theEnv)->AbortQuery = false;
    ProcedureFunctionData(theEnv)->BreakFlag = false;
    rm(theEnv,InstanceQueryData(theEnv)->QueryCore->solns,(sizeof(Instance *) * rcnt));
@@ -537,7 +537,7 @@ void DelayedQueryDoForAllInstances(
    TestEntireChain(theEnv,qclasses,0);
    InstanceQueryData(theEnv)->AbortQuery = false;
    InstanceQueryData(theEnv)->QueryCore->action = GetFirstArgument()->nextArg;
-   
+
    CLIPSBlockStart(theEnv,&gcBlock);
 
    while (InstanceQueryData(theEnv)->QueryCore->soln_set != NULL)
@@ -546,7 +546,7 @@ void DelayedQueryDoForAllInstances(
         InstanceQueryData(theEnv)->QueryCore->solns[i] = InstanceQueryData(theEnv)->QueryCore->soln_set->soln[i];
       PopQuerySoln(theEnv);
       EvaluateExpression(theEnv,InstanceQueryData(theEnv)->QueryCore->action,returnValue);
-      
+
       if (EvaluationData(theEnv)->HaltExecution || ProcedureFunctionData(theEnv)->BreakFlag || ProcedureFunctionData(theEnv)->ReturnFlag)
         {
          while (InstanceQueryData(theEnv)->QueryCore->soln_set != NULL)
@@ -557,7 +557,7 @@ void DelayedQueryDoForAllInstances(
       CleanCurrentGarbageFrame(theEnv,NULL);
       CallPeriodicTasks(theEnv);
      }
-      
+
    CLIPSBlockEnd(theEnv,&gcBlock,returnValue);
    CallPeriodicTasks(theEnv);
 
@@ -912,15 +912,15 @@ static bool TestForFirstInstanceInClass(
    Instance *ins;
    CLIPSValue temp;
    struct CLIPSBlock gcBlock;
-   
+
    if (TestTraversalID(cls->traversalRecord,id))
      return false;
    SetTraversalID(cls->traversalRecord,id);
    if (DefclassInScope(theEnv,cls,theModule) == false)
      return false;
-     
+
    CLIPSBlockStart(theEnv,&gcBlock);
-   
+
    ins = cls->instanceList;
    while (ins != NULL)
      {
@@ -948,10 +948,10 @@ static bool TestForFirstInstanceInClass(
              (temp.value != EnvFalseSymbol(theEnv)))
            break;
         }
-        
+
       CleanCurrentGarbageFrame(theEnv,NULL);
       CallPeriodicTasks(theEnv);
-       
+
       ins = ins->nxtClass;
       while ((ins != NULL) ? (ins->garbage == 1) : false)
         ins = ins->nxtClass;
@@ -1035,13 +1035,13 @@ static void TestEntireClass(
    Instance *ins;
    CLIPSValue temp;
    struct CLIPSBlock gcBlock;
-   
+
    if (TestTraversalID(cls->traversalRecord,id))
      return;
    SetTraversalID(cls->traversalRecord,id);
    if (DefclassInScope(theEnv,cls,theModule) == false)
      return;
-     
+
    CLIPSBlockStart(theEnv,&gcBlock);
 
    ins = cls->instanceList;
@@ -1089,7 +1089,7 @@ static void TestEntireClass(
               AddSolution(theEnv);
            }
         }
-         
+
       ins = ins->nxtClass;
       while ((ins != NULL) ? (ins->garbage == 1) : false)
         ins = ins->nxtClass;
@@ -1097,7 +1097,7 @@ static void TestEntireClass(
       CleanCurrentGarbageFrame(theEnv,NULL);
       CallPeriodicTasks(theEnv);
      }
-   
+
    CLIPSBlockEnd(theEnv,&gcBlock,NULL);
    CallPeriodicTasks(theEnv);
 

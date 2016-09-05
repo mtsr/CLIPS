@@ -245,8 +245,8 @@ bool ParseDefrule(
                    GetModuleItem(theEnv,NULL,FindModuleItem(theEnv,"defrule")->moduleIndex);
 
    for (tempPtr = topDisjunct; tempPtr != NULL; tempPtr = tempPtr->disjunct)
-     { 
-      tempPtr->header.whichModule = (struct defmoduleItemHeader *) theModuleItem; 
+     {
+      tempPtr->header.whichModule = (struct defmoduleItemHeader *) theModuleItem;
       tempPtr->header.ppForm = topDisjunct->header.ppForm;
      }
 
@@ -323,13 +323,13 @@ static Defrule *ProcessRuleLHS(
       emptyLHS = false;
       if (theLHS->type == OR_CE) theLHS = theLHS->right;
      }
- 
+
    /*=========================================*/
    /* Loop through each disjunct of the rule. */
    /*=========================================*/
 
    localVarCnt = CountParsedBindNames(theEnv);
-   
+
    while ((theLHS != NULL) || (emptyLHS == true))
      {
       /*===================================*/
@@ -473,7 +473,7 @@ static Defrule *ProcessRuleLHS(
       /*===========================================*/
 
       lastDisjunct = currentDisjunct;
-      
+
       if (emptyLHS)
         { emptyLHS = false; }
       else
@@ -573,7 +573,7 @@ static int ReplaceRHSVariable(
   {
    struct lhsParseNode *theVariable;
    int factSlotReference;
-   
+
    /*=======================================*/
    /* Handle modify and duplicate commands. */
    /*=======================================*/
@@ -603,16 +603,16 @@ static int ReplaceRHSVariable(
    /*==================================*/
    /* Check for a ?var:slot reference. */
    /*==================================*/
-   
+
 #if DEFTEMPLATE_CONSTRUCT
-   factSlotReference = RuleFactSlotReferenceVar(theEnv,list,VtheLHS);
-      
+   factSlotReference = RuleFactSlotReferenceVar(theEnv,list,(struct lhsParseNode *) VtheLHS);
+
    if (factSlotReference == 1)
      { return 1; }
    else if (factSlotReference == -1)
      { return -1; }
 #endif
-   
+
    /*===============================================================*/
    /* Check to see if the variable is bound on the LHS of the rule. */
    /*===============================================================*/
@@ -671,7 +671,7 @@ static struct expr *ParseRuleRHS(
    /* Check for the closing right parenthesis of the rule. */
    /*======================================================*/
 
-   if (theToken.type != RPAREN)
+   if (theToken.tknType != RIGHT_PARENTHESIS_TOKEN)
      {
       SyntaxErrorMessage(theEnv,"defrule");
       ReturnExpression(theEnv,actions);
@@ -1003,54 +1003,54 @@ void DumpRuleAnalysis(
         { gensprintf(buffer,"SCE %2d J%2d (%2d %2d): ",traceNode->whichCE,traceNode->joinDepth,traceNode->beginNandDepth,traceNode->endNandDepth); }
 
       EnvPrintRouter(theEnv,WDISPLAY,buffer);
-      
+
       PrintExpression(theEnv,WDISPLAY,traceNode->networkTest);
       EnvPrintRouter(theEnv,WDISPLAY,"\n");
 
       if (traceNode->externalNetworkTest != NULL)
-        { 
+        {
          EnvPrintRouter(theEnv,WDISPLAY,"      ENT: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->externalNetworkTest);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
 
       if (traceNode->secondaryNetworkTest != NULL)
-        { 
+        {
          EnvPrintRouter(theEnv,WDISPLAY,"      SNT: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->secondaryNetworkTest);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
-                 
+
       if (traceNode->externalRightHash != NULL)
-        { 
+        {
          EnvPrintRouter(theEnv,WDISPLAY,"      ERH: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->externalRightHash);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
-                 
+
       if (traceNode->externalLeftHash != NULL)
-        { 
+        {
          EnvPrintRouter(theEnv,WDISPLAY,"      ELH: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->externalLeftHash);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
-               
+
       if (traceNode->leftHash != NULL)
-        { 
+        {
          EnvPrintRouter(theEnv,WDISPLAY,"       LH: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->leftHash);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
-                 
+
       if (traceNode->rightHash != NULL)
-        { 
+        {
          EnvPrintRouter(theEnv,WDISPLAY,"       RH: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->rightHash);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
         }
-                 
+
       if (traceNode->betaHash != NULL)
-        { 
+        {
          EnvPrintRouter(theEnv,WDISPLAY,"       BH: ");
          PrintExpression(theEnv,WDISPLAY,traceNode->betaHash);
          EnvPrintRouter(theEnv,WDISPLAY,"\n");
