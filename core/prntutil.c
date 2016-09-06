@@ -57,6 +57,8 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
+/*            Removed DATA_OBJECT_ARRAY primitive type.      */
+/*                                                           */
 /*      6.50: File name/line count displayed for errors      */
 /*            and warnings during load command.              */
 /*                                                           */
@@ -195,17 +197,6 @@ void PrintAtom(
            EnvPrintRouter(theEnv,logicalName,ValueToString(value));
            EnvPrintRouter(theEnv,logicalName,"\"");
           }
-        break;
-
-      case DATA_OBJECT_ARRAY:
-        if (PrintUtilityData(theEnv)->AddressesToStrings) EnvPrintRouter(theEnv,logicalName,"\"");
-
-        EnvPrintRouter(theEnv,logicalName,"<Pointer-");
-        gensprintf(buffer,"%p",value);
-        EnvPrintRouter(theEnv,logicalName,buffer);
-        EnvPrintRouter(theEnv,logicalName,">");
-
-        if (PrintUtilityData(theEnv)->AddressesToStrings) EnvPrintRouter(theEnv,logicalName,"\"");
         break;
 
       case EXTERNAL_ADDRESS:

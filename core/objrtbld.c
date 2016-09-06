@@ -431,7 +431,7 @@ static struct lhsParseNode *ObjectLHSParse(
          goto ObjectLHSParseERROR;
         }
       firstNode = GetLHSParseNode(theEnv);
-      firstNode->type = SF_WILDCARD;
+      firstNode->pnType = SF_WILDCARD_NODE;
       firstNode->slot = DefclassData(theEnv)->ISA_SYMBOL;
       firstNode->slotNumber = ISA_ID;
       firstNode->index = 1;
@@ -569,7 +569,7 @@ static bool ReorderAndAnalyzeObjectPattern(
               ClearBitMap(tmpset->map,i);
               clssetChanged = true;
              }
-           else if (tmpNode->type == MF_WILDCARD)
+           else if (tmpNode->pnType == MF_WILDCARD_NODE)
              {
               /* ==========================================
                  Check the sub-nodes for type compatibility
@@ -580,7 +580,7 @@ static bool ReorderAndAnalyzeObjectPattern(
                     Temporarily reset cardinality of variables to
                     match slot so that no cardinality errors will be flagged
                     ======================================================== */
-                 if ((subNode->type == MF_WILDCARD) || (subNode->type == MF_VARIABLE))
+                 if ((subNode->pnType == MF_WILDCARD_NODE) || (subNode->pnType == MF_VARIABLE_NODE))
                    { theConstraint = subNode->constraints->multifield; }
                  else
                    { theConstraint = subNode->constraints; }
@@ -694,8 +694,8 @@ static struct patternNodeHeader *PlaceObjectPattern(
       /* a multifield slot is being processed.      */
       /*============================================*/
 
-      if (((thePattern->type == MF_WILDCARD) ||
-           (thePattern->type == MF_VARIABLE)) &&
+      if (((thePattern->pnType == MF_WILDCARD_NODE) ||
+           (thePattern->pnType == MF_VARIABLE_NODE)) &&
           (thePattern->right == NULL) && (tempPattern != NULL))
         { endSlot = true; }
       else
@@ -824,7 +824,7 @@ static OBJECT_PATTERN_NODE *FindObjectPatternNode(
       /* and the network test expressions are the same.          */
       /*=========================================================*/
 
-      if (((thePattern->type == MF_WILDCARD) || (thePattern->type == MF_VARIABLE)) ?
+      if (((thePattern->pnType == MF_WILDCARD_NODE) || (thePattern->pnType == MF_VARIABLE_NODE)) ?
           listOfNodes->multifieldNode : (listOfNodes->multifieldNode == 0))
         {
          if ((thePattern->slotNumber == (int) listOfNodes->slotNameID) &&
@@ -915,7 +915,7 @@ static OBJECT_PATTERN_NODE *CreateNewObjectPatternNode(
    /*=========================================*/
 
    newNode->slotNameID = (unsigned) thePattern->slotNumber;
-   if ((thePattern->type == MF_WILDCARD) || (thePattern->type == MF_VARIABLE))
+   if ((thePattern->pnType == MF_WILDCARD_NODE) || (thePattern->pnType == MF_VARIABLE_NODE))
      newNode->multifieldNode = true;
    newNode->endSlot = endSlot;
 
@@ -1343,8 +1343,8 @@ static struct lhsParseNode *ParseClassRestriction(
       return NULL;
      }
    if ((theToken->tknType != RIGHT_PARENTHESIS_TOKEN) ||
-       (tmpNode->type == MF_WILDCARD) ||
-       (tmpNode->type == MF_VARIABLE))
+       (tmpNode->pnType == MF_WILDCARD_NODE) ||
+       (tmpNode->pnType == MF_VARIABLE_NODE))
      {
       PPBackup(theEnv);
       if (theToken->tknType != RIGHT_PARENTHESIS_TOKEN)
@@ -1395,8 +1395,8 @@ static struct lhsParseNode *ParseNameRestriction(
       return NULL;
      }
    if ((theToken->tknType != RIGHT_PARENTHESIS_TOKEN) ||
-       (tmpNode->type == MF_WILDCARD) ||
-       (tmpNode->type == MF_VARIABLE))
+       (tmpNode->pnType == MF_WILDCARD_NODE) ||
+       (tmpNode->pnType == MF_VARIABLE_NODE))
      {
       PPBackup(theEnv);
       if (theToken->tknType != RIGHT_PARENTHESIS_TOKEN)
@@ -1731,9 +1731,8 @@ static bool ProcessClassRestriction(
    tmpset2 = NewClassBitMap(theEnv,((int) DefclassData(theEnv)->MaxClassID) - 1,0);
    for  (chk = *classRestrictions ; chk != NULL ; chk = chk->right)
      {
-      if (chk->type == SYMBOL)
+      if (chk->pnType == SYMBOL_NODE)
         {
-         //chk->value = LookupDefclassInScope(theEnv,ValueToString(chk->value));
          chk->value = LookupDefclassByMdlOrScope(theEnv,ValueToString(chk->value));
          if (chk->value == NULL)
            {
@@ -1954,7 +1953,7 @@ static struct lhsParseNode *FilterObjectPattern(
       of the pattern which holds the class bitmap.
       ============================================ */
    *bitmap_slot = GetLHSParseNode(theEnv);
-   (*bitmap_slot)->type = SF_WILDCARD;
+   (*bitmap_slot)->pnType = SF_WILDCARD_NODE;
    (*bitmap_slot)->slot = DefclassData(theEnv)->ISA_SYMBOL;
    (*bitmap_slot)->slotNumber = ISA_ID;
    (*bitmap_slot)->index = 1;
@@ -2083,8 +2082,8 @@ static struct lhsParseNode *RemoveSlotExistenceTests(
          associated with it can be removed (i.e. any value contained
          in this slot will satisfy the pattern being matched).
          =========================================================== */
-      else if (((tempPattern->type == SF_WILDCARD) ||
-                (tempPattern->type == SF_VARIABLE)) &&
+      else if (((tempPattern->pnType == SF_WILDCARD_NODE) ||
+                (tempPattern->pnType == SF_VARIABLE_NODE)) &&
                (tempPattern->networkTest == NULL))
         {
          if (lastPattern != NULL) lastPattern->right = tempPattern->right;
@@ -2104,7 +2103,7 @@ static struct lhsParseNode *RemoveSlotExistenceTests(
          (and the multifield has no expressions which must be
          evaluated in the fact pattern network).
          ===================================================== */
-      else if (((tempPattern->type == MF_WILDCARD) || (tempPattern->type == MF_VARIABLE)) &&
+      else if (((tempPattern->pnType == MF_WILDCARD_NODE) || (tempPattern->pnType == MF_VARIABLE_NODE)) &&
                (tempPattern->multifieldSlot == false) &&
                (tempPattern->networkTest == NULL) &&
                (tempPattern->multiFieldsBefore == 0) &&
@@ -2126,13 +2125,13 @@ static struct lhsParseNode *RemoveSlotExistenceTests(
          does have an expression that must be evaluated, can be changed
          to a single field pattern node with the same expression.
          ================================================================ */
-      else if (((tempPattern->type == MF_WILDCARD) || (tempPattern->type == MF_VARIABLE)) &&
+      else if (((tempPattern->pnType == MF_WILDCARD_NODE) || (tempPattern->pnType == MF_VARIABLE_NODE)) &&
                (tempPattern->multifieldSlot == false) &&
                (tempPattern->networkTest != NULL) &&
                (tempPattern->multiFieldsBefore == 0) &&
                (tempPattern->multiFieldsAfter == 0))
         {
-         tempPattern->type = SF_WILDCARD;
+         tempPattern->pnType = SF_WILDCARD_NODE;
          lastPattern = tempPattern;
          tempPattern = tempPattern->right;
         }
@@ -2143,11 +2142,11 @@ static struct lhsParseNode *RemoveSlotExistenceTests(
          field slot, but attach a test which verifies that the
          slot contains a zero length multifield value.
          ======================================================= */
-      else if ((tempPattern->type == MF_WILDCARD) &&
+      else if ((tempPattern->pnType == MF_WILDCARD_NODE) &&
                (tempPattern->multifieldSlot == true) &&
                (tempPattern->bottom == NULL))
         {
-         tempPattern->type = SF_WILDCARD;
+         tempPattern->pnType = SF_WILDCARD_NODE;
          GenObjectZeroLengthTest(theEnv,tempPattern);
          tempPattern->multifieldSlot = false;
          lastPattern = tempPattern;
@@ -2158,7 +2157,7 @@ static struct lhsParseNode *RemoveSlotExistenceTests(
          Recursively call RemoveSlotExistenceTests for the slot
          restrictions contained within a multifield slot.
          ====================================================== */
-      else if ((tempPattern->type == MF_WILDCARD) &&
+      else if ((tempPattern->pnType == MF_WILDCARD_NODE) &&
                (tempPattern->multifieldSlot == true))
         {
          /* =====================================================

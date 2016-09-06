@@ -61,6 +61,8 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
+/*            Removed DATA_OBJECT_ARRAY primitive type.      */
+/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -176,11 +178,6 @@ bool EvaluateExpression(
       case INSTANCE_ADDRESS:
 #endif
       case EXTERNAL_ADDRESS:
-        returnValue->type = problem->type;
-        returnValue->value = problem->value;
-        break;
-
-      case DATA_OBJECT_ARRAY: /* TBD Remove with AddPrimitive */
         returnValue->type = problem->type;
         returnValue->value = problem->value;
         break;
@@ -400,7 +397,6 @@ void PrintDataObject(
       case INTEGER:
       case FLOAT:
       case EXTERNAL_ADDRESS:
-      case DATA_OBJECT_ARRAY: // TBD Remove with AddPrimitive
       case FACT_ADDRESS:
 #if OBJECT_SYSTEM
       case INSTANCE_NAME:
