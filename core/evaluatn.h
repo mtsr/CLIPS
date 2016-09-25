@@ -76,6 +76,12 @@ struct dataObject;
 typedef struct dataObject CLIPSValue;
 typedef struct dataObject * CLIPSValuePtr;
 typedef struct expr FUNCTION_REFERENCE;
+typedef struct typeHeader TypeHeader;
+
+struct typeHeader
+  {
+   unsigned short type;
+  };
 
 typedef void EntityPrintFunction(Environment *,const char *,void *);
 typedef bool EntityEvaluationFunction(Environment *,void *,CLIPSValue *);
@@ -84,18 +90,6 @@ typedef void EntityBusyCountFunction(Environment *,void *);
 #include "constant.h"
 #include "symbol.h"
 #include "expressn.h"
-
-struct dataObject
-  {
-   void *supplementalInfo;
-   unsigned short type;
-   unsigned bitType;
-   void *value;
-   long begin;
-   long end;
-   struct dataObject *next;
-   Environment *environment;
-  };
 
 #define C_POINTER_EXTERNAL_ADDRESS 0
 
@@ -122,6 +116,30 @@ struct entityRecord
    struct userData *usrData;
   };
 
+#include "factmngr.h"
+#include "object.h"
+
+struct dataObject
+  {
+   void *supplementalInfo;
+   union
+     {
+      void *value;
+      TypeHeader const *header;
+      Fact *factValue;
+      Instance *instanceValue;
+      CLIPSLexeme *lexemeValue;
+      CLIPSFloat *floatValue;
+      CLIPSInteger *integerValue;
+      CLIPSVoid *voidValue;
+      Multifield *multifieldValue;
+     };
+   long begin;
+   long end;
+   struct dataObject *next;
+   Environment *environment;
+  };
+
 struct externalAddressType
   {
    const  char *name;
@@ -137,57 +155,6 @@ typedef struct entityRecord * ENTITY_RECORD_PTR;
 
 #define GetDOLength(target)       (((target).end - (target).begin) + 1)
 #define GetpDOLength(target)      (((target)->end - (target)->begin) + 1)
-#define GetDOBegin(target)        ((target).begin + 1)
-#define GetDOEnd(target)          ((target).end + 1)
-#define GetpDOBegin(target)       ((target)->begin + 1)
-#define GetpDOEnd(target)         ((target)->end + 1)
-#define SetDOBegin(target,val)   ((target).begin = (long) ((val) - 1))
-#define SetDOEnd(target,val)     ((target).end = (long) ((val) - 1))
-#define SetpDOBegin(target,val)   ((target)->begin = (long) ((val) - 1))
-#define SetpDOEnd(target,val)     ((target)->end = (long) ((val) - 1))
-
-#define EnvGetDOLength(theEnv,target)       (((target).end - (target).begin) + 1)
-#define EnvGetpDOLength(theEnv,target)      (((target)->end - (target)->begin) + 1)
-#define EnvGetDOBegin(theEnv,target)        ((target).begin + 1)
-#define EnvGetDOEnd(theEnv,target)          ((target).end + 1)
-#define EnvGetpDOBegin(theEnv,target)       ((target)->begin + 1)
-#define EnvGetpDOEnd(theEnv,target)         ((target)->end + 1)
-#define EnvSetDOBegin(theEnv,target,val)   ((target).begin = (long) ((val) - 1))
-#define EnvSetDOEnd(theEnv,target,val)     ((target).end = (long) ((val) - 1))
-#define EnvSetpDOBegin(theEnv,target,val)   ((target)->begin = (long) ((val) - 1))
-#define EnvSetpDOEnd(theEnv,target,val)     ((target)->end = (long) ((val) - 1))
-
-#define DOPToString(target) (((struct symbolHashNode *) ((target)->value))->contents)
-#define DOPToDouble(target) (((struct floatHashNode *) ((target)->value))->contents)
-#define DOPToFloat(target) ((float) (((struct floatHashNode *) ((target)->value))->contents))
-#define DOPToLong(target) (((struct integerHashNode *) ((target)->value))->contents)
-#define DOPToInteger(target) ((int) (((struct integerHashNode *) ((target)->value))->contents))
-#define DOPToPointer(target)       ((target)->value)
-#define DOPToExternalAddress(target) (((struct externalAddressHashNode *) ((target)->value))->externalAddress)
-
-#define EnvDOPToString(theEnv,target) (((struct symbolHashNode *) ((target)->value))->contents)
-#define EnvDOPToDouble(theEnv,target) (((struct floatHashNode *) ((target)->value))->contents)
-#define EnvDOPToFloat(theEnv,target) ((float) (((struct floatHashNode *) ((target)->value))->contents))
-#define EnvDOPToLong(theEnv,target) (((struct integerHashNode *) ((target)->value))->contents)
-#define EnvDOPToInteger(theEnv,target) ((int) (((struct integerHashNode *) ((target)->value))->contents))
-#define EnvDOPToPointer(theEnv,target)       ((target)->value)
-#define EnvDOPToExternalAddress(target) (((struct externalAddressHashNode *) ((target)->value))->externalAddress)
-
-#define DOToString(target) (((struct symbolHashNode *) ((target).value))->contents)
-#define DOToDouble(target) (((struct floatHashNode *) ((target).value))->contents)
-#define DOToFloat(target) ((float) (((struct floatHashNode *) ((target).value))->contents))
-#define DOToLong(target) (((struct integerHashNode *) ((target).value))->contents)
-#define DOToInteger(target) ((int) (((struct integerHashNode *) ((target).value))->contents))
-#define DOToPointer(target)        ((target).value)
-#define DOToExternalAddress(target) (((struct externalAddressHashNode *) ((target).value))->externalAddress)
-
-#define EnvDOToString(theEnv,target) (((struct symbolHashNode *) ((target).value))->contents)
-#define EnvDOToDouble(theEnv,target) (((struct floatHashNode *) ((target).value))->contents)
-#define EnvDOToFloat(theEnv,target) ((float) (((struct floatHashNode *) ((target).value))->contents))
-#define EnvDOToLong(theEnv,target) (((struct integerHashNode *) ((target).value))->contents)
-#define EnvDOToInteger(theEnv,target) ((int) (((struct integerHashNode *) ((target).value))->contents))
-#define EnvDOToPointer(theEnv,target)        ((target).value)
-#define EnvDOToExternalAddress(target) (((struct externalAddressHashNode *) ((target).value))->externalAddress)
 
 #define CoerceToLongInteger(t,v) ((t == INTEGER) ? ValueToLong(v) : (long int) ValueToDouble(v))
 #define CoerceToInteger(t,v) ((t == INTEGER) ? (int) ValueToLong(v) : (int) ValueToDouble(v))
@@ -224,9 +191,6 @@ struct evaluationData
 
 #define EvaluationData(theEnv) ((struct evaluationData *) GetEnvironmentData(theEnv,EVALUATION_DATA))
 
-#include "factmngr.h"
-#include "object.h"
-
    void                           InitializeEvaluationData(Environment *);
    bool                           EvaluateExpression(Environment *,struct expr *,CLIPSValue *);
    void                           EnvSetEvaluationError(Environment *,bool);
@@ -245,6 +209,8 @@ struct evaluationData
    void                           CopyDataObject(Environment *,CLIPSValue *,CLIPSValue *,int);
    void                           AtomInstall(Environment *,int,void *);
    void                           AtomDeinstall(Environment *,int,void *);
+   void                           CVAtomInstall(Environment *,void *);
+   void                           CVAtomDeinstall(Environment *,void *);
    struct expr                   *ConvertValueToExpression(Environment *,CLIPSValue *);
    unsigned long                  GetAtomicHashValue(unsigned short,void *,int);
    void                           InstallPrimitive(Environment *,struct entityRecord *,int);
@@ -254,142 +220,49 @@ struct evaluationData
    bool                           GetFunctionReference(Environment *,const char *,FUNCTION_REFERENCE *);
    bool                           DOsEqual(CLIPSValue *,CLIPSValue *);
    bool                           EvaluateAndStoreInDataObject(Environment *,bool,EXPRESSION *,CLIPSValue *,bool);
-   void                           MFSetNthValueF(CLIPSValue *,CLIPSInteger,CLIPSValue *);
-   void                           CVCreateMultifieldF(CLIPSValue *,CLIPSInteger);
-   CLIPSString                    CVToString(CLIPSValue *);
-   CLIPSInteger                   CVToInteger(CLIPSValue *);
-   CLIPSFloat                     CVToFloat(CLIPSValue *);
-   void                           CVSetVoid(CLIPSValue *);
-   void                           CVSetInteger(CLIPSValue *,CLIPSInteger);
-   void                           CVSetFloat(CLIPSValue *,CLIPSFloat);
-   void                           CVSetSymbol(CLIPSValue *,CLIPSString);
-   void                           CVSetString(CLIPSValue *,CLIPSString);
-   void                           CVSetInstanceName(CLIPSValue *,CLIPSString);
-   void                           CVSetInstanceAddress(CLIPSValue *,Instance *);
-   void                           CVSetFactAddress(CLIPSValue *,Fact *);
-   void                           CVSetBoolean(CLIPSValue *,bool);
-   bool                           CVIsType(CLIPSValue *,unsigned);
+   void                           MFSetNthValueF(CLIPSValue *,long,CLIPSValue *);
+   void                           CVCreateMultifieldF(CLIPSValue *,long);
    void                           EnvCVInit(Environment *,CLIPSValue *);
    void                           UDFCVInit(UDFContext *,CLIPSValue *);
-   bool                           CVIsFalseSymbol(CLIPSValue *);
-   bool                           CVIsTrueSymbol(CLIPSValue *);
-   CLIPSInteger                   MFLength(CLIPSValue *);
-   void                           MFNthValue(CLIPSValue *,CLIPSInteger,CLIPSValue *);
+   long                           MFLength(CLIPSValue *);
+   void                           MFNthValue(CLIPSValue *,long,CLIPSValue *);
 
-#define mCVIsType(cv,cvType) ((cv)->bitType & (cvType))
+#define CVIsType(cv,cvType) ((1 << (((TypeHeader *) (cv)->value)->type)) & (cvType))
 
-#define mCVToFloat(cv) ((cv)->type == FLOAT ? (CLIPSFloat) (((struct floatHashNode *) ((cv)->value))->contents) : \
-                       ((cv)->type == INTEGER) ? (CLIPSFloat) (((struct integerHashNode *) ((cv)->value))->contents) : 0.0)
+#define CVCoerceToFloat(cv) (((cv)->header->type == FLOAT) ? \
+                             ((cv)->floatValue->contents) : \
+                             ((double) (cv)->integerValue->contents))
 
-#define mCVToInteger(cv) ((cv)->type == INTEGER ? (CLIPSInteger) (((struct integerHashNode *) ((cv)->value))->contents) : \
-                       ((cv)->type == FLOAT) ? (CLIPSInteger) (((struct floatHashNode *) ((cv)->value))->contents) : 0LL)
-
-#define mCVToString(cv) (((struct symbolHashNode *) ((cv)->value))->contents)
-
-#define mCVSetVoid(cv) \
-   ( (cv)->value = NULL ,  \
-     (cv)->bitType = VOID_TYPE , \
-     (cv)->type = RVOID )
-
-#define mCVSetInteger(cv,iv) \
-   ( (cv)->value = EnvAddLong((cv)->environment,(iv)) ,  \
-     (cv)->bitType = INTEGER_TYPE , \
-     (cv)->type = INTEGER )
-
-#define mCVSetFloat(cv,fv) \
-   ( (cv)->value = EnvAddDouble((cv)->environment,(fv)) ,  \
-     (cv)->bitType = FLOAT_TYPE , \
-     (cv)->type = FLOAT )
-
-#define mCVSetString(cv,sv) \
-   ( (cv)->value = EnvAddSymbol((cv)->environment,(sv)) , \
-     (cv)->bitType = STRING_TYPE, \
-     (cv)->type = STRING )
-
-#define mCVSetSymbol(cv,sv) \
-   ( (cv)->value = EnvAddSymbol((cv)->environment,(sv)) , \
-     (cv)->bitType = SYMBOL_TYPE, \
-     (cv)->type = SYMBOL )
-
-#define mCVSetInstanceName(cv,iv) \
-   ( (cv)->value = EnvAddSymbol((cv)->environment,(iv)) , \
-     (cv)->bitType = INSTANCE_NAME_TYPE, \
-     (cv)->type = INSTANCE_NAME )
-
-#define mCVSetFactAddress(cv,fv) \
-   ( (cv)->value = (fv) , \
-     (cv)->bitType = FACT_ADDRESS_TYPE, \
-     (cv)->type = FACT_ADDRESS )
-
-#define mCVSetInstanceAddress(cv,iv) \
-   ( (cv)->value = (iv) , \
-     (cv)->bitType = INSTANCE_ADDRESS_TYPE, \
-     (cv)->type = INSTANCE_ADDRESS )
-
-#define mCVSetBoolean(cv,bv) \
-   ( (cv)->value = ((bv) ? SymbolData((cv)->environment)->TrueSymbolHN : \
-                           SymbolData((cv)->environment)->FalseSymbolHN ) , \
-     (cv)->bitType = (SYMBOL_TYPE | BOOLEAN_TYPE) , \
-     (cv)->type = SYMBOL )
+#define CVCoerceToInteger(cv) (((cv)->header->type == INTEGER) ? \
+                               ((cv)->integerValue->contents) : \
+                               ((long long) (cv)->floatValue->contents))
 
 #define mEnvCVInit(env,rv) ((rv)->environment = env)
 
 #define mUDFCVInit(context,rv) ((rv)->environment = (context)->environment)
 
-#define mCVIsFalseSymbol(cv) (((cv)->type == SYMBOL) &&  ((cv)->value == SymbolData((cv)->environment)->FalseSymbolHN))
-
-#define mCVIsTrueSymbol(cv) (((cv)->type == SYMBOL) &&  ((cv)->value == SymbolData((cv)->environment)->TrueSymbolHN))
-
-#define mMFLength(cv)   ((cv)->type == MULTIFIELD ? (((cv)->end - (cv)->begin) + 1) : 0)
+#define mMFLength(cv)   (((TypeHeader *) (cv)->value)->type == MULTIFIELD ? (((cv)->end - (cv)->begin) + 1) : 0)
 
 #define mMFNthValue(mf,n,rv) \
-   ( (rv)->type = (((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].type) , \
-     (rv)->value = (((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value) , \
+   ( (rv)->type = (((struct field *) ((Multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].type) , \
+     (rv)->value = (((struct field *) ((Multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value) , \
      (rv)->bitType = (1 << (rv)->type) , \
      (rv)->environment = (mf)->environment )
 
 /******/
 
-#define CVType(cv) ((cv)->bitType)
-
-#define CVSetCLIPSValue(v1,v2) ((v1)->type = (v2)->type, (v1)->value = (v2)->value, (v1)->bitType = (v2)->bitType)
-
-#define CVToRawValue(cv) ((cv)->value)
-
-#define CVSetCLIPSSymbol(cv,sv) \
-   ( (cv)->value = (sv) , \
-     (cv)->bitType = SYMBOL_TYPE, \
-     (cv)->type = SYMBOL )
-
-#define CVSetCLIPSString(cv,sv) \
-   ( (cv)->value = (sv) , \
-     (cv)->bitType = STRING_TYPE, \
-     (cv)->type = STRING )
-
-#define CVSetCLIPSInstanceName(cv,iv) \
-   ( (cv)->value = (iv) , \
-     (cv)->bitType = INSTANCE_NAME_TYPE, \
-     (cv)->type = INSTANCE_NAME )
+//#define CVType(cv) (((TypeHeader *) (cv)->value)->type)
 
 #define CVSetExternalAddress(cv,iv,ivt) \
-   ( (cv)->value = EnvAddExternalAddress((cv)->environment,iv,ivt) , \
-     (cv)->bitType = EXTERNAL_ADDRESS_TYPE, \
-     (cv)->type = EXTERNAL_ADDRESS )
-
-#define CVSetRawValue(cv,rv) \
-   ( (cv)->value = (rv)  )
-
+   ( (cv)->value = EnvAddExternalAddress((cv)->environment,iv,ivt) )
 
 #define MFSetNthValue(mf,n,nv) \
    ( \
-     ((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].type = (nv)->type , \
-     ((struct field *) ((struct multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value = (nv)->value \
+     ((struct field *) ((Multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value = (nv)->value \
    )
 
 #define CVCreateMultifield(mf,size) \
    ( (mf)->value = EnvCreateMultifield((mf)->environment,size) , \
-     (mf)->bitType = MULTIFIELD_TYPE, \
-     (mf)->type = MULTIFIELD, \
      (mf)->begin = 0, \
      (mf)->end = ((size) - 1) )
 
@@ -397,11 +270,5 @@ struct evaluationData
    ( (mf)->end = (mf)->begin + (e) - 1, \
      (mf)->begin = (mf)->begin + (b) - 1 )
 
-#define CVSetValue(tv,sv) \
-   ( (tv)->type = (sv)->type , \
-     (tv)->value = (sv)->value , \
-     (tv)->bitType = (sv)->bitType , \
-     (tv)->begin = (sv)->begin , \
-     (tv)->end = (sv)->end )
 
 #endif /* _H_evaluatn */

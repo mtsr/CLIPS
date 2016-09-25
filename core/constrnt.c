@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                 CONSTRAINT MODULE                   */
    /*******************************************************/
@@ -511,12 +511,12 @@ void SDCCommand(
   {
    CLIPSValue theArg;
 
-   mCVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvGetDynamicConstraintChecking(theEnv));
 
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
 
-   EnvSetDynamicConstraintChecking(theEnv,! mCVIsFalseSymbol(&theArg));
+   EnvSetDynamicConstraintChecking(theEnv,theArg.value != theEnv->FalseSymbol);
   }
 
 /**********************************************/
@@ -528,7 +528,7 @@ void GDCCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,EnvGetDynamicConstraintChecking(theEnv));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvGetDynamicConstraintChecking(theEnv));
   }
 
 /******************************************************/

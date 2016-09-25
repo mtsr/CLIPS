@@ -568,7 +568,7 @@ static struct FunctionDefinition *FastFindFunction(
    /* the named function wrapping around if necessary.     */
    /*======================================================*/
 
-   while (strcmp(functionName,ValueToString(theFunction->callFunctionName)) != 0)
+   while (strcmp(functionName,theFunction->callFunctionName->contents) != 0)
      {
       theFunction = theFunction->next;
       if (theFunction == lastFunction) return NULL;
@@ -826,13 +826,13 @@ void BloadCommand(
    fileName = GetFileName(context);
    if (fileName != NULL)
      {
-      mCVSetBoolean(returnValue,EnvBload(theEnv,fileName));
+      returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvBload(theEnv,fileName));
       return;
      }
 #else
 #if MAC_XCD
-#pragma unused(size,context)
+#pragma unused(theEnv,context)
 #endif
 #endif
-   mCVSetBoolean(returnValue,false);
+   returnValue->lexemeValue = theEnv->FalseSymbol;
   }

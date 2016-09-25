@@ -101,9 +101,9 @@ struct factgenData
    static void                      *FactGetVarPN1(Environment *,struct lhsParseNode *);
    static void                      *FactGetVarPN2(Environment *,struct lhsParseNode *);
    static void                      *FactGetVarPN3(Environment *,struct lhsParseNode *);
-   static SYMBOL_HN                 *ExtractSlotName(Environment *,unsigned,const char *);
-   static SYMBOL_HN                 *ExtractVariableName(Environment *,unsigned,const char *);
-   static void                       ReplaceVarSlotReference(Environment *,EXPRESSION *,SYMBOL_HN *,SYMBOL_HN *,SYMBOL_HN *);
+   static CLIPSLexeme               *ExtractSlotName(Environment *,unsigned,const char *);
+   static CLIPSLexeme               *ExtractVariableName(Environment *,unsigned,const char *);
+   static void                       ReplaceVarSlotReference(Environment *,EXPRESSION *,CLIPSLexeme *,CLIPSLexeme *,CLIPSLexeme *);
 #endif
 
 /*******************************************************************/
@@ -1280,14 +1280,14 @@ struct expr *FactJNVariableComparison(
 /*   a symbol reference to the slot name (or NULL if a slot   */
 /*   name cannot be extracted).                               */
 /**************************************************************/
-static SYMBOL_HN *ExtractSlotName(
+static CLIPSLexeme *ExtractSlotName(
   Environment *theEnv,
   unsigned thePosition,
   const char *theString)
   {
    size_t theLength;
    char *newString;
-   SYMBOL_HN *returnValue;
+   CLIPSLexeme *returnValue;
 
    /*=====================================*/
    /* Determine the length of the string. */
@@ -1321,7 +1321,7 @@ static SYMBOL_HN *ExtractSlotName(
    /* Add the slot name to the symbol table. */
    /*========================================*/
 
-   returnValue = (SYMBOL_HN *) EnvAddSymbol(theEnv,newString);
+   returnValue = EnvCreateSymbol(theEnv,newString);
 
    /*=============================================*/
    /* Return the storage of the temporary string. */
@@ -1333,7 +1333,7 @@ static SYMBOL_HN *ExtractSlotName(
    /* Return a pointer to the slot name symbol. */
    /*===========================================*/
 
-   return(returnValue);
+   return returnValue;
   }
 
 /******************************************************************/
@@ -1342,13 +1342,13 @@ static SYMBOL_HN *ExtractSlotName(
 /*   symbol reference to the variable name (or NULL if a variable */
 /*   name cannot be extracted).                                   */
 /******************************************************************/
-static SYMBOL_HN *ExtractVariableName(
+static CLIPSLexeme *ExtractVariableName(
   Environment *theEnv,
   unsigned thePosition,
   const char *theString)
   {
    char *newString;
-   SYMBOL_HN *returnValue;
+   CLIPSLexeme *returnValue;
 
    /*============================================*/
    /* Return NULL if the : is in a position such */
@@ -1380,7 +1380,7 @@ static SYMBOL_HN *ExtractVariableName(
    /* name) to the symbol table.                         */
    /*====================================================*/
 
-   returnValue = (SYMBOL_HN *) EnvAddSymbol(theEnv,newString);
+   returnValue = EnvCreateSymbol(theEnv,newString);
 
    /*=============================================*/
    /* Return the storage of the temporary string. */
@@ -1392,7 +1392,7 @@ static SYMBOL_HN *ExtractVariableName(
    /* Return a pointer to the variable name symbol. */
    /*===============================================*/
 
-   return(returnValue);
+   return returnValue;
   }
 
 /****************************/
@@ -1401,9 +1401,9 @@ static SYMBOL_HN *ExtractVariableName(
 static void ReplaceVarSlotReference(
   Environment *theEnv,
   EXPRESSION *theExpr,
-  SYMBOL_HN *variableName,
-  SYMBOL_HN *slotName,
-  SYMBOL_HN *varSlotName)
+  CLIPSLexeme *variableName,
+  CLIPSLexeme *slotName,
+  CLIPSLexeme *varSlotName)
   {
    theExpr->argList = GenConstant(theEnv,SF_VARIABLE,variableName);
    theExpr->argList->nextArg = GenConstant(theEnv,SYMBOL,slotName);
@@ -1425,7 +1425,7 @@ int FactSlotReferenceVar(
    const char *fullVar;
    char *result;
    size_t position;
-   SYMBOL_HN *slotName, *variableName;
+   CLIPSLexeme *slotName, *variableName;
 
    /*==============================================*/
    /* Reference should be a single field variable. */
@@ -1452,7 +1452,7 @@ int FactSlotReferenceVar(
    if (variableName == NULL)
      { return(-1);}
 
-   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
+   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(CLIPSLexeme *) varexp->value);
 
    return(1);
   }
@@ -1468,9 +1468,9 @@ int RuleFactSlotReferenceVar(
    const char *fullVar;
    char *result;
    size_t position;
-   SYMBOL_HN *slotName, *variableName;
+   CLIPSLexeme *slotName, *variableName;
    bool boundPosn;
-   SYMBOL_HN *templateName;
+   CLIPSLexeme *templateName;
    struct deftemplate *theDeftemplate;
    short slotPosition;
 
@@ -1508,7 +1508,7 @@ int RuleFactSlotReferenceVar(
 
    if (boundPosn != 0)
      {
-      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
+      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(CLIPSLexeme *) varexp->value);
       return (1);
      }
 
@@ -1519,7 +1519,7 @@ int RuleFactSlotReferenceVar(
    templateName = FindTemplateForFactAddress(variableName,theLHS);
    if (templateName == NULL)
      {
-      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
+      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(CLIPSLexeme *) varexp->value);
       return (1);
      }
 
@@ -1530,7 +1530,7 @@ int RuleFactSlotReferenceVar(
 
    if ((theDeftemplate == NULL) || (theDeftemplate->implied))
      {
-      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
+      ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(CLIPSLexeme *) varexp->value);
       return (1);
      }
 
@@ -1552,7 +1552,7 @@ int RuleFactSlotReferenceVar(
    /* Replace the ?var:slot reference with a slot-value function call. */
    /*==================================================================*/
 
-   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(SYMBOL_HN *) varexp->value);
+   ReplaceVarSlotReference(theEnv,varexp,variableName,slotName,(CLIPSLexeme *) varexp->value);
 
    return(1);
   }

@@ -115,7 +115,7 @@
    static long long               GetFactsArgument(UDFContext *);
 #endif
    static struct expr            *StandardLoadFact(Environment *,const char *,struct token *);
-   static CLIPSValue             *GetSaveFactsDeftemplateNames(Environment *,struct expr *,int,int *,bool *);
+   static Deftemplate           **GetSaveFactsDeftemplateNames(Environment *,struct expr *,int,int *,bool *);
 
 /***************************************/
 /* FactCommandDefinitions: Initializes */
@@ -192,7 +192,6 @@ void AssertCommand(
       newFact = CreateFactBySize(theEnv,1);
       if (theExpression->nextArg == NULL)
         {
-         newFact->theProposition.theFields[0].type = MULTIFIELD;
          newFact->theProposition.theFields[0].value = CreateMultifield2(theEnv,0L);
         }
       slotPtr = NULL;
@@ -225,12 +224,11 @@ void AssertCommand(
       /*============================================================*/
 
       if ((slotPtr != NULL) ?
-          (slotPtr->multislot == false) && (theValue.type == MULTIFIELD) :
+          (slotPtr->multislot == false) && (theValue.header->type == MULTIFIELD) :
           false)
         {
          MultiIntoSingleFieldSlotError(theEnv,slotPtr,theDeftemplate);
-         theValue.type = SYMBOL;
-         theValue.value = EnvFalseSymbol(theEnv);
+         theValue.value = theEnv->FalseSymbol;
          error = true;
         }
 
@@ -238,7 +236,6 @@ void AssertCommand(
       /* Store the value in the slot. */
       /*==============================*/
 
-      theField[i].type = theValue.type;
       theField[i].value = theValue.value;
 
       /*========================================*/
@@ -258,7 +255,7 @@ void AssertCommand(
    if (error)
      {
       ReturnFact(theEnv,newFact);
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -273,9 +270,9 @@ void AssertCommand(
    /*========================================*/
 
    if (theFact != NULL)
-     { mCVSetFactAddress(returnValue,theFact); }
+     { returnValue->factValue = theFact; }
    else
-     { mCVSetBoolean(returnValue,false); }
+     { returnValue->lexemeValue = theEnv->FalseSymbol; }
 
    return;
   }
@@ -289,7 +286,7 @@ void RetractCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CLIPSInteger factIndex;
+   long long factIndex;
    Fact *ptr;
    CLIPSValue theArg;
 
@@ -311,8 +308,8 @@ void RetractCommand(
       /* address, we can directly retract it. */
       /*======================================*/
 
-      if (mCVIsType(&theArg,FACT_ADDRESS_TYPE))
-        { EnvRetract(theEnv,(Fact *) CVToRawValue(&theArg)); }
+      if (CVIsType(&theArg,FACT_ADDRESS_TYPE))
+        { EnvRetract(theEnv,(Fact *) theArg.value); }
 
       /*===============================================*/
       /* If the argument evaluates to an integer, then */
@@ -320,13 +317,13 @@ void RetractCommand(
       /* to be retracted.                              */
       /*===============================================*/
 
-      else if (mCVIsType(&theArg,INTEGER_TYPE))
+      else if (CVIsType(&theArg,INTEGER_TYPE))
         {
          /*==========================================*/
          /* A fact index must be a positive integer. */
          /*==========================================*/
 
-         factIndex = mCVToInteger(&theArg);
+         factIndex = theArg.integerValue->contents;
          if (factIndex < 0)
            {
             UDFInvalidArgumentMessage(context,"fact-address, fact-index, or the symbol *");
@@ -359,8 +356,8 @@ void RetractCommand(
       /* symbol *, then all facts are retracted.    */
       /*============================================*/
 
-      else if ((mCVIsType(&theArg,SYMBOL_TYPE)) ?
-               (strcmp(mCVToString(&theArg),"*") == 0) : false)
+      else if ((CVIsType(&theArg,SYMBOL_TYPE)) ?
+               (strcmp(theArg.lexemeValue->contents,"*") == 0) : false)
         {
          RemoveAllFacts(theEnv);
          return;
@@ -394,7 +391,7 @@ void SetFactDuplicationCommand(
    /* Get the old value of the fact duplication behavior. */
    /*=====================================================*/
 
-   mCVSetBoolean(returnValue,EnvGetFactDuplication(theEnv));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvGetFactDuplication(theEnv));
 
    /*========================*/
    /* Evaluate the argument. */
@@ -408,7 +405,7 @@ void SetFactDuplicationCommand(
    /* behavior is disabled, otherwise it is enabled.                */
    /*===============================================================*/
 
-   EnvSetFactDuplication(theEnv,! mCVIsFalseSymbol(&theArg));
+   EnvSetFactDuplication(theEnv,theArg.value != theEnv->FalseSymbol);
   }
 
 /***************************************************/
@@ -420,7 +417,7 @@ void GetFactDuplicationCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,EnvGetFactDuplication(theEnv));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvGetFactDuplication(theEnv));
   }
 
 /*******************************************/
@@ -447,13 +444,13 @@ void FactIndexFunction(
    /* return -1 for the fact index.                  */
    /*================================================*/
 
-   if (((Fact *) GetValue(theArg))->garbage)
+   if (theArg.factValue->garbage)
      {
-      mCVSetInteger(returnValue,-1L);
+      returnValue->integerValue = EnvCreateInteger(theEnv,-1L);
       return;
      }
 
-   mCVSetInteger(returnValue,EnvFactIndex(theEnv,(Fact *) GetValue(theArg)));
+   returnValue->integerValue = EnvCreateInteger(theEnv,EnvFactIndex(theEnv,theArg.factValue));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -501,13 +498,13 @@ void FactsCommand(
    /* to see that a valid module was specified.     */
    /*===============================================*/
 
-   if (mCVIsType(&theArg,SYMBOL_TYPE))
+   if (CVIsType(&theArg,SYMBOL_TYPE))
      {
-      theModule = EnvFindDefmodule(theEnv,mCVToString(&theArg));
-      if ((theModule == NULL) && (strcmp(mCVToString(&theArg),"*") != 0))
+      theModule = EnvFindDefmodule(theEnv,theArg.lexemeValue->contents);
+      if ((theModule == NULL) && (strcmp(theArg.lexemeValue->contents,"*") != 0))
         {
          EnvSetEvaluationError(theEnv,true);
-         CantFindItemErrorMessage(theEnv,"defmodule",mCVToString(&theArg));
+         CantFindItemErrorMessage(theEnv,"defmodule",theArg.lexemeValue->contents);
          return;
         }
 
@@ -519,9 +516,9 @@ void FactsCommand(
    /* check to see that a valid index was specified. */
    /*================================================*/
 
-   else if (mCVIsType(&theArg,INTEGER_TYPE))
+   else if (CVIsType(&theArg,INTEGER_TYPE))
      {
-      start = mCVToInteger(&theArg);
+      start = theArg.integerValue->contents;
       if (start < 0)
         {
          ExpectedTypeError1(theEnv,"facts",1,"symbol or positive number");
@@ -685,7 +682,7 @@ static long long GetFactsArgument(
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return(INVALID); }
 
-   factIndex = mCVToInteger(&theArg);
+   factIndex = theArg.integerValue->contents;
 
    if (factIndex < 0)
      {
@@ -723,11 +720,11 @@ void AssertStringFunction(
    /* string to a fact and then assert it.     */
    /*==========================================*/
 
-   theFact = EnvAssertString(theEnv,mCVToString(&theArg));
+   theFact = EnvAssertString(theEnv,theArg.lexemeValue->contents);
    if (theFact != NULL)
-     { mCVSetFactAddress(returnValue,theFact); }
+     { returnValue->factValue = theFact; }
    else
-     { mCVSetBoolean(returnValue,false); }
+     { returnValue->lexemeValue = theEnv->FalseSymbol; }
   }
 
 /******************************************/
@@ -757,7 +754,7 @@ void SaveFactsCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -771,11 +768,11 @@ void SaveFactsCommand(
      {
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theValue))
         {
-         mCVSetBoolean(returnValue,false);
+         returnValue->lexemeValue = theEnv->FalseSymbol;
          return;
         }
 
-      argument = DOToString(theValue);
+      argument = theValue.lexemeValue->contents;
 
       if (strcmp(argument,"local") == 0)
         { saveCode = LOCAL_SAVE; }
@@ -784,7 +781,7 @@ void SaveFactsCommand(
       else
         {
          ExpectedTypeError1(theEnv,"save-facts",2,"symbol with value local or visible");
-         mCVSetBoolean(returnValue,false);
+         returnValue->lexemeValue = theEnv->FalseSymbol;
          return;
         }
      }
@@ -802,9 +799,9 @@ void SaveFactsCommand(
    /*====================================*/
 
    if (EnvSaveFactsDriver(theEnv,fileName,saveCode,theList) == false)
-     { mCVSetBoolean(returnValue,false); }
+     { returnValue->lexemeValue = theEnv->FalseSymbol; }
    else
-     { mCVSetBoolean(returnValue,true); }
+     { returnValue->lexemeValue = theEnv->TrueSymbol; }
   }
 
 /******************************************/
@@ -824,7 +821,7 @@ void LoadFactsCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -832,13 +829,7 @@ void LoadFactsCommand(
    /* Call the LoadFacts driver routine. */
    /*====================================*/
 
-   if (EnvLoadFacts(theEnv,fileName) == false)
-     {
-      mCVSetBoolean(returnValue,false);
-      return;
-     }
-
-   mCVSetBoolean(returnValue,true);
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvLoadFacts(theEnv,fileName));
   }
 
 /**************************************************************/
@@ -865,7 +856,7 @@ bool EnvSaveFactsDriver(
    struct fact *theFact;
    FILE *filePtr;
    Defmodule *theModule;
-   CLIPSValue *theDOArray;
+   Deftemplate **deftemplateArray;
    int count, i;
    bool printFact, error;
 
@@ -897,7 +888,7 @@ bool EnvSaveFactsDriver(
    /* Determine the list of specific facts to be saved. */
    /*===================================================*/
 
-   theDOArray = GetSaveFactsDeftemplateNames(theEnv,theList,saveCode,&count,&error);
+   deftemplateArray = GetSaveFactsDeftemplateNames(theEnv,theList,saveCode,&count,&error);
 
    if (error)
      {
@@ -949,7 +940,7 @@ bool EnvSaveFactsDriver(
          printFact = false;
          for (i = 0; i < count; i++)
            {
-            if (theDOArray[i].value == (void *) theFact->whichDeftemplate)
+            if (deftemplateArray[i] == theFact->whichDeftemplate)
               {
                printFact = true;
                break;
@@ -988,7 +979,8 @@ bool EnvSaveFactsDriver(
    /* Free the deftemplate name array. */
    /*==================================*/
 
-   if (theList != NULL) rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * count);
+   if (theList != NULL)
+     { rm3(theEnv,deftemplateArray,(long) sizeof(Deftemplate *) * count); }
 
    /*===================================*/
    /* Return true to indicate no errors */
@@ -1002,7 +994,7 @@ bool EnvSaveFactsDriver(
 /* GetSaveFactsDeftemplateNames: Retrieves the list of deftemplate */
 /*   names for saving specific facts with the save-facts command.  */
 /*******************************************************************/
-static CLIPSValue *GetSaveFactsDeftemplateNames(
+static Deftemplate **GetSaveFactsDeftemplateNames(
   Environment *theEnv,
   struct expr *theList,
   int saveCode,
@@ -1010,7 +1002,8 @@ static CLIPSValue *GetSaveFactsDeftemplateNames(
   bool *error)
   {
    struct expr *tempList;
-   CLIPSValue *theDOArray;
+   Deftemplate **deftemplateArray;
+   CLIPSValue tempArg;
    int i, tempCount;
    Deftemplate *theDeftemplate = NULL;
 
@@ -1045,7 +1038,7 @@ static CLIPSValue *GetSaveFactsDeftemplateNames(
    /* Allocate the storage for the name list. */
    /*=========================================*/
 
-   theDOArray = (CLIPSValue *) gm3(theEnv,(long) sizeof(CLIPSValue) * *count);
+   deftemplateArray = (Deftemplate **) gm3(theEnv,(long) sizeof(Deftemplate *) * *count);
 
    /*=====================================*/
    /* Loop through each of the arguments. */
@@ -1059,12 +1052,12 @@ static CLIPSValue *GetSaveFactsDeftemplateNames(
       /* Evaluate the argument. */
       /*========================*/
 
-      EvaluateExpression(theEnv,tempList,&theDOArray[i]);
+      EvaluateExpression(theEnv,tempList,&tempArg);
 
       if (EvaluationData(theEnv)->EvaluationError)
         {
          *error = true;
-         rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * *count);
+         rm3(theEnv,deftemplateArray,(long) sizeof(Deftemplate *) * *count);
          return NULL;
         }
 
@@ -1072,11 +1065,11 @@ static CLIPSValue *GetSaveFactsDeftemplateNames(
       /* A deftemplate name must be a symbol. */
       /*======================================*/
 
-      if (theDOArray[i].type != SYMBOL)
+      if (tempArg.header->type != SYMBOL)
         {
          *error = true;
          ExpectedTypeError1(theEnv,"save-facts",3+i,"symbol");
-         rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * *count);
+         rm3(theEnv,deftemplateArray,(long) sizeof(Deftemplate *) * *count);
          return NULL;
         }
 
@@ -1088,12 +1081,12 @@ static CLIPSValue *GetSaveFactsDeftemplateNames(
 
       if (saveCode == LOCAL_SAVE)
         {
-         theDeftemplate = EnvFindDeftemplateInModule(theEnv,ValueToString(theDOArray[i].value));
+         theDeftemplate = EnvFindDeftemplateInModule(theEnv,tempArg.lexemeValue->contents);
          if (theDeftemplate == NULL)
            {
             *error = true;
             ExpectedTypeError1(theEnv,"save-facts",3+i,"local deftemplate name");
-            rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * *count);
+            rm3(theEnv,deftemplateArray,(long) sizeof(Deftemplate *) * *count);
             return NULL;
            }
         }
@@ -1101,13 +1094,13 @@ static CLIPSValue *GetSaveFactsDeftemplateNames(
         {
          theDeftemplate = (Deftemplate *)
            FindImportedConstruct(theEnv,"deftemplate",NULL,
-                                 ValueToString(theDOArray[i].value),
+                                 tempArg.lexemeValue->contents,
                                  &tempCount,true,NULL);
          if (theDeftemplate == NULL)
            {
             *error = true;
             ExpectedTypeError1(theEnv,"save-facts",3+i,"visible deftemplate name");
-            rm3(theEnv,theDOArray,(long) sizeof(CLIPSValue) * *count);
+            rm3(theEnv,deftemplateArray,(long) sizeof(Deftemplate *) * *count);
             return NULL;
            }
         }
@@ -1117,15 +1110,14 @@ static CLIPSValue *GetSaveFactsDeftemplateNames(
       /* to the array being created.      */
       /*==================================*/
 
-      theDOArray[i].type = DEFTEMPLATE_PTR;
-      theDOArray[i].value = theDeftemplate;
+      deftemplateArray[i] = theDeftemplate;
      }
 
    /*===================================*/
    /* Return the array of deftemplates. */
    /*===================================*/
 
-   return(theDOArray);
+   return deftemplateArray;
   }
 
 /**************************************************************/

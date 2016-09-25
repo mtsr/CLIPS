@@ -212,7 +212,7 @@ void SetBetaMemoryResizingCommand(
   {
    CLIPSValue theArg;
 
-   mCVSetBoolean(returnValue,EnvGetBetaMemoryResizing(theEnv));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvGetBetaMemoryResizing(theEnv));
 
    /*=================================================*/
    /* The symbol FALSE disables beta memory resizing. */
@@ -222,7 +222,7 @@ void SetBetaMemoryResizingCommand(
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
 
-   if (mCVIsFalseSymbol(&theArg))
+   if (theArg.value == theEnv->FalseSymbol)
      { EnvSetBetaMemoryResizing(theEnv,false); }
    else
      { EnvSetBetaMemoryResizing(theEnv,true); }
@@ -237,7 +237,7 @@ void GetBetaMemoryResizingCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,EnvGetBetaMemoryResizing(theEnv));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvGetBetaMemoryResizing(theEnv));
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -259,13 +259,13 @@ void MatchesCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
-   ruleName = mCVToString(&theArg);
+   ruleName = theArg.lexemeValue->contents;
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -274,7 +274,7 @@ void MatchesCommand(
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
 
-      argument = mCVToString(&theArg);
+      argument = theArg.lexemeValue->contents;
       if (strcmp(argument,"verbose") == 0)
         { output = VERBOSE; }
       else if (strcmp(argument,"succinct") == 0)
@@ -284,7 +284,7 @@ void MatchesCommand(
       else
         {
          UDFInvalidArgumentMessage(context,"symbol with value verbose, succinct, or terse");
-         mCVSetBoolean(returnValue,false);
+         returnValue->lexemeValue = theEnv->FalseSymbol;
          return;
         }
      }
@@ -318,17 +318,13 @@ void EnvMatches(
    /* Set up the return value. */
    /*==========================*/
 
-   returnValue->type = MULTIFIELD;
    returnValue->begin = 0;
    returnValue->end = 2;
    returnValue->value = EnvCreateMultifield(theEnv,3L);
 
-   SetMFType(returnValue->value,1,INTEGER);
+   SetMFValue(returnValue->value,0,SymbolData(theEnv)->Zero);
    SetMFValue(returnValue->value,1,SymbolData(theEnv)->Zero);
-   SetMFType(returnValue->value,2,INTEGER);
    SetMFValue(returnValue->value,2,SymbolData(theEnv)->Zero);
-   SetMFType(returnValue->value,3,INTEGER);
-   SetMFValue(returnValue->value,3,SymbolData(theEnv)->Zero);
 
    /*=================================================*/
    /* Loop through each of the disjuncts for the rule */
@@ -354,9 +350,7 @@ void EnvMatches(
       for (joinIndex = 0; joinIndex < arraySize; joinIndex++)
         {
          alphaMatchCount += ListAlphaMatches(theEnv,&theInfo[joinIndex],output);
-
-         SetMFType(returnValue->value,1,INTEGER);
-         SetMFValue(returnValue->value,1,EnvAddLong(theEnv,alphaMatchCount));
+         SetMFValue(returnValue->value,0,EnvCreateInteger(theEnv,alphaMatchCount));
         }
 
       /*================================*/
@@ -385,9 +379,7 @@ void EnvMatches(
       for (joinIndex = 1; joinIndex < arraySize; joinIndex++)
         {
          betaMatchCount += ListBetaMatches(theEnv,theInfo,joinIndex,arraySize,output);
-
-         SetMFType(returnValue->value,2,INTEGER);
-         SetMFValue(returnValue->value,2,EnvAddLong(theEnv,betaMatchCount));
+         SetMFValue(returnValue->value,1,EnvCreateInteger(theEnv,betaMatchCount));
         }
 
       /*================================*/
@@ -431,8 +423,7 @@ void EnvMatches(
 
    if ((activations == 0) && (output == VERBOSE)) EnvPrintRouter(theEnv,WDISPLAY," None\n");
 
-   SetMFType(returnValue->value,3,INTEGER);
-   SetMFValue(returnValue->value,3,EnvAddLong(theEnv,activations));
+   SetMFValue(returnValue->value,2,EnvCreateInteger(theEnv,activations));
   }
 
 /****************************************************/
@@ -972,13 +963,13 @@ void JoinActivityCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
-   ruleName = mCVToString(&theArg);
+   ruleName = theArg.lexemeValue->contents;
 
    rulePtr = EnvFindDefrule(theEnv,ruleName);
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -987,7 +978,7 @@ void JoinActivityCommand(
       if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
         { return; }
 
-      argument = mCVToString(&theArg);
+      argument = theArg.lexemeValue->contents;
       if (strcmp(argument,"verbose") == 0)
         { output = VERBOSE; }
       else if (strcmp(argument,"succinct") == 0)
@@ -997,7 +988,7 @@ void JoinActivityCommand(
       else
         {
          UDFInvalidArgumentMessage(context,"symbol with value verbose, succinct, or terse");
-         mCVSetBoolean(returnValue,false);
+         returnValue->lexemeValue = theEnv->FalseSymbol;
          return;
         }
      }
@@ -1026,17 +1017,13 @@ void EnvJoinActivity(
    /* Set up the return value. */
    /*==========================*/
 
-   returnValue->type = MULTIFIELD;
    returnValue->begin = 0;
    returnValue->end = 2;
    returnValue->value = EnvCreateMultifield(theEnv,3L);
 
-   SetMFType(returnValue->value,1,INTEGER);
+   SetMFValue(returnValue->value,0,SymbolData(theEnv)->Zero);
    SetMFValue(returnValue->value,1,SymbolData(theEnv)->Zero);
-   SetMFType(returnValue->value,2,INTEGER);
    SetMFValue(returnValue->value,2,SymbolData(theEnv)->Zero);
-   SetMFType(returnValue->value,3,INTEGER);
-   SetMFValue(returnValue->value,3,SymbolData(theEnv)->Zero);
 
    /*=================================================*/
    /* Loop through each of the disjuncts for the rule */
@@ -1214,16 +1201,13 @@ static void ListBetaJoinActivity(
       EnvPrintRouter(theEnv,WDISPLAY,"\n");
      }
 
-   compares += ValueToLong(GetMFValue(returnValue->value,1));
-   adds += ValueToLong(GetMFValue(returnValue->value,2));
-   deletes += ValueToLong(GetMFValue(returnValue->value,3));
+   compares += ValueToLong(GetMFValue(returnValue->value,0));
+   adds += ValueToLong(GetMFValue(returnValue->value,1));
+   deletes += ValueToLong(GetMFValue(returnValue->value,2));
 
-   SetMFType(returnValue->value,1,INTEGER);
-   SetMFValue(returnValue->value,1,EnvAddLong(theEnv,compares));
-   SetMFType(returnValue->value,2,INTEGER);
-   SetMFValue(returnValue->value,2,EnvAddLong(theEnv,adds));
-   SetMFType(returnValue->value,3,INTEGER);
-   SetMFValue(returnValue->value,3,EnvAddLong(theEnv,deletes));
+   SetMFValue(returnValue->value,0,EnvCreateInteger(theEnv,compares));
+   SetMFValue(returnValue->value,1,EnvCreateInteger(theEnv,adds));
+   SetMFValue(returnValue->value,2,EnvCreateInteger(theEnv,deletes));
   }
 
 /*********************************************/
@@ -1286,11 +1270,11 @@ void TimetagFunction(
 
    if (ptr == NULL)
      {
-      mCVSetInteger(returnValue,-1LL);
+      returnValue->integerValue = EnvCreateInteger(theEnv,-1LL);
       return;
      }
 
-   mCVSetInteger(returnValue,((struct patternEntity *) ptr)->timeTag);
+   returnValue->integerValue = EnvCreateInteger(theEnv,((struct patternEntity *) ptr)->timeTag);
   }
 
 #endif /* DEBUGGING_FUNCTIONS */
@@ -1311,7 +1295,7 @@ void RuleComplexityCommand(
    ruleName = GetConstructName(context,"rule-complexity","rule name");
    if (ruleName == NULL)
      {
-      mCVSetInteger(returnValue,-1);
+      returnValue->integerValue = EnvCreateInteger(theEnv,-1);
       return;
      }
 
@@ -1319,11 +1303,11 @@ void RuleComplexityCommand(
    if (rulePtr == NULL)
      {
       CantFindItemErrorMessage(theEnv,"defrule",ruleName);
-      mCVSetInteger(returnValue,-1);
+      returnValue->integerValue = EnvCreateInteger(theEnv,-1);
       return;
      }
 
-   mCVSetInteger(returnValue,rulePtr->complexity);
+   returnValue->integerValue = EnvCreateInteger(theEnv,rulePtr->complexity);
   }
 
 /******************************************/

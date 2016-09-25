@@ -295,6 +295,7 @@ void PrintErrorID(
    /* and there is no callback for errors/warnings.    */
    /*==================================================*/
 
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    if ((ConstructData(theEnv)->ParserErrorCallback == NULL) &&
        (GetLoadInProgress(theEnv) == true))
      {
@@ -309,6 +310,7 @@ void PrintErrorID(
          EnvPrintRouter(theEnv,WERROR,": ");
         }
      }
+#endif
   }
 
 /**********************************************/
@@ -337,6 +339,7 @@ void PrintWarningID(
    /* and there is no callback for errors/warnings.    */
    /*==================================================*/
 
+#if (! RUN_TIME) && (! BLOAD_ONLY)
    if ((ConstructData(theEnv)->ParserErrorCallback == NULL) &&
        (GetLoadInProgress(theEnv) == true))
      {
@@ -351,6 +354,7 @@ void PrintWarningID(
          EnvPrintRouter(theEnv,WERROR,", ");
         }
      }
+#endif
 
    EnvPrintRouter(theEnv,WWARNING,"WARNING: ");
   }
@@ -509,7 +513,7 @@ const char *FloatToString(
    char floatString[40];
    int i;
    char x;
-   void *thePtr;
+   CLIPSLexeme *thePtr;
 
    gensprintf(floatString,"%.15g",number);
 
@@ -517,15 +521,15 @@ const char *FloatToString(
      {
       if ((x == '.') || (x == 'e'))
         {
-         thePtr = EnvAddSymbol(theEnv,floatString);
-         return(ValueToString(thePtr));
+         thePtr = EnvCreateString(theEnv,floatString);
+         return thePtr->contents;
         }
      }
 
    genstrcat(floatString,".0");
 
-   thePtr = EnvAddSymbol(theEnv,floatString);
-   return(ValueToString(thePtr));
+   thePtr = EnvCreateString(theEnv,floatString);
+   return thePtr->contents;
   }
 
 /*******************************************************************/
@@ -536,12 +540,12 @@ const char *LongIntegerToString(
   long long number)
   {
    char buffer[50];
-   void *thePtr;
+   CLIPSLexeme *thePtr;
 
    gensprintf(buffer,"%lld",number);
 
-   thePtr = EnvAddSymbol(theEnv,buffer);
-   return(ValueToString(thePtr));
+   thePtr = EnvCreateString(theEnv,buffer);
+   return thePtr->contents;
   }
 
 /******************************************************************/
@@ -551,7 +555,7 @@ const char *DataObjectToString(
   Environment *theEnv,
   CLIPSValue *theDO)
   {
-   void *thePtr;
+   CLIPSLexeme *thePtr;
    const char *theString;
    char *newString;
    const char *prefix, *postfix;
@@ -559,55 +563,53 @@ const char *DataObjectToString(
    struct externalAddressHashNode *theAddress;
    char buffer[30];
 
-   switch (GetpType(theDO))
+   switch (theDO->header->type)
      {
       case MULTIFIELD:
          prefix = "(";
-         theString = ValueToString(ImplodeMultifield(theEnv,theDO));
+         theString = ImplodeMultifield(theEnv,theDO)->contents;
          postfix = ")";
          break;
 
       case STRING:
          prefix = "\"";
-         theString = DOPToString(theDO);
+         theString = theDO->lexemeValue->contents;
          postfix = "\"";
          break;
 
       case INSTANCE_NAME:
          prefix = "[";
-         theString = DOPToString(theDO);
+         theString = theDO->lexemeValue->contents;
          postfix = "]";
          break;
 
       case SYMBOL:
-         return(DOPToString(theDO));
+         return theDO->lexemeValue->contents;
 
       case FLOAT:
-         return(FloatToString(theEnv,DOPToDouble(theDO)));
+         return(FloatToString(theEnv,theDO->floatValue->contents));
 
       case INTEGER:
-         return(LongIntegerToString(theEnv,DOPToLong(theDO)));
+         return(LongIntegerToString(theEnv,theDO->integerValue->contents));
 
       case RVOID:
          return("");
 
 #if OBJECT_SYSTEM
       case INSTANCE_ADDRESS:
-         thePtr = DOPToPointer(theDO);
-
-         if (thePtr == (void *) &InstanceData(theEnv)->DummyInstance)
+         if (theDO->instanceValue == &InstanceData(theEnv)->DummyInstance)
            { return("<Dummy Instance>"); }
 
-         if (((struct instance *) thePtr)->garbage)
+         if (theDO->instanceValue->garbage)
            {
             prefix = "<Stale Instance-";
-            theString = ValueToString(((struct instance *) thePtr)->name);
+            theString = theDO->instanceValue->name->contents;
             postfix = ">";
            }
          else
            {
             prefix = "<Instance-";
-            theString = ValueToString(GetFullInstanceName(theEnv,(Instance *) thePtr));
+            theString = GetFullInstanceName(theEnv,theDO->instanceValue)->contents;
             postfix = ">";
            }
 
@@ -615,21 +617,20 @@ const char *DataObjectToString(
 #endif
 
       case EXTERNAL_ADDRESS:
-        theAddress = (struct externalAddressHashNode *) DOPToPointer(theDO);
+        theAddress = (struct externalAddressHashNode *) theDO->value;
         /* TBD Need specific routine for creating name string. */
-        gensprintf(buffer,"<Pointer-%d-%p>",(int) theAddress->type,DOPToExternalAddress(theDO));
-        thePtr = EnvAddSymbol(theEnv,buffer);
+        gensprintf(buffer,"<Pointer-%d-%p>",(int) theAddress->type,theDO->value);
+        thePtr = EnvCreateString(theEnv,buffer);
         return(ValueToString(thePtr));
 
 #if DEFTEMPLATE_CONSTRUCT
       case FACT_ADDRESS:
-         if (DOPToPointer(theDO) == (void *) &FactData(theEnv)->DummyFact)
+         if (theDO->factValue == &FactData(theEnv)->DummyFact)
            { return("<Dummy Fact>"); }
 
-         thePtr = DOPToPointer(theDO);
-         gensprintf(buffer,"<Fact-%lld>",((struct fact *) thePtr)->factIndex);
-         thePtr = EnvAddSymbol(theEnv,buffer);
-         return(ValueToString(thePtr));
+         gensprintf(buffer,"<Fact-%lld>",theDO->factValue->factIndex);
+         thePtr = EnvCreateString(theEnv,buffer);
+         return thePtr->contents;
 #endif
 
       default:
@@ -642,9 +643,9 @@ const char *DataObjectToString(
    genstrcat(newString,prefix);
    genstrcat(newString,theString);
    genstrcat(newString,postfix);
-   thePtr = EnvAddSymbol(theEnv,newString);
+   thePtr = EnvCreateString(theEnv,newString);
    genfree(theEnv,newString,length);
-   return(ValueToString(thePtr));
+   return thePtr->contents;
   }
 
 /************************************************************/

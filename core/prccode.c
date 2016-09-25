@@ -115,7 +115,7 @@ typedef struct
    static void                    ReleaseProcParameters(Environment *);
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
-   static int                     FindProcParameter(SYMBOL_HN *,EXPRESSION *,SYMBOL_HN *);
+   static int                     FindProcParameter(CLIPSLexeme *,EXPRESSION *,CLIPSLexeme *);
    static bool                    ReplaceProcBinds(Environment *,EXPRESSION *,
                                                    int (*)(Environment *,EXPRESSION *,void *),void *);
    static EXPRESSION             *CompactActions(Environment *,EXPRESSION *);
@@ -212,7 +212,7 @@ void InstallProcedurePrimitives(
       and zero-length multifield parameters
       ============================================= */
    ProceduralPrimitiveData(theEnv)->NoParamValue = CreateMultifield2(theEnv,0L);
-   MultifieldInstall(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->NoParamValue);
+   MultifieldInstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->NoParamValue);
   }
 
 /**************************************************************/
@@ -222,7 +222,7 @@ void InstallProcedurePrimitives(
 static void DeallocateProceduralPrimitiveData(
   Environment *theEnv)
   {
-   ReturnMultifield(theEnv,(struct multifield *) ProceduralPrimitiveData(theEnv)->NoParamValue);
+   ReturnMultifield(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->NoParamValue);
    ReleaseProcParameters(theEnv);
   }
 
@@ -259,7 +259,7 @@ EXPRESSION *ParseProcParameters(
   const char *readSource,
   struct token *tkn,
   EXPRESSION *parameterList,
-  SYMBOL_HN **wildcard,
+  CLIPSLexeme **wildcard,
   int *min,
   int *max,
   bool *error,
@@ -302,14 +302,14 @@ EXPRESSION *ParseProcParameters(
          ReturnExpression(theEnv,parameterList);
          return NULL;
         }
-      if ((checkfunc != NULL) ? (*checkfunc)(theEnv,ValueToString(tkn->value)) : false)
+      if ((checkfunc != NULL) ? (*checkfunc)(theEnv,tkn->lexemeValue->contents) : false)
         {
          ReturnExpression(theEnv,parameterList);
          return NULL;
         }
       nextOne = GenConstant(theEnv,TokenTypeToType(tkn->tknType),tkn->value);
       if (tkn->tknType == MF_VARIABLE_TOKEN)
-        *wildcard = (SYMBOL_HN *) tkn->value;
+        *wildcard = tkn->lexemeValue;
       else
         (*min)++;
       if (lastOne == NULL)
@@ -387,7 +387,7 @@ EXPRESSION *ParseProcActions(
   const char *readSource,
   struct token *tkn,
   EXPRESSION *params,
-  SYMBOL_HN *wildcard,
+  CLIPSLexeme *wildcard,
   int (*altvarfunc)(Environment *,EXPRESSION *,void *),
   int (*altbindfunc)(Environment *,EXPRESSION *,void *),
   int *lvarcnt,
@@ -490,14 +490,14 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
   const char *bodytype,
   EXPRESSION *actions,
   EXPRESSION *parameterList,
-  SYMBOL_HN *wildcard,
+  CLIPSLexeme *wildcard,
   int (*altvarfunc)(Environment *,EXPRESSION *,void *),
   void *specdata)
   {
    int position,altcode;
    int boundPosn;
    EXPRESSION *arg_lvl,*altvarexp;
-   SYMBOL_HN *bindName;
+   CLIPSLexeme *bindName;
    PACKED_PROC_VAR pvar;
    int errorCode;
 
@@ -509,7 +509,7 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
          /* See if the variable is in the parameter list. */
          /*===============================================*/
 
-         bindName = (SYMBOL_HN *) actions->value;
+         bindName = (CLIPSLexeme *) actions->value;
          position = FindProcParameter(bindName,parameterList,wildcard);
 
          /*=============================================================*/
@@ -621,7 +621,7 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
              (actions->argList->type == SYMBOL))
            {
             actions->type = PROC_BIND;
-            boundPosn = SearchParsedBindNames(theEnv,(SYMBOL_HN *) actions->argList->value);
+            boundPosn = SearchParsedBindNames(theEnv,(CLIPSLexeme *) actions->argList->value);
             actions->value = EnvAddBitMap(theEnv,&boundPosn,(int) sizeof(int));
             arg_lvl = actions->argList->nextArg;
             rtn_struct(theEnv,expr,actions->argList);
@@ -756,9 +756,9 @@ void PopProcParameters(
 
    if (ProceduralPrimitiveData(theEnv)->WildcardValue != NULL)
      {
-      MultifieldDeinstall(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+      MultifieldDeinstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-        AddToMultifieldList(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+        AddToMultifieldList(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
       rtn_struct(theEnv,dataObject,ProceduralPrimitiveData(theEnv)->WildcardValue);
      }
    ProceduralPrimitiveData(theEnv)->WildcardValue = ptmp->WildcardValue;
@@ -786,7 +786,7 @@ static void ReleaseProcParameters(
    if (ProceduralPrimitiveData(theEnv)->WildcardValue != NULL)
      {
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-        { ReturnMultifield(theEnv,(struct multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value); }
+        { ReturnMultifield(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value); }
 
       rtn_struct(theEnv,dataObject,ProceduralPrimitiveData(theEnv)->WildcardValue);
      }
@@ -813,7 +813,7 @@ static void ReleaseProcParameters(
       if (ptmp->WildcardValue != NULL)
         {
          if (ptmp->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-           { ReturnMultifield(theEnv,(struct multifield *) ptmp->WildcardValue->value); }
+           { ReturnMultifield(theEnv,(Multifield *) ptmp->WildcardValue->value); }
 
          rtn_struct(theEnv,dataObject,ptmp->WildcardValue);
         }
@@ -848,8 +848,8 @@ EXPRESSION *GetProcParamExpressions(
                gm2(theEnv,(sizeof(EXPRESSION) * ProceduralPrimitiveData(theEnv)->ProcParamArraySize));
    for (i = 0 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
      {
-      ProceduralPrimitiveData(theEnv)->ProcParamExpressions[i].type = ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type;
-      if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type != MULTIFIELD)
+      ProceduralPrimitiveData(theEnv)->ProcParamExpressions[i].type = ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type; // TBD Remove
+      if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type != MULTIFIELD)
         ProceduralPrimitiveData(theEnv)->ProcParamExpressions[i].value = ProceduralPrimitiveData(theEnv)->ProcParamArray[i].value;
       else
         ProceduralPrimitiveData(theEnv)->ProcParamExpressions[i].value = &ProceduralPrimitiveData(theEnv)->ProcParamArray[i];
@@ -905,7 +905,7 @@ void EvaluateProcActions(
      { theTM = NULL; }
 
    for (i = 0 ; i < lvarcnt ; i++)
-     ProceduralPrimitiveData(theEnv)->LocalVarArray[i].supplementalInfo = EnvFalseSymbol(theEnv);
+     ProceduralPrimitiveData(theEnv)->LocalVarArray[i].supplementalInfo = theEnv->FalseSymbol;
 
    oldModule = EnvGetCurrentModule(theEnv);
    if (oldModule != theModule)
@@ -915,8 +915,7 @@ void EvaluateProcActions(
 
    if (EvaluateExpression(theEnv,actions,returnValue))
      {
-      returnValue->type = SYMBOL;
-      returnValue->value = EnvFalseSymbol(theEnv);
+      returnValue->value = theEnv->FalseSymbol;
      }
 
    ProceduralPrimitiveData(theEnv)->CurrentProcActions = oldActions;
@@ -930,9 +929,9 @@ void EvaluateProcActions(
      }
    if ((ProceduralPrimitiveData(theEnv)->WildcardValue != NULL) ? (returnValue->value == ProceduralPrimitiveData(theEnv)->WildcardValue->value) : false)
      {
-      MultifieldDeinstall(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+      MultifieldDeinstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-        AddToMultifieldList(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+        AddToMultifieldList(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
       rtn_struct(theEnv,dataObject,ProceduralPrimitiveData(theEnv)->WildcardValue);
       ProceduralPrimitiveData(theEnv)->WildcardValue = NULL;
      }
@@ -941,7 +940,7 @@ void EvaluateProcActions(
      {
       RemoveTrackedMemory(theEnv,theTM);
       for (i = 0 ; i < lvarcnt ; i++)
-        if (ProceduralPrimitiveData(theEnv)->LocalVarArray[i].supplementalInfo == EnvTrueSymbol(theEnv))
+        if (ProceduralPrimitiveData(theEnv)->LocalVarArray[i].supplementalInfo == theEnv->TrueSymbol)
           ValueDeinstall(theEnv,&ProceduralPrimitiveData(theEnv)->LocalVarArray[i]);
       rm(theEnv,ProceduralPrimitiveData(theEnv)->LocalVarArray,(sizeof(CLIPSValue) * lvarcnt));
      }
@@ -997,7 +996,6 @@ void GrabProcWildargs(
    long size;
    CLIPSValue *val;
 
-   returnValue->type = MULTIFIELD;
    returnValue->begin = 0;
    if (ProceduralPrimitiveData(theEnv)->WildcardValue == NULL)
      {
@@ -1012,9 +1010,9 @@ void GrabProcWildargs(
      }
    else
      {
-      MultifieldDeinstall(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+      MultifieldDeinstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-        AddToMultifieldList(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+        AddToMultifieldList(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
      }
    ProceduralPrimitiveData(theEnv)->Oldindex = theIndex;
    size = ProceduralPrimitiveData(theEnv)->ProcParamArraySize - theIndex + 1;
@@ -1022,35 +1020,33 @@ void GrabProcWildargs(
      {
       returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = -1;
       returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = ProceduralPrimitiveData(theEnv)->NoParamValue;
-      MultifieldInstall(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+      MultifieldInstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
       return;
      }
    for (i = theIndex-1 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
      {
-      if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type == MULTIFIELD)
+      if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type == MULTIFIELD)
         size += ProceduralPrimitiveData(theEnv)->ProcParamArray[i].end - ProceduralPrimitiveData(theEnv)->ProcParamArray[i].begin;
      }
    returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = size-1;
    returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = CreateMultifield2(theEnv,(unsigned long) size);
-   for (i = theIndex-1 , j = 1 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
+   for (i = theIndex-1 , j = 0 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
      {
-      if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type != MULTIFIELD)
+      if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type != MULTIFIELD)
         {
-         SetMFType(returnValue->value,j,(short) ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type);
          SetMFValue(returnValue->value,j,ProceduralPrimitiveData(theEnv)->ProcParamArray[i].value);
          j++;
         }
       else
         {
          val = &ProceduralPrimitiveData(theEnv)->ProcParamArray[i];
-         for (k = val->begin + 1 ; k <= val->end + 1 ; k++ , j++)
+         for (k = val->begin ; k <= val->end  ; k++ , j++)
            {
-            SetMFType(returnValue->value,j,GetMFType(val->value,k));
             SetMFValue(returnValue->value,j,GetMFValue(val->value,k));
            }
         }
      }
-   MultifieldInstall(theEnv,(MULTIFIELD_PTR) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+   MultifieldInstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
   }
 
 /* =========================================
@@ -1100,9 +1096,9 @@ static void EvaluateProcParameters(
    while (parameterList != NULL)
      {
       if ((EvaluateExpression(theEnv,parameterList,&temp) == true) ? true :
-          (temp.type == RVOID))
+          (temp.header->type == RVOID))
         {
-         if (temp.type == RVOID)
+         if (temp.header->type == RVOID)
            {
             PrintErrorID(theEnv,"PRCCODE",2,false);
             EnvPrintRouter(theEnv,WERROR,"Functions without a return value are illegal as ");
@@ -1120,7 +1116,6 @@ static void EvaluateProcParameters(
          rm(theEnv,rva,(sizeof(CLIPSValue) * numberOfParameters));
          return;
         }
-      rva[i].type = temp.type;
       rva[i].value = temp.value;
       rva[i].begin = temp.begin;
       rva[i].end = temp.end;
@@ -1152,7 +1147,6 @@ static bool RtnProcParam(
    CLIPSValue *src;
 
    src = &ProceduralPrimitiveData(theEnv)->ProcParamArray[*((int *) ValueToBitMap(value)) - 1];
-   returnValue->type = src->type;
    returnValue->value = src->value;
    returnValue->begin = src->begin;
    returnValue->end = src->end;
@@ -1182,9 +1176,8 @@ static bool GetProcBind(
 
    pvar = (PACKED_PROC_VAR *) ValueToBitMap(value);
    src = &ProceduralPrimitiveData(theEnv)->LocalVarArray[pvar->first - 1];
-   if (src->supplementalInfo == EnvTrueSymbol(theEnv))
+   if (src->supplementalInfo == theEnv->TrueSymbol)
      {
-      returnValue->type = src->type;
       returnValue->value = src->value;
       returnValue->begin = src->begin;
       returnValue->end = src->end;
@@ -1208,14 +1201,12 @@ static bool GetProcBind(
         }
       else
         EnvPrintRouter(theEnv,WERROR," unbound.\n");
-      returnValue->type = SYMBOL;
-      returnValue->value = EnvFalseSymbol(theEnv);
+      returnValue->value = theEnv->FalseSymbol;
       return true;
      }
    if (pvar->secondFlag == 0)
      {
       src = &ProceduralPrimitiveData(theEnv)->ProcParamArray[pvar->second - 1];
-      returnValue->type = src->type;
       returnValue->value = src->value;
       returnValue->begin = src->begin;
       returnValue->end = src->end;
@@ -1247,11 +1238,10 @@ static bool PutProcBind(
    dst = &ProceduralPrimitiveData(theEnv)->LocalVarArray[*((int *) ValueToBitMap(value)) - 1];
    if (GetFirstArgument() == NULL)
      {
-      if (dst->supplementalInfo == EnvTrueSymbol(theEnv))
+      if (dst->supplementalInfo == theEnv->TrueSymbol)
         ValueDeinstall(theEnv,dst);
-      dst->supplementalInfo = EnvFalseSymbol(theEnv);
-      returnValue->type = SYMBOL;
-      returnValue->value = EnvFalseSymbol(theEnv);
+      dst->supplementalInfo = theEnv->FalseSymbol;
+      returnValue->value = theEnv->FalseSymbol;
      }
    else
      {
@@ -1259,10 +1249,9 @@ static bool PutProcBind(
         StoreInMultifield(theEnv,returnValue,GetFirstArgument(),true);
       else
         EvaluateExpression(theEnv,GetFirstArgument(),returnValue);
-      if (dst->supplementalInfo == EnvTrueSymbol(theEnv))
+      if (dst->supplementalInfo == theEnv->TrueSymbol)
         ValueDeinstall(theEnv,dst);
-      dst->supplementalInfo = EnvTrueSymbol(theEnv);
-      dst->type = returnValue->type;
+      dst->supplementalInfo = theEnv->TrueSymbol;
       dst->value = returnValue->value;
       dst->begin = returnValue->begin;
       dst->end = returnValue->end;
@@ -1309,9 +1298,9 @@ static bool RtnProcWild(
   NOTES        : None
  ***************************************************/
 static int FindProcParameter(
-  SYMBOL_HN *name,
+  CLIPSLexeme *name,
   EXPRESSION *parameterList,
-  SYMBOL_HN *wildcard)
+  CLIPSLexeme *wildcard)
   {
    int i = 1;
 
@@ -1372,7 +1361,7 @@ static bool ReplaceProcBinds(
   void *userBuffer)
   {
    int bcode;
-   SYMBOL_HN *bname;
+   CLIPSLexeme *bname;
 
    while (actions != NULL)
      {
@@ -1383,7 +1372,7 @@ static bool ReplaceProcBinds(
          if ((actions->value == (void *) FindFunction(theEnv,"bind")) &&
              (actions->argList->type == SYMBOL))
            {
-            bname = (SYMBOL_HN *) actions->argList->value;
+            bname = (CLIPSLexeme *) actions->argList->value;
             bcode = (*altbindfunc)(theEnv,actions,userBuffer);
             if (bcode == -1)
               return true;
@@ -1421,7 +1410,7 @@ static EXPRESSION *CompactActions(
    if (actions->argList == NULL)
      {
       actions->type = SYMBOL;
-      actions->value = EnvFalseSymbol(theEnv);
+      actions->value = theEnv->FalseSymbol;
      }
    else if (actions->argList->nextArg == NULL)
      {
@@ -1463,8 +1452,7 @@ static bool EvaluateBadCall(
    EnvPrintRouter(theEnv,WERROR,"Attempted to call a deffunction/generic function ");
    EnvPrintRouter(theEnv,WERROR,"which does not exist.\n");
    EnvSetEvaluationError(theEnv,true);
-   SetpType(returnValue,SYMBOL);
-   SetpValue(returnValue,EnvFalseSymbol(theEnv));
+   returnValue->value = theEnv->FalseSymbol;
    return false;
   }
 

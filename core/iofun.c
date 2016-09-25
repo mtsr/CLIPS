@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.40  08/25/16             */
    /*                                                     */
    /*                I/O FUNCTIONS MODULE                 */
    /*******************************************************/
@@ -130,7 +130,7 @@
 
 struct IOFunctionData
   {
-   void *locale;
+   CLIPSLexeme *locale;
    bool useFullCRLF;
   };
 
@@ -161,7 +161,7 @@ void IOFunctionDefinitions(
 
 #if IO_FUNCTIONS
    IOFunctionData(theEnv)->useFullCRLF = false;
-   IOFunctionData(theEnv)->locale = (SYMBOL_HN *) EnvAddSymbol(theEnv,setlocale(LC_ALL,NULL));
+   IOFunctionData(theEnv)->locale = EnvCreateSymbol(theEnv,setlocale(LC_ALL,NULL));
    IncrementSymbolCount(IOFunctionData(theEnv)->locale);
 #endif
 
@@ -281,28 +281,28 @@ static void PrintDriver(
 
       if (EvaluationData(theEnv)->HaltExecution) break;
 
-      switch(GetType(theArg))
+      switch(theArg.header->type)
         {
          case SYMBOL:
-           if (strcmp(mCVToString(&theArg),"crlf") == 0)
+           if (strcmp(theArg.lexemeValue->contents,"crlf") == 0)
              {
               if (IOFunctionData(theEnv)->useFullCRLF)
                 { EnvPrintRouter(theEnv,logicalName,"\r\n"); }
               else
                 { EnvPrintRouter(theEnv,logicalName,"\n"); }
              }
-           else if (strcmp(mCVToString(&theArg),"tab") == 0)
+           else if (strcmp(theArg.lexemeValue->contents,"tab") == 0)
              { EnvPrintRouter(theEnv,logicalName,"\t"); }
-           else if (strcmp(mCVToString(&theArg),"vtab") == 0)
+           else if (strcmp(theArg.lexemeValue->contents,"vtab") == 0)
              { EnvPrintRouter(theEnv,logicalName,"\v"); }
-           else if (strcmp(mCVToString(&theArg),"ff") == 0)
+           else if (strcmp(theArg.lexemeValue->contents,"ff") == 0)
              { EnvPrintRouter(theEnv,logicalName,"\f"); }
            else
-             { EnvPrintRouter(theEnv,logicalName,mCVToString(&theArg)); }
+             { EnvPrintRouter(theEnv,logicalName,theArg.lexemeValue->contents); }
            break;
 
          case STRING:
-           EnvPrintRouter(theEnv,logicalName,mCVToString(&theArg));
+           EnvPrintRouter(theEnv,logicalName,theArg.lexemeValue->contents);
            break;
 
          default:
@@ -360,7 +360,7 @@ void ReadFunction(
          IllegalLogicalNameMessage(theEnv,"read");
          EnvSetHaltExecution(theEnv,true);
          EnvSetEvaluationError(theEnv,true);
-         mCVSetString(returnValue,"*** READ ERROR ***");
+         returnValue->lexemeValue = EnvCreateString(theEnv,"*** READ ERROR ***");
          return;
         }
      }
@@ -374,7 +374,7 @@ void ReadFunction(
       UnrecognizedRouterMessage(theEnv,logicalName);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      mCVSetString(returnValue,"*** READ ERROR ***");
+      returnValue->lexemeValue = EnvCreateString(theEnv,"*** READ ERROR ***");
       return;
      }
 
@@ -400,24 +400,13 @@ void ReadFunction(
        (theToken.tknType == INSTANCE_NAME_TOKEN) ||
 #endif
        (theToken.tknType == SYMBOL_TOKEN) || (theToken.tknType == INTEGER_TOKEN))
-     {
-      returnValue->type = TokenTypeToType(theToken.tknType);
-      returnValue->value = theToken.value;
-     }
+     { returnValue->value = theToken.value; }
    else if (theToken.tknType == STOP_TOKEN)
-     {
-      returnValue->type = SYMBOL;
-      returnValue->value = EnvAddSymbol(theEnv,"EOF");
-     }
+     { returnValue->value = EnvCreateSymbol(theEnv,"EOF"); }
    else if (theToken.tknType == UNKNOWN_VALUE_TOKEN)
-     {
-      mCVSetString(returnValue,"*** READ ERROR ***");
-     }
+     { returnValue->lexemeValue = EnvCreateString(theEnv,"*** READ ERROR ***"); }
    else
-     {
-      returnValue->type = STRING;
-      returnValue->value = EnvAddSymbol(theEnv,theToken.printForm);
-     }
+     { returnValue->value = EnvCreateString(theEnv,theToken.printForm); }
   }
 
 /********************************************************/
@@ -495,7 +484,7 @@ static void ReadTokenFromStdin(
       if (EnvGetHaltExecution(theEnv))
         {
          theToken->tknType = STRING_TOKEN;
-         theToken->value = EnvAddSymbol(theEnv,"*** READ ERROR ***");
+         theToken->value = EnvCreateString(theEnv,"*** READ ERROR ***");
         }
 
       /*====================================================*/
@@ -508,7 +497,7 @@ static void ReadTokenFromStdin(
       if ((theToken->tknType == STOP_TOKEN) && (inchar == EOF))
         {
          theToken->tknType = SYMBOL_TOKEN;
-         theToken->value = EnvAddSymbol(theEnv,"EOF");
+         theToken->value = EnvCreateSymbol(theEnv,"EOF");
         }
      }
 
@@ -532,7 +521,7 @@ void OpenFunction(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -547,7 +536,7 @@ void OpenFunction(
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
       IllegalLogicalNameMessage(theEnv,"open");
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -564,7 +553,7 @@ void OpenFunction(
       EnvPrintRouter(theEnv,WERROR,"Logical name ");
       EnvPrintRouter(theEnv,WERROR,logicalName);
       EnvPrintRouter(theEnv,WERROR," already in use.\n");
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -578,7 +567,7 @@ void OpenFunction(
      {
       if (! UDFNextArgument(context,STRING_TYPE,&theArg))
         { return; }
-      accessMode = mCVToString(&theArg);
+      accessMode = theArg.lexemeValue->contents;
      }
 
    /*=====================================*/
@@ -595,7 +584,7 @@ void OpenFunction(
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
       ExpectedTypeError1(theEnv,"open",3,"string with value \"r\", \"w\", \"a\", \"rb\", \"wb\", or \"ab\"");
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -605,7 +594,7 @@ void OpenFunction(
    /* file was opened successfully, otherwise FALSE. */
    /*================================================*/
 
-   mCVSetBoolean(returnValue,OpenAFile(theEnv,fileName,accessMode,logicalName));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,OpenAFile(theEnv,fileName,accessMode,logicalName));
   }
 
 /***************************************************************/
@@ -626,7 +615,7 @@ void CloseFunction(
 
    if (! UDFHasNextArgument(context))
      {
-      mCVSetBoolean(returnValue,CloseAllFiles(theEnv));
+      returnValue->lexemeValue = EnvCreateBoolean(theEnv,CloseAllFiles(theEnv));
       return;
      }
 
@@ -640,7 +629,7 @@ void CloseFunction(
       IllegalLogicalNameMessage(theEnv,"close");
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -650,7 +639,7 @@ void CloseFunction(
    /* otherwise false.                                       */
    /*========================================================*/
 
-   mCVSetBoolean(returnValue,CloseFile(theEnv,logicalName));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,CloseFile(theEnv,logicalName));
   }
 
 /***************************************/
@@ -674,7 +663,7 @@ void GetCharFunction(
          IllegalLogicalNameMessage(theEnv,"get-char");
          EnvSetHaltExecution(theEnv,true);
          EnvSetEvaluationError(theEnv,true);
-         mCVSetInteger(returnValue,-1);
+         returnValue->integerValue = EnvCreateInteger(theEnv,-1);
          return;
         }
      }
@@ -684,11 +673,11 @@ void GetCharFunction(
       UnrecognizedRouterMessage(theEnv,logicalName);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      mCVSetInteger(returnValue,-1);
+      returnValue->integerValue = EnvCreateInteger(theEnv,-1);
       return;
      }
 
-   mCVSetInteger(returnValue,EnvGetcRouter(theEnv,logicalName));
+   returnValue->integerValue = EnvCreateInteger(theEnv,EnvGetcRouter(theEnv,logicalName));
   }
 
 /***************************************/
@@ -741,7 +730,7 @@ void PutCharFunction(
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
      { return; }
 
-   theChar = mCVToInteger(&theArg);
+   theChar = theArg.integerValue->contents;
 
    /*===================================================*/
    /* If the "fast load" option is being used, then the */
@@ -772,7 +761,7 @@ void RemoveFunction(
 
    if ((theFileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -781,7 +770,7 @@ void RemoveFunction(
    /* sucessfully removed, otherwise false.        */
    /*==============================================*/
 
-   mCVSetBoolean(returnValue,genremove(theFileName));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,genremove(theFileName));
   }
 
 /****************************************/
@@ -801,13 +790,13 @@ void RenameFunction(
 
    if ((oldFileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
    if ((newFileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -816,7 +805,7 @@ void RenameFunction(
    /* sucessfully renamed, otherwise false.        */
    /*==============================================*/
 
-   mCVSetBoolean(returnValue,genrename(oldFileName,newFileName));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,genrename(oldFileName,newFileName));
   }
 
 /****************************************/
@@ -846,7 +835,7 @@ void FormatFunction(
    /* Set default return value for errors. */
    /*======================================*/
 
-   hptr = EnvAddSymbol(theEnv,"");
+   hptr = EnvCreateString(theEnv,"");
 
    /*=========================================*/
    /* Format requires at least two arguments: */
@@ -864,7 +853,7 @@ void FormatFunction(
       IllegalLogicalNameMessage(theEnv,"format");
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      CVSetCLIPSString(returnValue,hptr);
+      returnValue->value = hptr;
       return;
      }
 
@@ -873,7 +862,7 @@ void FormatFunction(
    else if (QueryRouters(theEnv,logicalName) == false)
      {
       UnrecognizedRouterMessage(theEnv,logicalName);
-      CVSetCLIPSString(returnValue,hptr);
+      returnValue->value = hptr;
       return;
      }
 
@@ -885,7 +874,7 @@ void FormatFunction(
 
    if ((formatString = ControlStringCheck(context,argCount)) == NULL)
      {
-      CVSetCLIPSString(returnValue,hptr);
+      returnValue->value = hptr;
       return;
      }
 
@@ -913,13 +902,13 @@ void FormatFunction(
             if ((theString = PrintFormatFlag(context,percentBuffer,f_cur_arg,formatFlagType)) == NULL)
               {
                if (fstr != NULL) rm(theEnv,fstr,fmaxm);
-               CVSetCLIPSString(returnValue,hptr);
+               returnValue->value = hptr;
                return;
               }
             fstr = AppendToString(theEnv,theString,fstr,&fpos,&fmaxm);
             if (fstr == NULL)
               {
-               CVSetCLIPSString(returnValue,hptr);
+               returnValue->value = hptr;
                return;
               }
             f_cur_arg++;
@@ -929,7 +918,7 @@ void FormatFunction(
             fstr = AppendToString(theEnv,percentBuffer,fstr,&fpos,&fmaxm);
             if (fstr == NULL)
               {
-               CVSetCLIPSString(returnValue,hptr);
+               returnValue->value = hptr;
                return;
               }
            }
@@ -938,14 +927,14 @@ void FormatFunction(
 
    if (fstr != NULL)
      {
-      hptr = EnvAddSymbol(theEnv,fstr);
+      hptr = EnvCreateString(theEnv,fstr);
       if (strcmp(logicalName,"nil") != 0) EnvPrintRouter(theEnv,logicalName,fstr);
       rm(theEnv,fstr,fmaxm);
      }
    else
-     { hptr = EnvAddSymbol(theEnv,""); }
+     { hptr = EnvCreateString(theEnv,""); }
 
-   CVSetCLIPSString(returnValue,hptr);
+   returnValue->value = hptr;
   }
 
 /*********************************************************************/
@@ -968,7 +957,7 @@ static const char *ControlStringCheck(
      { return NULL; }
 
    per_count = 0;
-   str_array = ValueToString(t_ptr.value);
+   str_array = t_ptr.lexemeValue->contents;
    for (i= 0 ; str_array[i] != '\0' ; )
      {
       if (str_array[i] == '%')
@@ -1132,7 +1121,7 @@ static const char *PrintFormatFlag(
    const char *theString;
    char *printBuffer;
    size_t theLength;
-   void *oldLocale;
+   CLIPSLexeme *oldLocale;
    Environment *theEnv = context->environment;
 
    /*=================*/
@@ -1144,25 +1133,25 @@ static const char *PrintFormatFlag(
       case 's':
         if (! UDFNthArgument(context,whichArg,LEXEME_TYPES,&theResult))
           { return(NULL); }
-        theLength = strlen(formatString) + strlen(ValueToString(theResult.value)) + 200;
+        theLength = strlen(formatString) + strlen(theResult.lexemeValue->contents) + 200;
         printBuffer = (char *) gm2(theEnv,(sizeof(char) * theLength));
-        gensprintf(printBuffer,formatString,ValueToString(theResult.value));
+        gensprintf(printBuffer,formatString,theResult.lexemeValue->contents);
         break;
 
       case 'c':
         UDFNthArgument(context,whichArg,ANY_TYPE,&theResult);
-        if ((GetType(theResult) == STRING) ||
-            (GetType(theResult) == SYMBOL))
+        if ((theResult.header->type == STRING) ||
+            (theResult.header->type == SYMBOL))
           {
            theLength = strlen(formatString) + 200;
            printBuffer = (char *) gm2(theEnv,(sizeof(char) * theLength));
-           gensprintf(printBuffer,formatString,(ValueToString(theResult.value))[0]);
+           gensprintf(printBuffer,formatString,theResult.lexemeValue->contents[0]);
           }
-        else if (GetType(theResult) == INTEGER)
+        else if (theResult.header->type == INTEGER)
           {
            theLength = strlen(formatString) + 200;
            printBuffer = (char *) gm2(theEnv,(sizeof(char) * theLength));
-           gensprintf(printBuffer,formatString,(char) DOToLong(theResult));
+           gensprintf(printBuffer,formatString,(char) theResult.integerValue->contents);
           }
         else
           {
@@ -1180,15 +1169,15 @@ static const char *PrintFormatFlag(
         theLength = strlen(formatString) + 200;
         printBuffer = (char *) gm2(theEnv,(sizeof(char) * theLength));
 
-        oldLocale = EnvAddSymbol(theEnv,setlocale(LC_NUMERIC,NULL));
-        setlocale(LC_NUMERIC,ValueToString(IOFunctionData(theEnv)->locale));
+        oldLocale = EnvCreateSymbol(theEnv,setlocale(LC_NUMERIC,NULL));
+        setlocale(LC_NUMERIC,IOFunctionData(theEnv)->locale->contents);
 
-        if (GetType(theResult) == FLOAT)
+        if (theResult.header->type == FLOAT)
           { gensprintf(printBuffer,formatString,(long long) ValueToDouble(theResult.value)); }
         else
           { gensprintf(printBuffer,formatString,(long long) ValueToLong(theResult.value)); }
 
-        setlocale(LC_NUMERIC,ValueToString(oldLocale));
+        setlocale(LC_NUMERIC,oldLocale->contents);
         break;
 
       case 'f':
@@ -1199,16 +1188,16 @@ static const char *PrintFormatFlag(
         theLength = strlen(formatString) + 200;
         printBuffer = (char *) gm2(theEnv,(sizeof(char) * theLength));
 
-        oldLocale = EnvAddSymbol(theEnv,setlocale(LC_NUMERIC,NULL));
+        oldLocale = EnvCreateSymbol(theEnv,setlocale(LC_NUMERIC,NULL));
 
-        setlocale(LC_NUMERIC,ValueToString(IOFunctionData(theEnv)->locale));
+        setlocale(LC_NUMERIC,IOFunctionData(theEnv)->locale->contents);
 
-        if (GetType(theResult) == FLOAT)
+        if (theResult.header->type == FLOAT)
           { gensprintf(printBuffer,formatString,ValueToDouble(theResult.value)); }
         else
           { gensprintf(printBuffer,formatString,(double) ValueToLong(theResult.value)); }
 
-        setlocale(LC_NUMERIC,ValueToString(oldLocale));
+        setlocale(LC_NUMERIC,oldLocale->contents);
 
         break;
 
@@ -1218,7 +1207,7 @@ static const char *PrintFormatFlag(
          return NULL;
      }
 
-   theString = ValueToString(EnvAddSymbol(theEnv,printBuffer));
+   theString = EnvCreateString(theEnv,printBuffer)->contents;
    rm(theEnv,printBuffer,sizeof(char) * theLength);
    return(theString);
   }
@@ -1246,7 +1235,7 @@ void ReadlineFunction(
          IllegalLogicalNameMessage(theEnv,"readline");
          EnvSetHaltExecution(theEnv,true);
          EnvSetEvaluationError(theEnv,true);
-         mCVSetString(returnValue,"*** READ ERROR ***");
+         returnValue->lexemeValue = EnvCreateString(theEnv,"*** READ ERROR ***");
          return;
         }
      }
@@ -1256,7 +1245,7 @@ void ReadlineFunction(
       UnrecognizedRouterMessage(theEnv,logicalName);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      mCVSetString(returnValue,"*** READ ERROR ***");
+      returnValue->lexemeValue = EnvCreateString(theEnv,"*** READ ERROR ***");
       return;
      }
 
@@ -1268,18 +1257,18 @@ void ReadlineFunction(
 
    if (EnvGetHaltExecution(theEnv))
      {
-      mCVSetString(returnValue,"*** READ ERROR ***");
+      returnValue->lexemeValue = EnvCreateString(theEnv,"*** READ ERROR ***");
       if (buffer != NULL) rm(theEnv,buffer,(int) sizeof (char) * line_max);
       return;
      }
 
    if (buffer == NULL)
      {
-      mCVSetSymbol(returnValue,"EOF");
+      returnValue->lexemeValue = EnvCreateSymbol(theEnv,"EOF");
       return;
      }
 
-   mCVSetString(returnValue,buffer);
+   returnValue->lexemeValue = EnvCreateString(theEnv,buffer);
    rm(theEnv,buffer,(int) sizeof (char) * line_max);
    return;
   }
@@ -1344,7 +1333,7 @@ void SetLocaleFunction(
 
    if (! UDFHasNextArgument(context))
      {
-      CVSetCLIPSString(returnValue,IOFunctionData(theEnv)->locale);
+      returnValue->value = IOFunctionData(theEnv)->locale;
       return;
      }
 
@@ -1359,14 +1348,14 @@ void SetLocaleFunction(
    /* Return the old value of the locale. */
    /*=====================================*/
 
-   CVSetCLIPSString(returnValue,IOFunctionData(theEnv)->locale);
+   returnValue->value = IOFunctionData(theEnv)->locale;
 
    /*======================================================*/
    /* Change the value of the locale to the one specified. */
    /*======================================================*/
 
    DecrementSymbolCount(theEnv,(struct symbolHashNode *) IOFunctionData(theEnv)->locale);
-   IOFunctionData(theEnv)->locale = CVToRawValue(&theArg);
+   IOFunctionData(theEnv)->locale = theArg.lexemeValue;
    IncrementSymbolCount(IOFunctionData(theEnv)->locale);
   }
 
@@ -1396,7 +1385,7 @@ void ReadNumberFunction(
          IllegalLogicalNameMessage(theEnv,"read");
          EnvSetHaltExecution(theEnv,true);
          EnvSetEvaluationError(theEnv,true);
-         mCVSetString(returnValue,"*** READ ERROR ***");
+         returnValue->lexemeValue = EnvCreateString(theEnv,"*** READ ERROR ***");
          return;
         }
      }
@@ -1410,7 +1399,7 @@ void ReadNumberFunction(
       UnrecognizedRouterMessage(theEnv,logicalName);
       EnvSetHaltExecution(theEnv,true);
       EnvSetEvaluationError(theEnv,true);
-      mCVSetString(returnValue,"*** READ ERROR ***");
+      returnValue->lexemeValue = EnvCreateString(theEnv,"*** READ ERROR ***");
       return;
      }
 
@@ -1437,25 +1426,13 @@ void ReadNumberFunction(
        (theToken.tknType == INSTANCE_NAME_TOKEN) ||
 #endif
        (theToken.tknType == SYMBOL_TOKEN) || (theToken.tknType == INTEGER_TOKEN))
-     {
-      returnValue->type = TokenTypeToType(theToken.tknType);
-      returnValue->value = theToken.value;
-     }
+     { returnValue->value = theToken.value; }
    else if (theToken.tknType == STOP_TOKEN)
-     {
-      returnValue->type = SYMBOL;
-      returnValue->value = EnvAddSymbol(theEnv,"EOF");
-     }
+     { returnValue->value = EnvCreateSymbol(theEnv,"EOF"); }
    else if (theToken.tknType == UNKNOWN_VALUE_TOKEN)
-     {
-      returnValue->type = STRING;
-      returnValue->value = EnvAddSymbol(theEnv,"*** READ ERROR ***");
-     }
+     { returnValue->value = EnvCreateString(theEnv,"*** READ ERROR ***"); }
    else
-     {
-      returnValue->type = STRING;
-      returnValue->value = EnvAddSymbol(theEnv,theToken.printForm);
-     }
+     { returnValue->value = EnvCreateString(theEnv,theToken.printForm); }
 
    return;
   }
@@ -1476,7 +1453,7 @@ static void ReadNumber(
    int inchar;
    long long theLong;
    double theDouble;
-   void *oldLocale;
+   CLIPSLexeme *oldLocale;
 
    theToken->tknType = STOP_TOKEN;
 
@@ -1522,7 +1499,7 @@ static void ReadNumber(
    if (EnvGetHaltExecution(theEnv))
      {
       theToken->tknType = STRING_TOKEN;
-      theToken->value = EnvAddSymbol(theEnv,"*** READ ERROR ***");
+      theToken->value = EnvCreateString(theEnv,"*** READ ERROR ***");
       if (inputStringSize > 0) rm(theEnv,inputString,inputStringSize);
       return;
      }
@@ -1537,7 +1514,7 @@ static void ReadNumber(
    if (inchar == EOF)
      {
       theToken->tknType = SYMBOL_TOKEN;
-      theToken->value = EnvAddSymbol(theEnv,"EOF");
+      theToken->value = EnvCreateSymbol(theEnv,"EOF");
       if (inputStringSize > 0) rm(theEnv,inputString,inputStringSize);
       return;
      }
@@ -1553,8 +1530,8 @@ static void ReadNumber(
    /* converted using the localized format. */
    /*=======================================*/
 
-   oldLocale = EnvAddSymbol(theEnv,setlocale(LC_NUMERIC,NULL));
-   setlocale(LC_NUMERIC,ValueToString(IOFunctionData(theEnv)->locale));
+   oldLocale = EnvCreateSymbol(theEnv,setlocale(LC_NUMERIC,NULL));
+   setlocale(LC_NUMERIC,IOFunctionData(theEnv)->locale->contents);
 
    /*========================================*/
    /* Try to parse the number as a long. The */
@@ -1572,9 +1549,9 @@ static void ReadNumber(
        (isspace(*charPtr) || (*charPtr == '\0')))
      {
       theToken->tknType = INTEGER_TOKEN;
-      theToken->value = EnvAddLong(theEnv,theLong);
+      theToken->value = EnvCreateInteger(theEnv,theLong);
       if (inputStringSize > 0) rm(theEnv,inputString,inputStringSize);
-      setlocale(LC_NUMERIC,ValueToString(oldLocale));
+      setlocale(LC_NUMERIC,oldLocale->contents);
       return;
      }
 
@@ -1589,9 +1566,9 @@ static void ReadNumber(
        (isspace(*charPtr) || (*charPtr == '\0')))
      {
       theToken->tknType = FLOAT_TOKEN;
-      theToken->value = EnvAddDouble(theEnv,theDouble);
+      theToken->value = EnvCreateFloat(theEnv,theDouble);
       if (inputStringSize > 0) rm(theEnv,inputString,inputStringSize);
-      setlocale(LC_NUMERIC,ValueToString(oldLocale));
+      setlocale(LC_NUMERIC,oldLocale->contents);
       return;
      }
 
@@ -1600,7 +1577,7 @@ static void ReadNumber(
    /* of numbers uses the C format.              */
    /*============================================*/
 
-   setlocale(LC_NUMERIC,ValueToString(oldLocale));
+   setlocale(LC_NUMERIC,oldLocale->contents);
 
    /*=========================================*/
    /* Return "*** READ ERROR ***" to indicate */
@@ -1608,7 +1585,7 @@ static void ReadNumber(
    /*=========================================*/
 
    theToken->tknType = STRING_TOKEN;
-   theToken->value = EnvAddSymbol(theEnv,"*** READ ERROR ***");
+   theToken->value = EnvCreateString(theEnv,"*** READ ERROR ***");
   }
 
 #endif

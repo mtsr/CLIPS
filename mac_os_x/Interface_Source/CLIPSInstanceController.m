@@ -8,6 +8,7 @@
 #import "CLIPSInstanceController.h"
 
 #import "AppController.h"
+#import "CLIPSAgendaController.h"
 #import "CLIPSEnvironment.h"
 #import "CLIPSFactInstance.h"
 #import "ModuleArrayController.h"

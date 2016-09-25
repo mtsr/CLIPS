@@ -102,8 +102,8 @@
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    static struct expr            *ParseRuleRHS(Environment *,const char *);
    static int                     ReplaceRHSVariable(Environment *,struct expr *,void *);
-   static Defrule                *ProcessRuleLHS(Environment *,struct lhsParseNode *,struct expr *,SYMBOL_HN *,bool *);
-   static Defrule                *CreateNewDisjunct(Environment *,SYMBOL_HN *,int,struct expr *,
+   static Defrule                *ProcessRuleLHS(Environment *,struct lhsParseNode *,struct expr *,CLIPSLexeme *,bool *);
+   static Defrule                *CreateNewDisjunct(Environment *,CLIPSLexeme *,int,struct expr *,
                                                     int,unsigned,struct joinNode *);
    static int                     RuleComplexity(Environment *,struct lhsParseNode *);
    static int                     ExpressionComplexity(Environment *,struct expr *);
@@ -121,7 +121,7 @@ bool ParseDefrule(
   const char *readSource)
   {
 #if (! RUN_TIME) && (! BLOAD_ONLY)
-   SYMBOL_HN *ruleName;
+   CLIPSLexeme *ruleName;
    struct lhsParseNode *theLHS;
    struct expr *actions;
    struct token theToken;
@@ -172,7 +172,7 @@ bool ParseDefrule(
    /* Parse the LHS of the rule. */
    /*============================*/
 
-   theLHS = ParseRuleLHS(theEnv,readSource,&theToken,ValueToString(ruleName),&error);
+   theLHS = ParseRuleLHS(theEnv,readSource,&theToken,ruleName->contents,&error);
    if (error)
      {
       ReturnPackedExpression(theEnv,PatternData(theEnv)->SalienceExpression);
@@ -292,7 +292,7 @@ static Defrule *ProcessRuleLHS(
   Environment *theEnv,
   struct lhsParseNode *theLHS,
   struct expr *actions,
-  SYMBOL_HN *ruleName,
+  CLIPSLexeme *ruleName,
   bool *error)
   {
    struct lhsParseNode *tempNode = NULL;
@@ -488,7 +488,7 @@ static Defrule *ProcessRuleLHS(
 /************************************************************************/
 static Defrule *CreateNewDisjunct(
   Environment *theEnv,
-  SYMBOL_HN *ruleName,
+  CLIPSLexeme *ruleName,
   int localVarCnt,
   struct expr *theActions,
   int complexity,
@@ -508,6 +508,7 @@ static Defrule *CreateNewDisjunct(
    newDisjunct->header.usrData = NULL;
    newDisjunct->logicalJoin = NULL;
    newDisjunct->disjunct = NULL;
+   newDisjunct->header.constructType = DEFRULE;
    newDisjunct->header.name = ruleName;
    IncrementSymbolCount(newDisjunct->header.name);
    newDisjunct->actions = theActions;
@@ -617,7 +618,7 @@ static int ReplaceRHSVariable(
    /* Check to see if the variable is bound on the LHS of the rule. */
    /*===============================================================*/
 
-   theVariable = FindVariable((SYMBOL_HN *) list->value,(struct lhsParseNode *) VtheLHS);
+   theVariable = FindVariable((CLIPSLexeme *) list->value,(struct lhsParseNode *) VtheLHS);
    if (theVariable == NULL) return 0;
 
    /*================================================*/
@@ -871,7 +872,7 @@ static int LogicalAnalysis(
 /*  RHS of the rule.                                             */
 /*****************************************************************/
 struct lhsParseNode *FindVariable(
-  SYMBOL_HN *name,
+  CLIPSLexeme *name,
   struct lhsParseNode *theLHS)
   {
    struct lhsParseNode *theFields, *tmpFields = NULL;

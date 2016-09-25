@@ -432,11 +432,11 @@ void DribbleOnCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
-   mCVSetBoolean(returnValue,EnvDribbleOn(theEnv,fileName));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvDribbleOn(theEnv,fileName));
   }
 
 /**********************************/
@@ -517,7 +517,7 @@ void DribbleOffCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,EnvDribbleOff(theEnv));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvDribbleOff(theEnv));
   }
 
 /***********************************/
@@ -750,11 +750,11 @@ void BatchCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
-   mCVSetBoolean(returnValue,OpenBatch(theEnv,fileName,false));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,OpenBatch(theEnv,fileName,false));
   }
 
 /**************************************************/
@@ -1090,11 +1090,11 @@ void BatchStarCommand(
 
    if ((fileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
-   mCVSetBoolean(returnValue,EnvBatchStar(theEnv,fileName));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvBatchStar(theEnv,fileName));
   }
 
 #if ! RUN_TIME
@@ -1235,7 +1235,7 @@ void LoadCommand(
 
    if ((theFileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -1245,17 +1245,17 @@ void LoadCommand(
      {
       SetPrintWhileLoading(theEnv,false);
       OpenErrorMessage(theEnv,"load",theFileName);
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
    SetPrintWhileLoading(theEnv,false);
 
-   if (rv == -1) mCVSetBoolean(returnValue,false);
-   else mCVSetBoolean(returnValue,true);
+   if (rv == -1) returnValue->lexemeValue = theEnv->FalseSymbol;
+   else returnValue->lexemeValue = theEnv->TrueSymbol;
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Load is not available in this environment\n");
-   mCVSetBoolean(returnValue,false);
+   returnValue->lexemeValue = theEnv->FalseSymbol;
 #endif
   }
 
@@ -1273,22 +1273,22 @@ void LoadStarCommand(
 
    if ((theFileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
    if ((rv = EnvLoad(theEnv,theFileName)) == 0)
      {
       OpenErrorMessage(theEnv,"load*",theFileName);
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
-   if (rv == -1) mCVSetBoolean(returnValue,false);
-   else mCVSetBoolean(returnValue,true);
+   if (rv == -1) returnValue->lexemeValue = theEnv->FalseSymbol;
+   else returnValue->lexemeValue = theEnv->TrueSymbol;
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Load* is not available in this environment\n");
-   mCVSetBoolean(returnValue,false);
+   returnValue->lexemeValue = theEnv->FalseSymbol;
 #endif
   }
 
@@ -1306,21 +1306,21 @@ void SaveCommand(
 
    if ((theFileName = GetFileName(context)) == NULL)
      {
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
    if (EnvSave(theEnv,theFileName) == false)
      {
       OpenErrorMessage(theEnv,"save",theFileName);
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
-   mCVSetBoolean(returnValue,true);
+   returnValue->lexemeValue = theEnv->TrueSymbol;
 #else
    EnvPrintRouter(theEnv,WDIALOG,"Save is not available in this environment\n");
-   mCVSetBoolean(returnValue,false);
+   returnValue->lexemeValue = theEnv->FalseSymbol;
 #endif
   }
 #endif

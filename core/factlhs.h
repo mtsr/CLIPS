@@ -47,7 +47,7 @@
 #include "scanner.h"
 #include "symbol.h"
 
-   bool                           FactPatternParserFind(SYMBOL_HN *);
+   bool                           FactPatternParserFind(CLIPSLexeme *);
    struct lhsParseNode           *FactPatternParse(Environment *,const char *,struct token *);
    struct lhsParseNode           *SequenceRestrictionParse(Environment *,const char *,struct token *);
 

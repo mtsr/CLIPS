@@ -985,7 +985,7 @@ void GetStrategyCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetSymbol(returnValue,GetStrategyName(EnvGetStrategy(theEnv)));
+   returnValue->lexemeValue = EnvCreateSymbol(theEnv,GetStrategyName(EnvGetStrategy(theEnv)));
   }
 
 /********************************************/
@@ -1006,7 +1006,7 @@ void SetStrategyCommand(
    /*=======================*/
 
    oldStrategy = EnvGetStrategy(theEnv);
-   mCVSetSymbol(returnValue,GetStrategyName(oldStrategy));
+   returnValue->lexemeValue = EnvCreateSymbol(theEnv,GetStrategyName(oldStrategy));
 
    /*=========================================*/
    /* Check for the correct type of argument. */
@@ -1019,7 +1019,7 @@ void SetStrategyCommand(
    /* Set the strategy to the specified strategy. */
    /*=============================================*/
 
-   argument = mCVToString(&theArg);
+   argument = theArg.lexemeValue->contents;
 
    if (strcmp(argument,"depth") == 0)
      { EnvSetStrategy(theEnv,DEPTH_STRATEGY); }

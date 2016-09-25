@@ -124,7 +124,7 @@ struct deffunctionData
    Deffunction                   *EnvFindDeffunctionInModule(Environment *,const char *);
    void                           EnvGetDeffunctionList(Environment *,CLIPSValue *,Defmodule *);
    const char                    *EnvGetDeffunctionName(Environment *,Deffunction *);
-   SYMBOL_HN                     *EnvGetDeffunctionNamePointer(Environment *,Deffunction *);
+   CLIPSLexeme                   *EnvGetDeffunctionNamePointer(Environment *,Deffunction *);
    const char                    *EnvGetDeffunctionPPForm(Environment *,Deffunction *);
    Deffunction                   *EnvGetNextDeffunction(Environment *,Deffunction *);
    bool                           EnvIsDeffunctionDeletable(Environment *,Deffunction *);

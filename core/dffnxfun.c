@@ -514,7 +514,7 @@ void GetDeffunctionModuleCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"deffunction-module",DeffunctionData(theEnv)->DeffunctionConstruct));
+   returnValue->value = GetConstructModuleCommand(context,"deffunction-module",DeffunctionData(theEnv)->DeffunctionConstruct);
   }
 
 #if DEBUGGING_FUNCTIONS
@@ -707,9 +707,8 @@ static bool EvaluateDeffunctionCall(
   CLIPSValue *returnValue)
   {
    CallDeffunction(theEnv,theDeffunction,GetFirstArgument(),returnValue);
-   if ((GetpType(returnValue) == SYMBOL) &&
-       (GetpValue(returnValue) == EnvFalseSymbol(theEnv)))
-     return false;
+   if (returnValue->value == theEnv->FalseSymbol)
+     { return false; }
    return true;
   }
 
@@ -1119,7 +1118,7 @@ const char *EnvGetDeffunctionPPForm(
    return GetConstructPPForm(theEnv,(struct constructHeader *) theDeffunction);
   }
 
-SYMBOL_HN *EnvGetDeffunctionNamePointer(
+CLIPSLexeme *EnvGetDeffunctionNamePointer(
   Environment *theEnv,
   Deffunction *theDeffunction)
   {

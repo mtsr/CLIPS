@@ -190,16 +190,14 @@ void CheckTemplateFact(
 
       if (slotPtr->multislot == false)
         {
-         theData.type = sublist[i].type;
          theData.value = sublist[i].value;
          i++;
         }
       else
         {
-         theData.type = MULTIFIELD;
          theData.value = (void *) sublist[i].value;
-         SetDOBegin(theData,1);
-         SetDOEnd(theData,((struct multifield *) sublist[i].value)->multifieldLength);
+         theData.begin = 0;
+         theData.end = ((Multifield *) sublist[i].value)->multifieldLength - 1;
          i++;
         }
 
@@ -282,7 +280,7 @@ struct templateSlot *GetNthSlot(
 /*******************************************************/
 int FindSlotPosition(
   Deftemplate *theDeftemplate,
-  SYMBOL_HN *name)
+  CLIPSLexeme *name)
   {
    struct templateSlot *slotPtr;
    int position;
@@ -317,7 +315,7 @@ static void PrintTemplateSlot(
    if (slotPtr->multislot == false)
      {
       EnvPrintRouter(theEnv,logicalName," ");
-      PrintAtom(theEnv,logicalName,slotValue->type,slotValue->value);
+      PrintAtom(theEnv,logicalName,((TypeHeader *) slotValue->value)->type,slotValue->value);
      }
 
    /*==========================================================*/
@@ -328,7 +326,7 @@ static void PrintTemplateSlot(
      {
       struct multifield *theSegment;
 
-      theSegment = (struct multifield *) slotValue->value;
+      theSegment = (Multifield *) slotValue->value;
       if (theSegment->multifieldLength > 0)
         {
          EnvPrintRouter(theEnv,logicalName," ");
@@ -382,16 +380,15 @@ static struct templateSlot *GetNextTemplateSlotToPrint(
 
          if (slotPtr->multislot == false)
            {
-            if ((GetType(tempDO) == sublist[*position].type) &&
-                (GetValue(tempDO) == sublist[*position].value))
+            if (tempDO.value == sublist[*position].value)
               {
                (*position)++;
                slotPtr = slotPtr->next;
                continue;
               }
            }
-         else if (MultifieldsEqual((struct multifield*) GetValue(tempDO),
-                                   (struct multifield *) sublist[*position].value))
+         else if (MultifieldsEqual((Multifield *) tempDO.value,
+                                   (Multifield *) sublist[*position].value))
            {
             (*position)++;
             slotPtr = slotPtr->next;
@@ -466,9 +463,9 @@ void PrintTemplateFact(
       if (separateLines)
         { EnvPrintRouter(theEnv,logicalName,"\n   "); }
 
-      /*===================================*/
-      /* Print the slot name and it value. */
-      /*===================================*/
+      /*====================================*/
+      /* Print the slot name and its value. */
+      /*====================================*/
 
       PrintTemplateSlot(theEnv,logicalName,slotPtr,&sublist[i]);
 
@@ -525,7 +522,7 @@ void UpdateDeftemplateScope(
          /*=======================================*/
 
          if (FindImportedConstruct(theEnv,"deftemplate",theModule,
-                                   ValueToString(theDeftemplate->header.name),
+                                   theDeftemplate->header.name->contents,
                                    &moduleCount,true,NULL) != NULL)
            { theDeftemplate->inScope = true; }
          else
@@ -539,7 +536,7 @@ void UpdateDeftemplateScope(
 /****************************************************************/
 struct templateSlot *FindSlot(
   Deftemplate *theDeftemplate,
-  SYMBOL_HN *name,
+  CLIPSLexeme *name,
   short *whichOne)
   {
    struct templateSlot *slotPtr;
@@ -566,7 +563,7 @@ struct templateSlot *FindSlot(
 /************************************************************/
 Deftemplate *CreateImpliedDeftemplate(
   Environment *theEnv,
-  SYMBOL_HN *deftemplateName,
+  CLIPSLexeme *deftemplateName,
   bool setFlag)
   {
    Deftemplate *newDeftemplate;
@@ -575,6 +572,7 @@ Deftemplate *CreateImpliedDeftemplate(
    newDeftemplate->header.name = deftemplateName;
    newDeftemplate->header.ppForm = NULL;
    newDeftemplate->header.usrData = NULL;
+   newDeftemplate->header.constructType = DEFTEMPLATE;
    newDeftemplate->slotList = NULL;
    newDeftemplate->implied = setFlag;
    newDeftemplate->numberOfSlots = 0;

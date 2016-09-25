@@ -52,12 +52,12 @@
 
       tempArray = [NSMutableArray arrayWithCapacity: (unsigned) GetDOLength(slotNames)];
 
-      for (i = 1; i <= GetDOLength(slotNames); i++)
+      for (i = 0; i < GetDOLength(slotNames); i++)
         {
-         const char *theCSlotName = ValueToString(GetMFValue(GetValue(slotNames),i));
+         const char *theCSlotName = ValueToString(GetMFValue(slotNames.value,i));
          NSString *theSlotName = [NSString stringWithUTF8String: theCSlotName];
          
-         FactSlotValue(theEnvironment,theFact,ValueToString(GetMFValue(GetValue(slotNames),i)),&slotValue);
+         FactSlotValue(theEnvironment,theFact,ValueToString(GetMFValue(slotNames.value,i)),&slotValue);
 
          NSString *theSlotValue = [NSString stringWithUTF8String: DataObjectToString(theEnvironment,&slotValue)];
 
@@ -138,10 +138,10 @@
 
       for (i = 1; i <= GetDOLength(slotNames); i++)
         {
-         const char *theCSlotName = ValueToString(GetMFValue(GetValue(slotNames),i));
+         const char *theCSlotName = ValueToString(GetMFValue(slotNames.value,i));
          NSString *theSlotName = [NSString stringWithUTF8String: theCSlotName];
          
-         EnvDirectGetSlot(theEnvironment,theInstance,ValueToString(GetMFValue(GetValue(slotNames),i)),&slotValue);
+         EnvDirectGetSlot(theEnvironment,theInstance,ValueToString(GetMFValue(slotNames.value,i)),&slotValue);
 
          NSString *theSlotValue = [NSString stringWithUTF8String: DataObjectToString(theEnvironment,&slotValue)];
 

@@ -357,7 +357,7 @@ void ExitCommand(
      if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
        { EnvExitRouter(theEnv,EXIT_SUCCESS); }
 
-     status = (int) mCVToInteger(&theArg);
+     status = (int) theArg.integerValue->contents;
      if (EnvGetEvaluationError(theEnv)) return;
      EnvExitRouter(theEnv,status);
     }

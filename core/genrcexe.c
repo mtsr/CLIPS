@@ -148,8 +148,7 @@ void GenericDispatch(
 #endif
    struct CLIPSBlock gcBlock;
 
-   returnValue->type = SYMBOL;
-   returnValue->value = EnvFalseSymbol(theEnv);
+   returnValue->value = theEnv->FalseSymbol;
    EvaluationData(theEnv)->EvaluationError = false;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
@@ -222,7 +221,7 @@ void GenericDispatch(
         {
 #if PROFILING_FUNCTIONS
          StartProfile(theEnv,&profileFrame,
-                      &DefgenericData(theEnv)->CurrentMethod->usrData,
+                      &DefgenericData(theEnv)->CurrentMethod->header.usrData,
                       ProfileFunctionData(theEnv)->ProfileConstructs);
 #endif
 
@@ -327,19 +326,19 @@ bool IsMethodApplicable(
               break;
             if (rp->types[j] == (void *) DefclassData(theEnv)->PrimitiveClassMap[INSTANCE_ADDRESS])
               {
-               if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type == INSTANCE_ADDRESS)
+               if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type == INSTANCE_ADDRESS)
                  break;
               }
             else if (rp->types[j] == (void *) DefclassData(theEnv)->PrimitiveClassMap[INSTANCE_NAME])
               {
-               if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type == INSTANCE_NAME)
+               if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type == INSTANCE_NAME)
                  break;
               }
             else if (rp->types[j] ==
                 DefclassData(theEnv)->PrimitiveClassMap[INSTANCE_NAME]->directSuperclasses.classArray[0])
               {
-               if ((ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type == INSTANCE_NAME) ||
-                   (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].type == INSTANCE_ADDRESS))
+               if ((ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type == INSTANCE_NAME) ||
+                   (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type == INSTANCE_ADDRESS))
                  break;
               }
            }
@@ -360,8 +359,7 @@ bool IsMethodApplicable(
         {
          DefgenericData(theEnv)->GenericCurrentArgument = &ProceduralPrimitiveData(theEnv)->ProcParamArray[i];
          EvaluateExpression(theEnv,rp->query,&temp);
-         if ((temp.type != SYMBOL) ? false :
-             (temp.value == EnvFalseSymbol(theEnv)))
+         if (temp.value == theEnv->FalseSymbol)
            return false;
         }
       if (((int) k) != meth->restrictionCount-1)
@@ -404,7 +402,7 @@ void NextMethodPCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,NextMethodP(theEnv));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,NextMethodP(theEnv));
   }
 
 /****************************************************
@@ -428,7 +426,7 @@ void CallNextMethod(
    struct profileFrameInfo profileFrame;
 #endif
 
-   mCVSetBoolean(returnValue,false);
+   returnValue->lexemeValue = theEnv->FalseSymbol;
 
    if (EvaluationData(theEnv)->HaltExecution)
      return;
@@ -505,16 +503,16 @@ void CallSpecificMethod(
    Defgeneric *gfunc;
    int mi;
 
-   mCVSetBoolean(returnValue,false);
+   returnValue->lexemeValue = theEnv->FalseSymbol;
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg)) return;
 
-   gfunc = CheckGenericExists(theEnv,"call-specific-method",mCVToString(&theArg));
+   gfunc = CheckGenericExists(theEnv,"call-specific-method",theArg.lexemeValue->contents);
    if (gfunc == NULL) return;
 
    if (! UDFNextArgument(context,INTEGER_TYPE,&theArg)) return;
 
-   mi = CheckMethodExists(theEnv,"call-specific-method",gfunc,(long) mCVToInteger(&theArg));
+   mi = CheckMethodExists(theEnv,"call-specific-method",gfunc,(long) theArg.integerValue->contents);
    if (mi == -1)
      return;
    gfunc->methods[mi].busy++;
@@ -537,7 +535,7 @@ void OverrideNextMethod(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,false);
+   returnValue->lexemeValue = theEnv->FalseSymbol;
    if (EvaluationData(theEnv)->HaltExecution)
      return;
    if (DefgenericData(theEnv)->CurrentMethod == NULL)
@@ -566,7 +564,6 @@ void GetGenericCurrentArgument(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   returnValue->type = DefgenericData(theEnv)->GenericCurrentArgument->type;
    returnValue->value = DefgenericData(theEnv)->GenericCurrentArgument->value;
    returnValue->begin = DefgenericData(theEnv)->GenericCurrentArgument->begin;
    returnValue->end = DefgenericData(theEnv)->GenericCurrentArgument->end;
@@ -635,7 +632,7 @@ static void WatchGeneric(
                         DefgenericData(theEnv)->CurrentGeneric->header.whichModule->theModule));
       EnvPrintRouter(theEnv,WTRACE,"::");
      }
-   EnvPrintRouter(theEnv,WTRACE,ValueToString(DefgenericData(theEnv)->CurrentGeneric->header.name));
+   EnvPrintRouter(theEnv,WTRACE,DefgenericData(theEnv)->CurrentGeneric->header.name->contents);
    EnvPrintRouter(theEnv,WTRACE," ");
    EnvPrintRouter(theEnv,WTRACE," ED:");
    PrintLongInteger(theEnv,WTRACE,(long long) EvaluationData(theEnv)->CurrentEvaluationDepth);
@@ -667,7 +664,7 @@ static void WatchMethod(
                         DefgenericData(theEnv)->CurrentGeneric->header.whichModule->theModule));
       EnvPrintRouter(theEnv,WTRACE,"::");
      }
-   EnvPrintRouter(theEnv,WTRACE,ValueToString(DefgenericData(theEnv)->CurrentGeneric->header.name));
+   EnvPrintRouter(theEnv,WTRACE,DefgenericData(theEnv)->CurrentGeneric->header.name->contents);
    EnvPrintRouter(theEnv,WTRACE,":#");
    if (DefgenericData(theEnv)->CurrentMethod->system)
      EnvPrintRouter(theEnv,WTRACE,"SYS");
@@ -698,18 +695,18 @@ static Defclass *DetermineRestrictionClass(
    Instance *ins;
    Defclass *cls;
 
-   if (dobj->type == INSTANCE_NAME)
+   if (dobj->header->type == INSTANCE_NAME)
      {
-      ins = FindInstanceBySymbol(theEnv,(SYMBOL_HN *) dobj->value);
+      ins = FindInstanceBySymbol(theEnv,dobj->lexemeValue);
       cls = (ins != NULL) ? ins->cls : NULL;
      }
-   else if (dobj->type == INSTANCE_ADDRESS)
+   else if (dobj->header->type == INSTANCE_ADDRESS)
      {
-      ins = (Instance *) dobj->value;
+      ins = dobj->instanceValue;
       cls = (ins->garbage == 0) ? ins->cls : NULL;
      }
    else
-     return(DefclassData(theEnv)->PrimitiveClassMap[dobj->type]);
+     return(DefclassData(theEnv)->PrimitiveClassMap[dobj->header->type]);
    if (cls == NULL)
      {
       EnvSetEvaluationError(theEnv,true);

@@ -52,7 +52,6 @@
 
 #include <math.h>
 
-void UserFunctions(void);
 void EnvUserFunctions(Environment *);
 
    void                           RTA(Environment *,UDFContext *,CLIPSValue *);
@@ -65,21 +64,6 @@ void EnvUserFunctions(Environment *);
    void                           CntMFChars(Environment *,UDFContext *,CLIPSValue *);
    void                           Sample4(Environment *,UDFContext *,CLIPSValue *);
    void                           Rest(Environment *,UDFContext *,CLIPSValue *);
-
-/*********************************************************/
-/* UserFunctions: Informs the expert system environment  */
-/*   of any user defined functions. In the default case, */
-/*   there are no user defined functions. To define      */
-/*   functions, either this function must be replaced by */
-/*   a function with the same name within this file, or  */
-/*   this function can be deleted from this file and     */
-/*   included in another file.                           */
-/*********************************************************/
-void UserFunctions()
-  {
-   // Use of UserFunctions is deprecated.
-   // Use EnvUserFunctions instead.
-  }
 
 /***********************************************************/
 /* EnvUserFunctions: Informs the expert system environment */
@@ -124,7 +108,7 @@ void RTA(
    if (! UDFNextArgument(context,NUMBER_TYPES,&height))
      { return; }
 
-   CVSetFloat(returnValue,0.5 * CVToFloat(&base) * CVToFloat(&height));
+   returnValue->floatValue = EnvCreateFloat(theEnv,0.5 * CVCoerceToFloat(&base) * CVCoerceToFloat(&height));
   }
 
 /*******/
@@ -136,7 +120,7 @@ void MUL(
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   CLIPSInteger firstNumber, secondNumber;
+   long long firstNumber, secondNumber;
 
    /*=============================================================*/
    /* Get the first argument using the UDFFirstArgument function. */
@@ -152,10 +136,10 @@ void MUL(
    /* the nearest integer using the C library ceil function. */
    /*========================================================*/
 
-   if (mCVIsType(&theArg,INTEGER_TYPE))
-     { firstNumber = CVToInteger(&theArg); }
+   if (CVIsType(&theArg,INTEGER_TYPE))
+     { firstNumber = theArg.integerValue->contents; }
    else /* the type must be FLOAT */
-     { firstNumber = (CLIPSInteger) ceil(CVToFloat(&theArg) - 0.5); }
+     { firstNumber = (long long) ceil(theArg.floatValue->contents - 0.5); }
 
    /*=============================================================*/
    /* Get the second argument using the UDFNextArgument function. */
@@ -171,16 +155,16 @@ void MUL(
    /* the nearest integer using the C library ceil function. */
    /*========================================================*/
 
-   if (mCVIsType(&theArg,INTEGER_TYPE))
-     { secondNumber = CVToInteger(&theArg); }
+   if (CVIsType(&theArg,INTEGER_TYPE))
+     { secondNumber = theArg.integerValue->contents; }
    else /* the type must be FLOAT */
-     { secondNumber = (CLIPSInteger) ceil(CVToFloat(&theArg) - 0.5); }
+     { secondNumber = (long long) ceil(theArg.floatValue->contents - 0.5); }
 
    /*=========================================================*/
    /* Multiply the two values together and return the result. */
    /*=========================================================*/
 
-   CVSetInteger(returnValue,firstNumber * secondNumber);
+   returnValue->integerValue = EnvCreateInteger(theEnv,firstNumber * secondNumber);
   }
 
 /*************/
@@ -207,17 +191,17 @@ void Positivep(
 
    if (CVIsType(&theArg,INTEGER_TYPE))
      {
-      if (CVToInteger(&theArg) <= 0L)
-        { CVSetBoolean(returnValue,false); }
+      if (theArg.integerValue->contents <= 0L)
+        { returnValue->lexemeValue = theEnv->FalseSymbol; }
       else
-        { CVSetBoolean(returnValue,true); }
+        { returnValue->lexemeValue = theEnv->TrueSymbol; }
      }
    else /* the type must be FLOAT */
      {
-      if (CVToFloat(&theArg) <= 0.0)
-        { CVSetBoolean(returnValue,false); }
+      if (theArg.floatValue->contents <= 0.0)
+        { returnValue->lexemeValue = theEnv->FalseSymbol; }
       else
-        { CVSetBoolean(returnValue,true); }
+        { returnValue->lexemeValue = theEnv->TrueSymbol; }
      }
   }
 
@@ -230,8 +214,8 @@ void Cube(
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg;
-   CLIPSInteger integerValue;
-   CLIPSFloat floatValue;
+   long long theInteger;
+   double theFloat;
 
    /*==================================*/
    /* Get the first argument using the */
@@ -240,7 +224,7 @@ void Cube(
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      {
-      CVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -250,13 +234,13 @@ void Cube(
 
    if (CVIsType(&theArg,INTEGER_TYPE))
      {
-      integerValue = CVToInteger(&theArg);
-      CVSetInteger(returnValue,integerValue * integerValue * integerValue);
+      theInteger = theArg.integerValue->contents;
+      returnValue->integerValue = EnvCreateInteger(theEnv,theInteger * theInteger * theInteger);
      }
    else /* the type must be FLOAT */
      {
-      floatValue = CVToFloat(&theArg);
-      CVSetFloat(returnValue,floatValue * floatValue * floatValue);
+      theFloat = theArg.floatValue->contents;
+      returnValue->floatValue = EnvCreateFloat(theEnv,theFloat * theFloat * theFloat);
      }
   }
 
@@ -283,9 +267,9 @@ void TripleNumber(
    /*======================*/
 
    if (CVIsType(&theArg,INTEGER_TYPE))
-     { CVSetInteger(returnValue,3 * CVToInteger(&theArg)); }
+     { returnValue->integerValue = EnvCreateInteger(theEnv,3 * theArg.integerValue->contents); }
    else /* the type must be FLOAT */
-     { CVSetFloat(returnValue,3.0 * CVToFloat(&theArg)); }
+     { returnValue->floatValue = EnvCreateFloat(theEnv,3.0 * theArg.floatValue->contents); }
   }
 
 /***********/
@@ -308,7 +292,7 @@ void Reverse(
    if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
      { return; }
 
-   theString = mCVToString(&theArg);
+   theString = theArg.lexemeValue->contents;
 
    /*========================================================*/
    /* Allocate temporary space to store the reversed string. */
@@ -325,23 +309,23 @@ void Reverse(
      { tempString[length - (i + 1)] = theString[i]; }
    tempString[length] = '\0';
 
-   /*=====================================*/
+   /*==========================================*/
    /* Set the return value before deallocating */
    /* the temporary reversed string.           */
    /*==========================================*/
 
-   switch(CVType(&theArg))
+   switch(theArg.header->type)
      {
-      case STRING_TYPE:
-        CVSetString(returnValue,tempString);
+      case STRING:
+        returnValue->lexemeValue = EnvCreateString(theEnv,tempString);
         break;
 
-      case SYMBOL_TYPE:
-        CVSetSymbol(returnValue,tempString);
+      case SYMBOL:
+        returnValue->lexemeValue = EnvCreateSymbol(theEnv,tempString);
         break;
 
-      case INSTANCE_NAME_TYPE:
-        CVSetInstanceName(returnValue,tempString);
+      case INSTANCE_NAME:
+        returnValue->lexemeValue = EnvCreateInstanceName(theEnv,tempString);
         break;
      }
 
@@ -364,7 +348,7 @@ void MFL(
 
    if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
      {
-      CVSetInteger(returnValue,-1);
+      returnValue->integerValue = EnvCreateInteger(theEnv,-1);
       return;
      }
 
@@ -372,7 +356,7 @@ void MFL(
    /* Return the length of the multifield value. */
    /*============================================*/
 
-   CVSetInteger(returnValue,MFLength(&theArg));
+   returnValue->integerValue = EnvCreateInteger(theEnv,MFLength(&theArg));
   }
 
 /**************/
@@ -384,8 +368,8 @@ void CntMFChars(
   CLIPSValue *returnValue)
   {
    CLIPSValue theArg, theValue;
-   CLIPSInteger i, count = 0;
-   CLIPSInteger mfLength;
+   long long i, count = 0;
+   long long mfLength;
 
    /*======================================================*/
    /* Check that the first argument is a multifield value. */
@@ -403,14 +387,14 @@ void CntMFChars(
      {
       MFNthValue(&theArg,i,&theValue);
       if (CVIsType(&theValue,LEXEME_TYPES))
-        { count += strlen(CVToString(&theValue)); }
+        { count += strlen(theValue.lexemeValue->contents); }
      }
 
    /*=============================*/
    /* Return the character count. */
    /*=============================*/
 
-   CVSetInteger(returnValue,count);
+   returnValue->integerValue = EnvCreateInteger(theEnv,count);
   }
 
 /***********/
@@ -442,7 +426,7 @@ void Sample4(
    /* "altitude".                                */
    /*============================================*/
 
-   CVSetSymbol(&theValue,"altitude");
+   theValue.lexemeValue = EnvCreateSymbol(theEnv,"altitude");
    MFSetNthValue(&mfValue,1,&theValue);
 
    /*===========================================*/
@@ -450,14 +434,16 @@ void Sample4(
    /* will be a FLOAT. Its value will be 900.   */
    /*===========================================*/
 
-   CVSetFloat(&theValue,900.0);
+   theValue.floatValue = EnvCreateFloat(theEnv,900.00);
    MFSetNthValue(&mfValue,2,&theValue);
 
    /*=====================================================*/
    /* Assign the type and value to the return CLIPSValue. */
    /*=====================================================*/
 
-   CVSetValue(returnValue,&mfValue);
+   returnValue->value = mfValue.value;
+   returnValue->begin = mfValue.begin;
+   returnValue->end = mfValue.end;
   }
 
 /********/
@@ -468,7 +454,7 @@ void Rest(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CLIPSInteger mfLength;
+   long long mfLength;
 
    /*======================================================*/
    /* Check that the first argument is a multifield value. */

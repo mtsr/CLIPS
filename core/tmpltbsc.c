@@ -188,7 +188,7 @@ void DeftemplateModuleFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"deftemplate-module",DeftemplateData(theEnv)->DeftemplateConstruct));
+   returnValue->value = GetConstructModuleCommand(context,"deftemplate-module",DeftemplateData(theEnv)->DeftemplateConstruct);
   }
 
 #if DEBUGGING_FUNCTIONS

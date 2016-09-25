@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/25/16             */
+   /*            CLIPS Version 6.40  09/05/16             */
    /*                                                     */
    /*                CONSTANTS HEADER FILE                */
    /*******************************************************/
@@ -91,11 +91,11 @@
 #endif
 
 #ifndef CREATION_DATE_STRING
-#define CREATION_DATE_STRING "9/4/16"
+#define CREATION_DATE_STRING "9/22/16"
 #endif
 
 #ifndef BANNER_STRING
-#define BANNER_STRING "         CLIPS (Forge Alpha 9/4/16)\n"
+#define BANNER_STRING "         CLIPS (Forge Alpha 9/22/16)\n"
 #endif
 
 /*************************/
@@ -155,10 +155,6 @@ typedef enum
 #define SINGLEFIELD_TYPES (NUMBER_TYPES | LEXEME_TYPES | ADDRESS_TYPES | INSTANCE_NAME_TYPE)
 #define ANY_TYPE (VOID_TYPE | SINGLEFIELD_TYPES | MULTIFIELD_TYPE)
 
-typedef long long CLIPSInteger;
-typedef double CLIPSFloat;
-typedef const char * CLIPSString;
-
 /****************************************************/
 /* The first 9 primitive types need to retain their */
 /* values!! Sorted arrays depend on their values!!  */
@@ -175,6 +171,8 @@ typedef const char * CLIPSString;
 #define INSTANCE_NAME                   8
 
 #define RVOID                           9
+
+#define BITMAP                         11
 
 #define FCALL                          30
 #define GCALL                          31

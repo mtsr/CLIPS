@@ -86,20 +86,20 @@ const char *GetLogicalName(
    if (! UDFNextArgument(context,ANY_TYPE,&theArg))
      { return NULL; }
 
-   if (mCVIsType(&theArg,LEXEME_TYPES) ||
-       mCVIsType(&theArg,INSTANCE_NAME_TYPE))
+   if (CVIsType(&theArg,LEXEME_TYPES) ||
+       CVIsType(&theArg,INSTANCE_NAME_TYPE))
      {
-      logicalName = mCVToString(&theArg);
+      logicalName = theArg.lexemeValue->contents;
       if ((strcmp(logicalName,"t") == 0) || (strcmp(logicalName,"T") == 0))
         { logicalName = defaultLogicalName; }
      }
-   else if (mCVIsType(&theArg,FLOAT_TYPE))
+   else if (CVIsType(&theArg,FLOAT_TYPE))
      {
-      logicalName = ValueToString(EnvAddSymbol(theEnv,FloatToString(theEnv,mCVToFloat(&theArg))));
+      logicalName = EnvCreateSymbol(theEnv,FloatToString(theEnv,theArg.floatValue->contents))->contents;
      }
-   else if (mCVIsType(&theArg,INTEGER_TYPE))
+   else if (CVIsType(&theArg,INTEGER_TYPE))
      {
-      logicalName = ValueToString(EnvAddSymbol(theEnv,LongIntegerToString(theEnv,mCVToInteger(&theArg))));
+      logicalName = EnvCreateSymbol(theEnv,LongIntegerToString(theEnv,theArg.integerValue->contents))->contents;
      }
    else
      { logicalName = NULL; }
@@ -121,7 +121,7 @@ const char *GetFileName(
    if (! UDFNextArgument(context,LEXEME_TYPES,&theArg))
      { return NULL; }
 
-   return mCVToString(&theArg);
+   return theArg.lexemeValue->contents;
   }
 
 /******************************************************************/
@@ -174,9 +174,9 @@ Defmodule *GetModuleName(
    /* corresponds to a defined module.      */
    /*=======================================*/
 
-   if ((theModule = EnvFindDefmodule(theEnv,DOToString(returnValue))) == NULL)
+   if ((theModule = EnvFindDefmodule(theEnv,returnValue.lexemeValue->contents)) == NULL)
      {
-      if (strcmp("*",DOToString(returnValue)) != 0)
+      if (strcmp("*",returnValue.lexemeValue->contents) != 0)
         {
          ExpectedTypeError1(theEnv,functionName,whichArgument,"defmodule name");
          *error = true;
@@ -209,13 +209,13 @@ const char *GetConstructName(
    if (! UDFFirstArgument(context,ANY_TYPE,&returnValue))
      { return NULL; }
 
-   if (! mCVIsType(&returnValue,SYMBOL_TYPE))
+   if (! CVIsType(&returnValue,SYMBOL_TYPE))
      {
       UDFInvalidArgumentMessage(context,constructType);
       return NULL;
      }
 
-   return(mCVToString(&returnValue));
+   return(returnValue.lexemeValue->contents);
   }
 
 /*********************************************************/
@@ -423,9 +423,8 @@ void *GetFactOrInstanceArgument(
    /* Fact and instance addresses are valid arguments. */
    /*==================================================*/
 
-   if ((GetpType(item) == FACT_ADDRESS) ||
-       (GetpType(item) == INSTANCE_ADDRESS))
-     { return(GetpValue(item)); }
+   if (CVIsType(item,FACT_ADDRESS_TYPE | INSTANCE_ADDRESS_TYPE))
+     { return item->value; }
 
    /*==================================================*/
    /* An integer is a valid argument if it corresponds */
@@ -433,12 +432,12 @@ void *GetFactOrInstanceArgument(
    /*==================================================*/
 
 #if DEFTEMPLATE_CONSTRUCT
-   else if (GetpType(item) == INTEGER)
+   else if (item->header->type == INTEGER)
      {
-      if ((ptr = (void *) FindIndexedFact(theEnv,DOPToLong(item))) == NULL)
+      if ((ptr = (void *) FindIndexedFact(theEnv,item->integerValue->contents)) == NULL)
         {
          char tempBuffer[20];
-         gensprintf(tempBuffer,"f-%lld",DOPToLong(item));
+         gensprintf(tempBuffer,"f-%lld",item->integerValue->contents);
          CantFindItemErrorMessage(theEnv,"fact",tempBuffer);
         }
       return(ptr);
@@ -451,11 +450,11 @@ void *GetFactOrInstanceArgument(
    /*================================================*/
 
 #if OBJECT_SYSTEM
-   else if ((GetpType(item) == INSTANCE_NAME) || (GetpType(item) == SYMBOL))
+   else if (CVIsType(item,INSTANCE_NAME_TYPE | SYMBOL_TYPE))
      {
-      if ((ptr = (void *) FindInstanceBySymbol(theEnv,(SYMBOL_HN *) GetpValue(item))) == NULL)
+      if ((ptr = (void *) FindInstanceBySymbol(theEnv,item->lexemeValue)) == NULL)
         {
-         CantFindItemErrorMessage(theEnv,"instance",ValueToString(GetpValue(item)));
+         CantFindItemErrorMessage(theEnv,"instance",item->lexemeValue->contents);
         }
       return(ptr);
      }

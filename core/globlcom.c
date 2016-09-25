@@ -110,7 +110,7 @@ void SetResetGlobalsCommand(
    if (! UDFFirstArgument(context,ANY_TYPE,&theArg))
      { return; }
 
-   if (mCVIsFalseSymbol(&theArg))
+   if (theArg.value == theEnv->FalseSymbol)
      { EnvSetResetGlobals(theEnv,false); }
    else
      { EnvSetResetGlobals(theEnv,true); }
@@ -119,7 +119,7 @@ void SetResetGlobalsCommand(
    /* Return the old value of the attribute. */
    /*========================================*/
 
-   mCVSetBoolean(returnValue,oldValue);
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,oldValue);
   }
 
 /****************************************/
@@ -146,7 +146,7 @@ void GetResetGlobalsCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetBoolean(returnValue,EnvGetResetGlobals(theEnv));
+   returnValue->lexemeValue = EnvCreateBoolean(theEnv,EnvGetResetGlobals(theEnv));
   }
 
 /****************************************/
@@ -269,7 +269,7 @@ static void PrintDefglobalValueForm(
   Defglobal *theGlobal)
   {
    EnvPrintRouter(theEnv,logicalName,"?*");
-   EnvPrintRouter(theEnv,logicalName,ValueToString(theGlobal->header.name));
+   EnvPrintRouter(theEnv,logicalName,theGlobal->header.name->contents);
    EnvPrintRouter(theEnv,logicalName,"* = ");
    PrintDataObject(theEnv,logicalName,&theGlobal->current);
   }

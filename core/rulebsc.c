@@ -325,7 +325,7 @@ void DefruleModuleFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"defrule-module",DefruleData(theEnv)->DefruleConstruct));
+   returnValue->value = GetConstructModuleCommand(context,"defrule-module",DefruleData(theEnv)->DefruleConstruct);
   }
 
 #if DEBUGGING_FUNCTIONS

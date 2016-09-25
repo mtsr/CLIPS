@@ -130,7 +130,7 @@
    =========================================
    ***************************************** */
 
-   static bool                    PatternParserFind(SYMBOL_HN *);
+   static bool                    PatternParserFind(CLIPSLexeme *);
    static struct lhsParseNode    *ObjectLHSParse(Environment *,const char *,struct token *);
    static bool                    ReorderAndAnalyzeObjectPattern(Environment *,struct lhsParseNode *);
    static struct patternNodeHeader
@@ -142,7 +142,7 @@
    static void                    DetachObjectPattern(Environment *,struct patternNodeHeader *);
    static void                    ClearObjectPatternMatches(Environment *,OBJECT_ALPHA_NODE *);
    static void                    RemoveObjectPartialMatches(Environment *,Instance *,struct patternNodeHeader *);
-   static bool                    CheckDuplicateSlots(Environment *,struct lhsParseNode *,SYMBOL_HN *);
+   static bool                    CheckDuplicateSlots(Environment *,struct lhsParseNode *,CLIPSLexeme *);
    static struct lhsParseNode    *ParseClassRestriction(Environment *,const char *,struct token *);
    static struct lhsParseNode    *ParseNameRestriction(Environment *,const char *,struct token *);
    static struct lhsParseNode    *ParseSlotRestriction(Environment *,const char *,struct token *,CONSTRAINT_RECORD *,int);
@@ -155,7 +155,7 @@
    static bool                    EmptyClassBitMap(CLASS_BITMAP *);
    static bool                    IdenticalClassBitMap(CLASS_BITMAP *,CLASS_BITMAP *);
    static bool                    ProcessClassRestriction(Environment *,CLASS_BITMAP *,struct lhsParseNode **,bool);
-   static CONSTRAINT_RECORD      *ProcessSlotRestriction(Environment *,CLASS_BITMAP *,SYMBOL_HN *,bool *);
+   static CONSTRAINT_RECORD      *ProcessSlotRestriction(Environment *,CLASS_BITMAP *,CLIPSLexeme *,bool *);
    static void                    IntersectClassBitMaps(CLASS_BITMAP *,CLASS_BITMAP *);
    static void                    UnionClassBitMaps(CLASS_BITMAP *,CLASS_BITMAP *);
    static CLASS_BITMAP           *PackClassBitMap(Environment *,CLASS_BITMAP *);
@@ -281,9 +281,9 @@ void SetupObjectPatternStuff(
   NOTES        : Used by AddPatternParser()
  *****************************************************/
 static bool PatternParserFind(
-  SYMBOL_HN *value)
+  CLIPSLexeme *value)
   {
-   if (strcmp(ValueToString(value),OBJECT_PATTERN_INDICATOR) == 0)
+   if (strcmp(value->contents,OBJECT_PATTERN_INDICATOR) == 0)
      return true;
 
    return false;
@@ -356,7 +356,7 @@ static struct lhsParseNode *ObjectLHSParse(
          SyntaxErrorMessage(theEnv,"object pattern");
          goto ObjectLHSParseERROR;
         }
-      if (CheckDuplicateSlots(theEnv,firstNode,(SYMBOL_HN *) theToken.value))
+      if (CheckDuplicateSlots(theEnv,firstNode,theToken.lexemeValue))
         goto ObjectLHSParseERROR;
       if (theToken.value == (void *) DefclassData(theEnv)->ISA_SYMBOL)
         {
@@ -380,7 +380,7 @@ static struct lhsParseNode *ObjectLHSParse(
         }
       else
         {
-         slotConstraints = ProcessSlotRestriction(theEnv,clsset,(SYMBOL_HN *) theToken.value,&multip);
+         slotConstraints = ProcessSlotRestriction(theEnv,clsset,theToken.lexemeValue,&multip);
          if (slotConstraints != NULL)
            {
             InitializeClassBitMap(theEnv,tmpset,1);
@@ -392,14 +392,14 @@ static struct lhsParseNode *ObjectLHSParse(
            {
             InitializeClassBitMap(theEnv,tmpset,0);
             tmpNode = GetLHSParseNode(theEnv);
-            tmpNode->slot = (SYMBOL_HN *) theToken.value;
+            tmpNode->slot = theToken.lexemeValue;
            }
         }
       if (EmptyClassBitMap(tmpset))
         {
          PrintErrorID(theEnv,"OBJRTBLD",2,false);
          EnvPrintRouter(theEnv,WERROR,"No objects of existing classes can satisfy ");
-         EnvPrintRouter(theEnv,WERROR,ValueToString(tmpNode->slot));
+         EnvPrintRouter(theEnv,WERROR,tmpNode->slot->contents);
          EnvPrintRouter(theEnv,WERROR," restriction in object pattern.\n");
          ReturnLHSParseNodes(theEnv,tmpNode);
          goto ObjectLHSParseERROR;
@@ -1212,7 +1212,7 @@ static void ClearObjectPatternMatches(
    ins = InstanceData(theEnv)->InstanceList;
    while (ins != NULL)
      {
-      RemoveObjectPartialMatches(theEnv,(Instance *) ins,(struct patternNodeHeader *) alphaPtr);
+      RemoveObjectPartialMatches(theEnv,ins,(struct patternNodeHeader *) alphaPtr);
       ins = ins->nxtList;
      }
 
@@ -1222,7 +1222,7 @@ static void ClearObjectPatternMatches(
    igrb = InstanceData(theEnv)->InstanceGarbageList;
    while (igrb != NULL)
      {
-      RemoveObjectPartialMatches(theEnv,(Instance *) igrb->ins,(struct patternNodeHeader *) alphaPtr);
+      RemoveObjectPartialMatches(theEnv,igrb->ins,(struct patternNodeHeader *) alphaPtr);
       igrb = igrb->nxt;
      }
   }
@@ -1292,7 +1292,7 @@ static void RemoveObjectPartialMatches(
 static bool CheckDuplicateSlots(
   Environment *theEnv,
   struct lhsParseNode *nodeList,
-  SYMBOL_HN *slotName)
+  CLIPSLexeme *slotName)
   {
    while (nodeList != NULL)
      {
@@ -1300,7 +1300,7 @@ static bool CheckDuplicateSlots(
         {
          PrintErrorID(theEnv,"OBJRTBLD",4,true);
          EnvPrintRouter(theEnv,WERROR,"Multiple restrictions on attribute ");
-         EnvPrintRouter(theEnv,WERROR,ValueToString(slotName));
+         EnvPrintRouter(theEnv,WERROR,slotName->contents);
          EnvPrintRouter(theEnv,WERROR," not allowed.\n");
          return true;
         }
@@ -1327,13 +1327,13 @@ static struct lhsParseNode *ParseClassRestriction(
   struct token *theToken)
   {
    struct lhsParseNode *tmpNode;
-   SYMBOL_HN *rln;
+   CLIPSLexeme *rln;
    CONSTRAINT_RECORD *rv;
 
    rv = GetConstraintRecord(theEnv);
    rv->anyAllowed = 0;
    rv->symbolsAllowed = 1;
-   rln = (SYMBOL_HN *) theToken->value;
+   rln = theToken->lexemeValue;
    SavePPBuffer(theEnv," ");
    GetToken(theEnv,readSource,theToken);
    tmpNode = RestrictionParse(theEnv,readSource,theToken,false,rln,ISA_ID,rv,0);
@@ -1379,13 +1379,13 @@ static struct lhsParseNode *ParseNameRestriction(
   struct token *theToken)
   {
    struct lhsParseNode *tmpNode;
-   SYMBOL_HN *rln;
+   CLIPSLexeme *rln;
    CONSTRAINT_RECORD *rv;
 
    rv = GetConstraintRecord(theEnv);
    rv->anyAllowed = 0;
    rv->instanceNamesAllowed = 1;
-   rln = (SYMBOL_HN *) theToken->value;
+   rln = theToken->lexemeValue;
    SavePPBuffer(theEnv," ");
    GetToken(theEnv,readSource,theToken);
    tmpNode = RestrictionParse(theEnv,readSource,theToken,false,rln,NAME_ID,rv,0);
@@ -1441,9 +1441,9 @@ static struct lhsParseNode *ParseSlotRestriction(
   int multip)
   {
    struct lhsParseNode *tmpNode;
-   SYMBOL_HN *slotName;
+   CLIPSLexeme *slotName;
 
-   slotName = (SYMBOL_HN *) theToken->value;
+   slotName = theToken->lexemeValue;
    SavePPBuffer(theEnv," ");
    GetToken(theEnv,readSource,theToken);
    tmpNode = RestrictionParse(theEnv,readSource,theToken,multip,slotName,FindSlotNameID(theEnv,slotName),
@@ -1804,7 +1804,7 @@ static bool ProcessClassRestriction(
 static CONSTRAINT_RECORD *ProcessSlotRestriction(
   Environment *theEnv,
   CLASS_BITMAP *clsset,
-  SYMBOL_HN *slotName,
+  CLIPSLexeme *slotName,
   bool *multip)
   {
    Defclass *cls;
@@ -2299,7 +2299,7 @@ static void ObjectIncrementalReset(
    Instance *ins;
 
    for (ins = InstanceData(theEnv)->InstanceList ; ins != NULL ; ins = ins->nxtList)
-     ObjectNetworkAction(theEnv,OBJECT_ASSERT,(Instance *) ins,-1);
+     ObjectNetworkAction(theEnv,OBJECT_ASSERT,ins,-1);
   }
 
 #endif

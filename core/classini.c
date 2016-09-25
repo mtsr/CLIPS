@@ -172,9 +172,9 @@ void SetupObjectSystem(
 
 #if ! RUN_TIME
    DefclassData(theEnv)->ClassDefaultsMode = CONVENIENCE_MODE;
-   DefclassData(theEnv)->ISA_SYMBOL = (SYMBOL_HN *) EnvAddSymbol(theEnv,SUPERCLASS_RLN);
+   DefclassData(theEnv)->ISA_SYMBOL = EnvCreateSymbol(theEnv,SUPERCLASS_RLN);
    IncrementSymbolCount(DefclassData(theEnv)->ISA_SYMBOL);
-   DefclassData(theEnv)->NAME_SYMBOL = (SYMBOL_HN *) EnvAddSymbol(theEnv,NAME_RLN);
+   DefclassData(theEnv)->NAME_SYMBOL = EnvCreateSymbol(theEnv,NAME_RLN);
    IncrementSymbolCount(DefclassData(theEnv)->NAME_SYMBOL);
 #endif
 
@@ -378,12 +378,12 @@ void ObjectsRunTimeInitialize(
           }
      }
 
-   InstanceQueryData(theEnv)->QUERY_DELIMETER_SYMBOL = FindSymbolHN(theEnv,QUERY_DELIMETER_STRING);
-   MessageHandlerData(theEnv)->INIT_SYMBOL = FindSymbolHN(theEnv,INIT_STRING);
-   MessageHandlerData(theEnv)->DELETE_SYMBOL = FindSymbolHN(theEnv,DELETE_STRING);
-   MessageHandlerData(theEnv)->CREATE_SYMBOL = FindSymbolHN(theEnv,CREATE_STRING);
-   DefclassData(theEnv)->ISA_SYMBOL = FindSymbolHN(theEnv,SUPERCLASS_RLN);
-   DefclassData(theEnv)->NAME_SYMBOL = FindSymbolHN(theEnv,NAME_RLN);
+   InstanceQueryData(theEnv)->QUERY_DELIMITER_SYMBOL = FindSymbolHN(theEnv,QUERY_DELIMITER_STRING,SYMBOL_TYPE);
+   MessageHandlerData(theEnv)->INIT_SYMBOL = FindSymbolHN(theEnv,INIT_STRING,SYMBOL_TYPE);
+   MessageHandlerData(theEnv)->DELETE_SYMBOL = FindSymbolHN(theEnv,DELETE_STRING,SYMBOL_TYPE);
+   MessageHandlerData(theEnv)->CREATE_SYMBOL = FindSymbolHN(theEnv,CREATE_STRING,SYMBOL_TYPE);
+   DefclassData(theEnv)->ISA_SYMBOL = FindSymbolHN(theEnv,SUPERCLASS_RLN,SYMBOL_TYPE);
+   DefclassData(theEnv)->NAME_SYMBOL = FindSymbolHN(theEnv,NAME_RLN,SYMBOL_TYPE);
 
    DefclassData(theEnv)->ClassTable = (Defclass **) ctable;
    DefclassData(theEnv)->SlotNameTable = (SLOT_NAME **) sntable;
@@ -690,7 +690,7 @@ static Defclass *AddSystemClass(
    long i;
    char defaultScopeMap[1];
 
-   sys = NewClass(theEnv,(SYMBOL_HN *) EnvAddSymbol(theEnv,name));
+   sys = NewClass(theEnv,EnvCreateSymbol(theEnv,name));
    sys->abstract = 1;
 #if DEFRULE_CONSTRUCT
    sys->reactive = 0;
@@ -785,7 +785,7 @@ static void UpdateDefclassesScope(
    const char *className;
    Defmodule *matchModule;
 
-   newModuleID = (int) EnvGetCurrentModule(theEnv)->bsaveID;
+   newModuleID = (int) EnvGetCurrentModule(theEnv)->header.bsaveID;
    newScopeMapSize = (sizeof(char) * ((GetNumberOfDefmodules(theEnv) / BITS_PER_BYTE) + 1));
    newScopeMap = (char *) gm2(theEnv,newScopeMapSize);
    for (i = 0 ; i < CLASS_TABLE_HASH_SIZE ; i++)
@@ -794,7 +794,7 @@ static void UpdateDefclassesScope(
           theDefclass = theDefclass->nxtHash)
        {
         matchModule = theDefclass->header.whichModule->theModule;
-        className = ValueToString(theDefclass->header.name);
+        className = theDefclass->header.name->contents;
         ClearBitString(newScopeMap,newScopeMapSize);
         GenCopyMemory(char,theDefclass->scopeMap->size,
                    newScopeMap,ValueToBitMap(theDefclass->scopeMap));

@@ -68,6 +68,7 @@ typedef struct patternEntityRecord *PTRN_ENTITY_RECORD_PTR;
 
 struct patternEntity
   {
+   TypeHeader th;
    struct patternEntityRecord *theInfo;
    void *dependents;
    unsigned busyCount;
@@ -105,7 +106,7 @@ struct patternParser
    const char *name;
    struct patternEntityRecord *entityType;
    int positionInArray;
-   bool (*recognizeFunction)(SYMBOL_HN *);
+   bool (*recognizeFunction)(CLIPSLexeme *);
    struct lhsParseNode *(*parseFunction)(Environment *,const char *,struct token *);
    bool (*postAnalysisFunction)(Environment *,struct lhsParseNode *);
    struct patternNodeHeader *(*addPatternFunction)(Environment *,struct lhsParseNode *);
@@ -163,7 +164,7 @@ struct patternData
                                                        struct patternEntity **);
    struct patternParser          *GetPatternParser(Environment *,int);
    struct lhsParseNode           *RestrictionParse(Environment *,const char *,struct token *,bool,
-                                                   struct symbolHashNode *,short,
+                                                   CLIPSLexeme *,short,
                                                    struct constraintRecord *,short);
    bool                           PostPatternAnalysis(Environment *,struct lhsParseNode *);
    void                           PatternNodeHeaderToCode(Environment *,FILE *,struct patternNodeHeader *,int,int);

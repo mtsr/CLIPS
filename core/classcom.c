@@ -106,7 +106,7 @@ Defclass *EnvFindDefclass( // TBD Needs to look in imported
   Environment *theEnv,
   const char *classAndModuleName)
   {
-   SYMBOL_HN *classSymbol = NULL;
+   CLIPSLexeme *classSymbol = NULL;
    Defclass *cls;
    Defmodule *theModule = NULL;
    const char *className;
@@ -116,7 +116,7 @@ Defclass *EnvFindDefclass( // TBD Needs to look in imported
    className = ExtractModuleAndConstructName(theEnv,classAndModuleName);
    if (className != NULL)
      {
-      classSymbol = FindSymbolHN(theEnv,ExtractModuleAndConstructName(theEnv,classAndModuleName));
+      classSymbol = FindSymbolHN(theEnv,ExtractModuleAndConstructName(theEnv,classAndModuleName),SYMBOL_TYPE);
       theModule = EnvGetCurrentModule(theEnv);
      }
 
@@ -152,7 +152,7 @@ Defclass *EnvFindDefclassInModule(
   Environment *theEnv,
   const char *classAndModuleName)
   {
-   SYMBOL_HN *classSymbol = NULL;
+   CLIPSLexeme *classSymbol = NULL;
    Defclass *cls;
    Defmodule *theModule = NULL;
    const char *className;
@@ -161,7 +161,7 @@ Defclass *EnvFindDefclassInModule(
    className = ExtractModuleAndConstructName(theEnv,classAndModuleName);
    if (className != NULL)
      {
-      classSymbol = FindSymbolHN(theEnv,ExtractModuleAndConstructName(theEnv,classAndModuleName));
+      classSymbol = FindSymbolHN(theEnv,ExtractModuleAndConstructName(theEnv,classAndModuleName),SYMBOL_TYPE);
       theModule = EnvGetCurrentModule(theEnv);
      }
    RestoreCurrentModule(theEnv);
@@ -201,7 +201,7 @@ Defclass *LookupDefclassByMdlOrScope(
   {
    Defclass *cls;
    const char *className;
-   SYMBOL_HN *classSymbol;
+   CLIPSLexeme *classSymbol;
    Defmodule *theModule;
 
    if (FindModuleSeparator(classAndModuleName) == 0)
@@ -215,7 +215,7 @@ Defclass *LookupDefclassByMdlOrScope(
    if (className == NULL)
      { return NULL; }
 
-   if ((classSymbol = FindSymbolHN(theEnv,className)) == NULL)
+   if ((classSymbol = FindSymbolHN(theEnv,className,SYMBOL_TYPE)) == NULL)
      { return NULL; }
 
    cls = DefclassData(theEnv)->ClassTable[HashClass(classSymbol)];
@@ -247,9 +247,9 @@ Defclass *LookupDefclassInScope(
   const char *className)
   {
    Defclass *cls;
-   SYMBOL_HN *classSymbol;
+   CLIPSLexeme *classSymbol;
 
-   if ((classSymbol = FindSymbolHN(theEnv,className)) == NULL)
+   if ((classSymbol = FindSymbolHN(theEnv,className,SYMBOL_TYPE)) == NULL)
      { return NULL; }
 
    cls = DefclassData(theEnv)->ClassTable[HashClass(classSymbol)];
@@ -282,9 +282,9 @@ Defclass *LookupDefclassAnywhere(
   const char *className)
   {
    Defclass *cls;
-   SYMBOL_HN *classSymbol;
+   CLIPSLexeme *classSymbol;
 
-   if ((classSymbol = FindSymbolHN(theEnv,className)) == NULL)
+   if ((classSymbol = FindSymbolHN(theEnv,className,SYMBOL_TYPE)) == NULL)
      { return NULL; }
 
    cls = DefclassData(theEnv)->ClassTable[HashClass(classSymbol)];
@@ -324,7 +324,7 @@ bool DefclassInScope(
    scopeMap = (char *) ValueToBitMap(theDefclass->scopeMap);
    if (theModule == NULL)
      { theModule = EnvGetCurrentModule(theEnv); }
-   moduleID = (int) theModule->bsaveID;
+   moduleID = (int) theModule->header.bsaveID;
 
    return TestBitMap(scopeMap,moduleID) ? true : false;
 #else
@@ -701,7 +701,7 @@ bool HasSuperclass(
   SIDE EFFECTS : None
   NOTES        : None
  ********************************************************************/
-SYMBOL_HN *CheckClassAndSlot(
+CLIPSLexeme *CheckClassAndSlot(
    UDFContext *context,
    const char *func,
    Defclass **cls)
@@ -712,17 +712,17 @@ SYMBOL_HN *CheckClassAndSlot(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      return NULL;
 
-   *cls = LookupDefclassByMdlOrScope(theEnv,mCVToString(&theArg));
+   *cls = LookupDefclassByMdlOrScope(theEnv,theArg.lexemeValue->contents);
    if (*cls == NULL)
      {
-      ClassExistError(theEnv,func,mCVToString(&theArg));
+      ClassExistError(theEnv,func,theArg.lexemeValue->contents);
       return NULL;
      }
 
    if (! UDFNextArgument(context,SYMBOL_TYPE,&theArg))
      return NULL;
 
-   return (SYMBOL_HN *) CVToRawValue(&theArg);
+   return theArg.lexemeValue;
   }
 
 #if (! BLOAD_ONLY) && (! RUN_TIME)
@@ -837,7 +837,7 @@ void GetClassDefaultsModeCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
+   returnValue->lexemeValue = EnvCreateSymbol(theEnv,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
   }
 
 /***************************************************/
@@ -862,7 +862,7 @@ void SetClassDefaultsModeCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theArg))
      { return; }
 
-   argument = mCVToString(&theArg);
+   argument = theArg.lexemeValue->contents;
 
    /*=============================================*/
    /* Set the strategy to the specified strategy. */
@@ -875,7 +875,7 @@ void SetClassDefaultsModeCommand(
    else
      {
       UDFInvalidArgumentMessage(context,"symbol with value conservation or convenience");
-      mCVSetSymbol(returnValue,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
+      returnValue->lexemeValue = EnvCreateSymbol(theEnv,GetClassDefaultsModeName(EnvGetClassDefaultsMode(theEnv)));
       return;
      }
 
@@ -883,7 +883,7 @@ void SetClassDefaultsModeCommand(
    /* Return the old value of the mode. */
    /*===================================*/
 
-   mCVSetSymbol(returnValue,GetClassDefaultsModeName(oldMode));
+   returnValue->lexemeValue = EnvCreateSymbol(theEnv,GetClassDefaultsModeName(oldMode));
   }
 
 /*******************************************************************/
@@ -916,7 +916,7 @@ static const char *GetClassDefaultsModeName(
 /* Additional Access Functions */
 /*#############################*/
 
-SYMBOL_HN *GetDefclassNamePointer(
+CLIPSLexeme *GetDefclassNamePointer(
   Defclass *theClass)
   {
    return GetConstructNamePointer((struct constructHeader *) theClass);

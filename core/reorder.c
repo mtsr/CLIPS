@@ -81,7 +81,7 @@
 
 struct variableReference
    {
-    struct symbolHashNode *name;
+    CLIPSLexeme *name;
     int depth;
     struct variableReference *next;
    };
@@ -108,7 +108,7 @@ struct groupReference
    static struct lhsParseNode    *AssignPatternIndices(struct lhsParseNode *,short,int,short);
    static void                    PropagateIndexSlotPatternValues(struct lhsParseNode *,
                                                                   short,short,
-                                                                  struct symbolHashNode *,
+                                                                  CLIPSLexeme *,
                                                                   short);
    static void                    PropagateJoinDepth(struct lhsParseNode *,short);
    static void                    PropagateNandDepth(struct lhsParseNode *,int,int);
@@ -1710,7 +1710,7 @@ static void PropagateIndexSlotPatternValues(
   struct lhsParseNode *theField,
   short thePattern,
   short theIndex,
-  struct symbolHashNode *theSlot,
+  CLIPSLexeme *theSlot,
   short theSlotNumber)
   {
    struct lhsParseNode *tmpNode, *andField;

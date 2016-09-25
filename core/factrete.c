@@ -97,7 +97,6 @@ bool FactPNGetVar1(
 
    if (hack->factAddress)
      {
-      returnValue->type = FACT_ADDRESS;
       returnValue->value = factPtr;
       return true;
      }
@@ -110,12 +109,11 @@ bool FactPNGetVar1(
      {
       theSlot = hack->whichSlot;
       fieldPtr = &factPtr->theProposition.theFields[theSlot];
-      returnValue->type = fieldPtr->type;
       returnValue->value = fieldPtr->value;
-      if (returnValue->type == MULTIFIELD)
+      if (returnValue->header->type == MULTIFIELD)
         {
-         SetpDOBegin(returnValue,1);
-         SetpDOEnd(returnValue,((struct multifield *) fieldPtr->value)->multifieldLength);
+         returnValue->begin = 0;
+         returnValue->end = ((Multifield *) fieldPtr->value)->multifieldLength - 1;
         }
 
       return true;
@@ -149,7 +147,6 @@ bool FactPNGetVar1(
 
    if (extent != -1)
      {
-      returnValue->type = MULTIFIELD;
       returnValue->value = fieldPtr->value;
       returnValue->begin = theField;
       returnValue->end = theField + extent - 1;
@@ -161,10 +158,9 @@ bool FactPNGetVar1(
    /* a multifield slot. Just return the type and value.     */
    /*========================================================*/
 
-   segmentPtr = (struct multifield *) fieldPtr->value;
+   segmentPtr = (Multifield *) fieldPtr->value;
    fieldPtr = &segmentPtr->theFields[theField];
 
-   returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
    return true;
@@ -202,7 +198,6 @@ bool FactPNGetVar2(
 
    fieldPtr = &factPtr->theProposition.theFields[hack->whichSlot];
 
-   returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
    return true;
@@ -239,7 +234,7 @@ bool FactPNGetVar3(
    /* Get the multifield value from which the data is retrieved. */
    /*============================================================*/
 
-   segmentPtr = (struct multifield *) factPtr->theProposition.theFields[hack->whichSlot].value;
+   segmentPtr = (Multifield *) factPtr->theProposition.theFields[hack->whichSlot].value;
 
    /*=========================================*/
    /* If the beginning and end flags are set, */
@@ -248,7 +243,6 @@ bool FactPNGetVar3(
 
    if (hack->fromBeginning && hack->fromEnd)
      {
-      returnValue->type = MULTIFIELD;
       returnValue->value = segmentPtr;
       returnValue->begin = (long) hack->beginOffset;
       returnValue->end = (long) (segmentPtr->multifieldLength - (hack->endOffset + 1));
@@ -264,7 +258,6 @@ bool FactPNGetVar3(
    else
      { fieldPtr = &segmentPtr->theFields[segmentPtr->multifieldLength - (hack->endOffset + 1)]; }
 
-   returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
    return true;
@@ -304,7 +297,6 @@ bool FactPNConstant1(
    /*====================================*/
 
    theConstant = GetFirstArgument();
-   if (theConstant->type != fieldPtr->type) return(1 - hack->testForEquality);
    if (theConstant->value != fieldPtr->value) return(1 - hack->testForEquality);
    return(hack->testForEquality);
   }
@@ -344,9 +336,9 @@ bool FactPNConstant2(
 
    fieldPtr = &FactData(theEnv)->CurrentPatternFact->theProposition.theFields[hack->whichSlot];
 
-   if (fieldPtr->type == MULTIFIELD)
+   if (fieldPtr->header->type == MULTIFIELD)
      {
-      segmentPtr = (struct multifield *) fieldPtr->value;
+      segmentPtr = (Multifield *) fieldPtr->value;
 
       if (hack->fromBeginning)
         { fieldPtr = &segmentPtr->theFields[hack->offset]; }
@@ -362,7 +354,6 @@ bool FactPNConstant2(
    /*====================================*/
 
    theConstant = GetFirstArgument();
-   if (theConstant->type != fieldPtr->type) return(1 - hack->testForEquality);
    if (theConstant->value != fieldPtr->value) return(1 - hack->testForEquality);
    return(hack->testForEquality);
   }
@@ -397,27 +388,27 @@ bool FactJNGetVar1(
 
    if (hack->lhs)
      {
-      factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem;
+      factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem;
       marks = get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->markers;
      }
    else if (hack->rhs)
      {
-      factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,hack->whichPattern)->matchingItem;
+      factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,hack->whichPattern)->matchingItem;
       marks = get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,hack->whichPattern)->markers;
      }
    else if (EngineData(theEnv)->GlobalRHSBinds == NULL)
      {
-      factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem;
+      factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem;
       marks = get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->markers;
      }
    else if ((((unsigned short) (EngineData(theEnv)->GlobalJoin->depth - 1))) == hack->whichPattern)
      {
-      factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,0)->matchingItem;
+      factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,0)->matchingItem;
       marks = get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,0)->markers;
      }
    else
      {
-      factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem;
+      factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem;
       marks = get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->markers;
      }
 
@@ -428,7 +419,6 @@ bool FactJNGetVar1(
 
    if (hack->factAddress)
      {
-      returnValue->type = FACT_ADDRESS;
       returnValue->value = factPtr;
       return true;
      }
@@ -447,12 +437,11 @@ bool FactJNGetVar1(
      {
       theSlot = hack->whichSlot;
       fieldPtr = &theSlots->theFields[theSlot];
-      returnValue->type = fieldPtr->type;
       returnValue->value = fieldPtr->value;
-      if (returnValue->type == MULTIFIELD)
+      if (returnValue->header->type == MULTIFIELD)
         {
-         SetpDOBegin(returnValue,1);
-         SetpDOEnd(returnValue,((struct multifield *) fieldPtr->value)->multifieldLength);
+         returnValue->begin = 0;
+         returnValue->end = ((Multifield *) fieldPtr->value)->multifieldLength - 1;
         }
 
       return true;
@@ -471,9 +460,8 @@ bool FactJNGetVar1(
    theSlot = hack->whichSlot;
    fieldPtr = &theSlots->theFields[theSlot];
 
-   if (fieldPtr->type != MULTIFIELD)
+   if (fieldPtr->header->type != MULTIFIELD)
      {
-      returnValue->type = fieldPtr->type;
       returnValue->value = fieldPtr->value;
       return true;
      }
@@ -493,7 +481,6 @@ bool FactJNGetVar1(
 
    if (extent != -1)
      {
-      returnValue->type = MULTIFIELD;
       returnValue->value = fieldPtr->value;
       returnValue->begin = theField;
       returnValue->end = theField + extent - 1;
@@ -508,7 +495,6 @@ bool FactJNGetVar1(
    segmentPtr = (Multifield *) theSlots->theFields[theSlot].value;
    fieldPtr = &segmentPtr->theFields[theField];
 
-   returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
    return true;
@@ -539,15 +525,15 @@ bool FactJNGetVar2(
    /*=====================================================*/
 
    if (hack->lhs)
-     { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
+     { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
    else if (hack->rhs)
-     { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,hack->whichPattern)->matchingItem; }
+     { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,hack->whichPattern)->matchingItem; }
    else if (EngineData(theEnv)->GlobalRHSBinds == NULL)
-     { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
+     { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
    else if (((unsigned short) (EngineData(theEnv)->GlobalJoin->depth - 1)) == hack->whichPattern)
-	 { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,0)->matchingItem; }
+	 { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,0)->matchingItem; }
    else
-     { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
+     { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
 
    /*============================================*/
    /* Extract the value from the specified slot. */
@@ -559,7 +545,6 @@ bool FactJNGetVar2(
    else
      { fieldPtr = &factPtr->theProposition.theFields[hack->whichSlot]; }
 
-   returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
    return true;
@@ -591,15 +576,15 @@ bool FactJNGetVar3(
    /*=====================================================*/
 
    if (hack->lhs)
-     { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
+     { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
    else if (hack->rhs)
-     { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,hack->whichPattern)->matchingItem; }
+     { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,hack->whichPattern)->matchingItem; }
    else if (EngineData(theEnv)->GlobalRHSBinds == NULL)
-     { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
+     { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
    else if (((unsigned short) (EngineData(theEnv)->GlobalJoin->depth - 1)) == hack->whichPattern)
-     { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,0)->matchingItem; }
+     { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalRHSBinds,0)->matchingItem; }
    else
-     { factPtr = (struct fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
+     { factPtr = (Fact *) get_nth_pm_match(EngineData(theEnv)->GlobalLHSBinds,hack->whichPattern)->matchingItem; }
 
    /*============================================================*/
    /* Get the multifield value from which the data is retrieved. */
@@ -607,9 +592,9 @@ bool FactJNGetVar3(
 
    if ((factPtr->basisSlots != NULL) &&
        (! EngineData(theEnv)->JoinOperationInProgress))
-     { segmentPtr = (struct multifield *) factPtr->basisSlots->theFields[hack->whichSlot].value; }
+     { segmentPtr = (Multifield *) factPtr->basisSlots->theFields[hack->whichSlot].value; }
    else
-     { segmentPtr = (struct multifield *) factPtr->theProposition.theFields[hack->whichSlot].value; }
+     { segmentPtr = (Multifield *) factPtr->theProposition.theFields[hack->whichSlot].value; }
 
    /*=========================================*/
    /* If the beginning and end flags are set, */
@@ -618,7 +603,6 @@ bool FactJNGetVar3(
 
    if (hack->fromBeginning && hack->fromEnd)
      {
-      returnValue->type = MULTIFIELD;
       returnValue->value = segmentPtr;
       returnValue->begin = hack->beginOffset;
       returnValue->end = (long) (segmentPtr->multifieldLength - (hack->endOffset + 1));
@@ -634,7 +618,6 @@ bool FactJNGetVar3(
    else
      { fieldPtr = &segmentPtr->theFields[segmentPtr->multifieldLength - (hack->endOffset + 1)]; }
 
-   returnValue->type = fieldPtr->type;
    returnValue->value = fieldPtr->value;
 
    return true;
@@ -654,8 +637,7 @@ bool FactSlotLength(
    long extraOffset = 0;
    struct multifieldMarker *tempMark;
 
-   returnValue->type = SYMBOL;
-   returnValue->value = EnvFalseSymbol(theEnv);
+   returnValue->value = theEnv->FalseSymbol;
 
    hack = (struct factCheckLengthPNCall *) ValueToBitMap(theValue);
 
@@ -667,7 +649,7 @@ bool FactSlotLength(
       extraOffset += ((tempMark->endPosition - tempMark->startPosition) + 1);
      }
 
-   segmentPtr = (struct multifield *) FactData(theEnv)->CurrentPatternFact->theProposition.theFields[hack->whichSlot].value;
+   segmentPtr = (Multifield *) FactData(theEnv)->CurrentPatternFact->theProposition.theFields[hack->whichSlot].value;
 
    if (segmentPtr->multifieldLength < (hack->minLength + extraOffset))
      { return false; }
@@ -675,7 +657,7 @@ bool FactSlotLength(
    if (hack->exactly && (segmentPtr->multifieldLength > (hack->minLength + extraOffset)))
      { return false; }
 
-   returnValue->value = EnvTrueSymbol(theEnv);
+   returnValue->value = theEnv->TrueSymbol;
    return true;
   }
 
@@ -708,12 +690,12 @@ bool FactJNCompVars1(
    p1 = (int) hack->pattern1;
    p2 = (int) hack->pattern2;
 
-   fact1 = (struct fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p1].gm.theMatch->matchingItem;
+   fact1 = (Fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p1].gm.theMatch->matchingItem;
 
    if (hack->p2rhs)
-     { fact2 = (struct fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p2].gm.theMatch->matchingItem; }
+     { fact2 = (Fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p2].gm.theMatch->matchingItem; }
    else
-     { fact2 = (struct fact *) EngineData(theEnv)->GlobalLHSBinds->binds[p2].gm.theMatch->matchingItem; }
+     { fact2 = (Fact *) EngineData(theEnv)->GlobalLHSBinds->binds[p2].gm.theMatch->matchingItem; }
 
    /*=====================*/
    /* Compare the values. */
@@ -721,10 +703,6 @@ bool FactJNCompVars1(
 
    e1 = (int) hack->slot1;
    e2 = (int) hack->slot2;
-
-   if (fact1->theProposition.theFields[e1].type !=
-       fact2->theProposition.theFields[e2].type)
-     { return((bool) hack->fail); }
 
    if (fact1->theProposition.theFields[e1].value !=
        fact2->theProposition.theFields[e2].value)
@@ -769,22 +747,22 @@ bool FactJNCompVars2(
    s1 = (int) hack->slot1;
    s2 = (int) hack->slot2;
 
-   fact1 = (struct fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p1].gm.theMatch->matchingItem;
+   fact1 = (Fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p1].gm.theMatch->matchingItem;
 
    if (hack->p2rhs)
-     { fact2 = (struct fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p2].gm.theMatch->matchingItem; }
+     { fact2 = (Fact *) EngineData(theEnv)->GlobalRHSBinds->binds[p2].gm.theMatch->matchingItem; }
    else
-     { fact2 = (struct fact *) EngineData(theEnv)->GlobalLHSBinds->binds[p2].gm.theMatch->matchingItem; }
+     { fact2 = (Fact *) EngineData(theEnv)->GlobalLHSBinds->binds[p2].gm.theMatch->matchingItem; }
 
    /*======================*/
    /* Retrieve the values. */
    /*======================*/
 
-   if (fact1->theProposition.theFields[s1].type != MULTIFIELD)
+   if (fact1->theProposition.theFields[s1].header->type != MULTIFIELD)
      { fieldPtr1 = &fact1->theProposition.theFields[s1]; }
    else
      {
-      segment = (struct multifield *) fact1->theProposition.theFields[s1].value;
+      segment = (Multifield *) fact1->theProposition.theFields[s1].value;
 
       if (hack->fromBeginning1)
         { fieldPtr1 = &segment->theFields[hack->offset1]; }
@@ -792,11 +770,11 @@ bool FactJNCompVars2(
         { fieldPtr1 = &segment->theFields[segment->multifieldLength - (hack->offset1 + 1)]; }
      }
 
-   if (fact2->theProposition.theFields[s2].type != MULTIFIELD)
+   if (fact2->theProposition.theFields[s2].header->type != MULTIFIELD)
      { fieldPtr2 = &fact2->theProposition.theFields[s2]; }
    else
      {
-      segment = (struct multifield *) fact2->theProposition.theFields[s2].value;
+      segment = (Multifield *) fact2->theProposition.theFields[s2].value;
 
       if (hack->fromBeginning2)
         { fieldPtr2 = &segment->theFields[hack->offset2]; }
@@ -807,9 +785,6 @@ bool FactJNCompVars2(
    /*=====================*/
    /* Compare the values. */
    /*=====================*/
-
-   if (fieldPtr1->type != fieldPtr2->type)
-     { return((bool) hack->fail); }
 
    if (fieldPtr1->value != fieldPtr2->value)
      { return((bool) hack->fail); }
@@ -842,13 +817,11 @@ bool FactPNCompVars1(
    /* Compare the values. */
    /*=====================*/
 
-   if (fieldPtr1->type != fieldPtr2->type) rv = (int) hack->fail;
-   else if (fieldPtr1->value != fieldPtr2->value) rv = (int) hack->fail;
+   if (fieldPtr1->value != fieldPtr2->value) rv = (int) hack->fail;
    else rv = (int) hack->pass;
 
-   theResult->type = SYMBOL;
-   if (rv) theResult->value = EnvTrueSymbol(theEnv);
-   else theResult->value = EnvFalseSymbol(theEnv);
+   if (rv) theResult->value = theEnv->TrueSymbol;
+   else theResult->value = theEnv->FalseSymbol;
 
    return(rv);
   }

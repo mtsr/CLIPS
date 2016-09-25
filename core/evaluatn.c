@@ -157,13 +157,11 @@ bool EvaluateExpression(
 #endif
 
    returnValue->environment = theEnv;
-   returnValue->type = RVOID;
-   returnValue->bitType = VOID_TYPE;
+   returnValue->voidValue = theEnv->VoidConstant;
 
    if (problem == NULL)
      {
-      returnValue->type = SYMBOL;
-      returnValue->value = EnvFalseSymbol(theEnv);
+      returnValue->value = theEnv->FalseSymbol;
       return(EvaluationData(theEnv)->EvaluationError);
      }
 
@@ -177,8 +175,8 @@ bool EvaluateExpression(
       case INSTANCE_NAME:
       case INSTANCE_ADDRESS:
 #endif
+      case FACT_ADDRESS:
       case EXTERNAL_ADDRESS:
-        returnValue->type = problem->type;
         returnValue->value = problem->value;
         break;
 
@@ -213,7 +211,6 @@ bool EvaluateExpression(
         }
 
      case MULTIFIELD:
-        returnValue->type = MULTIFIELD;
         returnValue->value = ((CLIPSValue *) (problem->value))->value;
         returnValue->begin = ((CLIPSValue *) (problem->value))->begin;
         returnValue->end = ((CLIPSValue *) (problem->value))->end;
@@ -221,14 +218,13 @@ bool EvaluateExpression(
 
      case MF_VARIABLE:
      case SF_VARIABLE:
-        if (GetBoundVariable(theEnv,returnValue,(SYMBOL_HN *) problem->value) == false)
+        if (GetBoundVariable(theEnv,returnValue,(CLIPSLexeme *) problem->value) == false)
           {
            PrintErrorID(theEnv,"EVALUATN",1,false);
            EnvPrintRouter(theEnv,WERROR,"Variable ");
            EnvPrintRouter(theEnv,WERROR,ValueToString(problem->value));
            EnvPrintRouter(theEnv,WERROR," is unbound\n");
-           returnValue->type = SYMBOL;
-           returnValue->value = EnvFalseSymbol(theEnv);
+           returnValue->value = theEnv->FalseSymbol;
            EnvSetEvaluationError(theEnv,true);
           }
         break;
@@ -242,7 +238,6 @@ bool EvaluateExpression(
 
         if (EvaluationData(theEnv)->PrimitivesArray[problem->type]->copyToEvaluate)
           {
-           returnValue->type = problem->type;
            returnValue->value = problem->value;
            break;
           }
@@ -389,7 +384,7 @@ void PrintDataObject(
   const char *fileid,
   CLIPSValue *argPtr)
   {
-   switch(argPtr->type)
+   switch(argPtr->header->type)
      {
       case RVOID:
       case SYMBOL:
@@ -402,31 +397,17 @@ void PrintDataObject(
       case INSTANCE_NAME:
       case INSTANCE_ADDRESS:
 #endif
-        PrintAtom(theEnv,fileid,argPtr->type,argPtr->value);
+        PrintAtom(theEnv,fileid,argPtr->header->type,argPtr->value);
         break;
 
       case MULTIFIELD:
-        PrintMultifield(theEnv,fileid,(struct multifield *) argPtr->value,
+        PrintMultifield(theEnv,fileid,(Multifield *) argPtr->value,
                         argPtr->begin,argPtr->end,true);
         break;
 
       default:
-        if (EvaluationData(theEnv)->PrimitivesArray[argPtr->type] != NULL)
-          {
-           if (EvaluationData(theEnv)->PrimitivesArray[argPtr->type]->longPrintFunction)
-             {
-              (*EvaluationData(theEnv)->PrimitivesArray[argPtr->type]->longPrintFunction)(theEnv,fileid,argPtr->value);
-              break;
-             }
-           else if (EvaluationData(theEnv)->PrimitivesArray[argPtr->type]->shortPrintFunction)
-             {
-              (*EvaluationData(theEnv)->PrimitivesArray[argPtr->type]->shortPrintFunction)(theEnv,fileid,argPtr->value);
-              break;
-             }
-          }
-
         EnvPrintRouter(theEnv,fileid,"<UnknownPrintType");
-        PrintLongInteger(theEnv,fileid,(long int) argPtr->type);
+        PrintLongInteger(theEnv,fileid,(long int) argPtr->header->type);
         EnvPrintRouter(theEnv,fileid,">");
         EnvSetHaltExecution(theEnv,true);
         EnvSetEvaluationError(theEnv,true);
@@ -442,8 +423,6 @@ void EnvSetMultifieldErrorValue(
   Environment *theEnv,
   CLIPSValue *returnValue)
   {
-   returnValue->type = MULTIFIELD;
-   returnValue->bitType = MULTIFIELD_TYPE;
    returnValue->value = EnvCreateMultifield(theEnv,0L);
    returnValue->begin = 1;
    returnValue->end = 0;
@@ -457,8 +436,8 @@ void ValueInstall(
   Environment *theEnv,
   CLIPSValue *vPtr)
   {
-   if (vPtr->type == MULTIFIELD) MultifieldInstall(theEnv,(struct multifield *) vPtr->value);
-   else AtomInstall(theEnv,vPtr->type,vPtr->value);
+   if (vPtr->header->type == MULTIFIELD) CVMultifieldInstall(theEnv,(Multifield *) vPtr->value);
+   else CVAtomInstall(theEnv,vPtr->value);
   }
 
 /****************************************************/
@@ -469,8 +448,112 @@ void ValueDeinstall(
   Environment *theEnv,
   CLIPSValue *vPtr)
   {
-   if (vPtr->type == MULTIFIELD) MultifieldDeinstall(theEnv,(struct multifield *) vPtr->value);
-   else AtomDeinstall(theEnv,vPtr->type,vPtr->value);
+   if (vPtr->header->type == MULTIFIELD) CVMultifieldDeinstall(theEnv,(Multifield *) vPtr->value);
+   else CVAtomDeinstall(theEnv,vPtr->value);
+  }
+
+/*******************************************/
+/* CVAtomInstall: Increments the reference */
+/*   count of an atomic data type.         */
+/*******************************************/
+void CVAtomInstall(
+  Environment *theEnv,
+  void *vPtr)
+  {
+   switch (((TypeHeader *) vPtr)->type)
+     {
+      case SYMBOL:
+      case STRING:
+#if OBJECT_SYSTEM
+      case INSTANCE_NAME:
+#endif
+        IncrementSymbolCount(vPtr);
+        break;
+
+      case FLOAT:
+        IncrementFloatCount(vPtr);
+        break;
+
+      case INTEGER:
+        IncrementIntegerCount(vPtr);
+        break;
+
+      case EXTERNAL_ADDRESS:
+        IncrementExternalAddressCount(vPtr);
+        break;
+
+      case MULTIFIELD:
+        MultifieldInstall(theEnv,(Multifield *) vPtr);
+        break;
+        
+      case INSTANCE_ADDRESS:
+        EnvIncrementInstanceCount(theEnv,(Instance *) vPtr);
+        break;
+     
+      case FACT_ADDRESS:
+        EnvIncrementFactCount(theEnv,(Fact *) vPtr);
+        break;
+     
+      case RVOID:
+        break;
+
+      default:
+        SystemError(theEnv,"EVALUATN",7);
+        EnvExitRouter(theEnv,EXIT_FAILURE);
+        break;
+     }
+  }
+
+/*********************************************/
+/* CVAtomDeinstall: Decrements the reference */
+/*   count of an atomic data type.           */
+/*********************************************/
+void CVAtomDeinstall(
+  Environment *theEnv,
+  void *vPtr)
+  {
+   switch (((TypeHeader *) vPtr)->type)
+     {
+      case SYMBOL:
+      case STRING:
+#if OBJECT_SYSTEM
+      case INSTANCE_NAME:
+#endif
+        DecrementSymbolCount(theEnv,(CLIPSLexeme *) vPtr);
+        break;
+
+      case FLOAT:
+        DecrementFloatCount(theEnv,(CLIPSFloat *) vPtr);
+        break;
+
+      case INTEGER:
+        DecrementIntegerCount(theEnv,(CLIPSInteger *) vPtr);
+        break;
+
+      case EXTERNAL_ADDRESS:
+        DecrementExternalAddressCount(theEnv,(EXTERNAL_ADDRESS_HN *) vPtr);
+        break;
+
+      case MULTIFIELD:
+        MultifieldDeinstall(theEnv,(Multifield *) vPtr);
+        break;
+        
+      case INSTANCE_ADDRESS:
+        EnvDecrementInstanceCount(theEnv,(Instance *) vPtr);
+        break;
+     
+      case FACT_ADDRESS:
+        EnvDecrementFactCount(theEnv,(Fact *) vPtr);
+        break;
+
+      case RVOID:
+        break;
+
+      default:
+        SystemError(theEnv,"EVALUATN",8);
+        EnvExitRouter(theEnv,EXIT_FAILURE);
+        break;
+     }
   }
 
 /*****************************************/
@@ -508,7 +591,7 @@ void AtomInstall(
         break;
 
       case MULTIFIELD:
-        MultifieldInstall(theEnv,(struct multifield *) vPtr);
+        MultifieldInstall(theEnv,(Multifield *) vPtr);
         break;
 
       case RVOID:
@@ -527,7 +610,7 @@ void AtomInstall(
 /* AtomDeinstall: Decrements the reference */
 /*   count of an atomic data type.         */
 /*******************************************/
-void AtomDeinstall(
+void AtomDeinstall( // TBD remove type argument
   Environment *theEnv,
   int type,
   void *vPtr)
@@ -542,15 +625,15 @@ void AtomDeinstall(
 #if OBJECT_SYSTEM
       case INSTANCE_NAME:
 #endif
-        DecrementSymbolCount(theEnv,(SYMBOL_HN *) vPtr);
+        DecrementSymbolCount(theEnv,(CLIPSLexeme *) vPtr);
         break;
 
       case FLOAT:
-        DecrementFloatCount(theEnv,(FLOAT_HN *) vPtr);
+        DecrementFloatCount(theEnv,(CLIPSFloat *) vPtr);
         break;
 
       case INTEGER:
-        DecrementIntegerCount(theEnv,(INTEGER_HN *) vPtr);
+        DecrementIntegerCount(theEnv,(CLIPSInteger *) vPtr);
         break;
 
       case EXTERNAL_ADDRESS:
@@ -558,7 +641,7 @@ void AtomDeinstall(
         break;
 
       case MULTIFIELD:
-        MultifieldDeinstall(theEnv,(struct multifield *) vPtr);
+        MultifieldDeinstall(theEnv,(Multifield *) vPtr);
         break;
 
       case RVOID:
@@ -644,8 +727,7 @@ bool FunctionCall2(
    /* Initialize the default return value. */
    /*======================================*/
 
-   returnValue->type = SYMBOL;
-   returnValue->value = EnvFalseSymbol(theEnv);
+   returnValue->value = theEnv->FalseSymbol;
 
    /*============================*/
    /* Parse the argument string. */
@@ -687,16 +769,15 @@ void CopyDataObject(
   CLIPSValue *src,
   int garbageMultifield)
   {
-   if (src->type != MULTIFIELD)
+   if (src->header->type != MULTIFIELD)
      {
-      dst->type = src->type;
       dst->value = src->value;
      }
    else
      {
       DuplicateMultifield(theEnv,dst,src);
       if (garbageMultifield)
-        { AddToMultifieldList(theEnv,(struct multifield *) dst->value); }
+        { AddToMultifieldList(theEnv,(Multifield *) dst->value); }
      }
   }
 
@@ -709,7 +790,6 @@ void TransferDataObjectValues(
   CLIPSValue *dst,
   CLIPSValue *src)
   {
-   dst->type = src->type;
    dst->value = src->value;
    dst->begin = src->begin;
    dst->end = src->end;
@@ -730,13 +810,13 @@ struct expr *ConvertValueToExpression(
    long i;
    struct expr *head = NULL, *last = NULL, *newItem;
 
-   if (GetpType(theValue) != MULTIFIELD)
-     { return(GenConstant(theEnv,GetpType(theValue),GetpValue(theValue))); }
+   if (theValue->header->type != MULTIFIELD)
+     { return(GenConstant(theEnv,theValue->header->type,theValue->value)); }
 
-   for (i = GetpDOBegin(theValue); i <= GetpDOEnd(theValue); i++)
+   for (i = theValue->begin; i <= theValue->end; i++)
      {
-      newItem = GenConstant(theEnv,GetMFType(GetpValue(theValue),i),
-                        GetMFValue(GetpValue(theValue),i));
+      newItem = GenConstant(theEnv,GetMFType(theValue->value,i),
+                                   GetMFValue(theValue->value,i));
       if (last == NULL) head = newItem;
       else last->nextArg = newItem;
       last = newItem;
@@ -797,7 +877,7 @@ unsigned long GetAtomicHashValue(
       case INSTANCE_NAME:
 #endif
       case SYMBOL:
-        tvalue = ((SYMBOL_HN *) value)->bucket;
+        tvalue = ((CLIPSLexeme *) value)->bucket;
         break;
 
       default:
@@ -938,15 +1018,15 @@ bool DOsEqual(
   CLIPSValue *dobj1,
   CLIPSValue *dobj2)
   {
-   if (GetpType(dobj1) != GetpType(dobj2))
+   if (dobj1->header->type != dobj2->header->type)
      { return false; }
 
-   if (GetpType(dobj1) == MULTIFIELD)
+   if (dobj1->header->type == MULTIFIELD)
      {
       if (MultifieldDOsEqual(dobj1,dobj2) == false)
         { return false; }
      }
-   else if (GetpValue(dobj1) != GetpValue(dobj2))
+   else if (dobj1->value != dobj2->value)
      { return false; }
 
    return true;
@@ -974,7 +1054,6 @@ bool EvaluateAndStoreInDataObject(
   CLIPSValue *val,
   bool garbageSegment)
   {
-   val->type = MULTIFIELD;
    val->begin = 0;
    val->end = -1;
 
@@ -999,11 +1078,10 @@ bool EvaluateAndStoreInDataObject(
 /******************/
 void MFSetNthValueF(
   CLIPSValue *mf,
-  CLIPSInteger n,
+  long n,
   CLIPSValue *nv)
   {
-   ((struct field *) ((struct multifield *) (mf->value))->theFields)[(mf->begin + n) - 1].type = nv->type;
-   ((struct field *) ((struct multifield *) (mf->value))->theFields)[(mf->begin + n) - 1].value = nv->value;
+   ((struct field *) ((Multifield *) (mf->value))->theFields)[(mf->begin + n) - 1].value = nv->value;
   }
 
 /***********************/
@@ -1011,23 +1089,11 @@ void MFSetNthValueF(
 /***********************/
 void CVCreateMultifieldF(
   CLIPSValue *mf,
-  CLIPSInteger size)
+  long size)
   {
    mf->value = EnvCreateMultifield(mf->environment,size);
-   mf->bitType = MULTIFIELD_TYPE;
-   mf->type = MULTIFIELD;
    mf->begin = 0;
    mf->end = size - 1;
-  }
-
-/************/
-/* CVIsType */
-/************/
-bool CVIsType(
-  CLIPSValue *theValue,
-  unsigned expectedType)
-  {
-   return (theValue->bitType & expectedType);
   }
 
 /*************/
@@ -1040,183 +1106,13 @@ void EnvCVInit(
    theValue->environment = theEnv;
   }
 
-/**************/
-/* CVToString */
-/**************/
-CLIPSString CVToString(
-  CLIPSValue *theValue)
-  {
-   if (mCVIsType(theValue,LEXEME_TYPES | INSTANCE_NAME_TYPE))
-     { return ((struct symbolHashNode *) theValue->value)->contents; }
-   else
-     { return NULL; }
-  }
-
-/***************/
-/* CVToInteger */
-/***************/
-CLIPSInteger CVToInteger(
-  CLIPSValue *theValue)
-  {
-   if (mCVIsType(theValue,INTEGER_TYPE))
-     { return ((struct integerHashNode *) theValue->value)->contents; }
-   else if (mCVIsType(theValue,FLOAT_TYPE))
-     { return (CLIPSInteger) ((struct floatHashNode *) theValue->value)->contents; }
-   else
-     { return 0LL; }
-  }
-
-/*************/
-/* CVToFloat */
-/*************/
-CLIPSFloat CVToFloat(
-  CLIPSValue *theValue)
-  {
-   if (mCVIsType(theValue,FLOAT_TYPE))
-     { return ((struct floatHashNode *) theValue->value)->contents; }
-   else if (mCVIsType(theValue,INTEGER_TYPE))
-     { return (CLIPSFloat) ((struct integerHashNode *) theValue->value)->contents; }
-   else
-     { return 0.0; }
-  }
-
-/*************/
-/* CVSetVoid */
-/*************/
-void CVSetVoid(
-  CLIPSValue *theValue)
-  {
-   theValue->value = NULL;
-   theValue->bitType = VOID_TYPE;
-   theValue->type = RVOID;
-  }
-
-/****************/
-/* CVSetInteger */
-/****************/
-void CVSetInteger(
-  CLIPSValue *theValue,
-  CLIPSInteger iv)
-  {
-   theValue->value = EnvAddLong(theValue->environment,iv);
-   theValue->bitType = INTEGER_TYPE;
-   theValue->type = INTEGER;
-  }
-
-/**************/
-/* CVSetFloat */
-/**************/
-void CVSetFloat(
-  CLIPSValue *theValue,
-  CLIPSFloat fv)
-  {
-   theValue->value = EnvAddDouble(theValue->environment,fv);
-   theValue->bitType = FLOAT_TYPE;
-   theValue->type = FLOAT;
-  }
-
-/***************/
-/* CVSetString */
-/***************/
-void CVSetString(
-  CLIPSValue *theValue,
-  CLIPSString sv)
-  {
-   theValue->value = EnvAddSymbol(theValue->environment,sv);
-   theValue->bitType = STRING_TYPE;
-   theValue->type = STRING;
-  }
-
-/***************/
-/* CVSetSymbol */
-/***************/
-void CVSetSymbol(
-  CLIPSValue *theValue,
-  CLIPSString sv)
-  {
-   theValue->value = EnvAddSymbol(theValue->environment,sv);
-   theValue->bitType = SYMBOL_TYPE;
-   theValue->type = SYMBOL;
-  }
-
-/*********************/
-/* CVSetInstanceName */
-/*********************/
-void CVSetInstanceName(
-  CLIPSValue *theValue,
-  CLIPSString sv)
-  {
-   theValue->value = EnvAddSymbol(theValue->environment,sv);
-   theValue->bitType = INSTANCE_NAME_TYPE;
-   theValue->type = INSTANCE_NAME;
-  }
-
-/********************/
-/* CVSetFactAddress */
-/********************/
-void CVSetFactAddress(
-  CLIPSValue *theValue,
-  Fact *fv)
-  {
-   theValue->value = fv;
-   theValue->bitType = FACT_ADDRESS_TYPE;
-   theValue->type = FACT_ADDRESS;
-  }
-
-/************************/
-/* CVSetInstanceAddress */
-/************************/
-void CVSetInstanceAddress(
-  CLIPSValue *theValue,
-  Instance *iv)
-  {
-   theValue->value = iv;
-   theValue->bitType = INSTANCE_ADDRESS_TYPE;
-   theValue->type = INSTANCE_ADDRESS;
-  }
-
-/****************/
-/* CVSetBoolean */
-/****************/
-void CVSetBoolean(
-  CLIPSValue *theValue,
-  bool bv)
-  {
-   if (bv)
-     { theValue->value = SymbolData(theValue->environment)->TrueSymbolHN; }
-   else
-     { theValue->value = SymbolData(theValue->environment)->FalseSymbolHN; }
-   theValue->bitType = (SYMBOL_TYPE | BOOLEAN_TYPE);
-   theValue->type = SYMBOL;
-  }
-
-/*******************/
-/* CVIsFalseSymbol */
-/*******************/
-bool CVIsFalseSymbol(
-  CLIPSValue *theValue)
-  {
-   return ((theValue->type == SYMBOL) &&
-           (theValue->value == SymbolData(theValue->environment)->FalseSymbolHN));
-  }
-
-/******************/
-/* CVIsTrueSymbol */
-/******************/
-bool CVIsTrueSymbol(
-  CLIPSValue *theValue)
-  {
-   return ((theValue->type == SYMBOL) &&
-           (theValue->value == SymbolData(theValue->environment)->TrueSymbolHN));
-  }
-
 /************/
 /* MFLength */
 /************/
-CLIPSInteger MFLength(
+long MFLength(
   CLIPSValue *theValue)
   {
-   if (theValue->type == MULTIFIELD)
+   if (theValue->header->type == MULTIFIELD)
      { return (theValue->end - theValue->begin) + 1; }
    else
      { return 0; }
@@ -1227,25 +1123,21 @@ CLIPSInteger MFLength(
 /**************/
 void MFNthValue(
   CLIPSValue *theMFValue,
-  CLIPSInteger n,
+  long n,
   CLIPSValue *returnValue)
   {
    struct multifield *theMF;
 
-   if ((theMFValue->type != MULTIFIELD) ||
+   if ((theMFValue->header->type != MULTIFIELD) ||
        (n < 0) ||
        (n >= (theMFValue->end - theMFValue->begin)))
      {
-      returnValue->type = RVOID;
-      returnValue->bitType = VOID_TYPE;
-      returnValue->value = NULL;
+      returnValue->value = returnValue->environment->VoidConstant;
       return;
      }
 
-   theMF = (struct multifield *) theMFValue->value;
-   returnValue->type = theMF->theFields[theMFValue->begin + n - 1].type;
+   theMF = (Multifield *) theMFValue->value;
    returnValue->value = theMF->theFields[theMFValue->begin + n - 1].value;
-   returnValue->bitType = (1 << returnValue->type);
    returnValue->environment = theMFValue->environment;
   }
 
@@ -1286,8 +1178,7 @@ static void NewCAddress(
       return;
      }
 
-   SetpType(rv,EXTERNAL_ADDRESS);
-   SetpValue(rv,EnvAddExternalAddress(theEnv,NULL,0));
+   rv->value = EnvAddExternalAddress(theEnv,NULL,0);
   }
 
 /*******************************/

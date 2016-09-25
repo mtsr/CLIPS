@@ -144,8 +144,7 @@ static void ResetDefglobalAction(
 
    if (EvaluateExpression(theEnv,theDefglobal->initial,&assignValue))
      {
-      assignValue.type = SYMBOL;
-      assignValue.value = EnvFalseSymbol(theEnv);
+      assignValue.value = theEnv->FalseSymbol;
      }
 
    QSetDefglobalValue(theEnv,theDefglobal,&assignValue,false);
@@ -219,7 +218,7 @@ void DefglobalModuleFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"defglobal-module",DefglobalData(theEnv)->DefglobalConstruct));
+   returnValue->value = GetConstructModuleCommand(context,"defglobal-module",DefglobalData(theEnv)->DefglobalConstruct);
   }
 
 #if DEBUGGING_FUNCTIONS

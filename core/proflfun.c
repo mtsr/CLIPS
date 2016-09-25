@@ -162,7 +162,7 @@ void ProfileCommand(
    CLIPSValue theValue;
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
-   argument = mCVToString(&theValue);
+   argument = theValue.lexemeValue->contents;
 
    if (! Profile(theEnv,argument))
      {
@@ -505,7 +505,7 @@ void ProfileResetCommand(
         {
          theMethod = GetDefmethodPointer(theDefgeneric,methodIndex);
          ResetProfileInfo((struct constructProfileInfo *)
-                          TestUserData(ProfileFunctionData(theEnv)->ProfileDataID,theMethod->usrData));
+                          TestUserData(ProfileFunctionData(theEnv)->ProfileDataID,theMethod->header.usrData));
         }
      }
 #endif
@@ -523,7 +523,7 @@ void ProfileResetCommand(
         {
          theHandler = GetDefmessageHandlerPointer(theDefclass,handlerIndex);
          ResetProfileInfo((struct constructProfileInfo *)
-                          TestUserData(ProfileFunctionData(theEnv)->ProfileDataID,theHandler->usrData));
+                          TestUserData(ProfileFunctionData(theEnv)->ProfileDataID,theHandler->header.usrData));
         }
      }
 #endif
@@ -559,7 +559,7 @@ static void OutputUserFunctionsInfo(
         theFunction != NULL;
         theFunction = theFunction->next)
      {
-      OutputProfileInfo(theEnv,ValueToString(theFunction->callFunctionName),
+      OutputProfileInfo(theEnv,theFunction->callFunctionName->contents,
                         (struct constructProfileInfo *)
                            TestUserData(ProfileFunctionData(theEnv)->ProfileDataID,
                         theFunction->usrData),
@@ -643,7 +643,7 @@ static void OutputConstructsCodeInfo(
          EnvGetDefmethodDescription(theEnv,methodBuffer,510,theDefgeneric,methodIndex);
          if (OutputProfileInfo(theEnv,methodBuffer,
                                (struct constructProfileInfo *)
-                                  TestUserData(ProfileFunctionData(theEnv)->ProfileDataID,theMethod->usrData),
+                                  TestUserData(ProfileFunctionData(theEnv)->ProfileDataID,theMethod->header.usrData),
                                prefixBefore,prefix,prefixAfter,&banner))
            {
             prefixBefore = NULL;
@@ -672,7 +672,7 @@ static void OutputConstructsCodeInfo(
          if (OutputProfileInfo(theEnv,EnvGetDefmessageHandlerName(theEnv,theDefclass,handlerIndex),
                                (struct constructProfileInfo *)
                                   TestUserData(ProfileFunctionData(theEnv)->ProfileDataID,
-                               theHandler->usrData),
+                               theHandler->header.usrData),
                                prefixBefore,prefix,prefixAfter,&banner))
            {
             prefixBefore = NULL;
@@ -715,15 +715,15 @@ void SetProfilePercentThresholdCommand(
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theValue))
      { return; }
 
-   newThreshold = mCVToFloat(&theValue);
+   newThreshold = CVCoerceToFloat(&theValue);
 
    if ((newThreshold < 0.0) || (newThreshold > 100.0))
      {
       UDFInvalidArgumentMessage(context,"number in the range 0 to 100");
-      mCVSetFloat(returnValue,-1.0);
+      returnValue->floatValue = EnvCreateFloat(theEnv,-1.0);
      }
-
-   mCVSetFloat(returnValue,SetProfilePercentThreshold(theEnv,newThreshold));
+   else
+     { returnValue->floatValue = EnvCreateFloat(theEnv,SetProfilePercentThreshold(theEnv,newThreshold)); }
   }
 
 /****************************************************/
@@ -755,7 +755,7 @@ void GetProfilePercentThresholdCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   mCVSetFloat(returnValue,ProfileFunctionData(theEnv)->PercentThreshold);
+   returnValue->floatValue = EnvCreateFloat(theEnv,ProfileFunctionData(theEnv)->PercentThreshold);
   }
 
 /****************************************************/

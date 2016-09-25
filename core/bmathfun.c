@@ -88,8 +88,8 @@ void AdditionFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CLIPSFloat ftotal = 0.0;
-   CLIPSInteger ltotal = 0LL;
+   double ftotal = 0.0;
+   long long ltotal = 0LL;
    bool useFloatTotal = false;
    CLIPSValue theArg;
 
@@ -106,14 +106,14 @@ void AdditionFunction(
         { return; }
 
       if (useFloatTotal)
-        { ftotal += mCVToFloat(&theArg); }
+        { ftotal += CVCoerceToFloat(&theArg); }
       else
         {
-         if (mCVIsType(&theArg,INTEGER_TYPE))
-           { ltotal += mCVToInteger(&theArg); }
+         if (CVIsType(&theArg,INTEGER_TYPE))
+           { ltotal += theArg.integerValue->contents; }
          else
            {
-            ftotal = ((CLIPSFloat) ltotal) + mCVToFloat(&theArg);
+            ftotal = (double) ltotal + CVCoerceToFloat(&theArg);
             useFloatTotal = true;
            }
         }
@@ -125,9 +125,9 @@ void AdditionFunction(
    /*======================================================*/
 
    if (useFloatTotal)
-     { mCVSetFloat(returnValue,ftotal); }
+     { returnValue->floatValue = EnvCreateFloat(theEnv,ftotal); }
    else
-     { mCVSetInteger(returnValue,ltotal); }
+     { returnValue->integerValue = EnvCreateInteger(theEnv,ltotal); }
   }
 
 /****************************************/
@@ -139,8 +139,8 @@ void MultiplicationFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CLIPSFloat ftotal = 1.0;
-   CLIPSInteger ltotal = 1LL;
+   double ftotal = 1.0;
+   long long ltotal = 1LL;
    bool useFloatTotal = false;
    CLIPSValue theArg;
 
@@ -157,14 +157,14 @@ void MultiplicationFunction(
         { return; }
 
       if (useFloatTotal)
-        { ftotal *= mCVToFloat(&theArg); }
+        { ftotal *= CVCoerceToFloat(&theArg); }
       else
         {
-         if (mCVIsType(&theArg,INTEGER_TYPE))
-           { ltotal *= mCVToInteger(&theArg); }
+         if (CVIsType(&theArg,INTEGER_TYPE))
+           { ltotal *= theArg.integerValue->contents; }
          else
            {
-            ftotal = ((CLIPSFloat) ltotal) * mCVToFloat(&theArg);
+            ftotal = (double) ltotal * CVCoerceToFloat(&theArg);
             useFloatTotal = true;
            }
         }
@@ -176,9 +176,9 @@ void MultiplicationFunction(
    /*======================================================*/
 
    if (useFloatTotal)
-     { mCVSetFloat(returnValue,ftotal); }
+     { returnValue->floatValue = EnvCreateFloat(theEnv,ftotal); }
    else
-     { mCVSetInteger(returnValue,ltotal); }
+     { returnValue->integerValue = EnvCreateInteger(theEnv,ltotal); }
   }
 
 /*************************************/
@@ -190,8 +190,8 @@ void SubtractionFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CLIPSFloat ftotal = 0.0;
-   CLIPSInteger ltotal = 0LL;
+   double ftotal = 0.0;
+   long long ltotal = 0LL;
    bool useFloatTotal = false;
    CLIPSValue theArg;
 
@@ -204,11 +204,11 @@ void SubtractionFunction(
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      { return; }
 
-   if (mCVIsType(&theArg,INTEGER_TYPE))
-     { ltotal = mCVToInteger(&theArg); }
+   if (CVIsType(&theArg,INTEGER_TYPE))
+     { ltotal = theArg.integerValue->contents; }
    else
      {
-      ftotal = mCVToFloat(&theArg);
+      ftotal = CVCoerceToFloat(&theArg);
       useFloatTotal = true;
      }
 
@@ -225,14 +225,14 @@ void SubtractionFunction(
         { return; }
 
       if (useFloatTotal)
-        { ftotal -= mCVToFloat(&theArg); }
+        { ftotal -= CVCoerceToFloat(&theArg); }
       else
         {
-         if (mCVIsType(&theArg,INTEGER_TYPE))
-           { ltotal -= mCVToInteger(&theArg); }
+         if (CVIsType(&theArg,INTEGER_TYPE))
+           { ltotal -= theArg.integerValue->contents; }
          else
            {
-            ftotal = ((CLIPSFloat) ltotal) - mCVToFloat(&theArg);
+            ftotal = (double) ltotal - theArg.floatValue->contents;
             useFloatTotal = true;
            }
         }
@@ -244,9 +244,9 @@ void SubtractionFunction(
    /*======================================================*/
 
    if (useFloatTotal)
-     { mCVSetFloat(returnValue,ftotal); }
+     { returnValue->floatValue = EnvCreateFloat(theEnv,ftotal); }
    else
-     { mCVSetInteger(returnValue,ltotal); }
+     { returnValue->integerValue = EnvCreateInteger(theEnv,ltotal); }
   }
 
 /***********************************/
@@ -258,8 +258,8 @@ void DivisionFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CLIPSFloat ftotal = 1.0;
-   CLIPSFloat theNumber;
+   double ftotal = 1.0;
+   double theNumber;
    CLIPSValue theArg;
 
    /*===================================================*/
@@ -273,7 +273,7 @@ void DivisionFunction(
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      { return; }
 
-   ftotal = mCVToFloat(&theArg);
+   ftotal = CVCoerceToFloat(&theArg);
 
    /*====================================================*/
    /* Loop through each of the arguments dividing it     */
@@ -288,13 +288,13 @@ void DivisionFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
         { return; }
 
-      theNumber = mCVToFloat(&theArg);
+      theNumber = CVCoerceToFloat(&theArg);
 
       if (theNumber == 0.0)
         {
          DivideByZeroErrorMessage(theEnv,"/");
          EnvSetEvaluationError(theEnv,true);
-         mCVSetFloat(returnValue,1.0);
+         returnValue->floatValue = EnvCreateFloat(theEnv,1.0);
          return;
         }
 
@@ -306,7 +306,7 @@ void DivisionFunction(
    /* then return a float, otherwise return an integer.    */
    /*======================================================*/
 
-   mCVSetFloat(returnValue,ftotal);
+   returnValue->floatValue = EnvCreateFloat(theEnv,ftotal);
   }
 
 /*************************************/
@@ -318,9 +318,9 @@ void DivFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CLIPSInteger total = 1LL;
+   long long total = 1LL;
    CLIPSValue theArg;
-   CLIPSInteger theNumber;
+   long long theNumber;
 
    /*===================================================*/
    /* Get the first argument. This number which will be */
@@ -330,7 +330,7 @@ void DivFunction(
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&theArg))
      { return; }
-   total = mCVToInteger(&theArg);
+   total = CVCoerceToInteger(&theArg);
 
    /*=====================================================*/
    /* Loop through each of the arguments dividing it into */
@@ -344,13 +344,13 @@ void DivFunction(
       if (! UDFNextArgument(context,NUMBER_TYPES,&theArg))
         { return; }
 
-      theNumber = mCVToInteger(&theArg);
+      theNumber = CVCoerceToInteger(&theArg);
 
       if (theNumber == 0LL)
         {
          DivideByZeroErrorMessage(theEnv,"div");
          EnvSetEvaluationError(theEnv,true);
-         mCVSetInteger(returnValue,1L);
+         returnValue->integerValue = EnvCreateInteger(theEnv,1L);
          return;
         }
 
@@ -361,7 +361,7 @@ void DivFunction(
    /* The result of the div function is always an integer. */
    /*======================================================*/
 
-   mCVSetInteger(returnValue,total);
+   returnValue->integerValue = EnvCreateInteger(theEnv,total);
   }
 
 /*****************************************/
@@ -385,8 +385,8 @@ void IntegerFunction(
    /* return the argument unchanged.             */
    /*============================================*/
 
-   if (mCVIsType(returnValue,FLOAT_TYPE))
-     { mCVSetInteger(returnValue,mCVToInteger(returnValue)); }
+   if (CVIsType(returnValue,FLOAT_TYPE))
+     { returnValue->integerValue = EnvCreateInteger(theEnv,CVCoerceToInteger(returnValue)); }
   }
 
 /***************************************/
@@ -410,8 +410,8 @@ void FloatFunction(
    /* return the argument unchanged.              */
    /*=============================================*/
 
-   if (mCVIsType(returnValue,INTEGER_TYPE))
-     { mCVSetFloat(returnValue,mCVToFloat(returnValue)); }
+   if (CVIsType(returnValue,INTEGER_TYPE))
+     { returnValue->floatValue = EnvCreateFloat(theEnv,CVCoerceToFloat(returnValue)); }
   }
 
 /*************************************/
@@ -434,15 +434,17 @@ void AbsFunction(
    /* Return the absolute value of the number. */
    /*==========================================*/
 
-   if (mCVIsType(returnValue,INTEGER_TYPE))
+   if (CVIsType(returnValue,INTEGER_TYPE))
      {
-      CLIPSInteger lv = mCVToInteger(returnValue);
-      if (lv < 0L) mCVSetInteger(returnValue,-lv);
+      long long lv = returnValue->integerValue->contents;
+      if (lv < 0L)
+        { returnValue->integerValue = EnvCreateInteger(theEnv,-lv); }
      }
    else
      {
-      CLIPSFloat dv = mCVToFloat(returnValue);
-      if (dv < 0.0) mCVSetFloat(returnValue,-dv);
+      double dv = returnValue->floatValue->contents;
+      if (dv < 0.0)
+        { returnValue->floatValue = EnvCreateFloat(theEnv,-dv); }
      }
   }
 
@@ -481,15 +483,15 @@ void MinFunction(
       /* to floats. Otherwise compare two integers.  */
       /*=============================================*/
 
-      if (mCVIsType(returnValue,FLOAT_TYPE) || mCVIsType(&nextPossible,FLOAT_TYPE))
+      if (CVIsType(returnValue,FLOAT_TYPE) || CVIsType(&nextPossible,FLOAT_TYPE))
         {
-         if (mCVToFloat(returnValue) > mCVToFloat(&nextPossible))
-           { CVSetCLIPSValue(returnValue,&nextPossible); }
+         if (CVCoerceToFloat(returnValue) > CVCoerceToFloat(&nextPossible))
+           { returnValue->value = nextPossible.value; }
         }
       else
         {
-         if (mCVToInteger(returnValue) > mCVToInteger(&nextPossible))
-           { CVSetCLIPSValue(returnValue,&nextPossible); }
+         if (returnValue->integerValue->contents > nextPossible.integerValue->contents)
+           { returnValue->value = nextPossible.value; }
         }
      }
   }
@@ -529,15 +531,15 @@ void MaxFunction(
       /* to floats. Otherwise compare two integers.  */
       /*=============================================*/
 
-      if (mCVIsType(returnValue,FLOAT_TYPE) || mCVIsType(&nextPossible,FLOAT_TYPE))
+      if (CVIsType(returnValue,FLOAT_TYPE) || CVIsType(&nextPossible,FLOAT_TYPE))
         {
-         if (mCVToFloat(returnValue) < mCVToFloat(&nextPossible))
-           { CVSetCLIPSValue(returnValue,&nextPossible); }
+         if (CVCoerceToFloat(returnValue) < CVCoerceToFloat(&nextPossible))
+           { returnValue->value = nextPossible.value; }
         }
       else
         {
-         if (mCVToInteger(returnValue) < mCVToInteger(&nextPossible))
-           { CVSetCLIPSValue(returnValue,&nextPossible); }
+         if (returnValue->integerValue->contents < nextPossible.integerValue->contents)
+           { returnValue->value = nextPossible.value; }
         }
      }
   }

@@ -227,7 +227,7 @@ void DeffactsModuleFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CVSetCLIPSSymbol(returnValue,GetConstructModuleCommand(context,"deffacts-module",DeffactsData(theEnv)->DeffactsConstruct));
+   returnValue->value = GetConstructModuleCommand(context,"deffacts-module",DeffactsData(theEnv)->DeffactsConstruct);
   }
 
 #if DEBUGGING_FUNCTIONS

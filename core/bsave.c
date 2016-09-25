@@ -121,16 +121,16 @@ void BsaveCommand(
      {
       if (EnvBsave(theEnv,fileName))
         {
-         mCVSetBoolean(returnValue,true);
+         returnValue->lexemeValue = theEnv->TrueSymbol;
          return;
         }
      }
 #else
 #if MAC_XCD
-#pragma unused(context)
+#pragma unused(theEnv,context)
 #endif
 #endif
-   mCVSetBoolean(returnValue,false);
+   returnValue->lexemeValue = theEnv->FalseSymbol;
   }
 
 #if BLOAD_AND_BSAVE
@@ -384,8 +384,8 @@ static void WriteNeededFunctions(
      {
       if (functionList->bsaveIndex >= 0)
         {
-         length = strlen(ValueToString(functionList->callFunctionName)) + 1;
-         GenWrite((void *) ValueToString(functionList->callFunctionName),(unsigned long) length,fp);
+         length = strlen(functionList->callFunctionName->contents) + 1;
+         GenWrite((void *) functionList->callFunctionName->contents,(unsigned long) length,fp);
         }
      }
   }
@@ -406,7 +406,7 @@ static size_t FunctionBinarySize(
         functionList = functionList->next)
      {
       if (functionList->bsaveIndex >= 0)
-        { size += strlen(ValueToString(functionList->callFunctionName)) + 1; }
+        { size += strlen(functionList->callFunctionName->contents) + 1; }
      }
 
    return(size);
@@ -472,15 +472,15 @@ void MarkNeededItems(
          case STRING:
          case GBL_VARIABLE:
          case INSTANCE_NAME:
-            ((SYMBOL_HN *) testPtr->value)->neededSymbol = true;
+            ((CLIPSLexeme *) testPtr->value)->neededSymbol = true;
             break;
 
          case FLOAT:
-            ((FLOAT_HN *) testPtr->value)->neededFloat = true;
+            ((CLIPSFloat *) testPtr->value)->neededFloat = true;
             break;
 
          case INTEGER:
-            ((INTEGER_HN *) testPtr->value)->neededInteger = true;
+            ((CLIPSInteger *) testPtr->value)->neededInteger = true;
             break;
 
          case FCALL:

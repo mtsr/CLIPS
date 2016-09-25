@@ -316,7 +316,7 @@ int LoadConstructsFromLogicalName(
       /* Parse the construct. */
       /*======================*/
 
-      constructFlag = ParseConstruct(theEnv,ValueToString(theToken.value),readSource);
+      constructFlag = ParseConstruct(theEnv,theToken.lexemeValue->contents,readSource);
 
       /*==============================================================*/
       /* If an error occurred while parsing, then find the beginning  */
@@ -362,7 +362,7 @@ int LoadConstructsFromLogicalName(
       YieldTime(theEnv);
 
       if (foundConstruct)
-         { DecrementSymbolCount(theEnv,(SYMBOL_HN *) theToken.value); }
+         { DecrementSymbolCount(theEnv,theToken.lexemeValue); }
      }
 
    /*========================================================*/
@@ -463,7 +463,7 @@ static bool FindConstructBeginning(
          /* Is this a valid construct name (e.g., defrule, deffacts). */
          /*===========================================================*/
 
-         if (FindConstruct(theEnv,ValueToString(theToken->value)) != NULL) return true;
+         if (FindConstruct(theEnv,theToken->lexemeValue->contents) != NULL) return true;
 
          /*===============================================*/
          /* The construct name is invalid. Print an error */
@@ -762,7 +762,7 @@ int ParseConstruct(
 /*   field of a construct. Returns name of the construct */
 /*   if no errors are detected, otherwise returns NULL.  */
 /*********************************************************/
-SYMBOL_HN *GetConstructNameAndComment(
+CLIPSLexeme *GetConstructNameAndComment(
   Environment *theEnv,
   const char *readSource,
   struct token *inputToken,
@@ -778,7 +778,7 @@ SYMBOL_HN *GetConstructNameAndComment(
 #if (MAC_XCD) && (! DEBUGGING_FUNCTIONS)
 #pragma unused(fullMessageCR)
 #endif
-   SYMBOL_HN *name, *moduleName;
+   CLIPSLexeme *name, *moduleName;
    bool redefining = false;
    void *theConstruct;
    unsigned separatorPosition;
@@ -799,13 +799,13 @@ SYMBOL_HN *GetConstructNameAndComment(
       return NULL;
      }
 
-   name = (SYMBOL_HN *) inputToken->value;
+   name = inputToken->lexemeValue;
 
    /*===============================*/
    /* Determine the current module. */
    /*===============================*/
 
-   separatorPosition = FindModuleSeparator(ValueToString(name));
+   separatorPosition = FindModuleSeparator(name->contents);
    if (separatorPosition)
      {
       if (moduleNameAllowed == false)
@@ -814,22 +814,22 @@ SYMBOL_HN *GetConstructNameAndComment(
          return NULL;
         }
 
-      moduleName = ExtractModuleName(theEnv,separatorPosition,ValueToString(name));
+      moduleName = ExtractModuleName(theEnv,separatorPosition,name->contents);
       if (moduleName == NULL)
         {
          SyntaxErrorMessage(theEnv,"construct name");
          return NULL;
         }
 
-      theModule = EnvFindDefmodule(theEnv,ValueToString(moduleName));
+      theModule = EnvFindDefmodule(theEnv,moduleName->contents);
       if (theModule == NULL)
         {
-         CantFindItemErrorMessage(theEnv,"defmodule",ValueToString(moduleName));
+         CantFindItemErrorMessage(theEnv,"defmodule",moduleName->contents);
          return NULL;
         }
 
       EnvSetCurrentModule(theEnv,theModule);
-      name = ExtractConstructName(theEnv,separatorPosition,ValueToString(name));
+      name = ExtractConstructName(theEnv,separatorPosition,name->contents,SYMBOL);
       if (name == NULL)
         {
          SyntaxErrorMessage(theEnv,"construct name");
@@ -850,7 +850,7 @@ SYMBOL_HN *GetConstructNameAndComment(
          PPBackup(theEnv);
          SavePPBuffer(theEnv,EnvGetDefmoduleName(theEnv,theModule));
          SavePPBuffer(theEnv,"::");
-         SavePPBuffer(theEnv,ValueToString(name));
+         SavePPBuffer(theEnv,name->contents);
         }
      }
 
@@ -859,9 +859,9 @@ SYMBOL_HN *GetConstructNameAndComment(
    /*==================================================================*/
 
 #if DEFMODULE_CONSTRUCT
-   if (FindImportExportConflict(theEnv,constructName,theModule,ValueToString(name)))
+   if (FindImportExportConflict(theEnv,constructName,theModule,name->contents))
      {
-      ImportExportConflictMessage(theEnv,constructName,ValueToString(name),NULL,NULL);
+      ImportExportConflictMessage(theEnv,constructName,name->contents,NULL,NULL);
       return NULL;
      }
 #endif
@@ -873,7 +873,7 @@ SYMBOL_HN *GetConstructNameAndComment(
 
    if ((findFunction != NULL) && (! ConstructData(theEnv)->CheckSyntaxMode))
      {
-      theConstruct = (*findFunction)(theEnv,ValueToString(name));
+      theConstruct = (*findFunction)(theEnv,name->contents);
       if (theConstruct != NULL)
         {
          redefining = true;
@@ -885,7 +885,7 @@ SYMBOL_HN *GetConstructNameAndComment(
                EnvPrintRouter(theEnv,WERROR,"Cannot redefine ");
                EnvPrintRouter(theEnv,WERROR,constructName);
                EnvPrintRouter(theEnv,WERROR," ");
-               EnvPrintRouter(theEnv,WERROR,ValueToString(name));
+               EnvPrintRouter(theEnv,WERROR,name->contents);
                EnvPrintRouter(theEnv,WERROR," while it is in use.\n");
                return NULL;
               }
@@ -913,7 +913,7 @@ SYMBOL_HN *GetConstructNameAndComment(
 
       EnvPrintRouter(theEnv,outRouter,constructName);
       EnvPrintRouter(theEnv,outRouter,": ");
-      EnvPrintRouter(theEnv,outRouter,ValueToString(name));
+      EnvPrintRouter(theEnv,outRouter,name->contents);
 
       if (fullMessageCR) EnvPrintRouter(theEnv,outRouter,"\n");
       else EnvPrintRouter(theEnv,outRouter," ");

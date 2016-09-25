@@ -283,7 +283,7 @@ void RestorePriorGarbageFrame(
      }
 
    if (returnValue != NULL)
-     { EphemerateValue(theEnv,returnValue->type,returnValue->value); }
+     { EphemerateValue(theEnv,returnValue->value); }
   }
 
 /********************/
@@ -459,7 +459,7 @@ const char *StringPrintForm(
    size_t pos = 0;
    size_t max = 0;
    char *theString = NULL;
-   void *thePtr;
+   CLIPSLexeme *thePtr;
 
    theString = ExpandStringWithChar(theEnv,'"',theString,&pos,&max,max+80);
    while (str[i] != EOS)
@@ -476,9 +476,10 @@ const char *StringPrintForm(
 
    theString = ExpandStringWithChar(theEnv,'"',theString,&pos,&max,max+80);
 
-   thePtr = EnvAddSymbol(theEnv,theString);
+   thePtr = EnvCreateString(theEnv,theString);
    rm(theEnv,theString,max);
-   return(ValueToString(thePtr));
+   
+   return thePtr->contents;
   }
 
 /**************************************************************/
@@ -523,14 +524,14 @@ const char *AppendStrings(
    size_t pos = 0;
    size_t max = 0;
    char *theString = NULL;
-   void *thePtr;
+   CLIPSLexeme *thePtr;
 
    theString = AppendToString(theEnv,str1,theString,&pos,&max);
    theString = AppendToString(theEnv,str2,theString,&pos,&max);
 
-   thePtr = EnvAddSymbol(theEnv,theString);
+   thePtr = EnvCreateString(theEnv,theString);
    rm(theEnv,theString,max);
-   return(ValueToString(thePtr));
+   return thePtr->contents;
   }
 
 /******************************************************/
@@ -1058,7 +1059,7 @@ unsigned long ItemHashValue(
         return(HashSymbol(ValueToString(theValue),theRange));
 
       case MULTIFIELD:
-        return(HashMultifield((struct multifield *) theValue,theRange));
+        return(HashMultifield((Multifield *) theValue,theRange));
 
 #if DEFTEMPLATE_CONSTRUCT
       case FACT_ADDRESS:

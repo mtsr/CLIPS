@@ -377,7 +377,7 @@ void WatchCommand(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
 
-   argument = mCVToString(&theValue);
+   argument = theValue.lexemeValue->contents;
    wPtr = ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
      {
@@ -427,7 +427,7 @@ void UnwatchCommand(
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
 
-   argument = mCVToString(&theValue);
+   argument = theValue.lexemeValue->contents;
    wPtr = ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
      {
@@ -490,7 +490,7 @@ void ListWatchItemsCommand(
    /*=======================================*/
 
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue)) return;
-   wPtr = ValidWatchItem(theEnv,mCVToString(&theValue),&recognized);
+   wPtr = ValidWatchItem(theEnv,theValue.lexemeValue->contents,&recognized);
    if ((recognized == false) || (wPtr == NULL))
      {
       EnvSetEvaluationError(theEnv,true);
@@ -550,13 +550,13 @@ void GetWatchItemCommand(
    if (! UDFFirstArgument(context,SYMBOL_TYPE,&theValue))
      { return; }
 
-   argument = mCVToString(&theValue);
+   argument = theValue.lexemeValue->contents;
    ValidWatchItem(theEnv,argument,&recognized);
    if (recognized == false)
      {
       EnvSetEvaluationError(theEnv,true);
       ExpectedTypeError1(theEnv,"get-watch-item",1,"watchable symbol");
-      mCVSetBoolean(returnValue,false);
+      returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
      }
 
@@ -565,9 +565,9 @@ void GetWatchItemCommand(
    /*===========================*/
 
    if (EnvGetWatchItem(theEnv,argument) == 1)
-     { mCVSetBoolean(returnValue,true); }
-
-   mCVSetBoolean(returnValue,false);
+     { returnValue->lexemeValue = theEnv->TrueSymbol; }
+   else
+     { returnValue->lexemeValue = theEnv->FalseSymbol; }
   }
 
 /*************************************************************/
