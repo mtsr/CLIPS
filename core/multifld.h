@@ -68,6 +68,7 @@ struct field;
 typedef struct multifield Multifield;
 
 #include "evaluatn.h"
+#include "object.h"
 
 struct field
   {
@@ -79,6 +80,8 @@ struct field
       CLIPSFloat *floatValue;
       CLIPSInteger *integerValue;
       CLIPSVoid *voidValue;
+      Fact *factValue;
+      Instance *instanceValue;
      };
   };
 

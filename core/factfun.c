@@ -339,7 +339,7 @@ void EnvFactSlotNames(
       returnValue->begin = 0;
       returnValue->end = 0;
       theList = EnvCreateMultifield(theEnv,(int) 1);
-      SetMFValue(theList,0,EnvCreateSymbol(theEnv,"implied"));
+      theList->theFields[0].lexemeValue = EnvCreateSymbol(theEnv,"implied");
       returnValue->value = theList;
       return;
      }
@@ -370,7 +370,7 @@ void EnvFactSlotNames(
         theSlot != NULL;
         count++, theSlot = theSlot->next)
      {
-      SetMFValue(theList,count,theSlot->slotName);
+      theList->theFields[count].lexemeValue = theSlot->slotName;
      }
   }
 
@@ -476,7 +476,7 @@ void EnvGetFactList(
            theFact != NULL;
            theFact = EnvGetNextFact(theEnv,theFact), count++)
         {
-         SetMFValue(theList,count,theFact);
+         theList->theFields[count].factValue = theFact;
         }
      }
    else
@@ -485,7 +485,7 @@ void EnvGetFactList(
            theFact != NULL;
            theFact = GetNextFactInScope(theEnv,theFact), count++)
         {
-         SetMFValue(theList,count,theFact);
+         theList->theFields[count].factValue = theFact;
         }
      }
 
@@ -609,7 +609,7 @@ Fact *GetFactAddressOrIndexArgument(
      }
    else if (theArg.header->type == INTEGER)
      {
-      factIndex = ValueToLong(theArg.value);
+      factIndex = theArg.integerValue->contents;
       if (factIndex < 0)
         {
          UDFInvalidArgumentMessage(context,"fact-address or fact-index");

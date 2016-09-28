@@ -646,7 +646,7 @@ void NthFunction(
 	 }
 
    elm_ptr = (Multifield *) value2.value;
-   returnValue->value = GetMFValue(elm_ptr,((long) n - 1) + value2.begin);
+   returnValue->value = elm_ptr->theFields[((long) n - 1) + value2.begin].value;
   }
 
 /* ------------------------------------------------------------------
@@ -696,7 +696,7 @@ void SubsetpFunction(
 
    for (i = item1.begin ; i <= item1.end ; i++)
      {
-      tmpItem.value = GetMFValue((Multifield *) item1.value,i);
+      tmpItem.value = item1.multifieldValue->theFields[i].value;
 
       if (! FindDOsInSegment(&tmpItem,1,&item2,&j,&k,NULL,0))
         {
@@ -735,8 +735,8 @@ void MemberFunction(
       else
         {
          returnValue->value = EnvCreateMultifield(theEnv,2);
-         SetMFValue(returnValue->value,0,EnvCreateInteger(theEnv,j));
-         SetMFValue(returnValue->value,1,EnvCreateInteger(theEnv,k));
+         returnValue->multifieldValue->theFields[0].integerValue = EnvCreateInteger(theEnv,j);
+         returnValue->multifieldValue->theFields[1].integerValue = EnvCreateInteger(theEnv,k);
          returnValue->begin = 0;
          returnValue->end = 1;
         }
@@ -770,10 +770,8 @@ bool FindDOsInSegment(
             if (MVRangeCheck(i+1L,i+slen,excludes,epaircnt))
               {
                for (k = 0L ; (k < slen) && ((k + i) < mul_length) ; k++)
-                 if ((GetMFType(searchDOs[j].value,k+searchDOs[j].begin) !=
-                      GetMFType(value->value,k+i+value->begin)) ||
-                     (GetMFValue(searchDOs[j].value,k+searchDOs[j].begin) !=
-                      GetMFValue(value->value,k+i+value->begin)))
+                 if (searchDOs[j].multifieldValue->theFields[k+searchDOs[j].begin].value !=
+                     value->multifieldValue->theFields[k+i+value->begin].value)
                    break;
                if (k >= slen)
                  {
@@ -783,8 +781,7 @@ bool FindDOsInSegment(
                  }
               }
            }
-         else if ((searchDOs[j].value == GetMFValue(value->value,i + value->begin)) &&
-                  (searchDOs[j].header->type == GetMFType(value->value,i + value->begin)) &&
+         else if ((searchDOs[j].value == value->multifieldValue->theFields[i + value->begin].value) &&
                   MVRangeCheck(i+1L,i+1L,excludes,epaircnt))
            {
             *si = *ei = i+1L;
@@ -827,7 +824,7 @@ static struct expr *MultifieldPrognParser(
   struct expr *top,
   const char *infile)
   {
-   struct BindInfo *oldBindList,*newBindList,*prev;
+   struct BindInfo *oldBindList, *newBindList, *prev;
    struct token tkn;
    struct expr *tmp;
    CLIPSLexeme *fieldVar = NULL;
@@ -915,7 +912,7 @@ static struct expr *MultifieldPrognParser(
    while (newBindList != NULL)
      {
       if ((fieldVar == NULL) ? false :
-          (strcmp(ValueToString(newBindList->name),fieldVar->contents) == 0))
+          (strcmp(newBindList->name->contents,fieldVar->contents) == 0))
         {
          ClearParsedBindNames(theEnv);
          SetParsedBindNames(theEnv,oldBindList);
@@ -999,7 +996,7 @@ static struct expr *ForeachParser(
    while (newBindList != NULL)
      {
       if ((fieldVar == NULL) ? false :
-          (strcmp(ValueToString(newBindList->name),fieldVar->contents) == 0))
+          (strcmp(newBindList->name->contents,fieldVar->contents) == 0))
         {
          ClearParsedBindNames(theEnv);
          SetParsedBindNames(theEnv,oldBindList);
@@ -1041,10 +1038,10 @@ static void ReplaceMvPrognFieldVars(
    while (theExp != NULL)
      {
       if ((theExp->type != SF_VARIABLE) ? false :
-          (strncmp(ValueToString(theExp->value),fieldVar->contents,
+          (strncmp(theExp->lexemeValue->contents,fieldVar->contents,
                    (STD_SIZE) flen) == 0))
         {
-         if (ValueToString(theExp->value)[flen] == '\0')
+         if (theExp->lexemeValue->contents[flen] == '\0')
            {
             theExp->type = FCALL;
             theExp->value = FindFunction(theEnv,"(get-progn$-field)");
@@ -1150,8 +1147,8 @@ static void MultifieldPrognDriver(
    end = argval.end;
    for (i = argval.begin ; i <= end ; i++)
      {
-      tmpField->type = GetMFType(argval.value,i);
-      tmpField->value = GetMFValue(argval.value,i);
+      tmpField->type = argval.multifieldValue->theFields[i].header->type;
+      tmpField->value = argval.multifieldValue->theFields[i].value;
       tmpField->index = (i - argval.begin) + 1;
       for (theExp = GetFirstArgument()->nextArg ; theExp != NULL ; theExp = theExp->nextArg)
         {
@@ -1202,7 +1199,7 @@ void GetMvPrognField(
    int depth;
    FIELD_VAR_STACK *tmpField;
 
-   depth = ValueToInteger(GetFirstArgument()->value);
+   depth = (int) GetFirstArgument()->integerValue->contents;
    tmpField = MultiFunctionData(theEnv)->FieldVarStack;
    while (depth > 0)
      {
@@ -1223,7 +1220,7 @@ void GetMvPrognIndex(
    int depth;
    FIELD_VAR_STACK *tmpField;
 
-   depth = ValueToInteger(GetFirstArgument()->value);
+   depth = (int) GetFirstArgument()->integerValue->contents;
    tmpField = MultiFunctionData(theEnv)->FieldVarStack;
    while (depth > 0)
      {
