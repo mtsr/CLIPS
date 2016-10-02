@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.50  10/01/16             */
    /*                                                     */
    /*               STRING FUNCTIONS MODULE               */
    /*******************************************************/
@@ -715,8 +715,6 @@ bool EnvEval(
    struct BindInfo *oldBinds;
    int danglingConstructs;
 
-   returnValue->environment = theEnv;
-
    /*=====================================*/
    /* If embedded, clear the error flags. */
    /*=====================================*/
@@ -847,7 +845,6 @@ void EvalFunction(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   returnValue->environment = theEnv;
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function eval does not work in run time modules.\n");
    returnValue->lexemeValue = theEnv->FalseSymbol;
@@ -862,7 +859,6 @@ bool EnvEval(
   const char *theString,
   CLIPSValue *returnValue)
   {
-   returnValue->environment = theEnv;
    PrintErrorID(theEnv,"STRNGFUN",1,false);
    EnvPrintRouter(theEnv,WERROR,"Function eval does not work in run time modules.\n");
    returnValue->lexemeValue = theEnv->FalseSymbol;

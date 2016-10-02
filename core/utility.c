@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.40  10/01/16             */
    /*                                                     */
    /*                   UTILITY MODULE                    */
    /*******************************************************/
@@ -62,7 +62,7 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
-/*      6.50: Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
 /*            functions for garbage collection blocks.       */
 /*                                                           */
 /*************************************************************/
@@ -291,7 +291,7 @@ void RestorePriorGarbageFrame(
 /********************/
 void CLIPSBlockStart(
   Environment *theEnv,
-  struct CLIPSBlock *theBlock)
+  CLIPSBlock *theBlock)
   {
    theBlock->oldGarbageFrame = UtilityData(theEnv)->CurrentGarbageFrame;
    memset(&theBlock->newGarbageFrame,0,sizeof(struct garbageFrame));
@@ -304,7 +304,7 @@ void CLIPSBlockStart(
 /******************/
 void CLIPSBlockEnd(
   Environment *theEnv,
-  struct CLIPSBlock *theBlock,
+  CLIPSBlock *theBlock,
   CLIPSValue *rv)
   {
    RestorePriorGarbageFrame(theEnv,&theBlock->newGarbageFrame,theBlock->oldGarbageFrame,rv);
@@ -1067,7 +1067,7 @@ unsigned long ItemHashValue(
 #endif
 
       case EXTERNAL_ADDRESS:
-        return(HashExternalAddress(ValueToExternalAddress(theValue),theRange));
+        return HashExternalAddress(((CLIPSExternalAddress *) theValue)->contents,theRange);
 
 #if OBJECT_SYSTEM
       case INSTANCE_ADDRESS:

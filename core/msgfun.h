@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/30/16            */
+   /*             CLIPS Version 6.40  10/01/16            */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -40,9 +40,6 @@
 /*                                                           */
 /*            Removed use of void pointers for specific      */
 /*            data structures.                               */
-/*                                                           */
-/*      6.50: Option printing of carriage return for the     */
-/*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*************************************************************/
 

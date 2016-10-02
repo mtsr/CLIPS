@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/11/16             */
+   /*            CLIPS Version 6.50  10/01/16             */
    /*                                                     */
    /*           MESSAGE-HANDLER PARSER FUNCTIONS          */
    /*******************************************************/
@@ -45,9 +45,6 @@
 /*            data structures.                               */
 /*                                                           */
 /*            Static constraint checking is always enabled.  */
-/*                                                           */
-/*      6.50: Option printing of carriage return for the     */
-/*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*************************************************************/
 

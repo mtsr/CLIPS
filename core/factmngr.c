@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.50  10/01/16             */
    /*                                                     */
    /*                 FACT MANAGER MODULE                 */
    /*******************************************************/
@@ -142,11 +142,11 @@ void InitializeFacts(
           (EntityBusyCountFunction *) EnvIncrementFactCount,
           NULL,NULL,NULL,NULL,NULL
         },
-        (void (*)(void *,void *)) DecrementFactBasisCount,
-        (void (*)(void *,void *)) IncrementFactBasisCount,
-        (void (*)(void *,void *)) MatchFactFunction,
+        (void (*)(Environment *,void *)) DecrementFactBasisCount,
+        (void (*)(Environment *,void *)) IncrementFactBasisCount,
+        (void (*)(Environment *,void *)) MatchFactFunction,
         NULL,
-        (bool (*)(void *,void *)) FactIsDeleted
+        (bool (*)(Environment *,void *)) FactIsDeleted
       };
 
    Fact dummyFact = { { { FACT_ADDRESS }, NULL, NULL, 0, 0L },
@@ -765,7 +765,7 @@ Fact *AssertDriver(
 
    for (i = 0; i < length; i++)
      {
-      if (theField[i].header->type == RVOID) // TBD EnvSymbol(theEnv)->VoidConstant
+      if (theField[i].value == theEnv->VoidConstant)
         {
          theField[i].value = EnvCreateSymbol(theEnv,"nil");
         }

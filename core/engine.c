@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.40  10/01/16             */
    /*                                                     */
    /*                    ENGINE MODULE                    */
    /*******************************************************/
@@ -81,6 +81,9 @@
 /*            Incremental reset is always enabled.           */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*            functions for garbage collection blocks.       */
 /*                                                           */
 /*************************************************************/
 
@@ -187,7 +190,7 @@ long long EnvRun(
 #endif
    struct trackedMemory *theTM;
    int danglingConstructs;
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
 
    /*=====================================================*/
    /* Make sure the run command is not already executing. */

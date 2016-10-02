@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/25/16             */
+   /*            CLIPS Version 6.40  10/01/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -42,6 +42,9 @@
 /*            data structures.                               */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*            functions for garbage collection blocks.       */
 /*                                                           */
 /*************************************************************/
 
@@ -515,7 +518,7 @@ void DelayedQueryDoForAllInstances(
    QUERY_CLASS *qclasses;
    unsigned rcnt;
    unsigned i;
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
 
    returnValue->lexemeValue = theEnv->FalseSymbol;
    qclasses = DetermineQueryClasses(theEnv,GetFirstArgument()->nextArg->nextArg,
@@ -920,7 +923,7 @@ static bool TestForFirstInstanceInClass(
    long i;
    Instance *ins;
    CLIPSValue temp;
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
 
    if (TestTraversalID(cls->traversalRecord,id))
      return false;
@@ -1042,7 +1045,7 @@ static void TestEntireClass(
    long i;
    Instance *ins;
    CLIPSValue temp;
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
 
    if (TestTraversalID(cls->traversalRecord,id))
      return;

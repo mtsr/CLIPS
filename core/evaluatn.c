@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.40  10/01/16             */
    /*                                                     */
    /*                  EVALUATION MODULE                  */
    /*******************************************************/
@@ -156,7 +156,6 @@ bool EvaluateExpression(
    struct profileFrameInfo profileFrame;
 #endif
 
-   returnValue->environment = theEnv;
    returnValue->voidValue = theEnv->VoidConstant;
 
    if (problem == NULL)
@@ -531,7 +530,7 @@ void CVAtomDeinstall(
         break;
 
       case EXTERNAL_ADDRESS:
-        DecrementExternalAddressCount(theEnv,(EXTERNAL_ADDRESS_HN *) vPtr);
+        DecrementExternalAddressCount(theEnv,(CLIPSExternalAddress *) vPtr);
         break;
 
       case MULTIFIELD:
@@ -610,7 +609,7 @@ void AtomInstall(
 /* AtomDeinstall: Decrements the reference */
 /*   count of an atomic data type.         */
 /*******************************************/
-void AtomDeinstall( // TBD remove type argument
+void AtomDeinstall(
   Environment *theEnv,
   int type,
   void *vPtr)
@@ -637,7 +636,7 @@ void AtomDeinstall( // TBD remove type argument
         break;
 
       case EXTERNAL_ADDRESS:
-        DecrementExternalAddressCount(theEnv,(EXTERNAL_ADDRESS_HN *) vPtr);
+        DecrementExternalAddressCount(theEnv,(CLIPSExternalAddress *) vPtr);
         break;
 
       case MULTIFIELD:
@@ -649,7 +648,7 @@ void AtomDeinstall( // TBD remove type argument
 
       default:
         if (EvaluationData(theEnv)->PrimitivesArray[type] == NULL) break;
-        if (EvaluationData(theEnv)->PrimitivesArray[type]->bitMap) DecrementBitMapCount(theEnv,(BITMAP_HN *) vPtr);
+        if (EvaluationData(theEnv)->PrimitivesArray[type]->bitMap) DecrementBitMapCount(theEnv,(CLIPSBitMap *) vPtr);
         else if (EvaluationData(theEnv)->PrimitivesArray[type]->decrementBusyCount)
           { (*EvaluationData(theEnv)->PrimitivesArray[type]->decrementBusyCount)(theEnv,vPtr); }
      }
@@ -859,7 +858,7 @@ unsigned long GetAtomicHashValue(
 
       case EXTERNAL_ADDRESS:
          fis.liv = 0;
-         fis.vv = ValueToExternalAddress(value);
+         fis.vv = ((CLIPSExternalAddress *) value)->contents;
          tvalue = (unsigned long) fis.liv;
          break;
 
@@ -1074,74 +1073,6 @@ bool EvaluateAndStoreInDataObject(
   }
 
 /******************/
-/* MFSetNthValueF */
-/******************/
-void MFSetNthValueF(
-  CLIPSValue *mf,
-  long n,
-  CLIPSValue *nv)
-  {
-   ((struct field *) ((Multifield *) (mf->value))->theFields)[(mf->begin + n) - 1].value = nv->value;
-  }
-
-/***********************/
-/* CVCreateMultifieldF */
-/***********************/
-void CVCreateMultifieldF(
-  CLIPSValue *mf,
-  long size)
-  {
-   mf->value = EnvCreateMultifield(mf->environment,size);
-   mf->begin = 0;
-   mf->end = size - 1;
-  }
-
-/*************/
-/* EnvCVInit */
-/*************/
-void EnvCVInit(
-  Environment *theEnv,
-  CLIPSValue *theValue)
-  {
-   theValue->environment = theEnv;
-  }
-
-/************/
-/* MFLength */
-/************/
-long MFLength(
-  CLIPSValue *theValue)
-  {
-   if (theValue->header->type == MULTIFIELD)
-     { return (theValue->end - theValue->begin) + 1; }
-   else
-     { return 0; }
-  }
-
-/**************/
-/* MFNthValue */
-/**************/
-void MFNthValue(
-  CLIPSValue *theMFValue,
-  long n,
-  CLIPSValue *returnValue)
-  {
-   struct multifield *theMF;
-
-   if ((theMFValue->header->type != MULTIFIELD) ||
-       (n < 0) ||
-       (n >= (theMFValue->end - theMFValue->begin)))
-     {
-      returnValue->value = returnValue->environment->VoidConstant;
-      return;
-     }
-
-   theMF = (Multifield *) theMFValue->value;
-   returnValue->value = theMF->theFields[theMFValue->begin + n - 1].value;
-   returnValue->environment = theMFValue->environment;
-  }
-
-/******************/
 /* PrintCAddress: */
 /******************/
 static void PrintCAddress(
@@ -1153,7 +1084,7 @@ static void PrintCAddress(
 
    EnvPrintRouter(theEnv,logicalName,"<Pointer-C-");
 
-   gensprintf(buffer,"%p",ValueToExternalAddress(theValue));
+   gensprintf(buffer,"%p",((CLIPSExternalAddress *) theValue)->contents);
    EnvPrintRouter(theEnv,logicalName,buffer);
    EnvPrintRouter(theEnv,logicalName,">");
   }

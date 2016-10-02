@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  07/30/16             */
+   /*            CLIPS Version 6.50  10/01/16             */
    /*                                                     */
    /*          FACT RETE FUNCTION GENERATION MODULE       */
    /*******************************************************/
@@ -1434,7 +1434,7 @@ int FactSlotReferenceVar(
    if (varexp->type != SF_VARIABLE)
      { return(0); }
 
-   fullVar = ValueToString(varexp->value);
+   fullVar = varexp->lexemeValue->contents;
 
    result = strchr(fullVar,SLOT_REF);
    if (result == NULL)
@@ -1481,7 +1481,7 @@ int RuleFactSlotReferenceVar(
    if (varexp->type != SF_VARIABLE)
      { return(0); }
 
-   fullVar = ValueToString(varexp->value);
+   fullVar = varexp->lexemeValue->contents;
 
    result = strchr(fullVar,SLOT_REF);
    if (result == NULL)
@@ -1525,8 +1525,7 @@ int RuleFactSlotReferenceVar(
 
    theDeftemplate = (struct deftemplate *)
                     LookupConstruct(theEnv,DeftemplateData(theEnv)->DeftemplateConstruct,
-                                    ValueToString(templateName),
-                                    false);
+                                    templateName->contents,false);
 
    if ((theDeftemplate == NULL) || (theDeftemplate->implied))
      {
@@ -1542,7 +1541,7 @@ int RuleFactSlotReferenceVar(
      {
       PrintErrorID(theEnv,"FACTGEN",1,true);
       EnvPrintRouter(theEnv,WERROR,"The variable/slot reference ?");
-      EnvPrintRouter(theEnv,WERROR,ValueToString(varexp->value));
+      EnvPrintRouter(theEnv,WERROR,varexp->lexemeValue->contents);
       EnvPrintRouter(theEnv,WERROR," is invalid because the referenced deftemplate does not contain the specified slot\n");
       EnvSetEvaluationError(theEnv,true);
       return(-1);

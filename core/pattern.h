@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  07/30/16            */
+   /*             CLIPS Version 6.50  10/01/16            */
    /*                                                     */
    /*                PATTERN HEADER FILE                  */
    /*******************************************************/
@@ -56,11 +56,11 @@
 struct patternEntityRecord
   {
    struct entityRecord base;
-   void (*decrementBasisCount)(void *,void *);
-   void (*incrementBasisCount)(void *,void *);
-   void (*matchFunction)(void *,void *);
-   bool (*synchronized)(void *,void *);
-   bool (*isDeleted)(void *,void *);
+   void (*decrementBasisCount)(Environment *,void *);
+   void (*incrementBasisCount)(Environment *,void *);
+   void (*matchFunction)(Environment *,void *);
+   bool (*synchronized)(Environment *,void *);
+   bool (*isDeleted)(Environment *,void *);
   };
 
 typedef struct patternEntityRecord PTRN_ENTITY_RECORD;

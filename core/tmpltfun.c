@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.50  10/01/16             */
    /*                                                     */
    /*             DEFTEMPLATE FUNCTIONS MODULE            */
    /*******************************************************/
@@ -228,7 +228,7 @@ void ModifyCommand(
 
    if (computeResult.header->type == INTEGER)
      {
-      factNum = ValueToLong(computeResult.value);
+      factNum = computeResult.integerValue->contents;
       if (factNum < 0)
         {
          ExpectedTypeError2(theEnv,"modify",1);
@@ -324,7 +324,7 @@ void ModifyCommand(
       /*============================================================*/
 
       if (testPtr->type == INTEGER)
-        { position = (int) ValueToLong(testPtr->value); }
+        { position = (int) testPtr->integerValue->contents; }
       else
         {
          found = false;
@@ -346,8 +346,8 @@ void ModifyCommand(
 
          if (! found)
            {
-            InvalidDeftemplateSlotMessage(theEnv,ValueToString(testPtr->value),
-                                          ValueToString(templatePtr->header.name),true);
+            InvalidDeftemplateSlotMessage(theEnv,testPtr->lexemeValue->contents,
+                                          templatePtr->header.name->contents,true);
             EnvSetEvaluationError(theEnv,true);
             FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
             if (changeMap != NULL)

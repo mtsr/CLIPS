@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.40  08/25/16             */
+   /*            CLIPS Version 6.40  10/01/16             */
    /*                                                     */
    /*             PROCEDURAL FUNCTIONS MODULE             */
    /*******************************************************/
@@ -45,6 +45,9 @@
 /*            data structures.                               */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*            functions for garbage collection blocks.       */
 /*                                                           */
 /*************************************************************/
 
@@ -140,7 +143,7 @@ void WhileFunction(
   CLIPSValue *returnValue)
   {
    CLIPSValue theResult;
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
 
    /*====================================================*/
    /* Evaluate the body of the while loop as long as the */
@@ -208,7 +211,7 @@ void LoopForCountFunction(
    CLIPSValue theArg;
    long long iterationEnd;
    LOOP_COUNTER_STACK *tmpCounter;
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
 
    tmpCounter = get_struct(theEnv,loopCounterStack);
    tmpCounter->loopCounter = 0L;

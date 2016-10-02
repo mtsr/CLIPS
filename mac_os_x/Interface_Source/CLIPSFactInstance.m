@@ -28,9 +28,9 @@
       NSMutableArray *tempArray;
       NSMutableDictionary *theMD;
       NSNumber *theNumber;
-      BITMAP_HN *theScopeMap;
+      CLIPSBitMap *theScopeMap;
 
-      [self setValue: [NSString stringWithUTF8String: ValueToString(FactRelation(theFact))] forKey: @"relationName"]; 
+      [self setValue: [NSString stringWithUTF8String: FactRelation(theFact)->contents] forKey: @"relationName"];
       
       [self setValue: [NSString stringWithFormat:@"%lld", EnvFactIndex(theEnvironment,theFact)] forKey: @"name"]; 
 
@@ -42,7 +42,7 @@
       
       environment = theEnvironment;
 
-      theScopeMap = (BITMAP_HN *) CreateDeftemplateScopeMap(theEnvironment,theFact->whichDeftemplate);
+      theScopeMap = (CLIPSBitMap *) CreateDeftemplateScopeMap(theEnvironment,theFact->whichDeftemplate);
       
       scopeMap = malloc(theScopeMap->size);
       
@@ -54,10 +54,10 @@
 
       for (i = 0; i < GetDOLength(slotNames); i++)
         {
-         const char *theCSlotName = ValueToString(GetMFValue(slotNames.value,i));
+         const char *theCSlotName = slotNames.multifieldValue->theFields[i].lexemeValue->contents;
          NSString *theSlotName = [NSString stringWithUTF8String: theCSlotName];
          
-         FactSlotValue(theEnvironment,theFact,ValueToString(GetMFValue(slotNames.value,i)),&slotValue);
+         FactSlotValue(theEnvironment,theFact,theCSlotName,&slotValue);
 
          NSString *theSlotValue = [NSString stringWithUTF8String: DataObjectToString(theEnvironment,&slotValue)];
 
@@ -94,7 +94,7 @@
 /*********************/
 /* initWithInstance: */
 /*********************/
-- initWithInstance: (struct instance *) theInstance 
+- initWithInstance: (Instance *) theInstance
   fromEnvironment: (void *) theEnvironment
   {
    if (self = [super init])
@@ -106,7 +106,7 @@
       NSMutableArray *tempArray;
       NSMutableDictionary *theMD;
       NSNumber *theNumber;
-      BITMAP_HN *theScopeMap;
+      CLIPSBitMap *theScopeMap;
       Defclass *theClass;
 
       theClass = EnvGetInstanceClass(theEnvironment,theInstance);
@@ -126,7 +126,7 @@
       
       environment = theEnvironment;
 
-      theScopeMap = (BITMAP_HN *) CreateClassScopeMap(theEnvironment,theClass);
+      theScopeMap = (CLIPSBitMap *) CreateClassScopeMap(theEnvironment,theClass);
       
       scopeMap = malloc(theScopeMap->size);
       
@@ -138,10 +138,10 @@
 
       for (i = 1; i <= GetDOLength(slotNames); i++)
         {
-         const char *theCSlotName = ValueToString(GetMFValue(slotNames.value,i));
+         const char *theCSlotName = slotNames.multifieldValue->theFields[i].lexemeValue->contents;
          NSString *theSlotName = [NSString stringWithUTF8String: theCSlotName];
          
-         EnvDirectGetSlot(theEnvironment,theInstance,ValueToString(GetMFValue(slotNames.value,i)),&slotValue);
+         EnvDirectGetSlot(theEnvironment,theInstance,theCSlotName,&slotValue);
 
          NSString *theSlotValue = [NSString stringWithUTF8String: DataObjectToString(theEnvironment,&slotValue)];
 

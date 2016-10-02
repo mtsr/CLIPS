@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/25/16            */
+   /*             CLIPS Version 6.40  10/01/16            */
    /*                                                     */
    /*               EVALUATION HEADER FILE                */
    /*******************************************************/
@@ -133,11 +133,11 @@ struct dataObject
       CLIPSInteger *integerValue;
       CLIPSVoid *voidValue;
       Multifield *multifieldValue;
+      CLIPSExternalAddress *externalAddressValue;
      };
    long begin;
    long end;
    struct dataObject *next;
-   Environment *environment;
   };
 
 struct externalAddressType
@@ -220,14 +220,10 @@ struct evaluationData
    bool                           GetFunctionReference(Environment *,const char *,FUNCTION_REFERENCE *);
    bool                           DOsEqual(CLIPSValue *,CLIPSValue *);
    bool                           EvaluateAndStoreInDataObject(Environment *,bool,EXPRESSION *,CLIPSValue *,bool);
-   void                           MFSetNthValueF(CLIPSValue *,long,CLIPSValue *);
-   void                           CVCreateMultifieldF(CLIPSValue *,long);
-   void                           EnvCVInit(Environment *,CLIPSValue *);
-   void                           UDFCVInit(UDFContext *,CLIPSValue *);
-   long                           MFLength(CLIPSValue *);
-   void                           MFNthValue(CLIPSValue *,long,CLIPSValue *);
 
 #define CVIsType(cv,cvType) ((1 << (((TypeHeader *) (cv)->value)->type)) & (cvType))
+
+#define ValueIsType(value,vType) ((1 << (((TypeHeader *) value)->type)) & (vType))
 
 #define CVCoerceToFloat(cv) (((cv)->header->type == FLOAT) ? \
                              ((cv)->floatValue->contents) : \
@@ -237,38 +233,6 @@ struct evaluationData
                                ((cv)->integerValue->contents) : \
                                ((long long) (cv)->floatValue->contents))
 
-#define mEnvCVInit(env,rv) ((rv)->environment = env)
-
-#define mUDFCVInit(context,rv) ((rv)->environment = (context)->environment)
-
-#define mMFLength(cv)   (((TypeHeader *) (cv)->value)->type == MULTIFIELD ? (((cv)->end - (cv)->begin) + 1) : 0)
-
-#define mMFNthValue(mf,n,rv) \
-   ( (rv)->type = (((struct field *) ((Multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].type) , \
-     (rv)->value = (((struct field *) ((Multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value) , \
-     (rv)->bitType = (1 << (rv)->type) , \
-     (rv)->environment = (mf)->environment )
-
-/******/
-
-//#define CVType(cv) (((TypeHeader *) (cv)->value)->type)
-
-#define CVSetExternalAddress(cv,iv,ivt) \
-   ( (cv)->value = EnvAddExternalAddress((cv)->environment,iv,ivt) )
-
-#define MFSetNthValue(mf,n,nv) \
-   ( \
-     ((struct field *) ((Multifield *) ((mf)->value))->theFields)[((mf)->begin + n) - 1].value = (nv)->value \
-   )
-
-#define CVCreateMultifield(mf,size) \
-   ( (mf)->value = EnvCreateMultifield((mf)->environment,size) , \
-     (mf)->begin = 0, \
-     (mf)->end = ((size) - 1) )
-
-#define MFSetRange(mf,b,e) \
-   ( (mf)->end = (mf)->begin + (e) - 1, \
-     (mf)->begin = (mf)->begin + (b) - 1 )
-
+#define MFLength(cv)   (((TypeHeader *) (cv)->value)->type == MULTIFIELD ? (((cv)->end - (cv)->begin) + 1) : 0)
 
 #endif /* _H_evaluatn */

@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/06/16             */
+   /*            CLIPS Version 6.50  10/01/16             */
    /*                                                     */
    /*              CONSTRUCT PARSER MODULE                */
    /*******************************************************/
@@ -57,6 +57,9 @@
 /*            data structures.                               */
 /*                                                           */
 /*            ALLOW_ENVIRONMENT_GLOBALS no longer supported. */
+/*                                                           */
+/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*            functions for garbage collection blocks.       */
 /*                                                           */
 /*      6.50: File name/line count displayed for errors      */
 /*            and warnings during load command.              */
@@ -261,7 +264,7 @@ int LoadConstructsFromLogicalName(
    struct token theToken;
    bool noErrors = true;
    bool foundConstruct;
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
    long oldLineCountValue;
    const char *oldLineCountRouter;
 
@@ -696,7 +699,7 @@ int ParseConstruct(
   {
    struct construct *currentPtr;
    int rv, ov;
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
 
    /*=================================*/
    /* Look for a valid construct name */

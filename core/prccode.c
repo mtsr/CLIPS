@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.50  10/01/16             */
    /*                                                     */
    /*                                                     */
    /*******************************************************/
@@ -541,7 +541,7 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
                  {
                   PrintErrorID(theEnv,"PRCCODE",3,true);
                   EnvPrintRouter(theEnv,WERROR,"Undefined variable ");
-                  EnvPrintRouter(theEnv,WERROR,ValueToString(bindName));
+                  EnvPrintRouter(theEnv,WERROR,bindName->contents);
                   EnvPrintRouter(theEnv,WERROR," referenced in ");
                   EnvPrintRouter(theEnv,WERROR,bodytype);
                   EnvPrintRouter(theEnv,WERROR,".\n");
@@ -1146,7 +1146,7 @@ static bool RtnProcParam(
   {
    CLIPSValue *src;
 
-   src = &ProceduralPrimitiveData(theEnv)->ProcParamArray[*((int *) ValueToBitMap(value)) - 1];
+   src = &ProceduralPrimitiveData(theEnv)->ProcParamArray[*((int *) ((CLIPSBitMap *) value)->contents) - 1];
    returnValue->value = src->value;
    returnValue->begin = src->begin;
    returnValue->end = src->end;
@@ -1174,7 +1174,7 @@ static bool GetProcBind(
    CLIPSValue *src;
    PACKED_PROC_VAR *pvar;
 
-   pvar = (PACKED_PROC_VAR *) ValueToBitMap(value);
+   pvar = (PACKED_PROC_VAR *) ((CLIPSBitMap *) value)->contents;
    src = &ProceduralPrimitiveData(theEnv)->LocalVarArray[pvar->first - 1];
    if (src->supplementalInfo == theEnv->TrueSymbol)
      {
@@ -1235,7 +1235,7 @@ static bool PutProcBind(
   {
    CLIPSValue *dst;
 
-   dst = &ProceduralPrimitiveData(theEnv)->LocalVarArray[*((int *) ValueToBitMap(value)) - 1];
+   dst = &ProceduralPrimitiveData(theEnv)->LocalVarArray[*((int *) ((CLIPSBitMap *) value)->contents) - 1];
    if (GetFirstArgument() == NULL)
      {
       if (dst->supplementalInfo == theEnv->TrueSymbol)
@@ -1278,7 +1278,7 @@ static bool RtnProcWild(
   void *value,
   CLIPSValue *returnValue)
   {
-   GrabProcWildargs(theEnv,returnValue,*(int *) ValueToBitMap(value));
+   GrabProcWildargs(theEnv,returnValue,*(int *) ((CLIPSBitMap *) value)->contents);
    return true;
   }
 

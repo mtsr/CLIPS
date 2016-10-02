@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.50  10/01/16             */
    /*                                                     */
    /*               EXTERNAL FUNCTION MODULE              */
    /*******************************************************/
@@ -720,7 +720,6 @@ bool UDFNextArgument(
    struct expr *argPtr = context->lastArg;
    int argumentPosition = context->lastPosition;
    Environment *theEnv = context->environment;
-   returnValue->environment = theEnv;
 
    if (argPtr == NULL)
      {
@@ -965,19 +964,10 @@ void UDFInvalidArgumentMessage(
 void UDFThrowError(
   UDFContext *context)
   {
-   Environment *theEnv = UDFContextEnvironment(context);
+   Environment *theEnv = context->environment;
 
    EnvSetHaltExecution(theEnv,true);
    EnvSetEvaluationError(theEnv,true);
-  }
-
-/**************************/
-/* UDFContextEnvironment: */
-/**************************/
-Environment *UDFContextEnvironment(
-  UDFContext *context)
-  {
-   return context->environment;
   }
 
 /***************************/
@@ -987,25 +977,6 @@ const char *UDFContextFunctionName(
   UDFContext *context)
   {
    return context->theFunction->callFunctionName->contents;
-  }
-
-/**************************/
-/* UDFContextUserContext: */
-/**************************/
-void *UDFContextUserContext(
-  UDFContext *context)
-  {
-   return context->theFunction->context;
-  }
-
-/*************/
-/* UDFCVInit */
-/*************/
-void UDFCVInit(
-  UDFContext *context,
-  CLIPSValue *theValue)
-  {
-   theValue->environment = context->environment;
   }
 
 /**************/

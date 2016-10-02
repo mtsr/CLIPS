@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.40  10/01/16             */
    /*                                                     */
    /*              OBJECT MESSAGE FUNCTIONS               */
    /*******************************************************/
@@ -43,9 +43,6 @@
 /*            data structures.                               */
 /*                                                           */
 /*            UDF redesign.                                  */
-/*                                                           */
-/*      6.50: Option printing of carriage return for the     */
-/*            SlotVisibilityViolationError function.         */
 /*                                                           */
 /*************************************************************/
 

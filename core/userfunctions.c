@@ -367,7 +367,7 @@ void CntMFChars(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CLIPSValue theArg, theValue;
+   CLIPSValue theArg;
    long long i, count = 0;
    long long mfLength;
 
@@ -383,11 +383,10 @@ void CntMFChars(
    /*=====================================*/
 
    mfLength = MFLength(&theArg);
-   for (i = 1; i <= mfLength; i++)
+   for (i = 0; i < mfLength; i++)
      {
-      MFNthValue(&theArg,i,&theValue);
-      if (CVIsType(&theValue,LEXEME_TYPES))
-        { count += strlen(theValue.lexemeValue->contents); }
+      if (ValueIsType(theArg.multifieldValue->theFields[i].value,LEXEME_TYPES))
+        { count += strlen(theArg.multifieldValue->theFields[i].lexemeValue->contents); }
      }
 
    /*=============================*/
@@ -405,20 +404,13 @@ void Sample4(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   CLIPSValue mfValue, theValue;
-
-   /*======================================*/
-   /* Initialize the CLIPSValue variables. */
-   /*======================================*/
-
-   UDFCVInit(context,&mfValue);
-   UDFCVInit(context,&theValue);
-
    /*=======================================*/
    /* Create a multifield value of length 2 */
    /*=======================================*/
 
-   CVCreateMultifield(&mfValue,2);
+   returnValue->multifieldValue = EnvCreateMultifield(theEnv,2);
+   returnValue->begin = 0;
+   returnValue->end = 1;
 
    /*============================================*/
    /* The first field in the multi-field value   */
@@ -426,24 +418,14 @@ void Sample4(
    /* "altitude".                                */
    /*============================================*/
 
-   theValue.lexemeValue = EnvCreateSymbol(theEnv,"altitude");
-   MFSetNthValue(&mfValue,1,&theValue);
+   returnValue->multifieldValue->theFields[0].lexemeValue = EnvCreateSymbol(theEnv,"altitude");
 
    /*===========================================*/
    /* The second field in the multi-field value */
    /* will be a FLOAT. Its value will be 900.   */
    /*===========================================*/
 
-   theValue.floatValue = EnvCreateFloat(theEnv,900.00);
-   MFSetNthValue(&mfValue,2,&theValue);
-
-   /*=====================================================*/
-   /* Assign the type and value to the return CLIPSValue. */
-   /*=====================================================*/
-
-   returnValue->value = mfValue.value;
-   returnValue->begin = mfValue.begin;
-   returnValue->end = mfValue.end;
+   returnValue->multifieldValue->theFields[1].floatValue = EnvCreateFloat(theEnv,900.00);
   }
 
 /********/
@@ -469,6 +451,9 @@ void Rest(
 
    mfLength = MFLength(returnValue);
    if (mfLength != 0)
-     { MFSetRange(returnValue,2,mfLength); }
+     {
+      returnValue->begin = 1;
+      returnValue->end = mfLength - 1;
+     }
   }
 

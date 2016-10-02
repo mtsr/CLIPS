@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.50  10/01/16             */
    /*                                                     */
    /*             MULTIFIELD FUNCTIONS MODULE             */
    /*******************************************************/
@@ -63,6 +63,9 @@
 /*            and nth functions.                             */
 /*                                                           */
 /*            UDF redesign.                                  */
+/*                                                           */
+/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*            functions for garbage collection blocks.       */
 /*                                                           */
 /*      6.50: Fact ?var:slot references in progn$/foreach.   */
 /*                                                           */
@@ -565,11 +568,7 @@ void FirstFunction(
    /* Get the segment to be subdivided. */
    /*===================================*/
 
-   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg)) return;
 
    theList = (Multifield *) theArg.value;
 
@@ -601,11 +600,7 @@ void RestFunction(
    /* Get the segment to be subdivided. */
    /*===================================*/
 
-   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg))
-     {
-      EnvSetMultifieldErrorValue(theEnv,returnValue);
-      return;
-     }
+   if (! UDFFirstArgument(context,MULTIFIELD_TYPE,&theArg)) return;
 
    theList = (Multifield *) theArg.value;
 
@@ -682,13 +677,13 @@ void SubsetpFunction(
    if (! UDFNextArgument(context,MULTIFIELD_TYPE,&item2))
      { return; }
 
-   if (mMFLength(&item1) == 0)
+   if (MFLength(&item1) == 0)
      {
       returnValue->lexemeValue = theEnv->TrueSymbol;
       return;
      }
 
-   if (mMFLength(&item2) == 0)
+   if (MFLength(&item2) == 0)
      {
       returnValue->lexemeValue = theEnv->FalseSymbol;
       return;
@@ -1048,12 +1043,12 @@ static void ReplaceMvPrognFieldVars(
             theExp->argList = GenConstant(theEnv,INTEGER,EnvCreateInteger(theEnv,(long long) depth));
            }
 #if DEFTEMPLATE_CONSTRUCT
-         else if (ValueToString(theExp->value)[flen] == ':')
+         else if (theExp->lexemeValue->contents[flen] == ':')
            {
-            size_t svlen = strlen(ValueToString(theExp->value));
+            size_t svlen = strlen(theExp->lexemeValue->contents);
             if (svlen > (flen + 1))
               {
-               const char *slotName = &ValueToString(theExp->value)[flen+1];
+               const char *slotName = &theExp->lexemeValue->contents[flen+1];
 
                theExp->argList = GenConstant(theEnv,FCALL,(void *) FindFunction(theEnv,"(get-progn$-field)"));
                theExp->argList->argList = GenConstant(theEnv,INTEGER,EnvCreateInteger(theEnv,(long long) depth));
@@ -1066,7 +1061,7 @@ static void ReplaceMvPrognFieldVars(
               }
            }
 #endif
-         else if (strcmp(ValueToString(theExp->value) + flen,"-index") == 0)
+         else if (strcmp(theExp->lexemeValue->contents + flen,"-index") == 0)
            {
             theExp->type = FCALL;
             theExp->value = FindFunction(theEnv,"(get-progn$-index)");
@@ -1124,7 +1119,7 @@ static void MultifieldPrognDriver(
    CLIPSValue argval;
    long i, end; /* 6.04 Bug Fix */
    FIELD_VAR_STACK *tmpField;
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
    Environment *theEnv = context->environment;
 
    tmpField = get_struct(theEnv,fieldVarStack);

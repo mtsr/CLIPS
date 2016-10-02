@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  08/25/16             */
+   /*            CLIPS Version 6.40  10/01/16             */
    /*                                                     */
    /*             OBJECT MESSAGE DISPATCH CODE            */
    /*******************************************************/
@@ -55,8 +55,8 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
-/*      6.50: Option printing of carriage return for the     */
-/*            SlotVisibilityViolationError function.         */
+/*            Added CLIPSBlockStart and CLIPSBlockEnd        */
+/*            functions for garbage collection blocks.       */
 /*                                                           */
 /*************************************************************/
 
@@ -587,7 +587,7 @@ void PrintHandlerSlotGetFunction(
    Defclass *theDefclass;
    SlotDescriptor *sd;
 
-   theReference = (HANDLER_SLOT_REFERENCE *) ValueToBitMap(theValue);
+   theReference = (HANDLER_SLOT_REFERENCE *) ((CLIPSBitMap *) theValue)->contents;
    EnvPrintRouter(theEnv,logicalName,"?self:[");
    theDefclass = DefclassData(theEnv)->ClassIDMap[theReference->classID];
    EnvPrintRouter(theEnv,logicalName,theDefclass->header.name->contents);
@@ -639,7 +639,7 @@ bool HandlerSlotGetFunction(
    INSTANCE_SLOT *sp;
    unsigned instanceSlotIndex;
 
-   theReference = (HANDLER_SLOT_REFERENCE *) ValueToBitMap(theValue);
+   theReference = (HANDLER_SLOT_REFERENCE *) ((CLIPSBitMap *) theValue)->contents;
    theInstance = ProceduralPrimitiveData(theEnv)->ProcParamArray[0].instanceValue;
    theDefclass = DefclassData(theEnv)->ClassIDMap[theReference->classID];
 
@@ -704,7 +704,7 @@ void PrintHandlerSlotPutFunction(
    Defclass *theDefclass;
    SlotDescriptor *sd;
 
-   theReference = (HANDLER_SLOT_REFERENCE *) ValueToBitMap(theValue);
+   theReference = (HANDLER_SLOT_REFERENCE *) ((CLIPSBitMap *) theValue)->contents;
    EnvPrintRouter(theEnv,logicalName,"(bind ?self:[");
    theDefclass = DefclassData(theEnv)->ClassIDMap[theReference->classID];
    EnvPrintRouter(theEnv,logicalName,theDefclass->header.name->contents);
@@ -763,7 +763,7 @@ bool HandlerSlotPutFunction(
    unsigned instanceSlotIndex;
    CLIPSValue theSetVal;
 
-   theReference = (HANDLER_SLOT_REFERENCE *) ValueToBitMap(theValue);
+   theReference = (HANDLER_SLOT_REFERENCE *) ((CLIPSBitMap *) theValue)->contents;
    theInstance = ProceduralPrimitiveData(theEnv)->ProcParamArray[0].instanceValue;
    theDefclass = DefclassData(theEnv)->ClassIDMap[theReference->classID];
 
@@ -988,7 +988,7 @@ static bool PerformMessage(
 #if PROFILING_FUNCTIONS
    struct profileFrameInfo profileFrame;
 #endif
-   struct CLIPSBlock gcBlock;
+   CLIPSBlock gcBlock;
 
    returnValue->value = theEnv->FalseSymbol;
    EvaluationData(theEnv)->EvaluationError = false;

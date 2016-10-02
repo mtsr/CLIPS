@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/25/16            */
+   /*             CLIPS Version 6.50  10/01/16            */
    /*                                                     */
    /*                  CONSTRUCT MODULE                   */
    /*******************************************************/
@@ -156,7 +156,7 @@ struct constructData
    bool ResetReadyInProgress;
    bool ResetInProgress;
    short ClearReadyLocks;
-   int DanglingConstructs; // TBD Where set?
+   int DanglingConstructs;
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    struct callFunctionItem *ListOfSaveFunctions;
    bool PrintWhileLoading;

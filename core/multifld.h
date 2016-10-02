@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.40  08/25/16            */
+   /*             CLIPS Version 6.40  10/01/16            */
    /*                                                     */
    /*                MULTIFIELD HEADER FILE               */
    /*******************************************************/
@@ -82,6 +82,7 @@ struct field
       CLIPSVoid *voidValue;
       Fact *factValue;
       Instance *instanceValue;
+      CLIPSExternalAddress *externalAddressValue;
      };
   };
 
@@ -98,10 +99,6 @@ typedef struct field FIELD;
 typedef struct field * FIELD_PTR;
 
 #define GetMFLength(target)     (((Multifield *) (target))->multifieldLength)
-#define SetMFValue(target,index,val)  (((struct field *) ((Multifield *) (target))->theFields)[index].value = (void *) (val))
-
-#define GetMFType(target,index)  ((((struct field *) ((Multifield *) (target))->theFields)[index].header)->type)
-#define GetMFValue(target,index)  (((struct field *) ((Multifield *) (target))->theFields)[index].value)
 
    Multifield                    *CreateMultifield2(Environment *,long);
    void                           ReturnMultifield(Environment *,struct multifield *);

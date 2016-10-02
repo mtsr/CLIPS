@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*             CLIPS Version 6.50  08/25/16            */
+   /*             CLIPS Version 6.50  10/01/16            */
    /*                                                     */
    /*            EXTERNAL FUNCTIONS HEADER FILE           */
    /*******************************************************/
@@ -79,6 +79,7 @@ struct FunctionDefinition
    int maxArgs;
    bool overloadable;
    bool sequenceuseok;
+   bool neededFunction;
    short int bsaveIndex;
    struct FunctionDefinition *next;
    struct userData *usrData;
@@ -144,8 +145,6 @@ struct FunctionHash
    int                            UDFArgumentCount(UDFContext *);
    bool                           UDFNthArgument(UDFContext *,int,unsigned,CLIPSValue *);
    void                           UDFInvalidArgumentMessage(UDFContext *,const char *);
-   Environment                   *UDFContextEnvironment(UDFContext *);
-   void                          *UDFContextUserContext(UDFContext *);
    const char                    *UDFContextFunctionName(UDFContext *);
    void                           PrintTypesString(Environment *,const char *,unsigned,bool);
    bool                           UDFFirstArgument(UDFContext *,unsigned,CLIPSValue *);
