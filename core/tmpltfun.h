@@ -115,6 +115,7 @@
    void                           DeftemplateSlotFacetValueFunction(Environment *,UDFContext *,CLIPSValue *);
    bool                           EnvDeftemplateSlotFacetValue(Environment *,Deftemplate *,const char *,const char *,CLIPSValue *);
    CLIPSLexeme                   *FindTemplateForFactAddress(CLIPSLexeme *,struct lhsParseNode *);
+   Fact                          *ReplaceFact(Environment *,Fact *,GenericValue *,char *);
 
 #endif /* _H_tmpltfun */
 

@@ -211,8 +211,8 @@ void InstallProcedurePrimitives(
       let callers distinguish between no parameters
       and zero-length multifield parameters
       ============================================= */
-   ProceduralPrimitiveData(theEnv)->NoParamValue = CreateMultifield2(theEnv,0L);
-   MultifieldInstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->NoParamValue);
+   ProceduralPrimitiveData(theEnv)->NoParamValue = CreateUnmanagedMultifield(theEnv,0L);
+   MultifieldInstall(theEnv,ProceduralPrimitiveData(theEnv)->NoParamValue);
   }
 
 /**************************************************************/
@@ -222,7 +222,7 @@ void InstallProcedurePrimitives(
 static void DeallocateProceduralPrimitiveData(
   Environment *theEnv)
   {
-   ReturnMultifield(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->NoParamValue);
+   ReturnMultifield(theEnv,ProceduralPrimitiveData(theEnv)->NoParamValue);
    ReleaseProcParameters(theEnv);
   }
 
@@ -509,7 +509,7 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
          /* See if the variable is in the parameter list. */
          /*===============================================*/
 
-         bindName = (CLIPSLexeme *) actions->value;
+         bindName = actions->lexemeValue;
          position = FindProcParameter(bindName,parameterList,wildcard);
 
          /*=============================================================*/
@@ -621,7 +621,7 @@ int ReplaceProcVars( // TBD should be bool? returns -1, 0, 1
              (actions->argList->type == SYMBOL))
            {
             actions->type = PROC_BIND;
-            boundPosn = SearchParsedBindNames(theEnv,(CLIPSLexeme *) actions->argList->value);
+            boundPosn = SearchParsedBindNames(theEnv,actions->argList->lexemeValue);
             actions->value = EnvAddBitMap(theEnv,&boundPosn,(int) sizeof(int));
             arg_lvl = actions->argList->nextArg;
             rtn_struct(theEnv,expr,actions->argList);
@@ -756,9 +756,9 @@ void PopProcParameters(
 
    if (ProceduralPrimitiveData(theEnv)->WildcardValue != NULL)
      {
-      MultifieldDeinstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+      MultifieldDeinstall(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue);
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-        AddToMultifieldList(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+        AddToMultifieldList(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue);
       rtn_struct(theEnv,dataObject,ProceduralPrimitiveData(theEnv)->WildcardValue);
      }
    ProceduralPrimitiveData(theEnv)->WildcardValue = ptmp->WildcardValue;
@@ -786,7 +786,7 @@ static void ReleaseProcParameters(
    if (ProceduralPrimitiveData(theEnv)->WildcardValue != NULL)
      {
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-        { ReturnMultifield(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value); }
+        { ReturnMultifield(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue); }
 
       rtn_struct(theEnv,dataObject,ProceduralPrimitiveData(theEnv)->WildcardValue);
      }
@@ -813,7 +813,7 @@ static void ReleaseProcParameters(
       if (ptmp->WildcardValue != NULL)
         {
          if (ptmp->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-           { ReturnMultifield(theEnv,(Multifield *) ptmp->WildcardValue->value); }
+           { ReturnMultifield(theEnv,ptmp->WildcardValue->multifieldValue); }
 
          rtn_struct(theEnv,dataObject,ptmp->WildcardValue);
         }
@@ -929,9 +929,9 @@ void EvaluateProcActions(
      }
    if ((ProceduralPrimitiveData(theEnv)->WildcardValue != NULL) ? (returnValue->value == ProceduralPrimitiveData(theEnv)->WildcardValue->value) : false)
      {
-      MultifieldDeinstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+      MultifieldDeinstall(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue);
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-        AddToMultifieldList(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+        AddToMultifieldList(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue);
       rtn_struct(theEnv,dataObject,ProceduralPrimitiveData(theEnv)->WildcardValue);
       ProceduralPrimitiveData(theEnv)->WildcardValue = NULL;
      }
@@ -1010,9 +1010,9 @@ void GrabProcWildargs(
      }
    else
      {
-      MultifieldDeinstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+      MultifieldDeinstall(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue);
       if (ProceduralPrimitiveData(theEnv)->WildcardValue->value != ProceduralPrimitiveData(theEnv)->NoParamValue)
-        AddToMultifieldList(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+        AddToMultifieldList(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue);
      }
    ProceduralPrimitiveData(theEnv)->Oldindex = theIndex;
    size = ProceduralPrimitiveData(theEnv)->ProcParamArraySize - theIndex + 1;
@@ -1020,7 +1020,7 @@ void GrabProcWildargs(
      {
       returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = -1;
       returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = ProceduralPrimitiveData(theEnv)->NoParamValue;
-      MultifieldInstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+      MultifieldInstall(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue);
       return;
      }
    for (i = theIndex-1 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
@@ -1029,7 +1029,7 @@ void GrabProcWildargs(
         size += ProceduralPrimitiveData(theEnv)->ProcParamArray[i].end - ProceduralPrimitiveData(theEnv)->ProcParamArray[i].begin;
      }
    returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = size-1;
-   returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = CreateMultifield2(theEnv,(unsigned long) size);
+   returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = CreateUnmanagedMultifield(theEnv,(unsigned long) size);
    for (i = theIndex-1 , j = 0 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
      {
       if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type != MULTIFIELD)
@@ -1046,7 +1046,7 @@ void GrabProcWildargs(
            }
         }
      }
-   MultifieldInstall(theEnv,(Multifield *) ProceduralPrimitiveData(theEnv)->WildcardValue->value);
+   MultifieldInstall(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue);
   }
 
 /* =========================================
@@ -1372,7 +1372,7 @@ static bool ReplaceProcBinds(
          if ((actions->value == (void *) FindFunction(theEnv,"bind")) &&
              (actions->argList->type == SYMBOL))
            {
-            bname = (CLIPSLexeme *) actions->argList->value;
+            bname = actions->argList->lexemeValue;
             bcode = (*altbindfunc)(theEnv,actions,userBuffer);
             if (bcode == -1)
               return true;

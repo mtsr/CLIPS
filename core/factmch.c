@@ -178,8 +178,8 @@ void FactPatternMatch(
                   [patternPtr->whichSlot].header->type == MULTIFIELD))
            {
             if ((patternPtr->leaveFields + theSlotField) != (int)
-               ((Multifield *) FactData(theEnv)->CurrentPatternFact->theProposition.theFields
-                                      [patternPtr->whichSlot].value)->multifieldLength)
+                  FactData(theEnv)->CurrentPatternFact->theProposition.theFields
+                                      [patternPtr->whichSlot].multifieldValue->multifieldLength)
               { skipit = true; }
            }
 
@@ -294,7 +294,7 @@ static void ProcessMultifieldNode(
   {
    struct multifieldMarker *newMark, *oldMark;
    int repeatCount;
-   struct multifield *theSlotValue;
+   Multifield *theSlotValue;
    CLIPSValue theResult;
    struct factPatternNode *tempPtr;
    bool success;
@@ -304,8 +304,8 @@ static void ProcessMultifieldNode(
    /* multifield slot being pattern matched. */
    /*========================================*/
 
-   theSlotValue = (Multifield *)
-     FactData(theEnv)->CurrentPatternFact->theProposition.theFields[thePattern->whichSlot].value;
+   theSlotValue =
+     FactData(theEnv)->CurrentPatternFact->theProposition.theFields[thePattern->whichSlot].multifieldValue;
 
    /*===============================================*/
    /* Save the value of the markers already stored. */

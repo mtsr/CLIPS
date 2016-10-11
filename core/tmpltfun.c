@@ -120,7 +120,7 @@
 /***************************************/
 
    static CLIPSLexeme            *CheckDeftemplateAndSlotArguments(UDFContext *,Deftemplate **);
-   static void                    FreeTemplateDataObjectArray(Environment *,CLIPSValue *,Deftemplate *);
+   static void                    FreeTemplateValueArray(Environment *,GenericValue *,Deftemplate *);
 
 #if (! RUN_TIME) && (! BLOAD_ONLY)
    static struct expr            *ModAndDupParse(Environment *,struct expr *,const char *,const char *);
@@ -165,25 +165,25 @@ void DeftemplateFunctions(
 #endif
   }
 
-/********************************/
-/* FreeTemplateDataObjectArray: */
-/********************************/
-static void FreeTemplateDataObjectArray(
+/***************************/
+/* FreeTemplateValueArray: */
+/***************************/
+static void FreeTemplateValueArray(
   Environment *theEnv,
-  CLIPSValue *theDOArray,
+  GenericValue *theValueArray,
   Deftemplate *templatePtr)
   {
    int i;
 
-   if (theDOArray == NULL) return;
+   if (theValueArray == NULL) return;
 
    for (i = 0; i < (int) templatePtr->numberOfSlots; i++)
      {
-      if (theDOArray[i].header->type == MULTIFIELD)
-        { ReturnMultifield(theEnv,(Multifield *) theDOArray[i].value); }
+      if (theValueArray[i].header->type == MULTIFIELD)
+        { ReturnMultifield(theEnv,theValueArray[i].multifieldValue); }
      }
 
-   rm3(theEnv,theDOArray,sizeof(CLIPSValue) * templatePtr->numberOfSlots);
+   rm3(theEnv,theValueArray,sizeof(GenericValue) * templatePtr->numberOfSlots);
   }
 
 /*************************************************************/
@@ -194,15 +194,15 @@ void ModifyCommand(
   UDFContext *context,
   CLIPSValue *returnValue)
   {
-   long long factNum, factIndex;
-   struct fact *oldFact, *theFact;
+   long long factNum;
+   struct fact *oldFact;
    struct expr *testPtr;
    CLIPSValue computeResult;
    struct deftemplate *templatePtr;
    struct templateSlot *slotPtr;
    int i, position, replacementCount = 0;
    bool found;
-   CLIPSValue *theDOArray;
+   GenericValue *theValueArray;
    char *changeMap;
 
    /*===================================================*/
@@ -284,29 +284,25 @@ void ModifyCommand(
    /*========================================================*/
    /* Create a data object array to hold the updated values. */
    /*========================================================*/
-
+   
    if (templatePtr->numberOfSlots == 0)
      {
-      theDOArray = NULL;
+      theValueArray = NULL;
       changeMap = NULL;
      }
    else
      {
-      theDOArray = (CLIPSValue *) gm3(theEnv,sizeof(CLIPSValue) * templatePtr->numberOfSlots);
-      changeMap = (char *) gm2(theEnv,templatePtr->numberOfSlots);
-      ClearBitString((void *) changeMap,templatePtr->numberOfSlots);
+      theValueArray = (GenericValue *) gm3(theEnv,sizeof(void *) * templatePtr->numberOfSlots);
+      changeMap = (char *) gm2(theEnv,CountToBitMapSize(templatePtr->numberOfSlots));
+      ClearBitString((void *) changeMap,CountToBitMapSize(templatePtr->numberOfSlots));
      }
 
    /*================================================================*/
    /* Duplicate the values from the old fact (skipping multifields). */
    /*================================================================*/
 
-   factIndex = oldFact->factIndex;
-
    for (i = 0; i < (int) oldFact->theProposition.multifieldLength; i++)
-     {
-      theDOArray[i].voidValue = theEnv->VoidConstant;
-     }
+     { theValueArray[i].voidValue = theEnv->VoidConstant; }
 
    /*========================*/
    /* Start replacing slots. */
@@ -349,9 +345,9 @@ void ModifyCommand(
             InvalidDeftemplateSlotMessage(theEnv,testPtr->lexemeValue->contents,
                                           templatePtr->header.name->contents,true);
             EnvSetEvaluationError(theEnv,true);
-            FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
+            FreeTemplateValueArray(theEnv,theValueArray,templatePtr);
             if (changeMap != NULL)
-              { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
+              { rm(theEnv,(void *) changeMap,CountToBitMapSize(templatePtr->numberOfSlots)); }
             return;
            }
         }
@@ -372,9 +368,9 @@ void ModifyCommand(
          if ((testPtr->argList == NULL) ? true : (testPtr->argList->nextArg != NULL))
            {
             MultiIntoSingleFieldSlotError(theEnv,GetNthSlot(templatePtr,position),templatePtr);
-            FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
+            FreeTemplateValueArray(theEnv,theValueArray,templatePtr);
             if (changeMap != NULL)
-              { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
+              { rm(theEnv,(void *) changeMap,CountToBitMapSize(templatePtr->numberOfSlots)); }
             return;
            }
 
@@ -396,9 +392,9 @@ void ModifyCommand(
          if (computeResult.header->type == MULTIFIELD)
            {
             MultiIntoSingleFieldSlotError(theEnv,GetNthSlot(templatePtr,position),templatePtr);
-            FreeTemplateDataObjectArray(theEnv,theDOArray,templatePtr);
+            FreeTemplateValueArray(theEnv,theValueArray,templatePtr);
             if (changeMap != NULL)
-              { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
+              { rm(theEnv,(void *) changeMap,CountToBitMapSize(templatePtr->numberOfSlots)); }
             return;
            }
 
@@ -409,7 +405,7 @@ void ModifyCommand(
          if (oldFact->theProposition.theFields[position].value != computeResult.value)
            {
             replacementCount++;
-            theDOArray[position].value = computeResult.value;
+            theValueArray[position].value = computeResult.value;
             if (changeMap != NULL)
               { SetBitMap(changeMap,position); }
            }
@@ -437,7 +433,7 @@ void ModifyCommand(
          if ((oldFact->theProposition.theFields[position].header->type != computeResult.header->type) ||
              (! MultifieldsEqual((Multifield *) oldFact->theProposition.theFields[position].value,(Multifield *) computeResult.value)))
            {
-            theDOArray[position].value = computeResult.value;
+            theValueArray[position].value = computeResult.value;
             replacementCount++;
             if (changeMap != NULL)
               { SetBitMap(changeMap,position); }
@@ -456,15 +452,48 @@ void ModifyCommand(
 
    if (replacementCount == 0)
      {
-      if (theDOArray != NULL)
-        { rm3(theEnv,theDOArray,sizeof(CLIPSValue) * templatePtr->numberOfSlots); }
+      if (theValueArray != NULL)
+        { rm3(theEnv,theValueArray,sizeof(void *) * templatePtr->numberOfSlots); }
       if (changeMap != NULL)
-        { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
+        { rm(theEnv,(void *) changeMap,CountToBitMapSize(templatePtr->numberOfSlots)); }
       
       returnValue->value = oldFact;
       return;
      }
+    
+   /*=========================================*/
+   /* Replace the old values with the values. */
+   /*=========================================*/
+   
+   if (ReplaceFact(theEnv,oldFact,theValueArray,changeMap) != NULL)
+     { returnValue->factValue = oldFact; }
 
+   /*=============================*/
+   /* Free the data object array. */
+   /*=============================*/
+
+   if (theValueArray != NULL)
+     { rm3(theEnv,theValueArray,sizeof(void *) * templatePtr->numberOfSlots); }
+
+   if (changeMap != NULL)
+     { rm(theEnv,(void *) changeMap,CountToBitMapSize(templatePtr->numberOfSlots)); }
+
+   return;
+  }
+
+/****************/
+/* ReplaceFact: */
+/****************/
+Fact *ReplaceFact(
+  Environment *theEnv,
+  Fact *oldFact,
+  GenericValue *theValueArray,
+  char *changeMap)
+  {
+   int i;
+   Fact *theFact;
+   Fact *factListPosition, *templatePosition;
+   
    /*===============================================*/
    /* Call registered modify notification functions */
    /* for the existing version of the fact.         */
@@ -489,11 +518,9 @@ void ModifyCommand(
    /* when the modified fact is asserted.      */
    /*==========================================*/
 
-   struct fact *factListPosition, *templatePosition;
-
    factListPosition = oldFact->previousFact;
    templatePosition = oldFact->previousTemplateFact;
-
+   
    /*===================*/
    /* Retract the fact. */
    /*===================*/
@@ -507,7 +534,7 @@ void ModifyCommand(
 
    for (i = 0; i < (int) oldFact->theProposition.multifieldLength; i++)
      {
-      if (theDOArray[i].voidValue != theEnv->VoidConstant)
+      if (theValueArray[i].voidValue != theEnv->VoidConstant)
         {
          if (oldFact->theProposition.theFields[i].header->type == MULTIFIELD)
            {
@@ -518,7 +545,7 @@ void ModifyCommand(
               { AddToMultifieldList(theEnv,theSegment); }
            }
 
-         oldFact->theProposition.theFields[i].value = theDOArray[i].value;
+         oldFact->theProposition.theFields[i].value = theValueArray[i].value;
         }
      }
 
@@ -526,18 +553,7 @@ void ModifyCommand(
    /* Assert the new fact. */
    /*======================*/
 
-   theFact = (struct fact *) AssertDriver(theEnv,oldFact,factIndex,factListPosition,templatePosition,changeMap);
-
-   /*========================================*/
-   /* The asserted fact is the return value. */
-   /*========================================*/
-
-   if (theFact != NULL)
-     {
-      returnValue->begin = 0;
-      returnValue->end = theFact->theProposition.multifieldLength - 1; // TBD Necessary?
-      returnValue->value = theFact;
-     }
+   theFact = AssertDriver(theEnv,oldFact,oldFact->factIndex,factListPosition,templatePosition,changeMap);
 
    /*===============================================*/
    /* Call registered modify notification functions */
@@ -556,17 +572,8 @@ void ModifyCommand(
          ((void (*)(void *,void *,void *))(*theModifyFunction->func))(theEnv,NULL,theFact);
         }
      }
-
-   /*=============================*/
-   /* Free the data object array. */
-   /*=============================*/
-
-   if (theDOArray != NULL)
-     { rm3(theEnv,theDOArray,sizeof(CLIPSValue) * templatePtr->numberOfSlots); }
-   if (changeMap != NULL)
-     { rm(theEnv,(void *) changeMap,templatePtr->numberOfSlots); }
-
-   return;
+     
+   return theFact;
   }
 
 /*******************************************************************/
@@ -700,7 +707,7 @@ void DuplicateCommand(
          slotPtr = templatePtr->slotList;
          while (slotPtr != NULL)
            {
-            if (slotPtr->slotName == (CLIPSLexeme *) testPtr->value)
+            if (slotPtr->slotName == testPtr->lexemeValue)
               {
                found = true;
                slotPtr = NULL;
@@ -808,7 +815,7 @@ void DuplicateCommand(
 
         {
          newFact->theProposition.theFields[i].value =
-            CopyMultifield(theEnv,(Multifield *) oldFact->theProposition.theFields[i].value);
+            CopyMultifield(theEnv,oldFact->theProposition.theFields[i].multifieldValue);
         }
      }
 
@@ -2131,7 +2138,7 @@ bool UpdateModifyDuplicate(
       /* Does the slot exist? */
       /*======================*/
 
-      if ((slotPtr = FindSlot(theDeftemplate,(CLIPSLexeme *) tempArg->value,&position)) == NULL)
+      if ((slotPtr = FindSlot(theDeftemplate,tempArg->lexemeValue,&position)) == NULL)
         {
          InvalidDeftemplateSlotMessage(theEnv,tempArg->lexemeValue->contents,
                                        theDeftemplate->header.name->contents,true);
@@ -2181,7 +2188,7 @@ bool UpdateModifyDuplicate(
       /*=============================================*/
 
       tempArg->type = INTEGER;
-      tempArg->value = EnvCreateInteger(theEnv,(long long) (FindSlotPosition(theDeftemplate,(CLIPSLexeme *) tempArg->value) - 1));
+      tempArg->value = EnvCreateInteger(theEnv,(long long) (FindSlotPosition(theDeftemplate,tempArg->lexemeValue) - 1));
 
       tempArg = tempArg->nextArg;
      }
@@ -2238,7 +2245,7 @@ CLIPSLexeme *FindTemplateForFactAddress(
    /* Return the deftemplate name. */
    /*==============================*/
 
-   return (CLIPSLexeme *) thePattern->value;
+   return thePattern->lexemeValue;
   }
 
 /*******************************************/

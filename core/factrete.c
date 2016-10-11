@@ -37,8 +37,6 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
-/*      6.50: Modify command preserves fact address.         */
-/*                                                           */
 /*************************************************************/
 
 #include <stdio.h>
@@ -113,7 +111,7 @@ bool FactPNGetVar1(
       if (returnValue->header->type == MULTIFIELD)
         {
          returnValue->begin = 0;
-         returnValue->end = ((Multifield *) fieldPtr->value)->multifieldLength - 1;
+         returnValue->end = fieldPtr->multifieldValue->multifieldLength - 1;
         }
 
       return true;
@@ -158,7 +156,7 @@ bool FactPNGetVar1(
    /* a multifield slot. Just return the type and value.     */
    /*========================================================*/
 
-   segmentPtr = (Multifield *) fieldPtr->value;
+   segmentPtr = fieldPtr->multifieldValue;
    fieldPtr = &segmentPtr->theFields[theField];
 
    returnValue->value = fieldPtr->value;
@@ -234,7 +232,7 @@ bool FactPNGetVar3(
    /* Get the multifield value from which the data is retrieved. */
    /*============================================================*/
 
-   segmentPtr = (Multifield *) factPtr->theProposition.theFields[hack->whichSlot].value;
+   segmentPtr = factPtr->theProposition.theFields[hack->whichSlot].multifieldValue;
 
    /*=========================================*/
    /* If the beginning and end flags are set, */
@@ -338,7 +336,7 @@ bool FactPNConstant2(
 
    if (fieldPtr->header->type == MULTIFIELD)
      {
-      segmentPtr = (Multifield *) fieldPtr->value;
+      segmentPtr = fieldPtr->multifieldValue;
 
       if (hack->fromBeginning)
         { fieldPtr = &segmentPtr->theFields[hack->offset]; }
@@ -441,7 +439,7 @@ bool FactJNGetVar1(
       if (returnValue->header->type == MULTIFIELD)
         {
          returnValue->begin = 0;
-         returnValue->end = ((Multifield *) fieldPtr->value)->multifieldLength - 1;
+         returnValue->end = fieldPtr->multifieldValue->multifieldLength - 1;
         }
 
       return true;
@@ -492,7 +490,7 @@ bool FactJNGetVar1(
    /* a multifield slot. Just return the type and value.     */
    /*========================================================*/
 
-   segmentPtr = (Multifield *) theSlots->theFields[theSlot].value;
+   segmentPtr = theSlots->theFields[theSlot].multifieldValue;
    fieldPtr = &segmentPtr->theFields[theField];
 
    returnValue->value = fieldPtr->value;
@@ -592,9 +590,9 @@ bool FactJNGetVar3(
 
    if ((factPtr->basisSlots != NULL) &&
        (! EngineData(theEnv)->JoinOperationInProgress))
-     { segmentPtr = (Multifield *) factPtr->basisSlots->theFields[hack->whichSlot].value; }
+     { segmentPtr = factPtr->basisSlots->theFields[hack->whichSlot].multifieldValue; }
    else
-     { segmentPtr = (Multifield *) factPtr->theProposition.theFields[hack->whichSlot].value; }
+     { segmentPtr = factPtr->theProposition.theFields[hack->whichSlot].multifieldValue; }
 
    /*=========================================*/
    /* If the beginning and end flags are set, */
@@ -633,7 +631,7 @@ bool FactSlotLength(
   CLIPSValue *returnValue)
   {
    struct factCheckLengthPNCall *hack;
-   struct multifield *segmentPtr;
+   Multifield *segmentPtr;
    long extraOffset = 0;
    struct multifieldMarker *tempMark;
 
@@ -649,7 +647,7 @@ bool FactSlotLength(
       extraOffset += ((tempMark->endPosition - tempMark->startPosition) + 1);
      }
 
-   segmentPtr = (Multifield *) FactData(theEnv)->CurrentPatternFact->theProposition.theFields[hack->whichSlot].value;
+   segmentPtr = FactData(theEnv)->CurrentPatternFact->theProposition.theFields[hack->whichSlot].multifieldValue;
 
    if (segmentPtr->multifieldLength < (hack->minLength + extraOffset))
      { return false; }
@@ -762,7 +760,7 @@ bool FactJNCompVars2(
      { fieldPtr1 = &fact1->theProposition.theFields[s1]; }
    else
      {
-      segment = (Multifield *) fact1->theProposition.theFields[s1].value;
+      segment = fact1->theProposition.theFields[s1].multifieldValue;
 
       if (hack->fromBeginning1)
         { fieldPtr1 = &segment->theFields[hack->offset1]; }
@@ -774,7 +772,7 @@ bool FactJNCompVars2(
      { fieldPtr2 = &fact2->theProposition.theFields[s2]; }
    else
      {
-      segment = (Multifield *) fact2->theProposition.theFields[s2].value;
+      segment = fact2->theProposition.theFields[s2].multifieldValue;
 
       if (hack->fromBeginning2)
         { fieldPtr2 = &segment->theFields[hack->offset2]; }
