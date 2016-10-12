@@ -54,16 +54,16 @@
 
 void EnvUserFunctions(Environment *);
 
-   void                           RTA(Environment *,UDFContext *,CLIPSValue *);
-   void                           MUL(Environment *,UDFContext *,CLIPSValue *);
-   void                           Positivep(Environment *,UDFContext *,CLIPSValue *);
-   void                           Cube(Environment *,UDFContext *,CLIPSValue *);
-   void                           TripleNumber(Environment *,UDFContext *,CLIPSValue *);
-   void                           Reverse(Environment *,UDFContext *,CLIPSValue *);
-   void                           MFL(Environment *,UDFContext *,CLIPSValue *);
-   void                           CntMFChars(Environment *,UDFContext *,CLIPSValue *);
-   void                           Sample4(Environment *,UDFContext *,CLIPSValue *);
-   void                           Rest(Environment *,UDFContext *,CLIPSValue *);
+   void                           RTA(Environment *,UDFContext *,UDFValue *);
+   void                           MUL(Environment *,UDFContext *,UDFValue *);
+   void                           Positivep(Environment *,UDFContext *,UDFValue *);
+   void                           Cube(Environment *,UDFContext *,UDFValue *);
+   void                           TripleNumber(Environment *,UDFContext *,UDFValue *);
+   void                           Reverse(Environment *,UDFContext *,UDFValue *);
+   void                           MFL(Environment *,UDFContext *,UDFValue *);
+   void                           CntMFChars(Environment *,UDFContext *,UDFValue *);
+   void                           Sample4(Environment *,UDFContext *,UDFValue *);
+   void                           Rest(Environment *,UDFContext *,UDFValue *);
 
 /***********************************************************/
 /* EnvUserFunctions: Informs the expert system environment */
@@ -98,9 +98,9 @@ void EnvUserFunctions(
 void RTA(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
-   CLIPSValue base, height;
+   UDFValue base, height;
 
    if (! UDFFirstArgument(context,NUMBER_TYPES,&base))
      { return; }
@@ -117,9 +117,9 @@ void RTA(
 void MUL(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
-   CLIPSValue theArg;
+   UDFValue theArg;
    long long firstNumber, secondNumber;
 
    /*=============================================================*/
@@ -173,9 +173,9 @@ void MUL(
 void Positivep(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
-   CLIPSValue theArg;
+   UDFValue theArg;
 
    /*==================================*/
    /* Get the first argument using the */
@@ -211,9 +211,9 @@ void Positivep(
 void Cube(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
-   CLIPSValue theArg;
+   UDFValue theArg;
    long long theInteger;
    double theFloat;
 
@@ -250,9 +250,9 @@ void Cube(
 void TripleNumber(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
-   CLIPSValue theArg;
+   UDFValue theArg;
 
    /*==================================*/
    /* Get the first argument using the */
@@ -278,9 +278,9 @@ void TripleNumber(
 void Reverse(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
-   CLIPSValue theArg;
+   UDFValue theArg;
    const char *theString;
    char *tempString;
    size_t length, i;
@@ -338,9 +338,9 @@ void Reverse(
 void MFL(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
-   CLIPSValue theArg;
+   UDFValue theArg;
 
    /*======================================================*/
    /* Check that the first argument is a multifield value. */
@@ -365,9 +365,9 @@ void MFL(
 void CntMFChars(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
-   CLIPSValue theArg;
+   UDFValue theArg;
    long long i, count = 0;
    long long mfLength;
 
@@ -402,7 +402,7 @@ void CntMFChars(
 void Sample4(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    /*=======================================*/
    /* Create a multifield value of length 2 */
@@ -434,7 +434,7 @@ void Sample4(
 void Rest(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    long long mfLength;
 

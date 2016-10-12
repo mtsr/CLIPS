@@ -371,7 +371,7 @@ bool EnvIsDefinstancesDeletable(
 void UndefinstancesCommand(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    UndefconstructCommand(context,"undefinstances",DefinstancesData(theEnv)->DefinstancesConstruct);
   }
@@ -387,7 +387,7 @@ void UndefinstancesCommand(
 void GetDefinstancesModuleCommand(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    returnValue->value = GetConstructModuleCommand(context,"definstances-module",DefinstancesData(theEnv)->DefinstancesConstruct);
   }
@@ -442,7 +442,7 @@ bool EnvUndefinstances(
 void PPDefinstancesCommand(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    PPConstructCommand(context,"ppdefinstances",DefinstancesData(theEnv)->DefinstancesConstruct);
   }
@@ -458,7 +458,7 @@ void PPDefinstancesCommand(
 void ListDefinstancesCommand(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    ListConstructCommand(context,DefinstancesData(theEnv)->DefinstancesConstruct);
   }
@@ -495,7 +495,7 @@ void EnvListDefinstances(
 void GetDefinstancesListFunction(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    GetConstructListFunction(context,returnValue,DefinstancesData(theEnv)->DefinstancesConstruct);
   }
@@ -513,7 +513,7 @@ void GetDefinstancesListFunction(
  ***************************************************************/
 void EnvGetDefinstancesList(
   Environment *theEnv,
-  CLIPSValue *returnValue,
+  UDFValue *returnValue,
   Defmodule *theModule)
   {
    GetConstructList(theEnv,returnValue,DefinstancesData(theEnv)->DefinstancesConstruct,theModule);
@@ -922,7 +922,7 @@ static void ResetDefinstancesAction(
 #endif
    Definstances *theDefinstances = (Definstances *) vDefinstances;
    EXPRESSION *theExp;
-   CLIPSValue temp;
+   UDFValue temp;
 
    SaveCurrentModule(theEnv);
    EnvSetCurrentModule(theEnv,vDefinstances->whichModule->theModule);

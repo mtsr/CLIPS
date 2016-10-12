@@ -109,14 +109,14 @@ struct factBuilder
   {
    Environment *fbEnv;
    Deftemplate *fbDeftemplate;
-   GenericValue *fbValueArray;
+   CLIPSValue *fbValueArray;
   };
 
 struct factModifier
   {
    Environment *fmEnv;
    Fact *fmOldFact;
-   GenericValue *fmValueArray;
+   CLIPSValue *fmValueArray;
    char *changeMap;
   };
 
@@ -164,7 +164,7 @@ struct factsData
    Fact                          *EnvCreateFact(Environment *,Deftemplate *);
    void                           EnvDecrementFactCount(Environment *,Fact *);
    long long                      EnvFactIndex(Environment *,Fact *);
-   bool                           EnvGetFactSlot(Environment *,Fact *,const char *,CLIPSValue *);
+   bool                           EnvGetFactSlot(Environment *,Fact *,const char *,UDFValue *);
    void                           PrintFactWithIdentifier(Environment *,const char *,Fact *,const char *);
    void                           PrintFact(Environment *,const char *,Fact *,bool,bool,const char *);
    void                           PrintFactIdentifierInLongForm(Environment *,const char *,Fact *);
@@ -189,11 +189,11 @@ struct factsData
    bool                           FactIsDeleted(Environment *,Fact *);
    void                           ReturnFact(Environment *,Fact *);
    void                           MatchFactFunction(Environment *,Fact *);
-   bool                           EnvPutFactSlot(Environment *,Fact *,const char *,CLIPSValue *);
+   bool                           EnvPutFactSlot(Environment *,Fact *,const char *,UDFValue *);
    bool                           EnvAssignFactSlotDefaults(Environment *,Fact *);
    bool                           CopyFactSlotValues(Environment *,Fact *,Fact *);
    bool                           DeftemplateSlotDefault(Environment *,Deftemplate *,
-                                                         struct templateSlot *,CLIPSValue *,bool);
+                                                         struct templateSlot *,UDFValue *,bool);
    bool                           EnvAddAssertFunction(Environment *,const char *,
                                                        void (*)(Environment *,void *),int);
    bool                           EnvAddAssertFunctionWithContext(Environment *,const char *,
@@ -211,7 +211,7 @@ struct factsData
    bool                           EnvRemoveModifyFunction(Environment *,const char *);
 
    FactBuilder                   *EnvCreateFactBuilder(Environment *,const char *);
-   bool                           FBPutSlot(FactBuilder *,const char *,GenericValue *);
+   bool                           FBPutSlot(FactBuilder *,const char *,CLIPSValue *);
    Fact                          *FBAssert(FactBuilder *);
    void                           FBDispose(FactBuilder *);
    void                           FBAbort(FactBuilder *);
@@ -225,7 +225,7 @@ struct factsData
    bool                           FBPutSlotMultifield(FactBuilder *,const char *,Multifield *);
 
    FactModifier                  *EnvCreateFactModifier(Environment *,Fact *);
-   bool                           FMPutSlot(FactModifier *,const char *,GenericValue *);
+   bool                           FMPutSlot(FactModifier *,const char *,CLIPSValue *);
    Fact                          *FMApply(FactModifier *);
    void                           FMDispose(FactModifier *);
    void                           FMAbort(FactModifier *);

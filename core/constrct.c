@@ -455,7 +455,7 @@ void InitializeConstructs(
 void ClearCommand(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    EnvClear(theEnv);
   }
@@ -467,7 +467,7 @@ void ClearCommand(
 void ResetCommand(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    EnvReset(theEnv);
   }

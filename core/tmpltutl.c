@@ -156,7 +156,7 @@ void CheckTemplateFact(
    int i;
    Deftemplate *theDeftemplate;
    struct templateSlot *slotPtr;
-   CLIPSValue theData;
+   UDFValue theData;
    char thePlace[20];
    int rv;
 
@@ -353,7 +353,7 @@ static struct templateSlot *GetNextTemplateSlotToPrint(
   int ignoreDefaults,
   const char *changeMap)
   {
-   CLIPSValue tempDO;
+   UDFValue tempDO;
    struct field *sublist;
 
    sublist = theFact->theProposition.theFields;

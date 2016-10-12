@@ -149,7 +149,7 @@ static void ResetDeffactsAction(
 #if MAC_XCD
 #pragma unused(buffer)
 #endif
-   CLIPSValue returnValue;
+   UDFValue returnValue;
    Deffacts *theDeffacts = (Deffacts *) theConstruct;
 
    if (theDeffacts->assertList == NULL) return;
@@ -178,7 +178,7 @@ static void SaveDeffacts(
 void UndeffactsCommand(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    UndefconstructCommand(context,"undeffacts",DeffactsData(theEnv)->DeffactsConstruct);
   }
@@ -201,7 +201,7 @@ bool EnvUndeffacts(
 void GetDeffactsListFunction(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    GetConstructListFunction(context,returnValue,DeffactsData(theEnv)->DeffactsConstruct);
   }
@@ -212,7 +212,7 @@ void GetDeffactsListFunction(
 /*****************************************/
 void EnvGetDeffactsList(
   Environment *theEnv,
-  CLIPSValue *returnValue,
+  UDFValue *returnValue,
   Defmodule *theModule)
   {
    GetConstructList(theEnv,returnValue,DeffactsData(theEnv)->DeffactsConstruct,theModule);
@@ -225,7 +225,7 @@ void EnvGetDeffactsList(
 void DeffactsModuleFunction(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    returnValue->value = GetConstructModuleCommand(context,"deffacts-module",DeffactsData(theEnv)->DeffactsConstruct);
   }
@@ -239,7 +239,7 @@ void DeffactsModuleFunction(
 void PPDeffactsCommand(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    PPConstructCommand(context,"ppdeffacts",DeffactsData(theEnv)->DeffactsConstruct);
   }
@@ -263,7 +263,7 @@ bool PPDeffacts(
 void ListDeffactsCommand(
   Environment *theEnv,
   UDFContext *context,
-  CLIPSValue *returnValue)
+  UDFValue *returnValue)
   {
    ListConstructCommand(context,DeffactsData(theEnv)->DeffactsConstruct);
   }
