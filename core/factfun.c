@@ -337,7 +337,7 @@ void EnvFactSlotNames(
    if (theFact->whichDeftemplate->implied)
      {
       returnValue->begin = 0;
-      returnValue->end = 0;
+      returnValue->range = 1;
       theList = EnvCreateMultifield(theEnv,(int) 1);
       theList->theFields[0].lexemeValue = EnvCreateSymbol(theEnv,"implied");
       returnValue->value = theList;
@@ -358,7 +358,7 @@ void EnvFactSlotNames(
    /*=============================================================*/
 
    returnValue->begin = 0;
-   returnValue->end = count - 1;
+   returnValue->range = count;
    theList = EnvCreateMultifield(theEnv,count);
    returnValue->value = theList;
 
@@ -462,7 +462,7 @@ void EnvGetFactList(
    /*===========================================================*/
 
    returnValue->begin = 0;
-   returnValue->end = count - 1;
+   returnValue->range = count;
    theList = EnvCreateMultifield(theEnv,count);
    returnValue->value = theList;
 

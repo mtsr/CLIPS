@@ -153,7 +153,7 @@ struct udfValue
       CLIPSExternalAddress *externalAddressValue;
      };
    long begin;
-   long end;
+   long range;
    struct udfValue *next;
   };
 

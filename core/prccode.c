@@ -1004,7 +1004,7 @@ void GrabProcWildargs(
      }
    else if (theIndex == ProceduralPrimitiveData(theEnv)->Oldindex)
      {
-      returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end;
+      returnValue->range = ProceduralPrimitiveData(theEnv)->WildcardValue->range;
       returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value;
       return;
      }
@@ -1018,7 +1018,8 @@ void GrabProcWildargs(
    size = ProceduralPrimitiveData(theEnv)->ProcParamArraySize - theIndex + 1;
    if (size <= 0)
      {
-      returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = -1;
+      returnValue->range = 0;
+      ProceduralPrimitiveData(theEnv)->WildcardValue->range = 0;
       returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = ProceduralPrimitiveData(theEnv)->NoParamValue;
       MultifieldInstall(theEnv,ProceduralPrimitiveData(theEnv)->WildcardValue->multifieldValue);
       return;
@@ -1026,9 +1027,10 @@ void GrabProcWildargs(
    for (i = theIndex-1 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
      {
       if (ProceduralPrimitiveData(theEnv)->ProcParamArray[i].header->type == MULTIFIELD)
-        size += ProceduralPrimitiveData(theEnv)->ProcParamArray[i].end - ProceduralPrimitiveData(theEnv)->ProcParamArray[i].begin;
+        size += ProceduralPrimitiveData(theEnv)->ProcParamArray[i].range - 1;
      }
-   returnValue->end = ProceduralPrimitiveData(theEnv)->WildcardValue->end = size-1;
+   returnValue->range = size;
+   ProceduralPrimitiveData(theEnv)->WildcardValue->range = size;
    returnValue->value = ProceduralPrimitiveData(theEnv)->WildcardValue->value = CreateUnmanagedMultifield(theEnv,(unsigned long) size);
    for (i = theIndex-1 , j = 0 ; i < ProceduralPrimitiveData(theEnv)->ProcParamArraySize ; i++)
      {
@@ -1040,7 +1042,7 @@ void GrabProcWildargs(
       else
         {
          val = &ProceduralPrimitiveData(theEnv)->ProcParamArray[i];
-         for (k = val->begin ; k <= val->end  ; k++ , j++)
+         for (k = val->begin ; k < (val->begin + val->range)  ; k++ , j++)
            {
             returnValue->multifieldValue->theFields[j].value = val->multifieldValue->theFields[k].value;
            }
@@ -1118,7 +1120,7 @@ static void EvaluateProcParameters(
         }
       rva[i].value = temp.value;
       rva[i].begin = temp.begin;
-      rva[i].end = temp.end;
+      rva[i].range = temp.range;
       parameterList = parameterList->nextArg;
       i++;
      }
@@ -1149,7 +1151,7 @@ static bool RtnProcParam(
    src = &ProceduralPrimitiveData(theEnv)->ProcParamArray[*((int *) ((CLIPSBitMap *) value)->contents) - 1];
    returnValue->value = src->value;
    returnValue->begin = src->begin;
-   returnValue->end = src->end;
+   returnValue->range = src->range;
    return true;
   }
 
@@ -1180,7 +1182,7 @@ static bool GetProcBind(
      {
       returnValue->value = src->value;
       returnValue->begin = src->begin;
-      returnValue->end = src->end;
+      returnValue->range = src->range;
       return true;
      }
    if (GetFirstArgument()->nextArg != NULL)
@@ -1209,7 +1211,7 @@ static bool GetProcBind(
       src = &ProceduralPrimitiveData(theEnv)->ProcParamArray[pvar->second - 1];
       returnValue->value = src->value;
       returnValue->begin = src->begin;
-      returnValue->end = src->end;
+      returnValue->range = src->range;
      }
    else
      GrabProcWildargs(theEnv,returnValue,(int) pvar->second);
@@ -1254,7 +1256,7 @@ static bool PutProcBind(
       dst->supplementalInfo = theEnv->TrueSymbol;
       dst->value = returnValue->value;
       dst->begin = returnValue->begin;
-      dst->end = returnValue->end;
+      dst->range = returnValue->range;
       ValueInstall(theEnv,dst);
      }
    return true;
