@@ -1,7 +1,7 @@
    /*******************************************************/
    /*      "C" Language Integrated Production System      */
    /*                                                     */
-   /*            CLIPS Version 6.50  10/01/16             */
+   /*            CLIPS Version 6.50  10/18/16             */
    /*                                                     */
    /*               EXTERNAL FUNCTION MODULE              */
    /*******************************************************/
@@ -49,6 +49,8 @@
 /*                                                           */
 /*            UDF redesign.                                  */
 /*                                                           */
+/*            Eval support for run time and bload only.      */
+/*                                                           */
 /*************************************************************/
 
 #include "setup.h"
@@ -61,10 +63,6 @@
 #include "envrnmnt.h"
 #include "memalloc.h"
 #include "router.h"
-
-#if DEFTEMPLATE_CONSTRUCT
-#include "factmngr.h"
-#endif
 
 #if OBJECT_SYSTEM
 #include "inscom.h"
@@ -81,12 +79,12 @@
    static void                    DeallocateExternalFunctionData(Environment *);
 #if (! RUN_TIME)
    static bool                    RemoveHashFunction(Environment *,struct FunctionDefinition *);
-#endif
-   static void                    PrintType(Environment *,const char *,int,int *,const char *);
-   static void                    AssignErrorValue(UDFContext *);
    static bool                    DefineFunction(Environment *,const char *,unsigned,
                                                  void (*)(Environment *,UDFContext *,UDFValue *),
                                                  const char *,int,int,const char *,void *);
+#endif
+   static void                    PrintType(Environment *,const char *,int,int *,const char *);
+   static void                    AssignErrorValue(UDFContext *);
 
 /*********************************************************/
 /* InitializeExternalFunctionData: Allocates environment */
@@ -292,6 +290,8 @@ static bool RemoveHashFunction(
    return false;
   }
 
+#endif
+
 /***************************************************************************/
 /* AddFunctionParser: Associates a specialized expression parsing function */
 /*   with the function entry for a function which was defined using        */
@@ -320,6 +320,8 @@ bool AddFunctionParser(
 
    return true;
   }
+
+#if (! RUN_TIME)
 
 /*********************************************************************/
 /* RemoveFunctionParser: Removes a specialized expression parsing    */
