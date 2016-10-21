@@ -3,7 +3,7 @@
    /*                                                     */
    /*            CLIPS Version 6.50  10/18/16             */
    /*                                                     */
-   /*               STRING FUNCTIONS MODULE               */
+   /*               STRING_TYPE FUNCTIONS MODULE               */
    /*******************************************************/
 
 /*************************************************************/
@@ -142,7 +142,7 @@ void StrCatFunction(
   UDFContext *context,
   UDFValue *returnValue)
   {
-   StrOrSymCatFunction(context,returnValue,STRING);
+   StrOrSymCatFunction(context,returnValue,STRING_TYPE);
   }
 
 /****************************************/
@@ -154,7 +154,7 @@ void SymCatFunction(
   UDFContext *context,
   UDFValue *returnValue)
   {
-   StrOrSymCatFunction(context,returnValue,SYMBOL);
+   StrOrSymCatFunction(context,returnValue,SYMBOL_TYPE);
   }
 
 /********************************************************/
@@ -194,27 +194,27 @@ static void StrOrSymCatFunction(
    total = 1;
    for (i = 1 ; i <= numArgs ; i++)
      {
-      UDFNthArgument(context,i,ANY_TYPE,&theArg);
+      UDFNthArgument(context,i,ANY_TYPE_BITS,&theArg);
 
       switch(theArg.header->type)
         {
-         case STRING:
+         case STRING_TYPE:
 #if OBJECT_SYSTEM
-         case INSTANCE_NAME:
+         case INSTANCE_NAME_TYPE:
 #endif
-         case SYMBOL:
+         case SYMBOL_TYPE:
            hashPtr = theArg.lexemeValue;
            arrayOfStrings[i-1] = hashPtr;
            IncrementSymbolCount(hashPtr);
            break;
 
-         case FLOAT:
+         case FLOAT_TYPE:
            hashPtr = EnvCreateString(theEnv,FloatToString(theEnv,theArg.floatValue->contents));
            arrayOfStrings[i-1] = hashPtr;
            IncrementSymbolCount(hashPtr);
            break;
 
-         case INTEGER:
+         case INTEGER_TYPE:
            hashPtr = EnvCreateString(theEnv,LongIntegerToString(theEnv,theArg.integerValue->contents));
            arrayOfStrings[i-1] = hashPtr;
            IncrementSymbolCount(hashPtr);
@@ -236,7 +236,7 @@ static void StrOrSymCatFunction(
 
          rm(theEnv,arrayOfStrings,sizeof(CLIPSLexeme *) * numArgs);
 
-         if (returnType == STRING)
+         if (returnType == STRING_TYPE)
            { returnValue->value = EnvCreateString(theEnv,""); }
          else
            { returnValue->value = EnvCreateSymbol(theEnv,"nil"); }
@@ -266,7 +266,7 @@ static void StrOrSymCatFunction(
    /* up the temporary memory used.           */
    /*=========================================*/
 
-   if (returnType == STRING)
+   if (returnType == STRING_TYPE)
      { returnValue->value = EnvCreateString(theEnv,theString); }
    else
      { returnValue->value = EnvCreateSymbol(theEnv,theString); }
@@ -296,7 +296,7 @@ void StrLengthFunction(
    /* The argument should be of type symbol, string, or instance name. */
    /*==================================================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
+   if (! UDFFirstArgument(context,LEXEME_BITS | INSTANCE_NAME_BIT,&theArg))
      { return; }
 
    /*============================================*/
@@ -325,7 +325,7 @@ void UpcaseFunction(
    /* The argument should be of type symbol or string. */
    /*==================================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
+   if (! UDFFirstArgument(context,LEXEME_BITS | INSTANCE_NAME_BIT,&theArg))
      { return; }
 
    /*======================================================*/
@@ -351,9 +351,9 @@ void UpcaseFunction(
    /* up the temporary memory used.          */
    /*========================================*/
 
-   if (CVIsType(&theArg,SYMBOL_TYPE))
+   if (CVIsType(&theArg,SYMBOL_BIT))
      { returnValue->value = EnvCreateSymbol(theEnv,nsptr); }
-   else if (CVIsType(&theArg,INSTANCE_NAME_TYPE))
+   else if (CVIsType(&theArg,INSTANCE_NAME_BIT))
      { returnValue->value = EnvCreateInstanceName(theEnv,nsptr); }
    else
      { returnValue->value = EnvCreateString(theEnv,nsptr); }
@@ -379,7 +379,7 @@ void LowcaseFunction(
    /* The argument should be of type symbol or string. */
    /*==================================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
+   if (! UDFFirstArgument(context,LEXEME_BITS | INSTANCE_NAME_BIT,&theArg))
      { return; }
 
    /*======================================================*/
@@ -405,9 +405,9 @@ void LowcaseFunction(
    /* up the temporary memory used.          */
    /*========================================*/
 
-   if (CVIsType(&theArg,SYMBOL_TYPE))
+   if (CVIsType(&theArg,SYMBOL_BIT))
      { returnValue->value = EnvCreateSymbol(theEnv,nsptr); }
-   else if (CVIsType(&theArg,INSTANCE_NAME_TYPE))
+   else if (CVIsType(&theArg,INSTANCE_NAME_BIT))
      { returnValue->value = EnvCreateInstanceName(theEnv,nsptr); }
    else
      { returnValue->value = EnvCreateString(theEnv,nsptr); }
@@ -430,10 +430,10 @@ void StrCompareFunction(
    /* The first two arguments should be of type symbol or string. */
    /*=============================================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&arg1))
+   if (! UDFFirstArgument(context,LEXEME_BITS | INSTANCE_NAME_BIT,&arg1))
      { return; }
 
-   if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&arg2))
+   if (! UDFNextArgument(context,LEXEME_BITS | INSTANCE_NAME_BIT,&arg2))
      { return; }
 
    /*===================================================*/
@@ -443,7 +443,7 @@ void StrCompareFunction(
 
    if (UDFHasNextArgument(context))
      {
-      if (! UDFNextArgument(context,INTEGER_TYPE,&arg3))
+      if (! UDFNextArgument(context,INTEGER_BIT,&arg3))
         { return; }
 
       compareResult = strncmp(arg1.lexemeValue->contents,arg2.lexemeValue->contents,
@@ -485,7 +485,7 @@ void SubStringFunction(
    /* Check and retrieve the arguments. */
    /*===================================*/
 
-   if (! UDFFirstArgument(context,INTEGER_TYPE,&theArg))
+   if (! UDFFirstArgument(context,INTEGER_BIT,&theArg))
      { return; }
 
    if (theArg.integerValue->contents < 1)
@@ -493,7 +493,7 @@ void SubStringFunction(
    else
      { start = (size_t) theArg.integerValue->contents - 1; }
 
-   if (! UDFNextArgument(context,INTEGER_TYPE,&theArg))
+   if (! UDFNextArgument(context,INTEGER_BIT,&theArg))
      { return; }
 
    if (theArg.integerValue->contents < 1)
@@ -504,7 +504,7 @@ void SubStringFunction(
    else
      { end = (size_t) theArg.integerValue->contents - 1; }
 
-   if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
+   if (! UDFNextArgument(context,LEXEME_BITS | INSTANCE_NAME_BIT,&theArg))
      { return; }
 
    tempString = theArg.lexemeValue->contents;
@@ -573,10 +573,10 @@ void StrIndexFunction(
    /* Check and retrieve the arguments. */
    /*===================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg1))
+   if (! UDFFirstArgument(context,LEXEME_BITS | INSTANCE_NAME_BIT,&theArg1))
      { return; }
 
-   if (! UDFNextArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg2))
+   if (! UDFNextArgument(context,LEXEME_BITS | INSTANCE_NAME_BIT,&theArg2))
      { return; }
 
    strg1 = theArg1.lexemeValue->contents;
@@ -624,7 +624,7 @@ void StringToFieldFunction(
    /* The argument should be of type symbol or string. */
    /*==================================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES | INSTANCE_NAME_TYPE,&theArg))
+   if (! UDFFirstArgument(context,LEXEME_BITS | INSTANCE_NAME_BIT,&theArg))
      {
       returnValue->lexemeValue = EnvCreateSymbol(theEnv,"*** ERROR ***");
       return;
@@ -684,19 +684,21 @@ void EvalFunction(
   UDFValue *returnValue)
   {
    UDFValue theArg;
+   CLIPSValue cv;
 
    /*==================================================*/
-   /* The argument should be of type SYMBOL or STRING. */
+   /* The argument should be of type SYMBOL_TYPE or STRING_TYPE. */
    /*==================================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
+   if (! UDFFirstArgument(context,LEXEME_BITS,&theArg))
      { return; }
 
    /*======================*/
    /* Evaluate the string. */
    /*======================*/
 
-   EnvEval(theEnv,theArg.lexemeValue->contents,returnValue);
+   EnvEval(theEnv,theArg.lexemeValue->contents,&cv);
+   CLIPSToUDFValue(&cv,returnValue);
   }
 
 /*****************************/
@@ -706,7 +708,7 @@ void EvalFunction(
 bool EnvEval(
   Environment *theEnv,
   const char *theString,
-  UDFValue *returnValue)
+  CLIPSValue *returnValue)
   {
    struct expr *top;
    bool ov;
@@ -714,6 +716,7 @@ bool EnvEval(
    char logicalNameBuffer[20];
    struct BindInfo *oldBinds;
    int danglingConstructs;
+   UDFValue evalResult;
 
    /*=====================================*/
    /* If embedded, clear the error flags. */
@@ -803,13 +806,19 @@ bool EnvEval(
    /*====================================*/
 
    ExpressionInstall(theEnv,top);
-   EvaluateExpression(theEnv,top,returnValue);
+   EvaluateExpression(theEnv,top,&evalResult);
    ExpressionDeinstall(theEnv,top);
 
    depth--;
    ReturnExpression(theEnv,top);
    CloseStringSource(theEnv,logicalNameBuffer);
 
+   /*====================================================*/
+   /* Convert a partial multifield to a full multifield. */
+   /*====================================================*/
+   
+   NormalizeMultifield(theEnv,&evalResult);
+    
    /*==============================================*/
    /* If embedded, reset dangling construct count. */
    /*==============================================*/
@@ -826,10 +835,12 @@ bool EnvEval(
    if ((UtilityData(theEnv)->CurrentGarbageFrame->topLevel) && (! CommandLineData(theEnv)->EvaluatingTopLevelCommand) &&
        (EvaluationData(theEnv)->CurrentExpression == NULL) && (UtilityData(theEnv)->GarbageCollectionLocks == 0))
      {
-      CleanCurrentGarbageFrame(theEnv,returnValue);
+      CleanCurrentGarbageFrame(theEnv,&evalResult);
       CallPeriodicTasks(theEnv);
      }
 
+   returnValue->value = evalResult.value;
+   
    if (EnvGetEvaluationError(theEnv)) return false;
    return true;
   }
@@ -847,10 +858,10 @@ void BuildFunction(
    UDFValue theArg;
 
    /*==================================================*/
-   /* The argument should be of type SYMBOL or STRING. */
+   /* The argument should be of type SYMBOL_TYPE or STRING_TYPE. */
    /*==================================================*/
 
-   if (! UDFFirstArgument(context,LEXEME_TYPES,&theArg))
+   if (! UDFFirstArgument(context,LEXEME_BITS,&theArg))
      { return; }
 
    /*======================*/

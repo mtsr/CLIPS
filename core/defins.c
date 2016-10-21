@@ -516,7 +516,11 @@ void EnvGetDefinstancesList(
   UDFValue *returnValue,
   Defmodule *theModule)
   {
-   GetConstructList(theEnv,returnValue,DefinstancesData(theEnv)->DefinstancesConstruct,theModule);
+   UDFValue result;
+   
+   GetConstructList(theEnv,&result,DefinstancesData(theEnv)->DefinstancesConstruct,theModule);
+   NormalizeMultifield(theEnv,&result);
+   returnValue->value = result.value;
   }
 
 /* =========================================
@@ -676,7 +680,7 @@ static CLIPSLexeme *ParseDefinstancesName(
      return NULL;
 
 #if DEFRULE_CONSTRUCT
-   if ((DefclassData(theEnv)->ObjectParseToken.tknType != SYMBOL_TYPE) ? false :
+   if ((DefclassData(theEnv)->ObjectParseToken.tknType != SYMBOL_BIT) ? false :
        (strcmp(DefclassData(theEnv)->ObjectParseToken.lexemeValue->contents,ACTIVE_RLN) == 0))
      {
       PPBackup(theEnv);
